@@ -161,14 +161,14 @@ export interface DesignToken {
       about?: "classic" | "split-image" | "stat-heavy" | "timeline" | "team-grid";
       benefits?: "grid" | "stat-grid" | "checklist" | "comparison-table" | "featured-grid" | "icon-row" | "bento-grid";
       testimonials?: "carousel" | "compact" | "grid" | "logo-wall" | "featured-spotlight" | "google-reviews";
-      cta?: "banner" | "card" | "centered" | "split-image";
+      cta?: "banner" | "card" | "centered" | "split-image" | "inline-lead-form";
       faq?: "accordion" | "simple" | "columns" | "sidebar-category" | "two-column-grid" | "chat-bubble-style";
       gallery?: "grid" | "masonry" | "carousel" | "lightbox-story";
       menu?: "grid" | "compact" | "cards" | "text-list" | "compact-list" | "tabs-by-category" | "accordion-by-category" | "bento-photo-grid" | "visual-showcase-hero" | "sidebar-scrollspy-photo";
       catalog?: "grid" | "compact" | "cards" | "grid-dense" | "showcase-featured" | "tabs-by-category" | "editorial-grid" | "masonry-flow" | "instagram-square-grid" | "split-hero-catalog" | "neo-brutalist-matrix" | "horizontal-swipe-carousel";
       stats?: "counter-row" | "card-grid" | "minimal-split";
       partners?: "logo-wall" | "marquee" | "pill-grid";
-      pricing?: "cards" | "horizontal-rows" | "comparison-table";
+      pricing?: "cards" | "horizontal-rows" | "comparison-table" | "single-tier-highlight";
       contact?: "classic-split" | "whatsapp-direct" | "minimal-centered" | "overlay-map" | "bento-grid" | "dark-split";
       header?: "left-logo-inline-nav" | "centered-logo" | "transparent-overlay" | "logo-with-cta-button" | "stacked-logo-tagline";
       footer?: "minimal-band" | "columns-with-social" | "columns-with-nav" | "dark-contrast-band";

@@ -6,8 +6,9 @@ import CtaClassic from "./classic";
 import CtaCard from "./card";
 import CtaCentered from "./centered";
 import CtaSplitImage from "./split-image";
+import CtaInlineLeadForm from "./inline-lead-form";
 
-type CtaVariantProps = {
+export type CtaVariantProps = {
   cta: TemplateProps["content"]["cta"];
   design_token?: DesignToken | null;
   language?: "id" | "en";
@@ -16,6 +17,10 @@ type CtaVariantProps = {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onSubmitLead?: (data: { name: string; email: string; phone: string; message: string }) => Promise<string | void>;
+  leadSubmitting?: boolean;
+  leadSuccess?: boolean;
+  leadError?: string | null;
 };
 
 const variants: Record<string, ComponentType<CtaVariantProps>> = {
@@ -23,6 +28,7 @@ const variants: Record<string, ComponentType<CtaVariantProps>> = {
   card: CtaCard,
   centered: CtaCentered,
   "split-image": CtaSplitImage,
+  "inline-lead-form": CtaInlineLeadForm,
 };
 
 export default function CtaSection({
@@ -34,6 +40,10 @@ export default function CtaSection({
   isSelected,
   collapseSheetForInlineEdit,
   onEditingStateChange,
+  onSubmitLead,
+  leadSubmitting,
+  leadSuccess,
+  leadError,
 }: {
   cta: TemplateProps["content"]["cta"];
   design_token?: DesignToken | null;
@@ -43,6 +53,10 @@ export default function CtaSection({
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onSubmitLead?: (data: { name: string; email: string; phone: string; message: string }) => Promise<string | void>;
+  leadSubmitting?: boolean;
+  leadSuccess?: boolean;
+  leadError?: string | null;
 }) {
   const variant = design_token?.layout?.section_variants?.cta ?? "banner";
   const Renderer = variants[variant] ?? CtaClassic;
@@ -56,6 +70,10 @@ export default function CtaSection({
       isSelected={isSelected}
       collapseSheetForInlineEdit={collapseSheetForInlineEdit}
       onEditingStateChange={onEditingStateChange}
+      onSubmitLead={onSubmitLead}
+      leadSubmitting={leadSubmitting}
+      leadSuccess={leadSuccess}
+      leadError={leadError}
     />
   );
 }

@@ -5,6 +5,7 @@ import type { DesignToken, TemplateProps } from "../../templates/types";
 import PricingCards from "./cards";
 import PricingHorizontalRows from "./horizontal-rows";
 import PricingComparisonTable from "./comparison-table";
+import PricingSingleTierHighlight from "./single-tier-highlight";
 
 export interface PricingVariantProps {
   pricing: NonNullable<TemplateProps["content"]["pricing"]>;
@@ -21,6 +22,7 @@ const variants: Record<string, ComponentType<PricingVariantProps>> = {
   cards: PricingCards,
   "horizontal-rows": PricingHorizontalRows,
   "comparison-table": PricingComparisonTable,
+  "single-tier-highlight": PricingSingleTierHighlight,
 };
 
 export default function PricingSection(props: {
