@@ -54,6 +54,7 @@ import {
   getEnabledVariants,
 } from "@/lib/design-assets-config";
 import { SECTION_VARIANT_OPTIONS } from "@/components/sections/variant-registry";
+import { tenantHost } from "@/lib/site-config";
 
 import TypographyPairingPicker from "./components/TypographyPairingPicker";
 import ColorPatternPicker from "./components/ColorPatternPicker";
@@ -2417,6 +2418,15 @@ export default function SiteEditorPage() {
             </div>
           </div>
 
+          {/* Mobile site sub-nav bar */}
+          {siteId && (
+            <div className="md:hidden flex-shrink-0 border-b border-border/70 bg-[#111318]/95 py-1.5 backdrop-blur z-10">
+              <div className="px-3 overflow-x-auto no-scrollbar">
+                <SiteSubNav siteId={siteId} compact className="w-max min-w-full" />
+              </div>
+            </div>
+          )}
+
           {/* Canvas topbar */}
           <div className="hidden md:flex h-10 flex-shrink-0 items-center gap-2 border-b border-border bg-background px-3">
             {/* Device switcher */}
@@ -2763,6 +2773,7 @@ export default function SiteEditorPage() {
                       collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                       onEditingStateChange={(editing) => { isInlineEditingRef.current = editing; }}
                       onSubmitLead={async () => { }}
+                      tenantDomain={siteDetails?.subdomain ? tenantHost(siteDetails.subdomain) : ""}
                       isPremium={activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise"}
                     />
                   </div>
@@ -2801,6 +2812,7 @@ export default function SiteEditorPage() {
                       collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                       onEditingStateChange={(editing) => { isInlineEditingRef.current = editing; }}
                       onSubmitLead={async () => { }}
+                      tenantDomain={siteDetails?.subdomain ? tenantHost(siteDetails.subdomain) : ""}
                       isPremium={activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise"}
                     />
                   </div>
@@ -2820,6 +2832,7 @@ export default function SiteEditorPage() {
                   collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                   onEditingStateChange={(editing) => { isInlineEditingRef.current = editing; }}
                   onSubmitLead={async () => { }}
+                  tenantDomain={siteDetails?.subdomain ? tenantHost(siteDetails.subdomain) : ""}
                   isPremium={activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise"}
                   language={siteDetails?.language}
                 />

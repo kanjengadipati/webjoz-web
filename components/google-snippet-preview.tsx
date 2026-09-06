@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { BASE_DOMAIN } from "@/lib/site-config";
 
 export interface BusinessPreview {
   name: string;
@@ -31,7 +32,7 @@ export function GoogleSnippetPreview({ variant, business }: GoogleSnippetPreview
         <div className="text-xs text-slate-700 leading-tight">
           <div className="font-semibold text-slate-800 text-[12px]">{business.name}</div>
           <div className="text-[10px] text-slate-500 hover:underline cursor-pointer">
-            https://{business.subdomain}.webjoz.com
+            https://{business.subdomain}.{BASE_DOMAIN}
           </div>
         </div>
       </div>

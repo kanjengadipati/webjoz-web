@@ -130,6 +130,7 @@ export function SeoPreview({ seo, subdomain = "namabisnis.webjoz.com" }: SeoPrev
   const title    = seo?.title       || "";
   const desc     = seo?.description || "";
   const ogImage  = seo?.og_image_url || "";
+  const ogSiteName = (seo?.og_site_name || "").trim();
   const titleLen = title.length;
   const descLen  = desc.length;
 
@@ -168,8 +169,8 @@ export function SeoPreview({ seo, subdomain = "namabisnis.webjoz.com" }: SeoPrev
             <div className="flex items-center gap-2 mb-1">
               <span className="w-5 h-5 rounded-full bg-slate-600 flex items-center justify-center text-[8px] font-bold text-white shrink-0">W</span>
               <div className="leading-tight">
-                <p className="text-[11px] text-slate-300 font-medium">webjoz.com</p>
-                <p className="text-[10px] text-slate-500">{subdomain} › bisnis</p>
+                <p className="text-[11px] text-slate-300 font-medium">{subdomain}</p>
+                {ogSiteName && <p className="text-[10px] text-slate-500">{subdomain} › {ogSiteName}</p>}
               </div>
             </div>
             <p className={`text-[16px] font-medium leading-snug hover:underline cursor-pointer ${
@@ -476,7 +477,7 @@ export function SeoForm({
             value={seo?.custom_robots_txt || ""}
             onChange={(e) => updateField("seo", "custom_robots_txt", e.target.value)}
             className={`${fieldBase} resize-none font-mono text-[11px]`}
-            placeholder={"User-agent: *\nAllow: /\n\nSitemap: https://namabisnis.webjoz.com/sitemap.xml"}
+            placeholder={`User-agent: *\nAllow: /\n\nSitemap: https://${subdomain || "namabisnis.webjoz.com"}/sitemap.xml`}
           />
         ) : (
           <div
@@ -537,7 +538,7 @@ export function SeoForm({
         const siteTitle = seo?.title || "Nama Bisnis — Layanan";
         const siteDesc = seo?.description || "Deskripsi singkat bisnis dan layanan.";
         const siteName = siteTitle.split(/[-—|]/)[0].trim() || "Nama Bisnis";
-        const cleanSubdomain = subdomain || "namabisnis";
+        const cleanSubdomain = (subdomain || "namabisnis.webjoz.com").split(".")[0] || "namabisnis";
 
         const demoBusiness = {
           name: siteName,

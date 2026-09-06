@@ -7,6 +7,7 @@ import LocationPicker from "@/components/location-picker";
 import { GoogleSnippetPreview } from "@/components/google-snippet-preview";
 import { isPlaceholderValue, AI_SUGGESTIONS, getAiSuggestions } from "./editor-utils";
 import { request } from "@/lib/api/client";
+import { tenantHost } from "@/lib/site-config";
 import { getEnabledMapTiles } from "@/lib/design-assets-config";
 import { SocialPlatformSelect, SOCIAL_PLATFORMS, SocialIcon } from "@/components/sections/social-platforms";
 import { useToast } from "@/components/toast-provider";
@@ -1990,7 +1991,7 @@ export default function SectionForms({
             const ogTitle = content.seo?.title || "";
             const ogDesc  = content.seo?.description || "";
             const ogImg   = content.seo?.og_image_url || "";
-            const ogDomain = subdomain ? `${subdomain}.webjoz.com` : "namabisnis.webjoz.com";
+            const ogDomain = subdomain ? tenantHost(subdomain) : "namabisnis.webjoz.com";
             return (
               <div className="space-y-2">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Preview Saat Link Dibagikan</p>
@@ -2190,7 +2191,7 @@ export default function SectionForms({
                 value={content.seo?.custom_robots_txt || ""}
                 onChange={(e) => updateField("seo", "custom_robots_txt", e.target.value)}
                 className="w-full px-2.5 py-1.5 border rounded-md text-[11px] font-mono outline-none focus:border-primary/60 bg-transparent text-slate-200 resize-none"
-                placeholder={"User-agent: *\nAllow: /\n\nSitemap: https://namabisnis.webjoz.com/sitemap.xml"}
+                placeholder={`User-agent: *\nAllow: /\n\nSitemap: https://${subdomain ? tenantHost(subdomain) : "namabisnis.webjoz.com"}/sitemap.xml`}
               />
             ) : (
               <div

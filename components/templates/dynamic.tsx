@@ -66,7 +66,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
   content, design_token,
   onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
   activeSection, onSelectSection, onRegenSection, onUpdateField, collapseSheetForInlineEdit, onEditingStateChange,
-  isEditorMode = false, arrivedSections, isPremium = false, language
+  isEditorMode = false, arrivedSections, isPremium = false, language, tenantDomain
 }) => {
   const dt = design_token ?? null;
   const { header, footer, seo } = content;
@@ -461,7 +461,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
         <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
           <MemoSectionContent content={{ seo, dt }} render={(data) => {
             const { seo: s } = data;
-            return <SeoEditorPreview seo={s} />;
+            return <SeoEditorPreview seo={s} domain={tenantDomain} />;
           }} />
         </MemoPreviewSectionWrapper>
       )}
