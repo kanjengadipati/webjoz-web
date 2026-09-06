@@ -2,6 +2,7 @@
 import React from "react";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 import { InlineText } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 
 interface FaqVariantProps {
   faq: TemplateProps["content"]["faq"];
@@ -12,6 +13,7 @@ interface FaqVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: () => void;
 }
 
 export default function FaqChatBubbleStyle({
@@ -22,6 +24,7 @@ export default function FaqChatBubbleStyle({
   isSelected = false,
   collapseSheetForInlineEdit,
   onEditingStateChange,
+  onAddItem,
 }: FaqVariantProps) {
   const py = { paddingTop: "var(--dt-spacing)", paddingBottom: "var(--dt-spacing)" } as any;
   const isEN = language === "en";
@@ -118,6 +121,11 @@ export default function FaqChatBubbleStyle({
           );
         })}
       </div>
+      {isEditorMode && onAddItem && (
+        <div style={{ marginTop: "1rem", display: "flex", justifyContent: "center" }}>
+          <InlineAddTile compact label={isEN ? "Add question" : "Tambah Pertanyaan"} onClick={onAddItem} style={{ borderRadius: "1rem", maxWidth: "24rem" }} />
+        </div>
+      )}
     </section>
   );
 }

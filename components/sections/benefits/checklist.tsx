@@ -2,6 +2,7 @@
 import React from "react";
 import { CheckCircle } from "lucide-react";
 import { InlineText } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 
 interface BenefitsVariantProps {
@@ -12,6 +13,7 @@ interface BenefitsVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: () => void;
   language?: "id" | "en";
 }
 
@@ -23,6 +25,7 @@ export default function BenefitsChecklist({
   collapseSheetForInlineEdit,
   onEditingStateChange,
   language = "id",
+  onAddItem,
 }: BenefitsVariantProps) {
   const py = { paddingTop: "var(--dt-spacing)", paddingBottom: "var(--dt-spacing)" } as any;
   const isEN = language === "en";
@@ -76,6 +79,11 @@ export default function BenefitsChecklist({
               </div>
             </React.Fragment>
           ))}
+          {isEditorMode && onAddItem && (
+            <div style={{ marginTop: "0.25rem" }}>
+              <InlineAddTile compact label={isEN ? "Add benefit" : "Tambah Keunggulan"} onClick={onAddItem} style={{ borderRadius: "var(--dt-radius)" }} />
+            </div>
+          )}
         </div>
       </div>
     </section>

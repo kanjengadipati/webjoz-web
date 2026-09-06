@@ -2,6 +2,7 @@
 import React from "react";
 import { ArrowRight, Check, X } from "lucide-react";
 import { InlineText } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface BenefitsVariantProps {
@@ -12,6 +13,7 @@ interface BenefitsVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: () => void;
 }
 
 export default function BenefitsComparisonTable({
@@ -21,6 +23,7 @@ export default function BenefitsComparisonTable({
   isSelected,
   collapseSheetForInlineEdit,
   onEditingStateChange,
+  onAddItem,
 }: BenefitsVariantProps) {
   const comp = b.comparison;
   const rows = comp?.rows || [];
@@ -73,6 +76,11 @@ export default function BenefitsComparisonTable({
             </tbody>
           </table>
         </div>
+        {isEditorMode && onAddItem && (
+          <div style={{ marginTop: "1.25rem" }}>
+            <InlineAddTile label="Tambah Perbandingan" onClick={onAddItem} style={{ borderRadius: "var(--dt-radius)" }} />
+          </div>
+        )}
       </div>
     </section>
   );

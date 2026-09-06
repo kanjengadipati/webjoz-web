@@ -2,6 +2,7 @@
 import React from "react";
 import { Star } from "lucide-react";
 import { DynamicIcon, InlineText } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface BenefitsVariantProps {
@@ -12,6 +13,7 @@ interface BenefitsVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: () => void;
   language?: "id" | "en";
 }
 
@@ -188,6 +190,7 @@ export default function BenefitsBentoGrid({
   collapseSheetForInlineEdit,
   onEditingStateChange,
   language = "id",
+  onAddItem,
 }: BenefitsVariantProps) {
   const isEN = language === "en";
   const items = b.items ?? [];
@@ -246,6 +249,11 @@ export default function BenefitsBentoGrid({
               language={language}
             />
           ))}
+          {isEditorMode && onAddItem && (
+            <div className="col-span-1 sm:col-span-2 lg:col-span-1">
+              <InlineAddTile label={isEN ? "Add benefit" : "Tambah Keunggulan"} onClick={onAddItem} style={{ borderRadius: "var(--dt-radius-lg)", minHeight: "8rem" }} />
+            </div>
+          )}
         </div>
       </div>
     </section>

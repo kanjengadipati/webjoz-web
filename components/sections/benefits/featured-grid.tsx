@@ -2,6 +2,7 @@
 import React from "react";
 import { Star } from "lucide-react";
 import { DynamicIcon, InlineText } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface BenefitsVariantProps {
@@ -12,6 +13,7 @@ interface BenefitsVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: () => void;
   language?: "id" | "en";
 }
 
@@ -23,6 +25,7 @@ export default function BenefitsFeaturedGrid({
   collapseSheetForInlineEdit,
   onEditingStateChange,
   language = "id",
+  onAddItem,
 }: BenefitsVariantProps) {
   const isEN = language === "en";
   const items = b.items ?? [];
@@ -238,6 +241,12 @@ export default function BenefitsFeaturedGrid({
                 />
               </div>
             ))}
+          </div>
+        )}
+
+        {isEditorMode && onAddItem && (
+          <div style={{ marginTop: "1.25rem" }}>
+            <InlineAddTile label={isEN ? "Add benefit" : "Tambah Keunggulan"} onClick={onAddItem} style={{ borderRadius: "var(--dt-radius-lg)" }} />
           </div>
         )}
       </div>

@@ -11,6 +11,7 @@ interface TestimonialsVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: () => void;
 }
 
 export default function TestimonialsCompact({
@@ -20,6 +21,7 @@ export default function TestimonialsCompact({
   isSelected,
   collapseSheetForInlineEdit,
   onEditingStateChange,
+  onAddItem,
 }: TestimonialsVariantProps) {
   return (
     <SharedTestimonialsSection
@@ -43,6 +45,7 @@ export default function TestimonialsCompact({
       isSelected={isSelected}
       collapseSheetForInlineEdit={collapseSheetForInlineEdit}
       onEditingStateChange={onEditingStateChange}
+      onAddItem={onAddItem}
     />
   );
 }
