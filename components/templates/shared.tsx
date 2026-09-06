@@ -1323,7 +1323,7 @@ function MenuCatalogCard({
             accept="image/*"
             className="hidden"
           />
-          <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/40 backdrop-blur-[1.5px] opacity-0 group-hover/img:opacity-100 transition-all duration-200 pointer-events-none group-hover/img:pointer-events-auto">
+          <div className={`absolute inset-0 z-30 flex items-center justify-center bg-black/40 backdrop-blur-[1.5px] opacity-0 group-hover/img:opacity-100 transition-all duration-200 pointer-events-none group-hover/img:pointer-events-auto ${isSelected ? "opacity-100 pointer-events-auto" : ""} pointer-coarse:opacity-100 pointer-coarse:pointer-events-auto`}>
             <button
               type="button"
               onClick={handleTriggerUpload}
@@ -2861,7 +2861,7 @@ export function InlineImage({
           className={`absolute inset-0 z-30 flex items-center justify-center bg-black/40 backdrop-blur-[1.5px] transition-all duration-200 pointer-events-none ${
             isSelected
               ? "opacity-100 pointer-events-auto"
-              : "opacity-0 group-hover/inline-img:opacity-100 group-hover/inline-img:pointer-events-auto"
+              : "opacity-0 group-hover/inline-img:opacity-100 group-hover/inline-img:pointer-events-auto pointer-coarse:opacity-100 pointer-coarse:pointer-events-auto"
           }`}
         >
           <div className="flex items-center gap-1.5 p-1 max-w-[90%]">
