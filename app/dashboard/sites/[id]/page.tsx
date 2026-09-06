@@ -1406,7 +1406,7 @@ export default function SiteEditorPage() {
   }
 
   return (
-    <div className="flex w-screen h-dvh overflow-hidden bg-background text-slate-100">
+    <div className="flex w-screen h-screen supports-[height:100dvh]:h-dvh overflow-hidden bg-background text-slate-100">
       {/* ── Main editor split ── */}
       <div className="relative flex flex-1 min-h-0 overflow-hidden">
 
