@@ -2736,7 +2736,7 @@ export interface InlineImageProps {
   collapseSheetForInlineEdit?: () => void;
 }
 
-const DEFAULT_IMAGE_POOL = [
+export const DEFAULT_IMAGE_POOL = [
   "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&auto=format&fit=crop&q=80",
   "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1200&auto=format&fit=crop&q=80",
   "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1200&auto=format&fit=crop&q=80",

@@ -3,6 +3,7 @@ import React from "react";
 import type { GalleryItem } from "@/components/templates/types";
 import PhotoCredit from "../PhotoCredit";
 import { InlineText } from "../../templates/shared";
+import { GalleryTileOverlay, GalleryAddTile } from "./shared";
 
 interface MasonryProps {
   items: GalleryItem[];
@@ -13,12 +14,17 @@ interface MasonryProps {
   onUpdateCaption?: (idx: number, val: string) => void;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onReplaceImage?: (idx: number, url: string) => void;
+  onRemoveItem?: (idx: number) => void;
+  onMoveItem?: (idx: number, dir: -1 | 1) => void;
+  onAddItem?: (url: string) => void;
 }
 
 export default function GalleryMasonry({
   items, radius, setLightboxIndex,
   isEditorMode, isSelected, onUpdateCaption,
   collapseSheetForInlineEdit, onEditingStateChange,
+  onReplaceImage, onRemoveItem, onMoveItem, onAddItem,
 }: MasonryProps) {
   const col1 = items.filter((_, i) => i % 3 === 0);
   const col2 = items.filter((_, i) => i % 3 === 1);
@@ -81,6 +87,17 @@ export default function GalleryMasonry({
                 <PhotoCredit credit={item.image_credit} className="text-[10px] text-white/60" />
               </div>
             )}
+            {isEditorMode && (
+              <GalleryTileOverlay
+                idx={itemIdx}
+                total={items.length}
+                isSelected={isSelected}
+                onReplace={onReplaceImage}
+                onRemove={onRemoveItem}
+                onMove={onMoveItem}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              />
+            )}
           </ItemTag>
         );
       })}
@@ -92,6 +109,13 @@ export default function GalleryMasonry({
       <MasonryCol colItems={col1} startIdx={0} />
       <MasonryCol colItems={col2} startIdx={1} />
       <MasonryCol colItems={col3} startIdx={2} />
+      {isEditorMode && onAddItem && (
+        <GalleryAddTile
+          onAdd={onAddItem}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          style={{ borderRadius: radius, height: 320 }}
+        />
+      )}
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { GalleryItem } from "@/components/templates/types";
 import PhotoCredit from "../PhotoCredit";
 import { InlineText } from "../../templates/shared";
+import { GalleryTileOverlay } from "./shared";
 
 interface CarouselProps {
   items: GalleryItem[];
@@ -17,6 +18,9 @@ interface CarouselProps {
   onUpdateCaption?: (idx: number, val: string) => void;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onReplaceImage?: (idx: number, url: string) => void;
+  onRemoveItem?: (idx: number) => void;
+  onMoveItem?: (idx: number, dir: -1 | 1) => void;
 }
 
 export default function GalleryCarousel({
@@ -24,6 +28,7 @@ export default function GalleryCarousel({
   autoplaySpeed, showDots, showArrows,
   isEditorMode, isSelected, onUpdateCaption,
   collapseSheetForInlineEdit, onEditingStateChange,
+  onReplaceImage, onRemoveItem, onMoveItem,
 }: CarouselProps) {
   const [current, setCurrent] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -66,7 +71,7 @@ export default function GalleryCarousel({
             key={idx}
             {...(!isEditorMode ? { type: "button" as const } : {})}
             onClick={() => setLightboxIndex(idx)}
-            className="min-w-full aspect-video relative cursor-pointer p-0 border-0 text-left"
+            className="group min-w-full aspect-video relative cursor-pointer p-0 border-0 text-left"
           >
             {item.image_url && (
               <img
@@ -101,6 +106,17 @@ export default function GalleryCarousel({
               <div className="absolute bottom-1 right-2 z-10">
                 <PhotoCredit credit={item.image_credit} className="text-[10px] text-white/60" />
               </div>
+            )}
+            {isEditorMode && (
+              <GalleryTileOverlay
+                idx={idx}
+                total={items.length}
+                isSelected={isSelected}
+                onReplace={onReplaceImage}
+                onRemove={onRemoveItem}
+                onMove={onMoveItem}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              />
             )}
           </ItemTag>
         ))}
