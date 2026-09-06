@@ -1,14 +1,17 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { DISABLED_STYLES, FOCUS_VISIBLE, MOTION } from "@/lib/ui-tokens";
 import { cn } from "@/lib/utils";
+import { Spinner, type SpinnerSize } from "./spinner";
 
 type ButtonVariant = "default" | "outline" | "ghost" | "secondary" | "destructive";
 type ButtonSize = "default" | "sm" | "lg" | "icon";
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   children?: ReactNode;
+  loading?: boolean;
+  loadingText?: ReactNode;
 }
 
 const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
@@ -38,13 +41,34 @@ export function buttonClassName({ className, variant = "default", size = "defaul
   );
 }
 
-export function Button({ children, className, variant = "default", size = "default", ...props }: ButtonProps) {
+export function Button({
+  children,
+  className,
+  variant = "default",
+  size = "default",
+  loading = false,
+  loadingText,
+  disabled,
+  ...props
+}: ButtonProps) {
+  const spinnerSize: SpinnerSize = size === "sm" ? "xs" : size === "lg" ? "md" : "sm";
+  const spinnerVariant = variant === "default" || variant === "destructive" ? "white" : "current";
+
   return (
     <button
       className={buttonClassName({ className, variant, size })}
+      disabled={disabled || loading}
+      aria-busy={loading}
       {...props}
     >
-      {children}
+      {loading && (
+        <Spinner
+          size={spinnerSize}
+          variant={spinnerVariant}
+          className="shrink-0"
+        />
+      )}
+      {loading && loadingText !== undefined ? loadingText : children}
     </button>
   );
 }

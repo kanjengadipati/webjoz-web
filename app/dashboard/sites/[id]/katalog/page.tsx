@@ -8,9 +8,10 @@ import { request } from "@/lib/api/client";
 import { useToast } from "@/components/toast-provider";
 import { SiteSubNav } from "@/components/site-sub-nav";
 import { SparkleGenAI } from "@/components/sparkle-icon";
+import { PageLoading, Spinner } from "@/components/ui";
 import Link from "next/link";
 import {
-  Loader2, ChevronLeft, Save, Check, ShoppingBag,
+  ChevronLeft, Save, Check, ShoppingBag,
   Utensils, Sparkles
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
@@ -153,11 +154,7 @@ export default function KatalogManagerPage() {
   }, [token, activeTenantId, siteId, sectionKey, updateField, pushToast, t]);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <Loader2 className="w-8 h-8 text-primary animate-spin" />
-      </div>
-    );
+    return <PageLoading message={t("dashboard.sitesKatalog.loading", "Memuat katalog...")} className="min-h-[400px]" />;
   }
 
   const isMenu = sectionKey === "menu";
@@ -199,7 +196,7 @@ export default function KatalogManagerPage() {
         <div className="flex items-center gap-3 shrink-0 self-end sm:self-auto">
           {saving ? (
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-500 border border-amber-500/20">
-              <Loader2 className="w-3.5 h-3.5 animate-spin" /> {t("dashboard.sitesKatalog.saving", "Menyimpan...")}
+              <Spinner size="xs" variant="current" /> {t("dashboard.sitesKatalog.saving", "Menyimpan...")}
             </span>
           ) : savedAt ? (
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">

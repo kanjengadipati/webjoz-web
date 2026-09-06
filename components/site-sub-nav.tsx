@@ -13,9 +13,10 @@ interface SiteSubNavProps {
    *  Leave undefined (e.g. in the desktop editor footer) to always show the tab. */
   hasCatalog?: boolean;
   hasMenu?: boolean;
+  className?: string;
 }
 
-export function SiteSubNav({ siteId, compact, hasCatalog, hasMenu }: SiteSubNavProps) {
+export function SiteSubNav({ siteId, compact, hasCatalog, hasMenu, className = "" }: SiteSubNavProps) {
   const pathname = usePathname();
   const { t } = useI18n();
   const encodedId = encodeSiteId(siteId);
@@ -40,7 +41,7 @@ export function SiteSubNav({ siteId, compact, hasCatalog, hasMenu }: SiteSubNavP
   ];
 
   return (
-    <nav className={`flex gap-1.5 overflow-x-auto no-scrollbar ${compact ? "" : "border-b border-white/[0.06] pb-3 mb-6"}`}>
+    <nav className={`flex gap-1.5 overflow-x-auto no-scrollbar ${compact ? "" : "border-b border-white/[0.06] pb-3 mb-6"} ${className}`}>
       {allTabs.map(({ href, label, icon: Icon }) => {
         const isActive = href === ""
           ? current === ""
@@ -50,7 +51,7 @@ export function SiteSubNav({ siteId, compact, hasCatalog, hasMenu }: SiteSubNavP
             key={href}
             href={`/dashboard/sites/${encodedId}${href}`}
             className={`
-              group relative flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] font-semibold
+              group relative flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] font-semibold shrink-0
               transition-all duration-200 whitespace-nowrap select-none outline-none
               ${isActive
                 ? "bg-primary text-primary-foreground shadow-[0_0_12px_rgba(var(--primary-rgb,99,102,241)/0.45)] scale-[1.02]"
