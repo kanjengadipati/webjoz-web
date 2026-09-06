@@ -4,6 +4,7 @@ import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { GalleryItem } from "@/components/templates/types";
 import PhotoCredit from "../PhotoCredit";
 import { InlineText } from "../../templates/shared";
+import { GalleryTileOverlay } from "./shared";
 
 interface LightboxStoryProps {
   items: GalleryItem[];
@@ -13,6 +14,9 @@ interface LightboxStoryProps {
   onUpdateCaption?: (idx: number, val: string) => void;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onReplaceImage?: (idx: number, url: string) => void;
+  onRemoveItem?: (idx: number) => void;
+  onMoveItem?: (idx: number, dir: -1 | 1) => void;
 }
 
 function StoryLightbox({
@@ -154,6 +158,7 @@ export default function GalleryLightboxStory({
   items, radius,
   isEditorMode, isSelected, onUpdateCaption,
   collapseSheetForInlineEdit, onEditingStateChange,
+  onReplaceImage, onRemoveItem, onMoveItem,
 }: LightboxStoryProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
@@ -204,6 +209,17 @@ export default function GalleryLightboxStory({
               <div className="absolute bottom-1 right-2 z-10">
                 <PhotoCredit credit={item.image_credit} className="text-[10px] text-white/60" />
               </div>
+            )}
+            {isEditorMode && (
+              <GalleryTileOverlay
+                idx={idx}
+                total={items.length}
+                isSelected={isSelected}
+                onReplace={onReplaceImage}
+                onRemove={onRemoveItem}
+                onMove={onMoveItem}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              />
             )}
           </ItemTag>
         ))}

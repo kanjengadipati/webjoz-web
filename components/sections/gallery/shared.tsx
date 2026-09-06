@@ -1,9 +1,10 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
-import { X, ChevronLeft, ChevronRight, Play } from "lucide-react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { X, ChevronLeft, ChevronRight, Play, Camera, Sparkles, Link2, Loader2, Plus, Trash2 } from "lucide-react";
 import type { GalleryItem, DesignToken } from "@/components/templates/types";
 import PhotoCredit from "../PhotoCredit";
-import { InlineText } from "../../templates/shared";
+import { InlineText, DEFAULT_IMAGE_POOL } from "../../templates/shared";
+import { uploadImageFile } from "@/components/file-upload";
 
 export interface GalleryVariantProps {
   gallery: {
@@ -22,6 +23,274 @@ export interface GalleryVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onReplaceImage?: (idx: number, url: string) => void;
+  onRemoveItem?: (idx: number) => void;
+  onMoveItem?: (idx: number, dir: -1 | 1) => void;
+  onAddItem?: (url: string) => void;
+}
+
+export function useGalleryUpload({
+  onUrl,
+  collapseSheetForInlineEdit,
+}: {
+  onUrl: (url: string) => void;
+  collapseSheetForInlineEdit?: () => void;
+}) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const stop = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+    e.stopPropagation();
+  }, []);
+
+  const openPicker = useCallback(() => {
+    collapseSheetForInlineEdit?.();
+    fileInputRef.current?.click();
+  }, [collapseSheetForInlineEdit]);
+
+  const handleFile = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      try {
+        setUploading(true);
+        const url = await uploadImageFile(file);
+        onUrl(url);
+      } catch (err) {
+        console.error("Upload gallery image error:", err);
+      } finally {
+        setUploading(false);
+        if (fileInputRef.current) fileInputRef.current.value = "";
+      }
+    },
+    [onUrl]
+  );
+
+  const random = useCallback(() => {
+    collapseSheetForInlineEdit?.();
+    const chosen = DEFAULT_IMAGE_POOL[Math.floor(Math.random() * DEFAULT_IMAGE_POOL.length)];
+    onUrl(chosen);
+  }, [collapseSheetForInlineEdit, onUrl]);
+
+  const promptUrl = useCallback(() => {
+    collapseSheetForInlineEdit?.();
+    const entered = window.prompt("Masukkan URL gambar:");
+    if (entered && entered.trim()) onUrl(entered.trim());
+  }, [collapseSheetForInlineEdit, onUrl]);
+
+  return { fileInputRef, uploading, stop, openPicker, handleFile, random, promptUrl };
+}
+
+export function GalleryTileOverlay({
+  idx,
+  total,
+  isSelected,
+  onReplace,
+  onRemove,
+  onMove,
+  collapseSheetForInlineEdit,
+}: {
+  idx: number;
+  total: number;
+  isSelected?: boolean;
+  onReplace?: (idx: number, url: string) => void;
+  onRemove?: (idx: number) => void;
+  onMove?: (idx: number, dir: -1 | 1) => void;
+  collapseSheetForInlineEdit?: () => void;
+}) {
+  const { fileInputRef, uploading, stop, openPicker, handleFile, random, promptUrl } = useGalleryUpload({
+    onUrl: (url) => onReplace?.(idx, url),
+    collapseSheetForInlineEdit,
+  });
+
+  return (
+    <div
+      className={`absolute inset-0 z-20 flex flex-col items-center justify-center gap-2 bg-black/40 backdrop-blur-[1.5px] opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto pointer-events-none transition-opacity duration-200 ${
+        isSelected ? "opacity-100 pointer-events-auto" : ""
+      } pointer-coarse:opacity-100 pointer-coarse:pointer-events-auto`}
+      onClick={stop}
+      onPointerDown={stop}
+      onTouchStart={stop}
+    >
+      <input type="file" ref={fileInputRef} accept="image/*" onChange={handleFile} className="hidden" />
+      <div className="flex items-center gap-1.5 max-w-[92%]">
+        <button
+          type="button"
+          onClick={(e) => { stop(e); openPicker(); }}
+          onPointerDown={stop}
+          onTouchStart={stop}
+          disabled={uploading}
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-slate-900/90 text-white text-[11px] font-semibold shadow-xl border border-white/20 hover:bg-slate-950 active:scale-95 transition-all cursor-pointer disabled:opacity-50 backdrop-blur-sm"
+        >
+          {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin text-white" /> : <Camera className="w-3.5 h-3.5 text-white" />}
+          <span>Ganti Foto</span>
+        </button>
+        <button
+          type="button"
+          onClick={(e) => { stop(e); random(); }}
+          onPointerDown={stop}
+          onTouchStart={stop}
+          title="Ganti foto acak (Unsplash)"
+          aria-label="Ganti foto acak"
+          className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-900/90 text-amber-300 shadow-xl border border-white/20 hover:bg-slate-950 active:scale-95 transition-all cursor-pointer backdrop-blur-sm"
+        >
+          <Sparkles className="w-3.5 h-3.5" />
+        </button>
+        <button
+          type="button"
+          onClick={(e) => { stop(e); promptUrl(); }}
+          onPointerDown={stop}
+          onTouchStart={stop}
+          title="Masukkan URL foto"
+          aria-label="Masukkan URL foto"
+          className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-900/90 text-white/90 shadow-xl border border-white/20 hover:bg-slate-950 active:scale-95 transition-all cursor-pointer backdrop-blur-sm"
+        >
+          <Link2 className="w-3.5 h-3.5" />
+        </button>
+      </div>
+      {(onRemove || onMove) && total > 1 && (
+        <div className="flex items-center gap-1.5 p-1 bg-black/50 rounded-full backdrop-blur-sm">
+          <button
+            type="button"
+            disabled={idx === 0}
+            onClick={(e) => { stop(e); onMove?.(idx, -1); }}
+            onPointerDown={stop}
+            onTouchStart={stop}
+            title="Geser ke kiri"
+            aria-label="Geser ke kiri"
+            className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-white/80 hover:bg-white/20 transition-colors cursor-pointer disabled:opacity-30"
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => { stop(e); onRemove?.(idx); }}
+            onPointerDown={stop}
+            onTouchStart={stop}
+            title="Hapus foto"
+            aria-label="Hapus foto"
+            className="flex items-center justify-center w-6 h-6 rounded-full bg-rose-500/80 text-white hover:bg-rose-500 transition-colors cursor-pointer"
+          >
+            <Trash2 className="w-3 h-3" />
+          </button>
+          <button
+            type="button"
+            disabled={idx === total - 1}
+            onClick={(e) => { stop(e); onMove?.(idx, 1); }}
+            onPointerDown={stop}
+            onTouchStart={stop}
+            title="Geser ke kanan"
+            aria-label="Geser ke kanan"
+            className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-white/80 hover:bg-white/20 transition-colors cursor-pointer disabled:opacity-30"
+          >
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function GalleryAddTile({
+  onAdd,
+  collapseSheetForInlineEdit,
+  style,
+}: {
+  onAdd?: (url: string) => void;
+  collapseSheetForInlineEdit?: () => void;
+  style?: React.CSSProperties;
+}) {
+  const { fileInputRef, uploading, stop, openPicker, handleFile, random, promptUrl } = useGalleryUpload({
+    onUrl: (url) => onAdd?.(url),
+    collapseSheetForInlineEdit,
+  });
+
+  return (
+    <div
+      className="group flex flex-col items-center justify-center gap-2 border-2 border-dashed border-white/50 bg-white/5 hover:bg-white/10 transition-colors cursor-pointer p-4"
+      style={style}
+      onClick={(e) => { stop(e); openPicker(); }}
+      onPointerDown={stop}
+      onTouchStart={stop}
+    >
+      <input type="file" ref={fileInputRef} accept="image/*" onChange={handleFile} className="hidden" />
+      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 text-white">
+        {uploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
+      </div>
+      <span className="text-xs font-semibold text-white/80">Tambah Foto</span>
+      <div className="flex items-center gap-1.5">
+        <button
+          type="button"
+          onClick={(e) => { stop(e); openPicker(); }}
+          onPointerDown={stop}
+          onTouchStart={stop}
+          className="flex items-center gap-1 px-2 py-1 rounded-full bg-white/10 text-white/90 text-[10px] font-semibold hover:bg-white/20 transition-colors cursor-pointer"
+        >
+          <Camera className="w-3 h-3" />
+          Unggah
+        </button>
+        <button
+          type="button"
+          onClick={(e) => { stop(e); promptUrl(); }}
+          onPointerDown={stop}
+          onTouchStart={stop}
+          title="Masukkan URL foto"
+          className="flex items-center gap-1 px-2 py-1 rounded-full bg-white/10 text-white/90 text-[10px] font-semibold hover:bg-white/20 transition-colors cursor-pointer"
+        >
+          <Link2 className="w-3 h-3" />
+          URL
+        </button>
+        <button
+          type="button"
+          onClick={(e) => { stop(e); random(); }}
+          onPointerDown={stop}
+          onTouchStart={stop}
+          title="Foto acak (Unsplash)"
+          className="flex items-center justify-center w-7 h-6 rounded-full bg-white/10 text-amber-300 hover:bg-white/20 transition-colors cursor-pointer"
+        >
+          <Sparkles className="w-3 h-3" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export function GalleryAddButton({
+  onAdd,
+  collapseSheetForInlineEdit,
+}: {
+  onAdd?: (url: string) => void;
+  collapseSheetForInlineEdit?: () => void;
+}) {
+  const { fileInputRef, uploading, stop, openPicker, handleFile, promptUrl } = useGalleryUpload({
+    onUrl: (url) => onAdd?.(url),
+    collapseSheetForInlineEdit,
+  });
+
+  return (
+    <div
+      className="inline-flex items-center gap-2 rounded-full border border-dashed border-white/50 bg-white/5 hover:bg-white/10 text-white/90 text-xs font-semibold transition-colors cursor-pointer px-3 py-1.5"
+      onClick={(e) => { stop(e); openPicker(); }}
+      onPointerDown={stop}
+      onTouchStart={stop}
+    >
+      <input type="file" ref={fileInputRef} accept="image/*" onChange={handleFile} className="hidden" />
+      {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+      <span>Tambah Foto</span>
+      <span className="w-px h-3 bg-white/20" />
+      <button
+        type="button"
+        onClick={(e) => { stop(e); promptUrl(); }}
+        onPointerDown={stop}
+        onTouchStart={stop}
+        title="Masukkan URL foto"
+        aria-label="Masukkan URL foto"
+        className="text-white/70 hover:text-white transition-colors cursor-pointer"
+      >
+        <Link2 className="w-3.5 h-3.5" />
+      </button>
+    </div>
+  );
 }
 
 export function getRadius(designToken?: DesignToken | null): string {
@@ -37,7 +306,11 @@ export function GallerySectionHeader({
   onUpdateField,
   collapseSheetForInlineEdit,
   onEditingStateChange,
-}: Pick<GalleryVariantProps, "gallery" | "design_token" | "isEditorMode" | "isSelected" | "onUpdateField" | "collapseSheetForInlineEdit" | "onEditingStateChange">) {
+  onAddItem,
+}: Pick<
+  GalleryVariantProps,
+  "gallery" | "design_token" | "isEditorMode" | "isSelected" | "onUpdateField" | "collapseSheetForInlineEdit" | "onEditingStateChange" | "onAddItem"
+>) {
   return (
     <div className="text-center space-y-2">
       {(gallery.eyebrow || isEditorMode) && (
@@ -79,6 +352,11 @@ export function GallerySectionHeader({
           />
         ) : gallery.title}
       </h2>
+      {isEditorMode && onAddItem && (
+        <div className="pt-1">
+          <GalleryAddButton onAdd={onAddItem} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+        </div>
+      )}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
-import type { DesignToken } from "@/components/templates/types";
-import { GallerySectionHeader, Lightbox, getRadius } from "./shared";
+import type { DesignToken, GalleryItem } from "@/components/templates/types";
+import { GallerySectionHeader, Lightbox, getRadius, GalleryAddTile } from "./shared";
 import type { GalleryVariantProps } from "./shared";
 import GalleryGrid from "./grid";
 import GalleryMasonry from "./masonry";
@@ -38,9 +38,55 @@ export default function GallerySection({
     [gallery.items, onUpdateField]
   );
 
-  if (!gallery.items || gallery.items.length === 0) {
+  const onUpdateItems = useCallback(
+    (items: GalleryItem[]) => {
+      onUpdateField?.("gallery", "items", items);
+    },
+    [onUpdateField]
+  );
+
+  const onReplaceImage = useCallback(
+    (idx: number, url: string) => {
+      const items = [...(gallery.items || [])];
+      if (!items[idx]) return;
+      items[idx] = { ...items[idx], image_url: url, video_url: undefined };
+      onUpdateItems(items);
+    },
+    [gallery.items, onUpdateItems]
+  );
+
+  const onRemoveItem = useCallback(
+    (idx: number) => {
+      const items = [...(gallery.items || [])];
+      items.splice(idx, 1);
+      onUpdateItems(items);
+    },
+    [gallery.items, onUpdateItems]
+  );
+
+  const onMoveItem = useCallback(
+    (idx: number, dir: -1 | 1) => {
+      const items = [...(gallery.items || [])];
+      const j = idx + dir;
+      if (j < 0 || j >= items.length) return;
+      [items[idx], items[j]] = [items[j], items[idx]];
+      onUpdateItems(items);
+    },
+    [gallery.items, onUpdateItems]
+  );
+
+  const onAddItem = useCallback(
+    (url: string) => {
+      onUpdateItems([...(gallery.items || []), { image_url: url, caption: "" }]);
+    },
+    [gallery.items, onUpdateItems]
+  );
+
+  if ((!gallery.items || gallery.items.length === 0) && !isEditorMode) {
     return null;
   }
+
+  const isEmpty = !gallery.items || gallery.items.length === 0;
 
   const headerProps = {
     gallery,
@@ -50,10 +96,14 @@ export default function GallerySection({
     onUpdateField,
     collapseSheetForInlineEdit,
     onEditingStateChange,
+    onAddItem:
+      isEditorMode && (isEmpty || variant === "carousel" || variant === "lightbox-story")
+        ? onAddItem
+        : undefined,
   };
 
   const variantProps = {
-    items: gallery.items,
+    items: gallery.items || [],
     radius,
     setLightboxIndex,
     isEditorMode,
@@ -61,6 +111,10 @@ export default function GallerySection({
     onUpdateCaption,
     collapseSheetForInlineEdit,
     onEditingStateChange,
+    onReplaceImage,
+    onRemoveItem,
+    onMoveItem,
+    onAddItem,
   };
 
   return (
@@ -76,7 +130,15 @@ export default function GallerySection({
       <div className="max-w-6xl mx-auto space-y-10 md:space-y-14">
         <GallerySectionHeader {...headerProps} />
 
-        {variant === "carousel" ? (
+        {isEditorMode && isEmpty ? (
+          <div className="max-w-md mx-auto">
+            <GalleryAddTile
+              onAdd={onAddItem}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              style={{ borderRadius: radius, aspectRatio: "4 / 3" }}
+            />
+          </div>
+        ) : variant === "carousel" ? (
           <GalleryCarousel
             {...variantProps}
             autoplaySpeed={autoplaySpeed}
@@ -94,6 +156,9 @@ export default function GallerySection({
             onUpdateCaption={onUpdateCaption}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
+            onReplaceImage={onReplaceImage}
+            onRemoveItem={onRemoveItem}
+            onMoveItem={onMoveItem}
           />
         ) : (
           <GalleryGrid {...variantProps} />
