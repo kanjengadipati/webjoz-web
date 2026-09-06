@@ -1406,7 +1406,7 @@ export default function SiteEditorPage() {
   }
 
   return (
-    <div className="flex w-screen h-screen overflow-hidden bg-background text-slate-100">
+    <div className="flex w-screen h-dvh overflow-hidden bg-background text-slate-100">
       {/* ── Main editor split ── */}
       <div className="relative flex flex-1 min-h-0 overflow-hidden">
 
@@ -2869,6 +2869,11 @@ export default function SiteEditorPage() {
                 }}
               >
                 <div className="w-9 h-1 rounded-full bg-white/20" />
+                {sheetCollapsed && (
+                  <span className="ml-2 text-[10px] font-extrabold uppercase tracking-widest text-slate-400 select-none">
+                    Panel Editor
+                  </span>
+                )}
               </div>
 
               {/* Expand / Collapse toggle button (Right) */}
