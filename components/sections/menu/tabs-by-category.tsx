@@ -194,17 +194,6 @@ export default function MenuTabsByCategory({ menu, onUpdateField, isEditorMode, 
                 />
               )}
             </div>
-          ) : isEditorMode && onAddItem ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-              <InlineAddTile
-                label="Tambah Item"
-                variant="card"
-                className="rounded-2xl"
-                onClick={() => onAddItem(activeIdx)}
-              />
-            </div>
-          ) : (
-            <p className="text-center py-12 text-sm opacity-60">Tidak ada menu dalam kategori ini.</p>
           )
         )}
       </div>
