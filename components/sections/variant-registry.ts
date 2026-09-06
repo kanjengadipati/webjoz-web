@@ -38,6 +38,7 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "card", label: "Kartu", description: "Kotak terpusat dengan shadow dan border." },
     { value: "centered", label: "Tengah", description: "Teks dan tombol rata tengah tanpa background." },
     { value: "split-image", label: "Split + Gambar", description: "Teks di kiri, gambar di kanan (membutuhkan image_url)." },
+    { value: "inline-lead-form", label: "Form Inquiry Inline", description: "Teks di kiri, form nama/email/telepon di kanan untuk tangkap lead." },
   ],
   faq: [
     { value: "accordion", label: "Akordion", description: "Expand/collapse per item, hemat ruang." },
@@ -67,6 +68,7 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "cards", label: "Kartu Paket", description: "Kartu 3 tier klasik dengan penanda paket terpopuler dan tombol aksi." },
     { value: "horizontal-rows", label: "Baris Horizontal", description: "Daftar paket horizontal dengan fitur di kiri dan harga/tombol di kanan." },
     { value: "comparison-table", label: "Tabel Perbandingan", description: "Tabel perbandingan fitur lengkap antar paket layanan." },
+    { value: "single-tier-highlight", label: "Satu Paket Sorotan", description: "Satu kartu besar menonjol — cocok bisnis dengan satu penawaran utama/membership." },
   ],
   menu: [
     { value: "grid", label: "Grid", group: "Dasar", description: "Kartu produk dalam grid dengan foto." },

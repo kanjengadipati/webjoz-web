@@ -220,8 +220,8 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
         const c = sec.data as TemplateProps["content"]["cta"];
         return (
           <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-            <MemoSectionContent content={{ cta: c, dt }} render={(data) => {
-              const { cta: cc } = data;
+            <MemoSectionContent content={{ cta: c, onSubmitLead, leadSubmitting, leadSuccess, leadError, dt }} render={(data) => {
+              const { cta: cc, onSubmitLead: osl, leadSubmitting: ls, leadSuccess: lsc, leadError: le } = data;
               return (
                 <CtaSectionInner
                   cta={cc}
@@ -232,6 +232,10 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
                   isSelected={activeSection === "cta"}
                   collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                   onEditingStateChange={onEditingStateChange}
+                  onSubmitLead={osl}
+                  leadSubmitting={ls}
+                  leadSuccess={lsc}
+                  leadError={le}
                 />
               );
             }} />

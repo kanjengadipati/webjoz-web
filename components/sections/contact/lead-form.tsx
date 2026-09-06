@@ -15,6 +15,7 @@ export default function DynamicLeadForm({
   isSelected,
   collapseSheetForInlineEdit,
   onEditingStateChange,
+  sectionKey = "contact",
 }: {
   onSubmit?: (data: { name: string; email: string; phone: string; message: string }) => Promise<string | void>;
   submitting?: boolean;
@@ -27,6 +28,7 @@ export default function DynamicLeadForm({
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  sectionKey?: string;
 }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -86,7 +88,7 @@ export default function DynamicLeadForm({
           <>
             <Send style={{ width: 16, height: 16 }} />
             <InlineText
-              section="contact"
+              section={sectionKey}
               fieldKey="button_text"
               value={buttonText || (isEN ? "Send Message" : "Kirim Pesan")}
               onUpdateField={onUpdateField}
