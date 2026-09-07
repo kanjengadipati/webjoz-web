@@ -183,7 +183,7 @@ export default function HeroSplitEditorial({
               fontFamily: "var(--dt-heading-font)",
               fontWeight: "var(--dt-heading-weight)" as any,
               fontStyle: "var(--dt-heading-style)" as any,
-              fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
+              fontSize: "clamp(2.5rem, 5vw, var(--dt-hero-size, 4.5rem))",
               lineHeight: 1.05,
               color: "var(--dt-text)",
               margin: 0,

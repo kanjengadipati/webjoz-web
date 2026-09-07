@@ -127,6 +127,34 @@ export function avatarTextColor(background: string): string {
   return isColorDark(background) ? "#ffffff" : "#111827";
 }
 
+const heroSizeMap: Record<string, string> = {
+  "sm": "2.25rem",
+  "md": "2.5rem",
+  "lg": "2.75rem",
+  "xl": "3rem",
+  "2xl": "3.25rem",
+  "3xl": "3.5rem",
+  "4xl": "3.75rem",
+  "5xl": "4.25rem",
+  "6xl": "4.75rem",
+  "7xl": "5.25rem",
+  "8xl": "6rem",
+  "9xl": "7rem",
+};
+
+export function resolveHeroFontSize(size?: string | null): string {
+  if (!size) return "3.75rem";
+  const trimmed = size.trim().toLowerCase();
+  if (heroSizeMap[trimmed]) return heroSizeMap[trimmed];
+  if (/^[0-9.]+$/.test(trimmed)) {
+    return `${trimmed}rem`;
+  }
+  if (/^[0-9.]+(rem|px|em|vw|cqw|%)$/.test(trimmed)) {
+    return trimmed;
+  }
+  return "3.75rem";
+}
+
 export function buildCssVars(dt: DesignToken | null | undefined): Record<string, string> {
   const p = dt?.palette;
   const ty = dt?.typography;
@@ -237,7 +265,7 @@ export function buildCssVars(dt: DesignToken | null | undefined): Record<string,
     "--dt-heading-font": `'${ty?.heading_font ?? "Inter"}', sans-serif`,
     "--dt-body-font": `'${ty?.body_font ?? "Inter"}', sans-serif`,
     "--dt-heading-weight": ty?.heading_weight ?? "700",
-    "--dt-hero-size": ty?.heading_size_hero ?? "3rem",
+    "--dt-hero-size": resolveHeroFontSize(ty?.heading_size_hero),
     "--dt-heading-style": ty?.heading_style ?? "normal",
     "--dt-heading-transform": ty?.heading_transform ?? "none",
     "--dt-heading-tracking": ty?.heading_tracking ?? "normal",
