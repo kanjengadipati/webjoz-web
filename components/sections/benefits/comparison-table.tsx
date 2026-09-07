@@ -31,7 +31,7 @@ export default function BenefitsComparisonTable({
     <section id="benefits" style={{ padding: `var(--dt-spacing) 1.5rem`, background: `color-mix(in srgb, var(--dt-primary) 4%, var(--dt-bg))`, borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)`, borderBottom: `1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)` }}>
       <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-          <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>Perbandingan</span>
+          <span style={{ display: "block", fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)", marginBottom: "0.25rem" }}>Perbandingan</span>
           <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>{b.title}</h2>
           {b.subtitle && <p style={{ color: "var(--dt-text-muted)", maxWidth: "36rem", margin: "0.75rem auto 0", lineHeight: 1.6 }}>{b.subtitle}</p>}
         </div>

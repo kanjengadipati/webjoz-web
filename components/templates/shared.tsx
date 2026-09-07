@@ -2796,10 +2796,8 @@ export function InlineText({
           : "hover:outline-dashed hover:outline-1 hover:outline-primary/50 hover:bg-primary/[0.03] rounded-[2px]"
       } ${isShowingPlaceholder ? "opacity-50 italic" : ""} ${className}`}
       style={{
-        minWidth: style?.display === "block" || multiline ? undefined : "1.5rem",
-        minHeight: "1.25em",
-        display: style?.display || (multiline ? "block" : "inline-block"),
         ...style,
+        ...(!currentDisplay ? { minWidth: "1.5rem", minHeight: "1.25em", display: style?.display || (multiline ? "block" : "inline-block") } : {}),
       }}
       title={t("dashboard.sitesEditor.inlineClickToEdit")}
     >
