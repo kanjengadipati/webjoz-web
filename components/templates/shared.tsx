@@ -9,6 +9,7 @@ import {
 import * as LucideIcons from "lucide-react";
 import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/components/cart";
 import { uploadImageFile } from "@/components/file-upload";
+import { SparkleIcon } from "@/components/sparkle-icon";
 
 import type { TestimonialItem, FaqItem, ImageCredit, BenefitItem } from "./types";
 import PhotoCredit from "../sections/PhotoCredit";
@@ -2849,6 +2850,9 @@ export function InlineImage({
   const { t } = useI18n();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [showUrlInput, setShowUrlInput] = useState(false);
+  const [urlInput, setUrlInput] = useState("");
+  const urlInputRef = useRef<HTMLInputElement>(null);
 
   if (!isEditorMode || !onUpdateField) {
     if (!src) return null;
@@ -2873,14 +2877,33 @@ export function InlineImage({
     onUpdateField(section, fieldKey, chosen);
   };
 
-  const handlePromptUrl = (e: React.MouseEvent | React.TouchEvent) => {
+  const handleOpenUrlInput = (e: React.MouseEvent | React.TouchEvent) => {
     e.stopPropagation();
     e.preventDefault();
     collapseSheetForInlineEdit?.();
-    const entered = window.prompt("Masukkan URL gambar:", src || "");
-    if (entered !== null && entered.trim() && entered.trim() !== (src || "").trim()) {
-      onUpdateField(section, fieldKey, entered.trim());
+    setUrlInput(src || "");
+    setShowUrlInput(true);
+    setTimeout(() => {
+      urlInputRef.current?.focus();
+      urlInputRef.current?.select();
+    }, 50);
+  };
+
+  const handleSaveUrl = (e?: React.MouseEvent | React.TouchEvent) => {
+    e?.stopPropagation();
+    e?.preventDefault();
+    const trimmed = urlInput.trim();
+    if (trimmed) {
+      onUpdateField(section, fieldKey, trimmed);
     }
+    setShowUrlInput(false);
+  };
+
+  const handleCancelUrl = (e?: React.MouseEvent | React.TouchEvent) => {
+    e?.stopPropagation();
+    e?.preventDefault();
+    setShowUrlInput(false);
+    setUrlInput("");
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -2921,9 +2944,29 @@ export function InlineImage({
           <span className="text-[11px] font-semibold text-foreground">
             {t("dashboard.sitesEditor.addPhoto")}
           </span>
-          <span className="text-[10px] text-muted-foreground mt-0.5">
+          <span className="text-[10px] text-muted-foreground mt-0.5 mb-2">
             Klik untuk unggah
           </span>
+          <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              onClick={handleRandomPhoto}
+              title="Foto acak (Unsplash)"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium bg-background/80 hover:bg-background border border-border shadow-xs text-amber-500 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+            >
+              <SparkleIcon className="w-3 h-3 text-amber-500" />
+              <span>Acak</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleOpenUrlInput}
+              title="Masukkan tautan URL foto"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium bg-background/80 hover:bg-background border border-border shadow-xs text-foreground transition-all hover:scale-105 active:scale-95 cursor-pointer"
+            >
+              <Link2 className="w-3 h-3 text-muted-foreground" />
+              <span>URL</span>
+            </button>
+          </div>
         </div>
       )}
 
@@ -2938,64 +2981,112 @@ export function InlineImage({
         className="hidden"
       />
 
-      {/* Centered hover overlay */}
-      {src && (
+      {/* Centered hover overlay or URL input */}
+      {(src || showUrlInput) && (
         <div
           className={`absolute inset-0 z-30 flex items-center justify-center bg-black/40 backdrop-blur-[1.5px] transition-all duration-200 pointer-events-none ${
-            isSelected
+            isSelected || showUrlInput
               ? "opacity-100 pointer-events-auto"
               : "opacity-0 group-hover/inline-img:opacity-100 group-hover/inline-img:pointer-events-auto pointer-coarse:opacity-100 pointer-coarse:pointer-events-auto"
           }`}
         >
-          <div className="flex items-center gap-1.5 p-1 max-w-[90%]">
-            {/* Main Change Photo Button */}
-            <button
-              type="button"
-              onClick={handleTriggerUpload}
+          {showUrlInput ? (
+            <div
+              className="flex items-center gap-1.5 p-1 bg-slate-900/95 border border-white/20 rounded-full shadow-2xl backdrop-blur-md max-w-[92%] w-72 sm:w-80 pointer-events-auto animate-in fade-in zoom-in-95 duration-150"
+              onClick={(e) => e.stopPropagation()}
               onPointerDown={(e) => e.stopPropagation()}
               onTouchStart={(e) => e.stopPropagation()}
-              disabled={uploading}
-              title={t("dashboard.sitesEditor.changePhoto")}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/90 text-white text-xs font-semibold shadow-xl border border-white/20 hover:bg-slate-950 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50 backdrop-blur-md"
             >
-              {uploading ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
-              ) : (
-                <Camera className="w-3.5 h-3.5 text-white" />
-              )}
-              <span className="whitespace-nowrap">
-                {uploading
-                  ? t("dashboard.sitesEditor.uploadingPhoto")
-                  : (src ? t("dashboard.sitesEditor.changePhoto") : t("dashboard.sitesEditor.addPhoto"))}
-              </span>
-            </button>
+              <div className="pl-2.5 text-slate-400 shrink-0">
+                <Link2 className="w-3.5 h-3.5" />
+              </div>
+              <input
+                ref={urlInputRef}
+                type="url"
+                value={urlInput}
+                onChange={(e) => setUrlInput(e.target.value)}
+                onKeyDown={(e) => {
+                  e.stopPropagation();
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleSaveUrl();
+                  } else if (e.key === "Escape") {
+                    e.preventDefault();
+                    handleCancelUrl();
+                  }
+                }}
+                placeholder="https://... (URL gambar)"
+                className="flex-1 bg-transparent text-white text-xs px-1 py-1 focus:outline-none placeholder:text-slate-400 min-w-0"
+                autoFocus
+              />
+              <button
+                type="button"
+                onClick={handleSaveUrl}
+                title="Simpan URL"
+                className="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shrink-0 transition-colors active:scale-95 cursor-pointer shadow-sm"
+              >
+                <Check className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={handleCancelUrl}
+                title="Batal"
+                className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white shrink-0 transition-colors active:scale-95 cursor-pointer"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1.5 p-1 max-w-[90%]">
+              {/* Main Change Photo Button */}
+              <button
+                type="button"
+                onClick={handleTriggerUpload}
+                onPointerDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+                disabled={uploading}
+                title={t("dashboard.sitesEditor.changePhoto")}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/90 text-white text-xs font-semibold shadow-xl border border-white/20 hover:bg-slate-950 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50 backdrop-blur-md"
+              >
+                {uploading ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
+                ) : (
+                  <Camera className="w-3.5 h-3.5 text-white" />
+                )}
+                <span className="whitespace-nowrap">
+                  {uploading
+                    ? t("dashboard.sitesEditor.uploadingPhoto")
+                    : (src ? t("dashboard.sitesEditor.changePhoto") : t("dashboard.sitesEditor.addPhoto"))}
+                </span>
+              </button>
 
-            {/* Quick Random Photo Button */}
-            <button
-              type="button"
-              onClick={handleRandomPhoto}
-              onPointerDown={(e) => e.stopPropagation()}
-              onTouchStart={(e) => e.stopPropagation()}
-              disabled={uploading}
-              title="Ganti foto acak (Unsplash)"
-              className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-900/90 text-white/90 hover:text-white shadow-xl border border-white/20 hover:bg-slate-950 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50 backdrop-blur-md"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-            </button>
+              {/* Quick Random Photo Button with Webjoz SparkleIcon */}
+              <button
+                type="button"
+                onClick={handleRandomPhoto}
+                onPointerDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+                disabled={uploading}
+                title="Ganti foto acak (Unsplash)"
+                className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-900/90 text-amber-300 hover:text-amber-200 shadow-xl border border-white/20 hover:bg-slate-950 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50 backdrop-blur-md"
+              >
+                <SparkleIcon className="w-3.5 h-3.5 text-amber-300" />
+              </button>
 
-            {/* Quick URL Input Button */}
-            <button
-              type="button"
-              onClick={handlePromptUrl}
-              onPointerDown={(e) => e.stopPropagation()}
-              onTouchStart={(e) => e.stopPropagation()}
-              disabled={uploading}
-              title="Masukkan Link URL Foto"
-              className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-900/90 text-white/90 hover:text-white shadow-xl border border-white/20 hover:bg-slate-950 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50 backdrop-blur-md"
-            >
-              <Link2 className="w-3 h-3 text-slate-300" />
-            </button>
-          </div>
+              {/* Quick URL Input Button */}
+              <button
+                type="button"
+                onClick={handleOpenUrlInput}
+                onPointerDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+                disabled={uploading}
+                title="Masukkan Link URL Foto"
+                className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-900/90 text-white/90 hover:text-white shadow-xl border border-white/20 hover:bg-slate-950 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50 backdrop-blur-md"
+              >
+                <Link2 className="w-3.5 h-3.5 text-slate-300" />
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>
