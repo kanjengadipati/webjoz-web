@@ -37,13 +37,9 @@ export default function TransparentOverlay({
           : "1px solid transparent",
       }}
     >
-      <span
-        className="min-w-0 text-base sm:text-lg font-bold tracking-wide flex items-center gap-2"
-        style={{
-          color: scrolled
-            ? "var(--dt-text)"
-            : "color-mix(in srgb, var(--dt-text) 70%, var(--dt-bg))",
-        }}
+      <div
+        className="min-w-0 text-base sm:text-lg font-bold tracking-wide flex items-center gap-2.5"
+        style={{ color: scrolled ? "var(--dt-text)" : "var(--dt-primary-foreground, #fff)" }}
       >
         <LogoImage
           url={header?.logo_url}
@@ -52,7 +48,7 @@ export default function TransparentOverlay({
           iconClass="w-5 h-5 shrink-0 text-[var(--dt-primary)]"
           imgClass="h-8 w-auto shrink-0 object-contain"
         />
-        <span className="min-w-0">
+        <div className="min-w-0 flex flex-col justify-center">
           <InlineText
             section="header"
             fieldKey="brand_name"
@@ -63,7 +59,7 @@ export default function TransparentOverlay({
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
             as="span"
-            className="truncate block"
+            className="truncate block leading-tight"
           />
           {header?.tagline && (
             <InlineText
@@ -76,11 +72,14 @@ export default function TransparentOverlay({
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
               onEditingStateChange={onEditingStateChange}
               as="span"
-              className="block text-[10px] font-normal text-[var(--dt-text-muted)] tracking-wide truncate"
+              className="block text-[11px] font-normal tracking-wide truncate leading-tight mt-0.5"
+              style={{
+                color: scrolled ? "var(--dt-text-muted)" : "color-mix(in srgb, var(--dt-primary-foreground, #fff) 70%, transparent)",
+              }}
             />
           )}
-        </span>
-      </span>
+        </div>
+      </div>
       <NavMenu
         sectionOrder={sectionOrder}
         hiddenSections={hiddenSections}
