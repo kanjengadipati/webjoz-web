@@ -276,7 +276,15 @@ export default function TemplateGalleryPage() {
 
   // Derive unique filter values from seeds
   const businessTypes = ["all", ...Array.from(new Set(seeds.map((s) => s.business_type)))].sort((a, b) => a === "all" ? -1 : b === "all" ? 1 : a.localeCompare(b));
-  const moods = ["all", ...Array.from(new Set(seeds.map((s) => s.mood)))].sort((a, b) => a === "all" ? -1 : b === "all" ? 1 : a.localeCompare(b));
+  const businessTypeCounts: Record<string, number> = {
+    all: seeds.length,
+    ...Object.fromEntries(businessTypes.filter(b => b !== "all").map((b) => [b, seeds.filter((s) => s.business_type === b).length])),
+  };
+  const moods = ["all", ...Array.from(new Set(seeds.map((s) => s.mood.trim().toLowerCase())))].sort((a, b) => a === "all" ? -1 : b === "all" ? 1 : a.localeCompare(b));
+  const moodCounts: Record<string, number> = {
+    all: seeds.length,
+    ...Object.fromEntries(moods.filter(m => m !== "all").map((m) => [m, seeds.filter((s) => s.mood.trim().toLowerCase() === m).length])),
+  };
 
   // Resolve score once per seed up front so filtering, sorting, and rendering agree
   const seedsScored = seeds.map((seed) => ({
@@ -327,7 +335,7 @@ export default function TemplateGalleryPage() {
         (seed.source_template_id && seed.source_template_id.toLowerCase().includes(q)) ||
         String(seed.id).includes(q);
       const matchesBT = selectedBusinessType === "all" || seed.business_type === selectedBusinessType;
-      const matchesMood = selectedMood === "all" || seed.mood === selectedMood;
+      const matchesMood = selectedMood === "all" || seed.mood.trim().toLowerCase() === selectedMood;
       const matchesScore =
         scoreFilter === "all" ||
         (scoreFilter === "excellent" && score >= 80) ||
@@ -463,9 +471,9 @@ export default function TemplateGalleryPage() {
                     onChange={(e) => setSelectedBusinessType(e.target.value)}
                     className="h-9 px-3 text-xs font-medium rounded-lg border border-border/40 bg-background/80 text-foreground outline-none focus:border-primary/60 cursor-pointer"
                   >
-                    <option value="all">{t("dashboard.adminTemplates.allBusinessTypes")}</option>
+                    <option value="all">{t("dashboard.adminTemplates.allBusinessTypes")} ({businessTypeCounts.all})</option>
                     {businessTypes.filter(b => b !== "all").map((bt) => (
-                      <option key={bt} value={bt} className="capitalize">{bt}</option>
+                      <option key={bt} value={bt} className="capitalize">{bt} ({businessTypeCounts[bt]})</option>
                     ))}
                   </select>
                 )}
@@ -476,9 +484,9 @@ export default function TemplateGalleryPage() {
                     onChange={(e) => setSelectedMood(e.target.value)}
                     className="h-9 px-3 text-xs font-medium rounded-lg border border-border/40 bg-background/80 text-foreground outline-none focus:border-primary/60 cursor-pointer capitalize"
                   >
-                    <option value="all">{t("dashboard.adminTemplates.allMoods")}</option>
+                    <option value="all">{t("dashboard.adminTemplates.allMoods")} ({moodCounts.all})</option>
                     {moods.filter(m => m !== "all").map((m) => (
-                      <option key={m} value={m} className="capitalize">{m}</option>
+                      <option key={m} value={m} className="capitalize">{m} ({moodCounts[m]})</option>
                     ))}
                   </select>
                 )}
