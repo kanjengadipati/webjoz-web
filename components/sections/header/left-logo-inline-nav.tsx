@@ -18,7 +18,7 @@ export default function LeftLogoInlineNav({
         borderBottom: "1px solid var(--dt-border)",
       }}
     >
-      <span className="min-w-0 text-base sm:text-lg font-bold text-[var(--dt-text)] tracking-wide flex items-center gap-2">
+      <div className="min-w-0 text-base sm:text-lg font-bold text-[var(--dt-text)] tracking-wide flex items-center gap-2.5">
         <LogoImage
           url={header?.logo_url}
           icon={header?.icon}
@@ -26,7 +26,7 @@ export default function LeftLogoInlineNav({
           iconClass="w-5 h-5 shrink-0 text-[var(--dt-primary)]"
           imgClass="h-8 w-auto shrink-0 object-contain"
         />
-        <span className="min-w-0">
+        <div className="min-w-0 flex flex-col justify-center">
           <InlineText
             section="header"
             fieldKey="brand_name"
@@ -37,7 +37,7 @@ export default function LeftLogoInlineNav({
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
             as="span"
-            className="truncate block"
+            className="truncate block leading-tight"
           />
           {header?.tagline && (
             <InlineText
@@ -50,11 +50,11 @@ export default function LeftLogoInlineNav({
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
               onEditingStateChange={onEditingStateChange}
               as="span"
-              className="block text-[10px] font-normal text-[var(--dt-text-muted)] tracking-wide truncate"
+              className="block text-[11px] font-normal text-[var(--dt-text-muted)] tracking-wide truncate leading-tight mt-0.5"
             />
           )}
-        </span>
-      </span>
+        </div>
+      </div>
       <NavMenu
         sectionOrder={sectionOrder}
         hiddenSections={hiddenSections}
