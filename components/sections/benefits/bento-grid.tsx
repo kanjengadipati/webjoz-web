@@ -215,7 +215,7 @@ export default function BenefitsBentoGrid({
       <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
         {/* Section header */}
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-          <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>
+          <span style={{ display: "block", fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)", marginBottom: "0.25rem" }}>
             {isEN ? "Benefits" : "Keunggulan"}
           </span>
           <InlineText
