@@ -92,7 +92,7 @@ export default function HeroMinimalistElegant({
               fontFamily: "var(--dt-heading-font)",
               fontWeight: "var(--dt-heading-weight)" as any,
               fontStyle: "var(--dt-heading-style)" as any,
-              fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
+              fontSize: "clamp(2.5rem, 5vw, var(--dt-hero-size, 4.5rem))",
               lineHeight: 1.08,
               letterSpacing: "-0.02em",
               color: "var(--dt-text)",

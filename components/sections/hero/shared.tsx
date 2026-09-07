@@ -31,7 +31,7 @@ export function HeroContent({
         isEditorMode={isEditorMode}
         isSelected={isSelected}
         as="h1"
-        style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontStyle: "var(--dt-heading-style)" as any, fontSize: "clamp(1.5rem, 6cqw, var(--dt-hero-size))", lineHeight: 1.15, color: "var(--dt-text)", margin: 0 }}
+        style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontStyle: "var(--dt-heading-style)" as any, fontSize: "clamp(2.25rem, 6vw, var(--dt-hero-size, 3.75rem))", lineHeight: 1.15, color: "var(--dt-text)", margin: 0 }}
         collapseSheetForInlineEdit={collapseSheetForInlineEdit}
         onEditingStateChange={onEditingStateChange}
       />
@@ -43,7 +43,7 @@ export function HeroContent({
         isEditorMode={isEditorMode}
         isSelected={isSelected}
         as="p"
-        style={{ fontSize: "clamp(0.95rem, 3.5cqw, 1.125rem)", color: "var(--dt-text-muted)", maxWidth: "36rem", lineHeight: 1.6, margin: 0 }}
+        style={{ fontSize: "clamp(1rem, 2vw, 1.25rem)", color: "var(--dt-text-muted)", maxWidth: "38rem", lineHeight: 1.6, margin: 0 }}
         collapseSheetForInlineEdit={collapseSheetForInlineEdit}
         onEditingStateChange={onEditingStateChange}
       />

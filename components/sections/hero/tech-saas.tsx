@@ -152,7 +152,7 @@ export default function HeroTechSaaS({
               fontFamily: "var(--dt-heading-font)",
               fontWeight: "var(--dt-heading-weight)" as any,
               fontStyle: "var(--dt-heading-style)" as any,
-              fontSize: "clamp(2.25rem, 6vw, 4rem)",
+              fontSize: "clamp(2.25rem, 6vw, var(--dt-hero-size, 4rem))",
               lineHeight: 1.1,
               color: "var(--dt-text)",
               margin: 0,

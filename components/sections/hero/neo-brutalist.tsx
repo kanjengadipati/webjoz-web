@@ -131,7 +131,7 @@ export default function HeroNeoBrutalist({
               style={{
                 fontFamily: "var(--dt-heading-font)",
                 fontWeight: 900,
-                fontSize: "clamp(2.5rem, 5.5vw, 4.5rem)",
+                fontSize: "clamp(2.5rem, 5.5vw, var(--dt-hero-size, 4.5rem))",
                 lineHeight: 1.0,
                 color: "var(--dt-text)",
                 margin: 0,

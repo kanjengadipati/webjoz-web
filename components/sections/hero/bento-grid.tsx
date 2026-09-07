@@ -134,7 +134,7 @@ export default function HeroBentoGrid({
                 fontFamily: "var(--dt-heading-font)",
                 fontWeight: "var(--dt-heading-weight)" as any,
                 fontStyle: "var(--dt-heading-style)" as any,
-                fontSize: "clamp(1.75rem, 4vw, 3rem)",
+                fontSize: "clamp(2rem, 5vw, var(--dt-hero-size, 3.5rem))",
                 lineHeight: 1.1,
                 color: "var(--dt-text)",
                 margin: 0,
