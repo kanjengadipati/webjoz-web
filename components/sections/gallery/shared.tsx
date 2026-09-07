@@ -1,10 +1,11 @@
 "use client";
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { X, ChevronLeft, ChevronRight, Play, Camera, Sparkles, Link2, Loader2, Plus, Trash2 } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Play, Camera, Sparkles, Link2, Loader2, Plus, Trash2, Check } from "lucide-react";
 import type { GalleryItem, DesignToken } from "@/components/templates/types";
 import PhotoCredit from "../PhotoCredit";
 import { InlineText, DEFAULT_IMAGE_POOL } from "../../templates/shared";
 import { uploadImageFile } from "@/components/file-upload";
+import { SparkleIcon } from "@/components/sparkle-icon";
 
 export interface GalleryVariantProps {
   gallery: {
@@ -38,6 +39,9 @@ export function useGalleryUpload({
 }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [showUrlInput, setShowUrlInput] = useState(false);
+  const [urlInput, setUrlInput] = useState("");
+  const urlInputRef = useRef<HTMLInputElement>(null);
 
   const stop = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     e.stopPropagation();
@@ -72,13 +76,46 @@ export function useGalleryUpload({
     onUrl(chosen);
   }, [collapseSheetForInlineEdit, onUrl]);
 
-  const promptUrl = useCallback(() => {
+  const openUrlInput = useCallback((currentUrl?: string) => {
     collapseSheetForInlineEdit?.();
-    const entered = window.prompt("Masukkan URL gambar:");
-    if (entered && entered.trim()) onUrl(entered.trim());
-  }, [collapseSheetForInlineEdit, onUrl]);
+    setUrlInput(currentUrl || "");
+    setShowUrlInput(true);
+    setTimeout(() => {
+      urlInputRef.current?.focus();
+      urlInputRef.current?.select();
+    }, 50);
+  }, [collapseSheetForInlineEdit]);
 
-  return { fileInputRef, uploading, stop, openPicker, handleFile, random, promptUrl };
+  const submitUrl = useCallback(() => {
+    const trimmed = urlInput.trim();
+    if (trimmed) {
+      onUrl(trimmed);
+      setUrlInput("");
+      setShowUrlInput(false);
+    }
+  }, [urlInput, onUrl]);
+
+  const cancelUrl = useCallback(() => {
+    setUrlInput("");
+    setShowUrlInput(false);
+  }, []);
+
+  return {
+    fileInputRef,
+    uploading,
+    stop,
+    openPicker,
+    handleFile,
+    random,
+    showUrlInput,
+    setShowUrlInput,
+    urlInput,
+    setUrlInput,
+    urlInputRef,
+    openUrlInput,
+    submitUrl,
+    cancelUrl,
+  };
 }
 
 export function GalleryTileOverlay({
@@ -98,7 +135,21 @@ export function GalleryTileOverlay({
   onMove?: (idx: number, dir: -1 | 1) => void;
   collapseSheetForInlineEdit?: () => void;
 }) {
-  const { fileInputRef, uploading, stop, openPicker, handleFile, random, promptUrl } = useGalleryUpload({
+  const {
+    fileInputRef,
+    uploading,
+    stop,
+    openPicker,
+    handleFile,
+    random,
+    showUrlInput,
+    urlInput,
+    setUrlInput,
+    urlInputRef,
+    openUrlInput,
+    submitUrl,
+    cancelUrl,
+  } = useGalleryUpload({
     onUrl: (url) => onReplace?.(idx, url),
     collapseSheetForInlineEdit,
   });
@@ -106,48 +157,101 @@ export function GalleryTileOverlay({
   return (
     <div
       className={`absolute inset-0 z-20 flex flex-col items-center justify-center gap-2 bg-black/40 backdrop-blur-[1.5px] opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto pointer-events-none transition-opacity duration-200 ${
-        isSelected ? "opacity-100 pointer-events-auto" : ""
+        isSelected || showUrlInput ? "opacity-100 pointer-events-auto" : ""
       } pointer-coarse:opacity-100 pointer-coarse:pointer-events-auto`}
       onClick={stop}
       onPointerDown={stop}
       onTouchStart={stop}
     >
       <input type="file" ref={fileInputRef} accept="image/*" onChange={handleFile} className="hidden" />
-      <div className="flex items-center gap-1.5 max-w-[92%]">
-        <button
-          type="button"
-          onClick={(e) => { stop(e); openPicker(); }}
+
+      {showUrlInput ? (
+        <div
+          className="flex items-center gap-1.5 p-1 bg-slate-900/95 border border-white/20 rounded-full shadow-2xl backdrop-blur-md max-w-[92%] w-64 sm:w-72 pointer-events-auto animate-in fade-in zoom-in-95 duration-150"
+          onClick={stop}
           onPointerDown={stop}
           onTouchStart={stop}
-          disabled={uploading}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-slate-900/90 text-white text-[11px] font-semibold shadow-xl border border-white/20 hover:bg-slate-950 active:scale-95 transition-all cursor-pointer disabled:opacity-50 backdrop-blur-sm"
         >
-          {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin text-white" /> : <Camera className="w-3.5 h-3.5 text-white" />}
-          <span>Ganti Foto</span>
-        </button>
-        <button
-          type="button"
-          onClick={(e) => { stop(e); random(); }}
-          onPointerDown={stop}
-          onTouchStart={stop}
-          title="Ganti foto acak (Unsplash)"
-          aria-label="Ganti foto acak"
-          className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-900/90 text-amber-300 shadow-xl border border-white/20 hover:bg-slate-950 active:scale-95 transition-all cursor-pointer backdrop-blur-sm"
-        >
-          <Sparkles className="w-3.5 h-3.5" />
-        </button>
-        <button
-          type="button"
-          onClick={(e) => { stop(e); promptUrl(); }}
-          onPointerDown={stop}
-          onTouchStart={stop}
-          title="Masukkan URL foto"
-          aria-label="Masukkan URL foto"
-          className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-900/90 text-white/90 shadow-xl border border-white/20 hover:bg-slate-950 active:scale-95 transition-all cursor-pointer backdrop-blur-sm"
-        >
-          <Link2 className="w-3.5 h-3.5" />
-        </button>
-      </div>
+          <div className="pl-2 text-slate-400 shrink-0">
+            <Link2 className="w-3.5 h-3.5" />
+          </div>
+          <input
+            ref={urlInputRef}
+            type="url"
+            value={urlInput}
+            onChange={(e) => setUrlInput(e.target.value)}
+            onKeyDown={(e) => {
+              e.stopPropagation();
+              if (e.key === "Enter") {
+                e.preventDefault();
+                submitUrl();
+              } else if (e.key === "Escape") {
+                e.preventDefault();
+                cancelUrl();
+              }
+            }}
+            placeholder="https://... (URL foto)"
+            className="flex-1 bg-transparent text-white text-xs px-1 py-1 focus:outline-none placeholder:text-slate-400 min-w-0"
+            autoFocus
+          />
+          <button
+            type="button"
+            onClick={(e) => { stop(e); submitUrl(); }}
+            onPointerDown={stop}
+            onTouchStart={stop}
+            title="Simpan URL"
+            className="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shrink-0 transition-colors active:scale-95 cursor-pointer shadow-sm"
+          >
+            <Check className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => { stop(e); cancelUrl(); }}
+            onPointerDown={stop}
+            onTouchStart={stop}
+            title="Batal"
+            className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white shrink-0 transition-colors active:scale-95 cursor-pointer"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      ) : (
+        <div className="flex items-center gap-1.5 max-w-[92%]">
+          <button
+            type="button"
+            onClick={(e) => { stop(e); openPicker(); }}
+            onPointerDown={stop}
+            onTouchStart={stop}
+            disabled={uploading}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-slate-900/90 text-white text-[11px] font-semibold shadow-xl border border-white/20 hover:bg-slate-950 active:scale-95 transition-all cursor-pointer disabled:opacity-50 backdrop-blur-sm"
+          >
+            {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin text-white" /> : <Camera className="w-3.5 h-3.5 text-white" />}
+            <span>Ganti Foto</span>
+          </button>
+          <button
+            type="button"
+            onClick={(e) => { stop(e); random(); }}
+            onPointerDown={stop}
+            onTouchStart={stop}
+            title="Ganti foto acak (Unsplash)"
+            aria-label="Ganti foto acak"
+            className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-900/90 text-amber-300 hover:text-amber-200 shadow-xl border border-white/20 hover:bg-slate-950 active:scale-95 transition-all cursor-pointer backdrop-blur-sm"
+          >
+            <SparkleIcon className="w-3.5 h-3.5 text-amber-300" />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => { stop(e); openUrlInput(); }}
+            onPointerDown={stop}
+            onTouchStart={stop}
+            title="Masukkan URL foto"
+            aria-label="Masukkan URL foto"
+            className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-900/90 text-white/90 hover:text-white shadow-xl border border-white/20 hover:bg-slate-950 active:scale-95 transition-all cursor-pointer backdrop-blur-sm"
+          >
+            <Link2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
       {(onRemove || onMove) && total > 1 && (
         <div className="flex items-center gap-1.5 p-1 bg-black/50 rounded-full backdrop-blur-sm">
           <button
@@ -200,7 +304,21 @@ export function GalleryAddTile({
   collapseSheetForInlineEdit?: () => void;
   style?: React.CSSProperties;
 }) {
-  const { fileInputRef, uploading, stop, openPicker, handleFile, random, promptUrl } = useGalleryUpload({
+  const {
+    fileInputRef,
+    uploading,
+    stop,
+    openPicker,
+    handleFile,
+    random,
+    showUrlInput,
+    urlInput,
+    setUrlInput,
+    urlInputRef,
+    openUrlInput,
+    submitUrl,
+    cancelUrl,
+  } = useGalleryUpload({
     onUrl: (url) => onAdd?.(url),
     collapseSheetForInlineEdit,
   });
@@ -243,54 +361,106 @@ export function GalleryAddTile({
         Tambah Foto
       </span>
 
-      {/* Quick Action Chips */}
-      <div className="flex items-center gap-1.5 pt-0.5">
-        <button
-          type="button"
-          onClick={(e) => { stop(e); openPicker(); }}
+      {/* Quick Action Chips or URL input */}
+      {showUrlInput ? (
+        <div
+          className="flex items-center gap-1.5 p-1 bg-slate-900/95 border border-white/20 rounded-full shadow-2xl backdrop-blur-md max-w-[95%] w-64 pointer-events-auto animate-in fade-in zoom-in-95 duration-150"
+          onClick={stop}
           onPointerDown={stop}
           onTouchStart={stop}
-          className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-xs"
-          style={{
-            background: "color-mix(in srgb, var(--dt-text, currentColor) 10%, rgba(100, 116, 139, 0.08))",
-            color: "var(--dt-text, currentColor)",
-            border: "1px solid color-mix(in srgb, var(--dt-text, currentColor) 18%, transparent)",
-          }}
         >
-          <Camera className="w-3.5 h-3.5" />
-          <span>Unggah</span>
-        </button>
-        <button
-          type="button"
-          onClick={(e) => { stop(e); promptUrl(); }}
-          onPointerDown={stop}
-          onTouchStart={stop}
-          title="Masukkan URL foto"
-          className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-xs"
-          style={{
-            background: "color-mix(in srgb, var(--dt-text, currentColor) 10%, rgba(100, 116, 139, 0.08))",
-            color: "var(--dt-text, currentColor)",
-            border: "1px solid color-mix(in srgb, var(--dt-text, currentColor) 18%, transparent)",
-          }}
-        >
-          <Link2 className="w-3.5 h-3.5" />
-          <span>URL</span>
-        </button>
-        <button
-          type="button"
-          onClick={(e) => { stop(e); random(); }}
-          onPointerDown={stop}
-          onTouchStart={stop}
-          title="Foto acak (Unsplash)"
-          className="flex items-center justify-center w-7 h-6 rounded-full text-amber-500 dark:text-amber-400 transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-xs"
-          style={{
-            background: "color-mix(in srgb, var(--dt-text, currentColor) 10%, rgba(100, 116, 139, 0.08))",
-            border: "1px solid color-mix(in srgb, var(--dt-text, currentColor) 18%, transparent)",
-          }}
-        >
-          <Sparkles className="w-3.5 h-3.5" />
-        </button>
-      </div>
+          <div className="pl-2 text-slate-400 shrink-0">
+            <Link2 className="w-3.5 h-3.5" />
+          </div>
+          <input
+            ref={urlInputRef}
+            type="url"
+            value={urlInput}
+            onChange={(e) => setUrlInput(e.target.value)}
+            onKeyDown={(e) => {
+              e.stopPropagation();
+              if (e.key === "Enter") {
+                e.preventDefault();
+                submitUrl();
+              } else if (e.key === "Escape") {
+                e.preventDefault();
+                cancelUrl();
+              }
+            }}
+            placeholder="https://... (URL foto)"
+            className="flex-1 bg-transparent text-white text-xs px-1 py-1 focus:outline-none placeholder:text-slate-400 min-w-0"
+            autoFocus
+          />
+          <button
+            type="button"
+            onClick={(e) => { stop(e); submitUrl(); }}
+            onPointerDown={stop}
+            onTouchStart={stop}
+            title="Simpan URL"
+            className="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shrink-0 transition-colors active:scale-95 cursor-pointer shadow-sm"
+          >
+            <Check className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => { stop(e); cancelUrl(); }}
+            onPointerDown={stop}
+            onTouchStart={stop}
+            title="Batal"
+            className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white shrink-0 transition-colors active:scale-95 cursor-pointer"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      ) : (
+        <div className="flex items-center gap-1.5 pt-0.5">
+          <button
+            type="button"
+            onClick={(e) => { stop(e); openPicker(); }}
+            onPointerDown={stop}
+            onTouchStart={stop}
+            className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-xs"
+            style={{
+              background: "color-mix(in srgb, var(--dt-text, currentColor) 10%, rgba(100, 116, 139, 0.08))",
+              color: "var(--dt-text, currentColor)",
+              border: "1px solid color-mix(in srgb, var(--dt-text, currentColor) 18%, transparent)",
+            }}
+          >
+            <Camera className="w-3.5 h-3.5" />
+            <span>Unggah</span>
+          </button>
+          <button
+            type="button"
+            onClick={(e) => { stop(e); openUrlInput(); }}
+            onPointerDown={stop}
+            onTouchStart={stop}
+            title="Masukkan URL foto"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-xs"
+            style={{
+              background: "color-mix(in srgb, var(--dt-text, currentColor) 10%, rgba(100, 116, 139, 0.08))",
+              color: "var(--dt-text, currentColor)",
+              border: "1px solid color-mix(in srgb, var(--dt-text, currentColor) 18%, transparent)",
+            }}
+          >
+            <Link2 className="w-3.5 h-3.5" />
+            <span>URL</span>
+          </button>
+          <button
+            type="button"
+            onClick={(e) => { stop(e); random(); }}
+            onPointerDown={stop}
+            onTouchStart={stop}
+            title="Foto acak (Unsplash)"
+            className="flex items-center justify-center w-7 h-6 rounded-full text-amber-500 dark:text-amber-400 transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-xs"
+            style={{
+              background: "color-mix(in srgb, var(--dt-text, currentColor) 10%, rgba(100, 116, 139, 0.08))",
+              border: "1px solid color-mix(in srgb, var(--dt-text, currentColor) 18%, transparent)",
+            }}
+          >
+            <SparkleIcon className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -302,10 +472,77 @@ export function GalleryAddButton({
   onAdd?: (url: string) => void;
   collapseSheetForInlineEdit?: () => void;
 }) {
-  const { fileInputRef, uploading, stop, openPicker, handleFile, promptUrl } = useGalleryUpload({
+  const {
+    fileInputRef,
+    uploading,
+    stop,
+    openPicker,
+    handleFile,
+    showUrlInput,
+    urlInput,
+    setUrlInput,
+    urlInputRef,
+    openUrlInput,
+    submitUrl,
+    cancelUrl,
+  } = useGalleryUpload({
     onUrl: (url) => onAdd?.(url),
     collapseSheetForInlineEdit,
   });
+
+  if (showUrlInput) {
+    return (
+      <div
+        className="inline-flex items-center gap-1.5 p-1 bg-slate-900/95 border border-white/20 rounded-full shadow-2xl backdrop-blur-md max-w-[92%] w-64 pointer-events-auto animate-in fade-in zoom-in-95 duration-150"
+        onClick={stop}
+        onPointerDown={stop}
+        onTouchStart={stop}
+      >
+        <div className="pl-2 text-slate-400 shrink-0">
+          <Link2 className="w-3.5 h-3.5" />
+        </div>
+        <input
+          ref={urlInputRef}
+          type="url"
+          value={urlInput}
+          onChange={(e) => setUrlInput(e.target.value)}
+          onKeyDown={(e) => {
+            e.stopPropagation();
+            if (e.key === "Enter") {
+              e.preventDefault();
+              submitUrl();
+            } else if (e.key === "Escape") {
+              e.preventDefault();
+              cancelUrl();
+            }
+          }}
+          placeholder="https://... (URL foto)"
+          className="flex-1 bg-transparent text-white text-xs px-1 py-1 focus:outline-none placeholder:text-slate-400 min-w-0"
+          autoFocus
+        />
+        <button
+          type="button"
+          onClick={(e) => { stop(e); submitUrl(); }}
+          onPointerDown={stop}
+          onTouchStart={stop}
+          title="Simpan URL"
+          className="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shrink-0 transition-colors active:scale-95 cursor-pointer shadow-sm"
+        >
+          <Check className="w-3.5 h-3.5" />
+        </button>
+        <button
+          type="button"
+          onClick={(e) => { stop(e); cancelUrl(); }}
+          onPointerDown={stop}
+          onTouchStart={stop}
+          title="Batal"
+          className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white shrink-0 transition-colors active:scale-95 cursor-pointer"
+        >
+          <X className="w-3.5 h-3.5" />
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -332,7 +569,7 @@ export function GalleryAddButton({
       />
       <button
         type="button"
-        onClick={(e) => { stop(e); promptUrl(); }}
+        onClick={(e) => { stop(e); openUrlInput(); }}
         onPointerDown={stop}
         onTouchStart={stop}
         title="Masukkan URL foto"
