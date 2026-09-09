@@ -741,6 +741,7 @@ export default function SectionForms({
                   <option value="#benefits">Keunggulan</option>
                   <option value="#catalog">Katalog / Produk</option>
                   <option value="#menu">Menu</option>
+                  <option value="#works">Portofolio Proyek</option>
                   <option value="#gallery">Galeri</option>
                   <option value="#testimonials">Testimoni</option>
                   <option value="#faq">FAQ</option>
@@ -788,6 +789,7 @@ export default function SectionForms({
                 ["benefits", "Keunggulan"],
                 ["menu", "Menu"],
                 ["catalog", "Katalog"],
+                ["works", "Portofolio"],
                 ["gallery", "Galeri"],
                 ["testimonials", "Testimoni"],
                 ["faq", "FAQ"],
@@ -2763,6 +2765,240 @@ export default function SectionForms({
                 className="w-full text-[12px] py-2 border border-dashed border-border rounded-xl text-slate-500 hover:bg-white/5 hover:text-slate-300 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" /> Tambah Foto Pertama
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* WORKS FORM */}
+      {activeTab === "works" && (
+        <div className="space-y-4">
+          <div className="rounded-xl border border-primary/20 bg-primary/10 px-3 py-2.5 text-[12px] leading-relaxed text-primary mb-1">
+            <p className="font-semibold text-primary">💼 Section Portofolio Proyek</p>
+            <p className="mt-1 text-primary/80">
+              Tampilkan proyek atau karya terbaik. Setiap proyek bisa dilengkapi kategori, tahun, klien, deskripsi, dan link proyek untuk meningkatkan kredibilitas.
+            </p>
+          </div>
+          <div className="space-y-1">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Judul Portofolio {needsAttention("works.title") && <span className="text-amber-300">⚠️</span>}</span>
+              {renderFieldActions("works", "title")}
+            </label>
+            <input
+              id="field-works.title"
+              type="text" value={content.works?.title || ""}
+              onChange={(e) => updateField("works", "title", e.target.value)}
+              className={fieldClass("works.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")}
+              placeholder="Proyek Kami"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <span>Eyebrow</span>
+              {renderFieldActions("works", "eyebrow")}
+            </label>
+            <input
+              id="field-works.eyebrow"
+              type="text" value={content.works?.eyebrow || ""}
+              onChange={(e) => updateField("works", "eyebrow", e.target.value)}
+              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+              placeholder="PORTFOLIO"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Deskripsi Ringkas</label>
+            <textarea
+              rows={2}
+              value={content.works?.subtitle || ""}
+              onChange={(e) => updateField("works", "subtitle", e.target.value)}
+              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent resize-none"
+              placeholder="Beberapa proyek terbaik yang pernah kami kerjakan."
+            />
+          </div>
+
+          {/* Layout Picker */}
+          <div className="space-y-1.5">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Tata Letak</label>
+            <div className="grid grid-cols-2 gap-2">
+              {([
+                { value: "grid", label: "Grid", desc: "Kotak seragam" },
+                { value: "masonry", label: "Masonry", desc: "Tinggi bervariasi" },
+                { value: "featured-grid", label: "Grid Unggulan", desc: "Proyek pertama besar" },
+                { value: "showcase-featured", label: "Showcase", desc: "Hero horizontal + grid" },
+              ] as const).map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => updateField("works", "layout", opt.value)}
+                  className={`p-2 rounded-lg border text-center transition-all cursor-pointer ${
+                    (content.works?.layout || "grid") === opt.value
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border text-slate-400 hover:border-border"
+                  }`}
+                >
+                  <div className="text-[11px] font-semibold">{opt.label}</div>
+                  <div className="text-[9px] opacity-60">{opt.desc}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Works Items */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Proyek ({content.works?.items?.length || 0})</span>
+              <button
+                type="button"
+                onClick={() => {
+                  const next = [...(content.works?.items || []), { title: "", category: "", year: "", client: "", description: "", image_url: "", project_url: "", alt_text: "" }];
+                  updateField("works", "items", next);
+                }}
+                className="text-[12px] py-1.5 px-3 border border-dashed border-border rounded-xl text-slate-500 hover:bg-white/5 hover:text-slate-300 flex items-center gap-1.5 cursor-pointer transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5" /> Tambah Proyek
+              </button>
+            </div>
+            {(content.works?.items || []).map((item: any, idx: number) => (
+              <div key={idx} className="mb-3 p-4 rounded-xl border border-border/50 bg-muted/30 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] text-slate-500 font-medium">Proyek #{idx + 1}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const next = (content.works?.items || []).filter((_: any, i: number) => i !== idx);
+                      updateField("works", "items", next);
+                    }}
+                    className="text-red-400 hover:text-red-300 transition-colors p-1"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Judul Proyek</label>
+                  <input
+                    type="text" value={item.title || ""}
+                    onChange={(e) => {
+                      const next = [...(content.works?.items || [])];
+                      next[idx] = { ...next[idx], title: e.target.value };
+                      updateField("works", "items", next);
+                    }}
+                    className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+                    placeholder="cth. Rebranding Toko Kopi Ketan"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1">
+                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Kategori</label>
+                    <input
+                      type="text" value={item.category || ""}
+                      onChange={(e) => {
+                        const next = [...(content.works?.items || [])];
+                        next[idx] = { ...next[idx], category: e.target.value };
+                        updateField("works", "items", next);
+                      }}
+                      className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+                      placeholder="Branding"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Tahun</label>
+                    <input
+                      type="text" value={item.year || ""}
+                      onChange={(e) => {
+                        const next = [...(content.works?.items || [])];
+                        next[idx] = { ...next[idx], year: e.target.value };
+                        updateField("works", "items", next);
+                      }}
+                      className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+                      placeholder="2025"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1">
+                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Klien</label>
+                    <input
+                      type="text" value={item.client || ""}
+                      onChange={(e) => {
+                        const next = [...(content.works?.items || [])];
+                        next[idx] = { ...next[idx], client: e.target.value };
+                        updateField("works", "items", next);
+                      }}
+                      className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+                      placeholder="cth. Kedai Kopi Nusantara"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Link Proyek</label>
+                    <input
+                      type="text" value={item.project_url || ""}
+                      onChange={(e) => {
+                        const next = [...(content.works?.items || [])];
+                        next[idx] = { ...next[idx], project_url: e.target.value };
+                        updateField("works", "items", next);
+                      }}
+                      className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent font-mono"
+                      placeholder="https://..."
+                    />
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Deskripsi</label>
+                  <textarea
+                    rows={2}
+                    value={item.description || ""}
+                    onChange={(e) => {
+                      const next = [...(content.works?.items || [])];
+                      next[idx] = { ...next[idx], description: e.target.value };
+                      updateField("works", "items", next);
+                    }}
+                    className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent resize-none"
+                    placeholder="Ceritakan ruang lingkup dan hasil proyek ini..."
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">URL Gambar</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text" value={item.image_url || ""}
+                      onChange={(e) => {
+                        const next = [...(content.works?.items || [])];
+                        next[idx] = { ...next[idx], image_url: e.target.value };
+                        updateField("works", "items", next);
+                      }}
+                      className="flex-1 px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent font-mono"
+                      placeholder="https://images.unsplash.com/..."
+                    />
+                  </div>
+                  {item.image_url && (
+                    <div className="mt-2 w-20 h-20 rounded-lg overflow-hidden border border-border">
+                      <img src={item.image_url} alt="" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                    </div>
+                  )}
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Teks Alt</label>
+                  <input
+                    type="text" value={item.alt_text || ""}
+                    onChange={(e) => {
+                      const next = [...(content.works?.items || [])];
+                      next[idx] = { ...next[idx], alt_text: e.target.value };
+                      updateField("works", "items", next);
+                    }}
+                    className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+                    placeholder="Deskripsi singkat gambar proyek"
+                  />
+                </div>
+              </div>
+            ))}
+            {(!content.works?.items || content.works.items.length === 0) && (
+              <button
+                type="button"
+                onClick={() => updateField("works", "items", [{ title: "", category: "", year: "", client: "", description: "", image_url: "", project_url: "", alt_text: "" }])}
+                className="w-full text-[12px] py-2 border border-dashed border-border rounded-xl text-slate-500 hover:bg-white/5 hover:text-slate-300 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5" /> Tambah Proyek Pertama
               </button>
             )}
           </div>

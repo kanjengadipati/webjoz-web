@@ -46,12 +46,10 @@ export default function HeroSplitEditorial({
       style={{
         position: "relative",
         minHeight: "90vh",
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
         background: h.background_color || "var(--dt-bg)",
         overflow: "hidden",
       }}
-      className="flex-col lg:grid"
+      className="flex flex-col lg:grid lg:grid-cols-2"
     >
       {/* Left: editorial image column */}
       <motion.div

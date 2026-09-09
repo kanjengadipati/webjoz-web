@@ -1951,6 +1951,16 @@ export interface Translations {
       heroSplit: string;
       heroFullBleed: string;
       heroMinimalist: string;
+      heroMinimalistElegant: string;
+      heroTechSaaS: string;
+      heroNeoBrutalist: string;
+      heroBentoGrid: string;
+      heroSplitEditorial: string;
+      heroNaturalOrganic: string;
+      heroPersonalBillboard: string;
+      heroPortraitShowcase: string;
+      heroWorkPreviewStrip: string;
+      heroChronologyBadge: string;
       spacingCompact: string;
       spacingRelaxed: string;
       spacingCompactShort: string;
@@ -4301,6 +4311,16 @@ export const translations: Record<Locale, Translations> = {
         heroSplit: "Hero: Split Screen",
         heroFullBleed: "Hero: Full Bleed",
         heroMinimalist: "Hero: Minimalist",
+        heroMinimalistElegant: "Hero: Minimalis Elegan",
+        heroTechSaaS: "Hero: Tech SaaS",
+        heroNeoBrutalist: "Hero: Neo-Brutalist",
+        heroBentoGrid: "Hero: Bento Grid",
+        heroSplitEditorial: "Hero: Editorial Split",
+        heroNaturalOrganic: "Hero: Natural Organik",
+        heroPersonalBillboard: "Hero: Billboard Personal",
+        heroPortraitShowcase: "Hero: Showcase Potret",
+        heroWorkPreviewStrip: "Hero: Strip Karya Unggulan",
+        heroChronologyBadge: "Hero: Badge Kronologi",
         spacingCompact: "Rapat (Compact)",
         spacingRelaxed: "Longgar (Relaxed)",
         spacingCompactShort: "Rapat",
@@ -4470,7 +4490,7 @@ export const translations: Record<Locale, Translations> = {
         weightSemiBold: "Semi-Bold",
       },
       wizard: {
-        initialMessage: "Halo! Saya AI assistant Anda. Mari buat website bisnis Anda dalam 1 menit! Siapa nama bisnis atau brand Anda?",
+        initialMessage: "Halo! Saya Jozz-ai, assistant Webjoz. Apapun jenis website Anda — bisnis, toko, atau portofolio — kita buat dalam 1 menit! Apa nama bisnis/brand atau nama Anda?",
         nameAckVariants: [
           "Baik, nama bisnis telah dicatat.",
           "Nama bisnis berhasil disimpan.",
@@ -6713,6 +6733,16 @@ export const translations: Record<Locale, Translations> = {
         heroSplit: "Hero: Split Screen",
         heroFullBleed: "Hero: Full Bleed",
         heroMinimalist: "Hero: Minimalist",
+        heroMinimalistElegant: "Hero: Minimalist Elegant",
+        heroTechSaaS: "Hero: Tech SaaS",
+        heroNeoBrutalist: "Hero: Neo-Brutalist",
+        heroBentoGrid: "Hero: Bento Grid",
+        heroSplitEditorial: "Hero: Editorial Split",
+        heroNaturalOrganic: "Hero: Natural Organic",
+        heroPersonalBillboard: "Hero: Personal Billboard",
+        heroPortraitShowcase: "Hero: Portrait Showcase",
+        heroWorkPreviewStrip: "Hero: Featured Work Strip",
+        heroChronologyBadge: "Hero: Chronology Badge",
         spacingCompact: "Compact",
         spacingRelaxed: "Relaxed",
         spacingCompactShort: "Compact",
@@ -6882,7 +6912,7 @@ export const translations: Record<Locale, Translations> = {
         weightSemiBold: "Semi-Bold",
       },
       wizard: {
-        initialMessage: "Hello! I'm your AI assistant. Let's create your business website in 1 minute! What is the name of your business or brand?",
+        initialMessage: "Hello! I'm Jozz-ai, your Webjoz assistant. Whatever your website type — business, store, or portfolio — we'll build it in 1 minute! What is your business/brand name or your name?",
         nameAckVariants: [
           "Got it, business name recorded.",
           "Business name saved successfully.",

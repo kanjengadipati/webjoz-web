@@ -22,6 +22,7 @@ import MenuSectionInner from "../sections/menu";
 import CatalogSectionInner from "../sections/catalog";
 import TestimonialsSectionInner from "../sections/testimonials";
 import GallerySection from "../sections/gallery";
+import WorksSection from "../sections/works";
 import StatsSectionInner from "../sections/stats";
 import PartnersSectionInner from "../sections/partners";
 import PricingSectionInner from "../sections/pricing";
@@ -44,7 +45,7 @@ function normalizeContent(content: TemplateProps["content"], dt: DesignToken | n
 
   const engine = dt?.layout?.engine || "default";
   const baseOrder: string[] = dt?.layout?.section_order ?? ENGINE_ORDER[engine] ?? ENGINE_ORDER.default;
-  const extras = (["menu", "catalog", "stats", "partners", "pricing", "testimonials", "gallery", "blog"] as const).filter(
+  const extras = (["menu", "catalog", "stats", "partners", "pricing", "testimonials", "gallery", "works", "blog"] as const).filter(
     (key) => content[key] && !baseOrder.includes(key)
   );
   const order = (() => {
@@ -125,7 +126,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       faq: "FAQ", cta: "CTA", contact: "Kontak",
       testimonials: "Testimoni", menu: "Menu", catalog: "Katalog",
       gallery: "Galeri", stats: "Statistik", partners: "Mitra / Klien",
-      pricing: "Paket & Harga", blog: "Blog",
+      pricing: "Paket & Harga", blog: "Blog", works: "Portofolio",
     };
     const label = labelMap[key] || key;
 
@@ -140,6 +141,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
                 <HeroSection
                   hero={hh}
                   design_token={dt}
+                  language={language}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={activeSection === "hero"}
@@ -341,6 +343,17 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
             }} />
           </MemoPreviewSectionWrapper>
         );
+      }
+      case "works": {
+        const w = sec.data as TemplateProps["content"]["works"];
+        return w ? (
+          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+            <MemoSectionContent content={{ works: w, dt }} render={(data) => {
+              const { works: ww } = data;
+              return <WorksSection works={ww} design_token={dt} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "works"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />;
+            }} />
+          </MemoPreviewSectionWrapper>
+        ) : null;
       }
       case "stats": {
         const s = sec.data as TemplateProps["content"]["stats"];

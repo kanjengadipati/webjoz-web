@@ -53,7 +53,7 @@ import {
   getHiddenSections,
   getEnabledVariants,
 } from "@/lib/design-assets-config";
-import { SECTION_VARIANT_OPTIONS } from "@/components/sections/variant-registry";
+import { SECTION_VARIANT_OPTIONS, HERO_STYLE_OPTIONS } from "@/components/sections/variant-registry";
 import { tenantHost } from "@/lib/site-config";
 
 import TypographyPairingPicker from "./components/TypographyPairingPicker";
@@ -2064,9 +2064,9 @@ export default function SiteEditorPage() {
                         className="w-full px-2.5 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
                       >
                         <option value="centered" className="bg-[#111318]">{t("dashboard.sitesEditor.heroCentered")}</option>
-                        <option value="split" className="bg-[#111318]">{t("dashboard.sitesEditor.heroSplit")}</option>
-                        <option value="full-bleed" className="bg-[#111318]">{t("dashboard.sitesEditor.heroFullBleed")}</option>
-                        <option value="minimal" className="bg-[#111318]">{t("dashboard.sitesEditor.heroMinimalist")}</option>
+                        {HERO_STYLE_OPTIONS.filter((o) => o.value !== "centered").map((o) => (
+                          <option key={o.value} value={o.value} className="bg-[#111318]">{t(`dashboard.sitesEditor.${o.labelKey}`)}</option>
+                        ))}
                       </select>
                     </div>
                     )}
@@ -3323,9 +3323,9 @@ export default function SiteEditorPage() {
                       onChange={(e) => updateDesignTokenField("layout", "hero_style", e.target.value)}
                       className="w-full h-8 px-2 border border-border bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
                       <option value="centered" className="bg-[#111318]">Hero: {t("dashboard.sitesEditor.heroCentered")}</option>
-                      <option value="split" className="bg-[#111318]">Hero: {t("dashboard.sitesEditor.heroSplit")}</option>
-                      <option value="full-bleed" className="bg-[#111318]">Hero: {t("dashboard.sitesEditor.heroFullBleed")}</option>
-                      <option value="minimal" className="bg-[#111318]">Hero: {t("dashboard.sitesEditor.heroMinimalist")}</option>
+                      {HERO_STYLE_OPTIONS.filter((o) => o.value !== "centered").map((o) => (
+                        <option key={o.value} value={o.value} className="bg-[#111318]">Hero: {t(`dashboard.sitesEditor.${o.labelKey}`)}</option>
+                      ))}
                     </select>}
                   </div>
                 </div>

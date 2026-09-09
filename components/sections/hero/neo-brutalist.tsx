@@ -71,14 +71,10 @@ export default function HeroNeoBrutalist({
           maxWidth: "1100px",
           margin: "0 auto",
           width: "100%",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "4rem",
-          alignItems: "center",
           position: "relative",
           zIndex: 1,
         }}
-        className="flex-col lg:grid"
+        className="flex flex-col lg:grid lg:grid-cols-2 gap-y-6 lg:gap-x-16 lg:items-center"
       >
         {/* Left */}
         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>

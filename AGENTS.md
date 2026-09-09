@@ -4,6 +4,36 @@
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
 
+# Feature Work Checklist (WAJIB dicek di SETIAP fitur section/komponen baru)
+
+Setiap kerja fitur yang menyentuh section/komponen website, wajib periksa semua poin berikut —
+jangan pernah selesai hanya karena render utama sudah jalan:
+
+1. **Localization (ID & EN)** — setiap teks/string baru wajib ada di ketiga tempat: `types.ts` (defaults),
+   locale ID, dan locale EN. Jangan hardcode string bahasa. Komponen baca bahasa via prop `isEN`/`language`
+   dan pilih teks sesuai. Jangan sampai mock/AI default menyuntik teks Indonesia ke output EN (dan sebaliknya).
+2. **inlineEdit** — setiap teks/gambar yang tampil di section wajib punya pendamping inline edit
+   (`InlineText`/`InlineImage`) dengan `fieldKey` yang benar dan nilai konten yang sama yang dirender.
+   Jangan ada text statis yang tidak bisa diedit oleh pengguna.
+3. **Editor (sidebar)** — setiap field baru section wajib didaftarkan di editor sidebar
+   (`app/dashboard/sites/[id]/page.tsx`) untuk DESKTOP dan variant MOBILE editor. Juga update
+   `editor-utils.ts` (`BODY_SECTION_KEYS`/`EDITOR_SECTION_KEYS`/`SECTION_META`/`AI_SUGGESTIONS` ID+EN)
+   beserta quality scoring bila ada.
+4. **Mobile view** — tiap layout harus responsif: gunakan `flex flex-col <breakpoint>:grid` (grid hanya di
+   layar besar). Jangan pernah inline-style `display: grid` yang memaksa grid di mobile. Cek tiap variant
+   (statistik, strip karya, galeri) di mobile.
+5. **Sinkronisasi variants/registry** — daftar variant baru (mis. `hero_style`) harus serentak di update di:
+   `types.ts` union, registry dropdown (`variant-registry.ts` → `HERO_STYLE_OPTIONS`), komponen section,
+   dan dummy data kalau ada.
+6. **Semua template** — kalau section/variant baru, pastikan SEMUA template mewariskan props/language yang
+   sama (bukan cuma 1-2 template). Cek `dynamic.tsx` karena pakai pendekatan CSS-variable yang beda.
+7. **Zero-state** — kalau field konten kosong (mis. `badge_text` tanpa format `|`), UI harus tetap rapi
+   (sembunyikan elemen), jangan tampilkan string mentah.
+8. **Verifikasi** — `npx tsc --noEmit` bersih; cek `npm run lint` (hanya error pre-existing yang boleh ada);
+   kalau mengubah generator/dummy, run build preview.
+
+<!-- END:feature-checklist -->
+
 # Session Summary — 18 June 2026
 
 ## Goal

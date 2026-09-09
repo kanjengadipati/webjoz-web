@@ -98,6 +98,17 @@ export interface GalleryItem {
   image_credit?: ImageCredit | null;
 }
 
+export interface WorksItem {
+  title: string;
+  category?: string;
+  year?: string;
+  client?: string;
+  description?: string;
+  image_url?: string | null;
+  project_url?: string;
+  alt_text?: string;
+}
+
 export interface StatItem {
   value: string;
   label: string;
@@ -125,6 +136,7 @@ export interface PricingPlan {
 }
 
 export type GalleryLayout = "grid" | "masonry" | "carousel";
+export type WorksLayout = "grid" | "masonry" | "featured-grid" | "showcase-featured";
 export type BlogLayout = "grid" | "list" | "featured" | "minimal";
 
 export interface DesignToken {
@@ -154,7 +166,7 @@ export interface DesignToken {
     heading_tracking?: string;
   };
   layout?: {
-    hero_style?: "full-bleed" | "split" | "centered" | "minimal" | "minimalist-elegant" | "tech-saas" | "neo-brutalist" | "bento-grid" | "split-editorial" | "natural-organic";
+    hero_style?: "full-bleed" | "split" | "centered" | "minimal" | "minimalist-elegant" | "tech-saas" | "neo-brutalist" | "bento-grid" | "split-editorial" | "natural-organic" | "personal-billboard" | "portrait-showcase" | "work-preview-strip" | "chronology-badge";
     section_spacing?: "compact" | "normal" | "relaxed";
     corner_radius?: "sharp" | "soft" | "rounded";
     section_variants?: {
@@ -164,6 +176,7 @@ export interface DesignToken {
       cta?: "banner" | "card" | "centered" | "split-image" | "inline-lead-form";
       faq?: "accordion" | "simple" | "columns" | "sidebar-category" | "two-column-grid" | "chat-bubble-style";
       gallery?: "grid" | "masonry" | "carousel" | "lightbox-story";
+      works?: "grid" | "masonry" | "featured-grid" | "showcase-featured";
       menu?: "grid" | "compact" | "cards" | "text-list" | "compact-list" | "tabs-by-category" | "accordion-by-category" | "bento-photo-grid" | "visual-showcase-hero" | "sidebar-scrollspy-photo";
       catalog?: "grid" | "compact" | "cards" | "grid-dense" | "showcase-featured" | "tabs-by-category" | "editorial-grid" | "masonry-flow" | "instagram-square-grid" | "split-hero-catalog" | "neo-brutalist-matrix" | "horizontal-swipe-carousel";
       stats?: "counter-row" | "card-grid" | "minimal-split" | "big-number-spotlight";
@@ -330,6 +343,13 @@ export interface TemplateProps {
       autoplay_speed?: number;
       show_dots?: boolean;
       show_arrows?: boolean;
+    };
+    works?: {
+      title: string;
+      eyebrow?: string;
+      subtitle?: string;
+      layout?: WorksLayout;
+      items: WorksItem[];
     };
     stats?: {
       title?: string;
