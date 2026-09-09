@@ -69,13 +69,7 @@ export default function HeroBentoGrid({
 
       <div style={{ position: "relative", zIndex: 1, maxWidth: "72rem", margin: "0 auto", width: "100%" }}>
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gridTemplateRows: "auto auto",
-            gap: "1rem",
-          }}
-          className="grid-cols-1 lg:grid-cols-2"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-4"
         >
           {/* Main text card */}
           <motion.div

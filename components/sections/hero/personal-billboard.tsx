@@ -4,18 +4,18 @@ import { motion } from "motion/react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import PhotoCredit from "../PhotoCredit";
-
-/**
- * Split Editorial — photo agency, content studio, travel, digital collective.
- * Stats generalized from about.highlight_stat_* (passed via design_token extras or fallback).
- * Left: masonry image column. Right: text content + stats row.
- * Business filter: photography/studio/travel/content/media businesses.
- */
 import { InlineText, InlineImage } from "../../templates/shared";
 
-export default function HeroSplitEditorial({
+/**
+ * Personal Billboard — personal-brand/portfolio businesses (photographer,
+ * designer, studio, consultant). Poster-style typography: huge name-driven
+ * headline, role in the eyebrow, availability pill, inline stats row.
+ * Business filter: kreatif/personal-brand businesses.
+ */
+export default function HeroPersonalBillboard({
   hero: h,
   design_token,
+  language,
   onUpdateField,
   isEditorMode,
   isSelected,
@@ -24,6 +24,8 @@ export default function HeroSplitEditorial({
 }: HeroVariantProps) {
   const [activeStatIdx, setActiveStatIdx] = useState<number | null>(null);
   const hasSecondary = h.cta_secondary_text && h.cta_secondary_url;
+  const isEN = language === "en";
+  const availLabel = isEN ? "Available for work" : "Tersedia untuk kerja";
 
   const rawStats = h.badge_text?.includes("|")
     ? h.badge_text.split(",").map((s) => {
@@ -32,12 +34,6 @@ export default function HeroSplitEditorial({
       })
     : null;
 
-  const stats = rawStats ?? [
-    { value: "—", label: "Projects" },
-    { value: "—", label: "Clients" },
-    { value: "—", label: "Awards" },
-  ];
-
   const showStats = rawStats !== null;
 
   return (
@@ -45,80 +41,70 @@ export default function HeroSplitEditorial({
       id="hero"
       style={{
         position: "relative",
-        minHeight: "90vh",
+        minHeight: "92vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
         background: h.background_color || "var(--dt-bg)",
         overflow: "hidden",
       }}
-      className="flex flex-col lg:grid lg:grid-cols-2"
     >
-      {/* Left: editorial image column */}
-      <motion.div
-        initial={{ opacity: 0, x: -30 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.7 }}
-        style={{ position: "relative", minHeight: "50vh" }}
-        className="hidden lg:block"
-      >
-        {h.image_url ? (
-          <>
-            <InlineImage
-              section="hero"
-              fieldKey="image_url"
-              src={h.image_url}
-              alt={h.headline}
-              onUpdateField={onUpdateField}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              className="w-full h-full"
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                display: "block",
-                filter: "grayscale(15%)",
-              }}
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            />
-            <div style={{ position: "absolute", bottom: 8, left: 12, zIndex: 20 }}>
-              <PhotoCredit credit={h.image_credit} />
-            </div>
-          </>
-        ) : (
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              background: `linear-gradient(160deg, color-mix(in srgb, var(--dt-primary) 25%, var(--dt-bg)), color-mix(in srgb, var(--dt-primary) 10%, var(--dt-bg)))`,
-            }}
+      {/* Faint billboard backdrop image */}
+      {h.image_url && (
+        <div style={{ position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none" }}>
+          <InlineImage
+            section="hero"
+            fieldKey="image_url"
+            src={h.image_url}
+            alt={h.headline}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            className="w-full h-full"
+            style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.09, mixBlendMode: "luminosity" }}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
           />
-        )}
-        {/* Year stamp */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: "1.5rem",
-            right: "1.5rem",
-            fontSize: "0.6rem",
-            fontWeight: 700,
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
-            color: "var(--dt-primary-foreground)",
-            background: "var(--dt-primary)",
-            padding: "0.25rem 0.6rem",
-          }}
-        >
-          {new Date().getFullYear()}
+          <div style={{ position: "absolute", bottom: 4, right: 8, zIndex: 20 }}>
+            <PhotoCredit credit={h.image_credit} language={language} />
+          </div>
         </div>
-      </motion.div>
-
-      {/* Right: text content */}
+      )}
       <div
         style={{
+          position: "absolute",
+          top: "-15%",
+          right: "-8%",
+          width: "55%",
+          height: "85%",
+          background: `radial-gradient(circle, color-mix(in srgb, var(--dt-primary) 22%, transparent), transparent 70%)`,
+          borderRadius: "50%",
+          pointerEvents: "none",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          bottom: "-18%",
+          left: "-6%",
+          width: "40%",
+          height: "65%",
+          background: `radial-gradient(circle, color-mix(in srgb, var(--dt-accent) 14%, transparent), transparent 70%)`,
+          borderRadius: "50%",
+          pointerEvents: "none",
+        }}
+      />
+
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          maxWidth: "68rem",
+          margin: "0 auto",
+          width: "100%",
+          padding: "clamp(4rem, 8vw, 7rem) clamp(1.5rem, 5vw, 4rem)",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
-          padding: "clamp(3rem, 7vw, 6rem) clamp(1.5rem, 4vw, 4rem)",
-          gap: "2rem",
+          gap: "1.75rem",
         }}
       >
         {h.eyebrow && (
@@ -126,25 +112,14 @@ export default function HeroSplitEditorial({
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.75rem",
-            }}
+            style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}
           >
+            <span style={{ display: "block", width: "2.5rem", height: "1px", background: "var(--dt-primary)" }} />
             <span
               style={{
-                display: "block",
-                width: "2rem",
-                height: "1px",
-                background: "var(--dt-primary)",
-              }}
-            />
-            <span
-              style={{
-                fontSize: "0.6rem",
+                fontSize: "clamp(0.6rem, 1.2vw, 0.7rem)",
                 fontWeight: 700,
-                letterSpacing: "0.2em",
+                letterSpacing: "0.22em",
                 textTransform: "uppercase",
                 color: "var(--dt-primary)",
               }}
@@ -181,10 +156,12 @@ export default function HeroSplitEditorial({
               fontFamily: "var(--dt-heading-font)",
               fontWeight: "var(--dt-heading-weight)" as any,
               fontStyle: "var(--dt-heading-style)" as any,
-              fontSize: "clamp(2.5rem, 5vw, var(--dt-hero-size, 4.5rem))",
-              lineHeight: 1.05,
+              fontSize: "clamp(3rem, 9vw, 6.5rem)",
+              lineHeight: 0.98,
+              letterSpacing: "-0.02em",
               color: "var(--dt-text)",
               margin: 0,
+              maxWidth: "17ch",
             }}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
@@ -195,6 +172,7 @@ export default function HeroSplitEditorial({
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
+          style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}
         >
           <InlineText
             section="hero"
@@ -205,22 +183,45 @@ export default function HeroSplitEditorial({
             isSelected={isSelected}
             as="p"
             style={{
-              fontSize: "1rem",
+              fontSize: "clamp(1rem, 1.8vw, 1.2rem)",
               color: "var(--dt-text-muted)",
               lineHeight: 1.7,
-              maxWidth: "30rem",
+              maxWidth: "34rem",
               margin: 0,
             }}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
           />
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              width: "fit-content",
+              background: "color-mix(in srgb, var(--dt-primary) 12%, var(--dt-bg))",
+              border: "1px solid color-mix(in srgb, var(--dt-primary) 35%, transparent)",
+              color: "var(--dt-text)",
+              padding: "0.4rem 0.9rem",
+              borderRadius: "9999px",
+              fontSize: "0.7rem",
+              fontWeight: 600,
+              letterSpacing: "0.04em",
+            }}
+          >
+            <motion.span
+              animate={{ opacity: [1, 0.35, 1] }}
+              transition={{ duration: 2.4, repeat: Infinity }}
+              style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--dt-primary)", display: "inline-block", flexShrink: 0 }}
+            />
+            {availLabel}
+          </span>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}
-          style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}
+          style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center", marginTop: "0.5rem" }}
         >
           <a
             href={h.cta_url}
@@ -228,7 +229,7 @@ export default function HeroSplitEditorial({
               display: "inline-flex",
               alignItems: "center",
               gap: "0.5rem",
-              padding: "0.875rem 2rem",
+              padding: "0.9rem 2.25rem",
               background: "var(--dt-primary)",
               color: "var(--dt-primary-foreground)",
               textDecoration: "none",
@@ -236,7 +237,10 @@ export default function HeroSplitEditorial({
               fontSize: "0.85rem",
               letterSpacing: "0.05em",
               borderRadius: "var(--dt-radius)",
+              transition: "opacity 0.2s",
             }}
+            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
+            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
           >
             <InlineText
               section="hero"
@@ -279,7 +283,6 @@ export default function HeroSplitEditorial({
           )}
         </motion.div>
 
-        {/* Stats row — generalized from about highlight stats */}
         {showStats && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -287,12 +290,14 @@ export default function HeroSplitEditorial({
             transition={{ duration: 0.4, delay: 0.45 }}
             style={{
               display: "flex",
-              gap: "2rem",
-              paddingTop: "1.25rem",
+              gap: "clamp(1.5rem, 4vw, 3rem)",
+              paddingTop: "1.75rem",
+              marginTop: "1rem",
               borderTop: "1px solid color-mix(in srgb, var(--dt-text) 12%, transparent)",
+              flexWrap: "wrap",
             }}
           >
-            {stats.map((s, i) => (
+            {rawStats!.map((s, i) => (
               <div
                 key={i}
                 onMouseEnter={() => setActiveStatIdx(i)}
@@ -302,7 +307,7 @@ export default function HeroSplitEditorial({
                 <p
                   style={{
                     margin: 0,
-                    fontSize: "1.25rem",
+                    fontSize: "clamp(1.6rem, 3vw, 2.4rem)",
                     fontWeight: 800,
                     color: activeStatIdx === i ? "var(--dt-primary)" : "var(--dt-text)",
                     transition: "color 0.2s",
@@ -314,7 +319,7 @@ export default function HeroSplitEditorial({
                 <p
                   style={{
                     margin: 0,
-                    fontSize: "0.6rem",
+                    fontSize: "0.62rem",
                     color: "var(--dt-text-muted)",
                     textTransform: "uppercase",
                     letterSpacing: "0.12em",

@@ -13,6 +13,10 @@ import HeroNeoBrutalist from "./neo-brutalist";
 import HeroBentoGrid from "./bento-grid";
 import HeroSplitEditorial from "./split-editorial";
 import HeroNaturalOrganic from "./natural-organic";
+import HeroPersonalBillboard from "./personal-billboard";
+import HeroPortraitShowcase from "./portrait-showcase";
+import HeroWorkPreviewStrip from "./work-preview-strip";
+import HeroChronologyBadge from "./chronology-badge";
 
 const variants: Record<string, ComponentType<HeroVariantProps>> = {
   // Original 4
@@ -27,11 +31,17 @@ const variants: Record<string, ComponentType<HeroVariantProps>> = {
   "bento-grid": HeroBentoGrid,
   "split-editorial": HeroSplitEditorial,
   "natural-organic": HeroNaturalOrganic,
+  // Portfolio / personal-brand 4
+  "personal-billboard": HeroPersonalBillboard,
+  "portrait-showcase": HeroPortraitShowcase,
+  "work-preview-strip": HeroWorkPreviewStrip,
+  "chronology-badge": HeroChronologyBadge,
 };
 
 export default function HeroSection({
   hero,
   design_token,
+  language,
   onUpdateField,
   isEditorMode,
   isSelected,
@@ -45,6 +55,7 @@ export default function HeroSection({
       <Renderer
         hero={hero}
         design_token={design_token}
+        language={language}
         onUpdateField={onUpdateField}
         isEditorMode={isEditorMode}
         isSelected={isSelected}

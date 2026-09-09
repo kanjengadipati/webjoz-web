@@ -1,5 +1,5 @@
 import { 
-  Layout, User, Award, HelpCircle, Mail, BookOpen, Globe, UtensilsCrossed, ShoppingBag, Star, Camera, MessageCircle, TrendingUp, Handshake, CreditCard
+  Layout, User, Award, HelpCircle, Mail, BookOpen, Globe, UtensilsCrossed, ShoppingBag, Star, Camera, MessageCircle, TrendingUp, Handshake, CreditCard, Briefcase
 } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 
@@ -18,13 +18,13 @@ export const stripRegeneratedMarkers = (value: any): any => {
   return value;
 };
 
-export const BODY_SECTION_KEYS = ["hero", "about", "benefits", "stats", "testimonials", "menu", "catalog", "gallery", "partners", "pricing", "blog", "cta", "faq", "contact"];
+export const BODY_SECTION_KEYS = ["hero", "about", "benefits", "stats", "testimonials", "menu", "catalog", "gallery", "works", "partners", "pricing", "blog", "cta", "faq", "contact"];
 export const EDITOR_SECTION_KEYS = ["header", ...BODY_SECTION_KEYS, "footer", "seo", "floating"];
 
 // Sections that are only shown in the sidebar when content actually has that key.
 // "faq" is here because the AI recommendation logic may prune it for certain business types
 // (e.g. coffee shops, restaurants). If the backend didn't generate faq, we don't show the tab.
-export const OPTIONAL_SECTION_KEYS = ["menu", "catalog", "stats", "partners", "pricing", "testimonials", "gallery", "blog", "faq"];
+export const OPTIONAL_SECTION_KEYS = ["menu", "catalog", "stats", "partners", "pricing", "testimonials", "gallery", "works", "blog", "faq"];
 
 export const SECTION_META: Record<string, { label: string; icon: any }> = {
   header:       { label: "Header",          icon: Layout },
@@ -36,6 +36,7 @@ export const SECTION_META: Record<string, { label: string; icon: any }> = {
   menu:         { label: "Menu",            icon: UtensilsCrossed },
   catalog:      { label: "Katalog",         icon: ShoppingBag },
   gallery:      { label: "Galeri",          icon: Camera },
+  works:        { label: "Portofolio",      icon: Briefcase },
   partners:     { label: "Mitra / Klien",   icon: Handshake },
   pricing:      { label: "Paket & Harga",   icon: CreditCard },
   blog:         { label: "Blog",            icon: BookOpen },
@@ -57,6 +58,7 @@ export const AI_SUGGESTIONS: Record<string, string[]> = {
   menu:         ["Buat nama menu lebih menggugah selera", "Tambahkan deskripsi yang membuat lapar", "Perbarui harga semua item menu"],
   catalog:      ["Buat nama produk lebih menarik", "Tambahkan badge Best Seller untuk produk terlaris", "Perbarui harga dan deskripsi produk"],
   gallery:      ["Tambahkan foto suasana dan interior", "Gunakan foto asli untuk membangun kepercayaan", "Pilih foto dengan pencahayaan yang baik"],
+  works:        ["Tonjolkan proyek terbaik di urutan pertama", "Tuliskan hasil nyata di deskripsi proyek", "Lengkapi link proyek untuk kredibilitas"],
   partners:     ["Tambahkan brand mitra ternama", "Tuliskan kategori partner yang relevan", "Urutkan mitra paling bergengsi di awal"],
   pricing:      ["Beri badge Populer pada paket terbaik", "Perjelas daftar fitur di tiap paket", "Buat CTA tiap tier lebih persuasif"],
   faq:          ["Jawab keberatan sebelum membeli", "Buat jawaban lebih ramah dan meyakinkan", "Tambahkan info harga atau proses pemesanan"],
@@ -76,6 +78,7 @@ export const AI_SUGGESTIONS_EN: Record<string, string[]> = {
   menu:         ["Make menu names more appetizing", "Add descriptions that make people hungry", "Update the price of all menu items"],
   catalog:      ["Make product names more appealing", "Add a Best Seller badge for top products", "Update product prices and descriptions"],
   gallery:      ["Add ambiance and interior photos", "Use real photos to build trust", "Choose photos with good lighting"],
+  works:        ["Highlight the best projects first", "Write real results in project descriptions", "Add project links for credibility"],
   partners:     ["Add notable partner brands", "Include relevant partner categories", "Put top prestigious brands first"],
   pricing:      ["Add a Popular badge to the best tier", "Clarify features included in each plan", "Make plan CTA buttons more persuasive"],
   faq:          ["Answer objections before purchase", "Make answers friendlier and more reassuring", "Add pricing or ordering process info"],
@@ -161,6 +164,11 @@ export const collectQualityIssues = (content: any) => {
     fields.push({ path: `faq.items.${idx}.question`, label: `Pertanyaan FAQ #${idx + 1}`, value: item?.question, required: true });
     fields.push({ path: `faq.items.${idx}.answer`, label: `Jawaban FAQ #${idx + 1}`, value: item?.answer, required: true });
   });
+  (content?.works?.items || []).forEach((item: any, idx: number) => {
+    fields.push({ path: `works.items.${idx}.title`, label: `Proyek #${idx + 1}`, value: item?.title, required: true });
+    fields.push({ path: `works.items.${idx}.description`, label: `Deskripsi proyek #${idx + 1}`, value: item?.description });
+    fields.push({ path: `works.items.${idx}.image_url`, label: `Gambar proyek #${idx + 1}`, value: item?.image_url });
+  });
 
   // Only flag required fields OR non-empty optional fields that contain placeholder text
   const issues = fields.filter((field) => {
@@ -203,6 +211,11 @@ export const getSectionScore = (content: any, section: string): number => {
   (content?.faq?.items || []).forEach((_: any, idx: number) => {
     allFields.push({ path: `faq.items.${idx}.question` });
     allFields.push({ path: `faq.items.${idx}.answer` });
+  });
+  (content?.works?.items || []).forEach((_: any, idx: number) => {
+    allFields.push({ path: `works.items.${idx}.title` });
+    allFields.push({ path: `works.items.${idx}.description` });
+    allFields.push({ path: `works.items.${idx}.image_url` });
   });
 
   const relevantFields = allFields.filter((f) => f.path.startsWith(section + "."));
@@ -282,7 +295,7 @@ export const getAutoHiddenSections = (
 ): string[] => {
   const result: string[] = [];
 
-  const OPTIONAL = ["faq", "testimonials", "gallery", "menu", "catalog", "blog"] as const;
+  const OPTIONAL = ["faq", "testimonials", "gallery", "works", "menu", "catalog", "blog"] as const;
 
   const isEmpty = (key: string): boolean => {
     if (key === "menu" || key === "catalog") return !(content?.[key]?.categories?.length);

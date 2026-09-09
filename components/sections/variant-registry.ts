@@ -54,6 +54,12 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "carousel", label: "Carousel", description: "Foto slide bergilir otomatis." },
     { value: "lightbox-story", label: "Story Lightbox", description: "Grid foto yang membuka fullscreen dengan narasi besar dan navigasi cerita." },
   ],
+  works: [
+    { value: "grid", label: "Grid", description: "Kartu proyek seragam dalam grid rapi." },
+    { value: "masonry", label: "Masonry", description: "Tinggi kartu bervariasi seperti Pinterest." },
+    { value: "featured-grid", label: "Grid Unggulan", description: "Proyek pertama besar sebagai sorotan, sisanya grid rapi." },
+    { value: "showcase-featured", label: "Showcase Unggulan", description: "Proyek utama horizontal besar, sisanya grid 2 kolom." },
+  ],
   stats: [
     { value: "counter-row", label: "Baris Metrik", description: "Baris metrik horizontal dengan pembatas rapi dan angka besar." },
     { value: "card-grid", label: "Grid Kartu", description: "Kartu statistik melayang dengan ikon dan efek glow aksen." },
@@ -137,3 +143,22 @@ export function getVariantDescription(section: string, value: string): string {
 export function getVariantValues(section: string): string[] {
   return SECTION_VARIANT_OPTIONS[section]?.map((v) => v.value) ?? [];
 }
+
+// Single source of truth for the hero_style choices exposed in the editor.
+// labelKey maps to a `dashboard.sitesEditor.*` i18n key so labels are localized.
+export const HERO_STYLE_OPTIONS: Array<{ value: string; labelKey: string }> = [
+  { value: "centered", labelKey: "heroCentered" },
+  { value: "split", labelKey: "heroSplit" },
+  { value: "full-bleed", labelKey: "heroFullBleed" },
+  { value: "minimal", labelKey: "heroMinimalist" },
+  { value: "minimalist-elegant", labelKey: "heroMinimalistElegant" },
+  { value: "tech-saas", labelKey: "heroTechSaaS" },
+  { value: "neo-brutalist", labelKey: "heroNeoBrutalist" },
+  { value: "bento-grid", labelKey: "heroBentoGrid" },
+  { value: "split-editorial", labelKey: "heroSplitEditorial" },
+  { value: "natural-organic", labelKey: "heroNaturalOrganic" },
+  { value: "personal-billboard", labelKey: "heroPersonalBillboard" },
+  { value: "portrait-showcase", labelKey: "heroPortraitShowcase" },
+  { value: "work-preview-strip", labelKey: "heroWorkPreviewStrip" },
+  { value: "chronology-badge", labelKey: "heroChronologyBadge" },
+];

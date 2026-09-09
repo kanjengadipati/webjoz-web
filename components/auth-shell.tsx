@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ReactNode } from "react";
-import { Home, LogIn, UserPlus, KeyRound } from "lucide-react";
+import { Home, LogIn, UserPlus, KeyRound, ArrowLeft } from "lucide-react";
 import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle, SubtleStat } from "@/components/ui";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { useI18n } from "@/lib/i18n/context";
@@ -34,6 +34,7 @@ export function AuthShell({
   footer,
 }: AuthShellProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const { t, locale } = useI18n();
   const isEn = locale === "en";
 
@@ -41,16 +42,25 @@ export function AuthShell({
     <main className="relative min-h-[100dvh] flex flex-col justify-between overflow-hidden px-4 py-4 pb-20 sm:px-6 sm:py-8 sm:pb-8 lg:px-10">
       {/* Mobile Top Bar */}
       <div className="flex items-center justify-between w-full max-w-md mx-auto pb-3 mb-2 border-b border-border/60 lg:hidden">
-        <Link href="/" className="flex items-center gap-2">
-          <Image
-            src="/logo2.png"
-            alt="Webjoz logo"
-            width={100}
-            height={60}
-            className="h-8 w-auto object-contain"
-            priority
-          />
-        </Link>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => router.back()}
+            aria-label={isEn ? "Go back" : "Kembali"}
+            className="inline-flex items-center justify-center size-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-all"
+          >
+            <ArrowLeft className="size-4" />
+          </button>
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/logo2.png"
+              alt="Webjoz logo"
+              width={100}
+              height={60}
+              className="h-8 w-auto object-contain"
+              priority
+            />
+          </Link>
+        </div>
         <div className="flex items-center gap-2.5">
           <Link
             href="/help"
@@ -68,6 +78,16 @@ export function AuthShell({
           <LanguageSwitcher />
         </div>
       </div>
+
+      {/* Desktop Back Button */}
+      <button
+        onClick={() => router.back()}
+        aria-label={isEn ? "Go back" : "Kembali"}
+        className="hidden lg:inline-flex items-center gap-1.5 absolute top-6 left-6 z-10 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-all px-2.5 py-1.5 rounded-lg"
+      >
+        <ArrowLeft className="size-3.5" />
+        <span>{isEn ? "Back" : "Kembali"}</span>
+      </button>
 
       {/* Desktop Top Actions */}
       <div className="hidden lg:flex items-center gap-3 absolute top-6 right-6 z-10">
@@ -134,7 +154,7 @@ export function AuthShell({
           </CardHeader>
           <CardContent className="px-5 pt-5 sm:px-6 sm:pt-6">
             {children}
-            <div className="hidden sm:block mt-5 text-sm text-muted-foreground sm:mt-6">
+            <div className="mt-5 text-sm text-muted-foreground sm:mt-6">
               {footer || <Link href="/" className="font-medium text-primary hover:opacity-80">{isEn ? "← Back to Home" : "← Kembali ke Beranda"}</Link>}
             </div>
           </CardContent>

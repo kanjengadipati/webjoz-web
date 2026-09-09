@@ -4,18 +4,18 @@ import { motion } from "motion/react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import PhotoCredit from "../PhotoCredit";
-
-/**
- * Split Editorial — photo agency, content studio, travel, digital collective.
- * Stats generalized from about.highlight_stat_* (passed via design_token extras or fallback).
- * Left: masonry image column. Right: text content + stats row.
- * Business filter: photography/studio/travel/content/media businesses.
- */
 import { InlineText, InlineImage } from "../../templates/shared";
 
-export default function HeroSplitEditorial({
+/**
+ * Portrait Showcase — photographer, model, artist, studio, content creator.
+ * Large portrait image column + text content. Photo stays visible on mobile
+ * (stacked on top), unlike split-editorial which hides the image on mobile.
+ * Business filter: photography/portrait/creative businesses.
+ */
+export default function HeroPortraitShowcase({
   hero: h,
   design_token,
+  language,
   onUpdateField,
   isEditorMode,
   isSelected,
@@ -24,6 +24,8 @@ export default function HeroSplitEditorial({
 }: HeroVariantProps) {
   const [activeStatIdx, setActiveStatIdx] = useState<number | null>(null);
   const hasSecondary = h.cta_secondary_text && h.cta_secondary_url;
+  const isEN = language === "en";
+  const availLabel = isEN ? "Available for work" : "Tersedia untuk kerja";
 
   const rawStats = h.badge_text?.includes("|")
     ? h.badge_text.split(",").map((s) => {
@@ -32,12 +34,6 @@ export default function HeroSplitEditorial({
       })
     : null;
 
-  const stats = rawStats ?? [
-    { value: "—", label: "Projects" },
-    { value: "—", label: "Clients" },
-    { value: "—", label: "Awards" },
-  ];
-
   const showStats = rawStats !== null;
 
   return (
@@ -45,19 +41,19 @@ export default function HeroSplitEditorial({
       id="hero"
       style={{
         position: "relative",
-        minHeight: "90vh",
+        minHeight: "100vh",
         background: h.background_color || "var(--dt-bg)",
         overflow: "hidden",
       }}
-      className="flex flex-col lg:grid lg:grid-cols-2"
+      className="flex flex-col lg:grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]"
     >
-      {/* Left: editorial image column */}
+      {/* Left: portrait image column (visible on mobile too) */}
       <motion.div
         initial={{ opacity: 0, x: -30 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.7 }}
-        style={{ position: "relative", minHeight: "50vh" }}
-        className="hidden lg:block"
+        style={{ position: "relative" }}
+        className="min-h-[55vh] lg:min-h-0"
       >
         {h.image_url ? (
           <>
@@ -69,19 +65,46 @@ export default function HeroSplitEditorial({
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
-              className="w-full h-full"
+              className="w-full h-full max-h-[70vh] lg:max-h-none"
               style={{
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
+                objectPosition: "top center",
                 display: "block",
-                filter: "grayscale(15%)",
               }}
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             />
             <div style={{ position: "absolute", bottom: 8, left: 12, zIndex: 20 }}>
-              <PhotoCredit credit={h.image_credit} />
+              <PhotoCredit credit={h.image_credit} language={language} />
             </div>
+            {/* Availability overlay badge on the photo */}
+            <span
+              style={{
+                position: "absolute",
+                top: "1rem",
+                left: "1rem",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                background: "rgba(0,0,0,0.55)",
+                backdropFilter: "blur(6px)",
+                color: "#fff",
+                padding: "0.4rem 0.9rem",
+                borderRadius: "9999px",
+                fontSize: "0.66rem",
+                fontWeight: 600,
+                letterSpacing: "0.04em",
+                zIndex: 10,
+              }}
+            >
+              <motion.span
+                animate={{ opacity: [1, 0.35, 1] }}
+                transition={{ duration: 2.4, repeat: Infinity }}
+                style={{ width: 7, height: 7, borderRadius: "50%", background: "#4ade80", display: "inline-block", flexShrink: 0 }}
+              />
+              {availLabel}
+            </span>
           </>
         ) : (
           <div
@@ -92,12 +115,11 @@ export default function HeroSplitEditorial({
             }}
           />
         )}
-        {/* Year stamp */}
         <div
           style={{
             position: "absolute",
-            bottom: "1.5rem",
-            right: "1.5rem",
+            bottom: "1.25rem",
+            right: "1.25rem",
             fontSize: "0.6rem",
             fontWeight: 700,
             letterSpacing: "0.2em",
@@ -117,8 +139,8 @@ export default function HeroSplitEditorial({
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          padding: "clamp(3rem, 7vw, 6rem) clamp(1.5rem, 4vw, 4rem)",
-          gap: "2rem",
+          padding: "clamp(3rem, 6vw, 5.5rem) clamp(1.5rem, 4.5vw, 4rem)",
+          gap: "1.75rem",
         }}
       >
         {h.eyebrow && (
@@ -126,20 +148,9 @@ export default function HeroSplitEditorial({
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.75rem",
-            }}
+            style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}
           >
-            <span
-              style={{
-                display: "block",
-                width: "2rem",
-                height: "1px",
-                background: "var(--dt-primary)",
-              }}
-            />
+            <span style={{ display: "block", width: "2rem", height: "1px", background: "var(--dt-primary)" }} />
             <span
               style={{
                 fontSize: "0.6rem",
@@ -181,7 +192,7 @@ export default function HeroSplitEditorial({
               fontFamily: "var(--dt-heading-font)",
               fontWeight: "var(--dt-heading-weight)" as any,
               fontStyle: "var(--dt-heading-style)" as any,
-              fontSize: "clamp(2.5rem, 5vw, var(--dt-hero-size, 4.5rem))",
+              fontSize: "clamp(2.5rem, 5.5vw, 4.75rem)",
               lineHeight: 1.05,
               color: "var(--dt-text)",
               margin: 0,
@@ -279,7 +290,6 @@ export default function HeroSplitEditorial({
           )}
         </motion.div>
 
-        {/* Stats row — generalized from about highlight stats */}
         {showStats && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -290,9 +300,10 @@ export default function HeroSplitEditorial({
               gap: "2rem",
               paddingTop: "1.25rem",
               borderTop: "1px solid color-mix(in srgb, var(--dt-text) 12%, transparent)",
+              flexWrap: "wrap",
             }}
           >
-            {stats.map((s, i) => (
+            {rawStats!.map((s, i) => (
               <div
                 key={i}
                 onMouseEnter={() => setActiveStatIdx(i)}

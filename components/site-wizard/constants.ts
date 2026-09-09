@@ -178,11 +178,17 @@ export const SUB_TYPES: Record<string, SubTypeItem[]> = {
     { value: "Fotografer", emoji: "📷", label: "Fotografer" },
     { value: "Videografer", emoji: "🎥", label: "Videografer" },
     { value: "Desainer", emoji: "🎨", label: "Desainer" },
+    { value: "Ilustrator & Seniman", emoji: "🎭", label: "Ilustrator & Seniman" },
+    { value: "Arsitek & Desainer Interior", emoji: "🏛️", label: "Arsitek & Interior" },
+    { value: "Penulis & Copywriter", emoji: "✍️", label: "Penulis & Copywriter" },
     { value: "Developer & IT", emoji: "💻", label: "Developer & IT" },
+    { value: "SEO & Digital Specialist", emoji: "🔍", label: "SEO & Digital" },
     { value: "Digital & Marketing Agency", emoji: "📈", label: "Digital Agency" },
     { value: "Konsultan", emoji: "📊", label: "Konsultan" },
-    { value: "Notaris & PPAT", emoji: "⚖️", label: "Notaris & PPAT" },
+    { value: "Tutor & Life Coach", emoji: "🎓", label: "Tutor & Coach" },
+    { value: "Public Speaker & Trainer", emoji: "🎤", label: "Speaker & Trainer" },
     { value: "Musisi & Entertainer", emoji: "🎵", label: "Musisi & Hiburan" },
+    { value: "Notaris & PPAT", emoji: "⚖️", label: "Notaris & PPAT" },
   ],
   "Company Profile": [
     { value: "Properti & Real Estate", emoji: "🏠", label: "Properti" },
@@ -221,17 +227,18 @@ export const LOADING_CHECKLIST = [
   { label: "Menulis keunggulan & layanan", desc: "Merinci kelebihan dan layanan yang ditawarkan" },
   { label: "Menyiapkan testimoni & FAQ", desc: "Mengumpulkan bukti sosial dan pertanyaan umum" },
   { label: "Menyusun katalog & galeri", desc: "Membuat daftar menu/layanan dan galeri foto" },
+  { label: "Kurasi portofolio proyek", desc: "Menyusun karya terbaik dan pencapaian bisnis" },
   { label: "Optimasi SEO & finalisasi", desc: "Mengatur metadata dan call-to-action kontak" },
 ];
 
-export const LOADING_STEPS_PERCENT = [15, 30, 48, 64, 80, 92];
+export const LOADING_STEPS_PERCENT = [15, 30, 46, 58, 70, 82, 92];
 
 export const SECTION_STEP_MAP: Record<string, number> = {
   header: 0, hero: 0,
   about: 1,
   benefits: 2,
   testimonials: 3, faq: 3,
-  menu: 4, catalog: 4, gallery: 4,
+  menu: 4, catalog: 4, gallery: 4, works: 4,
   cta: 5, contact: 5, footer: 5, seo: 5,
 };
 

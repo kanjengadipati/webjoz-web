@@ -8,6 +8,7 @@ import {
   SeoEditorPreview, ctaHref, InlineText, InlineImage,
 } from "./shared";
 import GallerySection from "../sections/gallery";
+import WorksSection from "../sections/works";
 import HeaderSection from "../sections/header";
 import FooterSection from "../sections/footer";
 import HeroSection from "../sections/hero";
@@ -25,7 +26,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
   activeSection, onSelectSection, onRegenSection, onUpdateField, collapseSheetForInlineEdit, onEditingStateChange,
   isEditorMode = false, arrivedSections, isPremium = false, language, tenantDomain
 }) => {
-  const { header, hero, about, benefits, faq, cta, contact, footer, seo, menu, testimonials, gallery } = content;
+  const { header, hero, about, benefits, faq, cta, contact, footer, seo, menu, testimonials, gallery, works } = content;
   const dt = design_token ?? null;
   const cssVars = buildCssVars(dt);
 
@@ -48,6 +49,10 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
       const idx = order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.indexOf("faq") >= 0 ? order.indexOf("faq") : order.length;
       order.splice(idx, 0, "gallery");
     }
+    if (works && !order.includes("works")) {
+      const idx = order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.indexOf("faq") >= 0 ? order.indexOf("faq") : order.length;
+      order.splice(idx, 0, "works");
+    }
     return order;
   })();
 
@@ -58,6 +63,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
       <HeroSection
         hero={{ ...hero, cta_url: ctaHref(contact.phone, hero.cta_url) }}
         design_token={dt}
+        language={language}
         onUpdateField={onUpdateField}
         isEditorMode={isEditorMode}
         isSelected={activeSection === "hero"}
@@ -265,6 +271,14 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
         <MemoSectionContent content={{ gallery, dt }} render={(data) => {
           const { gallery: g, dt: d } = data;
           return <GallerySection gallery={g} design_token={d} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "gallery"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />;
+        }} />
+      </MemoPreviewSectionWrapper>
+    ) : null,
+    works: works ? (
+      <MemoPreviewSectionWrapper section="works" label="Portofolio" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={{ works, dt }} render={(data) => {
+          const { works: w, dt: d } = data;
+          return <WorksSection works={w} design_token={d} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "works"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />;
         }} />
       </MemoPreviewSectionWrapper>
     ) : null,

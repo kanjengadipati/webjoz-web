@@ -11,6 +11,7 @@ import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections } from "
 import HeaderSection from "../sections/header";
 import FooterSection from "../sections/footer";
 import GallerySection from "../sections/gallery";
+import WorksSection from "../sections/works";
 import HeroSection from "../sections/hero";
 import PhotoCredit from "../sections/PhotoCredit";
 import BenefitsSectionInner from "../sections/benefits";
@@ -26,7 +27,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
   activeSection, onSelectSection, onRegenSection, isEditorMode = false, arrivedSections, isPremium = false, language, tenantDomain,
   onUpdateField, collapseSheetForInlineEdit, onEditingStateChange
 }) => {
-  const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog, gallery } = content;
+  const { header, hero, about, benefits, faq, cta, contact, footer, seo, testimonials, menu, catalog, gallery, works } = content;
   const dt = design_token ?? null;
   const cssVars = buildCssVars(dt);
   React.useEffect(() => {
@@ -42,6 +43,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
     if (menu    && !order.includes("menu"))    afterHero("menu");
     if (catalog && !order.includes("catalog")) afterHero("catalog");
     if (gallery && !order.includes("gallery")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "gallery");
+    if (works && !order.includes("works")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "works");
     if (testimonials && !order.includes("testimonials")) order.splice(order.indexOf("cta") >= 0 ? order.indexOf("cta") : order.length, 0, "testimonials");
     return order;
   })();
@@ -59,6 +61,7 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
       <HeroSection
         hero={{ ...h, cta_url: ctaHref(contact.phone, h.cta_url) }}
         design_token={dt}
+        language={language}
         isEditorMode={isEditorMode}
         isSelected={activeSection === "hero"}
         onUpdateField={onUpdateField}
@@ -188,6 +191,14 @@ export const TemplateMinimalist: React.FC<TemplateProps> = ({
         <MemoSectionContent content={{ gallery, dt }} render={(data) => {
           const { gallery: g, dt: d } = data;
           return <GallerySection gallery={g} design_token={d} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "gallery"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />;
+        }} />
+      </MemoPreviewSectionWrapper>
+    ) : null,
+    works: works ? (
+      <MemoPreviewSectionWrapper section="works" label="Portofolio" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+        <MemoSectionContent content={{ works, dt }} render={(data) => {
+          const { works: w, dt: d } = data;
+          return <WorksSection works={w} design_token={d} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "works"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />;
         }} />
       </MemoPreviewSectionWrapper>
     ) : null,
