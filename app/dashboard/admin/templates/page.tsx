@@ -487,7 +487,7 @@ export default function TemplateGalleryPage() {
 
       {/* ── Search & Filter Controls Panel ── */}
       <div className="rounded-xl border border-border/40 bg-card/40 p-3.5 space-y-3 shadow-xs">
-        {/* Row 1: Search & Dropdown Filters */}
+        {/* Row 1: Search + Dropdowns + Sort (inline, right-aligned) */}
         <div className="flex flex-col md:flex-row gap-2.5">
           <div className="relative flex-1 min-w-[200px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
@@ -551,6 +551,7 @@ export default function TemplateGalleryPage() {
                   </select>
                 )}
 
+                {/* Sort — moved here, inline with other dropdowns */}
                 <select
                   value={sortOrder}
                   onChange={(e) => setSortOrder(e.target.value as SortOrder)}
@@ -568,57 +569,97 @@ export default function TemplateGalleryPage() {
           </div>
         </div>
 
-        {/* Row 2: Faceted Filter Chips (Only for seeds tab) */}
+        {/* Row 2: Combined score filter chips — only for seeds tab */}
         {tab === "seeds" && (
-          <div className="pt-2.5 border-t border-border/30 flex flex-col xl:flex-row xl:items-center gap-3">
-            {/* Rule-based Quality Score Pills */}
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[11px] font-medium text-muted-foreground shrink-0 flex items-center gap-1">
-                <SlidersHorizontal className="size-3" />
-                Kualitas:
-              </span>
-              <div className="inline-flex p-0.5 bg-muted/40 border border-border/40 rounded-lg gap-0.5">
-                {scoreFilterOptions.map((opt) => (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    onClick={() => setScoreFilter(opt.value)}
-                    className={`px-2.5 py-1 text-[11px] font-medium rounded-md transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 ${
-                      scoreFilter === opt.value
-                        ? "bg-background text-foreground shadow-xs font-semibold"
-                        : `${opt.className || "text-muted-foreground"} hover:text-foreground hover:bg-background/40`
-                    }`}
-                  >
-                    <span>{t(opt.labelKey)}</span>
-                    <span className="text-[10px] opacity-60 font-mono">({scoreCounts[opt.value]})</span>
-                  </button>
-                ))}
-              </div>
-            </div>
+          <div className="pt-2.5 border-t border-border/30">
+            <div className="flex flex-wrap items-start gap-x-4 gap-y-2">
 
-            {/* AI Aesthetic Score Pills */}
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[11px] font-medium text-muted-foreground shrink-0 flex items-center gap-1">
-                <Sparkles className="size-3 text-primary/70" />
-                Estetika AI:
-              </span>
-              <div className="inline-flex p-0.5 bg-muted/40 border border-border/40 rounded-lg gap-0.5">
-                {aestheticFilterOptions.map((opt) => (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    onClick={() => setAestheticFilter(opt.value)}
-                    className={`px-2.5 py-1 text-[11px] font-medium rounded-md transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 ${
-                      aestheticFilter === opt.value
-                        ? "bg-background text-foreground shadow-xs font-semibold"
-                        : `${opt.className || "text-muted-foreground"} hover:text-foreground hover:bg-background/40`
-                    }`}
-                  >
-                    <span>{t(opt.labelKey)}</span>
-                    <span className="text-[10px] opacity-60 font-mono">({aestheticCounts[opt.value]})</span>
-                  </button>
-                ))}
+              {/* Kualitas group */}
+              <div className="flex flex-col gap-1.5 min-w-0">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 flex items-center gap-1 px-0.5">
+                  <SlidersHorizontal className="size-2.5" />
+                  Kualitas
+                </span>
+                <div className="inline-flex p-0.5 bg-muted/40 border border-border/40 rounded-lg gap-0.5">
+                  {scoreFilterOptions.map((opt) => {
+                    const count = scoreCounts[opt.value];
+                    const isActive = scoreFilter === opt.value;
+                    const isEmpty = opt.value !== "all" && count === 0;
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => !isEmpty && setScoreFilter(opt.value)}
+                        disabled={isEmpty}
+                        className={`px-2.5 py-1 text-[11px] font-medium rounded-md transition-all whitespace-nowrap flex items-center gap-1
+                          ${isEmpty
+                            ? "opacity-30 cursor-not-allowed text-muted-foreground"
+                            : isActive
+                              ? "bg-background text-foreground shadow-xs font-semibold cursor-pointer"
+                              : `${opt.className || "text-muted-foreground"} hover:text-foreground hover:bg-background/40 cursor-pointer`
+                          }`}
+                      >
+                        <span>{t(opt.labelKey)}</span>
+                        {!isEmpty && <span className="text-[10px] opacity-50 font-mono tabular-nums">{count}</span>}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
+
+              {/* Separator */}
+              <div className="self-end pb-0.5 h-8 w-px bg-border/40 shrink-0 hidden sm:block" />
+
+              {/* Estetika AI group */}
+              <div className="flex flex-col gap-1.5 min-w-0">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 flex items-center gap-1 px-0.5">
+                  <Sparkles className="size-2.5 text-primary/60" />
+                  Estetika AI
+                </span>
+                <div className="inline-flex p-0.5 bg-muted/40 border border-border/40 rounded-lg gap-0.5">
+                  {aestheticFilterOptions.map((opt) => {
+                    const count = aestheticCounts[opt.value];
+                    const isActive = aestheticFilter === opt.value;
+                    const isEmpty = opt.value !== "all" && count === 0;
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => !isEmpty && setAestheticFilter(opt.value)}
+                        disabled={isEmpty}
+                        className={`px-2.5 py-1 text-[11px] font-medium rounded-md transition-all whitespace-nowrap flex items-center gap-1
+                          ${isEmpty
+                            ? "opacity-30 cursor-not-allowed text-muted-foreground"
+                            : isActive
+                              ? "bg-background text-foreground shadow-xs font-semibold cursor-pointer"
+                              : `${opt.className || "text-muted-foreground"} hover:text-foreground hover:bg-background/40 cursor-pointer`
+                          }`}
+                      >
+                        <span>{t(opt.labelKey)}</span>
+                        {!isEmpty && <span className="text-[10px] opacity-50 font-mono tabular-nums">{count}</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Active filter badge + reset — shown only when non-default filter is active */}
+              {(scoreFilter !== "all" || aestheticFilter !== "all") && (
+                <div className="self-end pb-0.5 flex items-center gap-1.5">
+                  <span className="text-[10px] text-muted-foreground">
+                    {filteredSeeds.length} hasil
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => { setScoreFilter("all"); setAestheticFilter("all"); }}
+                    className="text-[10px] font-medium text-primary hover:text-primary/80 flex items-center gap-0.5 cursor-pointer"
+                  >
+                    <X className="size-2.5" />
+                    Reset filter
+                  </button>
+                </div>
+              )}
+
             </div>
           </div>
         )}
