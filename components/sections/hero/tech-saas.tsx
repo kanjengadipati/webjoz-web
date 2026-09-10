@@ -24,7 +24,7 @@ const TAB_LABELS: Record<Tab, string> = {
  * Auto-cycles through dashboard tabs every 2.5s.
  * Business filter: only used for tech/startup/digital businesses.
  */
-import { InlineText, InlineImage } from "../../templates/shared";
+import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
 
 export default function HeroTechSaaS({
   hero: h,
@@ -182,6 +182,14 @@ export default function HeroTechSaaS({
               maxWidth: "34rem",
               margin: 0,
             }}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
+          <HeroAccessory
+            accessory={h.accessory}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
           />

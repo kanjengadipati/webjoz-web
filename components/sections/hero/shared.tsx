@@ -1,10 +1,10 @@
 "use client";
 import React from "react";
-import { ArrowRight, Clock } from "lucide-react";
+import { ArrowRight, Clock, Star } from "lucide-react";
 import PhotoCredit from "../PhotoCredit";
 import type { TemplateProps } from "../../templates/types";
 
-import { InlineText, InlineImage } from "../../templates/shared";
+import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
 
 export function HeroContent({
   hero: h,
@@ -69,6 +69,14 @@ export function HeroContent({
           onEditingStateChange={onEditingStateChange}
         /> <ArrowRight style={{ width: 18, height: 18 }} />
       </a>
+      <HeroAccessory
+        accessory={h.accessory}
+        onUpdateField={onUpdateField}
+        isEditorMode={isEditorMode}
+        isSelected={isSelected}
+        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+        onEditingStateChange={onEditingStateChange}
+      />
     </>
   );
 }

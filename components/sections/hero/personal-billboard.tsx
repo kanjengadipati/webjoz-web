@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import PhotoCredit from "../PhotoCredit";
-import { InlineText, InlineImage } from "../../templates/shared";
+import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
 
 /**
  * Personal Billboard — personal-brand/portfolio businesses (photographer,
@@ -189,6 +189,14 @@ export default function HeroPersonalBillboard({
               maxWidth: "34rem",
               margin: 0,
             }}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
+          <HeroAccessory
+            accessory={h.accessory}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
           />

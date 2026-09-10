@@ -139,6 +139,22 @@ export type GalleryLayout = "grid" | "masonry" | "carousel";
 export type WorksLayout = "grid" | "masonry" | "featured-grid" | "showcase-featured";
 export type BlogLayout = "grid" | "list" | "featured" | "minimal";
 
+export interface IconHighlightPair {
+  icon: string;
+  text: string;
+}
+
+/** Hero business-case block (HERO_ACCESSORY_PLAN.md §4).
+ *  V1: price | availability | skill_tags. V2 (gated): rating | menu_highlight. */
+export interface HeroAccessory {
+  type: "price" | "availability" | "rating" | "skill_tags" | "menu_highlight";
+  label?: string;
+  value?: string;
+  /** Untuk type "skill_tags": daftar keahlian; untuk "menu_highlight": daftar menu unggulan. */
+  tags?: string[];
+  [key: string]: unknown;
+}
+
 export interface DesignToken {
   palette?: {
     primary?: string;
@@ -249,6 +265,7 @@ export interface TemplateProps {
       opening_hours?: string;
       launch_label?: string;
       background_color?: string;
+      accessory?: HeroAccessory | null;
     };
     about: {
       title: string;

@@ -10,7 +10,7 @@ import PhotoCredit from "../PhotoCredit";
  * Suited for: architecture, fashion, wellness, premium services.
  * Layout: full-width editorial with large serif headline + side image column.
  */
-import { InlineText, InlineImage } from "../../templates/shared";
+import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
 
 export default function HeroMinimalistElegant({
   hero: h,
@@ -133,6 +133,14 @@ export default function HeroMinimalistElegant({
               maxWidth: "32rem",
               margin: 0,
             }}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
+          <HeroAccessory
+            accessory={h.accessory}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
           />
