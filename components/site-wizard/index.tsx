@@ -42,6 +42,7 @@ import {
   Monitor,
   Music2,
   Package,
+  Paintbrush,
   Palette,
   Pencil,
   PencilRuler,
@@ -50,6 +51,7 @@ import {
   RefreshCw,
   Scale,
   Scissors,
+  Search,
   ShoppingBag,
   ShoppingCart,
   Shirt,
@@ -146,16 +148,22 @@ const SUB_TYPE_ICONS: Record<string, React.ElementType> = {
   "Perabot & Furnitur":       Axe,
   "Otomotif & Sparepart":     Wrench,
   "Pertanian & Peternakan":   Wheat,
-  // Kreatif & Profesional
+  // Portofolio & Kreator / Kreatif & Profesional
   "Konten Kreator":           Video,
   "Fotografer":               Camera,
   "Videografer":              Monitor,
   "Desainer":                 Palette,
+  "Ilustrator & Seniman":     Paintbrush,
+  "Arsitek & Desainer Interior": PencilRuler,
+  "Penulis & Copywriter":     Pencil,
   "Developer & IT":           Code2,
+  "SEO & Digital Specialist": Search,
   "Digital & Marketing Agency": Zap,
   "Konsultan":                Briefcase,
-  "Notaris & PPAT":           Scale,
+  "Tutor & Life Coach":       GraduationCap,
+  "Public Speaker & Trainer": Mic,
   "Musisi & Entertainer":     Music2,
+  "Notaris & PPAT":           Scale,
   // Company Profile
   "Properti & Real Estate":   Home,
   "Konstruksi & Kontraktor":  Building2,
@@ -1425,7 +1433,9 @@ export function SiteWizard({
                             {categoryIconMap[bt.value] || <Sparkles className="w-3.5 h-3.5" />}
                           </span>
                           <span>{translatedLabel}</span>
-                          {chat.suggestedHint?.type === bt.value && !isSelected && (
+                          {((chat.suggestedHint?.type === bt.value) ||
+                            (chat.suggestedHint?.type === "Kreatif & Profesional" && bt.value === "Portofolio & Kreator") ||
+                            (chat.suggestedHint?.type === "Portofolio & Kreator" && bt.value === "Kreatif & Profesional")) && !isSelected && (
                             <span className="text-[9px] font-bold text-amber-300 bg-amber-800/30 px-1.5 py-0.5 rounded-full">✨ Disarankan</span>
                           )}
                           {isSelected && (

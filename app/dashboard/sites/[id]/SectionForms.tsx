@@ -796,7 +796,16 @@ export default function SectionForms({
                 ["cta", "Promo"],
                 ["contact", "Kontak"],
                 ["blog", "Blog"],
-              ] as const).map(([key, label]) => {
+              ] as const)
+                .filter(([key]) => {
+                  if (key === "menu") return Boolean((content as any)?.menu?.categories?.length);
+                  if (key === "catalog") return Boolean((content as any)?.catalog?.categories?.length) && !(content as any)?.works?.items?.length;
+                  if (key === "works") return Boolean((content as any)?.works?.items?.length);
+                  if (key === "gallery") return Boolean((content as any)?.gallery?.items?.length);
+                  if (key === "blog") return Boolean((content as any)?.blog?.posts?.length);
+                  return true;
+                })
+                .map(([key, label]) => {
                 const hidden = designToken?.layout?.nav_hidden_sections?.includes(key);
                 return (
                   <button
@@ -2891,7 +2900,8 @@ export default function SectionForms({
                   <div className="space-y-1">
                     <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Kategori</label>
                     <input
-                      type="text" value={item.category || ""}
+                      list="works-category-suggestions"
+                      value={item.category || ""}
                       onChange={(e) => {
                         const next = [...(content.works?.items || [])];
                         next[idx] = { ...next[idx], category: e.target.value };
@@ -2900,6 +2910,17 @@ export default function SectionForms({
                       className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
                       placeholder="Branding"
                     />
+                    <datalist id="works-category-suggestions">
+                      <option value="Branding" />
+                      <option value="Photography" />
+                      <option value="Design" />
+                      <option value="Video" />
+                      <option value="Consulting" />
+                      <option value="Portfolio" />
+                      <option value="Freelance" />
+                      <option value="Agency" />
+                      <option value="Studio" />
+                    </datalist>
                   </div>
                   <div className="space-y-1">
                     <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Tahun</label>
