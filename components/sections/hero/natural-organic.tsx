@@ -10,7 +10,7 @@ import PhotoCredit from "../PhotoCredit";
  * Warm earthy palette, soft SVG botanical decoration, centered layout.
  * Suited for: organic products, wellness, farm-to-table, eco brands.
  */
-import { InlineText, InlineImage } from "../../templates/shared";
+import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
 
 export default function HeroNaturalOrganic({
   hero: h,
@@ -198,6 +198,14 @@ export default function HeroNaturalOrganic({
               maxWidth: "34rem",
               margin: 0,
             }}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
+          <HeroAccessory
+            accessory={h.accessory}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
           />

@@ -1012,6 +1012,11 @@ export default function SectionForms({
               className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
             />
           </div>
+          {/* Accessory — info bisnis di hero (see HERO_ACCESSORY_PLAN.md) */}
+          <HeroAccessoryEditor
+            accessory={content.hero?.accessory || null}
+            onChange={(acc) => updateField("hero", "accessory", acc)}
+          />
         </div>
       )}
 
@@ -3710,5 +3715,72 @@ export default function SectionForms({
         </div>
       )}
     </>
+  );
+}
+
+const HERO_ACCESSORY_TYPES: ReadonlyArray<{ value: string; label: string }> = [
+  { value: "price", label: "Harga (toko online/produk)" },
+  { value: "availability", label: "Ketersediaan (jasa/service)" },
+  { value: "skill_tags", label: "Keahlian (portfolio/kreator)" },
+  { value: "rating", label: "Rating (undangan/acara)" },
+  { value: "menu_highlight", label: "Menu Unggulan (kuliner)" },
+];
+
+function HeroAccessoryEditor({
+  accessory,
+  onChange,
+}: {
+  accessory: { type?: string; label?: string; value?: string; tags?: string[] } | null;
+  onChange: (acc: { type?: string; label?: string; value?: string; tags?: string[] } | null) => void;
+}) {
+  const acc = accessory && accessory.type ? accessory : null;
+  const tagsString = acc && Array.isArray(acc.tags) ? acc.tags.join(", ") : "";
+  const set = (patch: Record<string, unknown>) => onChange({ type: acc?.type ?? "", ...acc, ...patch });
+  const hasText = acc?.type === "price" || acc?.type === "availability" || acc?.type === "rating";
+  const hasTags = acc?.type === "skill_tags" || acc?.type === "menu_highlight";
+  const inputClass = "w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600";
+  return (
+    <div className="space-y-2 rounded-lg border border-border/60 p-2.5 bg-white/[0.02]">
+      <div className="space-y-1">
+        <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+          <span>Info Bisnis di Hero <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+        </label>
+        <select
+          value={acc?.type || ""}
+          onChange={(e) => onChange(e.target.value ? { type: e.target.value } : null)}
+          className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300"
+        >
+          <option value="">— Tidak Ada —</option>
+          {HERO_ACCESSORY_TYPES.map((o) => (
+            <option key={o.value} value={o.value} className="bg-slate-900">{o.label}</option>
+          ))}
+        </select>
+        <p className="text-[10px] text-slate-600 leading-relaxed">Blok kecil di hero sesuai jenis usaha (harga, ketersediaan, atau keahlian).</p>
+      </div>
+      {hasText && (
+        <>
+          <div className="space-y-1">
+            <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500">Label</label>
+            <input type="text" value={acc?.label || ""} onChange={(e) => set({ label: e.target.value })} placeholder={acc?.type === "price" ? "cth. Mulai dari" : "cth. Tersedia untuk"} className={inputClass} />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500">Nilai</label>
+            <input type="text" value={acc?.value || ""} onChange={(e) => set({ value: e.target.value })} placeholder={acc?.type === "price" ? "cth. Rp 99.000" : "cth. Pemesanan & konsultasi"} className={inputClass} />
+          </div>
+        </>
+      )}
+      {hasTags && (
+        <div className="space-y-1">
+          <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500">Daftar (dipisah koma)</label>
+          <input
+            type="text"
+            value={tagsString}
+            onChange={(e) => set({ tags: e.target.value.split(",").map((s) => s.trim()).filter(Boolean) })}
+            placeholder="cth. Fotografi, Video, Branding"
+            className={inputClass}
+          />
+        </div>
+      )}
+    </div>
   );
 }

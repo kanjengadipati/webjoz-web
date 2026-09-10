@@ -3106,6 +3106,93 @@ export function InlineImage({
   );
 }
 
+/** Hero business-case pill/strip — renders hero.accessory (HERO_ACCESSORY_PLAN.md §4).
+ *  Zero-state: returns null when accessory kosong/tidak relevan. */
+export function HeroAccessory({
+  accessory: acc,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+  align = "start",
+}: {
+  accessory: { type?: string; label?: string; value?: string; tags?: string[] } | null | undefined;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
+  align?: "start" | "center" | "end";
+}) {
+  if (!acc || !acc.type) return null;
+
+  const justifyContent = align === "center" ? "center" : align === "end" ? "flex-end" : "flex-start";
+
+  if (acc.type === "skill_tags" || acc.type === "menu_highlight") {
+    const tags = Array.isArray(acc.tags) ? (acc.tags.filter(Boolean) as string[]) : [];
+    if (tags.length === 0 && !isEditorMode) return null;
+    return (
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", justifyContent, marginTop: "0.25rem" }}>
+        {tags.map((tag, idx) => (
+          <span
+            key={`${tag}-${idx}`}
+            style={{
+              padding: "0.375rem 0.875rem",
+              fontSize: "0.75rem",
+              fontWeight: 600,
+              color: "var(--dt-text)",
+              background: "color-mix(in srgb, var(--dt-surface) 70%, transparent)",
+              border: "1px solid color-mix(in srgb, var(--dt-primary) 22%, transparent)",
+              borderRadius: "9999px",
+            }}
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+    );
+  }
+
+  const showRating = acc.type === "rating";
+  if (!acc.value && !showRating && !isEditorMode) return null;
+
+  return (
+    <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 1rem", borderRadius: "9999px", background: "var(--dt-surface)", border: "1px solid color-mix(in srgb, var(--dt-primary) 25%, transparent)", fontSize: "0.8rem", fontWeight: 600, color: "var(--dt-text)", marginTop: "0.25rem" }}>
+      {acc.label && (
+        <InlineText
+          section="hero"
+          fieldKey="accessory.label"
+          value={acc.label ?? ""}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          as="span"
+          style={{ opacity: 0.7, fontWeight: 500 }}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
+      )}
+      {showRating && (
+        <Star style={{ width: 13, height: 13, color: "var(--dt-accent)" }} />
+      )}
+      {acc.value && (
+        <InlineText
+          section="hero"
+          fieldKey="accessory.value"
+          value={acc.value ?? ""}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          as="span"
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
+      )}
+    </div>
+  );
+}
+
 export {
   NavMenu, WAFloatingButton, BackToTop, navCtaHref, ctaHref,
   SharedTestimonialsSection,

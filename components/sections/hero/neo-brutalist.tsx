@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import PhotoCredit from "../PhotoCredit";
-import { InlineText, InlineImage } from "../../templates/shared";
+import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
 
 /**
  * Neo-Brutalist — thick borders, offset shadows, sticker-style badges.
@@ -159,6 +159,14 @@ export default function HeroNeoBrutalist({
                 maxWidth: "28rem",
                 margin: 0,
               }}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
+            <HeroAccessory
+              accessory={h.accessory}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
               onEditingStateChange={onEditingStateChange}
             />

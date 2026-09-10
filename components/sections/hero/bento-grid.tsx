@@ -11,7 +11,7 @@ import PhotoCredit from "../PhotoCredit";
  * Business filter: tech/startup/product/digital businesses.
  * Stats: generalized from about.highlight_stat_* if available.
  */
-import { InlineText, InlineImage } from "../../templates/shared";
+import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
 
 export default function HeroBentoGrid({
   hero: h,
@@ -145,6 +145,14 @@ export default function HeroBentoGrid({
               isSelected={isSelected}
               as="p"
               style={{ fontSize: "0.9rem", color: "var(--dt-text-muted)", lineHeight: 1.65, margin: 0 }}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
+            <HeroAccessory
+              accessory={h.accessory}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
               onEditingStateChange={onEditingStateChange}
             />
