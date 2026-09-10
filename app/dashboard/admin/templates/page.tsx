@@ -429,22 +429,6 @@ export default function TemplateGalleryPage() {
               <SlidersHorizontal className="size-3.5" />
               <span>{t("dashboard.adminTemplates.backfillScores")}</span>
             </Button>
-            <Button
-              onClick={handleBulkAestheticCritique}
-              disabled={bulkCritiquing}
-              size="sm"
-              variant="outline"
-              className="gap-1.5 border-primary/30 text-primary hover:bg-primary/10 h-8 text-xs font-medium"
-              title={t("dashboard.adminTemplates.bulkAestheticTooltip")}
-            >
-              {bulkCritiquing ? <Loader2 className="size-3.5 animate-spin" /> : <Sparkles className="size-3.5" />}
-              <span>{t("dashboard.adminTemplates.bulkAesthetic")}</span>
-              {unreviewedCount > 0 && !bulkCritiquing && (
-                <span className="ml-0.5 bg-primary/20 text-primary text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                  {unreviewedCount}
-                </span>
-              )}
-            </Button>
           </div>
         )}
       </div>
