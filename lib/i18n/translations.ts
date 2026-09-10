@@ -1078,12 +1078,17 @@ export interface Translations {
       title: string;
       subtitle: string;
       backfillScores: string;
+      backfillScoresTooltip: string;
       refreshSeeds: string;
       bulkAesthetic: string;
       bulkAestheticConfirm: string;
       bulkAestheticDone: string;
       bulkAestheticFailed: string;
       bulkAestheticRateLimit: string;
+      bulkAestheticTooltip: string;
+      bulkAestheticRunning: string;
+      bulkAestheticStart: string;
+      pendingAestheticLabel: string;
       tabComponents: string;
       tabSeeds: string;
       searchComponentsPlaceholder: string;
@@ -3437,10 +3442,15 @@ export const translations: Record<Locale, Translations> = {
         superadmin: "Superadmin",
         title: "Template Gallery",
         subtitle: "Review template bawaan sistem dan design token seeds hasil inkubasi generator AI.",
-        backfillScores: "Backfill Scores",
-        refreshSeeds: "Refresh Seeds",
-        bulkAesthetic: "Bulk Aesthetic Critique",
+        backfillScores: "Hitung Ulang Skor",
+        backfillScoresTooltip: "Hitung ulang skor kualitas (rules) untuk semua seed di database",
+        refreshSeeds: "Refresh",
+        bulkAesthetic: "Jalankan Critique AI",
         bulkAestheticConfirm: "Jalankan aesthetic critique massal pada seed yang belum dinilai (50 per run, berhenti saat rate limit)?",
+        bulkAestheticTooltip: "Evaluasi estetika template menggunakan AI Vision (screenshot + LLM)",
+        bulkAestheticRunning: "Sedang berjalan...",
+        bulkAestheticStart: "Mulai Evaluasi Estetika",
+        pendingAestheticLabel: "template belum dievaluasi estetikanya oleh AI",
         bulkAestheticDone: "Bulk critique selesai — {processed} diproses, {critiqued} berhasil, {failed} gagal, {pending} menunggu",
         bulkAestheticFailed: "Bulk aesthetic critique gagal",
         bulkAestheticRateLimit: "berhenti karena rate limit, coba lagi dalam {sec}s",
@@ -5866,10 +5876,15 @@ export const translations: Record<Locale, Translations> = {
         superadmin: "Superadmin",
         title: "Template Gallery",
         subtitle: "Review system built-in templates and design token seeds from AI generator incubation.",
-        backfillScores: "Backfill Scores",
-        refreshSeeds: "Refresh Seeds",
-        bulkAesthetic: "Bulk Aesthetic Critique",
+        backfillScores: "Recalculate Scores",
+        backfillScoresTooltip: "Recalculate rule-based quality scores for all seeds in the database",
+        refreshSeeds: "Refresh",
+        bulkAesthetic: "Run AI Critique",
         bulkAestheticConfirm: "Run bulk aesthetic critique on unscored seeds (50 per run, stops on rate limit)?",
+        bulkAestheticTooltip: "Evaluate template aesthetics using AI Vision (screenshot + LLM)",
+        bulkAestheticRunning: "Running...",
+        bulkAestheticStart: "Start Aesthetic Evaluation",
+        pendingAestheticLabel: "templates have not been evaluated by AI yet",
         bulkAestheticDone: "Bulk critique done — {processed} processed, {critiqued} scored, {failed} failed, {pending} remaining",
         bulkAestheticFailed: "Bulk aesthetic critique failed",
         bulkAestheticRateLimit: "stopped on rate limit, retry in {sec}s",

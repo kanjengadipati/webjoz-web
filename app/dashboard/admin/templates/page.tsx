@@ -309,7 +309,6 @@ export default function TemplateGalleryPage() {
 
   const aestheticFilterOptions: { value: AestheticFilter; labelKey: string; className: string }[] = [
     { value: "all", labelKey: "dashboard.adminTemplates.aestheticFilterAll", className: "" },
-    { value: "reviewed", labelKey: "dashboard.adminTemplates.aestheticFilterReviewed", className: "text-green-500" },
     { value: "unreviewed", labelKey: "dashboard.adminTemplates.aestheticFilterUnreviewed", className: "text-orange-500" },
     { value: "high", labelKey: "dashboard.adminTemplates.aestheticFilterHigh", className: "text-green-500" },
     { value: "mid", labelKey: "dashboard.adminTemplates.aestheticFilterMid", className: "text-yellow-500" },
@@ -364,6 +363,12 @@ export default function TemplateGalleryPage() {
   // Get unique categories for template components filter
   const categories = ["all", ...Array.from(new Set(TEMPLATE_REGISTRY.map((t) => t.category)))];
 
+  // Compute progress for aesthetic review
+  const totalSeeds = seeds.length;
+  const reviewedSeeds = seeds.filter(s => s.aesthetic_score != null).length;
+  const unreviewedCount = totalSeeds - reviewedSeeds;
+  const reviewedPct = totalSeeds > 0 ? Math.round((reviewedSeeds / totalSeeds) * 100) : 0;
+
   return (
     <div className="space-y-5">
       {/* ── Header Bar: Tabs & Action Buttons ── */}
@@ -380,7 +385,7 @@ export default function TemplateGalleryPage() {
           >
             <Layers className="size-3.5" />
             <span>{t("dashboard.adminTemplates.tabComponents")}</span>
-            <span className="text-[10px] px-1.5 py-0.2 rounded bg-muted/80 text-muted-foreground font-mono">
+            <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-muted/80 text-muted-foreground font-mono">
               {TEMPLATE_REGISTRY.length}
             </span>
           </button>
@@ -394,36 +399,91 @@ export default function TemplateGalleryPage() {
           >
             <Sparkles className="size-3.5 text-primary" />
             <span>{t("dashboard.adminTemplates.tabSeeds")}</span>
-            <span className="text-[10px] px-1.5 py-0.2 rounded bg-muted/80 text-muted-foreground font-mono">
+            <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-muted/80 text-muted-foreground font-mono">
               {loading ? "..." : seeds.length}
             </span>
           </button>
         </div>
 
-        {/* Action Buttons */}
+        {/* Action Buttons - seeds tab only */}
         {tab === "seeds" && (
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={fetchSeeds}
+              disabled={loading}
+              size="sm"
+              variant="ghost"
+              className="gap-1.5 h-8 text-xs text-muted-foreground hover:text-foreground"
+              title={t("dashboard.adminTemplates.refreshSeeds")}
+            >
+              <RefreshCw className={`size-3.5 ${loading ? "animate-spin" : ""}`} />
+              <span className="hidden sm:inline">{t("dashboard.adminTemplates.refreshSeeds")}</span>
+            </Button>
+            <Button
+              onClick={handleBackfill}
+              size="sm"
+              variant="outline"
+              className="gap-1.5 border-amber-500/40 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 h-8 text-xs font-medium"
+              title={t("dashboard.adminTemplates.backfillScoresTooltip")}
+            >
+              <SlidersHorizontal className="size-3.5" />
+              <span>{t("dashboard.adminTemplates.backfillScores")}</span>
+            </Button>
             <Button
               onClick={handleBulkAestheticCritique}
               disabled={bulkCritiquing}
               size="sm"
               variant="outline"
               className="gap-1.5 border-primary/30 text-primary hover:bg-primary/10 h-8 text-xs font-medium"
+              title={t("dashboard.adminTemplates.bulkAestheticTooltip")}
             >
-              {bulkCritiquing ? <Loader2 className="size-3 animate-spin" /> : <Sparkles className="size-3" />}
+              {bulkCritiquing ? <Loader2 className="size-3.5 animate-spin" /> : <Sparkles className="size-3.5" />}
               <span>{t("dashboard.adminTemplates.bulkAesthetic")}</span>
-            </Button>
-            <Button onClick={handleBackfill} size="sm" variant="outline" className="gap-1.5 border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 h-8 text-xs font-medium">
-              <Loader2 className="size-3" />
-              <span>{t("dashboard.adminTemplates.backfillScores")}</span>
-            </Button>
-            <Button onClick={fetchSeeds} disabled={loading} size="sm" variant="ghost" className="gap-1.5 h-8 text-xs font-medium text-muted-foreground hover:text-foreground">
-              <RefreshCw className={`size-3 ${loading ? "animate-spin" : ""}`} />
-              <span>{t("dashboard.adminTemplates.refreshSeeds")}</span>
+              {unreviewedCount > 0 && !bulkCritiquing && (
+                <span className="ml-0.5 bg-primary/20 text-primary text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                  {unreviewedCount}
+                </span>
+              )}
             </Button>
           </div>
         )}
       </div>
+
+      {/* ── Aesthetic Review Progress Banner (seeds tab, when unreviewed > 0) ── */}
+      {tab === "seeds" && !loading && unreviewedCount > 0 && (
+        <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-3 flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="flex items-center gap-2.5 flex-1">
+            <div className="shrink-0 size-8 rounded-full bg-amber-500/15 flex items-center justify-center">
+              <Sparkles className="size-4 text-amber-500" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs font-semibold text-foreground">
+                {unreviewedCount.toLocaleString()} {t("dashboard.adminTemplates.pendingAestheticLabel")}
+              </p>
+              <div className="flex items-center gap-2 mt-1">
+                <div className="flex-1 h-1.5 rounded-full bg-muted/60 overflow-hidden max-w-[160px]">
+                  <div
+                    className="h-full rounded-full bg-amber-500 transition-all duration-500"
+                    style={{ width: `${reviewedPct}%` }}
+                  />
+                </div>
+                <span className="text-[11px] text-muted-foreground shrink-0">
+                  {reviewedSeeds}/{totalSeeds} ({reviewedPct}%)
+                </span>
+              </div>
+            </div>
+          </div>
+          <Button
+            onClick={handleBulkAestheticCritique}
+            disabled={bulkCritiquing}
+            size="sm"
+            className="shrink-0 h-8 text-xs gap-1.5 bg-amber-500 hover:bg-amber-600 text-white border-0"
+          >
+            {bulkCritiquing ? <Loader2 className="size-3 animate-spin" /> : <Sparkles className="size-3" />}
+            {bulkCritiquing ? t("dashboard.adminTemplates.bulkAestheticRunning") : t("dashboard.adminTemplates.bulkAestheticStart")}
+          </Button>
+        </div>
+      )}
 
       {/* ── Search & Filter Controls Panel ── */}
       <div className="rounded-xl border border-border/40 bg-card/40 p-3.5 space-y-3 shadow-xs">
@@ -513,9 +573,9 @@ export default function TemplateGalleryPage() {
           <div className="pt-2.5 border-t border-border/30 flex flex-col xl:flex-row xl:items-center gap-3">
             {/* Rule-based Quality Score Pills */}
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[11px] font-semibold text-muted-foreground/80 shrink-0 flex items-center gap-1">
-                <SlidersHorizontal className="size-3 text-muted-foreground" />
-                {t("dashboard.adminTemplates.ruleScoreLabel")}:
+              <span className="text-[11px] font-medium text-muted-foreground shrink-0 flex items-center gap-1">
+                <SlidersHorizontal className="size-3" />
+                Kualitas:
               </span>
               <div className="inline-flex p-0.5 bg-muted/40 border border-border/40 rounded-lg gap-0.5">
                 {scoreFilterOptions.map((opt) => (
@@ -530,19 +590,17 @@ export default function TemplateGalleryPage() {
                     }`}
                   >
                     <span>{t(opt.labelKey)}</span>
-                    <span className="text-[10px] opacity-60 font-mono">
-                      ({scoreCounts[opt.value]})
-                    </span>
+                    <span className="text-[10px] opacity-60 font-mono">({scoreCounts[opt.value]})</span>
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* AI Aesthetic Critique Score Pills */}
+            {/* AI Aesthetic Score Pills */}
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[11px] font-semibold text-muted-foreground/80 shrink-0 flex items-center gap-1">
-                <Sparkles className="size-3 text-primary" />
-                {t("dashboard.adminTemplates.aestheticCritiqueLabel")}:
+              <span className="text-[11px] font-medium text-muted-foreground shrink-0 flex items-center gap-1">
+                <Sparkles className="size-3 text-primary/70" />
+                Estetika AI:
               </span>
               <div className="inline-flex p-0.5 bg-muted/40 border border-border/40 rounded-lg gap-0.5">
                 {aestheticFilterOptions.map((opt) => (
@@ -557,9 +615,7 @@ export default function TemplateGalleryPage() {
                     }`}
                   >
                     <span>{t(opt.labelKey)}</span>
-                    <span className="text-[10px] opacity-60 font-mono">
-                      ({aestheticCounts[opt.value]})
-                    </span>
+                    <span className="text-[10px] opacity-60 font-mono">({aestheticCounts[opt.value]})</span>
                   </button>
                 ))}
               </div>
