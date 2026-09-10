@@ -15,12 +15,12 @@ import {
 } from "@/components/templates";
 
 export const BUSINESS_TEMPLATE_POOLS: Record<string, string[]> = {
-  kuliner:  ["TEMPLATE_KULINER01", "TEMPLATE_COLORFUL", "TEMPLATE_NATURAL", "TEMPLATE_ELEGANT", "TEMPLATE_RETRO", "TEMPLATE_BOLD"],
-  jasa:     ["TEMPLATE_JASA02", "TEMPLATE_MINIMALIST", "TEMPLATE_DYNAMIC", "TEMPLATE_ELEGANT", "TEMPLATE_BOLD"],
-  produk:   ["TEMPLATE_PRODUK03", "TEMPLATE_COLORFUL", "TEMPLATE_DYNAMIC", "TEMPLATE_NATURAL", "TEMPLATE_MINIMALIST"],
-  properti: ["TEMPLATE_JASA02", "TEMPLATE_ELEGANT", "TEMPLATE_MINIMALIST", "TEMPLATE_NATURAL"],
-  retro:    ["TEMPLATE_RETRO", "TEMPLATE_BOLD", "TEMPLATE_NATURAL"],
-  futuristic: ["TEMPLATE_FUTURISTIC", "TEMPLATE_DYNAMIC", "TEMPLATE_MINIMALIST", "TEMPLATE_BOLD"],
+  kuliner:  ["TEMPLATE_DYNAMIC", "TEMPLATE_KULINER01", "TEMPLATE_COLORFUL", "TEMPLATE_NATURAL", "TEMPLATE_ELEGANT", "TEMPLATE_RETRO", "TEMPLATE_BOLD"],
+  jasa:     ["TEMPLATE_DYNAMIC", "TEMPLATE_JASA02", "TEMPLATE_MINIMALIST", "TEMPLATE_ELEGANT", "TEMPLATE_BOLD"],
+  produk:   ["TEMPLATE_DYNAMIC", "TEMPLATE_PRODUK03", "TEMPLATE_COLORFUL", "TEMPLATE_NATURAL", "TEMPLATE_MINIMALIST"],
+  properti: ["TEMPLATE_DYNAMIC", "TEMPLATE_JASA02", "TEMPLATE_ELEGANT", "TEMPLATE_MINIMALIST", "TEMPLATE_NATURAL"],
+  retro:    ["TEMPLATE_DYNAMIC", "TEMPLATE_RETRO", "TEMPLATE_BOLD", "TEMPLATE_NATURAL"],
+  futuristic: ["TEMPLATE_DYNAMIC", "TEMPLATE_FUTURISTIC", "TEMPLATE_MINIMALIST", "TEMPLATE_BOLD"],
 };
 
 // selectTemplate is only called as a last-resort fallback in handleGoToEditor
@@ -112,14 +112,14 @@ export function getStageNumber(chatStage: string): number {
 }
 
 export const MOOD_TEMPLATE_POOLS: Record<string, string[]> = {
-  "elegan":      ["TEMPLATE_ELEGANT", "TEMPLATE_MINIMALIST", "TEMPLATE_NATURAL", "TEMPLATE_DYNAMIC"],
-  "natural":     ["TEMPLATE_NATURAL", "TEMPLATE_KULINER01", "TEMPLATE_COLORFUL", "TEMPLATE_ELEGANT"],
-  "fun":         ["TEMPLATE_COLORFUL", "TEMPLATE_KULINER01", "TEMPLATE_PRODUK03", "TEMPLATE_BOLD", "TEMPLATE_DYNAMIC"],
-  "bold":        ["TEMPLATE_BOLD", "TEMPLATE_FUTURISTIC", "TEMPLATE_JASA02", "TEMPLATE_DYNAMIC"],
-  "modern":      ["TEMPLATE_MINIMALIST", "TEMPLATE_ELEGANT", "TEMPLATE_FUTURISTIC", "TEMPLATE_DYNAMIC"],
-  "profesional": ["TEMPLATE_JASA02", "TEMPLATE_PRODUK03", "TEMPLATE_MINIMALIST", "TEMPLATE_ELEGANT"],
-  "retro":       ["TEMPLATE_RETRO", "TEMPLATE_BOLD", "TEMPLATE_NATURAL"],
-  "futuristic":  ["TEMPLATE_FUTURISTIC", "TEMPLATE_MINIMALIST", "TEMPLATE_BOLD", "TEMPLATE_DYNAMIC"],
+  "elegan":      ["TEMPLATE_DYNAMIC", "TEMPLATE_ELEGANT", "TEMPLATE_MINIMALIST", "TEMPLATE_NATURAL"],
+  "natural":     ["TEMPLATE_DYNAMIC", "TEMPLATE_NATURAL", "TEMPLATE_KULINER01", "TEMPLATE_COLORFUL", "TEMPLATE_ELEGANT"],
+  "fun":         ["TEMPLATE_DYNAMIC", "TEMPLATE_COLORFUL", "TEMPLATE_KULINER01", "TEMPLATE_PRODUK03", "TEMPLATE_BOLD"],
+  "bold":        ["TEMPLATE_DYNAMIC", "TEMPLATE_BOLD", "TEMPLATE_FUTURISTIC", "TEMPLATE_JASA02"],
+  "modern":      ["TEMPLATE_DYNAMIC", "TEMPLATE_MINIMALIST", "TEMPLATE_ELEGANT", "TEMPLATE_FUTURISTIC"],
+  "profesional": ["TEMPLATE_DYNAMIC", "TEMPLATE_JASA02", "TEMPLATE_PRODUK03", "TEMPLATE_MINIMALIST", "TEMPLATE_ELEGANT"],
+  "retro":       ["TEMPLATE_DYNAMIC", "TEMPLATE_RETRO", "TEMPLATE_BOLD", "TEMPLATE_NATURAL"],
+  "futuristic":  ["TEMPLATE_DYNAMIC", "TEMPLATE_FUTURISTIC", "TEMPLATE_MINIMALIST", "TEMPLATE_BOLD"],
 };
 
 function filterPoolByBusiness(pool: string[], businessLower: string): string[] {
@@ -980,17 +980,49 @@ const DESC_HINTS: DescHintEntry[] = [
     type: "Kreatif & Profesional",
     subType: "Desainer",
     keywords: [
-      // ID — hanya visual/graphic designer, bukan web developer
-      "desainer", "desain grafis", "ui/ux", "ui ux", "illustrator", "ilustrasi",
-      "logo maker", "desain logo", "3d artist", "animator", "freelance desainer",
-      "desainer grafis", "motion graphic", "visual artist", "branding identity",
-      "tipografi", "poster", "infografis", "packaging design",
+      // ID — visual/graphic designer, ui/ux
+      "desainer", "desain grafis", "ui/ux", "ui ux", "logo maker", "desain logo",
+      "3d artist", "animator", "freelance desainer", "desainer grafis", "motion graphic",
+      "visual artist", "branding identity", "tipografi", "poster", "infografis", "packaging design",
       // EN
       "designer", "graphic design", "logo design", "ui design", "ux design",
-      "visual design", "brand identity", "illustration", "motion design",
+      "visual design", "brand identity", "motion design",
       "3d design", "animation", "typography", "print design", "digital art",
     ],
     weight: 4,
+  },
+  {
+    type: "Kreatif & Profesional",
+    subType: "Ilustrator & Seniman",
+    keywords: [
+      // ID
+      "ilustrator", "seniman", "illustrator", "ilustrasi", "gambar digital", "lukisan", "komik", "webtoon", "mural", "sketsa",
+      // EN
+      "illustrator", "artist", "illustration", "digital illustration", "drawing", "painting", "comic artist", "sketch",
+    ],
+    weight: 5,
+  },
+  {
+    type: "Kreatif & Profesional",
+    subType: "Arsitek & Desainer Interior",
+    keywords: [
+      // ID
+      "arsitek", "desain interior", "interior design", "arsitektur", "desain rumah", "renovasi rumah", "tata ruang", "interior desainer",
+      // EN
+      "architect", "interior designer", "architecture", "interior design", "home design", "spatial design",
+    ],
+    weight: 5,
+  },
+  {
+    type: "Kreatif & Profesional",
+    subType: "Penulis & Copywriter",
+    keywords: [
+      // ID
+      "penulis", "copywriter", "content writer", "penulisan", "jasa penulisan", "ghostwriter", "editor naskah", "penerjemah",
+      // EN
+      "copywriter", "writer", "content writer", "copywriting", "ghostwriter", "editor", "scriptwriter",
+    ],
+    weight: 5,
   },
   {
     type: "Kreatif & Profesional",
@@ -1012,15 +1044,48 @@ const DESC_HINTS: DescHintEntry[] = [
   },
   {
     type: "Kreatif & Profesional",
+    subType: "SEO & Digital Specialist",
+    keywords: [
+      // ID
+      "seo", "seo specialist", "pakar seo", "optimasi website", "digital specialist", "sem", "google ads",
+      // EN
+      "seo specialist", "seo", "search engine optimization", "digital specialist", "growth specialist",
+    ],
+    weight: 5,
+  },
+  {
+    type: "Kreatif & Profesional",
     subType: "Digital & Marketing Agency",
     keywords: [
       // ID
-      "agensi", "iklan", "branding", "media sosial", "sosmed", "content writer", "kreatif", "jasa digital",
+      "agensi", "iklan", "branding", "media sosial", "sosmed", "kreatif", "jasa digital",
       // EN
-      "agency", "marketing", "digital marketing", "social media", "social media agency", "content creator",
-      "influencer", "seo", "ads", "advertising", "brand strategy", "growth hacking", "email marketing",
+      "agency", "marketing", "digital marketing", "social media", "social media agency",
+      "ads", "advertising", "brand strategy", "growth hacking", "email marketing",
     ],
     weight: 4,
+  },
+  {
+    type: "Kreatif & Profesional",
+    subType: "Tutor & Life Coach",
+    keywords: [
+      // ID
+      "tutor", "life coach", "coach", "guru les", "private tutor", "mentoring", "konselor", "pelatih hidup",
+      // EN
+      "tutor", "life coach", "coach", "coaching", "mentor", "tutoring", "personal coach",
+    ],
+    weight: 5,
+  },
+  {
+    type: "Kreatif & Profesional",
+    subType: "Public Speaker & Trainer",
+    keywords: [
+      // ID
+      "public speaker", "speaker", "trainer", "pembicara", "narasumber", "motivator", "fasilitator", "workshop",
+      // EN
+      "public speaker", "keynote speaker", "trainer", "speaker", "facilitator", "motivator",
+    ],
+    weight: 5,
   },
   {
     type: "Kreatif & Profesional",

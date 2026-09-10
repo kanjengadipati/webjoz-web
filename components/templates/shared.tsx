@@ -252,6 +252,10 @@ const NAV_LABELS_ID: Record<string, string> = {
   benefits: "Keunggulan",
   menu: "Menu",
   catalog: "Katalog",
+  works: "Portofolio",
+  stats: "Statistik",
+  pricing: "Paket & Harga",
+  partners: "Mitra",
   gallery: "Galeri",
   testimonials: "Testimoni",
   blog: "Blog",
@@ -265,6 +269,10 @@ const NAV_LABELS_EN: Record<string, string> = {
   benefits: "Why Us",
   menu: "Menu",
   catalog: "Catalog",
+  works: "Portfolio",
+  stats: "Stats",
+  pricing: "Pricing",
+  partners: "Partners",
   gallery: "Gallery",
   testimonials: "Testimonials",
   blog: "Blog",
@@ -311,7 +319,12 @@ const NavMenu: React.FC<NavMenuProps> = ({
 
   const navItems = [
     ...sectionOrder
-      .filter(k => !NAV_SKIP.has(k) && !hiddenSections.includes(k) && (nav_labels?.[k] || defaultLabels[k]))
+      .filter(k => {
+        if (NAV_SKIP.has(k) || hiddenSections.includes(k)) return false;
+        // Suppress generic catalog link when dedicated works/portfolio section exists
+        if (k === "catalog" && sectionOrder.includes("works")) return false;
+        return Boolean(nav_labels?.[k] || defaultLabels[k]);
+      })
       .map(k => ({
         key: k,
         label: nav_labels?.[k] || defaultLabels[k],
