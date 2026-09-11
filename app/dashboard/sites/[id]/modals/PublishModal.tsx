@@ -6,6 +6,7 @@ import { Rocket, Globe, Loader2 } from "lucide-react";
 import { Dialog } from "@/components/ui/dialog";
 import { Button } from "@/components/ui";
 import { useI18n } from "@/lib/i18n/context";
+import TermsAcceptance from "@/components/terms-acceptance";
 
 export interface PublishModalProps {
   site: {
@@ -23,6 +24,8 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
     if (site.subdomain.startsWith("draft-")) return "";
     return site.subdomain;
   });
+  const [agreed, setAgreed] = useState(false);
+  const [submitAttempted, setSubmitAttempted] = useState(false);
 
   const subdomainRegex = /^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$/;
 
@@ -35,7 +38,10 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isInputValid) return;
+    if (!isInputValid || !agreed) {
+      setSubmitAttempted(true);
+      return;
+    }
     onConfirm(subdomain);
   };
 
@@ -117,6 +123,17 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
           </p>
         </div>
 
+        {/* Terms & Conditions Acceptance */}
+        <TermsAcceptance
+          agreed={agreed}
+          onChange={(v) => {
+            setAgreed(v);
+            if (v) setSubmitAttempted(false);
+          }}
+          showError={submitAttempted && !agreed}
+          disabled={loading}
+        />
+
         {/* Custom Domain banner - only shown if site is already live on a subdomain */}
         {site.subdomain && !site.subdomain.startsWith("draft-") && (
           <div className="bg-card border border-border/70 hover:border-border rounded-xl p-4 flex gap-3 transition-colors relative overflow-hidden group">
@@ -160,11 +177,11 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
           <Button
             type="submit"
             className={`flex-1 rounded-xl h-11 text-[13.5px] font-bold border-0 transition-all flex items-center justify-center gap-2 cursor-pointer ${
-              !isInputValid || loading
+              !isInputValid || loading || !agreed
                 ? "bg-muted text-muted-foreground cursor-not-allowed"
                 : "bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_25%,transparent)] hover:shadow-[0_4px_18px_color-mix(in_srgb,var(--primary)_35%,transparent)] transform hover:scale-[1.02] active:scale-[0.98]"
             }`}
-            disabled={loading || !isInputValid}
+            disabled={loading || !isInputValid || !agreed}
           >
             {loading ? (
               <>

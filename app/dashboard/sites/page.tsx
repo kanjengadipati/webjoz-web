@@ -17,6 +17,7 @@ import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
 import { encodeSiteId } from "@/lib/sqids";
 import { BASE_DOMAIN } from "@/lib/site-config";
+import TermsAcceptance from "@/components/terms-acceptance";
 
 /* ── Delete Confirmation Modal ─────────────────────────────────────── */
 interface DeleteModalProps {
@@ -215,6 +216,8 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
     if (site.subdomain.startsWith("draft-")) return "";
     return site.subdomain;
   });
+  const [agreed, setAgreed] = useState(false);
+  const [submitAttempted, setSubmitAttempted] = useState(false);
 
   const subdomainRegex = /^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$/;
 
@@ -227,7 +230,10 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isInputValid) return;
+    if (!isInputValid || !agreed) {
+      setSubmitAttempted(true);
+      return;
+    }
     onConfirm(subdomain);
   };
 
@@ -333,6 +339,17 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
           </div>
         )}
 
+        {/* Terms & Conditions Acceptance */}
+        <TermsAcceptance
+          agreed={agreed}
+          onChange={(v) => {
+            setAgreed(v);
+            if (v) setSubmitAttempted(false);
+          }}
+          showError={submitAttempted && !agreed}
+          disabled={loading}
+        />
+
         {/* Actions */}
         <div className="flex gap-3 pt-1">
           <Button
@@ -346,11 +363,11 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
           </Button>
           <Button
             type="submit"
-            className={`flex-1 rounded-xl h-11 text-[13.5px] font-bold border-0 transition-all flex items-center justify-center gap-2 cursor-pointer ${!isInputValid || loading
+            className={`flex-1 rounded-xl h-11 text-[13.5px] font-bold border-0 transition-all flex items-center justify-center gap-2 cursor-pointer ${!isInputValid || loading || !agreed
                 ? "bg-muted text-muted-foreground cursor-not-allowed"
                 : "bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-primary-foreground shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_25%,transparent)] transform hover:scale-[1.02] active:scale-[0.98]"
               }`}
-            disabled={loading || !isInputValid}
+            disabled={loading || !isInputValid || !agreed}
           >
             {loading ? (
               <>
