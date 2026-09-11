@@ -123,17 +123,6 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
           </p>
         </div>
 
-        {/* Terms & Conditions Acceptance */}
-        <TermsAcceptance
-          agreed={agreed}
-          onChange={(v) => {
-            setAgreed(v);
-            if (v) setSubmitAttempted(false);
-          }}
-          showError={submitAttempted && !agreed}
-          disabled={loading}
-        />
-
         {/* Custom Domain banner - only shown if site is already live on a subdomain */}
         {site.subdomain && !site.subdomain.startsWith("draft-") && (
           <div className="bg-card border border-border/70 hover:border-border rounded-xl p-4 flex gap-3 transition-colors relative overflow-hidden group">
@@ -162,6 +151,17 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
             </div>
           </div>
         )}
+
+        {/* Terms & Conditions Acceptance - placed directly above action buttons */}
+        <TermsAcceptance
+          agreed={agreed}
+          onChange={(v) => {
+            setAgreed(v);
+            if (v) setSubmitAttempted(false);
+          }}
+          showError={submitAttempted && !agreed}
+          disabled={loading}
+        />
 
         {/* Actions */}
         <div className="flex gap-3 pt-1">
