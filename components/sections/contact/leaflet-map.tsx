@@ -42,17 +42,7 @@ export default function LeafletMap({
   const initRef = useRef(false);
   const mapRef = useRef<any>(null);
   const tileRef = useRef<any>(null);
-  const [coords, setCoords] = useState({ lat: -6.2088, lng: 106.8456 });
-
-  useEffect(() => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-        () => {},
-        { timeout: 5000, enableHighAccuracy: false }
-      );
-    }
-  }, []);
+  const [coords] = useState({ lat: -6.2088, lng: 106.8456 });
 
   useEffect(() => {
     if (!ref.current || initRef.current) return;

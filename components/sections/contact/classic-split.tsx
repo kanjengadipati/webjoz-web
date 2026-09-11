@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Mail, Phone, MapPin, Globe } from "lucide-react";
 import type { ContactVariantProps } from "./types";
 import DynamicLeadForm from "./lead-form";
@@ -25,18 +25,7 @@ export default function ClassicSplit({
   const displayAddress = c.address || "Jl. Malioboro No. 123, Yogyakarta, Indonesia";
   const displayPhone = c.phone || "+62 812-3456-7890";
   const displayEmail = c.email || "hello@domain.com";
-  const [mapCoords, setMapCoords] = useState({ lat: -6.2088, lng: 106.8456 });
-
-  useEffect(() => {
-    if (!showMap) return;
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => setMapCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-        () => {},
-        { timeout: 5000, enableHighAccuracy: false }
-      );
-    }
-  }, [showMap]);
+  const [mapCoords] = useState({ lat: -6.2088, lng: 106.8456 });
 
   const iconBox: React.CSSProperties = {
     padding: "0.75rem",

@@ -101,21 +101,56 @@ function TemplatePreview({
 type ShowcaseItem = (typeof SHOWCASE_ITEMS)[number];
 type GalleryItem = DesignTokenLibraryItem & { sample: ShowcaseItem };
 
+// Max jumlah token library yang boleh memakai warna primer yang sama dalam
+// satu galeri. Library sering berisi banyak token berpalet mirip (e.g. hasil
+// bulk critique), jadi di-dedupe per klaster warna supaya kartu tidak tampak
+// identik; sisa slot diisi default statis per-template yang memang variatif.
+const SHOWCASE_MAX_PER_COLOR = 2;
+
+function byAesthetic(a: DesignTokenLibraryItem, b: DesignTokenLibraryItem) {
+  return (
+    (b.aesthetic_score ?? -1) - (a.aesthetic_score ?? -1) ||
+    (b.score ?? 0) - (a.score ?? 0)
+  );
+}
+
+// Pilih pool token dari library yang warnanya beragam: klaster berdasarkan
+// warna primer, ambil paling banyak `maxPerCluster` dari tiap klaster, dan
+// round-robin antar klaster supaya kartu paling depan juga beragam.
+function pickDiverseLibraryTokens(
+  tokens: DesignTokenLibraryItem[],
+  maxPerCluster = SHOWCASE_MAX_PER_COLOR
+): DesignTokenLibraryItem[] {
+  const ordered = [...tokens].sort(byAesthetic);
+  const clusters = new Map<string, DesignTokenLibraryItem[]>();
+  for (const t of ordered) {
+    const color = (t.design_token?.palette?.primary || "none").toLowerCase();
+    const arr = clusters.get(color) ?? [];
+    arr.push(t);
+    clusters.set(color, arr);
+  }
+  const pool: DesignTokenLibraryItem[] = [];
+  for (let round = 0; round < maxPerCluster; round++) {
+    for (const arr of clusters.values()) {
+      const t = arr[round];
+      if (t) pool.push(t);
+    }
+  }
+  return pool;
+}
+
 // Kurasi statis: selalu tampilkan 18 SHOWCARE_ITEMS (konten + template + nama
 // bisnis bervariasi), lalu warnai preview tiap kartu dengan design token dari
-// library. Token dan kartu diurutkan berdasarkan skor estetika AI (null di
-// akhir) supaya kartu paling bagus tampil di depan; tie-break memakai skor
-// desain. Bila API kosong, pakai default token template masing-masing.
+// library yang sudah di-sebar warnanya. Bila pool tidak cukup (library kosong
+// atau semua paletnya mirip), sisa kartu memakai default token statis
+// per-template yang memang berbeda-beda.
 function buildCuratedGalleryItems(tokens: DesignTokenLibraryItem[]): GalleryItem[] {
-  const byAesthetic = (a: DesignTokenLibraryItem, b: DesignTokenLibraryItem) =>
-    (b.aesthetic_score ?? -1) - (a.aesthetic_score ?? -1) ||
-    (b.score ?? 0) - (a.score ?? 0);
-  const ordered = [...tokens].sort(byAesthetic);
+  const pool = pickDiverseLibraryTokens(tokens);
   const items = SHOWCASE_ITEMS.map((s, i) => {
     const preferred = TEMPLATE_PREFILL_MAP[s.templateId]?.businessSubType || s.businessType;
     const token =
-      ordered.find((t) => t.business_type?.toLowerCase() === preferred.toLowerCase()) ||
-      ordered[i % Math.max(ordered.length, 1)];
+      pool.find((t) => t.business_type?.toLowerCase() === preferred.toLowerCase()) ||
+      pool[i];
     const dt = token?.design_token || getDesignToken(s.templateId);
     return {
       id: i + 1,
