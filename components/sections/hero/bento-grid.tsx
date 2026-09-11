@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import type { HeroVariantProps } from "./types";
@@ -23,10 +23,17 @@ export default function HeroBentoGrid({
   onEditingStateChange,
 }: HeroVariantProps) {
   const [metricValue, setMetricValue] = useState(72);
+  const [isInlineEditing, setIsInlineEditing] = useState(false);
   const hasSecondary = h.cta_secondary_text && h.cta_secondary_url;
 
-  // Auto-animate metric bar
+  const handleEditingStateChange = useCallback((editing: boolean) => {
+    setIsInlineEditing(editing);
+    onEditingStateChange?.(editing);
+  }, [onEditingStateChange]);
+
+  // Auto-animate metric bar — pause when inline editing is active
   useEffect(() => {
+    if (isInlineEditing) return;
     const values = [72, 88, 61, 95, 79, 84];
     let i = 0;
     const interval = setInterval(() => {
@@ -34,7 +41,7 @@ export default function HeroBentoGrid({
       setMetricValue(values[i]);
     }, 2000);
     return () => clearInterval(interval);
-  }, []);
+  }, [isInlineEditing]);
 
   const stats = [
     { value: "98%", label: "Satisfaction" },
@@ -112,7 +119,7 @@ export default function HeroBentoGrid({
                   isSelected={isSelected}
                   as="span"
                   collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                  onEditingStateChange={onEditingStateChange}
+                  onEditingStateChange={handleEditingStateChange}
                 />
               </span>
             )}
@@ -134,7 +141,7 @@ export default function HeroBentoGrid({
                 margin: 0,
               }}
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
+              onEditingStateChange={handleEditingStateChange}
             />
             <InlineText
               section="hero"
@@ -146,7 +153,7 @@ export default function HeroBentoGrid({
               as="p"
               style={{ fontSize: "0.9rem", color: "var(--dt-text-muted)", lineHeight: 1.65, margin: 0 }}
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
+              onEditingStateChange={handleEditingStateChange}
             />
             <HeroAccessory
               accessory={h.accessory}
@@ -154,7 +161,7 @@ export default function HeroBentoGrid({
               isEditorMode={isEditorMode}
               isSelected={isSelected}
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
+              onEditingStateChange={handleEditingStateChange}
             />
             <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
               <a
@@ -181,7 +188,7 @@ export default function HeroBentoGrid({
                   isSelected={isSelected}
                   as="span"
                   collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                  onEditingStateChange={onEditingStateChange}
+                  onEditingStateChange={handleEditingStateChange}
                 /> <ArrowRight style={{ width: 14, height: 14 }} />
               </a>
               {hasSecondary && (
@@ -208,7 +215,7 @@ export default function HeroBentoGrid({
                     isSelected={isSelected}
                     as="span"
                     collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                    onEditingStateChange={onEditingStateChange}
+                    onEditingStateChange={handleEditingStateChange}
                   />
                 </a>
               )}
@@ -340,7 +347,7 @@ export default function HeroBentoGrid({
                   isSelected={isSelected}
                   as="span"
                   collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                  onEditingStateChange={onEditingStateChange}
+                  onEditingStateChange={handleEditingStateChange}
                 />
               </p>
             )}

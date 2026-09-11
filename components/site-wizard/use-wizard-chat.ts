@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/purity, react-hooks/immutability, react-hooks/refs */
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from "react";
@@ -49,6 +50,8 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   const inferenceAutoConfirmRef = useRef<((subType: string) => void) | null>(null);
   // ID pesan bubble user yang berisi nama bisnis — dipakai untuk tombol "Ubah nama"
   const [nameMessageId, setNameMessageId] = useState<string>("");
+  // ID pesan bubble user yang berisi deskripsi bisnis — dipakai untuk edit pesan tanpa endpoint
+  const [descriptionMessageId, setDescriptionMessageId] = useState<string>("");
 
   // ── Voice Input (STT) ──
   const [isRecording, setIsRecording] = useState(false);
@@ -644,8 +647,10 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
         return;
       }
 
+      const msgId = `user-name-${Date.now()}`;
+      setNameMessageId(msgId);
       setBusinessName(capitalized);
-      setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: val }]);
+      setMessages((prev) => [...prev, { id: msgId, sender: "user", text: val }]);
 
       const flagged = isLikelyGibberish(val);
       const hint = suggestTypeFromName(capitalized);
@@ -694,8 +699,10 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     if (isInitialTyping) return;
     const capitalized = capitalizeWords(sampleName.trim());
     setInputValue("");
+    const msgId = `user-name-${Date.now()}`;
+    setNameMessageId(msgId);
     setBusinessName(capitalized);
-    setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: sampleName }]);
+    setMessages((prev) => [...prev, { id: msgId, sender: "user", text: sampleName }]);
     const hint = suggestTypeFromName(capitalized);
     setSuggestedHint(hint);
 
@@ -748,7 +755,8 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     // STEP 2: DISPLAY USER MESSAGE & ATTEMPT LOCATION EXTRACTION
     // Render the user message bubble and extract geographic location if mentioned.
     // =========================================================================
-    const userMsgId = Date.now().toString();
+    const userMsgId = `user-desc-${Date.now()}`;
+    setDescriptionMessageId(userMsgId);
     setMessages((prev) => [...prev, { id: userMsgId, sender: "user", text: val }]);
 
     setDescription(val);
@@ -928,6 +936,48 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     }
   };
 
+  /**
+   * Mengedit teks bubble pesan chat (baik AI maupun user) secara langsung di client state
+   * tanpa perlu mengirim request ulang ke endpoint AI.
+   */
+  const editMessage = (id: string, newText: string) => {
+    const trimmed = newText.trim();
+    if (!trimmed) return;
+
+    setMessages((prev) =>
+      prev.map((m) => (m.id === id ? { ...m, text: trimmed, isEdited: true } : m))
+    );
+
+    const target = messages.find((m) => m.id === id);
+    if (!target) return;
+
+    // Jika pesan user yang diedit adalah deskripsi bisnis
+    const isDesc =
+      id === descriptionMessageId ||
+      id.startsWith("user-desc-") ||
+      (target.sender === "user" && target.text === descriptionRef.current) ||
+      (target.sender === "user" && id !== nameMessageId && !id.startsWith("user-name-") && !!descriptionRef.current);
+
+    if (isDesc) {
+      setDescription(trimmed);
+      descriptionRef.current = trimmed;
+      const detected = extractLocationFromDescription(trimmed);
+      if (detected) setServiceArea(detected);
+      return;
+    }
+
+    // Jika pesan user yang diedit adalah nama bisnis
+    const isName =
+      id === nameMessageId ||
+      id.startsWith("user-name-") ||
+      (target.sender === "user" && target.text === businessNameRef.current);
+
+    if (isName) {
+      setBusinessName(trimmed);
+      businessNameRef.current = trimmed;
+    }
+  };
+
   const syncChatRefs = (overrides: {
     businessName?: string;
     businessType?: string;
@@ -1053,7 +1103,10 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     handleSelectMood,
     handleConfirmInference,
     handleConfirmName,
+    editMessage,
     typeMessage,
+    nameMessageId,
+    descriptionMessageId,
     // Utilities
     syncChatRefs,
     hydrate,

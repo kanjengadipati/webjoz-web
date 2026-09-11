@@ -155,6 +155,24 @@ export interface HeroAccessory {
   [key: string]: unknown;
 }
 
+/** Hero Tech SaaS mockup dashboard widget configuration. */
+export interface HeroDashboardWidget {
+  hidden?: boolean;
+  tab_analytics_label?: string;
+  tab_deploy_label?: string;
+  tab_monitor_label?: string;
+  monitor_uptime_value?: string;
+  monitor_uptime_label?: string;
+  monitor_latency_value?: string;
+  monitor_latency_label?: string;
+  monitor_errors_value?: string;
+  monitor_errors_label?: string;
+  deploy_step_1?: string;
+  deploy_step_2?: string;
+  deploy_step_3?: string;
+  [key: string]: unknown;
+}
+
 export interface DesignToken {
   palette?: {
     primary?: string;
@@ -266,6 +284,7 @@ export interface TemplateProps {
       launch_label?: string;
       background_color?: string;
       accessory?: HeroAccessory | null;
+      dashboard_widget?: HeroDashboardWidget | null;
     };
     about: {
       title: string;

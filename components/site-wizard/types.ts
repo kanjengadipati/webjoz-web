@@ -22,6 +22,7 @@ export type Message = {
   /** Mood value yang dipilih user — dipakai untuk render SVG icon di bubble */
   moodValue?: string;
   isPreparing?: boolean;
+  isEdited?: boolean;
 };
 
 export type PreviewData = {

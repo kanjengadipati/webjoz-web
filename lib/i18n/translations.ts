@@ -2229,6 +2229,10 @@ export interface Translations {
       sttReviewPrompt: string;
       sttBtnEdit: string;
       sttBtnConfirm: string;
+      editMessage: string;
+      editedBadge: string;
+      editShortcutHint: string;
+      editPlaceholder: string;
       micReadyHint: string;
       micPermissionDenied: string;
       sttNoVoiceDetected: string;
@@ -4605,6 +4609,10 @@ export const translations: Record<Locale, Translations> = {
         sttReviewPrompt: "Apakah sudah sesuai? Anda bisa edit sebelum saya lanjutkan.",
         sttBtnEdit: "Edit",
         sttBtnConfirm: "Ya, lanjutkan",
+        editMessage: "Edit pesan",
+        editedBadge: "(diedit)",
+        editShortcutHint: "Enter untuk simpan, Esc untuk batal",
+        editPlaceholder: "Ketik perubahan pesan...",
         micReadyHint: "Klik icon mic untuk menjelaskan bisnis Anda secara lisan",
         micPermissionDenied: "Izin mikrofon diperlukan untuk merekam suara. Silakan aktifkan izin mikrofon pada browser Anda.",
         sttNoVoiceDetected: "Tidak ada suara yang terdeteksi. Silakan coba lagi atau ketik deskripsi bisnis Anda secara langsung.",
@@ -7039,6 +7047,10 @@ export const translations: Record<Locale, Translations> = {
         sttReviewPrompt: "Does this look correct? You can edit before we continue.",
         sttBtnEdit: "Edit",
         sttBtnConfirm: "Yes, continue",
+        editMessage: "Edit message",
+        editedBadge: "(edited)",
+        editShortcutHint: "Enter to save, Esc to cancel",
+        editPlaceholder: "Type message changes...",
         micReadyHint: "Click the mic icon to explain your business by voice",
         micPermissionDenied: "Microphone permission is required to record voice. Please allow microphone access in your browser.",
         sttNoVoiceDetected: "No voice detected. Please try speaking again or type your business description directly.",

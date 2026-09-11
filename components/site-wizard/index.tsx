@@ -16,6 +16,7 @@ import {
   Calendar,
   Camera,
   Car,
+  Check,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
@@ -388,6 +389,36 @@ export function SiteWizard({
 
   // One-time onboarding hint for "Coba rekomendasi lain" button
   const [showRekomendasiHint, setShowRekomendasiHint] = useState(false);
+
+  // Inline editing state for chat bubbles (both AI responses and user inputs)
+  const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
+  const [editingText, setEditingText] = useState<string>("");
+  const editTextareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (editingMessageId && editTextareaRef.current) {
+      editTextareaRef.current.focus();
+      const len = editTextareaRef.current.value.length;
+      editTextareaRef.current.setSelectionRange(len, len);
+    }
+  }, [editingMessageId]);
+
+  const handleStartEdit = (id: string, currentText: string) => {
+    setEditingMessageId(id);
+    setEditingText(currentText);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingMessageId(null);
+    setEditingText("");
+  };
+
+  const handleSaveEdit = (id: string) => {
+    if (!editingText.trim()) return;
+    chat.editMessage(id, editingText.trim());
+    setEditingMessageId(null);
+    setEditingText("");
+  };
 
   // One-time edu tooltips for "Lengkapi Data" and "Edit & Publikasikan" buttons
   const [showLengkapiHint, setShowLengkapiHint] = useState(false);
@@ -1550,16 +1581,93 @@ export function SiteWizard({
             };
             const moodCfgMsg = m.moodValue ? moodIconMapMsg[m.moodValue] : null;
 
+            const isEditing = editingMessageId === m.id;
+            const isUser = m.sender === "user";
+
+            if (isEditing) {
+              return (
+                <div key={m.id} className={`flex gap-2.5 ${isUser ? "justify-end" : "justify-start"} w-full animate-in fade-in duration-200`}>
+                  {!isUser && (
+                    <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 mt-1 text-primary-foreground">
+                      <SparkleGenAI className="w-[21px] h-[21px]" />
+                    </div>
+                  )}
+                  <div className="w-full max-w-[92%] sm:max-w-[80%] space-y-2">
+                    <div className="rounded-2xl p-3 bg-[#16191E] border border-primary/50 shadow-xl space-y-2">
+                      <div className="flex items-center justify-between text-[11px] text-slate-400 font-medium px-0.5">
+                        <span className="flex items-center gap-1.5 text-primary font-semibold">
+                          <Pencil className="w-3 h-3" />
+                          {t("dashboard.wizard.editMessage", "Edit pesan")}
+                        </span>
+                        <span className="hidden sm:inline text-[10px] text-slate-500">
+                          {t("dashboard.wizard.editShortcutHint", "Enter untuk simpan, Esc untuk batal")}
+                        </span>
+                      </div>
+                      <textarea
+                        ref={editTextareaRef}
+                        value={editingText}
+                        onChange={(e) => setEditingText(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault();
+                            handleSaveEdit(m.id);
+                          } else if (e.key === "Escape") {
+                            handleCancelEdit();
+                          }
+                        }}
+                        rows={Math.min(6, Math.max(2, editingText.split("\n").length))}
+                        className="w-full bg-black/40 border border-white/10 rounded-xl p-2.5 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/40 leading-relaxed resize-none font-sans"
+                        placeholder={t("dashboard.wizard.editPlaceholder", "Ketik perubahan pesan...")}
+                      />
+                      <div className="flex items-center justify-end gap-2 pt-1">
+                        <button
+                          type="button"
+                          onClick={handleCancelEdit}
+                          className="px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-all cursor-pointer flex items-center gap-1"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                          <span>{t("dashboard.wizard.btnCancel", "Batal")}</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleSaveEdit(m.id)}
+                          disabled={!editingText.trim()}
+                          className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:brightness-110 active:scale-95 disabled:opacity-40 transition-all cursor-pointer shadow-xs flex items-center gap-1.5"
+                        >
+                          <Check className="w-3.5 h-3.5" />
+                          <span>{t("dashboard.wizard.btnSave", "Simpan")}</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
             return (
-              <div key={m.id} className={`flex gap-2.5 ${m.sender === "user" ? "justify-end" : "justify-start"}`}>
-                {m.sender === "ai" && (
-                  <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5 text-primary-foreground">
+              <div key={m.id} className={`group flex gap-2 items-center ${isUser ? "justify-end" : "justify-start"}`}>
+                {!isUser && (
+                  <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5 text-primary-foreground self-start">
                     <SparkleGenAI className="w-[21px] h-[21px]" />
                   </div>
                 )}
+
+                {/* Tombol Edit untuk user message (tampil di sebelah kiri bubble user) */}
+                {isUser && !chat.isInitialTyping && (
+                  <button
+                    type="button"
+                    onClick={() => handleStartEdit(m.id, messageText)}
+                    title={t("dashboard.wizard.editMessage", "Edit pesan")}
+                    className="opacity-70 sm:opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-all duration-150 cursor-pointer shrink-0"
+                    aria-label={t("dashboard.wizard.editMessage", "Edit pesan")}
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                  </button>
+                )}
+
                 <div
-                  className={`max-w-[78%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${m.sender === "user" ? "bg-primary text-primary-foreground rounded-tr-sm" : "rounded-tl-sm text-slate-200"}`}
-                  style={m.sender !== "user" ? { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.07)" } : {}}
+                  className={`max-w-[78%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${isUser ? "bg-primary text-primary-foreground rounded-tr-sm" : "rounded-tl-sm text-slate-200"}`}
+                  style={!isUser ? { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.07)" } : {}}
                 >
                   {moodCfgMsg ? (
                     <span className="flex items-center gap-2">
@@ -1569,7 +1677,12 @@ export function SiteWizard({
                       {formatText(messageText.replace(/^\S+\s/, ""), true)}
                     </span>
                   ) : (
-                    formatText(messageText, m.sender === "user")
+                    formatText(messageText, isUser)
+                  )}
+                  {m.isEdited && (
+                    <span className={`text-[10px] ml-1.5 italic font-normal ${isUser ? "text-primary-foreground/70" : "text-slate-400"}`}>
+                      {t("dashboard.wizard.editedBadge", "(diedit)")}
+                    </span>
                   )}
                   {m.id === "init" && chat.isInitialTyping && (
                     <span className="ml-0.5 inline-block h-4 w-0.5 translate-y-0.5 animate-pulse rounded-full bg-slate-300" />
@@ -1578,6 +1691,19 @@ export function SiteWizard({
                     <PreparingWebsiteLoader t={t} />
                   )}
                 </div>
+
+                {/* Tombol Edit untuk AI message (tampil di sebelah kanan bubble AI) */}
+                {!isUser && !chat.isInitialTyping && m.id !== "typing" && !m.isPreparing && (
+                  <button
+                    type="button"
+                    onClick={() => handleStartEdit(m.id, messageText)}
+                    title={t("dashboard.wizard.editMessage", "Edit respon")}
+                    className="opacity-70 sm:opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-all duration-150 cursor-pointer shrink-0"
+                    aria-label={t("dashboard.wizard.editMessage", "Edit respon")}
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                  </button>
+                )}
               </div>
             );
           })}

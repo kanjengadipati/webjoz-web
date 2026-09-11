@@ -214,6 +214,7 @@ export default function SiteEditorPage() {
     setSheetExpanded(false);
   }, []);
   const [aiPromptCollapsed, setAiPromptCollapsed] = useState(true);
+  const [usageMeterCollapsed, setUsageMeterCollapsed] = useState(true);
   const activeTabRef = useRef(activeTab);
   const shouldScrollToActiveRef = useRef(false);
   const templatePickerRef = useRef<HTMLDivElement | null>(null);
@@ -2205,71 +2206,93 @@ export default function SiteEditorPage() {
 
                 </div>
 
-                {/* ── Usage Meter ── */}
+                {/* ── Usage Meter (Default Collapsed / Strip) ── */}
                 {tenantUsage && (
-                  <div className="border-t border-border px-3.5 py-2.5 space-y-2">
-                    <div className="flex items-center gap-1.5">
-                      <SparkleGenAI className="h-3 w-3 text-primary" />
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                        {t("dashboard.sitesEditor.aiUsage")}
-                      </span>
-                    </div>
-                    <div className="space-y-2">
-                      <div>
-                        <div className="flex items-center justify-between text-[11px]">
-                          <span className="text-slate-400">{t("dashboard.sitesEditor.generate")}</span>
-                          <span className="font-semibold text-slate-200">
-                            {(tenantUsage.usage.generate_count ?? 0)} / {tenantUsage.max_ai_generates <= 0 ? "∞" : tenantUsage.max_ai_generates}
+                  <div className="border-t border-border flex-shrink-0 bg-[#111318]/50">
+                    <button
+                      type="button"
+                      onClick={() => setUsageMeterCollapsed((prev) => !prev)}
+                      className="w-full px-3.5 py-2 flex items-center justify-between gap-2 text-left hover:bg-white/[0.04] transition-colors cursor-pointer select-none group"
+                      title={usageMeterCollapsed ? "Buka rincian AI Usage" : "Tutup rincian AI Usage"}
+                    >
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <SparkleGenAI className="h-3 w-3 text-primary shrink-0" />
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground group-hover:text-slate-300 transition-colors">
+                          {t("dashboard.sitesEditor.aiUsage")}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        {usageMeterCollapsed && (
+                          <span className="text-[10px] text-slate-400 font-medium tabular-nums">
+                            {tenantUsage.usage.generate_count ?? 0}/{tenantUsage.max_ai_generates <= 0 ? "∞" : tenantUsage.max_ai_generates}
                           </span>
+                        )}
+                        {usageMeterCollapsed ? (
+                          <ChevronUp className="h-3.5 w-3.5 text-muted-foreground group-hover:text-white transition-colors" />
+                        ) : (
+                          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground group-hover:text-white transition-colors" />
+                        )}
+                      </div>
+                    </button>
+
+                    {!usageMeterCollapsed && (
+                      <div className="px-3.5 pb-3 pt-1 space-y-2 animate-in fade-in duration-200">
+                        <div>
+                          <div className="flex items-center justify-between text-[11px]">
+                            <span className="text-slate-400">{t("dashboard.sitesEditor.generate")}</span>
+                            <span className="font-semibold text-slate-200">
+                              {(tenantUsage.usage.generate_count ?? 0)} / {tenantUsage.max_ai_generates <= 0 ? "∞" : tenantUsage.max_ai_generates}
+                            </span>
+                          </div>
+                          <div className="h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
+                            <div
+                              className="h-full rounded-full bg-amber-500 transition-all duration-500"
+                              style={{
+                                width: tenantUsage.max_ai_generates <= 0
+                                  ? 100
+                                  : Math.min(((tenantUsage.usage.generate_count ?? 0) / tenantUsage.max_ai_generates) * 100, 100),
+                              }}
+                            />
+                          </div>
                         </div>
-                        <div className="h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
-                          <div
-                            className="h-full rounded-full bg-amber-500 transition-all duration-500"
-                            style={{
-                              width: tenantUsage.max_ai_generates <= 0
-                                ? 100
-                                : Math.min(((tenantUsage.usage.generate_count ?? 0) / tenantUsage.max_ai_generates) * 100, 100),
-                            }}
-                          />
+                        <div>
+                          <div className="flex items-center justify-between text-[11px]">
+                            <span className="text-slate-400">{t("dashboard.sitesEditor.sectionRegen")}</span>
+                            <span className="font-semibold text-slate-200">
+                              {(tenantUsage.usage.section_regen_count ?? 0)} / {(tenantUsage.max_section_regens ?? 0) <= 0 ? "∞" : tenantUsage.max_section_regens}
+                            </span>
+                          </div>
+                          <div className="h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
+                            <div
+                              className="h-full rounded-full bg-violet-500 transition-all duration-500"
+                              style={{
+                                width: `${(tenantUsage.max_section_regens ?? 0) <= 0
+                                  ? 100
+                                  : Math.min(((tenantUsage.usage.section_regen_count ?? 0) / tenantUsage.max_section_regens) * 100, 100)}%`,
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <div className="flex items-center justify-between text-[11px]">
+                            <span className="text-slate-400">{t("dashboard.sitesEditor.designRegen")}</span>
+                            <span className="font-semibold text-slate-200">
+                              {(tenantUsage.usage.design_regen_count ?? 0)} / {(tenantUsage.max_design_regens ?? 0) <= 0 ? "∞" : tenantUsage.max_design_regens}
+                            </span>
+                          </div>
+                          <div className="h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
+                            <div
+                              className="h-full rounded-full bg-cyan-500 transition-all duration-500"
+                              style={{
+                                width: `${tenantUsage.max_design_regens <= 0
+                                  ? 100
+                                  : Math.min(((tenantUsage.usage.design_regen_count ?? 0) / tenantUsage.max_design_regens) * 100, 100)}%`,
+                              }}
+                            />
+                          </div>
                         </div>
                       </div>
-                      <div>
-                        <div className="flex items-center justify-between text-[11px]">
-                          <span className="text-slate-400">{t("dashboard.sitesEditor.sectionRegen")}</span>
-                          <span className="font-semibold text-slate-200">
-                            {(tenantUsage.usage.section_regen_count ?? 0)} / {(tenantUsage.max_section_regens ?? 0) <= 0 ? "∞" : tenantUsage.max_section_regens}
-                          </span>
-                        </div>
-                        <div className="h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
-                          <div
-                            className="h-full rounded-full bg-violet-500 transition-all duration-500"
-                            style={{
-                              width: `${(tenantUsage.max_section_regens ?? 0) <= 0
-                                ? 100
-                                : Math.min(((tenantUsage.usage.section_regen_count ?? 0) / tenantUsage.max_section_regens) * 100, 100)}%`,
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <div className="flex items-center justify-between text-[11px]">
-                          <span className="text-slate-400">{t("dashboard.sitesEditor.designRegen")}</span>
-                          <span className="font-semibold text-slate-200">
-                            {(tenantUsage.usage.design_regen_count ?? 0)} / {(tenantUsage.max_design_regens ?? 0) <= 0 ? "∞" : tenantUsage.max_design_regens}
-                          </span>
-                        </div>
-                        <div className="h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
-                          <div
-                            className="h-full rounded-full bg-cyan-500 transition-all duration-500"
-                            style={{
-                              width: `${tenantUsage.max_design_regens <= 0
-                                ? 100
-                                : Math.min(((tenantUsage.usage.design_regen_count ?? 0) / tenantUsage.max_design_regens) * 100, 100)}%`,
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
+                    )}
                   </div>
                 )}
 
