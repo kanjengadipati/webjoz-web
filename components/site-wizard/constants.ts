@@ -75,7 +75,7 @@ export const MOOD_OPTIONS: MoodItem[] = [
   },
 ];
 
-export const INITIAL_MESSAGE = "Halo! Saya Jozz-ai dari Webjoz. Mau buat website bisnis, jasa, atau portofolio karya? Kita buat dalam 1 menit! Apa nama bisnis, brand, atau nama profesional Anda?";
+export const INITIAL_MESSAGE = "Halo! Saya Jozz-AI dari Webjoz. Mau buat website bisnis, jasa, atau portofolio karya? Kita buat dalam 1 menit! Apa nama bisnis, brand, atau nama profesional Anda?";
 
 export const AI_LOADING_STEPS = [
   "Menganalisis profil bisnis Anda...",
