@@ -1029,6 +1029,61 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     siteLanguageRef.current = snap.siteLanguage ?? null;
   };
 
+  const resetChat = () => {
+    if (activeTypingCancellerRef.current) {
+      activeTypingCancellerRef.current();
+      activeTypingCancellerRef.current = null;
+    }
+    cleanupAudioStream();
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch {}
+      recognitionRef.current = null;
+    }
+    setIsRecording(false);
+    setIsMicConnecting(false);
+    setIsProcessingAudio(false);
+    setInterimTranscript("");
+
+    setChatStage("name");
+    setMessages([{ id: "init", sender: "ai", text: initialMessageText }]);
+    setInputValue("");
+    setInitialWordCount(initialMessageWords.length);
+    setBusinessName(prefill?.businessType ? "" : "");
+    setBusinessType(prefill?.businessType ?? "");
+    setBusinessSubType(prefill?.businessSubType ?? "");
+    setDescription("");
+    setWhatsapp("");
+    setServiceArea("");
+    setMood("");
+    setSiteLanguage(null);
+    setIsAiTyping(false);
+    setIsAnalyzingDescription(false);
+    setAwaitingNameConfirm(false);
+    setSuggestedHint(null);
+    setInferenceResult(null);
+    setAwaitingInferenceConfirm(false);
+    setTypeWasInferred(false);
+    setNameMessageId("");
+    setDescriptionMessageId("");
+
+    businessNameRef.current = "";
+    businessTypeRef.current = prefill?.businessType ?? "";
+    businessSubTypeRef.current = prefill?.businessSubType ?? "";
+    descriptionRef.current = "";
+    whatsappRef.current = "";
+    serviceAreaRef.current = "";
+    moodRef.current = "";
+    siteLanguageRef.current = null;
+    hasAskedNameConfirmRef.current = false;
+    inferenceAutoConfirmRef.current = null;
+
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 100);
+  };
+
   return {
     // State
     chatStage,
@@ -1110,5 +1165,6 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     // Utilities
     syncChatRefs,
     hydrate,
+    resetChat,
   };
 }
