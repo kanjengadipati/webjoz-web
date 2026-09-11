@@ -93,7 +93,7 @@ export default function TermsPage() {
               <li>Konten ilegal, penipuan, atau melanggar hukum yang berlaku di Indonesia.</li>
               <li><strong>Layanan pinjaman online (pinjol)</strong>, pemberian pinjaman, atau aktivitas keuangan yang tidak sesuai peraturan perundang-undangan.</li>
               <li><strong>Perjudian dalam bentuk apa pun</strong>, termasuk judi online, slot, dan taruhan.</li>
-              <li>Konten yang bertentangan dengan <strong>syariat Islam</strong> atau norma agama dan kesusilaan yang berlaku di Indonesia.</li>
+              <li>Menjual <strong>minuman beralkohol</strong> dan memperjualbelikan <strong>barang yang haram</strong>.</li>
               <li>Penyebaran malware, phishing, atau aktivitas berbahaya lainnya.</li>
               <li>Pelanggaran hak kekayaan intelektual pihak ketiga.</li>
               <li>Spam atau pengiriman pesan massal yang tidak diminta.</li>
@@ -108,7 +108,7 @@ export default function TermsPage() {
               Anda bertanggung jawab penuh atas keakuratan, legalitas, dan isi website yang Anda publikasikan melalui Webjoz. Anda menjamin bahwa seluruh konten yang dipublikasikan:
             </p>
             <ul className="list-disc pl-5 space-y-2 mt-2">
-              <li>Tidak melanggar hukum, termasuk larangan aktivitas pinjol, perjudian, atau penipuan, serta tidak bertentangan dengan syariat Islam.</li>
+              <li>Tidak melanggar hukum, termasuk larangan aktivitas pinjol, perjudian, atau penipuan, serta tidak menjual minuman beralkohol atau barang haram.</li>
               <li>Tidak melanggar hak kekayaan intelektual atau hak pihak ketiga lainnya.</li>
               <li>Tidak mengandung informasi yang menyesatkan atau melanggar ketentuan peraturan perundang-undangan.</li>
             </ul>
@@ -153,7 +153,7 @@ export default function TermsPage() {
             <ul className="list-disc pl-5 space-y-2 mt-2">
               <li>Penyediaan layanan pinjaman online (pinjol) atau aktivitas keuangan ilegal lainnya;</li>
               <li>Perjudian dalam bentuk apa pun, termasuk judi online, slot, dan taruhan;</li>
-              <li>Konten yang dilarang oleh hukum atau syariat Islam di Indonesia;</li>
+              <li>Penjualan minuman beralkohol atau barang haram;</li>
               <li>Penipuan atau aktivitas yang merugikan pengguna lain;</li>
               <li>Penyebaran malware, phishing, atau aktivitas berbahaya lainnya.</li>
             </ul>
