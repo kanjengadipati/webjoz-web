@@ -116,7 +116,7 @@ export function ConfirmCard(props: ConfirmCardProps) {
           {editingField === "type" ? (
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-semibold text-slate-500">{t("dashboard.wizard.confirmCardLabelTypeHeader", "Jenis Bisnis")}</span>
+                <span className="text-[10px] font-semibold text-slate-500">{t("dashboard.wizard.confirmCardLabelTypeHeader", "Kategori")}</span>
                 <button onClick={() => props.onSetEditingField(null)} className="text-[10px] text-slate-500">{t("dashboard.wizard.confirmCardBtnClose", "✕ tutup")}</button>
               </div>
               <div className="flex flex-wrap gap-1">

@@ -260,7 +260,7 @@ export const DESCRIPTION_PROMPT = "Ceritakan bisnis atau profil Anda secara sing
 export const DESCRIPTION_SKIP_KEYWORD = "lewat";
 export const DESCRIPTION_INFERENCE_HIGH = "Saya lihat Anda bergerak di bidang %s — %s. Langsung buat website-nya?";
 export const DESCRIPTION_INFERENCE_MEDIUM = "Saya lihat bidang usaha Anda adalah %s. Bisa pilih yang lebih spesifik?";
-export const DESCRIPTION_INFERENCE_NONE = "Baik, silakan pilih jenis bisnis Anda:";
+export const DESCRIPTION_INFERENCE_NONE = "Baik, silakan pilih kategori Anda:";
 
 export const NAME_CONFIRM_VARIANTS = [
   "Itu nama aslinya, atau masih nama sementara? Pilih 'Ya' untuk lanjut, atau 'Ganti' jika ingin diubah 😊",
@@ -355,6 +355,13 @@ export const NAME_TYPE_HINTS: Record<string, { type?: string; subType?: string }
   "ilustrator": { type: "Portofolio", subType: "Ilustrator & Seniman" },
   "illustrator": { type: "Portofolio", subType: "Ilustrator & Seniman" },
   "seniman": { type: "Portofolio", subType: "Ilustrator & Seniman" },
+  "lukis": { type: "Portofolio", subType: "Ilustrator & Seniman" },
+  "lukisan": { type: "Portofolio", subType: "Ilustrator & Seniman" },
+  "pelukis": { type: "Portofolio", subType: "Ilustrator & Seniman" },
+  "seni lukis": { type: "Portofolio", subType: "Ilustrator & Seniman" },
+  "karya seni": { type: "Portofolio", subType: "Ilustrator & Seniman" },
+  "art": { type: "Portofolio", subType: "Ilustrator & Seniman" },
+  "artwork": { type: "Portofolio", subType: "Ilustrator & Seniman" },
   "arsitek": { type: "Portofolio", subType: "Arsitek & Desainer Interior" },
   "interior": { type: "Portofolio", subType: "Arsitek & Desainer Interior" },
   "penulis": { type: "Portofolio", subType: "Penulis & Copywriter" },

@@ -259,7 +259,7 @@ function InferenceConfirmWidget({
             onClick={onChangeCategory}
             className="text-[10px] text-slate-500 hover:text-slate-300 underline underline-offset-2 transition-colors px-0.5"
           >
-            Pilih jenis bisnis lain
+            {t("dashboard.wizard.notThisType", "Pilih kategori lain")}
           </button>
         ) : (
           <button
@@ -879,14 +879,19 @@ export function SiteWizard({
     chat.setWhatsapp(whatsapp);
     chat.setServiceArea(serviceArea);
     setSheetOpen(false);
-    preview.setHasUnsavedEdits(true);
-    preview.setRegenCount((c: number) => c + 1);
-    preview.setPreviewState("loading");
-    device.setMobileScreen("loading");
-    void handleGenerate(chat.businessName, chat.businessType, {
-      whatsapp,
-      serviceArea,
-    });
+
+    if (preview.previewData) {
+      preview.setPreviewData((prev) => {
+        if (!prev) return prev;
+        const nextContent = { ...(prev.content || {}) };
+        const nextContact = { ...(nextContent.contact || {}) };
+        if (whatsapp) nextContact.phone = whatsapp;
+        if (serviceArea) nextContact.address = serviceArea;
+        nextContent.contact = nextContact;
+        return { ...prev, content: nextContent };
+      });
+      preview.setHasUnsavedEdits(true);
+    }
   };
 
   // ── Resume/state persistence ─────────────────────────────────────────────
@@ -1278,7 +1283,7 @@ export function SiteWizard({
                       }}
                       className="text-[10px] text-slate-400 hover:text-slate-200 underline mb-2 inline-block transition-colors"
                     >
-                      {t("dashboard.wizard.notThisType", "Bukan ini? Pilih jenis bisnis lain")}
+                      {t("dashboard.wizard.notThisType", "Bukan ini? Pilih kategori lain")}
                     </button>
                   )}
                   <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">{t("dashboard.wizard.moreSpecific", "Lebih spesifik:")}</p>
@@ -1581,8 +1586,12 @@ export function SiteWizard({
             };
             const moodCfgMsg = m.moodValue ? moodIconMapMsg[m.moodValue] : null;
 
-            const isEditing = editingMessageId === m.id;
             const isUser = m.sender === "user";
+            // HANYA pesan refine deskripsi yang bisa diedit (bukan nama, bahasa, mood, dsb.)
+            const isEditableDesc =
+              (isUser && (m.isRefined || m.id === chat.descriptionMessageId || m.id.startsWith("user-desc-"))) ||
+              (!isUser && (m.isRefined || m.isAiResponse));
+            const isEditing = editingMessageId === m.id && isEditableDesc;
 
             if (isEditing) {
               return (
@@ -1652,8 +1661,8 @@ export function SiteWizard({
                   </div>
                 )}
 
-                {/* Tombol Edit untuk user message (tampil di sebelah kiri bubble user) */}
-                {isUser && !chat.isInitialTyping && (
+                {/* Tombol Edit untuk user message: HANYA untuk refine desc */}
+                {isUser && isEditableDesc && !chat.isInitialTyping && (
                   <button
                     type="button"
                     onClick={() => handleStartEdit(m.id, messageText)}
@@ -1692,8 +1701,7 @@ export function SiteWizard({
                   )}
                 </div>
 
-                {/* Tombol Edit untuk AI message: HANYA untuk respon / refine dari AI, BUKAN untuk chat prompt bawaan dari web */}
-                {!isUser && (m.isRefined || m.isAiResponse) && !chat.isInitialTyping && m.id !== "typing" && !m.isPreparing && (
+                {!isUser && isEditableDesc && !chat.isInitialTyping && m.id !== "typing" && !m.isPreparing && (
                   <button
                     type="button"
                     onClick={() => handleStartEdit(m.id, messageText)}
