@@ -1692,8 +1692,8 @@ export function SiteWizard({
                   )}
                 </div>
 
-                {/* Tombol Edit untuk AI message (tampil di sebelah kanan bubble AI) */}
-                {!isUser && !chat.isInitialTyping && m.id !== "typing" && !m.isPreparing && (
+                {/* Tombol Edit untuk AI message: HANYA untuk respon / refine dari AI, BUKAN untuk chat prompt bawaan dari web */}
+                {!isUser && (m.isRefined || m.isAiResponse) && !chat.isInitialTyping && m.id !== "typing" && !m.isPreparing && (
                   <button
                     type="button"
                     onClick={() => handleStartEdit(m.id, messageText)}

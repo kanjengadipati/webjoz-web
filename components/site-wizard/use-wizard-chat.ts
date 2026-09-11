@@ -794,7 +794,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
               descriptionRef.current = refined;
               // Directly override the user's message bubble with the refined text (matching voice flow)
               setMessages((prev) =>
-                prev.map((m) => (m.id === userMsgId ? { ...m, text: refined } : m))
+                prev.map((m) => (m.id === userMsgId ? { ...m, text: refined, isRefined: true } : m))
               );
               // Also attempt to detect location from refined text if not already found
               if (!serviceArea) {
