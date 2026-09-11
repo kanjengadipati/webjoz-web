@@ -169,11 +169,20 @@ export function buildFullContent(
       ...c.footer,
       brand_name: businessName,
       tagline: c.footer?.tagline || description || `Layanan terbaik dari ${businessName} untuk Anda.`,
-      copyright_text: c.footer?.copyright_text || `© ${new Date().getFullYear()} ${businessName}. All rights reserved.`,
+      copyright_text: c.footer?.copyright_text
+        ? c.footer.copyright_text.replace(/\b20[12][0-9]\b/g, (y: string) => {
+            const yr = parseInt(y, 10);
+            return yr < new Date().getFullYear() ? String(new Date().getFullYear()) : y;
+          })
+        : `© ${new Date().getFullYear()} ${businessName}. All rights reserved.`,
     },
     ...(c.menu ? { menu: c.menu } : {}),
     ...(c.catalog ? { catalog: c.catalog } : {}),
     ...(c.gallery ? { gallery: c.gallery } : {}),
+    ...(c.works ? { works: c.works } : {}),
+    ...(c.stats ? { stats: c.stats } : {}),
+    ...(c.pricing ? { pricing: c.pricing } : {}),
+    ...(c.partners ? { partners: c.partners } : {}),
     seo: {
       ...c.seo,
       title: c.seo?.title || businessName,

@@ -2452,6 +2452,21 @@ export default function SiteEditorPage() {
 
           {/* Canvas topbar */}
           <div className="hidden md:flex h-10 flex-shrink-0 items-center gap-2 border-b border-border bg-background px-3">
+            {/* Back to sites shortcut */}
+            <button
+              type="button"
+              onClick={() => router.push("/dashboard/sites")}
+              className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-muted/40 px-2.5 text-[11px] font-medium text-slate-300 transition-all hover:bg-white/10 hover:text-white active:scale-95 cursor-pointer"
+              title={t("dashboard.sitesEditor.backToSites")}
+              aria-label={t("dashboard.sitesEditor.backToSites")}
+            >
+              <ChevronLeft className="w-3.5 h-3.5 flex-shrink-0" />
+              <span>{t("dashboard.sitesEditor.back")}</span>
+            </button>
+
+            {/* Separator */}
+            <div className="h-5 w-px bg-white/10" />
+
             {/* Device switcher */}
             <div className="flex items-center gap-0.5 rounded-lg border border-border bg-muted/50 p-0.5">
               <div className="relative group">

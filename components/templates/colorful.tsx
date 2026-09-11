@@ -54,7 +54,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
   const yellow = dt?.palette?.primary ?? "#FFE135";
   const pink = dt?.palette?.accent ?? "#FF3CAC";
   const black = "#0D0D0D";
-  const bg = "#FFFBEB";
+  const bg = dt?.palette?.background || "#FFFFFF";
   const ctaText = "var(--dt-cta-text)";
 
   const shadowBlock = "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]";

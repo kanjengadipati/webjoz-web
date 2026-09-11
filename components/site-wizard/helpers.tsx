@@ -126,8 +126,8 @@ function filterPoolByBusiness(pool: string[], businessLower: string): string[] {
   const kulinerTypes = ["kafe", "cafe", "kopi", "restoran", "warung", "bakery", "catering", "kuliner"];
   const jasaTypes = ["jasa", "konsultan", "agensi", "fotografer", "klinik", "dokter"];
   const produkTypes = ["produk", "toko", "retail", "fashion", "umkm", "online", "baju", "sepatu", "hijab"];
-  const techTypes = ["tech", "teknologi", "saas", "software", "ai", "digital", "startup", "robot"];
-  const creativeTypes = ["kreatif", "art", "seni", "musik", "film", "studio", "vintage", "retro"];
+  const techTypes = ["tech", "teknologi", "saas", "software", "ai", "digital", "startup", "robot", "developer", "programmer", "engineer", "coding", "web dev", "fullstack", "backend", "frontend"];
+  const creativeTypes = ["kreatif", "art", "seni", "musik", "film", "studio", "vintage", "retro", "portofolio", "portfolio", "desainer", "designer", "ilustrator", "seniman", "penulis", "copywriter", "arsitek"];
 
   let preferred = "";
   if (kulinerTypes.some((kw) => businessLower.includes(kw))) {
@@ -232,7 +232,9 @@ export function getTemplatePool(businessType: string, mood: string): string[] {
     return BUSINESS_TEMPLATE_POOLS.kuliner;
   }
   if (lower.includes("jasa") || lower.includes("konsultan") || lower.includes("agensi") ||
-    lower.includes("fotografer") || lower.includes("klinik") || lower.includes("dokter")) {
+    lower.includes("fotografer") || lower.includes("klinik") || lower.includes("dokter") ||
+    lower.includes("portofolio") || lower.includes("portfolio") || lower.includes("developer") ||
+    lower.includes("engineer") || lower.includes("desain") || lower.includes("kreator")) {
     return BUSINESS_TEMPLATE_POOLS.jasa;
   }
   if (lower.includes("produk") || lower.includes("toko") || lower.includes("retail") ||
@@ -996,9 +998,9 @@ const DESC_HINTS: DescHintEntry[] = [
     subType: "Ilustrator & Seniman",
     keywords: [
       // ID
-      "ilustrator", "seniman", "illustrator", "ilustrasi", "gambar digital", "lukisan", "komik", "webtoon", "mural", "sketsa",
+      "ilustrator", "seniman", "illustrator", "ilustrasi", "gambar digital", "lukisan", "lukis", "seni lukis", "karya seni", "seni rupa", "pelukis", "cat air", "kanvas", "komik", "webtoon", "mural", "sketsa",
       // EN
-      "illustrator", "artist", "illustration", "digital illustration", "drawing", "painting", "comic artist", "sketch",
+      "illustrator", "artist", "illustration", "digital illustration", "drawing", "painting", "painter", "artwork", "fine art", "comic artist", "sketch",
     ],
     weight: 5,
   },
@@ -1208,13 +1210,22 @@ const DESC_TYPE_HINTS: { type: string; keywords: string[]; weight: number }[] = 
     weight: 2,
   },
   {
+    type: "Portofolio",
+    keywords: [
+      // ID
+      "portofolio", "portfolio", "karya", "karya seni", "seni", "lukis", "lukisan", "freelance", "freelancer", "kreator", "seniman", "artist", "showcase", "karya pribadi", "fotografi", "videografi", "desain grafis", "ilustrasi",
+      // EN
+      "portfolio", "showcase", "creator", "freelancer", "personal work", "artist work", "photography portfolio", "design portfolio",
+    ],
+    weight: 2,
+  },
+  {
     type: "Kreatif & Profesional",
     keywords: [
       // ID
-      "portofolio", "kreator", "karya", "desain", "freelance", "kreatif", "fotografi", "videografi", "konsultan",
-      "pembuatan website", "bikin website", "web", "software", "programmer", "it", "digital", "agensi",
+      "agensi", "agency", "konsultan", "jasa profesional", "notaris", "ppat", "seo", "digital agency", "marketing agency", "corporate", "kantor konsultan",
       // EN
-      "portfolio", "showcase", "creator", "creative", "agency", "professional services", "consulting", "freelancer",
+      "agency", "consulting", "professional services", "firm", "digital marketing",
     ],
     weight: 2,
   },

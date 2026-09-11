@@ -673,9 +673,9 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       setTimeout(() => {
         if (prefill?.businessType && prefill?.businessSubType) {
           // Prefill dari galeri dibawa — tapi jangan di-skip: tampilkan chip
-          // jenis bisnis yang sudah terpilih supaya user bisa mengoreksinya
+          // kategori website yang sudah terpilih supaya user bisa mengoreksinya
           // sebelum lanjut ke bahasa/generate.
-          typeMessage(`${pickVariant(nameAckVariants)} ${t("dashboard.wizard.prefillTypePrompt", "Saya sudah memperkirakan jenis bisnis Anda di bawah. Lanjutkan jika sesuai, atau ubah dulu:")}`, () => {
+          typeMessage(`${pickVariant(nameAckVariants)} ${t("dashboard.wizard.prefillTypePrompt", "Saya sudah memperkirakan kategori website Anda. Lanjutkan jika sesuai, atau ubah dulu:")}`, () => {
             setMessages((prev) => [
               ...prev,
               { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
