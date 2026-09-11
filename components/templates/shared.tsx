@@ -2347,19 +2347,9 @@ const SharedContactSection: React.FC<ContactSectionProps> = ({
   const showForm = hasLeadForm;
   const formOnRight = formPosition === "right";
 
-  // Use mapsUrl coords as initial, fall back to geolocation or Jakarta
+  // Use mapsUrl coords as initial, fall back to Jakarta default (no auto-location prompt)
   const urlCoords = parseGoogleMapsCoords(mapsUrl);
-  const [mapCoords, setMapCoords] = useState(urlCoords || { lat: -6.2088, lng: 106.8456 });
-  useEffect(() => {
-    if (urlCoords) return;
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => setMapCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-        () => { },
-        { timeout: 5000, enableHighAccuracy: false },
-      );
-    }
-  }, []);
+  const [mapCoords] = useState(urlCoords || { lat: -6.2088, lng: 106.8456 });
 
   // Dummy fallbacks — real data replaces when user fills via editor
   const displayAddress = address || "Alamat Anda";
