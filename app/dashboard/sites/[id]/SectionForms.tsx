@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { AiFieldButton, EMOJI_GROUPS, MCF_INPUT_BASE as inputBase_mcf, MCF_INPUT_LABEL as inputLabel_mcf, normStr, MenuCatalogForm } from "@/components/menu-catalog-form";
-import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, RefreshCw, Loader2, Star, Zap, Shield, Award, Heart, CheckCircle, Clock, Globe, Users, TrendingUp, Leaf, Flame, Lightbulb, Target, Truck, ThumbsUp, Lock, Phone, Mail, MapPin, Camera, Utensils, Coffee, ShoppingBag, Wrench, Stethoscope, BookOpen, Home, Building2, Briefcase, Search, Check, RotateCcw } from "lucide-react";
+import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, RefreshCw, Loader2, Star, Zap, Shield, Award, Heart, CheckCircle, Clock, Globe, Users, TrendingUp, Leaf, Flame, Lightbulb, Target, Truck, ThumbsUp, Lock, Phone, Mail, MapPin, Camera, Utensils, Coffee, ShoppingBag, Wrench, Stethoscope, BookOpen, Home, Building2, Briefcase, Search, Check, RotateCcw, BarChart2, Eye, EyeOff } from "lucide-react";
 import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import FileUpload from "@/components/file-upload";
 import LocationPicker from "@/components/location-picker";
@@ -1016,6 +1016,12 @@ export default function SectionForms({
           <HeroAccessoryEditor
             accessory={content.hero?.accessory || null}
             onChange={(acc) => updateField("hero", "accessory", acc)}
+          />
+
+          {/* Dashboard Widget — preview widget untuk hero tech-saas */}
+          <HeroDashboardWidgetEditor
+            widget={content.hero?.dashboard_widget || null}
+            onChange={(dw) => updateField("hero", "dashboard_widget", dw)}
           />
         </div>
       )}
@@ -3779,6 +3785,195 @@ function HeroAccessoryEditor({
             placeholder="cth. Fotografi, Video, Branding"
             className={inputClass}
           />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function HeroDashboardWidgetEditor({
+  widget,
+  onChange,
+}: {
+  widget: any;
+  onChange: (widget: any) => void;
+}) {
+  const isHidden = widget?.hidden === true;
+  const setField = (key: string, val: any) => {
+    onChange({
+      ...widget,
+      [key]: val,
+    });
+  };
+
+  const inputClass =
+    "w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600";
+
+  return (
+    <div className="space-y-3 rounded-xl border border-border/70 p-3 bg-white/[0.02]">
+      {/* Header with Hide/Show switch */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <BarChart2 className="w-4 h-4 text-primary shrink-0" />
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-300">
+            Widget Dashboard Hero
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={() => setField("hidden", !isHidden)}
+          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+            isHidden
+              ? "border-white/10 bg-white/5 text-slate-400 hover:text-white"
+              : "border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20"
+          }`}
+          title={isHidden ? "Tampilkan widget" : "Sembunyikan widget"}
+        >
+          {isHidden ? (
+            <>
+              <EyeOff className="w-3.5 h-3.5" />
+              <span>Tersembunyi</span>
+            </>
+          ) : (
+            <>
+              <Eye className="w-3.5 h-3.5" />
+              <span>Tampil</span>
+            </>
+          )}
+        </button>
+      </div>
+
+      {!isHidden && (
+        <div className="space-y-3 pt-2 border-t border-border/40">
+          <p className="text-[11px] text-slate-400 leading-relaxed">
+            Sesuaikan nama tab dan metrik dashboard ilustrasi hero. Teks juga bisa diklik dan diedit langsung di kanvas.
+          </p>
+
+          {/* Tab labels */}
+          <div className="space-y-1.5">
+            <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500">
+              Nama Tab (Analytics, Deploy, Monitor)
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              <div>
+                <span className="text-[10px] text-slate-500 mb-1 block">Tab 1</span>
+                <input
+                  type="text"
+                  value={widget?.tab_analytics_label ?? "Analytics"}
+                  onChange={(e) => setField("tab_analytics_label", e.target.value)}
+                  className={inputClass}
+                  placeholder="Analytics"
+                />
+              </div>
+              <div>
+                <span className="text-[10px] text-slate-500 mb-1 block">Tab 2</span>
+                <input
+                  type="text"
+                  value={widget?.tab_deploy_label ?? "Deploy"}
+                  onChange={(e) => setField("tab_deploy_label", e.target.value)}
+                  className={inputClass}
+                  placeholder="Deploy"
+                />
+              </div>
+              <div>
+                <span className="text-[10px] text-slate-500 mb-1 block">Tab 3</span>
+                <input
+                  type="text"
+                  value={widget?.tab_monitor_label ?? "Monitor"}
+                  onChange={(e) => setField("tab_monitor_label", e.target.value)}
+                  className={inputClass}
+                  placeholder="Monitor"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Metrik Monitor */}
+          <div className="space-y-1.5">
+            <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500">
+              Metrik Tab Monitor (Nilai & Label)
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              <div className="space-y-1">
+                <input
+                  type="text"
+                  value={widget?.monitor_uptime_value ?? "99.9%"}
+                  onChange={(e) => setField("monitor_uptime_value", e.target.value)}
+                  className={inputClass}
+                  placeholder="99.9%"
+                />
+                <input
+                  type="text"
+                  value={widget?.monitor_uptime_label ?? "Uptime"}
+                  onChange={(e) => setField("monitor_uptime_label", e.target.value)}
+                  className={inputClass}
+                  placeholder="Uptime"
+                />
+              </div>
+              <div className="space-y-1">
+                <input
+                  type="text"
+                  value={widget?.monitor_latency_value ?? "12ms"}
+                  onChange={(e) => setField("monitor_latency_value", e.target.value)}
+                  className={inputClass}
+                  placeholder="12ms"
+                />
+                <input
+                  type="text"
+                  value={widget?.monitor_latency_label ?? "Latency"}
+                  onChange={(e) => setField("monitor_latency_label", e.target.value)}
+                  className={inputClass}
+                  placeholder="Latency"
+                />
+              </div>
+              <div className="space-y-1">
+                <input
+                  type="text"
+                  value={widget?.monitor_errors_value ?? "0"}
+                  onChange={(e) => setField("monitor_errors_value", e.target.value)}
+                  className={inputClass}
+                  placeholder="0"
+                />
+                <input
+                  type="text"
+                  value={widget?.monitor_errors_label ?? "Errors"}
+                  onChange={(e) => setField("monitor_errors_label", e.target.value)}
+                  className={inputClass}
+                  placeholder="Errors"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Langkah Deploy */}
+          <div className="space-y-1.5">
+            <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500">
+              Langkah Tab Deploy
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              <input
+                type="text"
+                value={widget?.deploy_step_1 ?? "Build"}
+                onChange={(e) => setField("deploy_step_1", e.target.value)}
+                className={inputClass}
+                placeholder="Build"
+              />
+              <input
+                type="text"
+                value={widget?.deploy_step_2 ?? "Test"}
+                onChange={(e) => setField("deploy_step_2", e.target.value)}
+                className={inputClass}
+                placeholder="Test"
+              />
+              <input
+                type="text"
+                value={widget?.deploy_step_3 ?? "Deploy"}
+                onChange={(e) => setField("deploy_step_3", e.target.value)}
+                className={inputClass}
+                placeholder="Deploy"
+              />
+            </div>
+          </div>
         </div>
       )}
     </div>
