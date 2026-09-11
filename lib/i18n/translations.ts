@@ -4504,7 +4504,7 @@ export const translations: Record<Locale, Translations> = {
         weightSemiBold: "Semi-Bold",
       },
       wizard: {
-        initialMessage: "Halo! Saya Jozz-ai, assistant Webjoz. Apapun jenis website Anda — bisnis, toko, atau portofolio — kita buat dalam 1 menit! Apa nama bisnis/brand atau nama Anda?",
+        initialMessage: "Halo! Saya Jozz-ai dari Webjoz. Mau buat website bisnis, jasa, atau portofolio karya? Kita buat dalam 1 menit! Apa nama bisnis, brand, atau nama profesional Anda?",
         nameAckVariants: [
           "Baik, nama bisnis telah dicatat.",
           "Nama bisnis berhasil disimpan.",
@@ -4518,7 +4518,7 @@ export const translations: Record<Locale, Translations> = {
           "Apakah itu nama sebenarnya? Klik 'Ya' untuk lanjut, atau 'Ganti' jika ingin memasukkan nama lain.",
           "Nama tersebut terdengar seperti percobaan — pastikan ini yang Anda mau. Klik 'Ya' untuk lanjut atau 'Ganti'."
         ],
-        descriptionPrompt: "Ceritakan bisnis Anda secara singkat — cukup 1-2 kalimat. Misalnya: produk/jasa apa yang ditawarkan, untuk siapa, dan di mana lokasinya. Tekan Enter untuk lanjut jika ingin skip.",
+        descriptionPrompt: "Ceritakan bisnis atau profil Anda secara singkat — cukup 1-2 kalimat. Misalnya: karya/jasa yang ditawarkan, keahlian Anda, atau untuk siapa. Tekan Enter untuk lanjut jika ingin skip.",
         descriptionSkipKeyword: "lewat",
         descriptionInferenceHigh: "Saya lihat jenis bisnis atau brand Anda adalah **{subType}**. Langsung buat website-nya?",
         descriptionInferenceMedium: "Saya lihat bidang usaha Anda adalah {type}. Bisa pilih yang lebih spesifik?",
@@ -6942,7 +6942,7 @@ export const translations: Record<Locale, Translations> = {
         weightSemiBold: "Semi-Bold",
       },
       wizard: {
-        initialMessage: "Hello! I'm Jozz-ai, your Webjoz assistant. Whatever your website type — business, store, or portfolio — we'll build it in 1 minute! What is your business/brand name or your name?",
+        initialMessage: "Hello! I'm Jozz-ai from Webjoz. Looking to build a website for your business, service, or creative portfolio? We'll make it in 1 minute! What is your business, brand, or professional name?",
         nameAckVariants: [
           "Got it, business name recorded.",
           "Business name saved successfully.",
@@ -6956,7 +6956,7 @@ export const translations: Record<Locale, Translations> = {
           "Is that the actual name? Click 'Yes' to continue, or 'Change' to enter a different one.",
           "That name sounds like a placeholder — make sure it's the one you want. Click 'Yes' or 'Change'."
         ],
-        descriptionPrompt: "Tell us briefly about your business — 1-2 sentences is enough. For example: what products/services you offer, who it's for, and where you're located. Press Enter or click Next to skip.",
+        descriptionPrompt: "Tell us briefly about your business or profile — 1-2 sentences is enough. For example: services/work you showcase, your expertise, or who it's for. Press Enter or click Next to skip.",
         descriptionSkipKeyword: "skip",
         descriptionInferenceHigh: "I see your business or brand is in **{subType}**. Shall we create the website directly?",
         descriptionInferenceMedium: "I see your business field is {type}. Could you pick a more specific category?",
