@@ -508,6 +508,22 @@ export interface Translations {
       publishTermsTitle: string;
       publishTermsLink: string;
       publishTermsRequired: string;
+      moderationTitle: string;
+      moderationDesc: string;
+      moderationCatPinjol: string;
+      moderationCatJudi: string;
+      moderationCatAlkohol: string;
+      moderationCatBarangHaram: string;
+      moderationKeywordPrefix: string;
+      moderationAppealTitle: string;
+      moderationAppealPlaceholder: string;
+      moderationAppealBtn: string;
+      moderationAppealSubmitting: string;
+      moderationAppealRequired: string;
+      moderationAppealSent: string;
+      moderationAppealFailed: string;
+      publishChecking: string;
+      publishCheckingDesc: string;
       errorLoadSites: string;
       connectingWorkspace: string;
       toastPublished: string;
@@ -2063,6 +2079,7 @@ export interface Translations {
       publishShort: string;
       publishSuccess: string;
       publishFailed: string;
+      moderationAppealFailed: string;
       applying: string;
       applyLive: string;
       apply: string;
@@ -2875,6 +2892,22 @@ export const translations: Record<Locale, Translations> = {
         publishTermsTitle: "Saya menyetujui",
         publishTermsLink: "Syarat & Ketentuan Webjoz",
         publishTermsRequired: "Mohon centang persetujuan untuk mempublikasikan website.",
+        moderationTitle: "Website tidak dapat dipublikasikan",
+        moderationDesc: "Konten website terindikasi melanggar Syarat & Ketentuan Webjoz. Perbaiki konten atau ajukan banding ke tim kami.",
+        moderationCatPinjol: "Layanan pinjaman online (pinjol)",
+        moderationCatJudi: "Perjudian / slot",
+        moderationCatAlkohol: "Penjualan minuman beralkohol",
+        moderationCatBarangHaram: "Penjualan barang haram / narkoba",
+        moderationKeywordPrefix: "Kata kunci terdeteksi: ",
+        moderationAppealTitle: "Menurut Anda ini bukan pelanggaran?",
+        moderationAppealPlaceholder: "Jelaskan alasan banding Anda...",
+        moderationAppealBtn: "Kirim Banding",
+        moderationAppealSubmitting: "Mengirim...",
+        moderationAppealRequired: "Tulis alasan banding terlebih dahulu.",
+        moderationAppealSent: "Banding terkirim. Tim kami akan meninjaunya.",
+        moderationAppealFailed: "Gagal mengirim banding. Silakan coba lagi.",
+        publishChecking: "Memeriksa konten...",
+        publishCheckingDesc: "Kami memeriksa konten Anda untuk memastikan sesuai Syarat & Ketentuan.",
         errorLoadSites: "Gagal memuat situs",
         connectingWorkspace: "Menghubungkan ke dashboard...",
         toastPublished: "Website berhasil dipublikasikan! 🚀",
@@ -4435,6 +4468,7 @@ export const translations: Record<Locale, Translations> = {
         publishShort: "Publish",
         publishSuccess: "Website berhasil dipublikasikan! 🚀",
         publishFailed: "Gagal memublikasikan website",
+        moderationAppealFailed: "Gagal mengirim banding. Silakan coba lagi.",
         applying: "Menerapkan...",
         applyLive: "Terapkan ke Live",
         apply: "Terapkan",
@@ -5316,6 +5350,22 @@ export const translations: Record<Locale, Translations> = {
         publishTermsTitle: "I agree to",
         publishTermsLink: "Webjoz's Terms & Conditions",
         publishTermsRequired: "Please check this box to publish the website.",
+        moderationTitle: "Website cannot be published",
+        moderationDesc: "Your website content appears to violate Webjoz's Terms & Conditions. Please fix the content or submit an appeal to our team.",
+        moderationCatPinjol: "Online lending (pinjol) services",
+        moderationCatJudi: "Gambling / slots",
+        moderationCatAlkohol: "Selling alcoholic beverages",
+        moderationCatBarangHaram: "Selling haram / narcotics goods",
+        moderationKeywordPrefix: "Detected keywords: ",
+        moderationAppealTitle: "Think this isn't a violation?",
+        moderationAppealPlaceholder: "Explain your appeal...",
+        moderationAppealBtn: "Submit Appeal",
+        moderationAppealSubmitting: "Submitting...",
+        moderationAppealRequired: "Please write your appeal first.",
+        moderationAppealSent: "Appeal submitted. Our team will review it.",
+        moderationAppealFailed: "Failed to submit appeal. Please try again.",
+        publishChecking: "Checking content...",
+        publishCheckingDesc: "We're checking your content to make sure it complies with our Terms & Conditions.",
         errorLoadSites: "Failed to load sites",
         connectingWorkspace: "Connecting to dashboard...",
         toastPublished: "Website published successfully! 🚀",
@@ -6876,6 +6926,7 @@ export const translations: Record<Locale, Translations> = {
         publishShort: "Publish",
         publishSuccess: "Website published successfully! 🚀",
         publishFailed: "Failed to publish website",
+        moderationAppealFailed: "Failed to submit appeal. Please try again.",
         applying: "Applying...",
         applyLive: "Apply to Live",
         apply: "Apply",

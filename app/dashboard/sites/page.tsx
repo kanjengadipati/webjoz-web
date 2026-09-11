@@ -18,6 +18,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { encodeSiteId } from "@/lib/sqids";
 import { BASE_DOMAIN } from "@/lib/site-config";
 import TermsAcceptance from "@/components/terms-acceptance";
+import ModerationBlock, { type ModerationViolation } from "@/components/moderation-block";
 
 /* ── Delete Confirmation Modal ─────────────────────────────────────── */
 interface DeleteModalProps {
@@ -208,10 +209,15 @@ interface PublishModalProps {
   onConfirm: (subdomain: string) => void;
   onCancel: () => void;
   loading: boolean;
+  violations?: ModerationViolation[];
+  onAppealSubmit?: (message: string) => void;
+  appealLoading?: boolean;
+  appealDone?: boolean;
 }
 
-function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps) {
+function PublishModal({ site, onConfirm, onCancel, loading, violations, onAppealSubmit, appealLoading, appealDone }: PublishModalProps) {
   const { t } = useI18n();
+  const hasModerationBlock = !!violations && violations.length > 0;
   const [subdomain, setSubdomain] = useState(() => {
     if (site.subdomain.startsWith("draft-")) return "";
     return site.subdomain;
@@ -248,6 +254,41 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
       title={t("dashboard.sites.publishTitle")}
     >
       <form onSubmit={handleSubmit} className="space-y-6">
+        {loading && (
+          <div className="flex items-center gap-3 border border-primary/20 bg-primary/[0.04] rounded-xl px-4 py-3">
+            <Loader2 className="w-4.5 h-4.5 animate-spin text-primary shrink-0" />
+            <div className="space-y-0.5 min-w-0">
+              <p className="text-[12.5px] font-bold text-foreground leading-snug">
+                {t("dashboard.sites.publishChecking")}
+              </p>
+              <p className="text-[11px] text-muted-foreground leading-relaxed">
+                {t("dashboard.sites.publishCheckingDesc")}
+              </p>
+            </div>
+          </div>
+        )}
+        {hasModerationBlock ? (
+          <>
+            <ModerationBlock
+              violations={violations!}
+              onAppealSubmit={onAppealSubmit!}
+              submitting={appealLoading}
+              appealed={appealDone}
+            />
+            <div className="flex pt-1">
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1 rounded-xl h-11 text-sm border-border hover:bg-muted/50"
+                onClick={onCancel}
+                disabled={appealLoading}
+              >
+                {t("dashboard.sites.cancel")}
+              </Button>
+            </div>
+          </>
+        ) : (
+        <>
         {/* Celebration Header Banner */}
         <div className="bg-gradient-to-tr from-primary/10 to-primary/5 border border-primary/20 rounded-2xl p-4 flex items-center gap-3.5 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 blur-2xl rounded-full pointer-events-none" />
@@ -382,6 +423,8 @@ function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps)
             )}
           </Button>
         </div>
+        </>
+        )}
       </form>
     </Dialog>
   );
@@ -493,6 +536,9 @@ export default function SitesPage() {
   const [renameTarget, setRenameTarget] = useState<Site | null>(null);
   const [publishTarget, setPublishTarget] = useState<Site | null>(null);
   const [publishedSiteTarget, setPublishedSiteTarget] = useState<Site | null>(null);
+  const [moderationViolations, setModerationViolations] = useState<ModerationViolation[] | null>(null);
+  const [appealSubmitting, setAppealSubmitting] = useState(false);
+  const [appealed, setAppealed] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const [copiedId, setCopiedId] = useState<number | null>(null);
 
@@ -585,10 +631,34 @@ export default function SitesPage() {
       setPublishTarget(null);
       setPublishedSiteTarget(tempSite);
       fetchSites();
-    } catch (err: any) {
-      pushToast(err.message || t("dashboard.sites.toastPublishFailed"), "error");
+    } catch (err) {
+      const apiErr = err as { code?: string; message?: string; details?: unknown };
+      if (apiErr.code === "MODERATION_VIOLATIONS" && Array.isArray(apiErr.details)) {
+        setModerationViolations(apiErr.details as ModerationViolation[]);
+        setAppealed(false);
+        return;
+      }
+      pushToast(apiErr.message || t("dashboard.sites.toastPublishFailed"), "error");
     } finally {
       setActionLoading(null);
+    }
+  };
+
+  const handleAppealSubmit = async (message: string) => {
+    if (!publishTarget || !token || !activeTenantId) return;
+    setAppealSubmitting(true);
+    try {
+      await request(`/sites/${publishTarget.id}/appeal`, {
+        method: "POST",
+        headers: { "X-Tenant-ID": activeTenantId.toString() },
+        body: JSON.stringify({ message }),
+      }, token);
+      setAppealed(true);
+    } catch (err) {
+      const apiErr = err as Error;
+      pushToast(apiErr.message || t("dashboard.sites.moderationAppealFailed"), "error");
+    } finally {
+      setAppealSubmitting(false);
     }
   };
 
@@ -815,8 +885,16 @@ export default function SitesPage() {
         <PublishModal
           site={publishTarget}
           onConfirm={handlePublishWithSubdomain}
-          onCancel={() => setPublishTarget(null)}
+          onCancel={() => {
+            setPublishTarget(null);
+            setModerationViolations(null);
+            setAppealed(false);
+          }}
           loading={actionLoading === publishTarget.id}
+          violations={moderationViolations ?? undefined}
+          onAppealSubmit={handleAppealSubmit}
+          appealLoading={appealSubmitting}
+          appealDone={appealed}
         />
       )}
 
@@ -1103,7 +1181,11 @@ export default function SitesPage() {
                     ) : (
                       <button
                         type="button"
-                        onClick={() => setPublishTarget(site)}
+                        onClick={() => {
+                          setPublishTarget(site);
+                          setModerationViolations(null);
+                          setAppealed(false);
+                        }}
                         disabled={actionLoading === site.id}
                         className="btn-primary flex-1 rounded-xl h-9 text-[12px] font-bold flex items-center justify-center gap-1.5 disabled:opacity-50 whitespace-nowrap"
                       >

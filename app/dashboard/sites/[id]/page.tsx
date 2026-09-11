@@ -39,6 +39,7 @@ import SectionForms from "./SectionForms";
 import FontPicker from "./components/FontPicker";
 import PublishModal from "./modals/PublishModal";
 import CongratsModal from "./modals/CongratsModal";
+import { type ModerationViolation } from "@/components/moderation-block";
 import { SiteSubNav } from "@/components/site-sub-nav";
 import { useI18n } from "@/lib/i18n/context";
 import { decodeSiteId } from "@/lib/sqids";
@@ -258,6 +259,9 @@ export default function SiteEditorPage() {
   const [confirmPublishOpen, setConfirmPublishOpen] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [showCongrats, setShowCongrats] = useState(false);
+  const [moderationViolations, setModerationViolations] = useState<ModerationViolation[] | null>(null);
+  const [appealSubmitting, setAppealSubmitting] = useState(false);
+  const [appealed, setAppealed] = useState(false);
 
   const fetchCustomTemplates = async (reset = false) => {
     if (!token || !activeTenantId || !siteId) return;
@@ -513,11 +517,37 @@ export default function SiteEditorPage() {
       if (publishRes.data) {
         setSiteDetails(publishRes.data);
       }
+      setModerationViolations(null);
+      setAppealed(false);
       setShowCongrats(true);
-    } catch (err: any) {
-      pushToast(err.message || t("dashboard.sitesEditor.publishFailed"), "error");
+    } catch (err) {
+      const apiErr = err as { code?: string; message?: string; details?: unknown };
+      if (apiErr.code === "MODERATION_VIOLATIONS" && Array.isArray(apiErr.details)) {
+        setModerationViolations(apiErr.details as ModerationViolation[]);
+        setAppealed(false);
+        return;
+      }
+      pushToast(apiErr.message || t("dashboard.sitesEditor.publishFailed"), "error");
     } finally {
       setPublishing(false);
+    }
+  };
+
+  const handleAppealSubmit = async (message: string) => {
+    if (!siteDetails || !token || !activeTenantId) return;
+    setAppealSubmitting(true);
+    try {
+      await request(`/sites/${siteDetails.id}/appeal`, {
+        method: "POST",
+        headers: { "X-Tenant-ID": activeTenantId.toString() },
+        body: JSON.stringify({ message }),
+      }, token);
+      setAppealed(true);
+    } catch (err) {
+      const apiErr = err as Error;
+      pushToast(apiErr.message || t("dashboard.sitesEditor.moderationAppealFailed"), "error");
+    } finally {
+      setAppealSubmitting(false);
     }
   };
 
@@ -2417,7 +2447,11 @@ export default function SiteEditorPage() {
                   </span>
                   <button
                     type="button"
-                    onClick={() => setConfirmPublishOpen(true)}
+                    onClick={() => {
+                  setConfirmPublishOpen(true);
+                  setModerationViolations(null);
+                  setAppealed(false);
+                }}
                     disabled={publishing}
                     className="flex h-7 items-center gap-1 rounded-lg px-2.5 text-[11px] font-semibold text-primary-foreground transition-all hover:brightness-110 disabled:opacity-60"
                     style={{ background: "var(--primary)" }}
@@ -2429,7 +2463,11 @@ export default function SiteEditorPage() {
               ) : (
                 <button
                   type="button"
-                  onClick={() => setPublishModalOpen(true)}
+                  onClick={() => {
+                  setPublishModalOpen(true);
+                  setModerationViolations(null);
+                  setAppealed(false);
+                }}
                   data-edu="publish-btn"
                   className="flex h-7 items-center gap-1 rounded-lg px-3 text-[11px] font-semibold text-primary-foreground"
                   style={{ background: "var(--primary)" }}
@@ -2638,7 +2676,11 @@ export default function SiteEditorPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setConfirmPublishOpen(true)}
+                  onClick={() => {
+                  setConfirmPublishOpen(true);
+                  setModerationViolations(null);
+                  setAppealed(false);
+                }}
                   disabled={publishing}
                   className="flex h-7 items-center gap-1.5 rounded-lg px-3 text-[11px] font-semibold text-primary-foreground transition-all hover:brightness-110 disabled:opacity-60"
                   style={{ background: "var(--primary)" }}
@@ -2650,7 +2692,11 @@ export default function SiteEditorPage() {
             ) : (
               <button
                 type="button"
-                onClick={() => setPublishModalOpen(true)}
+                onClick={() => {
+                  setPublishModalOpen(true);
+                  setModerationViolations(null);
+                  setAppealed(false);
+                }}
                 className="flex h-7 items-center gap-1.5 rounded-lg px-3 text-[11px] font-semibold text-primary-foreground transition-colors hover:brightness-110"
                 style={{ background: "var(--primary)" }}
               >
@@ -3416,7 +3462,11 @@ export default function SiteEditorPage() {
               {siteDetails?.status === "published" ? (
                 <button
                   type="button"
-                  onClick={() => setConfirmPublishOpen(true)}
+                  onClick={() => {
+                  setConfirmPublishOpen(true);
+                  setModerationViolations(null);
+                  setAppealed(false);
+                }}
                   disabled={publishing}
                   className="flex items-center gap-2 rounded-full px-5 py-2 text-sm font-extrabold text-primary-foreground shadow-[0_8px_24px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 disabled:opacity-70"
                   style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
@@ -3432,7 +3482,11 @@ export default function SiteEditorPage() {
               ) : (
                 <button
                   type="button"
-                  onClick={() => setPublishModalOpen(true)}
+                  onClick={() => {
+                  setPublishModalOpen(true);
+                  setModerationViolations(null);
+                  setAppealed(false);
+                }}
                   className="flex items-center gap-2 rounded-full px-5 py-2 text-sm font-extrabold text-primary-foreground shadow-[0_8px_24px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110"
                   style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
                 >
@@ -3447,8 +3501,16 @@ export default function SiteEditorPage() {
           <PublishModal
             site={siteDetails}
             onConfirm={handlePublishWithSubdomain}
-            onCancel={() => setPublishModalOpen(false)}
+            onCancel={() => {
+              setPublishModalOpen(false);
+              setModerationViolations(null);
+              setAppealed(false);
+            }}
             loading={publishing}
+            violations={moderationViolations ?? undefined}
+            onAppealSubmit={handleAppealSubmit}
+            appealLoading={appealSubmitting}
+            appealDone={appealed}
           />
         )}
 
@@ -3481,6 +3543,9 @@ export default function SiteEditorPage() {
                   onClick={async () => {
                     setConfirmPublishOpen(false);
                     await handlePublishWithSubdomain(siteDetails.subdomain);
+                    if (moderationViolations && moderationViolations.length > 0) {
+                      setPublishModalOpen(true);
+                    }
                   }}
                   className="flex-1 rounded-xl bg-emerald-600 py-2 text-[12px] font-bold text-white hover:bg-emerald-500 transition-colors disabled:opacity-60"
                 >
