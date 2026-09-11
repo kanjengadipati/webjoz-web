@@ -40,7 +40,7 @@ export default function EnTermsPage() {
         </div>
 
         <h1 className="text-3xl font-bold mb-2">Terms &amp; Conditions</h1>
-        <p className="text-sm text-muted-foreground mb-10">Last updated: August 16, 2026 · Applies to Webjoz services</p>
+        <p className="text-sm text-muted-foreground mb-10">Last updated: September 11, 2026 · Applies to Webjoz services</p>
 
         <div className="prose prose-invert max-w-none space-y-8 text-sm leading-relaxed text-foreground/80">
 
@@ -94,7 +94,8 @@ export default function EnTermsPage() {
             <ul className="list-disc pl-5 space-y-2 mt-2">
               <li>Post illegal, fraudulent, or unlawful content under the laws of Indonesia.</li>
               <li><strong>Provide online lending (pinjol) services</strong>, extend loans, or carry out financial activities not in compliance with applicable regulations.</li>
-              <li><strong>Engage in any form of gambling</strong>, including online gambling and betting.</li>
+              <li><strong>Engage in any form of gambling</strong>, including online gambling, slots, and betting.</li>
+              <li>Publish content that conflicts with <strong>Islamic (sharia) principles</strong> or prevailing religious norms and decency in Indonesia.</li>
               <li>Distribute malware, phishing, or other harmful activity.</li>
               <li>Infringe the intellectual property rights of third parties.</li>
               <li>Send spam or unsolicited mass messages.</li>
@@ -109,7 +110,7 @@ export default function EnTermsPage() {
               You are fully responsible for the accuracy, legality, and content of the websites you publish through Webjoz. You warrant that all content you publish:
             </p>
             <ul className="list-disc pl-5 space-y-2 mt-2">
-              <li>Does not violate any law, including prohibitions on online lending (pinjol), gambling, or fraud.</li>
+              <li>Does not violate any law, including prohibitions on online lending (pinjol), gambling, or fraud, and does not conflict with Islamic (sharia) principles.</li>
               <li>Does not infringe the intellectual property or other rights of third parties.</li>
               <li>Does not contain misleading information or violate applicable regulations.</li>
             </ul>
@@ -149,7 +150,20 @@ export default function EnTermsPage() {
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-3">11. Service Termination</h2>
             <p>
-              We reserve the right to terminate or suspend your account if you violate these terms, without prior notice in cases of serious violations. You may delete your account at any time through the dashboard.
+              We reserve the right to terminate or suspend your account if you violate these terms. <strong>Serious</strong> violations — including but not limited to:
+            </p>
+            <ul className="list-disc pl-5 space-y-2 mt-2">
+              <li>Providing online lending (pinjol) services or carrying out other illegal financial activities;</li>
+              <li>Engaging in any form of gambling, including online gambling, slots, and betting;</li>
+              <li>Publishing content prohibited by Indonesian law or Islamic (sharia) principles;</li>
+              <li>Fraud or activity that harms other users;</li>
+              <li>Distributing malware, phishing, or other harmful activity.</li>
+            </ul>
+            <p className="mt-2">
+              Serious violations result in <strong>suspension or deletion of your account without prior notice and without a refund</strong>.
+            </p>
+            <p className="mt-2">
+              For <strong>non-serious</strong> violations, we will first provide a warning or notification with a reasonable cure period before suspension. You may delete your account at any time through the dashboard.
             </p>
           </section>
 

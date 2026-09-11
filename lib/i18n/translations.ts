@@ -505,6 +505,9 @@ export interface Translations {
       customDomainLink: string;
       launching: string;
       launchWebsite: string;
+      publishTermsTitle: string;
+      publishTermsLink: string;
+      publishTermsRequired: string;
       errorLoadSites: string;
       connectingWorkspace: string;
       toastPublished: string;
@@ -2869,6 +2872,9 @@ export const translations: Record<Locale, Translations> = {
         customDomainLink: "Custom Domain",
         launching: "Meluncurkan...",
         launchWebsite: "Luncurkan Website",
+        publishTermsTitle: "Saya menyetujui",
+        publishTermsLink: "Syarat & Ketentuan Webjoz",
+        publishTermsRequired: "Mohon centang persetujuan untuk mempublikasikan website.",
         errorLoadSites: "Gagal memuat situs",
         connectingWorkspace: "Menghubungkan ke dashboard...",
         toastPublished: "Website berhasil dipublikasikan! 🚀",
@@ -5307,6 +5313,9 @@ export const translations: Record<Locale, Translations> = {
         customDomainLink: "Custom Domain",
         launching: "Launching...",
         launchWebsite: "Launch Website",
+        publishTermsTitle: "I agree to",
+        publishTermsLink: "Webjoz's Terms & Conditions",
+        publishTermsRequired: "Please check this box to publish the website.",
         errorLoadSites: "Failed to load sites",
         connectingWorkspace: "Connecting to dashboard...",
         toastPublished: "Website published successfully! 🚀",
