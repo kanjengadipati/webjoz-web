@@ -7,6 +7,7 @@ import { Dialog } from "@/components/ui/dialog";
 import { Button } from "@/components/ui";
 import { useI18n } from "@/lib/i18n/context";
 import TermsAcceptance from "@/components/terms-acceptance";
+import ModerationBlock, { type ModerationViolation } from "@/components/moderation-block";
 
 export interface PublishModalProps {
   site: {
@@ -16,10 +17,15 @@ export interface PublishModalProps {
   onConfirm: (subdomain: string) => void;
   onCancel: () => void;
   loading: boolean;
+  violations?: ModerationViolation[];
+  onAppealSubmit?: (message: string) => void;
+  appealLoading?: boolean;
+  appealDone?: boolean;
 }
 
-export default function PublishModal({ site, onConfirm, onCancel, loading }: PublishModalProps) {
+export default function PublishModal({ site, onConfirm, onCancel, loading, violations, onAppealSubmit, appealLoading, appealDone }: PublishModalProps) {
   const { t } = useI18n();
+  const hasModerationBlock = !!violations && violations.length > 0;
   const [subdomain, setSubdomain] = useState(() => {
     if (site.subdomain.startsWith("draft-")) return "";
     return site.subdomain;
@@ -56,6 +62,41 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
       title={t("dashboard.sites.publishTitle")}
     >
       <form onSubmit={handleSubmit} className="space-y-6">
+        {loading && (
+          <div className="flex items-center gap-3 border border-primary/20 bg-primary/[0.04] rounded-xl px-4 py-3">
+            <Loader2 className="w-4.5 h-4.5 animate-spin text-primary shrink-0" />
+            <div className="space-y-0.5 min-w-0">
+              <p className="text-[12.5px] font-bold text-foreground leading-snug">
+                {t("dashboard.sites.publishChecking")}
+              </p>
+              <p className="text-[11px] text-muted-foreground leading-relaxed">
+                {t("dashboard.sites.publishCheckingDesc")}
+              </p>
+            </div>
+          </div>
+        )}
+        {hasModerationBlock ? (
+          <>
+            <ModerationBlock
+              violations={violations!}
+              onAppealSubmit={onAppealSubmit!}
+              submitting={appealLoading}
+              appealed={appealDone}
+            />
+            <div className="flex pt-1">
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1 rounded-xl h-11 text-sm border-border hover:bg-muted/50"
+                onClick={onCancel}
+                disabled={appealLoading}
+              >
+                {t("dashboard.sites.cancel")}
+              </Button>
+            </div>
+          </>
+        ) : (
+        <>
         {/* Celebration Header Banner */}
         <div className="bg-gradient-to-tr from-primary/10 to-primary/5 border border-primary/20 rounded-2xl p-4 flex items-center gap-3.5 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 blur-2xl rounded-full pointer-events-none" />
@@ -196,6 +237,8 @@ export default function PublishModal({ site, onConfirm, onCancel, loading }: Pub
             )}
           </Button>
         </div>
+        </>
+        )}
       </form>
     </Dialog>
   );
