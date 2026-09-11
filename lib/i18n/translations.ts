@@ -4506,15 +4506,15 @@ export const translations: Record<Locale, Translations> = {
       wizard: {
         initialMessage: "Halo! Saya Jozz-ai dari Webjoz. Mau buat website bisnis, jasa, atau portofolio karya? Kita buat dalam 1 menit! Apa nama bisnis, brand, atau nama profesional Anda?",
         nameAckVariants: [
-          "Baik, nama bisnis telah dicatat.",
-          "Nama bisnis berhasil disimpan.",
+          "Baik, nama telah dicatat.",
+          "Nama berhasil disimpan.",
           "Oke, nama sudah tersimpan.",
-          "Siap, nama bisnis tercatat.",
-          "Nama usaha Anda sudah masuk sistem.",
-          "Baik, nama bisnis terdaftar."
+          "Siap, nama tercatat.",
+          "Nama Anda sudah masuk sistem.",
+          "Baik, nama sudah terdaftar."
         ],
         nameConfirmVariants: [
-          "Itu nama bisnis aslinya, atau masih nama sementara? Pilih 'Ya' untuk lanjut, atau 'Ganti' jika ingin diubah 😊",
+          "Itu nama aslinya, atau masih nama sementara? Pilih 'Ya' untuk lanjut, atau 'Ganti' jika ingin diubah 😊",
           "Apakah itu nama sebenarnya? Klik 'Ya' untuk lanjut, atau 'Ganti' jika ingin memasukkan nama lain.",
           "Nama tersebut terdengar seperti percobaan — pastikan ini yang Anda mau. Klik 'Ya' untuk lanjut atau 'Ganti'."
         ],
@@ -6944,15 +6944,15 @@ export const translations: Record<Locale, Translations> = {
       wizard: {
         initialMessage: "Hello! I'm Jozz-ai from Webjoz. Looking to build a website for your business, service, or creative portfolio? We'll make it in 1 minute! What is your business, brand, or professional name?",
         nameAckVariants: [
-          "Got it, business name recorded.",
-          "Business name saved successfully.",
+          "Got it, name recorded.",
+          "Name saved successfully.",
           "Okay, the name is saved.",
-          "Understood, business name noted.",
-          "Your business name is registered.",
-          "Great, business name saved."
+          "Understood, name noted.",
+          "Your name is in the system.",
+          "Great, name saved."
         ],
         nameConfirmVariants: [
-          "Is that your official business name, or a temporary one? Click 'Yes' to continue, or 'Change' if you'd like to edit it 😊",
+          "Is that the official name, or a temporary one? Click 'Yes' to continue, or 'Change' if you'd like to edit it 😊",
           "Is that the actual name? Click 'Yes' to continue, or 'Change' to enter a different one.",
           "That name sounds like a placeholder — make sure it's the one you want. Click 'Yes' or 'Change'."
         ],

@@ -1033,11 +1033,12 @@ const DESC_HINTS: DescHintEntry[] = [
       "developer", "pengembang", "programmer", "software house", "software",
       "aplikasi", "jasa it", "jasa aplikasi", "coding", "pemrograman",
       "jasa coding", "web development", "mobile app", "fullstack", "backend", "frontend",
+      "engineer", "software engineer", "web engineer", "frontend engineer", "backend engineer", "fullstack engineer",
       "teknologi informasi", "sistem informasi", "it solution", "it consultant",
       // EN
       "website", "web", "web developer", "web development", "web design",
       "landing page", "software", "app development", "mobile app", "developer",
-      "coding", "programming", "it services", "tech", "technology",
+      "coding", "programming", "it services", "tech", "technology", "engineer", "software engineer", "web engineer",
       "saas", "platform", "api", "database", "cloud", "devops",
     ],
     weight: 5,

@@ -248,12 +248,12 @@ export const WIREFRAME_STEPS = ["Tentang", "Keunggulan", "Kontak"] as const;
 
 // Variants for name acknowledgement / confirmation
 export const NAME_ACK_VARIANTS = [
-  "Baik, nama bisnis telah dicatat.",
-  "Nama bisnis berhasil disimpan.",
+  "Baik, nama telah dicatat.",
+  "Nama berhasil disimpan.",
   "Oke, nama sudah tersimpan.",
-  "Siap, nama bisnis tercatat.",
-  "Nama usaha Anda sudah masuk sistem.",
-  "Baik, nama bisnis terdaftar."
+  "Siap, nama tercatat.",
+  "Nama Anda sudah masuk sistem.",
+  "Baik, nama sudah terdaftar."
 ];
 
 export const DESCRIPTION_PROMPT = "Ceritakan bisnis atau profil Anda secara singkat — cukup 1-2 kalimat. Misalnya: karya/jasa yang ditawarkan, keahlian Anda, atau untuk siapa. Tekan Enter untuk lanjut jika ingin skip.";
@@ -263,7 +263,7 @@ export const DESCRIPTION_INFERENCE_MEDIUM = "Saya lihat bidang usaha Anda adalah
 export const DESCRIPTION_INFERENCE_NONE = "Baik, silakan pilih jenis bisnis Anda:";
 
 export const NAME_CONFIRM_VARIANTS = [
-  "Itu nama bisnis aslinya, atau masih nama sementara? Pilih 'Ya' untuk lanjut, atau 'Ganti' jika ingin diubah 😊",
+  "Itu nama aslinya, atau masih nama sementara? Pilih 'Ya' untuk lanjut, atau 'Ganti' jika ingin diubah 😊",
   "Apakah itu nama sebenarnya? Klik 'Ya' untuk lanjut, atau 'Ganti' jika ingin memasukkan nama lain.",
   "Nama tersebut terdengar seperti percobaan — pastikan ini yang Anda mau. Klik 'Ya' untuk lanjut atau 'Ganti'."
 ];
@@ -362,7 +362,13 @@ export const NAME_TYPE_HINTS: Record<string, { type?: string; subType?: string }
   "developer": { type: "Portofolio", subType: "Developer & IT" },
   "software": { type: "Portofolio", subType: "Developer & IT" },
   "programmer": { type: "Portofolio", subType: "Developer & IT" },
+  "engineer": { type: "Portofolio", subType: "Developer & IT" },
+  "frontend": { type: "Portofolio", subType: "Developer & IT" },
+  "backend": { type: "Portofolio", subType: "Developer & IT" },
+  "fullstack": { type: "Portofolio", subType: "Developer & IT" },
   "website": { type: "Portofolio", subType: "Developer & IT" },
+  "musik": { type: "Portofolio", subType: "Musisi & Entertainer" },
+  "band": { type: "Portofolio", subType: "Musisi & Entertainer" },
   // Kreatif & Profesional — agency/tim/jasa
   "seo": { type: "Kreatif & Profesional", subType: "SEO & Digital Specialist" },
   "agency": { type: "Kreatif & Profesional", subType: "Digital & Marketing Agency" },
@@ -370,8 +376,6 @@ export const NAME_TYPE_HINTS: Record<string, { type?: string; subType?: string }
   "coach": { type: "Kreatif & Profesional", subType: "Tutor & Life Coach" },
   "speaker": { type: "Kreatif & Profesional", subType: "Public Speaker & Trainer" },
   "trainer": { type: "Kreatif & Profesional", subType: "Public Speaker & Trainer" },
-  "musik": { type: "Kreatif & Profesional", subType: "Musisi & Entertainer" },
-  "band": { type: "Kreatif & Profesional", subType: "Musisi & Entertainer" },
   "wedding organizer": { type: "Layanan & Reservasi", subType: "Event & Wedding Organizer" },
   "wo ": { type: "Layanan & Reservasi", subType: "Event & Wedding Organizer" },
   "event organizer": { type: "Layanan & Reservasi", subType: "Event & Wedding Organizer" },
