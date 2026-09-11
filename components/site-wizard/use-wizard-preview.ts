@@ -241,6 +241,34 @@ export function useWizardPreview() {
     }
   };
 
+  const resetPreview = useCallback(() => {
+    setPreviewState("wireframe");
+    setPreviewData(null);
+    setStreamedSections({});
+    setSectionSources({});
+    setStreamedDesignToken(null);
+    setStreamedTemplateId("");
+    setArrivedSections([]);
+    setTemplatePool([]);
+    setTemplatePoolIndex(0);
+    setRegenCount(0);
+    setHasUnsavedEdits(false);
+    setPreviewHistory([]);
+    setHistoryIndex(-1);
+    setLoadingStep(0);
+    setStreamDone(false);
+    setSmoothProgress(0);
+    setIsSwitchingTemplate(false);
+    streamedSectionsRef.current = {};
+    streamedTokenRef.current = null;
+    historyIndexRef.current = -1;
+    loadingStepRef.current = 0;
+    streamDoneRef.current = false;
+    pendingResultRef.current = false;
+    desiredStepRef.current = 0;
+    prevStepRef.current = 0;
+  }, []);
+
   return {
     previewState,
     setPreviewState,
@@ -291,5 +319,6 @@ export function useWizardPreview() {
     scrollPreviewToTop,
     handleSwitchTemplate,
     advanceLoadingStepFromSection,
+    resetPreview,
   };
 }

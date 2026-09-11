@@ -50,6 +50,7 @@ import {
   Phone,
   Plus,
   RefreshCw,
+  RotateCcw,
   Scale,
   Scissors,
   Search,
@@ -437,6 +438,20 @@ export function SiteWizard({
   // Read localStorage in an effect (not a useState initializer) so SSR and the
   // first client render agree — otherwise the resume banner causes a hydration mismatch.
   const [resumeDraft, setResumeDraft] = useState<WizardResumeSnapshot | null>(null);
+
+  const handleResetChat = () => {
+    if (preview.previewState === "loading") {
+      generate.handleCancelGenerationError();
+    }
+    chat.resetChat();
+    preview.resetPreview();
+    clearWizardSnapshot();
+    setResumeDraft(null);
+    if (device.isMobile) {
+      device.setMobileScreen("chat");
+    }
+  };
+
   React.useEffect(() => {
     const snap = loadWizardSnapshot();
     if (snap && snapshotHasProgress(snap)) {
@@ -1073,48 +1088,61 @@ export function SiteWizard({
         style={{ borderColor: "rgba(255,255,255,0.07)" }}
       >
         <div className="px-5 pt-4 pb-0 shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.09)", boxShadow: "0 1px 0 rgba(255,255,255,0.025)" }}>
-          <div className="flex items-start gap-3 mb-4">
-            <button
-              type="button"
-              onClick={handleBack}
-              aria-label="Kembali"
-              className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-border bg-muted/50 text-slate-300 transition-all hover:border-primary/40 hover:bg-primary/10 hover:text-white active:scale-95"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex min-w-0 items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shrink-0 text-primary-foreground">
-                    <SparkleGenAI className="w-[27px] h-[27px]" />
-                  </div>
-                  <span className="font-bold text-white text-sm leading-tight truncate">Joz-AI · Webjoz Assistant</span>
+          <div className="flex items-center justify-between gap-3 mb-4">
+            {/* Left: Back button + Avatar + Title & Subtitle */}
+            <div className="flex items-center gap-3 min-w-0">
+              <button
+                type="button"
+                onClick={handleBack}
+                aria-label="Kembali"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-300 transition-all hover:border-primary/40 hover:bg-primary/10 hover:text-white active:scale-95 cursor-pointer"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+
+              <div className="relative shrink-0">
+                <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-primary-foreground shadow-xs">
+                  <SparkleGenAI className="w-[22px] h-[22px]" />
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  {device.isMobile && preview.previewState === "result" && (
-                    <button
-                      type="button"
-                      onClick={() => device.setMobileScreen("preview")}
-                      className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold transition-all active:scale-95 animate-pulse cursor-pointer"
-                    >
-                      Preview &rarr;
-                    </button>
-                  )}
-                  <span className="text-[10px] font-semibold text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full">BETA</span>
-                  
-                  {/* Help Button in Top Chat Header */}
-                  <Link
-                    href="/help"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex h-7 w-7 items-center justify-center rounded-lg border border-white/10 bg-white/[0.06] text-slate-400 hover:text-white hover:bg-white/10 transition-colors shadow-xs"
-                    title={t("landing.navHelp", "Pusat Bantuan")}
-                    aria-label="Pusat Bantuan"
-                  >
-                    <HelpCircle className="h-4 w-4" />
-                  </Link>
-                </div>
+                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-background" />
               </div>
+
+              <div className="min-w-0 flex flex-col">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-bold text-white text-sm leading-tight truncate">Joz-AI</span>
+                  <span className="text-[9px] font-semibold tracking-wide text-primary bg-primary/10 border border-primary/20 px-1.5 py-0.5 rounded-md leading-none">
+                    BETA
+                  </span>
+                </div>
+                <span className="text-[11px] text-slate-400 leading-tight truncate">
+                  Webjoz Assistant
+                </span>
+              </div>
+            </div>
+
+            {/* Right: Mobile preview link + Help */}
+            <div className="flex items-center gap-2 shrink-0">
+              {device.isMobile && preview.previewState === "result" && (
+                <button
+                  type="button"
+                  onClick={() => device.setMobileScreen("preview")}
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold transition-all active:scale-95 animate-pulse cursor-pointer"
+                >
+                  Preview &rarr;
+                </button>
+              )}
+
+              {/* Help Button */}
+              <Link
+                href="/help"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer shadow-xs"
+                title={t("landing.navHelp", "Pusat Bantuan")}
+                aria-label="Pusat Bantuan"
+              >
+                <HelpCircle className="h-4 w-4" />
+              </Link>
             </div>
           </div>
 
@@ -1902,9 +1930,21 @@ export function SiteWizard({
               {preview.previewState === "wireframe" && chat.chatStage === "done" && t("dashboard.wizard.statusPreparingAi", "Menyiapkan AI...")}
             </span>
           </span>
-          <span className="text-[11px] text-slate-500" suppressHydrationWarning>
-            {clock.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB
-          </span>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleResetChat}
+              disabled={preview.previewState === "loading" || chat.isAiTyping || (chat.chatStage === "name" && chat.messages.length <= 1 && !chat.inputValue.trim())}
+              className="flex items-center gap-1 text-[11px] text-slate-500 hover:text-slate-200 transition-colors disabled:opacity-30 disabled:pointer-events-none cursor-pointer py-0.5 px-1 rounded-md active:scale-95"
+              title={t("dashboard.wizard.resetChatTooltip", "Mulai ulang chat dari awal")}
+            >
+              <RotateCcw className="w-3 h-3" />
+              <span>{t("dashboard.wizard.resetChatBtn", "Reset Chat")}</span>
+            </button>
+            <span className="text-[11px] text-slate-500 hidden sm:inline" suppressHydrationWarning>
+              {clock.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB
+            </span>
+          </div>
         </div>
       </div>
 
