@@ -75,7 +75,7 @@ export const MOOD_OPTIONS: MoodItem[] = [
   },
 ];
 
-export const INITIAL_MESSAGE = "🤖 Halo! Saya akan membantu membuat website bisnis Anda. Apa nama bisnis Anda?";
+export const INITIAL_MESSAGE = "Halo! Saya Jozz-ai dari Webjoz. Mau buat website bisnis, jasa, atau portofolio karya? Kita buat dalam 1 menit! Apa nama bisnis, brand, atau nama profesional Anda?";
 
 export const AI_LOADING_STEPS = [
   "Menganalisis profil bisnis Anda...",
@@ -256,7 +256,7 @@ export const NAME_ACK_VARIANTS = [
   "Baik, nama bisnis terdaftar."
 ];
 
-export const DESCRIPTION_PROMPT = "Ceritakan bisnis Anda secara singkat — cukup 1-2 kalimat. Misalnya: produk/jasa apa yang ditawarkan, untuk siapa, dan di mana lokasinya. Tekan Enter untuk lanjut jika ingin skip.";
+export const DESCRIPTION_PROMPT = "Ceritakan bisnis atau profil Anda secara singkat — cukup 1-2 kalimat. Misalnya: karya/jasa yang ditawarkan, keahlian Anda, atau untuk siapa. Tekan Enter untuk lanjut jika ingin skip.";
 export const DESCRIPTION_SKIP_KEYWORD = "lewat";
 export const DESCRIPTION_INFERENCE_HIGH = "Saya lihat Anda bergerak di bidang %s — %s. Langsung buat website-nya?";
 export const DESCRIPTION_INFERENCE_MEDIUM = "Saya lihat bidang usaha Anda adalah %s. Bisa pilih yang lebih spesifik?";
