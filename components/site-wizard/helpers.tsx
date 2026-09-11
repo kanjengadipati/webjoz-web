@@ -939,7 +939,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 5,
   },
   {
-    type: "Kreatif & Profesional",
+    type: "Portofolio",
     subType: "Konten Kreator",
     keywords: [
       // ID
@@ -953,7 +953,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 5,
   },
   {
-    type: "Kreatif & Profesional",
+    type: "Portofolio",
     subType: "Fotografer",
     keywords: [
       // ID
@@ -965,7 +965,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 4,
   },
   {
-    type: "Kreatif & Profesional",
+    type: "Portofolio",
     subType: "Videografer",
     keywords: [
       // ID
@@ -977,7 +977,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 4,
   },
   {
-    type: "Kreatif & Profesional",
+    type: "Portofolio",
     subType: "Desainer",
     keywords: [
       // ID — visual/graphic designer, ui/ux
@@ -992,7 +992,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 4,
   },
   {
-    type: "Kreatif & Profesional",
+    type: "Portofolio",
     subType: "Ilustrator & Seniman",
     keywords: [
       // ID
@@ -1003,7 +1003,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 5,
   },
   {
-    type: "Kreatif & Profesional",
+    type: "Portofolio",
     subType: "Arsitek & Desainer Interior",
     keywords: [
       // ID
@@ -1014,7 +1014,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 5,
   },
   {
-    type: "Kreatif & Profesional",
+    type: "Portofolio",
     subType: "Penulis & Copywriter",
     keywords: [
       // ID
@@ -1025,7 +1025,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 5,
   },
   {
-    type: "Kreatif & Profesional",
+    type: "Portofolio",
     subType: "Developer & IT",
     keywords: [
       // ID — web/app developer, software house, IT services
@@ -1088,7 +1088,7 @@ const DESC_HINTS: DescHintEntry[] = [
     weight: 5,
   },
   {
-    type: "Kreatif & Profesional",
+    type: "Portofolio",
     subType: "Musisi & Entertainer",
     keywords: [
       // ID

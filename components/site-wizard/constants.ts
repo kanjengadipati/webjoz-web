@@ -90,27 +90,33 @@ export const AI_LOADING_STEPS = [
 export const BUSINESS_TYPES: BusinessTypeItem[] = [
   { value: "Kuliner", emoji: "🍽️", label: "Kuliner", desc: "Restoran, Warung, Cafe & Catering" },
   { value: "Toko", emoji: "🛒", label: "Toko", desc: "Retail & Produk Fisik" },
-  // "Kreatif & Profesional" mencakup website portofolio, kreator konten, seniman, agensi, dan profesional
-  { value: "Kreatif & Profesional", emoji: "🎨", label: "Kreatif & Profesional", desc: "Portofolio, Desainer, Developer, Agency, Kreator" },
+  // "Portofolio" untuk kreator & profesional individual yang menampilkan karya
+  { value: "Portofolio", emoji: "🎨", label: "Portofolio", desc: "Fotografer, Desainer, Developer, Kreator & Personal Brand" },
+  // "Kreatif & Profesional" untuk agensi, tim, dan jasa profesional
+  { value: "Kreatif & Profesional", emoji: "💼", label: "Kreatif & Profesional", desc: "Agency, Konsultan, Notaris & Jasa Profesional" },
   { value: "Company Profile", emoji: "🏢", label: "Company Profile", desc: "Properti, Konstruksi, Manufaktur, Yayasan, & Institusi" },
 ];
 
-// Sub-tipe untuk "Kreatif & Profesional" (mencakup portofolio, kreator, seniman, developer, dan praktisi profesional)
-const PORTOFOLIO_SUB_TYPES: SubTypeItem[] = [
-  { value: "Konten Kreator", emoji: "🎬", label: "Konten Kreator" },
+// Sub-tipe untuk "Portofolio" — kreator & profesional individual yang menampilkan karya
+const PORTOFOLIO_PERSONAL_SUB_TYPES: SubTypeItem[] = [
   { value: "Fotografer", emoji: "📷", label: "Fotografer" },
   { value: "Videografer", emoji: "🎥", label: "Videografer" },
   { value: "Desainer", emoji: "🎨", label: "Desainer" },
   { value: "Ilustrator & Seniman", emoji: "🎭", label: "Ilustrator & Seniman" },
-  { value: "Arsitek & Desainer Interior", emoji: "🏛️", label: "Arsitek & Interior" },
-  { value: "Penulis & Copywriter", emoji: "✍️", label: "Penulis & Copywriter" },
+  { value: "Konten Kreator", emoji: "🎬", label: "Konten Kreator" },
   { value: "Developer & IT", emoji: "💻", label: "Developer & IT" },
-  { value: "SEO & Digital Specialist", emoji: "🔍", label: "SEO & Digital" },
+  { value: "Penulis & Copywriter", emoji: "✍️", label: "Penulis & Copywriter" },
+  { value: "Arsitek & Desainer Interior", emoji: "🏛️", label: "Arsitek & Interior" },
+  { value: "Musisi & Entertainer", emoji: "🎵", label: "Musisi & Hiburan" },
+];
+
+// Sub-tipe untuk "Kreatif & Profesional" — agensi, tim, dan jasa profesional
+const KREATIF_PRO_SUB_TYPES: SubTypeItem[] = [
   { value: "Digital & Marketing Agency", emoji: "📈", label: "Digital Agency" },
+  { value: "SEO & Digital Specialist", emoji: "🔍", label: "SEO & Digital" },
   { value: "Konsultan", emoji: "📊", label: "Konsultan" },
   { value: "Tutor & Life Coach", emoji: "🎓", label: "Tutor & Coach" },
   { value: "Public Speaker & Trainer", emoji: "🎤", label: "Speaker & Trainer" },
-  { value: "Musisi & Entertainer", emoji: "🎵", label: "Musisi & Hiburan" },
   { value: "Notaris & PPAT", emoji: "⚖️", label: "Notaris & PPAT" },
 ];
 
@@ -181,9 +187,11 @@ export const SUB_TYPES: Record<string, SubTypeItem[]> = {
     { value: "Pendidikan & Kursus", emoji: "📚", label: "Les & Kursus" },
     { value: "Biro Jasa & Perizinan", emoji: "📋", label: "Biro Jasa" },
   ],
-  // Kategori "Kreatif & Profesional" mencakup website portofolio, kreator konten, seniman, dan profesional
-  "Portofolio & Kreator": PORTOFOLIO_SUB_TYPES,
-  "Kreatif & Profesional": PORTOFOLIO_SUB_TYPES,
+  // "Portofolio" — individual / personal brand
+  "Portofolio": PORTOFOLIO_PERSONAL_SUB_TYPES,
+  // Backward-compat aliases (data lama di database)
+  "Portofolio & Kreator": PORTOFOLIO_PERSONAL_SUB_TYPES,
+  "Kreatif & Profesional": KREATIF_PRO_SUB_TYPES,
   "Company Profile": [
     { value: "Properti & Real Estate", emoji: "🏠", label: "Properti" },
     { value: "Konstruksi & Kontraktor", emoji: "🏗️", label: "Konstruksi" },
@@ -328,32 +336,34 @@ export const NAME_TYPE_HINTS: Record<string, { type?: string; subType?: string }
   "fitness": { type: "Layanan & Reservasi", subType: "Gym & Olahraga" },
   "cleaning": { type: "Layanan & Reservasi", subType: "Jasa Rumah & Kebersihan" },
   "cuci ac": { type: "Layanan & Reservasi", subType: "Jasa Rumah & Kebersihan" },
+  // Portofolio — individual / personal brand
   "konsultan": { type: "Kreatif & Profesional", subType: "Konsultan" },
-  "fotogra": { type: "Kreatif & Profesional", subType: "Fotografer" },
+  "fotogra": { type: "Portofolio", subType: "Fotografer" },
   "minuman": { type: "Kuliner", subType: "Minuman & Bubble Tea" },
   "bubble": { type: "Kuliner", subType: "Minuman & Bubble Tea" },
-  "kreator": { type: "Kreatif & Profesional", subType: "Konten Kreator" },
-  "creator": { type: "Kreatif & Profesional", subType: "Konten Kreator" },
-  "konten": { type: "Kreatif & Profesional", subType: "Konten Kreator" },
-  "influencer": { type: "Kreatif & Profesional", subType: "Konten Kreator" },
-  "youtuber": { type: "Kreatif & Profesional", subType: "Konten Kreator" },
-  "tiktoker": { type: "Kreatif & Profesional", subType: "Konten Kreator" },
-  "streamer": { type: "Kreatif & Profesional", subType: "Konten Kreator" },
-  "vlogger": { type: "Kreatif & Profesional", subType: "Konten Kreator" },
-  "video": { type: "Kreatif & Profesional", subType: "Videografer" },
-  "desain": { type: "Kreatif & Profesional", subType: "Desainer" },
-  "design": { type: "Kreatif & Profesional", subType: "Desainer" },
-  "ilustrator": { type: "Kreatif & Profesional", subType: "Ilustrator & Seniman" },
-  "illustrator": { type: "Kreatif & Profesional", subType: "Ilustrator & Seniman" },
-  "seniman": { type: "Kreatif & Profesional", subType: "Ilustrator & Seniman" },
-  "arsitek": { type: "Kreatif & Profesional", subType: "Arsitek & Desainer Interior" },
-  "interior": { type: "Kreatif & Profesional", subType: "Arsitek & Desainer Interior" },
-  "penulis": { type: "Kreatif & Profesional", subType: "Penulis & Copywriter" },
-  "copywriter": { type: "Kreatif & Profesional", subType: "Penulis & Copywriter" },
-  "developer": { type: "Kreatif & Profesional", subType: "Developer & IT" },
-  "software": { type: "Kreatif & Profesional", subType: "Developer & IT" },
-  "programmer": { type: "Kreatif & Profesional", subType: "Developer & IT" },
-  "website": { type: "Kreatif & Profesional", subType: "Developer & IT" },
+  "kreator": { type: "Portofolio", subType: "Konten Kreator" },
+  "creator": { type: "Portofolio", subType: "Konten Kreator" },
+  "konten": { type: "Portofolio", subType: "Konten Kreator" },
+  "influencer": { type: "Portofolio", subType: "Konten Kreator" },
+  "youtuber": { type: "Portofolio", subType: "Konten Kreator" },
+  "tiktoker": { type: "Portofolio", subType: "Konten Kreator" },
+  "streamer": { type: "Portofolio", subType: "Konten Kreator" },
+  "vlogger": { type: "Portofolio", subType: "Konten Kreator" },
+  "video": { type: "Portofolio", subType: "Videografer" },
+  "desain": { type: "Portofolio", subType: "Desainer" },
+  "design": { type: "Portofolio", subType: "Desainer" },
+  "ilustrator": { type: "Portofolio", subType: "Ilustrator & Seniman" },
+  "illustrator": { type: "Portofolio", subType: "Ilustrator & Seniman" },
+  "seniman": { type: "Portofolio", subType: "Ilustrator & Seniman" },
+  "arsitek": { type: "Portofolio", subType: "Arsitek & Desainer Interior" },
+  "interior": { type: "Portofolio", subType: "Arsitek & Desainer Interior" },
+  "penulis": { type: "Portofolio", subType: "Penulis & Copywriter" },
+  "copywriter": { type: "Portofolio", subType: "Penulis & Copywriter" },
+  "developer": { type: "Portofolio", subType: "Developer & IT" },
+  "software": { type: "Portofolio", subType: "Developer & IT" },
+  "programmer": { type: "Portofolio", subType: "Developer & IT" },
+  "website": { type: "Portofolio", subType: "Developer & IT" },
+  // Kreatif & Profesional — agency/tim/jasa
   "seo": { type: "Kreatif & Profesional", subType: "SEO & Digital Specialist" },
   "agency": { type: "Kreatif & Profesional", subType: "Digital & Marketing Agency" },
   "tutor": { type: "Kreatif & Profesional", subType: "Tutor & Life Coach" },

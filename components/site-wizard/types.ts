@@ -23,6 +23,8 @@ export type Message = {
   moodValue?: string;
   isPreparing?: boolean;
   isEdited?: boolean;
+  isRefined?: boolean;
+  isAiResponse?: boolean;
 };
 
 export type PreviewData = {
