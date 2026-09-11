@@ -98,7 +98,7 @@ function RealPreviewPanel({
   content,
   designToken,
   flowStep = 0,
-  baseWidth = 1100,
+  baseWidth = 1280,
 }: {
   TemplateComponent: React.ComponentType<any>;
   content: any;
@@ -162,7 +162,7 @@ function RealPreviewPanel({
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 overflow-hidden rounded-[1.4rem] border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
+      className="absolute inset-0 overflow-hidden"
       style={{
         opacity: flowStep >= STEP_PREVIEW ? 1 : 0,
         transition: "opacity 0.8s cubic-bezier(0.4,0,0.2,1)",
@@ -180,12 +180,9 @@ function RealPreviewPanel({
       >
         <TemplateComponent content={content} design_token={designToken} isEditorMode={false} />
       </div>
-      {/* Soft top/bottom fades so the scaled screen blends into the frame */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-14"
-        style={{ background: "linear-gradient(to bottom, rgba(12,12,14,0.55), transparent)" }}
-      />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16"
-        style={{ background: "linear-gradient(to top, rgba(12,12,14,0.55), transparent)" }}
+      {/* Vignette overlay so edges blend smoothly */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ background: "radial-gradient(ellipse at center, transparent 65%, rgba(12,12,14,0.45) 100%)" }}
       />
     </div>
   );
@@ -196,7 +193,7 @@ function LiveAdaptiveSkeleton({
   sample,
   token,
   flowStep,
-  baseWidth = 1100,
+  baseWidth = 1280,
   visible,
 }: {
   sample: ShowcaseItem;
@@ -956,7 +953,7 @@ export function InteractiveMockup() {
     const box = cardRef.current.getBoundingClientRect();
     const x = clientX - box.left - box.width / 2;
     const y = clientY - box.top - box.height / 2;
-    const maxR = 4;
+    const maxR = 8;
     setRotate({ x: -(y / (box.height / 2)) * maxR, y: (x / (box.width / 2)) * maxR });
   };
 
@@ -1029,7 +1026,7 @@ export function InteractiveMockup() {
 
           {/* ── Content grid ──────────────────────────────────────────────── */}
           <div
-            className="grid gap-0 grid-rows-[auto_1fr] md:grid-rows-none md:grid-cols-[1fr_2.2fr] overflow-hidden rounded-b-[1.8rem]"
+            className="grid gap-0 grid-rows-[auto_1fr] md:grid-rows-none md:grid-cols-[1fr_1.1fr] overflow-hidden rounded-b-[1.8rem]"
             style={{ transformStyle: "preserve-3d" }}
           >
 
