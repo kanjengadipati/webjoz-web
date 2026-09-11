@@ -1088,7 +1088,7 @@ export function SiteWizard({
                   <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shrink-0 text-primary-foreground">
                     <SparkleGenAI className="w-[27px] h-[27px]" />
                   </div>
-                  <span className="font-bold text-white text-sm leading-tight truncate">Jozz-AI · Webjoz Assistant</span>
+                  <span className="font-bold text-white text-sm leading-tight truncate">Joz-AI · Webjoz Assistant</span>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   {device.isMobile && preview.previewState === "result" && (

@@ -4504,7 +4504,7 @@ export const translations: Record<Locale, Translations> = {
         weightSemiBold: "Semi-Bold",
       },
       wizard: {
-        initialMessage: "Halo! Saya Jozz-AI dari Webjoz. Mau buat website bisnis, jasa, atau portofolio karya? Kita buat dalam 1 menit! Apa nama bisnis, brand, atau nama profesional Anda?",
+        initialMessage: "Halo! Saya Joz-AI dari Webjoz. Mau buat website bisnis, jasa, atau portofolio karya? Kita buat dalam 1 menit! Apa nama bisnis, brand, atau nama profesional Anda?",
         nameAckVariants: [
           "Baik, nama telah dicatat.",
           "Nama berhasil disimpan.",
@@ -6942,7 +6942,7 @@ export const translations: Record<Locale, Translations> = {
         weightSemiBold: "Semi-Bold",
       },
       wizard: {
-        initialMessage: "Hello! I'm Jozz-AI from Webjoz. Looking to build a website for your business, service, or creative portfolio? We'll make it in 1 minute! What is your business, brand, or professional name?",
+        initialMessage: "Hello! I'm Joz-AI from Webjoz. Looking to build a website for your business, service, or creative portfolio? We'll make it in 1 minute! What is your business, brand, or professional name?",
         nameAckVariants: [
           "Got it, name recorded.",
           "Name saved successfully.",
