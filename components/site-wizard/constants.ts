@@ -5,7 +5,7 @@ export const PENDING_KEY = "webjoz_pending_wizard_data";
 export const MOOD_OPTIONS: MoodItem[] = [
   {
     value: "clean-modern",
-    emoji: "🖥️",
+    emoji: "✨",
     label: "Modern & Bersih",
     desc: "Bersih, rapi, dan profesional",
     palette: ["#FFFFFF", "#2563EB", "#0F172A"],
@@ -55,7 +55,7 @@ export const MOOD_OPTIONS: MoodItem[] = [
   },
   {
     value: "retro",
-    emoji: "⏰",
+    emoji: "⏳",
     label: "Klasik & Retro",
     desc: "Klasik, nostalgia, dan berkarakter",
     palette: ["#EFE6D5", "#8B4513", "#D97706"],
@@ -124,6 +124,7 @@ const KREATIF_PRO_SUB_TYPES: SubTypeItem[] = [
 export const SUB_TYPES: Record<string, SubTypeItem[]> = {
   "Kuliner": [
     { value: "Restoran & Warung Makan", emoji: "🍛", label: "Restoran" },
+    { value: "Kuliner Tradisional & Nusantara", emoji: "🍲", label: "Kuliner Tradisional" },
     { value: "Kafe", emoji: "☕", label: "Kafe" },
     { value: "Bakery & Pastry", emoji: "🥐", label: "Bakery" },
     { value: "Catering", emoji: "🍱", label: "Catering" },
@@ -276,7 +277,16 @@ export const NAME_TYPE_HINTS: Record<string, { type?: string; subType?: string }
   "cafe": { type: "Kuliner", subType: "Kafe" },
   "restoran": { type: "Kuliner", subType: "Restoran & Warung Makan" },
   "warung": { type: "Kuliner", subType: "Restoran & Warung Makan" },
-  "gudeg": { type: "Kuliner", subType: "Restoran & Warung Makan" },
+  "gudeg": { type: "Kuliner", subType: "Kuliner Tradisional & Nusantara" },
+  "rawon": { type: "Kuliner", subType: "Kuliner Tradisional & Nusantara" },
+  "rendang": { type: "Kuliner", subType: "Kuliner Tradisional & Nusantara" },
+  "soto": { type: "Kuliner", subType: "Kuliner Tradisional & Nusantara" },
+  "pecel": { type: "Kuliner", subType: "Kuliner Tradisional & Nusantara" },
+  "coto": { type: "Kuliner", subType: "Kuliner Tradisional & Nusantara" },
+  "konro": { type: "Kuliner", subType: "Kuliner Tradisional & Nusantara" },
+  "ayam betutu": { type: "Kuliner", subType: "Kuliner Tradisional & Nusantara" },
+  "kuliner tradisional": { type: "Kuliner", subType: "Kuliner Tradisional & Nusantara" },
+  "kuliner nusantara": { type: "Kuliner", subType: "Kuliner Tradisional & Nusantara" },
   "bakery": { type: "Kuliner", subType: "Bakery & Pastry" },
   "roti": { type: "Kuliner", subType: "Bakery & Pastry" },
   "frozen": { type: "Kuliner", subType: "Frozen Food Homemade" },

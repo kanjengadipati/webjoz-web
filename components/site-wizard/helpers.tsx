@@ -370,6 +370,8 @@ export function generateDescriptionFromBusinessName(
         return `Serving specialty coffee, delicious treats, and a cozy atmosphere at ${name}.`;
       case "Restoran & Warung Makan":
         return `Offering authentic, high-quality dishes and exceptional dining experiences at ${name}.`;
+      case "Kuliner Tradisional & Nusantara":
+        return `Serving authentic traditional Indonesian heritage recipes with rich flavors and time-tested quality at ${name}.`;
       case "Bakery & Pastry":
         return `Freshly baked artisanal breads, cakes, and pastries crafted daily at ${name}.`;
       case "Catering":
@@ -419,6 +421,8 @@ export function generateDescriptionFromBusinessName(
       return `Menyajikan aneka sajian kopi spesial pilihan, camilan lezat, dan tempat nongkrong nyaman bersama ${name}.`;
     case "Restoran & Warung Makan":
       return `Menyajikan aneka hidangan lezat dan berkualitas dengan cita rasa autentik khas ${name}.`;
+    case "Kuliner Tradisional & Nusantara":
+      return `Menyajikan hidangan tradisional nusantara autentik dengan bumbu rempah pilihan dan resep warisan leluhur di ${name}.`;
     case "Bakery & Pastry":
       return `Memproduksi aneka roti, kue, dan pastry lezat segar setiap hari bersama ${name}.`;
     case "Catering":
@@ -479,6 +483,8 @@ export function getDynamicDescriptionPlaceholder(
         return "Example: Specialty pour-over coffee, iced latte, pastries, cozy seating (Press Enter to skip)";
       case "Restoran & Warung Makan":
         return "Example: Authentic family recipes, grilled dishes, dine-in & takeaway (Press Enter to skip)";
+      case "Kuliner Tradisional & Nusantara":
+        return "Example: Traditional heritage dishes, authentic local spices, dine-in & takeaway (Press Enter to skip)";
       case "Otomotif & Bengkel":
         return "Example: Periodic engine tune-up, oil change, 24-hour emergency service (Press Enter to skip)";
       case "Rental Mobil & Kendaraan":
@@ -499,6 +505,8 @@ export function getDynamicDescriptionPlaceholder(
       return "Contoh: Jual aneka kopi manual brew, espresso, tempat nongkrong asik (Tekan Enter untuk lewati)";
     case "Restoran & Warung Makan":
       return "Contoh: Menu masakan khas Nusantara, paket hemat makan siang, melayani delivery (Tekan Enter untuk lewati)";
+    case "Kuliner Tradisional & Nusantara":
+      return "Contoh: Kuliner khas daerah resep warisan, bumbu rempah autentik, melayani pesanan besek/catering (Tekan Enter untuk lewati)";
     case "Otomotif & Bengkel":
       return "Contoh: Melayani servis rutin, ganti oli, tune up mesin, dan panggilan darurat (Tekan Enter untuk lewati)";
     case "Rental Mobil & Kendaraan":
@@ -537,11 +545,27 @@ const DESC_HINTS: DescHintEntry[] = [
   },
   {
     type: "Kuliner",
+    subType: "Kuliner Tradisional & Nusantara",
+    keywords: [
+      // ID
+      "gudeg", "rawon", "rendang", "soto", "pecel", "coto", "coto makassar", "konro", "ayam betutu",
+      "kuliner tradisional", "kuliner nusantara", "masakan tradisional", "makanan tradisional",
+      "resep tradisional", "khas jogja", "khas jawa", "khas padang", "khas sunda", "khas bali",
+      "khas makassar", "masakan nusantara", "resep nusantara", "resep leluhur", "resep warisan",
+      "resep simbah", "otentik", "autentik",
+      // EN
+      "traditional food", "traditional cuisine", "heritage recipe", "indonesian traditional food",
+      "authentic recipe", "heritage culinary",
+    ],
+    weight: 5,
+  },
+  {
+    type: "Kuliner",
     subType: "Restoran & Warung Makan",
     keywords: [
       // ID
-      "restoran", "resto", "warung", "warung makan", "rumah makan", "warteg", "nasi padang", "soto", "bakso", "mie ayam", "sate",
-      "ayam goreng", "ayam bakar", "ayam geprek", "seafood bakar", "pecel", "gudeg", "seblak", "martabak", "gorengan", "angkringan",
+      "restoran", "resto", "warung", "warung makan", "rumah makan", "warteg", "nasi padang", "bakso", "mie ayam", "sate",
+      "ayam goreng", "ayam bakar", "ayam geprek", "seafood bakar", "seblak", "martabak", "gorengan", "angkringan",
       "kedai makan", "masakan", "nasi", "lauk", "makanan", "makanan khas", "olahan makanan", "kulineran", "f&b", "dapur",
       // EN
       "restaurant", "eatery", "diner", "bistro", "food stall", "food court", "fast food", "street food", "meal", "dining",
