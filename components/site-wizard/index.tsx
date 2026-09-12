@@ -24,6 +24,7 @@ import {
   Clock,
   Code2,
   Coffee,
+  CookingPot,
   Cpu,
   Crown,
   Dumbbell,
@@ -36,6 +37,7 @@ import {
   HelpCircle,
   Home,
   Hotel,
+  Hourglass,
   Leaf,
   Loader2,
   Mic,
@@ -117,6 +119,7 @@ const MAX_QUALITY_RETRIES = 1;
 const SUB_TYPE_ICONS: Record<string, React.ElementType> = {
   // Kuliner
   "Restoran & Warung Makan": UtensilsCrossed,
+  "Kuliner Tradisional & Nusantara": CookingPot,
   "Kafe":                    Coffee,
   "Bakery & Pastry":         GalleryHorizontal,
   "Catering":                Package,
@@ -1393,13 +1396,13 @@ export function SiteWizard({
                       const translatedMoodLabel = moodKey ? t(`dashboard.wizard.moods.${moodKey}`, mo.label) : mo.label;
 
                       const moodIconMap: Record<string, { icon: React.ReactNode; bg: string; text: string; glow: string }> = {
-                        "clean-modern":  { icon: <Monitor className="w-4 h-4" />, bg: "bg-blue-500/15",   text: "text-blue-400",   glow: "shadow-blue-500/20" },
-                        "warm-earthy":   { icon: <Leaf    className="w-4 h-4" />, bg: "bg-green-600/15",  text: "text-green-400",  glow: "shadow-green-500/20" },
-                        "bold-vibrant":  { icon: <Palette className="w-4 h-4" />, bg: "bg-orange-500/15", text: "text-orange-400", glow: "shadow-orange-500/20" },
-                        "dark-premium":  { icon: <Crown   className="w-4 h-4" />, bg: "bg-yellow-500/15", text: "text-yellow-400", glow: "shadow-yellow-500/20" },
-                        "bold-dark":     { icon: <Zap     className="w-4 h-4" />, bg: "bg-red-500/15",    text: "text-red-400",    glow: "shadow-red-500/20" },
-                        "retro":         { icon: <Clock   className="w-4 h-4" />, bg: "bg-amber-600/15",  text: "text-amber-400",  glow: "shadow-amber-600/20" },
-                        "futuristic":    { icon: <Bot     className="w-4 h-4" />, bg: "bg-cyan-500/15",   text: "text-cyan-400",   glow: "shadow-cyan-500/20" },
+                        "clean-modern":  { icon: <Sparkles  className="w-4 h-4" />, bg: "bg-blue-500/15",    text: "text-blue-400",    glow: "shadow-blue-500/20" },
+                        "warm-earthy":   { icon: <Leaf      className="w-4 h-4" />, bg: "bg-emerald-600/15", text: "text-emerald-400", glow: "shadow-emerald-500/20" },
+                        "bold-vibrant":  { icon: <Palette   className="w-4 h-4" />, bg: "bg-orange-500/15",  text: "text-orange-400",  glow: "shadow-orange-500/20" },
+                        "dark-premium":  { icon: <Crown     className="w-4 h-4" />, bg: "bg-yellow-500/15",  text: "text-yellow-400",  glow: "shadow-yellow-500/20" },
+                        "bold-dark":     { icon: <Zap       className="w-4 h-4" />, bg: "bg-red-500/15",     text: "text-red-400",     glow: "shadow-red-500/20" },
+                        "retro":         { icon: <Hourglass className="w-4 h-4" />, bg: "bg-amber-600/15",   text: "text-amber-400",   glow: "shadow-amber-600/20" },
+                        "futuristic":    { icon: <Bot       className="w-4 h-4" />, bg: "bg-cyan-500/15",    text: "text-cyan-400",    glow: "shadow-cyan-500/20" },
                       };
                       const cfg = moodIconMap[mo.value] ?? { icon: <Sparkles className="w-4 h-4" />, bg: "bg-white/10", text: "text-slate-300", glow: "" };
 
@@ -1604,13 +1607,13 @@ export function SiteWizard({
 
             // Mood icon mapping — warna solid supaya kontras di atas bubble putih (bg-primary)
             const moodIconMapMsg: Record<string, { icon: React.ReactNode; bg: string; text: string }> = {
-              "clean-modern": { icon: <Monitor className="w-3.5 h-3.5" />, bg: "bg-blue-500",   text: "text-white" },
-              "warm-earthy":  { icon: <Leaf    className="w-3.5 h-3.5" />, bg: "bg-green-600",  text: "text-white" },
-              "bold-vibrant": { icon: <Palette className="w-3.5 h-3.5" />, bg: "bg-orange-500", text: "text-white" },
-              "dark-premium": { icon: <Crown   className="w-3.5 h-3.5" />, bg: "bg-yellow-500", text: "text-white" },
-              "bold-dark":    { icon: <Zap     className="w-3.5 h-3.5" />, bg: "bg-red-500",    text: "text-white" },
-              "retro":        { icon: <Clock   className="w-3.5 h-3.5" />, bg: "bg-amber-600",  text: "text-white" },
-              "futuristic":   { icon: <Bot     className="w-3.5 h-3.5" />, bg: "bg-cyan-500",   text: "text-white" },
+              "clean-modern": { icon: <Sparkles  className="w-3.5 h-3.5" />, bg: "bg-blue-500",    text: "text-white" },
+              "warm-earthy":  { icon: <Leaf      className="w-3.5 h-3.5" />, bg: "bg-emerald-600", text: "text-white" },
+              "bold-vibrant": { icon: <Palette   className="w-3.5 h-3.5" />, bg: "bg-orange-500",  text: "text-white" },
+              "dark-premium": { icon: <Crown     className="w-3.5 h-3.5" />, bg: "bg-yellow-500",  text: "text-white" },
+              "bold-dark":    { icon: <Zap       className="w-3.5 h-3.5" />, bg: "bg-red-500",     text: "text-white" },
+              "retro":        { icon: <Hourglass className="w-3.5 h-3.5" />, bg: "bg-amber-600",   text: "text-white" },
+              "futuristic":   { icon: <Bot       className="w-3.5 h-3.5" />, bg: "bg-cyan-500",    text: "text-white" },
             };
             const moodCfgMsg = m.moodValue ? moodIconMapMsg[m.moodValue] : null;
 

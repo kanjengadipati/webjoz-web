@@ -4733,6 +4733,7 @@ export const translations: Record<Locale, Translations> = {
         subtypes: {
           // Kuliner
           "Restoran & Warung Makan": "Restoran",
+          "Kuliner Tradisional & Nusantara": "Kuliner Tradisional",
           "Kafe": "Kafe",
           "Bakery & Pastry": "Bakery",
           "Catering": "Catering",
@@ -7190,6 +7191,7 @@ export const translations: Record<Locale, Translations> = {
         subtypes: {
           // Food & Beverage
           "Restoran & Warung Makan": "Restaurant",
+          "Kuliner Tradisional & Nusantara": "Traditional Cuisine",
           "Kafe": "Cafe",
           "Bakery & Pastry": "Bakery",
           "Catering": "Catering",
