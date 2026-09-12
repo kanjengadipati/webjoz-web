@@ -1,11 +1,20 @@
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from "react";
+import { Settings2, Trash2, Plus, RotateCcw } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import { usePermissions } from "@/hooks/use-permissions";
 import { TEMPLATE_REGISTRY, type DesignToken } from "@/lib/template-registry";
 import { TEMPLATE_DEFAULT_DESIGN_TOKENS } from "@/lib/template-defaults";
 import { SHOWCASE_ITEMS, findShowcaseSample, TEMPLATE_PREFILL_MAP } from "@/lib/landing-showcase-data";
 import { fetchDesignTokenLibrary } from "@/lib/design-token-library";
+import {
+  DEFAULT_MOCKUP_SHOWCASE_SITES,
+  MOCKUP_SHOWCASE_API_BASE,
+  type MockupShowcaseSite,
+  siteHost,
+  useMockupShowcaseSites,
+} from "@/lib/mockup-showcase-sites";
 import { buildCssVars } from "@/components/templates/helpers";
 import { SparkleIcon } from "@/components/sparkle-icon";
 
@@ -38,6 +47,7 @@ const CYCLE_MS = 14500;
 
 function useFlowStep() {
   const [flowStep, setFlowStep] = useState(0);
+  const [cycle, setCycle] = useState(0);
   useEffect(() => {
     let timers: ReturnType<typeof setTimeout>[] = [];
     const run = () => {
@@ -50,11 +60,12 @@ function useFlowStep() {
       timers.forEach(clearTimeout);
       timers = [];
       setFlowStep(0);
+      setCycle((c) => c + 1);
       run();
     }, CYCLE_MS);
     return () => { timers.forEach(clearTimeout); clearInterval(loop); };
   }, []);
-  return flowStep;
+  return { flowStep, cycle };
 }
 
 /* ── Best hero template (highest AI aesthetic score) ───────────────────── */
@@ -188,6 +199,89 @@ function RealPreviewPanel({
   );
 }
 
+/* ── RealSitePreviewPanel: fetches real site content from the API and renders
+     via the local template engine (auto-scroll preserved). Falls back to sample
+     content when fetch fails. ────────────────────────────────────────────── */
+interface SiteData {
+  content: Record<string, unknown>;
+  design_token: DesignToken;
+  templateId: string;
+}
+
+const _siteDataCache = new Map<string, SiteData | null>();
+
+function useRealSiteData(host: string | null): SiteData | null {
+  const [data, setData] = useState<SiteData | null>(() =>
+    host ? (_siteDataCache.has(host) ? (_siteDataCache.get(host) ?? null) : null) : null,
+  );
+
+  useEffect(() => {
+    if (!host) return;
+    const cached = _siteDataCache.get(host);
+    if (cached !== undefined) {
+      queueMicrotask(() => setData(cached));
+      return;
+    }
+    let active = true;
+    const url = `${MOCKUP_SHOWCASE_API_BASE}/public/sites?host=${encodeURIComponent(host)}`;
+    fetch(url, { cache: "no-store" })
+      .then(async (res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        const d = json?.data;
+        const entry: SiteData | null =
+          d?.content && d?.design_token && d?.template_id
+            ? { content: d.content, design_token: d.design_token, templateId: d.template_id }
+            : null;
+        _siteDataCache.set(host, entry);
+        if (active) setData(entry);
+      })
+      .catch(() => {
+        _siteDataCache.set(host, null);
+        if (active) setData(null);
+      });
+    return () => { active = false; };
+  }, [host]);
+
+  return data;
+}
+
+function RealSitePreviewPanel({
+  url,
+  sample,
+  sampleToken,
+  flowStep = 0,
+  baseWidth = 1280,
+}: {
+  url: string;
+  sample: ShowcaseItem;
+  sampleToken: DesignToken;
+  flowStep?: number;
+  baseWidth?: number;
+}) {
+  const host = siteHost(url);
+  const siteData = useRealSiteData(host);
+  const TemplateComponent = siteData
+    ? TEMPLATE_REGISTRY.find((t) => t.id === siteData.templateId)?.component
+    : null;
+  const fallbackTemplate = sample
+    ? TEMPLATE_REGISTRY.find((t) => t.id === sample.templateId)?.component
+    : null;
+  const ActiveComponent = TemplateComponent ?? fallbackTemplate;
+  const content = siteData?.content ?? sample?.content;
+  const token = siteData?.design_token ?? sampleToken;
+  if (!ActiveComponent) return null;
+  return (
+    <RealPreviewPanel
+      TemplateComponent={ActiveComponent}
+      content={content}
+      designToken={token}
+      flowStep={flowStep}
+      baseWidth={baseWidth}
+    />
+  );
+}
+
 /* ── LiveAdaptiveSkeleton: token-themed wireframe that evolves with the chat ── */
 function LiveAdaptiveSkeleton({
   sample,
@@ -195,12 +289,14 @@ function LiveAdaptiveSkeleton({
   flowStep,
   baseWidth = 1280,
   visible,
+  businessName,
 }: {
   sample: ShowcaseItem;
   token: DesignToken;
   flowStep: number;
   baseWidth?: number;
   visible: boolean;
+  businessName?: string;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0.22);
@@ -219,6 +315,7 @@ function LiveAdaptiveSkeleton({
   const cssVars = useMemo(() => buildCssVars(token), [token]);
   const prefill = TEMPLATE_PREFILL_MAP[sample.templateId];
   const subtype = prefill?.businessSubType || prefill?.businessType || sample.businessType;
+  const skeletonName = businessName?.trim() || sample.businessName;
   const showName  = flowStep >= STEP_NAME;
   const showType  = flowStep >= STEP_PICK_TYPE;
   const showMood  = flowStep >= STEP_PICK_MOOD;
@@ -269,7 +366,7 @@ function LiveAdaptiveSkeleton({
                 <div style={{
                   fontSize: 15, fontWeight: 800, color: "var(--dt-text)",
                   fontFamily: "var(--dt-heading-font)", letterSpacing: "-0.3px"
-                }}>{sample.businessName}</div>
+                }}>{skeletonName}</div>
               ) : (
                 <div style={{ height: 18, width: 120, borderRadius: 6, background: "color-mix(in srgb,var(--dt-text) 12%,transparent)",
                   animation: "pulse 2s infinite" }} />
@@ -343,7 +440,7 @@ function LiveAdaptiveSkeleton({
                   fontSize: 38, fontWeight: 900, lineHeight: 1.12,
                   color: "var(--dt-text)", fontFamily: "var(--dt-heading-font)",
                   letterSpacing: "-0.5px"
-                }}>{sample.businessName}</div>
+                }}>{skeletonName}</div>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   <div style={{ height: 40, width: "85%", borderRadius: 10, background: "color-mix(in srgb,var(--dt-text) 12%,transparent)",
@@ -632,11 +729,12 @@ function LiveAdaptiveSkeleton({
 }
 
 /* ── MobileChatCard: Native mobile chat card + live web preview ── */
-function MobileChatCard({ sample, token }: HeroItem) {
+function MobileChatCard({ sample, token, siteUrl, businessName }: HeroItem & { siteUrl?: string | null; businessName?: string }) {
   const { t, translations } = useI18n();
-  const flowStep = useFlowStep();
+  const { flowStep } = useFlowStep();
   const showcaseItem = sample;
   const TemplateComponent = TEMPLATE_REGISTRY.find((t) => t.id === showcaseItem.templateId)?.component;
+  const chatBusinessName = businessName?.trim() || showcaseItem.businessName;
 
   const [manualTab, setManualTab] = useState<"chat" | "preview" | null>(null);
 
@@ -745,7 +843,7 @@ function MobileChatCard({ sample, token }: HeroItem) {
             {/* Msg 2: User Business Name */}
             <div className={`flex justify-end transition-all duration-400 ${visible(STEP_NAME)}`}>
               <div className="rounded-2xl rounded-br-xs bg-white text-black font-semibold px-3.5 py-1.5 text-xs shadow-md">
-                {showcaseItem.businessName}
+                {chatBusinessName}
               </div>
             </div>
 
@@ -856,10 +954,19 @@ function MobileChatCard({ sample, token }: HeroItem) {
             flowStep={flowStep}
             visible={flowStep < STEP_PREVIEW}
             baseWidth={1200}
+            businessName={chatBusinessName}
           />
 
           {/* Real website preview — crossfades in at step 8 */}
-          {TemplateComponent && (
+          {siteUrl ? (
+            <RealSitePreviewPanel
+              url={siteUrl}
+              sample={showcaseItem}
+              sampleToken={token}
+              flowStep={flowStep}
+              baseWidth={1200}
+            />
+          ) : TemplateComponent ? (
             <RealPreviewPanel
               TemplateComponent={TemplateComponent}
               content={showcaseItem.content}
@@ -867,7 +974,7 @@ function MobileChatCard({ sample, token }: HeroItem) {
               flowStep={flowStep}
               baseWidth={1200}
             />
-          )}
+          ) : null}
 
           {/* Scan line on generating */}
           {generating && (
@@ -909,7 +1016,7 @@ function MobileChatCard({ sample, token }: HeroItem) {
           >
             <div className="flex items-center gap-1.5 bg-black/85 backdrop-blur-md border border-border rounded-full px-3 py-1 text-[9.5px] font-mono text-white shadow-lg">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              {domainSlug(showcaseItem.businessName)}.webjoz.com
+              {siteUrl ? siteHost(siteUrl) : `${domainSlug(chatBusinessName)}.webjoz.com`}
             </div>
           </div>
 
@@ -938,14 +1045,23 @@ function MobileChatCard({ sample, token }: HeroItem) {
 
 export function InteractiveMockup() {
   const { t, translations } = useI18n();
+  const { role: userRole } = usePermissions();
+  const isSuperAdmin = userRole === "superadmin";
+  const { sites, save } = useMockupShowcaseSites();
+  const [editingSites, setEditingSites] = useState(false);
+  const [draftSites, setDraftSites] = useState<MockupShowcaseSite[]>([]);
   const cardRef = useRef<HTMLDivElement>(null);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
-  const flowStep = useFlowStep();
+  const { flowStep, cycle } = useFlowStep();
 
   const { sample, token } = useBestHero();
   const showcaseItem = sample;
   const TemplateComponent = TEMPLATE_REGISTRY.find((t) => t.id === showcaseItem.templateId)?.component;
+
+  const currentSite =
+    sites.length > 0 ? sites[((cycle % sites.length) + sites.length) % sites.length] : null;
+  const chatBusinessName = currentSite?.businessName?.trim() || showcaseItem.businessName;
 
   /* ── 3D Tilt (mouse + touch) ─────────────────────────────────────────── */
   const applyTilt = (clientX: number, clientY: number) => {
@@ -1020,7 +1136,11 @@ export function InteractiveMockup() {
               ))}
             </div>
             <div className="flex-1 rounded-full bg-muted/40 px-4 py-1.5 text-center text-[11px] text-muted-foreground font-mono tracking-tight">
-              <span className="opacity-50">https://</span>webjoz.com<span className="opacity-50">/create</span>
+              {flowStep >= STEP_PREVIEW && currentSite ? (
+                siteHost(currentSite.url)
+              ) : (
+                <><span className="opacity-50">https://</span>webjoz.com<span className="opacity-50">/create</span></>
+              )}
             </div>
           </div>
 
@@ -1052,7 +1172,7 @@ export function InteractiveMockup() {
                     boxShadow: "0 4px 16px rgba(99,102,241,0.35)"
                   }}
                 >
-                  {showcaseItem.businessName}
+                  {chatBusinessName}
                 </div>
               </div>
 
@@ -1150,10 +1270,18 @@ export function InteractiveMockup() {
                 token={token}
                 flowStep={flowStep}
                 visible={flowStep < STEP_PREVIEW}
+                businessName={chatBusinessName}
               />
 
               {/* Real website preview — crossfades in at step 8 */}
-              {TemplateComponent && (
+              {currentSite ? (
+                <RealSitePreviewPanel
+                  url={currentSite.url}
+                  sample={showcaseItem}
+                  sampleToken={token}
+                  flowStep={flowStep}
+                />
+              ) : TemplateComponent && (
                 <RealPreviewPanel
                   TemplateComponent={TemplateComponent}
                   content={showcaseItem.content}
@@ -1217,7 +1345,7 @@ export function InteractiveMockup() {
               >
                 <div className="flex items-center gap-1.5 bg-black/70 backdrop-blur-md border border-white/15 rounded-full px-3 py-1 text-[10px] font-mono text-white/70">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  {domainSlug(showcaseItem.businessName)}.webjoz.com
+                  {currentSite ? siteHost(currentSite.url) : `${domainSlug(chatBusinessName)}.webjoz.com`}
                 </div>
               </div>
 
@@ -1257,8 +1385,99 @@ export function InteractiveMockup() {
 
       {/* ── Mobile: sleek native chat card (desktop uses 3D browser mockup above) ───── */}
       <div className="md:hidden w-full flex justify-center">
-        <MobileChatCard sample={sample} token={token} />
+        <MobileChatCard sample={sample} token={token} siteUrl={currentSite?.url ?? null} businessName={chatBusinessName} />
       </div>
+
+      {/* ── Super admin: manage the "result generate web" showcase sites ── */}
+      {isSuperAdmin && (
+        <div className="mt-4 w-full">
+          <button
+            type="button"
+            onClick={() => {
+              setDraftSites(sites.length ? sites.map((s) => ({ ...s })) : [{ url: "", businessName: "" }]);
+              setEditingSites((v) => !v);
+            }}
+            className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/40 bg-amber-500/10 px-3 py-1.5 text-[11px] font-semibold text-amber-700 dark:text-amber-400 hover:bg-amber-500/20 transition cursor-pointer"
+          >
+            <Settings2 className="size-3.5" />
+            {editingSites ? t("landing.mockupSitesClose") : t("landing.mockupSitesManage")}
+          </button>
+
+          {editingSites && (
+            <div className="mt-3 rounded-2xl border border-border bg-card/70 p-4 text-left backdrop-blur">
+              <p className="text-xs font-semibold text-foreground">{t("landing.mockupSitesTitle")}</p>
+              <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">{t("landing.mockupSitesHint")}</p>
+
+              <div className="mt-3 space-y-2">
+                {draftSites.map((site, i) => (
+                  <div key={i} className="space-y-1.5">
+                    <div className="flex items-center gap-2">
+                      <input
+                        value={site.businessName}
+                        onChange={(e) =>
+                          setDraftSites((prev) =>
+                            prev.map((v, idx) => (idx === i ? { ...v, businessName: e.target.value } : v)),
+                          )
+                        }
+                        placeholder={t("landing.mockupSitesNamePlaceholder")}
+                        className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-xs text-foreground outline-none focus:border-amber-500/60 transition-colors"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setDraftSites((prev) => prev.filter((_, idx) => idx !== i))}
+                        className="rounded-lg border border-border p-2 text-muted-foreground hover:text-red-500 hover:border-red-500/40 transition cursor-pointer"
+                        aria-label="remove"
+                      >
+                        <Trash2 className="size-3.5" />
+                      </button>
+                    </div>
+                    <input
+                      value={site.url}
+                      onChange={(e) =>
+                        setDraftSites((prev) =>
+                          prev.map((v, idx) => (idx === i ? { ...v, url: e.target.value } : v)),
+                        )
+                      }
+                      placeholder="https://contoh.webjoz.com/"
+                      className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-xs font-mono text-foreground outline-none focus:border-amber-500/60 transition-colors"
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setDraftSites((prev) => [...prev, { url: "", businessName: "" }])}
+                  className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-1.5 text-[11px] font-semibold text-muted-foreground hover:text-foreground transition cursor-pointer"
+                >
+                  <Plus className="size-3.5" />
+                  {t("landing.mockupSitesAdd")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDraftSites(DEFAULT_MOCKUP_SHOWCASE_SITES.map((s) => ({ ...s })))}
+                  className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-1.5 text-[11px] font-semibold text-muted-foreground hover:text-foreground transition cursor-pointer"
+                >
+                  <RotateCcw className="size-3.5" />
+                  {t("landing.mockupSitesReset")}
+                </button>
+                <div className="flex-1" />
+                <button
+                  type="button"
+                  onClick={() => {
+                    save(draftSites);
+                    setEditingSites(false);
+                    setDraftSites([]);
+                  }}
+                  className="inline-flex items-center gap-1 rounded-lg bg-amber-500 px-3 py-1.5 text-[11px] font-bold text-black hover:bg-amber-400 transition cursor-pointer"
+                >
+                  {t("landing.mockupSitesSave")}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </>
   );
 }
