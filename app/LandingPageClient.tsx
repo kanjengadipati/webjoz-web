@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
@@ -178,11 +178,32 @@ export default function LandingPageClient() {
   const authReady = useAuthReady();
   const { t, translations } = useI18n();
   const isLoggedIn = authReady && !!token;
-  const [showFloatingCta, setShowFloatingCta] = useState(false);
 
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
   const [plans, setPlans] = useState<PlanItem[]>([]);
   const [plansLoading, setPlansLoading] = useState(true);
+
+  // Waktu input scroll terakhir. Scroll (wheel/trackpad desktop, touch di
+  // mobile) berjalan dalam deretan event cepat; tap tak sengaja yang jatuh
+  // segera setelahnya (momen scroll) bisa "mengklik" tombol yang kebetulan
+  // berada di bawah jari/kursor → navigasi tak terduga (mis. ke /create atau
+  // webjoz.com). Guard ini menahan navigasi dari CTA selama bleed window,
+  // lebih lama untuk touch karena iOS masih memompa momentum scroll + 300ms
+  // tap delay. Klik disengaja (setelah jeda membaca halaman) tetap jalan.
+  const SCROLL_BLEED_MS_WHEEL = 350;
+  const SCROLL_BLEED_MS_TOUCH = 650;
+  const lastScrollInputRef = useRef<{ time: number; kind: "wheel" | "touch" }>({ time: 0, kind: "wheel" });
+  useEffect(() => {
+    const mark = (kind: "wheel" | "touch") => { lastScrollInputRef.current = { time: performance.now(), kind }; };
+    const markWheel = () => mark("wheel");
+    const markTouch = () => mark("touch");
+    window.addEventListener("wheel", markWheel, { passive: true });
+    window.addEventListener("touchmove", markTouch, { passive: true });
+    return () => {
+      window.removeEventListener("wheel", markWheel);
+      window.removeEventListener("touchmove", markTouch);
+    };
+  }, []);
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/plans/public`)
@@ -196,20 +217,12 @@ export default function LandingPageClient() {
       .finally(() => setPlansLoading(false));
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      // Show floating CTA after scrolling past the main hero action button (approx 400px)
-      if (window.scrollY > 400) {
-        setShowFloatingCta(true);
-      } else {
-        setShowFloatingCta(false);
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   function startWizard(item?: DesignTokenLibraryItem) {
+    // Tahan tap yang "ikut terbawa" momen scroll (wheel/trackpad desktop atau
+    // touch di mobile) supaya tidak langsung melempar pengguna ke /create.
+    const { time, kind } = lastScrollInputRef.current;
+    const bleed = kind === "touch" ? SCROLL_BLEED_MS_TOUCH : SCROLL_BLEED_MS_WHEEL;
+    if (performance.now() - time < bleed) return;
     if (!item) { router.push("/create"); return; }
     const prefill = prefillForLibraryBusinessType(item.business_type);
     const dtParam = encodeDesignTokenParam(item.design_token);
