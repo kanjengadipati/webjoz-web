@@ -116,6 +116,15 @@ export interface Translations {
     mockupGenerating: string;
     mockupReady: string;
     mockupStep: string;
+    mockupSitesManage: string;
+    mockupSitesClose: string;
+    mockupSitesTitle: string;
+    mockupSitesHint: string;
+    mockupSitesAdd: string;
+    mockupSitesReset: string;
+    mockupSitesSave: string;
+    mockupSitesName: string;
+    mockupSitesNamePlaceholder: string;
     showcaseCreate: string;
     showcaseFallback: string;
     categoryKuliner: string;
@@ -538,6 +547,7 @@ export interface Translations {
       toastDuplicateFailed: string;
       toastDuplicated: string;
       toastDuplicateError: string;
+      toastSiteLimitReached: string;
       publishedPrefix: string;
       updatedPrefix: string;
       justNow: string;
@@ -2501,6 +2511,15 @@ export const translations: Record<Locale, Translations> = {
       mockupGenerating: "⚡ AI sedang generate...",
       mockupReady: "✅ Website siap!",
       mockupStep: "Langkah 3 dari 6",
+      mockupSitesManage: "Kelola URL hasil generate (Super Admin)",
+      mockupSitesClose: "Tutup Editor",
+      mockupSitesTitle: "URL hasil generate website (dengan nama bisnis)",
+      mockupSitesHint: "Setiap baris berisi nama bisnis dan URL hasil generate. Website tampil di panel preview mockup satu per siklus, dan nama bisnisnya tampil di chat mockup. Kosongkan dan simpan untuk kembali ke preview template lokal.",
+      mockupSitesAdd: "Tambah URL",
+      mockupSitesReset: "Reset Default",
+      mockupSitesSave: "Simpan",
+      mockupSitesName: "Nama bisnis (tampil di chat mockup)",
+      mockupSitesNamePlaceholder: "Contoh: Kopi Jozz Jogja",
       showcaseCreate: "Buat",
       showcaseFallback: "Website",
       categoryKuliner: "Kuliner",
@@ -2922,6 +2941,7 @@ export const translations: Record<Locale, Translations> = {
         toastDuplicateFailed: "Gagal membuat duplikat website",
         toastDuplicated: "Website berhasil diduplikat!",
         toastDuplicateError: "Gagal menduplikasi website",
+        toastSiteLimitReached: "Batas jumlah website tercapai. Upgrade paket Anda untuk menduplikasi.",
         publishedPrefix: "Dipublikasikan",
         updatedPrefix: "Diubah",
         justNow: "{prefix} baru saja",
@@ -4960,6 +4980,15 @@ export const translations: Record<Locale, Translations> = {
       mockupGenerating: "⚡ AI is generating...",
       mockupReady: "✅ Website ready!",
       mockupStep: "Step 3 of 6",
+      mockupSitesManage: "Manage generated site URLs (Super Admin)",
+      mockupSitesClose: "Close Editor",
+      mockupSitesTitle: "Generated website result URLs (with business name)",
+      mockupSitesHint: "Each row has a business name and a generated result URL. The sites appear in the mockup preview panel one per cycle, and the business name shows in the mockup chat. Save empty to fall back to the local template preview.",
+      mockupSitesAdd: "Add URL",
+      mockupSitesReset: "Reset Default",
+      mockupSitesSave: "Save",
+      mockupSitesName: "Business name (shown in the mockup chat)",
+      mockupSitesNamePlaceholder: "e.g. Kopi Jozz Jogja",
       showcaseCreate: "Create",
       showcaseFallback: "Website",
       categoryKuliner: "Food & Beverage",
@@ -5381,6 +5410,7 @@ export const translations: Record<Locale, Translations> = {
         toastDuplicateFailed: "Failed to create website duplicate",
         toastDuplicated: "Website duplicated successfully!",
         toastDuplicateError: "Failed to duplicate website",
+        toastSiteLimitReached: "Website limit reached. Upgrade your plan to duplicate.",
         publishedPrefix: "Published",
         updatedPrefix: "Updated",
         justNow: "{prefix} just now",
