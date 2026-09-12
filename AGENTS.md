@@ -6,6 +6,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Feature Work Checklist (WAJIB dicek di SETIAP fitur section/komponen baru)
 
+> [!IMPORTANT]
+> **PANDUAN ARSITEKTUR AI & MOOD**:
+> Untuk perubahan wizard, taksonomi tipe bisnis, preset mood, atau integrasi generator AI, baca panduan arsitektur di [`api/docs/AI_GENERATION_PIPELINE.md`](file:///Users/meilanasapta/Code/giwangan-web-gen/api/docs/AI_GENERATION_PIPELINE.md).
+> Pegang teguh prinsip: **Kategori/Sub-Kategori** menentukan fungsi & struktur; **Mood** menentukan estetika visual & copywriting.
+
 Setiap kerja fitur yang menyentuh section/komponen website, wajib periksa semua poin berikut —
 jangan pernah selesai hanya karena render utama sudah jalan:
 
