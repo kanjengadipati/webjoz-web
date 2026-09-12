@@ -276,6 +276,7 @@ export const NAME_TYPE_HINTS: Record<string, { type?: string; subType?: string }
   "cafe": { type: "Kuliner", subType: "Kafe" },
   "restoran": { type: "Kuliner", subType: "Restoran & Warung Makan" },
   "warung": { type: "Kuliner", subType: "Restoran & Warung Makan" },
+  "gudeg": { type: "Kuliner", subType: "Restoran & Warung Makan" },
   "bakery": { type: "Kuliner", subType: "Bakery & Pastry" },
   "roti": { type: "Kuliner", subType: "Bakery & Pastry" },
   "frozen": { type: "Kuliner", subType: "Frozen Food Homemade" },

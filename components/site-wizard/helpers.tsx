@@ -541,7 +541,7 @@ const DESC_HINTS: DescHintEntry[] = [
     keywords: [
       // ID
       "restoran", "resto", "warung", "warung makan", "rumah makan", "warteg", "nasi padang", "soto", "bakso", "mie ayam", "sate",
-      "ayam goreng", "ayam bakar", "ayam geprek", "seafood bakar", "pecel", "seblak", "martabak", "gorengan", "angkringan",
+      "ayam goreng", "ayam bakar", "ayam geprek", "seafood bakar", "pecel", "gudeg", "seblak", "martabak", "gorengan", "angkringan",
       "kedai makan", "masakan", "nasi", "lauk", "makanan", "makanan khas", "olahan makanan", "kulineran", "f&b", "dapur",
       // EN
       "restaurant", "eatery", "diner", "bistro", "food stall", "food court", "fast food", "street food", "meal", "dining",
