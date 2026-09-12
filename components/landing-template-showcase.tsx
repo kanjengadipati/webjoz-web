@@ -3,7 +3,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { TEMPLATE_REGISTRY } from "@/lib/template-registry";
 import { TEMPLATE_DEFAULT_DESIGN_TOKENS } from "@/lib/template-defaults";
-import { SHOWCASE_ITEMS, TEMPLATE_PREFILL_MAP } from "@/lib/landing-showcase-data";
+import { SHOWCASE_ITEMS, TEMPLATE_PREFILL_MAP, sampleIndicesForBusinessType } from "@/lib/landing-showcase-data";
 import { fetchDesignTokenLibrary, type DesignTokenLibraryItem } from "@/lib/design-token-library";
 import { scoreDesignToken } from "@/lib/design-token-score";
 import { useI18n } from "@/lib/i18n/context";
@@ -139,21 +139,21 @@ function pickDiverseLibraryTokens(
   return pool;
 }
 
-// Kurasi statis: selalu tampilkan 18 SHOWCARE_ITEMS (konten + template + nama
-// bisnis bervariasi), lalu warnai preview tiap kartu dengan design token dari
-// library yang sudah di-sebar warnanya. Bila pool tidak cukup (library kosong
-// atau semua paletnya mirip), sisa kartu memakai default token statis
-// per-template yang memang berbeda-beda.
+// Kurasi statis: tampilkan semua SHOWCARE_ITEMS, warnai dengan token dari
+// library yang sudah di-sebar warnanya. Tiap token dipasangkan ke contoh
+// website yang bisnisnya paling cocok (via sampleIndicesForBusinessType) supaya
+// warna tidak menempel ke template yang salah. Sisa contoh memakai token default
+// per-template yang bervariasi.
 function buildCuratedGalleryItems(tokens: DesignTokenLibraryItem[]): GalleryItem[] {
   const pool = pickDiverseLibraryTokens(tokens);
-  const items = SHOWCASE_ITEMS.map((s, i) => {
+  const used = new Set<number>();
+  const items: GalleryItem[] = [];
+
+  function itemFor(s: ShowcaseItem, token?: DesignTokenLibraryItem): GalleryItem {
     const preferred = TEMPLATE_PREFILL_MAP[s.templateId]?.businessSubType || s.businessType;
-    const token =
-      pool.find((t) => t.business_type?.toLowerCase() === preferred.toLowerCase()) ||
-      pool[i];
     const dt = token?.design_token || getDesignToken(s.templateId);
     return {
-      id: i + 1,
+      id: items.length + 1,
       source_template_id: s.templateId,
       business_type: preferred,
       mood: dt.mood ?? "",
@@ -163,7 +163,26 @@ function buildCuratedGalleryItems(tokens: DesignTokenLibraryItem[]): GalleryItem
       created_at: token?.created_at ?? "",
       sample: s,
     };
-  });
+  }
+
+  // 1) Pasangkan setiap token ke contoh bisnis paling cocok (prioritas 1: rules,
+  //    sisa token yang tidak ada rules match di-skip — warnanya tetap tersedia
+  //    sebagai default per contoh). Greedy menghindari contoh ganda.
+  for (const token of pool) {
+    const candidates = sampleIndicesForBusinessType(token.business_type);
+    const match = candidates.find((j) => !used.has(j));
+    if (match === undefined) continue;
+    used.add(match);
+    items.push(itemFor(SHOWCASE_ITEMS[match], token));
+  }
+
+  // 2) Sisa contoh yang belum terpasangi token memakai token default statis
+  //    per-template (tetap bervariasi karena setiap template punya palet beda).
+  for (let i = 0; i < SHOWCASE_ITEMS.length; i++) {
+    if (used.has(i)) continue;
+    items.push(itemFor(SHOWCASE_ITEMS[i]));
+  }
+
   return items.sort(byAesthetic);
 }
 

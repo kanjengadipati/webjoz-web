@@ -32,35 +32,46 @@ function hashCodeSeed(seed: string): number {
   return h >>> 0;
 }
 
-export function findShowcaseSample(businessType: string, seed?: string | number): ShowcaseItem {
+// Aturan keyword → kandidat indeks di SHOWCARE_ITEMS. Diurutkan dari yang
+// paling spesifik ke generik. Dipakai oleh findShowcaseSample dan juga (lewat
+// sampleIndicesForBusinessType) oleh galeri untuk memasangkan token →
+// contoh website yang relevan.
+const SAMPLE_MATCH_RULES: Array<{ pattern: RegExp; indices: number[] }> = [
+  { pattern: /fashion|pakaian|clothing|apparel|baju|busana/, indices: [8] },
+  { pattern: /elektronik|gadget|komputer|laptop|smartphone|handphone|hp|teknologi|toko online/, indices: [9] },
+  { pattern: /properti|real estate|rumah|tanah|apartemen|perumahan/, indices: [10] },
+  { pattern: /travel|wisata|tour|pariwisata|liburan|outbond|agen perjalanan/, indices: [11] },
+  { pattern: /pendidikan|kursus|sekolah|les|bimbel|pelatihan|training|akademi|kampus/, indices: [12] },
+  { pattern: /hotel|penginapan|homestay|resort|villa|guesthouse|inn/, indices: [13] },
+  { pattern: /barbershop|barber|cukur|pangkas/, indices: [14] },
+  { pattern: /laundry|cuci|setrika|binatu/, indices: [15] },
+  { pattern: /fotografer|fotografi|foto|kamera|photography/, indices: [16] },
+  { pattern: /gym|fitness|fitnes|olahraga|kebugaran|sport/, indices: [17] },
+  { pattern: /salon|kecantikan|beauty|spa|wellness|facial|grooming/, indices: [3, 8] },
+  { pattern: /boba|bubble|minuman|jus|smoothie/, indices: [2, 0] },
+  { pattern: /produk|handmade|herbal|jamu|organik|pertanian|skincare|tani|kebun|olahan/, indices: [4, 0] },
+  { pattern: /desain|arsitek|interior|studio|portfolio/, indices: [5, 16] },
+  { pattern: /kreatif|kreator|seniman|ilustrator|illustrator|musisi|musik|art|agency konten/, indices: [5, 16] },
+  { pattern: /bengkel|otomotif|motor|mobil|servis|garasi|tuning/, indices: [6, 17] },
+  { pattern: /klinik|kesehatan|gigi|dokter|medis/, indices: [7] },
+  { pattern: /kafe|kopi|coffee|cafe|kuliner|restoran|makanan|bakery|kue|pastry|warung|snack|roti|teh|kaki lima/, indices: [0, 2, 4] },
+  { pattern: /konsultan|hukum|legal|akuntan|pajak|agency|jasa|kontraktor|marketing|notaris|developer|it|software|it services/, indices: [1, 3, 5, 6, 7] },
+];
+
+/** Indeks kandidat showcase untuk sebuah business_type library ([] bila tak cocok). */
+export function sampleIndicesForBusinessType(businessType: string): number[] {
   const lower = (businessType || "").toLowerCase();
-  const rules: Array<{ pattern: RegExp; indices: number[] }> = [
-    { pattern: /fashion|pakaian|clothing|apparel|baju|busana/, indices: [8] },
-    { pattern: /elektronik|gadget|komputer|laptop|smartphone|handphone|hp|teknologi/, indices: [9] },
-    { pattern: /properti|real estate|rumah|tanah|apartemen|developer|perumahan/, indices: [10] },
-    { pattern: /travel|wisata|tour|pariwisata|liburan|outbond|agen perjalanan/, indices: [11] },
-    { pattern: /pendidikan|kursus|sekolah|les|bimbel|pelatihan|training|akademi|kampus/, indices: [12] },
-    { pattern: /hotel|penginapan|homestay|resort|villa|guesthouse|inn/, indices: [13] },
-    { pattern: /barbershop|barber|cukur|pangkas/, indices: [14] },
-    { pattern: /laundry|cuci|setrika|binatu/, indices: [15] },
-    { pattern: /fotografer|fotografi|foto|kamera|photography/, indices: [16] },
-    { pattern: /gym|fitness|fitnes|olahraga|kebugaran|sport/, indices: [17] },
-    { pattern: /salon|kecantikan|beauty|spa|wellness|facial|grooming/, indices: [3, 8] },
-    { pattern: /boba|bubble|minuman|jus|smoothie/, indices: [2, 0] },
-    { pattern: /produk|handmade|herbal|jamu|organik|pertanian|skincare|tani|kebun|olahan/, indices: [4, 0] },
-    { pattern: /desain|arsitek|interior|studio|portfolio/, indices: [5, 16] },
-    { pattern: /bengkel|otomotif|motor|mobil|servis|garasi|tuning/, indices: [6, 17] },
-    { pattern: /klinik|kesehatan|gigi|dokter|medis/, indices: [7] },
-    { pattern: /kafe|kopi|coffee|cafe|kuliner|restoran|makanan|bakery|kue|pastry|warung|snack|roti|teh/, indices: [0, 2, 4] },
-    { pattern: /konsultan|hukum|legal|akuntan|pajak|agency|jasa|kontraktor|marketing|notaris/, indices: [1, 3, 5, 6, 7] },
-  ];
-  for (const rule of rules) {
-    if (rule.pattern.test(lower)) {
-      const hash = seed === undefined || seed === null ? 0 : hashCodeSeed(String(seed));
-      return SHOWCASE_ITEMS[rule.indices[hash % rule.indices.length]];
-    }
+  for (const rule of SAMPLE_MATCH_RULES) {
+    if (rule.pattern.test(lower)) return rule.indices;
   }
-  return SHOWCASE_ITEMS[1];
+  return [];
+}
+
+export function findShowcaseSample(businessType: string, seed?: string | number): ShowcaseItem {
+  const indices = sampleIndicesForBusinessType(businessType);
+  if (indices.length === 0) return SHOWCASE_ITEMS[1];
+  const hash = seed === undefined || seed === null ? 0 : hashCodeSeed(String(seed));
+  return SHOWCASE_ITEMS[indices[hash % indices.length]];
 }
 
 export const SHOWCASE_ITEMS = [
