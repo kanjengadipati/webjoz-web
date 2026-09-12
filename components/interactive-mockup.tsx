@@ -87,14 +87,13 @@ function useBestHero(): HeroItem {
   const [hero, setHero] = useState<HeroItem>(FALLBACK_HERO);
   useEffect(() => {
     let cancelled = false;
+    // fetchDesignTokenLibrary sudah mengembalikan pool terdiversifikasi per-warna
+    // dari API (setiap hue mendapat wakil). Ambil elemen teratas langsung — tidak
+    // perlu re-sort; urutan dari API sudah mempertahankan kualitas (aesthetic/score)
+    // sekaligus variasi.
     fetchDesignTokenLibrary(100).then((tokens) => {
       if (cancelled || tokens.length === 0) return;
-      const sorted = [...tokens].sort(
-        (a, b) =>
-          (b.aesthetic_score ?? -1) - (a.aesthetic_score ?? -1) ||
-          (b.score ?? 0) - (a.score ?? 0)
-      );
-      const best = sorted[0];
+      const best = tokens[0];
       if (!best) return;
       setHero({ sample: findShowcaseSample(best.business_type, best.id), token: best.design_token });
     });
