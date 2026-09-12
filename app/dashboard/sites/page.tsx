@@ -5,7 +5,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
-import { request } from "@/lib/api/client";
+import { request, ApiError } from "@/lib/api/client";
 import {
   Globe, Loader2, RefreshCw, Edit3, Trash2,
   Check, Copy, Info, CheckCircle2, AlertCircle,
@@ -726,43 +726,20 @@ export default function SitesPage() {
       setActionLoading(site.id);
       pushToast(t("dashboard.sites.toastDuplicating"), "info");
 
-      // 1. Get original content & design token
-      const contentRes = await request<any>(`/sites/${site.id}/content`, {
-        headers: { "X-Tenant-ID": activeTenantId.toString() }
-      }, token);
-
-      // 2. Create the duplicated site with a new temporary subdomain
-      const tempSubdomain = `draft-${Date.now()}`;
-      const createRes = await request<any>("/sites", {
+      await request(`/sites/${site.id}/duplicate`, {
         method: "POST",
-        headers: { "X-Tenant-ID": activeTenantId.toString() },
-        body: JSON.stringify({
-          name: `${site.name} (Copy)`,
-          template_id: site.template_id,
-          subdomain: tempSubdomain
-        })
-      }, token);
-
-      if (createRes.status !== "success" || !createRes.data) {
-        throw new Error(createRes.message || t("dashboard.sites.toastDuplicateFailed"));
-      }
-
-      const newSite = createRes.data;
-
-      // 3. Copy content to new site
-      await request(`/sites/${newSite.id}/content`, {
-        method: "PUT",
-        headers: { "X-Tenant-ID": activeTenantId.toString() },
-        body: JSON.stringify({
-          content: contentRes.data?.content || {},
-          design_token: contentRes.data?.design_token || {}
-        })
+        headers: { "X-Tenant-ID": activeTenantId.toString() }
       }, token);
 
       pushToast(t("dashboard.sites.toastDuplicated"), "success");
       fetchSites();
-    } catch (err: any) {
-      pushToast(err.message || t("dashboard.sites.toastDuplicateError"), "error");
+    } catch (err) {
+      const code = err instanceof ApiError ? err.code : undefined;
+      if (code === "ERR_SITE_LIMIT") {
+        pushToast(t("dashboard.sites.toastSiteLimitReached"), "error");
+      } else {
+        pushToast(err instanceof Error ? err.message : t("dashboard.sites.toastDuplicateError"), "error");
+      }
     } finally {
       setActionLoading(null);
     }
