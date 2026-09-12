@@ -90,6 +90,7 @@ export const AI_LOADING_STEPS = [
 export const BUSINESS_TYPES: BusinessTypeItem[] = [
   { value: "Kuliner", emoji: "🍽️", label: "Kuliner", desc: "Restoran, Warung, Cafe & Catering" },
   { value: "Toko", emoji: "🛒", label: "Toko", desc: "Retail & Produk Fisik" },
+  { value: "Layanan & Reservasi", emoji: "📅", label: "Layanan & Reservasi", desc: "Salon, Hotel, Bengkel, Rental, Klinik, dll" },
   // "Portofolio" untuk kreator & profesional individual yang menampilkan karya
   { value: "Portofolio", emoji: "🎨", label: "Portofolio", desc: "Fotografer, Desainer, Developer, Kreator & Personal Brand" },
   // "Kreatif & Profesional" untuk agensi, tim, dan jasa profesional
