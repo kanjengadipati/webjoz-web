@@ -6,12 +6,11 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { Badge, Button, Card } from "@/components/ui";
-import { Check, Loader2, Zap, ArrowRight, Home, LayoutGrid, Tag, UserCircle, ShieldCheck } from "lucide-react";
+import { Check, Loader2, Zap, ArrowRight, Home, LayoutGrid, Tag, UserCircle, ShieldCheck, MessageCircle, Plus } from "lucide-react";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { PricingCards } from "@/components/pricing-cards";
-import { prefillForLibraryBusinessType, encodeDesignTokenParam, type DesignTokenLibraryItem } from "@/lib/design-token-library";
-import { SparkleIcon } from "@/components/sparkle-icon";
+import { encodeDesignTokenParam, type DesignTokenLibraryItem } from "@/lib/design-token-library";
 import { useI18n } from "@/lib/i18n/context";
 import { useAuthToken, useAuthReady } from "@/lib/auth-store";
 import { API_BASE_URL } from "@/lib/config";
@@ -224,11 +223,10 @@ export default function LandingPageClient() {
     const bleed = kind === "touch" ? SCROLL_BLEED_MS_TOUCH : SCROLL_BLEED_MS_WHEEL;
     if (performance.now() - time < bleed) return;
     if (!item) { router.push("/create"); return; }
-    const prefill = prefillForLibraryBusinessType(item.business_type);
+    // Hanya bawa design token (visual/style) — kategori bisnis tidak di-prefill
+    // agar chat wizard tetap berjalan natural dari awal tanpa pre-selected type.
     const dtParam = encodeDesignTokenParam(item.design_token);
     const params = new URLSearchParams();
-    if (prefill.businessType) params.set("businessType", prefill.businessType);
-    if (prefill.businessSubType) params.set("businessSubType", prefill.businessSubType);
     if (dtParam) params.set("dt", dtParam);
     router.push(`/create?${params.toString()}`);
   }
@@ -375,16 +373,8 @@ export default function LandingPageClient() {
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden px-4 pt-3 pb-8 sm:pt-6 sm:pb-12 sm:px-6 lg:px-10 flex flex-col items-center justify-center lg:min-h-[calc(100dvh-64px)] lg:py-0">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-gradient-to-tr from-white/10 via-white/5 to-transparent blur-[140px] rounded-full pointer-events-none -z-10" />
-
         <div className="mx-auto max-w-7xl w-full grid gap-4 sm:gap-8 lg:gap-12 lg:grid-cols-2 items-center">
           <div className="space-y-4 sm:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 flex flex-col items-start text-left">
-            {/* Top pill badge */}
-            <div className="hidden sm:inline-flex items-center gap-2 rounded-full border border-border/80 bg-card/80 px-4 py-1.5 backdrop-blur-md text-[10px] sm:text-xs font-bold uppercase tracking-widest text-foreground shadow-sm dark:border-white/15 dark:bg-white/[0.04] dark:text-white/90">
-              <SparkleIcon className="w-3.5 h-3.5 text-foreground dark:text-white" />
-              <span>{t("landing.badge")}</span>
-            </div>
-
             {/* Main headline */}
             <h1 className="text-4xl sm:text-5xl md:text-5xl lg:text-[3.25rem] xl:text-[3.65rem] font-black leading-[1.1] tracking-tight w-full text-foreground">
               <span dangerouslySetInnerHTML={{ __html: t("landing.heroTitle") }} />
@@ -402,7 +392,6 @@ export default function LandingPageClient() {
                 size="lg"
                 className="w-auto rounded-full bg-primary text-primary-foreground font-extrabold px-7 py-5 sm:px-9 sm:py-6 text-base sm:text-lg shadow-xl hover:bg-primary/90 transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2.5 sm:gap-3 group dark:bg-white dark:text-black dark:hover:bg-slate-200"
               >
-                <SparkleIcon className="size-4 sm:size-4.5 text-primary-foreground dark:text-black" />
                 <span>{t("landing.ctaPrimary")}</span>
                 <ArrowRight className="size-4 sm:size-4.5 text-primary-foreground dark:text-black group-hover:translate-x-1 transition-transform" />
               </Button>
@@ -419,7 +408,7 @@ export default function LandingPageClient() {
               </div>
 
               <div className="flex items-center gap-1.5 sm:gap-2.5 px-1.5 sm:px-4">
-                <SparkleIcon className="size-3.5 sm:size-5 text-foreground dark:text-white shrink-0" />
+                <MessageCircle className="size-3.5 sm:size-5 text-primary dark:text-white shrink-0" />
                 <div className="min-w-0">
                   <div className="text-[10px] sm:text-xs md:text-[13px] font-bold text-foreground dark:text-white leading-tight truncate">
                     <span className="sm:hidden">Chat AI</span>
@@ -467,11 +456,9 @@ export default function LandingPageClient() {
             {STEPS.map((step) => (
               <div
                 key={step.num}
-                className="group relative rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:border-foreground/30 hover:bg-card/80 dark:border-white/10 dark:bg-[#111318] dark:hover:border-white/25 dark:hover:bg-[#151720]"
+                className="group relative border-l-2 border-border bg-card py-6 pl-6 pr-5 transition-colors hover:border-l-primary dark:border-white/10 dark:bg-[#111318] dark:hover:border-l-primary"
               >
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-black/[0.04] text-sm font-bold font-mono text-foreground transition-colors dark:border-white/10 dark:bg-white/[0.06] dark:text-white group-hover:bg-black/[0.08] dark:group-hover:bg-white/10 group-hover:border-black/20 dark:group-hover:border-white/20">
-                  {step.num}
-                </div>
+                <div className="mb-3 font-mono text-4xl font-black leading-none text-muted-foreground/30 transition-colors group-hover:text-primary">{step.num}</div>
                 <h3 className="mb-2 text-base font-bold text-foreground">{t(`landing.${step.titleKey}`)}</h3>
                 <p className="text-xs leading-relaxed text-muted-foreground">{t(`landing.${step.descKey}`)}</p>
               </div>
@@ -594,9 +581,9 @@ export default function LandingPageClient() {
             {FEATURES.map((f, i) => (
               <div
                 key={i}
-                className="rounded-2xl border border-border bg-card p-6 transition-all hover:border-border/80 hover:bg-card/80 dark:border-white/10 dark:bg-[#111318] dark:hover:bg-[#151720]"
+                className="rounded-xl border border-border bg-card p-6 transition-all hover:border-border/80 hover:bg-card/80 dark:border-white/10 dark:bg-[#111318] dark:hover:bg-[#151720]"
               >
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border border-border/80 bg-gradient-to-b from-muted/80 to-muted/30 text-2xl shadow-sm dark:border-white/10 dark:bg-gradient-to-b dark:from-white/10 dark:to-white/[0.02]">
+                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-muted text-2xl dark:bg-white/[0.06]">
                   {f.icon}
                 </div>
                 <h3 className="mb-2 text-base font-bold text-foreground">{t(`landing.${f.titleKey}`)}</h3>
@@ -684,10 +671,6 @@ export default function LandingPageClient() {
       <section className="px-4 py-16 sm:px-6 lg:px-10 max-w-4xl mx-auto">
         <div className="mx-auto max-w-4xl text-center">
           <div className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary/5 via-card to-background px-8 py-12 shadow-xl dark:border-white/10 dark:from-[#14161f] dark:via-[#111318] dark:to-[#0d0e12]">
-            <div className="pointer-events-none absolute inset-0 -z-10">
-              <div className="absolute left-1/2 top-1/2 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/[0.04] blur-[100px]" />
-            </div>
-
             <div className="space-y-4">
               <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl dark:text-white">
                 {t("landing.ctaBannerTitle")}
@@ -771,14 +754,14 @@ export default function LandingPageClient() {
             <span>{t("landing.bottomNavFeatures")}</span>
           </a>
 
-          {/* Center Elevated Action: Gen AI Spark Create */}
+          {/* Center Elevated Action: Create */}
           <button
             type="button"
             onClick={() => startWizard()}
             className="flex flex-col items-center -mt-5 group cursor-pointer active:scale-95 transition-transform"
           >
             <div className="size-12 rounded-full bg-primary text-primary-foreground dark:bg-white dark:text-black flex items-center justify-center shadow-lg ring-4 ring-background dark:ring-[#08080a] group-hover:scale-105 transition-all">
-              <SparkleIcon className="size-6 text-primary-foreground fill-primary-foreground dark:text-black dark:fill-black" />
+              <Plus className="size-6 text-primary-foreground dark:text-black" strokeWidth={2.5} />
             </div>
             <span className="text-[10px] font-bold text-foreground dark:text-white mt-0.5">{t("landing.bottomNavCreate")}</span>
           </button>
