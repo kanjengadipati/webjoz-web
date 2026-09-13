@@ -893,7 +893,7 @@ function MobileChatCard({
   ];
 
   return (
-    <div className="relative w-full max-w-[420px] mx-auto rounded-[14px] border-2 border-white/35 bg-[#0e0f14]/95 p-1.5 shadow-[0_25px_60px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-300">
+    <div className="relative w-full max-w-[420px] mx-auto rounded-[14px] border-2 border-white/80 bg-[#0e0f14]/95 p-1.5 shadow-[0_25px_60px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-300">
       {/* inner-top shimmer */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-t-[12px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
@@ -1248,7 +1248,7 @@ export function InteractiveMockup() {
             transformStyle: "preserve-3d",
             transition: isHovered ? "transform 0.08s linear" : "transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)",
           }}
-          className="relative rounded-[14px] border-2 border-white/35 bg-card/60 p-1.5 shadow-[0_48px_140px_rgba(0,0,0,0.42)] backdrop-blur-2xl"
+          className="relative rounded-[14px] border-2 border-white/80 bg-card/60 p-1.5 shadow-[0_48px_140px_rgba(0,0,0,0.42)] backdrop-blur-2xl"
         >
           {/* inner-top shimmer */}
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-t-[12px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
