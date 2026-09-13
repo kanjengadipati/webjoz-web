@@ -893,49 +893,32 @@ function MobileChatCard({
   ];
 
   return (
-    <div className="w-full max-w-[420px] mx-auto rounded-[2rem] border border-white/15 bg-[#0e0f14]/95 p-3.5 sm:p-5 shadow-[0_25px_60px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-300">
-      {/* ── Card Header ── */}
-      <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
-        <div className="flex items-center gap-2">
-          <div className="size-7 sm:size-8 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center text-white shadow-sm shrink-0">
-            <SparkleIcon className="size-3.5 sm:size-4 text-white" />
-          </div>
-          <div>
-            <div className="text-xs font-bold text-white tracking-tight">
-              {isPreview ? "Live Web Preview" : "AI Website Chat"}
-            </div>
-            <div className="flex items-center gap-1.5 text-[10px] text-emerald-400 font-medium">
-              <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>{isPreview ? "Interactive" : "Online"}</span>
-            </div>
-          </div>
+    <div className="relative w-full max-w-[420px] mx-auto rounded-[14px] border-2 border-white/35 bg-[#0e0f14]/95 p-1.5 shadow-[0_25px_60px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-300">
+      {/* inner-top shimmer */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-t-[12px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+
+      {/* ── Logo-style chrome bar ── */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.07] select-none">
+        {/* Left: 3 dots */}
+        <div className="flex items-center gap-[6px]">
+          {[0, 1, 2].map((i) => (
+            <span key={i} className="block rounded-full bg-white" style={{ width: 7, height: 7, opacity: 0.3 + i * 0.2 }} />
+          ))}
         </div>
 
-        {/* Tab switcher */}
-        <div className="inline-flex items-center rounded-full bg-white/5 border border-white/10 p-0.5 text-[10px]">
-          <button
-            type="button"
-            onClick={() => setManualTab("chat")}
-            className={`rounded-full px-2.5 py-1 font-semibold transition cursor-pointer ${
-              !isPreview ? "bg-white text-black shadow-xs" : "text-white/60 hover:text-white"
-            }`}
-          >
-            Chat
-          </button>
-          <button
-            type="button"
-            onClick={() => setManualTab("preview")}
-            className={`rounded-full px-2.5 py-1 font-semibold transition cursor-pointer flex items-center gap-1 ${
-              isPreview ? "bg-white text-black shadow-xs" : "text-white/60 hover:text-white"
-            }`}
-          >
-            <span>Preview</span>
-            {flowStep >= STEP_PREVIEW && (
-              <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            )}
-          </button>
-        </div>
+        {/* Center: domain / label */}
+        <span className="text-[10px] font-mono text-white/25">
+          {isPreview ? (siteUrl ? siteHost(siteUrl) : "webjoz.com") : "webjoz.com"}
+        </span>
+
+        {/* Right: sparkle */}
+        <svg width="10" height="10" viewBox="0 0 12 12" fill="none" className="text-white/30 shrink-0">
+          <path d="M6 0.5L6.9 4.9L11.5 6L6.9 7.1L6 11.5L5.1 7.1L0.5 6L5.1 4.9L6 0.5Z" fill="currentColor"/>
+        </svg>
       </div>
+
+      {/* ── Inner content wrapper ── */}
+      <div className="rounded-b-[10px] overflow-hidden">
 
       {/* ── Screen Body (Chat vs Preview) ── */}
       <div className="relative h-[440px] sm:h-[490px] w-full rounded-2xl overflow-hidden bg-[#0c0c0e]">
@@ -1166,7 +1149,8 @@ function MobileChatCard({
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 }
 
 export function InteractiveMockup() {
