@@ -234,11 +234,7 @@ export default function LandingPageClient() {
   }
 
   return (
-    <main className="min-h-screen pb-20 bg-background text-foreground selection:bg-amber-500/30 selection:text-amber-600 dark:selection:text-amber-200 transition-colors">
-      {/* PR Test Banner — floating top-right */}
-      <div className="fixed top-16 right-4 z-[100] rounded-full border border-amber-500/25 bg-amber-500/10 px-3 py-1 text-[10px] font-medium text-amber-600 dark:text-amber-300 shadow-sm backdrop-blur-md">
-        <span>⚠️ Mode Uji PR</span>
-      </div>
+    <main className="min-h-screen pb-20 bg-background text-foreground selection:bg-foreground/15 selection:text-foreground transition-colors">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -379,13 +375,13 @@ export default function LandingPageClient() {
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden px-4 pt-3 pb-8 sm:pt-6 sm:pb-12 sm:px-6 lg:px-10 flex flex-col items-center justify-center lg:min-h-[calc(100dvh-64px)] lg:py-0">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-gradient-to-tr from-amber-500/15 via-orange-500/10 to-transparent blur-[140px] rounded-full pointer-events-none -z-10" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-gradient-to-tr from-white/10 via-white/5 to-transparent blur-[140px] rounded-full pointer-events-none -z-10" />
 
         <div className="mx-auto max-w-7xl w-full grid gap-4 sm:gap-8 lg:gap-12 lg:grid-cols-2 items-center">
           <div className="space-y-4 sm:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 flex flex-col items-start text-left">
             {/* Top pill badge */}
             <div className="hidden sm:inline-flex items-center gap-2 rounded-full border border-border/80 bg-card/80 px-4 py-1.5 backdrop-blur-md text-[10px] sm:text-xs font-bold uppercase tracking-widest text-foreground shadow-sm dark:border-white/15 dark:bg-white/[0.04] dark:text-white/90">
-              <SparkleIcon className="w-3.5 h-3.5 text-amber-500 dark:text-white" />
+              <SparkleIcon className="w-3.5 h-3.5 text-foreground dark:text-white" />
               <span>{t("landing.badge")}</span>
             </div>
 
@@ -423,7 +419,7 @@ export default function LandingPageClient() {
               </div>
 
               <div className="flex items-center gap-1.5 sm:gap-2.5 px-1.5 sm:px-4">
-                <SparkleIcon className="size-3.5 sm:size-5 text-amber-500 dark:text-white shrink-0" />
+                <SparkleIcon className="size-3.5 sm:size-5 text-foreground dark:text-white shrink-0" />
                 <div className="min-w-0">
                   <div className="text-[10px] sm:text-xs md:text-[13px] font-bold text-foreground dark:text-white leading-tight truncate">
                     <span className="sm:hidden">Chat AI</span>
@@ -471,9 +467,9 @@ export default function LandingPageClient() {
             {STEPS.map((step) => (
               <div
                 key={step.num}
-                className="group relative rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:border-amber-500/40 hover:bg-card/80 dark:border-white/10 dark:bg-[#111318] dark:hover:bg-[#151720]"
+                className="group relative rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:border-foreground/30 hover:bg-card/80 dark:border-white/10 dark:bg-[#111318] dark:hover:border-white/25 dark:hover:bg-[#151720]"
               >
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 border border-amber-500/30 text-sm font-bold font-mono text-amber-600 dark:text-amber-400 group-hover:bg-amber-500/20 transition-colors">
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-black/[0.04] text-sm font-bold font-mono text-foreground transition-colors dark:border-white/10 dark:bg-white/[0.06] dark:text-white group-hover:bg-black/[0.08] dark:group-hover:bg-white/10 group-hover:border-black/20 dark:group-hover:border-white/20">
                   {step.num}
                 </div>
                 <h3 className="mb-2 text-base font-bold text-foreground">{t(`landing.${step.titleKey}`)}</h3>
@@ -511,7 +507,7 @@ export default function LandingPageClient() {
             <Card className="overflow-hidden border-border bg-card shadow-lg dark:border-white/10 dark:bg-[#111318]">
               <div className="p-8 lg:p-10">
                 <div className="space-y-5">
-                  <Badge variant="outline" className="border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold">
+                  <Badge variant="outline" className="border-border/80 bg-muted/50 text-foreground font-semibold dark:border-white/15 dark:bg-white/5 dark:text-white">
                     {t("landing.dashboardBadge")}
                   </Badge>
                   <div className="space-y-3">
@@ -524,7 +520,7 @@ export default function LandingPageClient() {
                   </div>
                   <div className="flex flex-wrap gap-3">
                     {translations.landing.dashboardTags.map((tag) => (
-                      <span key={tag} className="rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-600 dark:text-amber-300">
+                      <span key={tag} className="rounded-full border border-border/80 bg-muted/40 px-3 py-1 text-xs font-medium text-foreground/80 dark:border-white/10 dark:bg-white/5 dark:text-white/80">
                         {tag}
                       </span>
                     ))}
@@ -536,7 +532,7 @@ export default function LandingPageClient() {
             <Card className="overflow-hidden border-border bg-card shadow-lg dark:border-white/10 dark:bg-[#111318]">
               <div className="p-8 lg:p-10">
                 <div className="space-y-5">
-                  <Badge variant="outline" className="border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold">
+                  <Badge variant="outline" className="border-border/80 bg-muted/50 text-foreground font-semibold dark:border-white/15 dark:bg-white/5 dark:text-white">
                     {t("landing.domainBadge")}
                   </Badge>
                   <div className="space-y-3">
@@ -549,7 +545,7 @@ export default function LandingPageClient() {
                   </div>
                   <div className="flex flex-wrap gap-3">
                     {translations.landing.domainTags.map((tag) => (
-                      <span key={tag} className="rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-600 dark:text-amber-300">
+                      <span key={tag} className="rounded-full border border-border/80 bg-muted/40 px-3 py-1 text-xs font-medium text-foreground/80 dark:border-white/10 dark:bg-white/5 dark:text-white/80">
                         {tag}
                       </span>
                     ))}
@@ -600,7 +596,7 @@ export default function LandingPageClient() {
                 key={i}
                 className="rounded-2xl border border-border bg-card p-6 transition-all hover:border-border/80 hover:bg-card/80 dark:border-white/10 dark:bg-[#111318] dark:hover:bg-[#151720]"
               >
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-amber-500/10 border border-amber-500/20 text-2xl">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border border-border/80 bg-gradient-to-b from-muted/80 to-muted/30 text-2xl shadow-sm dark:border-white/10 dark:bg-gradient-to-b dark:from-white/10 dark:to-white/[0.02]">
                   {f.icon}
                 </div>
                 <h3 className="mb-2 text-base font-bold text-foreground">{t(`landing.${f.titleKey}`)}</h3>
@@ -689,7 +685,7 @@ export default function LandingPageClient() {
         <div className="mx-auto max-w-4xl text-center">
           <div className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary/5 via-card to-background px-8 py-12 shadow-xl dark:border-white/10 dark:from-[#14161f] dark:via-[#111318] dark:to-[#0d0e12]">
             <div className="pointer-events-none absolute inset-0 -z-10">
-              <div className="absolute left-1/2 top-1/2 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber-500/10 blur-[90px]" />
+              <div className="absolute left-1/2 top-1/2 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/[0.04] blur-[100px]" />
             </div>
 
             <div className="space-y-4">
@@ -726,7 +722,7 @@ export default function LandingPageClient() {
                 href={getWhatsAppUrl()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-amber-500 hover:text-amber-600 dark:text-amber-400 underline-offset-4 hover:underline font-semibold"
+                className="text-foreground hover:text-primary dark:text-white dark:hover:text-slate-300 underline-offset-4 hover:underline font-semibold"
               >
                 {t("landing.ctaBannerContact")}
               </a>
