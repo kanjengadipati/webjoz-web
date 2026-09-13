@@ -1100,7 +1100,7 @@ function MobileChatCard({
               <div className="rounded-xl border border-white/15 bg-black/85 px-4 py-3 shadow-2xl backdrop-blur-md text-center">
                 <div className="flex items-center justify-center gap-2">
                   <SparkleIcon className="h-3.5 w-3.5 animate-pulse text-white" />
-                  <span className="text-[11px] font-semibold text-white">⚡ AI sedang generate...</span>
+                  <span className="text-[11px] font-semibold text-white">AI sedang generate...</span>
                 </div>
                 <div className="mt-2.5 space-y-1.5 w-36 mx-auto">
                   {[100, 78, 56].map((w, i) => (
@@ -1124,7 +1124,7 @@ function MobileChatCard({
             }}
           >
             <div className="flex items-center gap-1.5 bg-black/85 backdrop-blur-md border border-border rounded-full px-3 py-1 text-[9.5px] font-mono text-white shadow-lg whitespace-nowrap max-w-full">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shrink-0" />
               <span className="truncate whitespace-nowrap">
                 {siteUrl ? siteHost(siteUrl) : `${domainSlug(chatBusinessName)}.webjoz.com`}
               </span>
@@ -1138,13 +1138,12 @@ function MobileChatCard({
               opacity: flowStep >= STEP_SUCCESS ? 1 : 0,
               transform: flowStep >= STEP_SUCCESS ? "translateY(0)" : "translateY(6px)",
               transition: "transform 0.5s ease-out, opacity 0.4s",
-              background: "linear-gradient(90deg, rgba(34,197,94,0.25), rgba(34,197,94,0.1))",
+              background: "rgba(34,197,94,0.18)",
               border: "1px solid rgba(34,197,94,0.4)",
-              boxShadow: "0 4px 16px rgba(34,197,94,0.15)",
             }}
           >
             <span className="text-[9.5px] font-bold text-emerald-400 flex items-center gap-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#22c55e] animate-pulse" />
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
               ✓ Website siap dipublikasikan!
             </span>
           </div>
@@ -1415,7 +1414,7 @@ export function InteractiveMockup() {
                   <div className="rounded-xl border border-white/15 bg-black/75 px-4 py-3 shadow-2xl backdrop-blur-md">
                     <div className="flex items-center gap-2">
                       <SparkleIcon className="h-3.5 w-3.5 animate-pulse text-primary" />
-                      <span className="text-[11px] font-semibold text-white">⚡ AI sedang generate...</span>
+                      <span className="text-[11px] font-semibold text-white">AI sedang generate...</span>
                     </div>
                     <div className="mt-2.5 space-y-1.5">
                       {[100, 78, 56].map((w, i) => (
@@ -1439,7 +1438,7 @@ export function InteractiveMockup() {
                 }}
               >
                 <div className="flex items-center gap-1.5 bg-black/70 backdrop-blur-md border border-white/15 rounded-full px-2.5 py-1 text-[9px] font-mono text-white/80 shadow-md">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
                   Interactive Preview
                 </div>
               </div>
@@ -1454,7 +1453,7 @@ export function InteractiveMockup() {
                 }}
               >
                 <div className="flex items-center gap-1.5 bg-black/85 backdrop-blur-md border border-white/15 rounded-full px-3 py-1 text-[10px] font-mono text-white/80 shadow-lg whitespace-nowrap max-w-full">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shrink-0" />
                   <span className="truncate whitespace-nowrap">
                     {currentSite ? siteHost(currentSite.url) : `${domainSlug(chatBusinessName)}.webjoz.com`}
                   </span>
@@ -1468,13 +1467,12 @@ export function InteractiveMockup() {
                   transform: flowStep >= STEP_SUCCESS ? "translateY(0)" : "translateY(6px)",
                   opacity: flowStep >= STEP_SUCCESS ? 1 : 0,
                   transition: "transform 0.5s ease-out, opacity 0.4s",
-                  background: "linear-gradient(90deg, color-mix(in srgb,#22c55e 12%,transparent), color-mix(in srgb,#22c55e 5%,transparent))",
+                  background: "color-mix(in srgb,#22c55e 8%,transparent)",
                   border: "1px solid color-mix(in srgb,#22c55e 30%,transparent)",
-                  boxShadow: "0 4px 20px color-mix(in srgb,#22c55e 12%,transparent)",
                 }}
               >
                 <span className="text-[10px] font-semibold text-emerald-400 flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_6px_#22c55e] animate-pulse" />
+                  <span className="h-2 w-2 rounded-full bg-emerald-400" />
                   ✓ Website siap dipublikasikan!
                 </span>
               </div>

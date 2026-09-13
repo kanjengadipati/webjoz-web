@@ -678,7 +678,7 @@ export default function LandingPageClient() {
       {/* ── CTA Banner ─────────────────────────────────────────────────────── */}
       <section className="px-4 py-16 sm:px-6 lg:px-10 max-w-4xl mx-auto">
         <div className="mx-auto max-w-4xl text-center">
-          <div className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary/5 via-card to-background px-8 py-12 shadow-xl dark:border-white/10 dark:from-[#14161f] dark:via-[#111318] dark:to-[#0d0e12]">
+          <div className="relative overflow-hidden rounded-3xl border border-border bg-card px-8 py-12 shadow-xl dark:border-white/10 dark:bg-[#14161f]">
             <div className="space-y-4">
               <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl dark:text-white">
                 {t("landing.ctaBannerTitle")}
