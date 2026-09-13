@@ -43,29 +43,34 @@ const SEQUENCE = [
   { step: STEP_PREVIEW, delay: 9200 },    // Preview appears with 3D depth
   { step: STEP_SUCCESS, delay: 10700 },   // Success banner
 ];
-const CYCLE_MS = 14500;
 
+// Playback chat: mainkan SEQUENCE SEKALI lalu berhenti — chat settle di pesan
+// terakhir ("website siap") dan tidak boleh terus mengetik ulang. Yang bergerak
+// terus-menerus hanya preview (via usePreviewExampleIndex), bukan chat.
 function useFlowStep() {
   const [flowStep, setFlowStep] = useState(0);
-  const [cycle, setCycle] = useState(0);
   useEffect(() => {
-    let timers: ReturnType<typeof setTimeout>[] = [];
-    const run = () => {
-      SEQUENCE.forEach(({ step, delay }) => {
-        timers.push(setTimeout(() => setFlowStep(step), delay));
-      });
-    };
-    run();
-    const loop = setInterval(() => {
-      timers.forEach(clearTimeout);
-      timers = [];
-      setFlowStep(0);
-      setCycle((c) => c + 1);
-      run();
-    }, CYCLE_MS);
-    return () => { timers.forEach(clearTimeout); clearInterval(loop); };
+    const timers = SEQUENCE.map(({ step, delay }) =>
+      setTimeout(() => setFlowStep(step), delay)
+    );
+    return () => timers.forEach(clearTimeout);
   }, []);
-  return { flowStep, cycle };
+  return flowStep;
+}
+
+// Pertunjukan preview yang mandiri: rotasi contoh (private showcase site)
+// dengan interval sendiri, terlepas dari flow chat yang sudah settle.
+// `enabled` digerbang oleh flowStep >= STEP_PREVIEW — sebelum preview muncul,
+// contoh (nama bisnis & domain di chat) harus tetap diam agar tidak berganti
+// di tengah skenario chat; begitu preview tampil, contoh mulai bergilir.
+function usePreviewExampleIndex(exampleCount: number, intervalMs = 6000, enabled = true) {
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    if (!enabled || exampleCount <= 1) return;
+    const id = setInterval(() => setIndex((i) => (i + 1) % exampleCount), intervalMs);
+    return () => clearInterval(id);
+  }, [enabled, exampleCount, intervalMs]);
+  return index;
 }
 
 /* ── Best hero template (highest AI aesthetic score) ───────────────────── */
@@ -828,17 +833,14 @@ function MobileChatCard({
   siteUrl,
   businessName,
   flowStep: parentFlowStep,
-  cycle: parentCycle,
 }: HeroItem & {
   siteUrl?: string | null;
   businessName?: string;
   flowStep?: number;
-  cycle?: number;
 }) {
   const { t, translations } = useI18n();
-  const localFlow = useFlowStep();
-  const flowStep = parentFlowStep ?? localFlow.flowStep;
-  const cycle = parentCycle ?? localFlow.cycle;
+  const localFlowStep = useFlowStep();
+  const flowStep = parentFlowStep ?? localFlowStep;
 
   const showcaseItem = sample;
   const TemplateComponent = TEMPLATE_REGISTRY.find((t) => t.id === showcaseItem.templateId)?.component;
@@ -850,11 +852,6 @@ function MobileChatCard({
   const [manualTab, setManualTab] = useState<"chat" | "preview" | null>(null);
   const [manualCategory, setManualCategory] = useState<number | null>(null);
   const [manualMood, setManualMood] = useState<number | null>(null);
-
-  useEffect(() => {
-    setManualCategory(null);
-    setManualMood(null);
-  }, [cycle]);
 
   const categoryIndex = manualCategory ?? inferCategoryIndex(chatBusinessName, realSiteData, sample);
   const moodIndices = inferMoodIndex(realSiteData, token, chatBusinessName);
@@ -1165,14 +1162,15 @@ export function InteractiveMockup() {
   const [editingSites, setEditingSites] = useState(false);
   const [draftSites, setDraftSites] = useState<MockupShowcaseSite[]>([]);
   const cardRef = useRef<HTMLDivElement>(null);
-  const { flowStep, cycle } = useFlowStep();
+  const flowStep = useFlowStep();
 
   const { sample, token } = useBestHero();
   const showcaseItem = sample;
   const TemplateComponent = TEMPLATE_REGISTRY.find((t) => t.id === showcaseItem.templateId)?.component;
 
+  const previewIndex = usePreviewExampleIndex(sites.length, 6000, flowStep >= STEP_PREVIEW);
   const currentSite =
-    sites.length > 0 ? sites[((cycle % sites.length) + sites.length) % sites.length] : null;
+    sites.length > 0 ? sites[previewIndex % sites.length] : null;
   const chatBusinessName = currentSite?.businessName?.trim() || showcaseItem.businessName;
 
   const currentHost = currentSite ? siteHost(currentSite.url) : null;
@@ -1180,11 +1178,6 @@ export function InteractiveMockup() {
 
   const [manualCategory, setManualCategory] = useState<number | null>(null);
   const [manualMood, setManualMood] = useState<number | null>(null);
-
-  useEffect(() => {
-    setManualCategory(null);
-    setManualMood(null);
-  }, [cycle]);
 
   const categoryIndex = manualCategory ?? inferCategoryIndex(chatBusinessName, realSiteData, showcaseItem);
   const moodIndices = inferMoodIndex(realSiteData, token, chatBusinessName);
@@ -1231,7 +1224,7 @@ export function InteractiveMockup() {
           </div>
 
           {/* ── Content grid ──────────────────────────────────────────────── */}
-          <div className="grid gap-0 grid-rows-[auto_1fr] md:grid-rows-none md:grid-cols-[1fr_1.1fr] overflow-hidden rounded-b-[11px]">
+          <div className="grid gap-0 grid-rows-[auto_1fr] md:grid-rows-none md:grid-cols-[0.8fr_1.4fr] overflow-hidden rounded-b-[11px]">
 
             {/* ── Left: Chat panel ──────────────────────────────────────── */}
             <div className="flex flex-col gap-3 p-4 md:p-5 border-b md:border-b-0 md:border-r border-border/20 bg-background/20 min-h-[260px] md:min-h-[480px]">
@@ -1461,7 +1454,6 @@ export function InteractiveMockup() {
           siteUrl={currentSite?.url ?? null}
           businessName={chatBusinessName}
           flowStep={flowStep}
-          cycle={cycle}
         />
       </div>
 
