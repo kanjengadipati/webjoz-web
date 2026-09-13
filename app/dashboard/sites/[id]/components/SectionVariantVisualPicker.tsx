@@ -216,22 +216,13 @@ export default function SectionVariantVisualPicker({
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<string>("Semua");
 
-  if (!isDynamic || !SECTION_VARIANT_OPTIONS[sectionKey]) return null;
-
-  const allVars = SECTION_VARIANT_OPTIONS[sectionKey];
-  const enabledOpts = allVars.filter((opt) =>
-    getEnabledVariants(sectionKey, allVars.map((o) => o.value)).includes(opt.value)
-  );
-
-  if (enabledOpts.length <= 1) return null;
-
-  // Derive current variant for hero or normal section
-  const currentVal =
-    (sectionKey === "hero"
-      ? (designToken?.layout?.section_variants?.hero || designToken?.layout?.hero_style)
-      : designToken?.layout?.section_variants?.[sectionKey]) || enabledOpts[0].value;
-
-  const currentOpt = enabledOpts.find((o) => o.value === currentVal) || enabledOpts[0];
+  const allVars = SECTION_VARIANT_OPTIONS[sectionKey] || [];
+  const enabledOpts = useMemo(() => {
+    if (!isDynamic || !SECTION_VARIANT_OPTIONS[sectionKey]) return [];
+    return allVars.filter((opt) =>
+      getEnabledVariants(sectionKey, allVars.map((o) => o.value)).includes(opt.value)
+    );
+  }, [allVars, getEnabledVariants, isDynamic, sectionKey]);
 
   // Unique groups for filtering
   const groups = useMemo(() => {
@@ -244,8 +235,20 @@ export default function SectionVariantVisualPicker({
 
   const filteredOptions = useMemo(() => {
     if (selectedGroup === "Semua") return enabledOpts;
-    return enabledOpts.filter((o) => o.group === selectedGroup);
+    return enabledOpts.filter((opt) => opt.group === selectedGroup);
   }, [enabledOpts, selectedGroup]);
+
+  if (!isDynamic || !SECTION_VARIANT_OPTIONS[sectionKey] || enabledOpts.length <= 1) {
+    return null;
+  }
+
+  // Derive current variant for hero or normal section
+  const currentVal =
+    (sectionKey === "hero"
+      ? (designToken?.layout?.section_variants?.hero || designToken?.layout?.hero_style)
+      : designToken?.layout?.section_variants?.[sectionKey]) || enabledOpts[0]?.value;
+
+  const currentOpt = enabledOpts.find((o) => o.value === currentVal) || enabledOpts[0];
 
   const getOptionLabel = (opt: { value: string; label: string; labelKey?: string }) => {
     if (t && opt.labelKey) {
