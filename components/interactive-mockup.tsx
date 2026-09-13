@@ -907,7 +907,7 @@ function MobileChatCard({
         </div>
 
         {/* Center: domain / label */}
-        <span className="text-[10px] font-mono text-white/25">
+        <span className="text-[10px] font-mono text-white/25 truncate max-w-[180px] sm:max-w-none whitespace-nowrap">
           {isPreview ? (siteUrl ? siteHost(siteUrl) : "webjoz.com") : "webjoz.com"}
         </span>
 
@@ -1117,15 +1117,17 @@ function MobileChatCard({
 
           {/* Domain pill */}
           <div
-            className="absolute top-2.5 left-1/2 -translate-x-1/2 z-30 transition-all duration-500"
+            className="absolute top-2.5 left-1/2 -translate-x-1/2 z-30 max-w-[calc(100%-20px)] w-max pointer-events-none transition-all duration-500"
             style={{
               opacity: flowStep >= STEP_PREVIEW ? 1 : 0,
               transform: flowStep >= STEP_PREVIEW ? "translateX(-50%) translateY(0)" : "translateX(-50%) translateY(-4px)",
             }}
           >
-            <div className="flex items-center gap-1.5 bg-black/85 backdrop-blur-md border border-border rounded-full px-3 py-1 text-[9.5px] font-mono text-white shadow-lg">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              {siteUrl ? siteHost(siteUrl) : `${domainSlug(chatBusinessName)}.webjoz.com`}
+            <div className="flex items-center gap-1.5 bg-black/85 backdrop-blur-md border border-border rounded-full px-3 py-1 text-[9.5px] font-mono text-white shadow-lg whitespace-nowrap max-w-full">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+              <span className="truncate whitespace-nowrap">
+                {siteUrl ? siteHost(siteUrl) : `${domainSlug(chatBusinessName)}.webjoz.com`}
+              </span>
             </div>
           </div>
 
@@ -1267,7 +1269,7 @@ export function InteractiveMockup() {
             </div>
 
             {/* Center: minimal domain */}
-            <span className="text-[10px] font-mono text-white/25">
+            <span className="text-[10px] font-mono text-white/25 truncate max-w-[200px] sm:max-w-none whitespace-nowrap">
               {flowStep >= STEP_PREVIEW && currentSite ? siteHost(currentSite.url) : "webjoz.com"}
             </span>
 
@@ -1460,16 +1462,18 @@ export function InteractiveMockup() {
 
               {/* Domain pill — floats above real preview */}
               <div
-                className="absolute top-3 left-1/2 -translate-x-1/2 z-30 transition-all duration-500"
+                className="absolute top-3 left-1/2 -translate-x-1/2 z-30 max-w-[calc(100%-24px)] w-max pointer-events-none transition-all duration-500"
                 style={{
                   opacity: flowStep >= STEP_PREVIEW ? 1 : 0,
-                  transform: flowStep >= STEP_PREVIEW ? `translateX(-50%) ${tz(30)}` : "translateX(-50%) translateY(-4px)",
+                  transform: flowStep >= STEP_PREVIEW ? "translateX(-50%) translateY(0)" : "translateX(-50%) translateY(-4px)",
                   transition: "opacity 0.5s, transform 0.6s cubic-bezier(0.34,1.3,0.64,1)",
                 }}
               >
-                <div className="flex items-center gap-1.5 bg-black/70 backdrop-blur-md border border-white/15 rounded-full px-3 py-1 text-[10px] font-mono text-white/70">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  {currentSite ? siteHost(currentSite.url) : `${domainSlug(chatBusinessName)}.webjoz.com`}
+                <div className="flex items-center gap-1.5 bg-black/85 backdrop-blur-md border border-white/15 rounded-full px-3 py-1 text-[10px] font-mono text-white/80 shadow-lg whitespace-nowrap max-w-full">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+                  <span className="truncate whitespace-nowrap">
+                    {currentSite ? siteHost(currentSite.url) : `${domainSlug(chatBusinessName)}.webjoz.com`}
+                  </span>
                 </div>
               </div>
 
