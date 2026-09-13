@@ -183,7 +183,21 @@ function buildCuratedGalleryItems(tokens: DesignTokenLibraryItem[]): GalleryItem
     items.push(itemFor(SHOWCASE_ITEMS[i]));
   }
 
-  return items.sort(byAesthetic);
+  // Urutan kurasi disengaja: Premium & Eksklusif (elegant) dan Bold & Tegas (bold)
+  // ditaruh di paling depan karena tampilannya paling menarik, lalu sisa template
+  // lain, dan Minimalis & Editorial selalu paling belakang (polos, kurang nendang
+  // untuk jadi kesan pertama).
+  function frontPriority(item: GalleryItem): number {
+    return item.sample.templateId === "TEMPLATE_ELEGANT" || item.sample.templateId === "TEMPLATE_BOLD"
+      ? 0
+      : item.sample.templateId === "TEMPLATE_MINIMALIST"
+        ? 2
+        : 1;
+  }
+
+  return items.sort(
+    (a, b) => frontPriority(a) - frontPriority(b) || byAesthetic(a, b)
+  );
 }
 
 function galleryScore(item: GalleryItem): number {
@@ -524,7 +538,7 @@ export function LandingTemplateShowcase({ onStart }: { onStart: (item: GalleryIt
           <div className="text-center pt-2">
             <button
               onClick={() => setShowAll(true)}
-              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-300 hover:text-white transition-all border border-white/10 bg-muted/50 hover:bg-white/[0.08] hover:border-border px-5 py-2.5 rounded-full group"
+              className="inline-flex items-center gap-2 text-xs font-semibold text-foreground hover:text-foreground/80 transition-all border border-border bg-muted/60 hover:bg-muted px-5 py-2.5 rounded-full group"
             >
               <svg
                 width="14" height="14" viewBox="0 0 24 24" fill="none"
@@ -533,7 +547,7 @@ export function LandingTemplateShowcase({ onStart }: { onStart: (item: GalleryIt
                 <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
               {t("landing.templatesViewMore", "Lihat lebih banyak contoh website")}
-              <span className="text-slate-400">+{rest.length}</span>
+              <span className="text-muted-foreground">+{rest.length}</span>
             </button>
           </div>
         )}

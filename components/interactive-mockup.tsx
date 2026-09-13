@@ -893,9 +893,7 @@ function MobileChatCard({
   ];
 
   return (
-    <div className="relative w-full max-w-[420px] mx-auto rounded-[14px] border border-border dark:border-white/10 bg-card dark:bg-[#111318] p-1.5 shadow-xl transition-all duration-300">
-      {/* inner-top shimmer */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-t-[12px] bg-gradient-to-r from-transparent via-foreground/10 dark:via-white/20 to-transparent" />
+    <div className="relative w-full max-w-[420px] mx-auto rounded-[14px] overflow-hidden border border-border dark:border-white/10 bg-card dark:bg-[#111318] p-1.5 shadow-xl transition-all duration-300">
 
       {/* ── Logo-style chrome bar ── */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-border/70 dark:border-white/[0.08] select-none">
@@ -922,10 +920,10 @@ function MobileChatCard({
       </div>
 
       {/* ── Inner content wrapper ── */}
-      <div className="rounded-b-[10px] overflow-hidden">
+      <div className="rounded-b-[11px] overflow-hidden">
 
       {/* ── Screen Body (Chat vs Preview) ── */}
-      <div className="relative h-[440px] sm:h-[490px] w-full rounded-2xl overflow-hidden bg-[#0c0c0e]">
+      <div className="relative h-[440px] sm:h-[490px] w-full rounded-b-[10px] overflow-hidden bg-[#0c0c0e]">
         {/* Layer 1: Chat View */}
         <div
           className={`absolute inset-0 p-2 sm:p-3 flex flex-col justify-between overflow-y-auto transition-all duration-500 ${
@@ -1092,7 +1090,7 @@ function MobileChatCard({
           {/* Scan line on generating */}
           {generating && (
             <div className="absolute inset-x-0 top-0 z-20 pointer-events-none">
-              <div className="h-px w-full bg-gradient-to-r from-transparent via-primary/70 to-transparent"
+              <div className="h-px w-full bg-gradient-to-r from-transparent via-foreground/25 dark:via-white/30 to-transparent"
                 style={{ animation: "scan 1.2s linear infinite" }}
               />
             </div>
@@ -1205,10 +1203,8 @@ export function InteractiveMockup() {
         {/* ── Card — logo-style frame ──────────────────────── */}
         <div
           ref={cardRef}
-          className="relative rounded-[14px] border border-border dark:border-white/10 bg-card dark:bg-[#111318] p-1.5 shadow-xl transition-all duration-300"
+          className="relative rounded-[14px] overflow-hidden border border-border dark:border-white/10 bg-card dark:bg-[#111318] p-1.5 shadow-xl transition-all duration-300"
         >
-          {/* inner-top shimmer */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-t-[12px] bg-gradient-to-r from-transparent via-foreground/10 dark:via-white/20 to-transparent" />
 
           {/* ── Logo-style chrome bar ──────────────────────────────────── */}
           <div className="flex items-center justify-between px-5 py-3 border-b border-border/70 dark:border-white/[0.08] select-none">
@@ -1235,7 +1231,7 @@ export function InteractiveMockup() {
           </div>
 
           {/* ── Content grid ──────────────────────────────────────────────── */}
-          <div className="grid gap-0 grid-rows-[auto_1fr] md:grid-rows-none md:grid-cols-[1fr_1.1fr] overflow-hidden rounded-b-[10px]">
+          <div className="grid gap-0 grid-rows-[auto_1fr] md:grid-rows-none md:grid-cols-[1fr_1.1fr] overflow-hidden rounded-b-[11px]">
 
             {/* ── Left: Chat panel ──────────────────────────────────────── */}
             <div className="flex flex-col gap-3 p-4 md:p-5 border-b md:border-b-0 md:border-r border-border/20 bg-background/20 min-h-[260px] md:min-h-[480px]">
@@ -1366,7 +1362,7 @@ export function InteractiveMockup() {
               {/* Scan line on generating */}
               {generating && (
                 <div className="absolute inset-x-0 top-0 z-20 pointer-events-none">
-                  <div className="h-px w-full bg-gradient-to-r from-transparent via-primary/70 to-transparent"
+                  <div className="h-px w-full bg-gradient-to-r from-transparent via-foreground/25 dark:via-white/30 to-transparent"
                     style={{ animation: "scan 1.2s linear infinite" }}
                   />
                 </div>

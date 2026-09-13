@@ -207,7 +207,7 @@ export function PricingCards({
               key={plan.id}
               className={`px-6 py-8 text-center shadow-lg relative flex flex-col justify-between transition-all ${
                 isCurrent
-                  ? "border-emerald-500/50 ring-2 ring-emerald-500/20 bg-emerald-500/5 shadow-emerald-500/10"
+                  ? "border-green-700/50 ring-2 ring-green-700/20 bg-green-900/10 shadow-green-900/10"
                   : isPro
                   ? "border-primary ring-1 ring-primary/30 bg-card shadow-primary/5 overflow-hidden md:scale-[1.03] md:z-10"
                   : "border-border/60 bg-card/60 shadow-primary/5"
@@ -220,7 +220,7 @@ export function PricingCards({
                 </div>
               )}
               {isCurrent && (
-                <div className="absolute top-3 right-3 bg-emerald-500 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow-sm">
+                <div className="absolute top-3 right-3 bg-green-800 text-green-200 text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full">
                   {activeBadgeLabel}
                 </div>
               )}
@@ -256,14 +256,14 @@ export function PricingCards({
                             : normalYearly.toLocaleString("id-ID")
                           }
                         </span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 font-semibold uppercase">
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-green-900/50 text-green-400 border border-green-800/60 font-semibold uppercase">
                           {plan.promo_label || promoLabel}
                         </span>
                       </div>
                     )}
                     <p className="text-sm text-muted-foreground">
                       {perYearLabel} ·{" "}
-                      <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
+                      <span className="text-green-600 dark:text-green-400 font-semibold">
                         {isUSD
                           ? `$${monthlyEquivalent}/mo`
                           : fill(monthlyEqLabel, monthlyEquivalent.toLocaleString("id-ID"))
@@ -271,7 +271,7 @@ export function PricingCards({
                       </span>
                     </p>
                     {yearlySavings > 0 && (
-                      <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-1">
+                      <p className="text-xs text-green-700 dark:text-green-400/80 font-semibold mt-1">
                         {isUSD
                           ? `Save $${yearlySavings}/year`
                           : fill(yearlySavingsLabel, yearlySavings.toLocaleString("id-ID"))
@@ -295,7 +295,7 @@ export function PricingCards({
                             : plan.price_monthly.toLocaleString("id-ID")
                           }
                         </span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 font-semibold uppercase">
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-green-900/50 text-green-400 border border-green-800/60 font-semibold uppercase">
                           {isUSD ? (plan.promo_label || promoLabel) : (plan.promo_label || `${promoLabel} ${plan.promo_duration_months} bln`)}
                         </span>
                       </div>
@@ -337,7 +337,7 @@ export function PricingCards({
 
               {/* ── CTA button ─────────────────────────────────────────────── */}
               {isCurrent ? (
-                <span className="block w-full py-2.5 rounded-full text-sm font-semibold text-center bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border border-emerald-500/25">
+                <span className="block w-full py-2.5 rounded-full text-sm font-semibold text-center bg-green-900/30 text-green-400 dark:text-green-400 border border-green-800/50">
                   {currentPlanLabel}
                 </span>
               ) : isDowngrade ? (
