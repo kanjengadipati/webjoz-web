@@ -364,9 +364,11 @@ export default function LandingPageClient() {
                 </Link>
               )
             )}
-            <Button onClick={() => startWizard()} className="inline-flex rounded-xl bg-primary text-primary-foreground font-semibold px-4 py-2 text-xs sm:px-5 sm:py-2 text-sm shadow-md hover:bg-primary/90 transition-all cursor-pointer">
-              {isLoggedIn ? t("landing.navCreateNew") : t("landing.navStartFree")}
-            </Button>
+            <div className="hidden sm:block">
+              <Button onClick={() => startWizard()} className="inline-flex rounded-xl bg-primary text-primary-foreground font-semibold px-4 py-2 text-xs sm:px-5 sm:py-2 text-sm shadow-md hover:bg-primary/90 transition-all cursor-pointer">
+                {isLoggedIn ? t("landing.navCreateNew") : t("landing.navStartFree")}
+              </Button>
+            </div>
           </div>
         </div>
       </header>
