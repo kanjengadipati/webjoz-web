@@ -1303,6 +1303,11 @@ export default function SiteEditorPage() {
     return () => setEditorSiteId(null);
   }, [siteId]);
 
+  useEffect(() => {
+    const t = setTimeout(checkNavScroll, 60);
+    return () => clearTimeout(t);
+  }, [sectionNavCollapsed, editorTab, checkNavScroll, content, designToken]);
+
   // Derived: resolve the effective dark/light state of the site design token.
   // When theme_mode is set explicitly, use it. When undefined (AI didn't set it),
   // infer from the background color so the toggle button reflects reality.
@@ -1348,10 +1353,6 @@ export default function SiteEditorPage() {
       icon: SECTION_META[key]?.icon ?? Layout,
       num: idx + 1,
     }));
-  useEffect(() => {
-    const t = setTimeout(checkNavScroll, 60);
-    return () => clearTimeout(t);
-  }, [SECTIONS.length, sectionNavCollapsed, editorTab, checkNavScroll]);
 
   const pageOrderSections = SECTIONS;
   const quality = collectQualityIssues(content);
