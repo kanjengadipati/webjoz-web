@@ -54,16 +54,16 @@ export default function PageLayoutHub({
         <div className="flex items-center gap-1.5">
           <Layers className="w-4 h-4 text-primary" />
           <p className="text-[11px] font-bold uppercase tracking-wider text-slate-200">
-            {t("dashboard.sitesEditor.pageLayoutVariants") || "Tata Letak Varian Seksi"}
+            {t("dashboard.sitesEditor.pageLayoutVariants") || "Tata Letak Bagian"}
           </p>
         </div>
         <span className="text-[10px] font-medium text-slate-400">
-          {activeSections.length} {t("dashboard.sitesEditor.activeSectionsCount") || "seksi aktif"}
+          {activeSections.length} {t("dashboard.sitesEditor.activeSectionsCount") || "bagian aktif"}
         </span>
       </div>
 
       <p className="text-[11px] text-slate-400 leading-relaxed">
-        {t("dashboard.sitesEditor.pageLayoutVariantsDesc") || "Sesuaikan gaya tampilan tiap bagian halaman situs Anda secara terpusat."}
+        {t("dashboard.sitesEditor.pageLayoutVariantsDesc") || "Sesuaikan gaya dan tata letak setiap bagian halaman situs Anda secara terpusat."}
       </p>
 
       {/* Accordion list of sections */}
@@ -143,7 +143,7 @@ export default function PageLayoutHub({
                         className="mt-1 inline-flex items-center gap-1 text-[10px] text-slate-400 hover:text-primary transition font-medium cursor-pointer"
                       >
                         <ArrowUpRight className="w-3 h-3" />
-                        <span>{t("dashboard.sitesEditor.editSectionContent") || "Edit konten teks seksi ini"}</span>
+                        <span>{t("dashboard.sitesEditor.editSectionContent") || "Edit konten bagian ini"}</span>
                       </button>
                     )}
                   </div>
