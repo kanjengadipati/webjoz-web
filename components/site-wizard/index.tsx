@@ -456,13 +456,21 @@ export function SiteWizard({
   };
 
   React.useEffect(() => {
+    // Jika wizard dibuka dari contoh template (ada prefill businessType / designToken),
+    // abaikan draft resume yang mungkin masih tersimpan di localStorage — state
+    // prefill baru dari URL params harus menjadi starting point yang bersih.
+    const hasPrefill = Boolean(initialBusinessType) || Boolean(initialDesignToken);
+    if (hasPrefill) {
+      clearWizardSnapshot();
+      return;
+    }
     const snap = loadWizardSnapshot();
     if (snap && snapshotHasProgress(snap)) {
       setResumeDraft(snap);
     } else if (snap) {
       clearWizardSnapshot();
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   // Ref to the preview container so confetti canvas can size itself correctly
   const previewContainerRef = React.useRef<HTMLDivElement | null>(null);
 
