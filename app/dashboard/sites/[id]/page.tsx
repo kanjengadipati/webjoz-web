@@ -140,6 +140,18 @@ export default function SiteEditorPage() {
   const [sheetCollapsed, setSheetCollapsed] = useState(true);
   const [qualityModalOpen, setQualityModalOpen] = useState(false);
   const [sectionNavCollapsed, setSectionNavCollapsed] = useState(false);
+  const [navScrollUp, setNavScrollUp] = useState(false);
+  const [navScrollDown, setNavScrollDown] = useState(false);
+  const sectionNavRef = useRef<HTMLDivElement>(null);
+
+  const checkNavScroll = useCallback(() => {
+    const el = sectionNavRef.current;
+    if (!el) return;
+    const hasOverflow = el.scrollHeight > el.clientHeight + 2;
+    setNavScrollUp(hasOverflow && el.scrollTop > 3);
+    setNavScrollDown(hasOverflow && el.scrollTop < el.scrollHeight - el.clientHeight - 3);
+  }, []);
+
   const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(false);
   const { isOpen: onboardingOpen, openGuide, handleClose: closeOnboarding } = useEditorOnboarding();
 
@@ -1336,6 +1348,11 @@ export default function SiteEditorPage() {
       icon: SECTION_META[key]?.icon ?? Layout,
       num: idx + 1,
     }));
+  useEffect(() => {
+    const t = setTimeout(checkNavScroll, 60);
+    return () => clearTimeout(t);
+  }, [SECTIONS.length, sectionNavCollapsed, editorTab, checkNavScroll]);
+
   const pageOrderSections = SECTIONS;
   const quality = collectQualityIssues(content);
   const issuePaths = new Set(quality.issues.map((issue) => issue.path));
@@ -1718,10 +1735,51 @@ export default function SiteEditorPage() {
                   <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${sectionNavCollapsed ? "" : "rotate-180"}`} />
                 </div>
               </div>
-              <div
-                className="flex flex-col overflow-y-auto scrollbar-none transition-all duration-300 ease-in-out"
-                style={{ maxHeight: sectionNavCollapsed ? 0 : 116, overflow: sectionNavCollapsed ? "hidden" : "auto" }}
-              >
+              <div className="relative">
+                {/* Top overflow shadow */}
+                <div
+                  className={`pointer-events-none absolute top-0 left-0 right-0 h-3 bg-gradient-to-b from-[#0c0f16] to-transparent z-10 transition-opacity duration-200 ${
+                    navScrollUp ? "opacity-100" : "opacity-0"
+                  }`}
+                />
+
+                {/* Right edge scroll overflow indicators */}
+                <div className="absolute right-1 top-1 bottom-1 flex flex-col justify-between items-center z-20 pointer-events-none py-0.5">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      sectionNavRef.current?.scrollBy({ top: -35, behavior: "smooth" });
+                    }}
+                    title="Scroll ke atas"
+                    className={`w-3.5 h-3.5 rounded-full bg-[#161b26] border border-primary/40 flex items-center justify-center text-primary shadow-xs transition-all duration-200 ${
+                      navScrollUp ? "opacity-100 scale-100 pointer-events-auto hover:bg-primary hover:text-white cursor-pointer" : "opacity-0 scale-75 pointer-events-none"
+                    }`}
+                  >
+                    <ChevronUp className="w-2.5 h-2.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      sectionNavRef.current?.scrollBy({ top: 35, behavior: "smooth" });
+                    }}
+                    title="Scroll ke bawah"
+                    className={`w-3.5 h-3.5 rounded-full bg-[#161b26] border border-primary/40 flex items-center justify-center text-primary shadow-xs transition-all duration-200 ${
+                      navScrollDown ? "opacity-100 scale-100 pointer-events-auto hover:bg-primary hover:text-white cursor-pointer" : "opacity-0 scale-75 pointer-events-none"
+                    }`}
+                  >
+                    <ChevronDown className="w-2.5 h-2.5" />
+                  </button>
+                </div>
+
+                {/* Scroll container (fits ~3 items, maxHeight: 78px) */}
+                <div
+                  ref={sectionNavRef}
+                  onScroll={checkNavScroll}
+                  className="flex flex-col overflow-y-auto transition-all duration-300 ease-in-out pr-4.5 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-white/[0.03] [&::-webkit-scrollbar-thumb]:bg-slate-500/50 hover:[&::-webkit-scrollbar-thumb]:bg-primary/80 [&::-webkit-scrollbar-thumb]:rounded-full"
+                  style={{ maxHeight: sectionNavCollapsed ? 0 : 78, overflow: sectionNavCollapsed ? "hidden" : "auto" }}
+                >
                 {SECTIONS.map(({ key, label, icon: Icon, num }) => (
                   <div
                     key={key}
@@ -1788,6 +1846,14 @@ export default function SiteEditorPage() {
                     </div>
                   </div>
                 ))}
+                </div>
+
+                {/* Bottom overflow shadow */}
+                <div
+                  className={`pointer-events-none absolute bottom-0 left-0 right-0 h-3 bg-gradient-to-t from-[#0c0f16] to-transparent z-10 transition-opacity duration-200 ${
+                    navScrollDown ? "opacity-100" : "opacity-0"
+                  }`}
+                />
               </div>
             </div>
           )}
