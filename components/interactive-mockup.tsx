@@ -1296,31 +1296,25 @@ export function InteractiveMockup() {
               
               {/* AI avatar row */}
               <div className={`flex gap-2 items-end transition-all duration-500 ${visible(STEP_GREET)}`}>
-                <div className="h-7 w-7 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-lg text-primary-foreground">
-                  <SparkleIcon className="w-[18px] h-[18px]" />
+                <div className="h-7 w-7 rounded-full bg-white/10 border border-white/15 flex items-center justify-center shrink-0 shadow-sm text-foreground dark:text-white">
+                  <SparkleIcon className="w-3.5 h-3.5 text-foreground dark:text-white" />
                 </div>
                 <div className="rounded-2xl rounded-bl-sm bg-card/70 border border-border/50 px-3.5 py-2.5 text-xs text-foreground max-w-[80%] shadow-md backdrop-blur-sm">
                   {t("landing.mockupGreeting")}
-                  {flowStep === STEP_GREET && <span className="ml-1 inline-block w-1 h-3 bg-primary animate-pulse rounded-sm" />}
+                  {flowStep === STEP_GREET && <span className="ml-1 inline-block w-1 h-3 bg-foreground dark:bg-white animate-pulse rounded-sm" />}
                 </div>
               </div>
 
               <div className={`flex justify-end transition-all duration-500 ${visible(STEP_NAME)}`}>
-                <div className="rounded-2xl rounded-br-sm px-3.5 py-2.5 text-xs max-w-[75%] shadow-md font-medium"
-                  style={{
-                    background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-                    color: "#ffffff",
-                    boxShadow: "0 4px 16px rgba(99,102,241,0.35)"
-                  }}
-                >
+                <div className="rounded-2xl rounded-br-sm px-3.5 py-2 text-xs max-w-[75%] shadow-md font-semibold bg-white text-black dark:bg-white dark:text-black border border-white/20">
                   {chatBusinessName}
                 </div>
               </div>
 
               {/* AI asks type */}
               <div className={`flex gap-2 items-end transition-all duration-500 ${visible(STEP_ASK_TYPE)}`}>
-                <div className="h-7 w-7 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-lg text-primary-foreground">
-                  <SparkleIcon className="w-[18px] h-[18px]" />
+                <div className="h-7 w-7 rounded-full bg-white/10 border border-white/15 flex items-center justify-center shrink-0 shadow-sm text-foreground dark:text-white">
+                  <SparkleIcon className="w-3.5 h-3.5 text-foreground dark:text-white" />
                 </div>
                 <div className="rounded-2xl rounded-bl-sm bg-card/70 border border-border/50 px-3.5 py-2.5 text-xs text-foreground max-w-[80%] shadow-md backdrop-blur-sm">
                   {t("landing.mockupPickType")}
@@ -1336,17 +1330,11 @@ export function InteractiveMockup() {
                       key={chip}
                       type="button"
                       onClick={() => setManualCategory(i)}
-                      className={`rounded-full px-3 py-1 text-[10px] font-semibold border transition-all duration-400 cursor-pointer ${
+                      className={`rounded-full px-3 py-1 text-[10px] font-semibold border transition-all duration-300 cursor-pointer ${
                         sel
-                          ? "scale-105"
+                          ? "bg-white text-black border-white shadow-md scale-105 dark:bg-white dark:text-black dark:border-white"
                           : "bg-card/60 border-border/40 text-muted-foreground hover:bg-card/80 hover:text-foreground"
                       }`}
-                      style={sel ? {
-                        background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-                        borderColor: "rgba(99,102,241,0.5)",
-                        color: "#ffffff",
-                        boxShadow: "0 4px 14px rgba(99,102,241,0.3)"
-                      } : {}}
                     >{chip}</button>
                   );
                 })}
@@ -1354,8 +1342,8 @@ export function InteractiveMockup() {
 
               {/* AI asks mood */}
               <div className={`flex gap-2 items-end transition-all duration-500 ${visible(STEP_ASK_MOOD)}`}>
-                <div className="h-7 w-7 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-lg text-primary-foreground">
-                  <SparkleIcon className="w-[18px] h-[18px]" />
+                <div className="h-7 w-7 rounded-full bg-white/10 border border-white/15 flex items-center justify-center shrink-0 shadow-sm text-foreground dark:text-white">
+                  <SparkleIcon className="w-3.5 h-3.5 text-foreground dark:text-white" />
                 </div>
                 <div className="rounded-2xl rounded-bl-sm bg-card/70 border border-border/50 px-3.5 py-2.5 text-xs text-foreground max-w-[80%] shadow-md backdrop-blur-sm">
                   {t("landing.mockupPickMood")}
@@ -1371,17 +1359,11 @@ export function InteractiveMockup() {
                       key={chip}
                       type="button"
                       onClick={() => setManualMood(i)}
-                      className={`rounded-full px-3 py-1 text-[10px] font-semibold border transition-all duration-400 cursor-pointer ${
+                      className={`rounded-full px-3 py-1 text-[10px] font-semibold border transition-all duration-300 cursor-pointer ${
                         sel
-                          ? "scale-105"
+                          ? "bg-white text-black border-white shadow-md scale-105 dark:bg-white dark:text-black dark:border-white"
                           : "bg-card/60 border-border/40 text-muted-foreground hover:bg-card/80 hover:text-foreground"
                       }`}
-                      style={sel ? {
-                        background: "linear-gradient(135deg, #8b5cf6, #ec4899)",
-                        borderColor: "rgba(139,92,246,0.5)",
-                        color: "#ffffff",
-                        boxShadow: "0 4px 14px rgba(139,92,246,0.3)"
-                      } : {}}
                     >{chip}</button>
                   );
                 })}
@@ -1394,8 +1376,8 @@ export function InteractiveMockup() {
                     className="h-full rounded-full"
                     style={{
                       width: generating ? "85%" : flowStep >= STEP_PREVIEW ? "100%" : "30%",
-                      background: "linear-gradient(90deg, var(--primary), color-mix(in srgb,var(--primary) 60%,white))",
-                      boxShadow: "0 0 8px color-mix(in srgb,var(--primary) 50%,transparent)",
+                      background: "linear-gradient(90deg, #94a3b8, #ffffff)",
+                      boxShadow: "0 0 8px rgba(255,255,255,0.4)",
                       transition: "width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)"
                     }}
                   />
