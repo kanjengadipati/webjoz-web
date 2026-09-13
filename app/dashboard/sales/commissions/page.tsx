@@ -57,7 +57,7 @@ export default function MyCommissionsPage() {
   const [bonusTotal, setBonusTotal] = useState(0);
 
   const limit = 10;
-  const canReadOwn = hasPermission("commission:read_own") || role === "superadmin" || role === "admin" || role === "sales";
+  const canReadOwn = Boolean(token);
 
   const loadCommissions = async () => {
     if (!token) return;
