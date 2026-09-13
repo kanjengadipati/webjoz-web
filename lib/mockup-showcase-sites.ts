@@ -10,11 +10,23 @@ export const MOCKUP_SHOWCASE_API_BASE =
 export interface MockupShowcaseSite {
   url: string;
   businessName: string;
+  category?: number; // 0: Kuliner, 1: Jasa, 2: Produk
+  mood?: number;     // 0: Modern & Clean, 1: Warm & Vintage, 2: Bold & Energetic, 3: Elegant & Luxury, 4: Minimalist Dark
 }
 
 export const DEFAULT_MOCKUP_SHOWCASE_SITES: MockupShowcaseSite[] = [
-  { url: "https://pleco-dev.webjoz.com/", businessName: "Pleco Dev" },
-  { url: "https://kopijozzjogja.webjoz.com/", businessName: "Kopi Jozz Jogja" },
+  {
+    url: "https://pleco-dev.webjoz.com/",
+    businessName: "Pleco Dev",
+    category: 1, // 🔧 Jasa
+    mood: 4,     // 🌑 Minimalist Dark
+  },
+  {
+    url: "https://kopijozzjogja.webjoz.com/",
+    businessName: "Kopi Jozz Jogja",
+    category: 0, // 🍜 Kuliner
+    mood: 1,     // 🕯️ Warm & Vintage
+  },
 ];
 
 function toSite(input: unknown): MockupShowcaseSite | null {
@@ -26,7 +38,15 @@ function toSite(input: unknown): MockupShowcaseSite | null {
     const obj = input as Record<string, unknown>;
     const url = typeof obj.url === "string" ? obj.url.trim() : "";
     const businessName = typeof obj.businessName === "string" ? obj.businessName.trim() : "";
-    return url ? { url, businessName } : null;
+    const category =
+      typeof obj.category === "number" && obj.category >= 0 && obj.category <= 2
+        ? obj.category
+        : undefined;
+    const mood =
+      typeof obj.mood === "number" && obj.mood >= 0 && obj.mood <= 4
+        ? obj.mood
+        : undefined;
+    return url ? { url, businessName, category, mood } : null;
   }
   return null;
 }
