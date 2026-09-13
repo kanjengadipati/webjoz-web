@@ -245,6 +245,92 @@ function useRealSiteData(host: string | null): SiteData | null {
   return data;
 }
 
+function inferCategoryIndex(
+  businessName?: string,
+  siteData?: SiteData | null,
+  sample?: ShowcaseItem | null
+): number {
+  const name = (businessName || "").toLowerCase();
+
+  // 1. Check strong keyword match on business name (highest user-perceived relevance)
+  if (
+    /\b(dev|developer|engineer|software|code|app|web|digital|agency|konsultan|consulting|jasa|service|law|hukum|notaris|bengkel|klinik|salon|barber|laundry|studio|arsitek|design|desain|fotografi|photo|creator|kreator|coach|trainer|portofolio|portfolio|it)\b/i.test(
+      name
+    )
+  ) {
+    return 1; // 🔧 Jasa / Services
+  }
+  if (
+    /\b(kopi|coffee|kafe|cafe|resto|restoran|kuliner|food|makan|dapur|kitchen|bakery|roti|cake|boba|tea|teh|snack|warung|angkringan|catering|bistro|bar|nasi|mie)\b/i.test(
+      name
+    )
+  ) {
+    return 0; // 🍜 Kuliner / F&B
+  }
+  if (
+    /\b(toko|shop|store|produk|product|fashion|baju|clothing|hijab|distro|sepatu|tas|craft|handmade|skincare|kosmetik|merch|mart|retail|boutique|olshop|elektronik|gadget)\b/i.test(
+      name
+    )
+  ) {
+    return 2; // 🛍 Produk / Products
+  }
+
+  // 2. Check siteData content or sample business type
+  const bType = (
+    (typeof siteData?.content?.business_type === "string" ? siteData.content.business_type : "") ||
+    sample?.businessType ||
+    ""
+  ).toLowerCase();
+
+  if (/kuliner|food|cafe|kopi|resto|makan/.test(bType)) return 0;
+  if (/produk|toko|retail|shop|fashion|store|olshop/.test(bType)) return 2;
+  if (/jasa|service|portofolio|kreator|agency|booking|konsultan|developer|it/.test(bType)) return 1;
+
+  // 3. Check template ID
+  const templateId = siteData?.templateId || sample?.templateId || "";
+  if (/KULINER|COLORFUL/.test(templateId)) return 0;
+  if (/PRODUK|NATURAL/.test(templateId)) return 2;
+  if (/JASA|PORTFOLIO|MINIMALIST|BOLD|ELEGANT|DYNAMIC|FUTURISTIC/.test(templateId)) return 1;
+
+  return 0;
+}
+
+function inferMoodIndex(
+  siteData?: SiteData | null,
+  token?: DesignToken | null,
+  businessName?: string
+): { desktop: number; mobile: number } {
+  const activeToken = siteData?.design_token || token;
+  const moodStr = (activeToken?.mood || "").toLowerCase();
+  const themeMode = activeToken?.theme_mode;
+  const name = (businessName || "").toLowerCase();
+
+  // If theme_mode is explicitly dark, or tech/dev profile:
+  const isDark = themeMode === "dark" || /\b(dev|developer|engineer|software|tech|code)\b/i.test(name);
+
+  if (isDark) {
+    if (/luxury|elegant|mewah|premium/.test(moodStr)) {
+      return { desktop: 3, mobile: 3 }; // 💎 Elegant & Luxury / Elegant
+    }
+    return { desktop: 4, mobile: 1 };   // 🌑 Minimalist Dark / Minimal
+  }
+
+  if (/warm|vintage|retro|earthy|alami|hangat|klasik/.test(moodStr)) {
+    return { desktop: 1, mobile: 2 };   // 🕯️ Warm & Vintage / Natural
+  }
+  if (/bold|energetic|vibrant|ceria|berenergi|color/.test(moodStr)) {
+    return { desktop: 2, mobile: 0 };   // 🔥 Bold & Energetic / Modern & Clean
+  }
+  if (/luxury|elegant|mewah|gold|cormorant/.test(moodStr)) {
+    return { desktop: 3, mobile: 3 };   // 💎 Elegant & Luxury / Elegant
+  }
+  if (/dark|futuristic|minimalist|minimal/.test(moodStr)) {
+    return { desktop: 4, mobile: 1 };   // 🌑 Minimalist Dark / Minimal
+  }
+
+  return { desktop: 0, mobile: 0 };     // ✨ Modern & Clean / Modern & Clean
+}
+
 function RealSitePreviewPanel({
   url,
   sample,
@@ -289,6 +375,7 @@ function LiveAdaptiveSkeleton({
   baseWidth = 1280,
   visible,
   businessName,
+  categoryIndex,
 }: {
   sample: ShowcaseItem;
   token: DesignToken;
@@ -296,6 +383,7 @@ function LiveAdaptiveSkeleton({
   baseWidth?: number;
   visible: boolean;
   businessName?: string;
+  categoryIndex?: number;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0.22);
@@ -312,8 +400,14 @@ function LiveAdaptiveSkeleton({
   }, [baseWidth]);
 
   const cssVars = useMemo(() => buildCssVars(token), [token]);
+  const catIdx = categoryIndex ?? inferCategoryIndex(businessName);
+  const fallbackSubtype =
+    catIdx === 1 ? "Developer & IT" : catIdx === 2 ? "Toko & Produk" : "Kuliner & Cafe";
   const prefill = TEMPLATE_PREFILL_MAP[sample.templateId];
-  const subtype = prefill?.businessSubType || prefill?.businessType || sample.businessType;
+  const subtype =
+    catIdx === 1
+      ? (/\b(dev|developer|engineer|software)\b/i.test(businessName || "") ? "Developer & IT" : "Jasa & Layanan")
+      : (prefill?.businessSubType || prefill?.businessType || fallbackSubtype);
   const skeletonName = businessName?.trim() || sample.businessName;
   const showName  = flowStep >= STEP_NAME;
   const showType  = flowStep >= STEP_PICK_TYPE;
@@ -728,14 +822,43 @@ function LiveAdaptiveSkeleton({
 }
 
 /* ── MobileChatCard: Native mobile chat card + live web preview ── */
-function MobileChatCard({ sample, token, siteUrl, businessName }: HeroItem & { siteUrl?: string | null; businessName?: string }) {
+function MobileChatCard({
+  sample,
+  token,
+  siteUrl,
+  businessName,
+  flowStep: parentFlowStep,
+  cycle: parentCycle,
+}: HeroItem & {
+  siteUrl?: string | null;
+  businessName?: string;
+  flowStep?: number;
+  cycle?: number;
+}) {
   const { t, translations } = useI18n();
-  const { flowStep } = useFlowStep();
+  const localFlow = useFlowStep();
+  const flowStep = parentFlowStep ?? localFlow.flowStep;
+  const cycle = parentCycle ?? localFlow.cycle;
+
   const showcaseItem = sample;
   const TemplateComponent = TEMPLATE_REGISTRY.find((t) => t.id === showcaseItem.templateId)?.component;
   const chatBusinessName = businessName?.trim() || showcaseItem.businessName;
 
+  const host = siteUrl ? siteHost(siteUrl) : null;
+  const realSiteData = useRealSiteData(host);
+
   const [manualTab, setManualTab] = useState<"chat" | "preview" | null>(null);
+  const [manualCategory, setManualCategory] = useState<number | null>(null);
+  const [manualMood, setManualMood] = useState<number | null>(null);
+
+  useEffect(() => {
+    setManualCategory(null);
+    setManualMood(null);
+  }, [cycle]);
+
+  const categoryIndex = manualCategory ?? inferCategoryIndex(chatBusinessName, realSiteData, sample);
+  const moodIndices = inferMoodIndex(realSiteData, token, chatBusinessName);
+  const selectedMoodIndex = manualMood ?? moodIndices.mobile;
 
   // Automatically transition tab when flowStep reaches preview/generating
   const activeTab = manualTab ?? (flowStep >= STEP_GENERATING ? "preview" : "chat");
@@ -858,22 +981,23 @@ function MobileChatCard({ sample, token, siteUrl, businessName }: HeroItem & { s
 
                 {/* Chips */}
                 <div className="flex flex-wrap gap-1.5">
-                  <div className={`rounded-full px-3 py-1 text-[10px] font-semibold flex items-center gap-1.5 transition-all duration-300 ${
-                    flowStep >= STEP_PICK_TYPE
-                      ? "bg-white text-black shadow-md scale-[1.02]"
-                      : "bg-white/5 border border-white/10 text-white/80"
-                  }`}>
-                    <span>☕</span>
-                    <span>{translations.landing.mockupChips[0] || "Food & Beverage"}</span>
-                  </div>
-                  <div className="rounded-full px-3 py-1 text-[10px] font-medium bg-white/5 border border-white/10 text-white/60 flex items-center gap-1.5">
-                    <span>🛠</span>
-                    <span>{translations.landing.mockupChips[1] || "Services"}</span>
-                  </div>
-                  <div className="rounded-full px-3 py-1 text-[10px] font-medium bg-white/5 border border-white/10 text-white/60 flex items-center gap-1.5">
-                    <span>🛍</span>
-                    <span>{translations.landing.mockupChips[2] || "Products"}</span>
-                  </div>
+                  {translations.landing.mockupChips.map((chipText, i) => {
+                    const isSelected = i === categoryIndex && flowStep >= STEP_PICK_TYPE;
+                    return (
+                      <button
+                        key={chipText}
+                        type="button"
+                        onClick={() => setManualCategory(i)}
+                        className={`rounded-full px-3 py-1 text-[10px] transition-all duration-300 flex items-center gap-1.5 cursor-pointer ${
+                          isSelected
+                            ? "bg-white text-black font-semibold shadow-md scale-[1.02]"
+                            : "bg-white/5 border border-white/10 text-white/70 font-medium hover:bg-white/10"
+                        }`}
+                      >
+                        <span>{chipText}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -891,14 +1015,16 @@ function MobileChatCard({ sample, token, siteUrl, businessName }: HeroItem & { s
                 {/* 4 Mood Cards Grid */}
                 <div className="grid grid-cols-4 gap-1.5 pt-0.5">
                   {MOOD_OPTIONS.map((mood, idx) => {
-                    const isSelected = idx === 0 && flowStep >= STEP_PICK_MOOD;
+                    const isSelected = idx === selectedMoodIndex && flowStep >= STEP_PICK_MOOD;
                     return (
-                      <div
+                      <button
                         key={mood.id}
-                        className={`relative rounded-xl overflow-hidden border transition-all duration-300 flex flex-col justify-end aspect-[3/4] p-1.5 ${
+                        type="button"
+                        onClick={() => setManualMood(idx)}
+                        className={`relative rounded-xl overflow-hidden border transition-all duration-300 flex flex-col justify-end aspect-[3/4] p-1.5 text-left cursor-pointer ${
                           isSelected
                             ? "border-white ring-2 ring-white/20 shadow-lg"
-                            : "border-white/10 opacity-70"
+                            : "border-white/10 opacity-70 hover:opacity-90"
                         }`}
                         style={{
                           backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.85) 100%), url(${mood.img})`,
@@ -916,7 +1042,7 @@ function MobileChatCard({ sample, token, siteUrl, businessName }: HeroItem & { s
                         <span className="text-[8.5px] font-bold text-white text-center leading-tight">
                           {mood.name}
                         </span>
-                      </div>
+                      </button>
                     );
                   })}
                 </div>
@@ -949,11 +1075,12 @@ function MobileChatCard({ sample, token, siteUrl, businessName }: HeroItem & { s
           {/* Skeleton — visible during initial steps */}
           <LiveAdaptiveSkeleton
             sample={showcaseItem}
-            token={token}
+            token={realSiteData?.design_token ?? token}
             flowStep={flowStep}
             visible={flowStep < STEP_PREVIEW}
             baseWidth={1200}
             businessName={chatBusinessName}
+            categoryIndex={categoryIndex}
           />
 
           {/* Real website preview — crossfades in at step 8 */}
@@ -1061,6 +1188,21 @@ export function InteractiveMockup() {
   const currentSite =
     sites.length > 0 ? sites[((cycle % sites.length) + sites.length) % sites.length] : null;
   const chatBusinessName = currentSite?.businessName?.trim() || showcaseItem.businessName;
+
+  const currentHost = currentSite ? siteHost(currentSite.url) : null;
+  const realSiteData = useRealSiteData(currentHost);
+
+  const [manualCategory, setManualCategory] = useState<number | null>(null);
+  const [manualMood, setManualMood] = useState<number | null>(null);
+
+  useEffect(() => {
+    setManualCategory(null);
+    setManualMood(null);
+  }, [cycle]);
+
+  const categoryIndex = manualCategory ?? inferCategoryIndex(chatBusinessName, realSiteData, showcaseItem);
+  const moodIndices = inferMoodIndex(realSiteData, token, chatBusinessName);
+  const selectedMoodIndex = manualMood ?? moodIndices.desktop;
 
   /* ── 3D Tilt (mouse + touch) ─────────────────────────────────────────── */
   const applyTilt = (clientX: number, clientY: number) => {
@@ -1188,20 +1330,24 @@ export function InteractiveMockup() {
               {/* Category chips */}
               <div className={`flex flex-wrap gap-1.5 ml-9 transition-all duration-500 ${visible(STEP_ASK_TYPE)}`}>
                 {translations.landing.mockupChips.map((chip, i) => {
-                  const sel = i === 0 && flowStep >= STEP_PICK_TYPE;
+                  const sel = i === categoryIndex && flowStep >= STEP_PICK_TYPE;
                   return (
-                    <div key={chip} className={`rounded-full px-3 py-1 text-[10px] font-semibold border transition-all duration-400 ${
-                      sel
-                        ? "scale-105"
-                        : "bg-card/60 border-border/40 text-muted-foreground"
-                    }`}
+                    <button
+                      key={chip}
+                      type="button"
+                      onClick={() => setManualCategory(i)}
+                      className={`rounded-full px-3 py-1 text-[10px] font-semibold border transition-all duration-400 cursor-pointer ${
+                        sel
+                          ? "scale-105"
+                          : "bg-card/60 border-border/40 text-muted-foreground hover:bg-card/80 hover:text-foreground"
+                      }`}
                       style={sel ? {
                         background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
                         borderColor: "rgba(99,102,241,0.5)",
                         color: "#ffffff",
                         boxShadow: "0 4px 14px rgba(99,102,241,0.3)"
                       } : {}}
-                    >{chip}</div>
+                    >{chip}</button>
                   );
                 })}
               </div>
@@ -1219,20 +1365,24 @@ export function InteractiveMockup() {
               {/* Mood chips */}
               <div className={`flex flex-wrap gap-1.5 ml-9 transition-all duration-500 ${visible(STEP_ASK_MOOD)}`}>
                 {translations.landing.mockupMoodChips.map((chip, i) => {
-                  const sel = i === 0 && flowStep >= STEP_PICK_MOOD;
+                  const sel = i === selectedMoodIndex && flowStep >= STEP_PICK_MOOD;
                   return (
-                    <div key={chip} className={`rounded-full px-3 py-1 text-[10px] font-semibold border transition-all duration-400 ${
-                      sel
-                        ? "scale-105"
-                        : "bg-card/60 border-border/40 text-muted-foreground"
-                    }`}
+                    <button
+                      key={chip}
+                      type="button"
+                      onClick={() => setManualMood(i)}
+                      className={`rounded-full px-3 py-1 text-[10px] font-semibold border transition-all duration-400 cursor-pointer ${
+                        sel
+                          ? "scale-105"
+                          : "bg-card/60 border-border/40 text-muted-foreground hover:bg-card/80 hover:text-foreground"
+                      }`}
                       style={sel ? {
                         background: "linear-gradient(135deg, #8b5cf6, #ec4899)",
                         borderColor: "rgba(139,92,246,0.5)",
                         color: "#ffffff",
                         boxShadow: "0 4px 14px rgba(139,92,246,0.3)"
                       } : {}}
-                    >{chip}</div>
+                    >{chip}</button>
                   );
                 })}
               </div>
@@ -1266,10 +1416,11 @@ export function InteractiveMockup() {
               {/* Skeleton — visible during AI chat (steps 0-7) */}
               <LiveAdaptiveSkeleton
                 sample={showcaseItem}
-                token={token}
+                token={realSiteData?.design_token ?? token}
                 flowStep={flowStep}
                 visible={flowStep < STEP_PREVIEW}
                 businessName={chatBusinessName}
+                categoryIndex={categoryIndex}
               />
 
               {/* Real website preview — crossfades in at step 8 */}
@@ -1384,7 +1535,14 @@ export function InteractiveMockup() {
 
       {/* ── Mobile: sleek native chat card (desktop uses 3D browser mockup above) ───── */}
       <div className="md:hidden w-full flex justify-center">
-        <MobileChatCard sample={sample} token={token} siteUrl={currentSite?.url ?? null} businessName={chatBusinessName} />
+        <MobileChatCard
+          sample={sample}
+          token={token}
+          siteUrl={currentSite?.url ?? null}
+          businessName={chatBusinessName}
+          flowStep={flowStep}
+          cycle={cycle}
+        />
       </div>
 
       {/* ── Super admin: manage the "result generate web" showcase sites ── */}

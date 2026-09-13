@@ -387,6 +387,7 @@ export const NAME_TYPE_HINTS: Record<string, { type?: string; subType?: string }
   "interior": { type: "Portofolio", subType: "Arsitek & Desainer Interior" },
   "penulis": { type: "Portofolio", subType: "Penulis & Copywriter" },
   "copywriter": { type: "Portofolio", subType: "Penulis & Copywriter" },
+  "dev": { type: "Portofolio", subType: "Developer & IT" },
   "developer": { type: "Portofolio", subType: "Developer & IT" },
   "software": { type: "Portofolio", subType: "Developer & IT" },
   "programmer": { type: "Portofolio", subType: "Developer & IT" },
