@@ -490,7 +490,7 @@ export default function LandingPageClient() {
             />
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid gap-6 lg:grid-cols-3">
             <Card className="overflow-hidden border-border bg-card shadow-lg dark:border-white/10 dark:bg-[#111318]">
               <div className="p-8 lg:p-10">
                 <div className="space-y-5">
@@ -532,6 +532,31 @@ export default function LandingPageClient() {
                   </div>
                   <div className="flex flex-wrap gap-3">
                     {translations.landing.domainTags.map((tag) => (
+                      <span key={tag} className="rounded-full border border-border/80 bg-muted/40 px-3 py-1 text-xs font-medium text-foreground/80 dark:border-white/10 dark:bg-white/5 dark:text-white/80">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="overflow-hidden border-border bg-card shadow-lg dark:border-white/10 dark:bg-[#111318]">
+              <div className="p-8 lg:p-10">
+                <div className="space-y-5">
+                  <Badge variant="outline" className="border-border/80 bg-muted/50 text-foreground font-semibold dark:border-white/15 dark:bg-white/5 dark:text-white">
+                    {t("landing.catalogBadge")}
+                  </Badge>
+                  <div className="space-y-3">
+                    <h3 className="text-2xl font-bold tracking-tight lg:text-3xl text-foreground">
+                      {t("landing.catalogTitle")}
+                    </h3>
+                    <p className="text-base leading-7 text-muted-foreground">
+                      {t("landing.catalogDesc")}
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-3">
+                    {translations.landing.catalogTags.map((tag) => (
                       <span key={tag} className="rounded-full border border-border/80 bg-muted/40 px-3 py-1 text-xs font-medium text-foreground/80 dark:border-white/10 dark:bg-white/5 dark:text-white/80">
                         {tag}
                       </span>

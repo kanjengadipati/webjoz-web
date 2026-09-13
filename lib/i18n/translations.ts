@@ -24,6 +24,10 @@ export interface Translations {
     domainTitle: string;
     domainDesc: string;
     domainTags: string[];
+    catalogBadge: string;
+    catalogTitle: string;
+    catalogDesc: string;
+    catalogTags: string[];
     templatesEyebrow: string;
     templatesTitle: string;
     templatesTitleAccent: string;
@@ -2422,6 +2426,10 @@ export const translations: Record<Locale, Translations> = {
       domainTitle: "Domain sendiri & SEO otomatis",
       domainDesc: "Hubungkan domain custom Anda, SEO title/description, OG tags, JSON-LD, sitemap — semuanya diurus oleh AI.",
       domainTags: ["Custom domain", "SEO otomatis", "Structured data", "Sitemap"],
+      catalogBadge: "Katalog & Menu",
+      catalogTitle: "Katalog produk & menu digital",
+      catalogDesc: "Tampilkan produk atau menu lengkap dengan foto, harga, dan deskripsi — pelanggan bisa langsung memesan tanpa aplikasi lain.",
+      catalogTags: ["Katalog produk", "Menu digital", "Pemesanan langsung", "Order WhatsApp"],
       templatesEyebrow: "CONTOH HASIL AI",
       templatesTitle: 'Website yang dihasilkan <span class="text-primary">untuk berbagai bisnis</span>',
       templatesTitleAccent: "untuk berbagai bisnis",
@@ -4894,6 +4902,10 @@ export const translations: Record<Locale, Translations> = {
       domainTitle: "Custom domain & automatic SEO",
       domainDesc: "Connect your custom domain, SEO title/description, OG tags, JSON-LD, sitemap — all handled by AI.",
       domainTags: ["Custom domain", "Automatic SEO", "Structured data", "Sitemap"],
+      catalogBadge: "Catalog & Menu",
+      catalogTitle: "Product catalog & digital menu",
+      catalogDesc: "Showcase products or menus with photos, prices, and descriptions — customers can order directly without another app.",
+      catalogTags: ["Product catalog", "Digital menu", "Direct ordering", "WhatsApp order"],
       templatesEyebrow: "AI GENERATED EXAMPLES",
       templatesTitle: 'Websites generated <span class="text-primary">for various businesses</span>',
       templatesTitleAccent: "for various businesses",
