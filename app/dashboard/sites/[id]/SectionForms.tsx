@@ -2450,7 +2450,7 @@ export default function SectionForms({
                 />
               </div>
               {/* Name + Role row */}
-              <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-2">
                 <div>
                   <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Nama</label>
                   <input
@@ -2528,7 +2528,7 @@ export default function SectionForms({
                 </div>
               </div>
               {/* Company + Logo URL */}
-              <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-2">
                 <div>
                   <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Perusahaan <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
                   <input
@@ -2907,7 +2907,7 @@ export default function SectionForms({
                     placeholder="cth. Rebranding Toko Kopi Ketan"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-2">
                   <div className="space-y-1">
                     <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Kategori</label>
                     <input
@@ -3137,7 +3137,7 @@ export default function SectionForms({
                     <Trash2 className="w-3 h-3" /> Hapus
                   </button>
                 </div>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-2">
                   <div>
                     <label className="text-[10px] text-slate-400 mb-0.5 block">Angka / Value</label>
                     <input

@@ -405,7 +405,7 @@ export function MenuCatalogForm({
             />
           </div>
 
-          <div className={isPageMode ? "space-y-1" : "grid gap-3 sm:grid-cols-2"}>
+          <div className={isPageMode ? "space-y-1" : "space-y-3"}>
             <div className="space-y-1">
               <div className="flex items-center justify-between">
                 <label className={MCF_INPUT_LABEL}>
@@ -756,7 +756,7 @@ function SortableItemRow({
             </div>
 
             {hasPrice && (
-              <div className={isPageMode ? "contents" : "grid gap-3 sm:grid-cols-2"}>
+              <div className={isPageMode ? "contents" : "space-y-3"}>
                 <div className="space-y-1">
                   <label className={MCF_INPUT_LABEL}>
                     {t("dashboard.sitesKatalog.priceDisplay", "Harga Tampil")} <span className="font-normal normal-case text-muted-foreground/60">({t("dashboard.sitesKatalog.display", "tampilan")})</span>
@@ -812,7 +812,7 @@ function SortableItemRow({
                     </button>
                   )}
                 </div>
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="space-y-3 pt-1">
                   <div className="space-y-1">
                     <label className={MCF_INPUT_LABEL}>
                       {t("dashboard.sitesKatalog.promoPriceDisplay", "Harga Promo Tampil")}
@@ -858,7 +858,7 @@ function SortableItemRow({
 
           {/* Badge & Capacity Row */}
           {(hasBadge || (sectionKey === "catalog")) && (
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="space-y-3">
               {hasBadge && (
                 <div className="space-y-1">
                   <label className={MCF_INPUT_LABEL}>
@@ -1248,7 +1248,7 @@ export function VariantGroupEditor({
               {isOpen && (
                 <div className="p-4 space-y-4 border-t border-border/60 bg-card">
                   {/* Group name + type + required */}
-                  <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="space-y-3">
                     <div className="space-y-1">
                       <label className={MCF_INPUT_LABEL}>{t("dashboard.sitesKatalog.variantsGroupName", "Nama Grup Varian")}</label>
                       <input
