@@ -60,77 +60,11 @@ import { tenantHost } from "@/lib/site-config";
 import TypographyPairingPicker from "./components/TypographyPairingPicker";
 import ColorPatternPicker from "./components/ColorPatternPicker";
 import IndustryPresetPicker from "./components/IndustryPresetPicker";
+import SectionVariantVisualPicker from "./components/SectionVariantVisualPicker";
+import PageLayoutHub from "./components/PageLayoutHub";
 import EditorOnboardingModal, { useEditorOnboarding } from "@/components/editor-onboarding-modal";
 
-function SectionVariantPicker({
-  sectionKey,
-  isDynamic,
-  designToken,
-  updateSectionVariant,
-  getEnabledVariants,
-  t,
-}: {
-  sectionKey: string;
-  isDynamic: boolean;
-  designToken: any;
-  updateSectionVariant: (section: string, value: string) => void;
-  getEnabledVariants: (section: string, variants: string[]) => string[];
-  t: any;
-}) {
-  if (!isDynamic || !SECTION_VARIANT_OPTIONS[sectionKey]) return null;
-  const allVars = SECTION_VARIANT_OPTIONS[sectionKey];
-  const enabledOpts = allVars.filter(opt => getEnabledVariants(sectionKey, allVars.map(o => o.value)).includes(opt.value));
-  if (enabledOpts.length <= 1) return null;
-
-  const currentVal = designToken?.layout?.section_variants?.[sectionKey] || enabledOpts[0].value;
-  const currentOpt = enabledOpts.find(o => o.value === currentVal) || enabledOpts[0];
-
-  return (
-    <div data-edu="variant-picker" className="rounded-2xl border border-primary/25 bg-primary/[0.08] p-3 space-y-2 mb-3 shadow-2xs">
-      <div className="flex items-center justify-between">
-        <span className="text-[10px] font-bold uppercase tracking-wider text-primary flex items-center gap-1.5">
-          <SparkleGenAI className="w-3.5 h-3.5 text-primary" />
-          {t("dashboard.sitesEditor.variantOptions")}
-        </span>
-        {currentOpt.group && (
-          <span className="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-primary/20 text-primary border border-primary/30">
-            {currentOpt.group}
-          </span>
-        )}
-      </div>
-      <select
-        value={currentVal}
-        onChange={(e) => updateSectionVariant(sectionKey, e.target.value)}
-        className="w-full h-8.5 px-2.5 border border-primary/40 bg-[#05070b] text-slate-100 rounded-xl text-[12px] font-semibold outline-none focus:border-primary cursor-pointer hover:bg-[#0c121e] transition-all shadow-inner"
-      >
-        {(() => {
-          const groups: { label?: string; options: typeof enabledOpts }[] = [];
-          let cur: { label?: string; options: typeof enabledOpts } | null = null;
-          for (const opt of enabledOpts) {
-            if (opt.group) {
-              if (!cur || cur.label !== opt.group) { cur = { label: opt.group, options: [] }; groups.push(cur); }
-              cur.options.push(opt);
-            } else { cur = null; groups.push({ options: [opt] }); }
-          }
-          return groups.map((g) =>
-            g.label ? (
-              <optgroup key={g.label} label={g.label}>
-                {g.options.map(o => <option key={o.value} value={o.value} className="bg-[#111318]">{o.label}</option>)}
-              </optgroup>
-            ) : (
-              g.options.map(o => <option key={o.value} value={o.value} className="bg-[#111318]">{o.label}</option>)
-            )
-          );
-        })()}
-      </select>
-      {currentOpt.description && (
-        <p className="text-[11px] text-slate-400 leading-relaxed pl-0.5">
-          {currentOpt.description}
-        </p>
-      )}
-    </div>
-  );
-}
+const SectionVariantPicker = SectionVariantVisualPicker;
 
 // Immutably set a nested value in `obj` by a dotted path of segments where
 // numeric segments index into arrays (e.g. ["categories", "0", "name"]).
@@ -1253,6 +1187,13 @@ export default function SiteEditorPage() {
         [key]: value
       };
 
+      if (group === "layout" && key === "hero_style") {
+        next.layout.section_variants = {
+          ...(next.layout?.section_variants || {}),
+          hero: value,
+        };
+      }
+
       return next;
     });
   };
@@ -1269,6 +1210,9 @@ export default function SiteEditorPage() {
           [section]: value,
         },
       };
+      if (section === "hero") {
+        next.layout.hero_style = value;
+      }
       return next;
     });
 
@@ -2085,21 +2029,22 @@ export default function SiteEditorPage() {
                       </select>
                     </div>
 
-                    {/* Hero style — hanya tampil untuk TEMPLATE_DYNAMIC */}
+                    {/* Page Layout & Section Variants Hub */}
                     {isDynamic && (
-                    <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{t("dashboard.sitesEditor.heroStyle")}</label>
-                      <select
-                        value={designToken?.layout?.hero_style || "centered"}
-                        onChange={(e) => updateDesignTokenField("layout", "hero_style", e.target.value)}
-                        className="w-full px-2.5 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
-                      >
-                        <option value="centered" className="bg-[#111318]">{t("dashboard.sitesEditor.heroCentered")}</option>
-                        {HERO_STYLE_OPTIONS.filter((o) => o.value !== "centered").map((o) => (
-                          <option key={o.value} value={o.value} className="bg-[#111318]">{t(`dashboard.sitesEditor.${o.labelKey}`)}</option>
-                        ))}
-                      </select>
-                    </div>
+                      <div className="pt-2 border-t border-border">
+                        <PageLayoutHub
+                          content={content}
+                          designToken={designToken}
+                          isDynamic={isDynamic}
+                          updateSectionVariant={updateSectionVariant}
+                          getEnabledVariants={getEnabledVariants}
+                          onSelectSection={(sec) => {
+                            setActiveTab(sec);
+                            setEditorTab("content");
+                          }}
+                          t={t}
+                        />
+                      </div>
                     )}
 
 
@@ -2854,6 +2799,7 @@ export default function SiteEditorPage() {
                       onSelectSection={handlePreviewSelectSection}
                       onRegenSection={handleRegenWithPremiumCheck}
                       onUpdateField={updateField}
+                      onUpdateSectionVariant={updateSectionVariant}
                       collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                       onEditingStateChange={(editing) => { isInlineEditingRef.current = editing; }}
                       onSubmitLead={async () => { }}
@@ -2893,6 +2839,7 @@ export default function SiteEditorPage() {
                       onSelectSection={handlePreviewSelectSection}
                       onRegenSection={handleRegenWithPremiumCheck}
                       onUpdateField={updateField}
+                      onUpdateSectionVariant={updateSectionVariant}
                       collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                       onEditingStateChange={(editing) => { isInlineEditingRef.current = editing; }}
                       onSubmitLead={async () => { }}
@@ -2913,6 +2860,7 @@ export default function SiteEditorPage() {
                   onSelectSection={handlePreviewSelectSection}
                   onRegenSection={handleRegenWithPremiumCheck}
                   onUpdateField={updateField}
+                  onUpdateSectionVariant={updateSectionVariant}
                   collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                   onEditingStateChange={(editing) => { isInlineEditingRef.current = editing; }}
                   onSubmitLead={async () => { }}
@@ -3403,14 +3351,22 @@ export default function SiteEditorPage() {
                       className="w-full h-8 px-2 border border-border bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
                       <option value="compact">{t("dashboard.sitesEditor.spacingCompactShort")}</option><option value="normal">{t("dashboard.sitesEditor.normal")}</option><option value="relaxed">{t("dashboard.sitesEditor.spacingRelaxedShort")}</option>
                     </select>
-                    {isDynamic && <select value={designToken?.layout?.hero_style || "centered"}
-                      onChange={(e) => updateDesignTokenField("layout", "hero_style", e.target.value)}
-                      className="w-full h-8 px-2 border border-border bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
-                      <option value="centered" className="bg-[#111318]">Hero: {t("dashboard.sitesEditor.heroCentered")}</option>
-                      {HERO_STYLE_OPTIONS.filter((o) => o.value !== "centered").map((o) => (
-                        <option key={o.value} value={o.value} className="bg-[#111318]">Hero: {t(`dashboard.sitesEditor.${o.labelKey}`)}</option>
-                      ))}
-                    </select>}
+                    {isDynamic && (
+                      <div className="pt-2 border-t border-border">
+                        <PageLayoutHub
+                          content={content}
+                          designToken={designToken}
+                          isDynamic={isDynamic}
+                          updateSectionVariant={updateSectionVariant}
+                          getEnabledVariants={getEnabledVariants}
+                          onSelectSection={(sec) => {
+                            setActiveTab(sec);
+                            setEditorTab("content");
+                          }}
+                          t={t}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               )}

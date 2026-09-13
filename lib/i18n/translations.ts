@@ -2091,6 +2091,20 @@ export interface Translations {
       showPageSections: string;
       expandEditArea: string;
       variantOptions: string;
+      visualGallery: string;
+      closeGallery: string;
+      pickVariant: string;
+      allVariants: string;
+      variantsCount: string;
+      variantPreviewHint: string;
+      done: string;
+      pageLayoutVariants: string;
+      activeSectionsCount: string;
+      pageLayoutVariantsDesc: string;
+      editSectionContent: string;
+      changeSectionVariant: string;
+      optionsCount: string;
+      variantLabel: string;
       selectSectionAria: string;
       openSheet: string;
       closeSheet: string;
@@ -4507,6 +4521,20 @@ export const translations: Record<Locale, Translations> = {
         showPageSections: "Tampilkan Bagian Halaman",
         expandEditArea: "Perluas area edit",
         variantOptions: "Variasi Tampilan",
+        visualGallery: "Galeri Visual",
+        closeGallery: "Tutup",
+        pickVariant: "Pilih Varian",
+        allVariants: "Semua",
+        variantsCount: "varian",
+        variantPreviewHint: "Klik varian untuk pratinjau langsung di kanvas.",
+        done: "Selesai",
+        pageLayoutVariants: "Tata Letak Varian Seksi",
+        activeSectionsCount: "seksi aktif",
+        pageLayoutVariantsDesc: "Sesuaikan gaya tampilan tiap bagian halaman situs Anda secara terpusat.",
+        editSectionContent: "Edit konten teks seksi ini",
+        changeSectionVariant: "Ganti varian tampilan seksi ini",
+        optionsCount: "opsi",
+        variantLabel: "Varian",
         selectSectionAria: "Pilih Section",
         openSheet: "Buka sheet",
         closeSheet: "Tutup sheet",
@@ -6993,6 +7021,20 @@ export const translations: Record<Locale, Translations> = {
         showPageSections: "Show page sections",
         expandEditArea: "Expand edit area",
         variantOptions: "Layout Variants",
+        visualGallery: "Visual Gallery",
+        closeGallery: "Close",
+        pickVariant: "Pick Variant",
+        allVariants: "All",
+        variantsCount: "variants",
+        variantPreviewHint: "Click a variant to preview instantly on the canvas.",
+        done: "Done",
+        pageLayoutVariants: "Section Layout Variants",
+        activeSectionsCount: "active sections",
+        pageLayoutVariantsDesc: "Customize the layout style of each section of your site in one place.",
+        editSectionContent: "Edit this section's content",
+        changeSectionVariant: "Change this section's layout variant",
+        optionsCount: "options",
+        variantLabel: "Variant",
         selectSectionAria: "Select Section",
         openSheet: "Open sheet",
         closeSheet: "Close sheet",

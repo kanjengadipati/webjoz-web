@@ -4,11 +4,28 @@
 export interface VariantOption {
   value: string;
   label: string;
+  labelKey?: string;
   description?: string;
   group?: string; // optional grouping label for dropdown submenu (e.g. "Dasar", "Visual Foto")
 }
 
 export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
+  hero: [
+    { value: "centered", label: "Tengah (Centered)", labelKey: "heroCentered", group: "Dasar", description: "Headline dan tombol aksi rata tengah dengan latar bersih dan proporsional." },
+    { value: "split", label: "Split Screen", labelKey: "heroSplit", group: "Dasar", description: "Teks headline dan tombol di kiri, media visual/gambar besar di kanan." },
+    { value: "full-bleed", label: "Full Bleed", labelKey: "heroFullBleed", group: "Visual Foto", description: "Latar gambar/media penuh layar dengan teks overlay elegan di atasnya." },
+    { value: "minimal", label: "Minimalis", labelKey: "heroMinimalist", group: "Dasar", description: "Tipografi bersih tanpa distraksi elemen berlebih, fokus pada pesan utama." },
+    { value: "minimalist-elegant", label: "Minimalis Elegan", labelKey: "heroMinimalistElegant", group: "Editorial", description: "Tipografi kontras tinggi bergaya editorial majalah dengan aksen halus." },
+    { value: "tech-saas", label: "Tech SaaS", labelKey: "heroTechSaaS", group: "Modern & Tekno", description: "Headline modern, badge rilis aplikasi, dan mockup produk/UI interaktif." },
+    { value: "neo-brutalist", label: "Neo-Brutalis", labelKey: "heroNeoBrutalist", group: "Modern & Tekno", description: "Border tegas hitam pekat, bayangan tajam kontras, dan elemen grafis mencolok." },
+    { value: "bento-grid", label: "Bento Grid", labelKey: "heroBentoGrid", group: "Modern & Tekno", description: "Komposisi kotak modular asimetris menampilkan beragam fitur dan keunggulan." },
+    { value: "split-editorial", label: "Editorial Split", labelKey: "heroSplitEditorial", group: "Editorial", description: "Tata letak ala majalah desain kontemporer dengan tipografi ekspresif." },
+    { value: "natural-organic", label: "Natural Organik", labelKey: "heroNaturalOrganic", group: "Editorial", description: "Bentuk kurva lembut, palet natural, dan nuansa hangat bersahabat." },
+    { value: "personal-billboard", label: "Billboard Personal", labelKey: "heroPersonalBillboard", group: "Portofolio & Personal", description: "Foto profil besar dengan kartu highlight pencapaian dan spesialisasi." },
+    { value: "portrait-showcase", label: "Showcase Potret", labelKey: "heroPortraitShowcase", group: "Portofolio & Personal", description: "Potret vertikal elegan dengan ringkasan peran profesional dan kontak cepat." },
+    { value: "work-preview-strip", label: "Strip Karya Unggulan", labelKey: "heroWorkPreviewStrip", group: "Portofolio & Personal", description: "Headline ringkas dengan deretan cuplikan thumbnail proyek langsung di hero." },
+    { value: "chronology-badge", label: "Badge Kronologi", labelKey: "heroChronologyBadge", group: "Portofolio & Personal", description: "Hero dengan penanda milestone tahunan atau rekam jejak karier." },
+  ],
   about: [
     { value: "classic", label: "Klasik", description: "Teks di kiri, konten bersih tanpa gambar besar." },
     { value: "split-image", label: "Split + Gambar", description: "Teks di kiri, gambar besar di kanan." },
@@ -132,8 +149,14 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
   ],
 };
 
-export function getVariantLabel(section: string, value: string): string {
-  return SECTION_VARIANT_OPTIONS[section]?.find((v) => v.value === value)?.label ?? value;
+export function getVariantLabel(section: string, value: string, t?: any): string {
+  const opt = SECTION_VARIANT_OPTIONS[section]?.find((v) => v.value === value);
+  if (!opt) return value;
+  if (t && opt.labelKey) {
+    const translated = t(`dashboard.sitesEditor.${opt.labelKey}`);
+    if (translated && !translated.startsWith("dashboard.")) return translated;
+  }
+  return opt.label;
 }
 
 export function getVariantDescription(section: string, value: string): string {

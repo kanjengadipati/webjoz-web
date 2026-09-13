@@ -48,7 +48,7 @@ export default function HeroSection({
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: HeroVariantProps) {
-  const heroStyle = design_token?.layout?.hero_style ?? "centered";
+  const heroStyle = (design_token?.layout?.section_variants?.hero as string | undefined) || design_token?.layout?.hero_style || "centered";
   const Renderer = variants[heroStyle] ?? HeroCentered;
   return (
     <div style={{ containerType: "inline-size", width: "100%" }}>
