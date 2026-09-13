@@ -304,40 +304,68 @@ function inferCategoryIndex(
   return 0;
 }
 
+export const REAL_MOOD_SLUGS = [
+  "clean-modern",
+  "warm-earthy",
+  "bold-vibrant",
+  "dark-premium",
+  "bold-dark",
+  "retro",
+  "futuristic",
+] as const;
+
+export type RealMoodSlug = (typeof REAL_MOOD_SLUGS)[number];
+
+export function resolveMoodIndex(mood: string | number | undefined): number {
+  if (typeof mood === "number" && mood >= 0 && mood < REAL_MOOD_SLUGS.length) {
+    return mood;
+  }
+  if (typeof mood === "string") {
+    const slug = mood.toLowerCase().trim();
+    const idx = REAL_MOOD_SLUGS.findIndex((s) => s === slug);
+    if (idx !== -1) return idx;
+    if (/clean|modern|bersih/.test(slug)) return 0;
+    if (/warm|earthy|alami|hangat/.test(slug)) return 1;
+    if (/vibrant|ceria|warna|playful/.test(slug)) return 2;
+    if (/dark-premium|luxury|elegant|mewah/.test(slug)) return 3;
+    if (/bold-dark|tegas|energi|bold/.test(slug)) return 4;
+    if (/retro|vintage|klasik|nostalgia/.test(slug)) return 5;
+    if (/futuristic|futuristik|cyber|dark/.test(slug)) return 6;
+  }
+  return 0;
+}
+
 function inferMoodIndex(
   siteData?: SiteData | null,
   token?: DesignToken | null,
   businessName?: string
-): { desktop: number; mobile: number } {
+): number {
   const activeToken = siteData?.design_token || token;
   const moodStr = (activeToken?.mood || "").toLowerCase();
   const themeMode = activeToken?.theme_mode;
   const name = (businessName || "").toLowerCase();
 
-  // If theme_mode is explicitly dark, or tech/dev profile:
-  const isDark = themeMode === "dark" || /\b(dev|developer|engineer|software|tech|code)\b/i.test(name);
+  // 1. Direct match with canonical mood value
+  const directIdx = REAL_MOOD_SLUGS.findIndex((s) => s === moodStr);
+  if (directIdx !== -1) return directIdx;
 
-  if (isDark) {
-    if (/luxury|elegant|mewah|premium/.test(moodStr)) {
-      return { desktop: 3, mobile: 3 }; // 💎 Elegant & Luxury / Elegant
-    }
-    return { desktop: 4, mobile: 1 };   // 🌑 Minimalist Dark / Minimal
-  }
-
-  if (/warm|vintage|retro|earthy|alami|hangat|klasik/.test(moodStr)) {
-    return { desktop: 1, mobile: 2 };   // 🕯️ Warm & Vintage / Natural
-  }
-  if (/bold|energetic|vibrant|ceria|berenergi|color/.test(moodStr)) {
-    return { desktop: 2, mobile: 0 };   // 🔥 Bold & Energetic / Modern & Clean
-  }
-  if (/luxury|elegant|mewah|gold|cormorant/.test(moodStr)) {
-    return { desktop: 3, mobile: 3 };   // 💎 Elegant & Luxury / Elegant
-  }
-  if (/dark|futuristic|minimalist|minimal/.test(moodStr)) {
-    return { desktop: 4, mobile: 1 };   // 🌑 Minimalist Dark / Minimal
+  // 2. Tech / software engineer profile default: futuristic (6)
+  const isTechDev = /\b(dev|developer|engineer|software|tech|code|saas|app|startup)\b/i.test(name);
+  if (isTechDev) {
+    if (themeMode === "dark") return 6; // 🤖 Futuristik
+    return 0; // ✨ Modern & Bersih
   }
 
-  return { desktop: 0, mobile: 0 };     // ✨ Modern & Clean / Modern & Clean
+  // 3. Keyword heuristic on mood and theme
+  if (/futuristic|futuristik|cyber|digital/.test(moodStr)) return 6; // 🤖 Futuristik
+  if (/retro|vintage|nostalgia|klasik|antik|tradisional/.test(moodStr)) return 5; // ⏳ Klasik & Retro
+  if (/bold-dark|tegas|energi|gym|sport|bengkel/.test(moodStr)) return 4; // ⚡ Tegas & Berenergi
+  if (/dark-premium|luxury|elegant|mewah|exclusive|cormorant/.test(moodStr)) return 3; // 👑 Elegan & Mewah
+  if (/bold-vibrant|vibrant|ceria|warna|playful|colorful/.test(moodStr)) return 2; // 🎨 Ceria & Berwarna
+  if (/warm-earthy|warm|earthy|alami|hangat|organik|kafe/.test(moodStr)) return 1; // 🌿 Hangat & Alami
+
+  if (themeMode === "dark") return 3; // 👑 Elegan & Mewah
+  return 0; // ✨ Modern & Bersih
 }
 
 function RealSitePreviewPanel({
@@ -858,13 +886,14 @@ function MobileChatCard({
 
   const [manualTab, setManualTab] = useState<"chat" | "preview" | null>(null);
   const categoryIndex = inferCategoryIndex(chatBusinessName, realSiteData, sample);
-  const moodIndices = inferMoodIndex(realSiteData, token, chatBusinessName);
-  const selectedMoodIndex = moodIndices.desktop;
+  const selectedMoodIndex = inferMoodIndex(realSiteData, token, chatBusinessName);
 
   const displayMoodIndices = useMemo(() => {
-    if (selectedMoodIndex <= 2) return [0, 1, 2];
-    if (selectedMoodIndex === 3) return [0, 1, 3];
-    return [0, 2, 4];
+    if (selectedMoodIndex === 0) return [0, 1, 3];
+    if (selectedMoodIndex === 1 || selectedMoodIndex === 5) return [0, 1, 5];
+    if (selectedMoodIndex === 2 || selectedMoodIndex === 4) return [0, 2, 4];
+    if (selectedMoodIndex === 3 || selectedMoodIndex === 6) return [0, 3, 6];
+    return [0, selectedMoodIndex, (selectedMoodIndex + 2) % 7];
   }, [selectedMoodIndex]);
 
   // Automatically transition tab when flowStep reaches preview/generating
@@ -1174,14 +1203,17 @@ export function InteractiveMockup() {
     currentSite?.category !== undefined
       ? currentSite.category
       : inferCategoryIndex(chatBusinessName, realSiteData, showcaseItem);
-  const moodIndices = inferMoodIndex(realSiteData, token, chatBusinessName);
   const selectedMoodIndex =
-    currentSite?.mood !== undefined ? currentSite.mood : moodIndices.desktop;
+    currentSite?.mood !== undefined
+      ? resolveMoodIndex(currentSite.mood)
+      : inferMoodIndex(realSiteData, token, chatBusinessName);
 
   const displayMoodIndices = useMemo(() => {
-    if (selectedMoodIndex <= 2) return [0, 1, 2];
-    if (selectedMoodIndex === 3) return [0, 1, 3];
-    return [0, 2, 4];
+    if (selectedMoodIndex === 0) return [0, 1, 3];
+    if (selectedMoodIndex === 1 || selectedMoodIndex === 5) return [0, 1, 5];
+    if (selectedMoodIndex === 2 || selectedMoodIndex === 4) return [0, 2, 4];
+    if (selectedMoodIndex === 3 || selectedMoodIndex === 6) return [0, 3, 6];
+    return [0, selectedMoodIndex, (selectedMoodIndex + 2) % 7];
   }, [selectedMoodIndex]);
 
   const activeShowcaseItem = showcaseItem;
@@ -1553,12 +1585,18 @@ export function InteractiveMockup() {
                       <div>
                         <label className="block text-[10px] text-muted-foreground mb-1 font-medium">Mood Desain</label>
                         <select
-                          value={site.mood !== undefined ? site.mood : ""}
+                          value={
+                            site.mood !== undefined
+                              ? typeof site.mood === "number"
+                                ? REAL_MOOD_SLUGS[site.mood] ?? site.mood
+                                : site.mood
+                              : ""
+                          }
                           onChange={(e) =>
                             setDraftSites((prev) =>
                               prev.map((v, idx) =>
                                 idx === i
-                                  ? { ...v, mood: e.target.value === "" ? undefined : Number(e.target.value) }
+                                  ? { ...v, mood: e.target.value === "" ? undefined : e.target.value }
                                   : v,
                               ),
                             )
@@ -1566,11 +1604,14 @@ export function InteractiveMockup() {
                           className="w-full rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs text-foreground outline-none focus:border-amber-500/60 transition-colors cursor-pointer"
                         >
                           <option value="">Otomatis (Deteksi AI)</option>
-                          {translations.landing.mockupMoodChips.map((name, moodIdx) => (
-                            <option key={moodIdx} value={moodIdx}>
-                              {name}
-                            </option>
-                          ))}
+                          {translations.landing.mockupMoodChips.map((name, moodIdx) => {
+                            const slug = REAL_MOOD_SLUGS[moodIdx];
+                            return (
+                              <option key={slug} value={slug}>
+                                {name}
+                              </option>
+                            );
+                          })}
                         </select>
                       </div>
                     </div>

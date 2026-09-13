@@ -11,7 +11,7 @@ export interface MockupShowcaseSite {
   url: string;
   businessName: string;
   category?: number; // 0: Kuliner, 1: Jasa, 2: Produk
-  mood?: number;     // 0: Modern & Clean, 1: Warm & Vintage, 2: Bold & Energetic, 3: Elegant & Luxury, 4: Minimalist Dark
+  mood?: string | number; // e.g. "clean-modern", "warm-earthy", "bold-vibrant", "dark-premium", "bold-dark", "retro", "futuristic", or index 0..6
 }
 
 export const DEFAULT_MOCKUP_SHOWCASE_SITES: MockupShowcaseSite[] = [
@@ -19,13 +19,13 @@ export const DEFAULT_MOCKUP_SHOWCASE_SITES: MockupShowcaseSite[] = [
     url: "https://pleco-dev.webjoz.com/",
     businessName: "Pleco Dev",
     category: 1, // 🔧 Jasa
-    mood: 4,     // 🌑 Minimalist Dark
+    mood: "futuristic", // 🤖 Futuristik
   },
   {
     url: "https://kopijozzjogja.webjoz.com/",
     businessName: "Kopi Jozz Jogja",
     category: 0, // 🍜 Kuliner
-    mood: 1,     // 🕯️ Warm & Vintage
+    mood: "retro", // ⏳ Klasik & Retro
   },
 ];
 
@@ -43,7 +43,9 @@ function toSite(input: unknown): MockupShowcaseSite | null {
         ? obj.category
         : undefined;
     const mood =
-      typeof obj.mood === "number" && obj.mood >= 0 && obj.mood <= 4
+      typeof obj.mood === "string" && obj.mood.trim()
+        ? obj.mood.trim()
+        : typeof obj.mood === "number" && obj.mood >= 0 && obj.mood <= 6
         ? obj.mood
         : undefined;
     return url ? { url, businessName, category, mood } : null;
