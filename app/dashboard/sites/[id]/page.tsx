@@ -1697,15 +1697,30 @@ export default function SiteEditorPage() {
             </div>
           )}
 
-          {/* Section nav — persistent list */}
+          {/* Section nav — persistent compact list */}
           {editorTab === "content" && (
-            <div className="flex-shrink-0 border-b border-border hidden md:block">
-              <div className="px-3 py-1.5">
-                <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-500">{t("dashboard.sitesEditor.pageSections")}</p>
+            <div className="flex-shrink-0 border-b border-border hidden md:block bg-[#0c0f16]/90">
+              <div
+                onClick={() => setSectionNavCollapsed((v) => !v)}
+                className="px-2.5 py-1.5 flex items-center justify-between cursor-pointer hover:bg-white/[0.04] transition-colors select-none"
+                title={sectionNavCollapsed ? (t("dashboard.sitesEditor.showPageSections") || "Tampilkan Bagian Halaman") : (t("dashboard.sitesEditor.expandEditArea") || "Perluas Area Edit")}
+              >
+                <div className="flex items-center gap-1.5">
+                  <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-500">{t("dashboard.sitesEditor.pageSections")}</p>
+                  <span className="text-[8px] font-semibold text-slate-500 px-1 py-0.2 rounded bg-white/5">
+                    {SECTIONS.length}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 text-slate-500 hover:text-slate-300">
+                  <span className="text-[8px] font-medium tracking-wide">
+                    {sectionNavCollapsed ? (t("dashboard.sitesEditor.show") || "Tampilkan") : (t("dashboard.sitesEditor.hide") || "Ciutkan")}
+                  </span>
+                  <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${sectionNavCollapsed ? "" : "rotate-180"}`} />
+                </div>
               </div>
               <div
                 className="flex flex-col overflow-y-auto scrollbar-none transition-all duration-300 ease-in-out"
-                style={{ maxHeight: sectionNavCollapsed ? 0 : 180, overflow: sectionNavCollapsed ? "hidden" : "auto" }}
+                style={{ maxHeight: sectionNavCollapsed ? 0 : 116, overflow: sectionNavCollapsed ? "hidden" : "auto" }}
               >
                 {SECTIONS.map(({ key, label, icon: Icon, num }) => (
                   <div
@@ -1730,16 +1745,16 @@ export default function SiteEditorPage() {
                     }}
                     onDragEnd={() => setDraggingSection(null)}
                     onClick={() => { if (!pendingDiff) selectSection(key, true); }}
-                    className={`group flex items-center gap-2 px-3 py-[7px] cursor-pointer transition-colors ${activeTab === key
-                      ? "bg-primary/15"
+                    className={`group flex items-center gap-1.5 px-2.5 py-1 cursor-pointer transition-colors ${activeTab === key
+                      ? "bg-primary/15 text-primary"
                       : hiddenSections.includes(key)
                         ? "opacity-40 hover:opacity-60"
                         : "hover:bg-muted/40"
                       }`}
                   >
-                    <GripVertical className={`h-3 w-3 shrink-0 ${BODY_SECTION_KEYS.includes(key) ? "text-slate-600" : "text-slate-800"}`} />
-                    <Icon className={`w-3.5 h-3.5 shrink-0 ${activeTab === key ? "text-primary" : "text-slate-500"}`} />
-                    <span className={`flex-1 text-[12px] truncate ${activeTab === key ? "text-slate-100 font-medium" : hiddenSections.includes(key) ? "line-through text-slate-600" : "text-slate-400"}`}>
+                    <GripVertical className={`h-2.5 w-2.5 shrink-0 ${BODY_SECTION_KEYS.includes(key) ? "text-slate-600" : "text-slate-800"}`} />
+                    <Icon className={`w-3 h-3 shrink-0 ${activeTab === key ? "text-primary" : "text-slate-500"}`} />
+                    <span className={`flex-1 text-[11px] truncate ${activeTab === key ? "text-slate-100 font-medium" : hiddenSections.includes(key) ? "line-through text-slate-600" : "text-slate-400"}`}>
                       {label}
                     </span>
                     {key === "seo" && !(activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise") && (
@@ -1756,8 +1771,8 @@ export default function SiteEditorPage() {
                         className="p-0.5 rounded transition-colors cursor-pointer shrink-0"
                       >
                         {hiddenSections.includes(key)
-                          ? <EyeOff className="w-3 h-3 text-slate-600" />
-                          : <Eye className="w-3 h-3 text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          ? <EyeOff className="w-2.5 h-2.5 text-slate-600" />
+                          : <Eye className="w-2.5 h-2.5 text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                         }
                       </div>
                     )}
@@ -1768,7 +1783,7 @@ export default function SiteEditorPage() {
                         const color = score >= 85 ? "bg-emerald-500" : score >= 65 ? "bg-amber-500" : "bg-red-500";
                         return <div className={`w-1.5 h-1.5 rounded-full ${color}`} title={t("dashboard.sitesEditor.qualityScore", undefined, { score: String(score) })} />;
                       })()}
-                      <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${activeTab === key ? "bg-primary/30 text-primary" : "bg-white/5 text-slate-500"
+                      <span className={`text-[8px] px-1 py-0.2 rounded-full font-medium ${activeTab === key ? "bg-primary/30 text-primary" : "bg-white/5 text-slate-500"
                         }`}>{num}</span>
                     </div>
                   </div>
@@ -2053,17 +2068,17 @@ export default function SiteEditorPage() {
               </>
             ) : (
               <>
-                <div className="px-3.5 py-2 border-b border-border flex-shrink-0 flex items-center justify-between gap-2">
-                  <p className="text-[10px] uppercase tracking-widest font-semibold text-slate-400">
+                <div className="px-3 py-1.5 border-b border-border flex-shrink-0 flex items-center justify-between gap-2 bg-[#0c0f16]/60">
+                  <p className="text-[10px] uppercase tracking-widest font-semibold text-slate-400 truncate">
                     {t("dashboard.sitesEditor.editLabel", undefined, { label: SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab })}
                   </p>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1 shrink-0">
                     {activeTab !== "seo" && activeTab !== "header" && activeTab !== "footer" && (
                       <button
                         type="button"
                         onClick={() => toggleSectionVisibility(activeTab)}
                         title={hiddenSections.includes(activeTab) ? t("dashboard.sitesEditor.showSection") : t("dashboard.sitesEditor.hideSection")}
-                        className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-semibold transition-all hover:bg-white/10"
+                        className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold transition-all hover:bg-white/10 cursor-pointer"
                         style={{ color: hiddenSections.includes(activeTab) ? "#f87171" : "#94a3b8" }}
                       >
                         {hiddenSections.includes(activeTab)
@@ -2076,11 +2091,11 @@ export default function SiteEditorPage() {
                       type="button"
                       onClick={() => setSectionNavCollapsed(v => !v)}
                       title={sectionNavCollapsed ? t("dashboard.sitesEditor.showPageSections") : t("dashboard.sitesEditor.expandEditArea")}
-                      className="flex items-center justify-center w-6 h-6 rounded transition-all hover:bg-white/10 text-slate-500 hover:text-slate-300"
+                      className="flex items-center justify-center w-5 h-5 rounded transition-all hover:bg-white/10 text-slate-500 hover:text-slate-300 cursor-pointer"
                     >
                       {sectionNavCollapsed
-                        ? <ChevronDown className="w-3.5 h-3.5" />
-                        : <ChevronUp className="w-3.5 h-3.5" />
+                        ? <ChevronDown className="w-3 h-3" />
+                        : <ChevronUp className="w-3 h-3" />
                       }
                     </button>
                   </div>
@@ -2157,6 +2172,7 @@ export default function SiteEditorPage() {
                     updateSectionVariant={updateSectionVariant}
                     getEnabledVariants={getEnabledVariants}
                     t={t}
+                    compact={true}
                   />
 
                   <SectionForms
