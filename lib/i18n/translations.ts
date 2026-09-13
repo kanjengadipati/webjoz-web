@@ -2,7 +2,6 @@ export type Locale = "id" | "en";
 
 export interface Translations {
   landing: {
-    badge: string;
     heroTitle: string;
     heroSubtitle: string;
     heroSubtitleBold: string;
@@ -2401,7 +2400,6 @@ export interface Translations {
 export const translations: Record<Locale, Translations> = {
   id: {
     landing: {
-      badge: "AI WEBSITE BUILDER UNTUK BISNIS ANDA",
       heroTitle: 'Generate website <br className="lg:hidden" />instan. <span class="inline-block text-foreground">✧</span><br /><span class="inline-block text-[0.6em] sm:text-[0.68em] lg:text-[0.62em] font-extrabold tracking-tight bg-primary text-primary-foreground dark:bg-white dark:text-black px-3.5 py-1 sm:px-5 sm:py-1.5 rounded-none mt-2 sm:mt-2.5 shadow-lg">Custom tanpa batas.</span>',
       heroSubtitle: 'Hanya butuh <strong class="text-foreground font-bold">chat singkat</strong>, <strong class="text-foreground font-bold">tanpa coding</strong> —<br />website bisnis Anda <strong class="text-foreground font-bold">langsung live</strong> siap pakai.',
       heroSubtitleBold: "",
@@ -2444,7 +2442,7 @@ export const translations: Record<Locale, Translations> = {
       monthly: "Bulanan",
       yearly: "Tahunan",
       saveBadge: "Hemat ~16%",
-      saveText: "🎉 Hemat hingga 2 bulan dengan langganan paket per tahun",
+      saveText: "Hemat hingga 2 bulan dengan langganan tahunan",
       popularBadge: "Terpopuler",
       priceFree: "Rp 0",
       priceFreePeriod: "/bulan · selamanya",
@@ -2530,7 +2528,7 @@ export const translations: Record<Locale, Translations> = {
       categoryJasa: "Jasa",
       categoryProduk: "Produk",
       activeBadge: "Aktif",
-      yearlySavings: "🎉 Hemat Rp {value}/tahun",
+      yearlySavings: "Hemat Rp {value}/tahun",
       websiteCount: "{n} Website",
       aiGenerate: "AI Generate {n}x/bulan",
       aiRegen: "AI Regenerasi {n}x/bulan",
@@ -4874,7 +4872,6 @@ export const translations: Record<Locale, Translations> = {
   },
   en: {
     landing: {
-      badge: "AI WEBSITE BUILDER FOR YOUR BUSINESS",
       heroTitle: 'Generate websites <br className="lg:hidden" />instantly. <span class="inline-block text-foreground">✧</span><br /><span class="inline-block text-[0.58em] sm:text-[0.66em] lg:text-[0.6em] font-extrabold tracking-tight bg-primary text-primary-foreground dark:bg-white dark:text-black px-3.5 py-1 sm:px-5 sm:py-1.5 rounded-none mt-2 sm:mt-2.5 shadow-lg">Unlimited customization.</span>',
       heroSubtitle: 'Just a <strong class="text-foreground font-bold">quick chat</strong>, <strong class="text-foreground font-bold">no coding</strong> —<br />your business website is <strong class="text-foreground font-bold">instantly live</strong>.',
       heroSubtitleBold: "",
@@ -4917,7 +4914,7 @@ export const translations: Record<Locale, Translations> = {
       monthly: "Monthly",
       yearly: "Yearly",
       saveBadge: "Save ~16%",
-      saveText: "🎉 Save up to 2 months with annual subscription",
+      saveText: "Save up to 2 months with annual subscription",
       popularBadge: "Most Popular",
       priceFree: "$0",
       priceFreePeriod: "/month · forever",
@@ -5003,7 +5000,7 @@ export const translations: Record<Locale, Translations> = {
       categoryJasa: "Services",
       categoryProduk: "Products",
       activeBadge: "Active",
-      yearlySavings: "🎉 Save Rp {value}/year",
+      yearlySavings: "Save Rp {value}/year",
       websiteCount: "{n} Website",
       aiGenerate: "AI Generate {n}x/month",
       aiRegen: "AI Regen {n}x/month",
