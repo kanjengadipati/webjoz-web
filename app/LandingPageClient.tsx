@@ -372,8 +372,8 @@ export default function LandingPageClient() {
       </header>
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden px-4 pt-3 pb-8 sm:pt-6 sm:pb-12 sm:px-6 lg:px-10 flex flex-col items-center justify-center lg:min-h-[calc(100dvh-64px)] lg:py-0">
-        <div className="mx-auto max-w-7xl w-full grid gap-4 sm:gap-8 lg:gap-12 lg:grid-cols-2 items-center">
+      <section className="relative overflow-hidden pt-3 pb-8 sm:pt-6 sm:pb-12 flex flex-col items-center justify-center lg:min-h-[calc(100dvh-64px)] lg:py-0">
+        <div className="mx-auto max-w-7xl w-full grid gap-4 sm:gap-8 lg:gap-12 lg:grid-cols-2 items-center px-4 sm:px-6 lg:px-8">
           <div className="space-y-4 sm:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 flex flex-col items-start text-left">
             {/* Main headline */}
             <h1 className="text-4xl sm:text-5xl md:text-5xl lg:text-[3.25rem] xl:text-[3.65rem] font-black leading-[1.1] tracking-tight w-full text-foreground">
@@ -619,26 +619,7 @@ export default function LandingPageClient() {
         </div>
       </section>
 
-      {/* ── Stats Banner (Pleco-style) ──────────────────────────────────────── */}
-      <section className="px-4 py-16 sm:px-6 lg:px-10 max-w-5xl mx-auto">
-        <div className="mx-auto max-w-5xl">
-          <Card className="border-border bg-card px-6 py-8 shadow-xl lg:px-8 lg:py-10 dark:border-white/10 dark:bg-[#111318]">
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {[
-                { value: t("landing.statsValue1"), label: t("landing.statsLabel1") },
-                { value: t("landing.statsValue2"), label: t("landing.statsLabel2") },
-                { value: t("landing.statsValue3"), label: t("landing.statsLabel3") },
-                { value: t("landing.statsValue4"), label: t("landing.statsLabel4") },
-              ].map((stat) => (
-                <div key={stat.label} className="text-center">
-                  <div className="text-3xl font-bold tracking-tight text-foreground lg:text-4xl dark:text-white">{stat.value}</div>
-                  <div className="mt-1 text-xs text-muted-foreground font-medium">{stat.label}</div>
-                </div>
-              ))}
-            </div>
-          </Card>
-        </div>
-      </section>
+
 
       {/* ── Pricing ───────────────────────────────────────────────────────── */}
       <section id="pricing" className="px-4 py-16 sm:px-6 lg:px-10 max-w-5xl mx-auto scroll-mt-16">
