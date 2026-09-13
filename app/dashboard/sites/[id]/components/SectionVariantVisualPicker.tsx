@@ -261,13 +261,17 @@ export default function SectionVariantVisualPicker({
   return (
     <div
       data-edu="variant-picker"
-      className="rounded-2xl border border-primary/25 bg-gradient-to-b from-primary/[0.08] to-slate-900/40 p-3 space-y-2.5 mb-3.5 shadow-sm transition-all duration-200"
+      className={`rounded-xl border border-primary/25 bg-gradient-to-b from-primary/[0.08] to-slate-900/40 shadow-sm transition-all duration-200 ${
+        compact ? "p-2 space-y-1.5 mb-2" : "p-3 space-y-2.5 mb-3.5"
+      }`}
     >
       {/* Active Variant Pill — tap to open gallery */}
       <button
         type="button"
         onClick={() => setIsExpanded((prev) => !prev)}
-        className="w-full flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-xl bg-black/40 border border-white/5 hover:border-primary/30 hover:bg-black/60 transition-all cursor-pointer text-left"
+        className={`w-full flex items-center justify-between gap-2 rounded-lg bg-black/40 border border-white/5 hover:border-primary/30 hover:bg-black/60 transition-all cursor-pointer text-left ${
+          compact ? "px-2 py-1" : "px-2.5 py-1.5"
+        }`}
       >
         {/* Left: active variant info */}
         <div className="flex items-center gap-2 min-w-0">
