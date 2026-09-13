@@ -186,11 +186,6 @@ export const PreviewSectionWrapper: React.FC<{
       return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [isGalleryOpen]);
 
-    if (!isEditorMode) {
-      return <>{children}</>;
-    }
-
-    const isSelected = activeSection === section;
     const variants = SECTION_VARIANT_OPTIONS[section] || [];
     const hasVariants = variants.length > 1 && Boolean(onUpdateVariant);
     const activeOpt = variants.find((v) => v.value === currentVariant) || variants[0];
@@ -206,6 +201,12 @@ export const PreviewSectionWrapper: React.FC<{
       if (selectedGroup === "Semua") return variants;
       return variants.filter((v) => v.group === selectedGroup);
     }, [variants, selectedGroup]);
+
+    if (!isEditorMode) {
+      return <>{children}</>;
+    }
+
+    const isSelected = activeSection === section;
 
     return (
       <div
