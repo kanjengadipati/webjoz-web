@@ -893,26 +893,30 @@ function MobileChatCard({
   ];
 
   return (
-    <div className="relative w-full max-w-[420px] mx-auto rounded-[14px] border border-border dark:border-white/10 bg-card dark:bg-[#111318] p-1.5 shadow-[0_25px_60px_rgba(0,0,0,0.5)] backdrop-blur-xl transition-all duration-300">
+    <div className="relative w-full max-w-[420px] mx-auto rounded-[14px] border border-border dark:border-white/10 bg-card dark:bg-[#111318] p-1.5 shadow-xl transition-all duration-300">
       {/* inner-top shimmer */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-t-[12px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-t-[12px] bg-gradient-to-r from-transparent via-foreground/10 dark:via-white/20 to-transparent" />
 
       {/* ── Logo-style chrome bar ── */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.07] select-none">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border/70 dark:border-white/[0.08] select-none">
         {/* Left: 3 dots */}
         <div className="flex items-center gap-[6px]">
           {[0, 1, 2].map((i) => (
-            <span key={i} className="block rounded-full bg-white" style={{ width: 7, height: 7, opacity: 0.3 + i * 0.2 }} />
+            <span
+              key={i}
+              className="block rounded-full bg-foreground dark:bg-white"
+              style={{ width: 7, height: 7, opacity: 0.35 + i * 0.25 }}
+            />
           ))}
         </div>
 
         {/* Center: domain / label */}
-        <span className="text-[10px] font-mono text-white/25 truncate max-w-[180px] sm:max-w-none whitespace-nowrap">
+        <span className="text-[10px] font-mono text-muted-foreground/70 dark:text-white/30 truncate max-w-[180px] sm:max-w-none whitespace-nowrap">
           {isPreview ? (siteUrl ? siteHost(siteUrl) : "webjoz.com") : "webjoz.com"}
         </span>
 
         {/* Right: sparkle */}
-        <svg width="10" height="10" viewBox="0 0 12 12" fill="none" className="text-white/30 shrink-0">
+        <svg width="10" height="10" viewBox="0 0 12 12" fill="none" className="text-muted-foreground/60 dark:text-white/30 shrink-0">
           <path d="M6 0.5L6.9 4.9L11.5 6L6.9 7.1L6 11.5L5.1 7.1L0.5 6L5.1 4.9L6 0.5Z" fill="currentColor"/>
         </svg>
       </div>
@@ -1163,8 +1167,6 @@ export function InteractiveMockup() {
   const [editingSites, setEditingSites] = useState(false);
   const [draftSites, setDraftSites] = useState<MockupShowcaseSite[]>([]);
   const cardRef = useRef<HTMLDivElement>(null);
-  const [rotate, setRotate] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
   const { flowStep, cycle } = useFlowStep();
 
   const { sample, token } = useBestHero();
@@ -1190,100 +1192,50 @@ export function InteractiveMockup() {
   const moodIndices = inferMoodIndex(realSiteData, token, chatBusinessName);
   const selectedMoodIndex = manualMood ?? moodIndices.desktop;
 
-  /* ── 3D Tilt (mouse + touch) ─────────────────────────────────────────── */
-  const applyTilt = (clientX: number, clientY: number) => {
-    if (!cardRef.current) return;
-    const box = cardRef.current.getBoundingClientRect();
-    const x = clientX - box.left - box.width / 2;
-    const y = clientY - box.top - box.height / 2;
-    const maxR = 8;
-    setRotate({ x: -(y / (box.height / 2)) * maxR, y: (x / (box.width / 2)) * maxR });
-  };
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => applyTilt(e.clientX, e.clientY);
-
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    const touch = e.touches[0];
-    if (touch) applyTilt(touch.clientX, touch.clientY);
-  };
-
-  const resetTilt = () => { setIsHovered(false); setRotate({ x: 0, y: 0 }); };
-
   /* ── helpers ──────────────────────────────────────────────────────────── */
   const visible = (minStep: number) =>
     flowStep >= minStep ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3 pointer-events-none";
-
-  const tz = (z: number) =>
-    flowStep >= STEP_PREVIEW ? `translateZ(${z}px)` : "translateZ(0px)";
 
   const generating = flowStep === STEP_GENERATING;
 
   return (
     <>
       {/* ── Desktop: browser mockup (hidden on mobile) ─────────────────── */}
-      <div
-        className="hidden w-full md:block"
-        style={{ perspective: "1100px" }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={resetTilt}
-        onMouseMove={handleMouseMove}
-        onTouchStart={() => setIsHovered(true)}
-        onTouchEnd={resetTilt}
-        onTouchMove={handleTouchMove}
-      >
-      {/* ── Outer glow halo ─────────────────────────────────────────────── */}
-      <div className="relative">
-        <div
-          className="absolute -inset-4 opacity-0 transition-opacity duration-700 pointer-events-none"
-          style={{
-            background: "radial-gradient(ellipse at 60% 40%, color-mix(in srgb,var(--foreground) 6%,transparent), transparent 70%)",
-            opacity: isHovered ? 1 : 0,
-            filter: "blur(32px)",
-          }}
-        />
-
-        {/* ── Card — logo-style open-corner frame ──────────────────────── */}
+      <div className="hidden w-full md:block">
+        {/* ── Card — logo-style frame ──────────────────────── */}
         <div
           ref={cardRef}
-          style={{
-            transform: `rotateX(${rotate.x}deg) rotateY(${rotate.y}deg)`,
-            transformStyle: "preserve-3d",
-            transition: isHovered ? "transform 0.08s linear" : "transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)",
-          }}
-          className="relative rounded-[14px] border border-border dark:border-white/10 bg-card dark:bg-[#111318] p-1.5 shadow-[0_30px_90px_rgba(0,0,0,0.5)] backdrop-blur-2xl"
+          className="relative rounded-[14px] border border-border dark:border-white/10 bg-card dark:bg-[#111318] p-1.5 shadow-xl transition-all duration-300"
         >
           {/* inner-top shimmer */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-t-[12px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-t-[12px] bg-gradient-to-r from-transparent via-foreground/10 dark:via-white/20 to-transparent" />
 
           {/* ── Logo-style chrome bar ──────────────────────────────────── */}
-          <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.07] select-none">
+          <div className="flex items-center justify-between px-5 py-3 border-b border-border/70 dark:border-white/[0.08] select-none">
             {/* Left: 3 dots à la logo */}
             <div className="flex items-center gap-[6px]">
               {[0, 1, 2].map((i) => (
                 <span
                   key={i}
-                  className="block rounded-full bg-white"
-                  style={{ width: 7, height: 7, opacity: 0.3 + i * 0.2 }}
+                  className="block rounded-full bg-foreground dark:bg-white"
+                  style={{ width: 7, height: 7, opacity: 0.35 + i * 0.25 }}
                 />
               ))}
             </div>
 
             {/* Center: minimal domain */}
-            <span className="text-[10px] font-mono text-white/25 truncate max-w-[200px] sm:max-w-none whitespace-nowrap">
+            <span className="text-[10px] font-mono text-muted-foreground/70 dark:text-white/30 truncate max-w-[200px] sm:max-w-none whitespace-nowrap">
               {flowStep >= STEP_PREVIEW && currentSite ? siteHost(currentSite.url) : "webjoz.com"}
             </span>
 
             {/* Right: sparkle à la logo */}
-            <svg width="10" height="10" viewBox="0 0 12 12" fill="none" className="text-white/30 shrink-0">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none" className="text-muted-foreground/60 dark:text-white/30 shrink-0">
               <path d="M6 0.5L6.9 4.9L11.5 6L6.9 7.1L6 11.5L5.1 7.1L0.5 6L5.1 4.9L6 0.5Z" fill="currentColor"/>
             </svg>
           </div>
 
           {/* ── Content grid ──────────────────────────────────────────────── */}
-          <div
-            className="grid gap-0 grid-rows-[auto_1fr] md:grid-rows-none md:grid-cols-[1fr_1.1fr] overflow-hidden rounded-b-[10px]"
-            style={{ transformStyle: "preserve-3d" }}
-          >
+          <div className="grid gap-0 grid-rows-[auto_1fr] md:grid-rows-none md:grid-cols-[1fr_1.1fr] overflow-hidden rounded-b-[10px]">
 
             {/* ── Left: Chat panel ──────────────────────────────────────── */}
             <div className="flex flex-col gap-3 p-4 md:p-5 border-b md:border-b-0 md:border-r border-border/20 bg-background/20 min-h-[260px] md:min-h-[480px]">
@@ -1382,13 +1334,8 @@ export function InteractiveMockup() {
               </div>
             </div>
 
-            {/* ── Right: Live 3D Preview panel ──────────────────────────── */}
-            <div
-              className="relative block overflow-hidden bg-[#0c0c0e] min-h-[360px] sm:min-h-[440px] md:min-h-[480px]"
-              style={{
-                transformStyle: "preserve-3d",
-              }}
-            >
+            {/* ── Right: Live Preview panel ──────────────────────────── */}
+            <div className="relative block overflow-hidden bg-[#0c0c0e] min-h-[360px] sm:min-h-[440px] md:min-h-[480px]">
               {/* Skeleton — visible during AI chat (steps 0-7) */}
               <LiveAdaptiveSkeleton
                 sample={showcaseItem}
@@ -1481,9 +1428,9 @@ export function InteractiveMockup() {
               <div
                 className="absolute bottom-3 left-3 right-3 h-9 rounded-xl flex items-center px-3.5 z-30"
                 style={{
-                  transform: flowStep >= STEP_SUCCESS ? tz(22) : "translateZ(0px) translateY(4px)",
+                  transform: flowStep >= STEP_SUCCESS ? "translateY(0)" : "translateY(6px)",
                   opacity: flowStep >= STEP_SUCCESS ? 1 : 0,
-                  transition: "transform 0.6s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.4s",
+                  transition: "transform 0.5s ease-out, opacity 0.4s",
                   background: "linear-gradient(90deg, color-mix(in srgb,#22c55e 12%,transparent), color-mix(in srgb,#22c55e 5%,transparent))",
                   border: "1px solid color-mix(in srgb,#22c55e 30%,transparent)",
                   boxShadow: "0 4px 20px color-mix(in srgb,#22c55e 12%,transparent)",
@@ -1509,7 +1456,6 @@ export function InteractiveMockup() {
           100% { transform: translateY(320px); opacity: 0; }
         }
       `}</style>
-      </div>
 
       {/* ── Mobile: sleek native chat card (desktop uses 3D browser mockup above) ───── */}
       <div className="md:hidden w-full flex justify-center">
