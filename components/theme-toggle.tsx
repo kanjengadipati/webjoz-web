@@ -20,10 +20,7 @@ export function ThemeToggle({ className = "", showAccent = false }: { className?
 
   const ThemeIcon = theme === "dark" ? Sun : Moon;
 
-  const themeIconClass =
-    theme === "dark"
-      ? "text-amber-400"
-      : "text-slate-600 dark:text-slate-300";
+  const themeIconClass = theme === "dark" ? "text-white" : "text-black";
 
   return (
     <div className="inline-flex items-center gap-1">

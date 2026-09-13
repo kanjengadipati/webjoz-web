@@ -533,7 +533,7 @@ export function LandingTemplateShowcase({ onStart }: { onStart: (item: GalleryIt
                 <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
               {t("landing.templatesViewMore", "Lihat lebih banyak contoh website")}
-              <span className="text-amber-400">+{rest.length}</span>
+              <span className="text-slate-400">+{rest.length}</span>
             </button>
           </div>
         )}

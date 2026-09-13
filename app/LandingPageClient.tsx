@@ -6,7 +6,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { Badge, Button, Card } from "@/components/ui";
-import { Check, Loader2, Zap, ArrowRight, Home, LayoutGrid, Tag, UserCircle, ShieldCheck, MessageCircle, Plus } from "lucide-react";
+import { Check, Loader2, Zap, ArrowRight, Home, LayoutGrid, Tag, UserCircle, ShieldCheck, MessageCircle, Plus, Globe, BarChart3, Pencil, Layers, Search, Rocket, ShoppingBag, UtensilsCrossed, MessageSquare } from "lucide-react";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { PricingCards } from "@/components/pricing-cards";
@@ -91,52 +91,52 @@ const STEPS = [
 
 const FEATURES = [
   {
-    icon: "🤖",
+    icon: <MessageCircle className="size-5" />,
     titleKey: "featureChatTitle",
     descKey: "featureChatDesc",
   },
   {
-    icon: "🔗",
+    icon: <Globe className="size-5" />,
     titleKey: "featureDomainTitle",
     descKey: "featureDomainDesc",
   },
   {
-    icon: "📊",
+    icon: <BarChart3 className="size-5" />,
     titleKey: "featureAnalyticsTitle",
     descKey: "featureAnalyticsDesc",
   },
   {
-    icon: "✏️",
+    icon: <Pencil className="size-5" />,
     titleKey: "featureEditTitle",
     descKey: "featureEditDesc",
   },
   {
-    icon: "📄",
+    icon: <Layers className="size-5" />,
     titleKey: "featureCustomTitle",
     descKey: "featureCustomDesc",
   },
   {
-    icon: "💬",
+    icon: <MessageSquare className="size-5" />,
     titleKey: "featureWaTitle",
     descKey: "featureWaDesc",
   },
   {
-    icon: "🔍",
+    icon: <Search className="size-5" />,
     titleKey: "featureSeoTitle",
     descKey: "featureSeoDesc",
   },
   {
-    icon: "🚀",
+    icon: <Rocket className="size-5" />,
     titleKey: "featureSubTitle",
     descKey: "featureSubDesc",
   },
   {
-    icon: "📦",
+    icon: <ShoppingBag className="size-5" />,
     titleKey: "featureCatalogTitle",
     descKey: "featureCatalogDesc",
   },
   {
-    icon: "🍽️",
+    icon: <UtensilsCrossed className="size-5" />,
     titleKey: "featureMenuTitle",
     descKey: "featureMenuDesc",
   },
@@ -583,7 +583,7 @@ export default function LandingPageClient() {
                 key={i}
                 className="rounded-xl border border-border bg-card p-6 transition-all hover:border-border/80 hover:bg-card/80 dark:border-white/10 dark:bg-[#111318] dark:hover:bg-[#151720]"
               >
-                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-muted text-2xl dark:bg-white/[0.06]">
+                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-muted dark:bg-white/[0.06]">
                   {f.icon}
                 </div>
                 <h3 className="mb-2 text-base font-bold text-foreground">{t(`landing.${f.titleKey}`)}</h3>
