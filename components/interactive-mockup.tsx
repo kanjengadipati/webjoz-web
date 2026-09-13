@@ -1270,27 +1270,27 @@ export function InteractiveMockup() {
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-t-[12px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
           {/* ── Logo-style chrome bar ──────────────────────────────────── */}
-          <div className="relative flex items-center justify-center px-5 py-3 border-b border-white/[0.07] select-none">
-            {/* Center: 3 dots */}
-            <div className="flex items-center gap-[7px]">
+          <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.07] select-none">
+            {/* Left: 3 dots à la logo */}
+            <div className="flex items-center gap-[6px]">
               {[0, 1, 2].map((i) => (
                 <span
                   key={i}
                   className="block rounded-full bg-white"
-                  style={{ width: 7, height: 7, opacity: 0.25 + i * 0.2 }}
+                  style={{ width: 7, height: 7, opacity: 0.3 + i * 0.2 }}
                 />
               ))}
             </div>
 
-            {/* Right: sparkle + domain */}
-            <div className="absolute right-5 flex items-center gap-2">
-              <span className="text-[10px] font-mono text-white/25 hidden sm:block">
-                {flowStep >= STEP_PREVIEW && currentSite ? siteHost(currentSite.url) : "webjoz.com"}
-              </span>
-              <svg width="10" height="10" viewBox="0 0 12 12" fill="none" className="text-white/30 shrink-0">
-                <path d="M6 0.5L6.9 4.9L11.5 6L6.9 7.1L6 11.5L5.1 7.1L0.5 6L5.1 4.9L6 0.5Z" fill="currentColor"/>
-              </svg>
-            </div>
+            {/* Center: minimal domain */}
+            <span className="text-[10px] font-mono text-white/25">
+              {flowStep >= STEP_PREVIEW && currentSite ? siteHost(currentSite.url) : "webjoz.com"}
+            </span>
+
+            {/* Right: sparkle à la logo */}
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none" className="text-white/30 shrink-0">
+              <path d="M6 0.5L6.9 4.9L11.5 6L6.9 7.1L6 11.5L5.1 7.1L0.5 6L5.1 4.9L6 0.5Z" fill="currentColor"/>
+            </svg>
           </div>
 
           {/* ── Content grid ──────────────────────────────────────────────── */}
