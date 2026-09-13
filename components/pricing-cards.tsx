@@ -115,7 +115,7 @@ export function PricingCards({
   promoLabel = "Promo",
   perYearLabel = "/ tahun",
   monthlyEqLabel = "Setara Rp {value}/bln",
-  yearlySavingsLabel = "🎉 Hemat Rp {value}/tahun",
+  yearlySavingsLabel = "Hemat Rp {value}/tahun",
   perMonthLabel = "/ bulan",
   perYearShortLabel = "/tahun",
   websiteCountLabel = "{n} Website",
@@ -209,7 +209,7 @@ export function PricingCards({
                 isCurrent
                   ? "border-emerald-500/50 ring-2 ring-emerald-500/20 bg-emerald-500/5 shadow-emerald-500/10"
                   : isPro
-                  ? "border-primary ring-1 ring-primary/30 bg-gradient-to-br from-primary/10 via-card to-primary/5 shadow-primary/20 overflow-hidden md:scale-[1.03] md:z-10"
+                  ? "border-primary ring-1 ring-primary/30 bg-card shadow-primary/5 overflow-hidden md:scale-[1.03] md:z-10"
                   : "border-border/60 bg-card/60 shadow-primary/5"
               }`}
             >
