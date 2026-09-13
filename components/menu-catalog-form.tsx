@@ -1192,8 +1192,8 @@ export function VariantGroupEditor({
 
   return (
     <div className="mt-3 border-t border-border/50 pt-3 space-y-2.5">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 min-w-0">
-        <div className="min-w-0 flex-1">
+      <div className="flex flex-col gap-2 min-w-0">
+        <div className="min-w-0">
           <label className={MCF_INPUT_LABEL}>{t("dashboard.sitesKatalog.variantsTitle", "Varian & Opsi Tambahan")}</label>
           <p className="text-[11px] text-muted-foreground leading-relaxed">
             {t("dashboard.sitesKatalog.variantsSubtitle", "Kustomisasi pilihan produk seperti Ukuran, Topping, atau Opsi Tambahan.")}
@@ -1202,7 +1202,7 @@ export function VariantGroupEditor({
         <button
           type="button"
           onClick={() => { const g = makeGroup(); onChange([...groups, g]); setExpandedGroup(g.id); }}
-          className="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-xl bg-primary/15 text-primary hover:bg-primary/25 border border-primary/20 transition-all cursor-pointer shadow-2xs self-start sm:self-auto"
+          className="w-full inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-xl bg-primary/15 text-primary hover:bg-primary/25 border border-primary/20 transition-all cursor-pointer shadow-2xs"
         >
           <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.variantsAddGroup", "Tambah Grup Varian")}
         </button>
