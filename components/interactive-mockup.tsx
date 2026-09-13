@@ -114,12 +114,14 @@ function RealPreviewPanel({
   designToken,
   flowStep = 0,
   baseWidth = 1280,
+  autoScroll = true,
 }: {
   TemplateComponent: React.ComponentType<any>;
   content: any;
   designToken: any;
   flowStep?: number;
   baseWidth?: number;
+  autoScroll?: boolean;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
@@ -152,11 +154,13 @@ function RealPreviewPanel({
   }, [scale]);
 
   // Auto-scroll the website top-to-bottom so more than just the hero is seen.
+  // autoScroll=false keeps the preview parked on the hero so it never settles
+  // on the contact section.
   const hasReachedPreview = flowStep >= STEP_PREVIEW;
   useEffect(() => {
     const inner = innerRef.current;
     if (!inner) return;
-    if (!hasReachedPreview || scrollMax <= 0) {
+    if (!hasReachedPreview || scrollMax <= 0 || !autoScroll) {
       inner.style.transform = `scale(${scale})`;
       return;
     }
@@ -172,7 +176,7 @@ function RealPreviewPanel({
     raf = requestAnimationFrame(tick);
     return () => { if (raf) cancelAnimationFrame(raf); };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasReachedPreview, scrollMax, scale]);
+  }, [hasReachedPreview, scrollMax, scale, autoScroll]);
 
   return (
     <div
@@ -342,12 +346,14 @@ function RealSitePreviewPanel({
   sampleToken,
   flowStep = 0,
   baseWidth = 1280,
+  autoScroll = true,
 }: {
   url: string;
   sample: ShowcaseItem;
   sampleToken: DesignToken;
   flowStep?: number;
   baseWidth?: number;
+  autoScroll?: boolean;
 }) {
   const host = siteHost(url);
   const siteData = useRealSiteData(host);
@@ -368,6 +374,7 @@ function RealSitePreviewPanel({
       designToken={token}
       flowStep={flowStep}
       baseWidth={baseWidth}
+      autoScroll={autoScroll}
     />
   );
 }
@@ -850,12 +857,15 @@ function MobileChatCard({
   const realSiteData = useRealSiteData(host);
 
   const [manualTab, setManualTab] = useState<"chat" | "preview" | null>(null);
-  const [manualCategory, setManualCategory] = useState<number | null>(null);
-  const [manualMood, setManualMood] = useState<number | null>(null);
-
-  const categoryIndex = manualCategory ?? inferCategoryIndex(chatBusinessName, realSiteData, sample);
+  const categoryIndex = inferCategoryIndex(chatBusinessName, realSiteData, sample);
   const moodIndices = inferMoodIndex(realSiteData, token, chatBusinessName);
-  const selectedMoodIndex = manualMood ?? moodIndices.mobile;
+  const selectedMoodIndex = moodIndices.desktop;
+
+  const displayMoodIndices = useMemo(() => {
+    if (selectedMoodIndex <= 2) return [0, 1, 2];
+    if (selectedMoodIndex === 3) return [0, 1, 3];
+    return [0, 2, 4];
+  }, [selectedMoodIndex]);
 
   // Automatically transition tab when flowStep reaches preview/generating
   const activeTab = manualTab ?? (flowStep >= STEP_GENERATING ? "preview" : "chat");
@@ -865,29 +875,6 @@ function MobileChatCard({
     flowStep >= minStep ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 pointer-events-none";
 
   const generating = flowStep === STEP_GENERATING;
-
-  const MOOD_OPTIONS = [
-    {
-      id: "modern",
-      name: "Modern & Clean",
-      img: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=300&auto=format&fit=crop&q=75",
-    },
-    {
-      id: "minimal",
-      name: "Minimal",
-      img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=300&auto=format&fit=crop&q=75",
-    },
-    {
-      id: "natural",
-      name: "Natural",
-      img: "https://images.unsplash.com/photo-1463797221720-6b07e6426c24?w=300&auto=format&fit=crop&q=75",
-    },
-    {
-      id: "elegant",
-      name: "Elegant",
-      img: "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?w=300&auto=format&fit=crop&q=75",
-    },
-  ];
 
   return (
     <div className="relative w-full max-w-[420px] mx-auto rounded-[14px] overflow-hidden border border-border dark:border-white/10 bg-card dark:bg-[#111318] p-1.5 shadow-xl transition-all duration-300">
@@ -923,20 +910,20 @@ function MobileChatCard({
       <div className="relative h-[440px] sm:h-[490px] w-full rounded-b-[10px] overflow-hidden bg-[#0c0c0e]">
         {/* Layer 1: Chat View */}
         <div
-          className={`absolute inset-0 p-2 sm:p-3 flex flex-col justify-between overflow-y-auto transition-all duration-500 ${
+          className={`absolute inset-0 p-2.5 sm:p-3 flex flex-col justify-between overflow-hidden transition-all duration-500 ${
             !isPreview
               ? "opacity-100 translate-y-0 pointer-events-auto z-10"
               : "opacity-0 -translate-y-3 pointer-events-none z-0"
           }`}
         >
           {/* Chat Messages */}
-          <div className="space-y-2.5">
+          <div className="space-y-2 overflow-hidden">
             {/* Msg 1: Bot Greeting */}
             <div className={`flex items-start gap-2 transition-all duration-400 ${visible(STEP_GREET)}`}>
               <div className="size-6 sm:size-7 rounded-full bg-white/10 border border-white/10 flex items-center justify-center shrink-0 mt-0.5">
                 <SparkleIcon className="size-3 text-white" />
               </div>
-              <div className="rounded-2xl rounded-tl-xs bg-white/[0.06] border border-white/5 px-3 py-2 text-xs text-white/90 shadow-sm leading-relaxed">
+              <div className="rounded-2xl rounded-tl-xs bg-white/[0.06] border border-white/5 px-3 py-1.5 text-xs text-white/90 shadow-sm leading-relaxed">
                 {t("landing.mockupGreeting")}
                 {flowStep === STEP_GREET && (
                   <span className="ml-1.5 inline-block w-1 h-3 bg-white animate-pulse rounded-xs" />
@@ -946,7 +933,7 @@ function MobileChatCard({
 
             {/* Msg 2: User Business Name */}
             <div className={`flex justify-end transition-all duration-400 ${visible(STEP_NAME)}`}>
-              <div className="rounded-2xl rounded-br-xs bg-white text-black font-semibold px-3.5 py-1.5 text-xs shadow-md">
+              <div className="rounded-2xl rounded-br-xs bg-white text-black font-semibold px-3 py-1.5 text-xs shadow-md">
                 {chatBusinessName}
               </div>
             </div>
@@ -956,28 +943,26 @@ function MobileChatCard({
               <div className="size-6 sm:size-7 rounded-full bg-white/10 border border-white/10 flex items-center justify-center shrink-0 mt-0.5">
                 <SparkleIcon className="size-3 text-white" />
               </div>
-              <div className="space-y-2 flex-1 min-w-0">
-                <div className="rounded-2xl rounded-tl-xs bg-white/[0.06] border border-white/5 px-3 py-2 text-xs text-white/90 shadow-sm">
+              <div className="space-y-1.5 flex-1 min-w-0">
+                <div className="rounded-2xl rounded-tl-xs bg-white/[0.06] border border-white/5 px-3 py-1.5 text-xs text-white/90 shadow-sm">
                   {t("landing.mockupPickType")}
                 </div>
 
-                {/* Chips */}
-                <div className="flex flex-wrap gap-1.5">
+                {/* Category Chips: 1 chip per line (decorative, non-clickable) */}
+                <div className="flex flex-col gap-1.5 pt-1">
                   {translations.landing.mockupChips.map((chipText, i) => {
                     const isSelected = i === categoryIndex && flowStep >= STEP_PICK_TYPE;
                     return (
-                      <button
+                      <div
                         key={chipText}
-                        type="button"
-                        onClick={() => setManualCategory(i)}
-                        className={`rounded-full px-3 py-1 text-[10px] transition-all duration-300 flex items-center gap-1.5 cursor-pointer ${
+                        className={`w-fit min-w-[125px] whitespace-nowrap rounded-full px-3.5 py-1 text-xs font-semibold select-none transition-all duration-300 flex items-center justify-center gap-1.5 ${
                           isSelected
-                            ? "bg-white text-black font-semibold shadow-md scale-[1.02]"
-                            : "bg-white/5 border border-white/10 text-white/70 font-medium hover:bg-white/10"
+                            ? "bg-white text-black shadow-md"
+                            : "bg-white/5 border border-white/10 text-white/80"
                         }`}
                       >
                         <span>{chipText}</span>
-                      </button>
+                      </div>
                     );
                   })}
                 </div>
@@ -989,42 +974,27 @@ function MobileChatCard({
               <div className="size-6 sm:size-7 rounded-full bg-white/10 border border-white/10 flex items-center justify-center shrink-0 mt-0.5">
                 <SparkleIcon className="size-3 text-white" />
               </div>
-              <div className="space-y-2 flex-1 min-w-0">
-                <div className="rounded-2xl rounded-tl-xs bg-white/[0.06] border border-white/5 px-3 py-2 text-xs text-white/90 shadow-sm">
+              <div className="space-y-1.5 flex-1 min-w-0">
+                <div className="rounded-2xl rounded-tl-xs bg-white/[0.06] border border-white/5 px-3 py-1.5 text-xs text-white/90 shadow-sm">
                   {t("landing.mockupPickMood")}
                 </div>
 
-                {/* 4 Mood Cards Grid */}
-                <div className="grid grid-cols-4 gap-1.5 pt-0.5">
-                  {MOOD_OPTIONS.map((mood, idx) => {
+                {/* Mood Chips: 3 chips, 1 chip per line (decorative, non-clickable) */}
+                <div className="flex flex-col gap-1.5 pt-1">
+                  {displayMoodIndices.map((idx) => {
+                    const chipText = translations.landing.mockupMoodChips[idx] || translations.landing.mockupMoodChips[0];
                     const isSelected = idx === selectedMoodIndex && flowStep >= STEP_PICK_MOOD;
                     return (
-                      <button
-                        key={mood.id}
-                        type="button"
-                        onClick={() => setManualMood(idx)}
-                        className={`relative rounded-xl overflow-hidden border transition-all duration-300 flex flex-col justify-end aspect-[3/4] p-1.5 text-left cursor-pointer ${
+                      <div
+                        key={chipText}
+                        className={`w-fit min-w-[165px] whitespace-nowrap rounded-full px-3.5 py-1 text-xs font-semibold select-none transition-all duration-300 flex items-center justify-center gap-1.5 ${
                           isSelected
-                            ? "border-white ring-2 ring-white/20 shadow-lg"
-                            : "border-white/10 opacity-70 hover:opacity-90"
+                            ? "bg-white text-black shadow-md"
+                            : "bg-white/5 border border-white/10 text-white/80"
                         }`}
-                        style={{
-                          backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.85) 100%), url(${mood.img})`,
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                        }}
                       >
-                        {isSelected && (
-                          <div className="absolute top-1 right-1 size-3.5 rounded-full bg-white text-black flex items-center justify-center shadow-md">
-                            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-                              <polyline points="20 6 9 17 4 12" />
-                            </svg>
-                          </div>
-                        )}
-                        <span className="text-[8.5px] font-bold text-white text-center leading-tight">
-                          {mood.name}
-                        </span>
-                      </button>
+                        <span>{chipText}</span>
+                      </div>
                     );
                   })}
                 </div>
@@ -1073,6 +1043,7 @@ function MobileChatCard({
               sampleToken={token}
               flowStep={flowStep}
               baseWidth={1200}
+              autoScroll={false}
             />
           ) : TemplateComponent ? (
             <RealPreviewPanel
@@ -1081,6 +1052,7 @@ function MobileChatCard({
               designToken={token}
               flowStep={flowStep}
               baseWidth={1200}
+              autoScroll={false}
             />
           ) : null}
 
@@ -1148,6 +1120,28 @@ function MobileChatCard({
             </span>
           </div>
         </div>
+
+          {/* Chat ⇋ Preview switch */}
+          <div className="absolute top-2.5 right-2.5 z-40 flex items-center gap-0.5 rounded-full border border-white/15 bg-black/75 backdrop-blur-md p-0.5 shadow-lg">
+            <button
+              type="button"
+              onClick={() => setManualTab("chat")}
+              className={`rounded-full px-2.5 py-1 text-[9.5px] font-semibold transition-all duration-300 cursor-pointer ${
+                activeTab === "chat" ? "bg-white text-black shadow" : "text-white/70 hover:text-white"
+              }`}
+            >
+              {t("landing.mockupSwitchChat")}
+            </button>
+            <button
+              type="button"
+              onClick={() => setManualTab("preview")}
+              className={`rounded-full px-2.5 py-1 text-[9.5px] font-semibold transition-all duration-300 cursor-pointer ${
+                activeTab === "preview" ? "bg-white text-black shadow" : "text-white/70 hover:text-white"
+              }`}
+            >
+              {t("landing.mockupSwitchPreview")}
+            </button>
+          </div>
       </div>
     </div>
   </div>
@@ -1176,12 +1170,21 @@ export function InteractiveMockup() {
   const currentHost = currentSite ? siteHost(currentSite.url) : null;
   const realSiteData = useRealSiteData(currentHost);
 
-  const [manualCategory, setManualCategory] = useState<number | null>(null);
-  const [manualMood, setManualMood] = useState<number | null>(null);
-
-  const categoryIndex = manualCategory ?? inferCategoryIndex(chatBusinessName, realSiteData, showcaseItem);
+  const categoryIndex =
+    currentSite?.category !== undefined
+      ? currentSite.category
+      : inferCategoryIndex(chatBusinessName, realSiteData, showcaseItem);
   const moodIndices = inferMoodIndex(realSiteData, token, chatBusinessName);
-  const selectedMoodIndex = manualMood ?? moodIndices.desktop;
+  const selectedMoodIndex =
+    currentSite?.mood !== undefined ? currentSite.mood : moodIndices.desktop;
+
+  const displayMoodIndices = useMemo(() => {
+    if (selectedMoodIndex <= 2) return [0, 1, 2];
+    if (selectedMoodIndex === 3) return [0, 1, 3];
+    return [0, 2, 4];
+  }, [selectedMoodIndex]);
+
+  const activeShowcaseItem = showcaseItem;
 
   /* ── helpers ──────────────────────────────────────────────────────────── */
   const visible = (minStep: number) =>
@@ -1227,107 +1230,118 @@ export function InteractiveMockup() {
           <div className="grid gap-0 grid-rows-[auto_1fr] md:grid-rows-none md:grid-cols-[0.8fr_1.4fr] overflow-hidden rounded-b-[11px]">
 
             {/* ── Left: Chat panel ──────────────────────────────────────── */}
-            <div className="flex flex-col gap-3 p-4 md:p-5 border-b md:border-b-0 md:border-r border-border/20 bg-background/20 min-h-[260px] md:min-h-[480px]">
+            <div className="flex flex-col justify-between p-4 md:p-5 border-b md:border-b-0 md:border-r border-border/20 bg-background/20 min-h-[460px] md:min-h-[500px]">
               
-              {/* AI avatar row */}
-              <div className={`flex gap-2 items-end transition-all duration-500 ${visible(STEP_GREET)}`}>
-                <div className="h-7 w-7 rounded-full bg-white/10 border border-white/15 flex items-center justify-center shrink-0 shadow-sm text-foreground dark:text-white">
-                  <SparkleIcon className="w-3.5 h-3.5 text-foreground dark:text-white" />
+              {/* Chat Messages Container */}
+              <div className="space-y-2 overflow-hidden">
+                {/* Msg 1: Bot Greeting */}
+                <div className={`flex items-start gap-2 transition-all duration-400 ${visible(STEP_GREET)}`}>
+                  <div className="size-6 sm:size-7 rounded-full bg-white/10 border border-white/15 flex items-center justify-center shrink-0 mt-0.5 shadow-sm text-foreground dark:text-white">
+                    <SparkleIcon className="size-3 text-foreground dark:text-white" />
+                  </div>
+                  <div className="rounded-2xl rounded-tl-xs bg-card/70 border border-border/50 px-3.5 py-2 text-xs text-foreground max-w-[80%] shadow-md backdrop-blur-sm leading-relaxed">
+                    {t("landing.mockupGreeting")}
+                    {flowStep === STEP_GREET && (
+                      <span className="ml-1 inline-block w-1 h-3 bg-foreground dark:bg-white animate-pulse rounded-xs" />
+                    )}
+                  </div>
                 </div>
-                <div className="rounded-2xl rounded-bl-sm bg-card/70 border border-border/50 px-3.5 py-2.5 text-xs text-foreground max-w-[80%] shadow-md backdrop-blur-sm">
-                  {t("landing.mockupGreeting")}
-                  {flowStep === STEP_GREET && <span className="ml-1 inline-block w-1 h-3 bg-foreground dark:bg-white animate-pulse rounded-sm" />}
+
+                {/* Msg 2: User Business Name */}
+                <div className={`flex justify-end transition-all duration-400 ${visible(STEP_NAME)}`}>
+                  <div className="rounded-2xl rounded-br-xs px-3.5 py-1.5 text-xs max-w-[75%] shadow-md font-semibold bg-white text-black dark:bg-white dark:text-black border border-white/20">
+                    {chatBusinessName}
+                  </div>
+                </div>
+
+                {/* Msg 3: Bot Ask Category */}
+                <div className={`flex items-start gap-2 transition-all duration-400 ${visible(STEP_ASK_TYPE)}`}>
+                  <div className="size-6 sm:size-7 rounded-full bg-white/10 border border-white/15 flex items-center justify-center shrink-0 mt-0.5 shadow-sm text-foreground dark:text-white">
+                    <SparkleIcon className="size-3 text-foreground dark:text-white" />
+                  </div>
+                  <div className="space-y-1.5 flex-1 min-w-0">
+                    <div className="rounded-2xl rounded-tl-xs bg-card/70 border border-border/50 px-3.5 py-2 text-xs text-foreground shadow-md backdrop-blur-sm">
+                      {t("landing.mockupPickType")}
+                    </div>
+
+                    {/* Category Chips: 1 chip per line (decorative, non-clickable) */}
+                    <div className="flex flex-col gap-1.5 pt-1">
+                      {translations.landing.mockupChips.map((chip, i) => {
+                        const sel = i === categoryIndex && flowStep >= STEP_PICK_TYPE;
+                        return (
+                          <div
+                            key={chip}
+                            className={`w-fit min-w-[125px] rounded-full px-3.5 py-1 text-xs font-semibold border select-none transition-all duration-300 whitespace-nowrap flex items-center justify-center gap-1.5 ${
+                              sel
+                                ? "bg-white text-black border-white shadow-md dark:bg-white dark:text-black"
+                                : "bg-card/70 border-border/50 text-muted-foreground dark:bg-white/5 dark:border-white/10 dark:text-white/80"
+                            }`}
+                          >
+                            <span>{chip}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Msg 4: Bot Ask Mood */}
+                <div className={`flex items-start gap-2 transition-all duration-400 ${visible(STEP_ASK_MOOD)}`}>
+                  <div className="size-6 sm:size-7 rounded-full bg-white/10 border border-white/15 flex items-center justify-center shrink-0 mt-0.5 shadow-sm text-foreground dark:text-white">
+                    <SparkleIcon className="size-3 text-foreground dark:text-white" />
+                  </div>
+                  <div className="space-y-1.5 flex-1 min-w-0">
+                    <div className="rounded-2xl rounded-tl-xs bg-card/70 border border-border/50 px-3.5 py-2 text-xs text-foreground shadow-md backdrop-blur-sm">
+                      {t("landing.mockupPickMood")}
+                    </div>
+
+                    {/* Mood Chips: 3 chips, 1 chip per line (decorative, non-clickable) */}
+                    <div className="flex flex-col gap-1.5 pt-1">
+                      {displayMoodIndices.map((idx) => {
+                        const chip = translations.landing.mockupMoodChips[idx] || translations.landing.mockupMoodChips[0];
+                        const sel = idx === selectedMoodIndex && flowStep >= STEP_PICK_MOOD;
+                        return (
+                          <div
+                            key={chip}
+                            className={`w-fit min-w-[165px] rounded-full px-3.5 py-1 text-xs font-semibold border select-none transition-all duration-300 whitespace-nowrap flex items-center justify-center gap-1.5 ${
+                              sel
+                                ? "bg-white text-black border-white shadow-md dark:bg-white dark:text-black"
+                                : "bg-card/70 border-border/50 text-muted-foreground dark:bg-white/5 dark:border-white/10 dark:text-white/80"
+                            }`}
+                          >
+                            <span>{chip}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className={`flex justify-end transition-all duration-500 ${visible(STEP_NAME)}`}>
-                <div className="rounded-2xl rounded-br-sm px-3.5 py-2 text-xs max-w-[75%] shadow-md font-semibold bg-white text-black dark:bg-white dark:text-black border border-white/20">
-                  {chatBusinessName}
+              {/* Bottom Input / Action Bar */}
+              <div className="mt-2.5 pt-2 border-t border-border/30 flex items-center justify-between rounded-full bg-card/60 dark:bg-white/[0.04] border border-border/60 dark:border-white/10 p-1 pl-3.5">
+                <span className="text-[11px] text-muted-foreground dark:text-white/40 font-normal truncate">
+                  {flowStep >= STEP_PREVIEW
+                    ? (translations.landing.typeMessage || "Ketik instruksi tambahan...")
+                    : generating
+                    ? t("landing.mockupGenerating")
+                    : "Ketik pesan..."}
+                </span>
+                <div className="size-7 rounded-full bg-white text-black flex items-center justify-center shadow-md cursor-pointer hover:bg-slate-200 transition shrink-0">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="translate-x-0.5">
+                    <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M22 2L15 22L11 13L2 9L22 2Z" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+                  </svg>
                 </div>
               </div>
 
-              {/* AI asks type */}
-              <div className={`flex gap-2 items-end transition-all duration-500 ${visible(STEP_ASK_TYPE)}`}>
-                <div className="h-7 w-7 rounded-full bg-white/10 border border-white/15 flex items-center justify-center shrink-0 shadow-sm text-foreground dark:text-white">
-                  <SparkleIcon className="w-3.5 h-3.5 text-foreground dark:text-white" />
-                </div>
-                <div className="rounded-2xl rounded-bl-sm bg-card/70 border border-border/50 px-3.5 py-2.5 text-xs text-foreground max-w-[80%] shadow-md backdrop-blur-sm">
-                  {t("landing.mockupPickType")}
-                </div>
-              </div>
-
-              {/* Category chips */}
-              <div className={`flex flex-wrap gap-1.5 ml-9 transition-all duration-500 ${visible(STEP_ASK_TYPE)}`}>
-                {translations.landing.mockupChips.map((chip, i) => {
-                  const sel = i === categoryIndex && flowStep >= STEP_PICK_TYPE;
-                  return (
-                    <button
-                      key={chip}
-                      type="button"
-                      onClick={() => setManualCategory(i)}
-                      className={`rounded-full px-3 py-1 text-[10px] font-semibold border transition-all duration-300 cursor-pointer ${
-                        sel
-                          ? "bg-white text-black border-white shadow-md scale-105 dark:bg-white dark:text-black dark:border-white"
-                          : "bg-card/60 border-border/40 text-muted-foreground hover:bg-card/80 hover:text-foreground"
-                      }`}
-                    >{chip}</button>
-                  );
-                })}
-              </div>
-
-              {/* AI asks mood */}
-              <div className={`flex gap-2 items-end transition-all duration-500 ${visible(STEP_ASK_MOOD)}`}>
-                <div className="h-7 w-7 rounded-full bg-white/10 border border-white/15 flex items-center justify-center shrink-0 shadow-sm text-foreground dark:text-white">
-                  <SparkleIcon className="w-3.5 h-3.5 text-foreground dark:text-white" />
-                </div>
-                <div className="rounded-2xl rounded-bl-sm bg-card/70 border border-border/50 px-3.5 py-2.5 text-xs text-foreground max-w-[80%] shadow-md backdrop-blur-sm">
-                  {t("landing.mockupPickMood")}
-                </div>
-              </div>
-
-              {/* Mood chips */}
-              <div className={`flex flex-wrap gap-1.5 ml-9 transition-all duration-500 ${visible(STEP_ASK_MOOD)}`}>
-                {translations.landing.mockupMoodChips.map((chip, i) => {
-                  const sel = i === selectedMoodIndex && flowStep >= STEP_PICK_MOOD;
-                  return (
-                    <button
-                      key={chip}
-                      type="button"
-                      onClick={() => setManualMood(i)}
-                      className={`rounded-full px-3 py-1 text-[10px] font-semibold border transition-all duration-300 cursor-pointer ${
-                        sel
-                          ? "bg-white text-black border-white shadow-md scale-105 dark:bg-white dark:text-black dark:border-white"
-                          : "bg-card/60 border-border/40 text-muted-foreground hover:bg-card/80 hover:text-foreground"
-                      }`}
-                    >{chip}</button>
-                  );
-                })}
-              </div>
-
-              {/* Progress bar */}
-              <div className={`ml-9 transition-all duration-500 ${visible(STEP_PICK_MOOD)}`}>
-                <div className="h-1.5 rounded-full bg-muted/50 overflow-hidden w-36 shadow-inner">
-                  <div
-                    className="h-full rounded-full"
-                    style={{
-                      width: generating ? "85%" : flowStep >= STEP_PREVIEW ? "100%" : "30%",
-                      background: "linear-gradient(90deg, #94a3b8, #ffffff)",
-                      boxShadow: "0 0 8px rgba(255,255,255,0.4)",
-                      transition: "width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)"
-                    }}
-                  />
-                </div>
-                <p className="mt-1.5 text-[10px] text-muted-foreground font-medium">
-                  {generating ? t("landing.mockupGenerating") : flowStep >= STEP_PREVIEW ? t("landing.mockupReady") : t("landing.mockupStep")}
-                </p>
-              </div>
             </div>
 
             {/* ── Right: Live Preview panel ──────────────────────────── */}
             <div className="relative block overflow-hidden bg-[#0c0c0e] min-h-[360px] sm:min-h-[440px] md:min-h-[480px]">
               {/* Skeleton — visible during AI chat (steps 0-7) */}
               <LiveAdaptiveSkeleton
-                sample={showcaseItem}
+                sample={activeShowcaseItem}
                 token={realSiteData?.design_token ?? token}
                 flowStep={flowStep}
                 visible={flowStep < STEP_PREVIEW}
@@ -1342,6 +1356,7 @@ export function InteractiveMockup() {
                   sample={showcaseItem}
                   sampleToken={token}
                   flowStep={flowStep}
+                  autoScroll={false}
                 />
               ) : TemplateComponent && (
                 <RealPreviewPanel
@@ -1349,6 +1364,7 @@ export function InteractiveMockup() {
                   content={showcaseItem.content}
                   designToken={token}
                   flowStep={flowStep}
+                  autoScroll={false}
                 />
               )}
 
@@ -1479,7 +1495,7 @@ export function InteractiveMockup() {
 
               <div className="mt-3 space-y-2">
                 {draftSites.map((site, i) => (
-                  <div key={i} className="space-y-1.5">
+                  <div key={i} className="space-y-2 p-3 rounded-xl border border-border/70 bg-background/60">
                     <div className="flex items-center gap-2">
                       <input
                         value={site.businessName}
@@ -1508,8 +1524,56 @@ export function InteractiveMockup() {
                         )
                       }
                       placeholder="https://contoh.webjoz.com/"
-                      className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-xs font-mono text-foreground outline-none focus:border-amber-500/60 transition-colors"
+                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs font-mono text-foreground outline-none focus:border-amber-500/60 transition-colors"
                     />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-0.5">
+                      <div>
+                        <label className="block text-[10px] text-muted-foreground mb-1 font-medium">Kategori</label>
+                        <select
+                          value={site.category !== undefined ? site.category : ""}
+                          onChange={(e) =>
+                            setDraftSites((prev) =>
+                              prev.map((v, idx) =>
+                                idx === i
+                                  ? { ...v, category: e.target.value === "" ? undefined : Number(e.target.value) }
+                                  : v,
+                              ),
+                            )
+                          }
+                          className="w-full rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs text-foreground outline-none focus:border-amber-500/60 transition-colors cursor-pointer"
+                        >
+                          <option value="">Otomatis (Deteksi AI)</option>
+                          {translations.landing.mockupChips.map((name, catIdx) => (
+                            <option key={catIdx} value={catIdx}>
+                              {name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-[10px] text-muted-foreground mb-1 font-medium">Mood Desain</label>
+                        <select
+                          value={site.mood !== undefined ? site.mood : ""}
+                          onChange={(e) =>
+                            setDraftSites((prev) =>
+                              prev.map((v, idx) =>
+                                idx === i
+                                  ? { ...v, mood: e.target.value === "" ? undefined : Number(e.target.value) }
+                                  : v,
+                              ),
+                            )
+                          }
+                          className="w-full rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs text-foreground outline-none focus:border-amber-500/60 transition-colors cursor-pointer"
+                        >
+                          <option value="">Otomatis (Deteksi AI)</option>
+                          {translations.landing.mockupMoodChips.map((name, moodIdx) => (
+                            <option key={moodIdx} value={moodIdx}>
+                              {name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>

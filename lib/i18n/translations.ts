@@ -112,6 +112,8 @@ export interface Translations {
     navCreateNew: string;
     navStartFree: string;
     mockupGreeting: string;
+    mockupSwitchChat: string;
+    mockupSwitchPreview: string;
     mockupPickType: string;
     mockupChips: string[];
     mockupPickMood: string;
@@ -2514,6 +2516,8 @@ export const translations: Record<Locale, Translations> = {
       navCreateNew: "Buat Website Baru",
       navStartFree: "Mulai Gratis",
       mockupGreeting: "Halo! Apa nama bisnis Anda?",
+      mockupSwitchChat: "Chat",
+      mockupSwitchPreview: "Preview",
       mockupPickType: "Keren! 👍 Pilih kategori:",
       mockupChips: ["🍜 Kuliner", "🔧 Jasa", "🛍 Produk"],
       mockupPickMood: "Mantap! 🎨 Pilih mood desain:",
@@ -4990,6 +4994,8 @@ export const translations: Record<Locale, Translations> = {
       navCreateNew: "Create New Website",
       navStartFree: "Start Free",
       mockupGreeting: "Hi! What's your business name?",
+      mockupSwitchChat: "Chat",
+      mockupSwitchPreview: "Preview",
       mockupPickType: "Awesome! 👍 Pick your category:",
       mockupChips: ["🍜 Food & Beverage", "🔧 Services", "🛍 Products"],
       mockupPickMood: "Nice! 🎨 Pick a design mood:",
