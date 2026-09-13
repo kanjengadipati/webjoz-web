@@ -1268,13 +1268,13 @@ export function InteractiveMockup() {
         >
           {/* ── Logo-style corner brackets ── */}
           {/* top-left */}
-          <span className="pointer-events-none absolute top-[9px] left-[9px] w-5 h-5 border-t border-l border-white/40 rounded-tl-[10px]" />
+          <span className="pointer-events-none absolute top-[9px] left-[9px] w-5 h-5 border-t-2 border-l-2 border-white/60 rounded-tl-[10px]" />
           {/* top-right */}
-          <span className="pointer-events-none absolute top-[9px] right-[9px] w-5 h-5 border-t border-r border-white/40 rounded-tr-[10px]" />
+          <span className="pointer-events-none absolute top-[9px] right-[9px] w-5 h-5 border-t-2 border-r-2 border-white/60 rounded-tr-[10px]" />
           {/* bottom-left */}
-          <span className="pointer-events-none absolute bottom-[9px] left-[9px] w-5 h-5 border-b border-l border-white/40 rounded-bl-[10px]" />
+          <span className="pointer-events-none absolute bottom-[9px] left-[9px] w-5 h-5 border-b-2 border-l-2 border-white/60 rounded-bl-[10px]" />
           {/* bottom-right */}
-          <span className="pointer-events-none absolute bottom-[9px] right-[9px] w-5 h-5 border-b border-r border-white/40 rounded-br-[10px]" />
+          <span className="pointer-events-none absolute bottom-[9px] right-[9px] w-5 h-5 border-b-2 border-r-2 border-white/60 rounded-br-[10px]" />
 
           {/* inner-top shimmer */}
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-t-[1.75rem] bg-gradient-to-r from-transparent via-white/15 to-transparent" />
@@ -1286,8 +1286,8 @@ export function InteractiveMockup() {
               {[0, 1, 2].map((i) => (
                 <span
                   key={i}
-                  className="block rounded-full bg-white/25"
-                  style={{ width: 4, height: 4, opacity: 0.5 + i * 0.2 }}
+                  className="block rounded-full bg-white/70"
+                  style={{ width: 5, height: 5, opacity: 0.6 + i * 0.15 }}
                 />
               ))}
             </div>
