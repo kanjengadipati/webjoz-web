@@ -513,13 +513,13 @@ function LiveAdaptiveSkeleton({
                 <div style={{
                   display: "inline-flex", alignItems: "center", gap: 6,
                   padding: "4px 12px", borderRadius: 99,
-                  background: "color-mix(in srgb,var(--dt-primary) 14%,transparent)",
-                  border: "1px solid color-mix(in srgb,var(--dt-primary) 28%,transparent)",
-                  color: "var(--dt-primary)",
+                  background: "color-mix(in srgb,var(--dt-text) 8%,transparent)",
+                  border: "1px solid color-mix(in srgb,var(--dt-text) 14%,transparent)",
+                  color: "var(--dt-text-muted)",
                   fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.2,
                   width: "fit-content"
                 }}>
-                  <span style={{ width: 6, height: 6, borderRadius: 99, background: "var(--dt-primary)" }} />
+                  <span style={{ width: 6, height: 6, borderRadius: 99, background: "color-mix(in srgb,var(--dt-text) 30%,transparent)" }} />
                   {subtype}
                 </div>
               ) : (
@@ -1248,15 +1248,15 @@ export function InteractiveMockup() {
       {/* ── Outer glow halo ─────────────────────────────────────────────── */}
       <div className="relative">
         <div
-          className="absolute -inset-px rounded-[2.2rem] opacity-0 transition-opacity duration-500 pointer-events-none"
+          className="absolute -inset-4 opacity-0 transition-opacity duration-700 pointer-events-none"
           style={{
-            background: "radial-gradient(ellipse at center, color-mix(in srgb,var(--primary) 25%,transparent), transparent 70%)",
+            background: "radial-gradient(ellipse at 60% 40%, color-mix(in srgb,var(--foreground) 6%,transparent), transparent 70%)",
             opacity: isHovered ? 1 : 0,
-            filter: "blur(18px)",
+            filter: "blur(32px)",
           }}
         />
 
-        {/* ── Card ────────────────────────────────────────────────────────── */}
+        {/* ── Card — logo-style open-corner frame ──────────────────────── */}
         <div
           ref={cardRef}
           style={{
@@ -1264,30 +1264,52 @@ export function InteractiveMockup() {
             transformStyle: "preserve-3d",
             transition: isHovered ? "transform 0.08s linear" : "transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)",
           }}
-          className="relative rounded-[2rem] border border-white/10 bg-card/50 p-1.5 shadow-[0_45px_130px_rgba(0,0,0,0.38)] backdrop-blur-xl ring-1 ring-white/5"
+          className="relative rounded-[1.75rem] border border-white/[0.09] bg-card/60 p-1.5 shadow-[0_48px_140px_rgba(0,0,0,0.42)] backdrop-blur-2xl"
         >
-          {/* inner-top highlight */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-t-[2rem] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+          {/* ── Logo-style corner brackets ── */}
+          {/* top-left */}
+          <span className="pointer-events-none absolute top-[9px] left-[9px] w-5 h-5 border-t border-l border-white/40 rounded-tl-[10px]" />
+          {/* top-right */}
+          <span className="pointer-events-none absolute top-[9px] right-[9px] w-5 h-5 border-t border-r border-white/40 rounded-tr-[10px]" />
+          {/* bottom-left */}
+          <span className="pointer-events-none absolute bottom-[9px] left-[9px] w-5 h-5 border-b border-l border-white/40 rounded-bl-[10px]" />
+          {/* bottom-right */}
+          <span className="pointer-events-none absolute bottom-[9px] right-[9px] w-5 h-5 border-b border-r border-white/40 rounded-br-[10px]" />
 
-          {/* ── Browser chrome ──────────────────────────────────────────── */}
-          <div className="flex items-center gap-2 px-4 py-3 border-b border-border/30 select-none">
-            <div className="flex gap-1.5">
-              {["bg-[#ff5f57]", "bg-[#febc2e]", "bg-[#28c840]"].map((c, i) => (
-                <div key={i} className={`h-2.5 w-2.5 rounded-full ${c} opacity-80 shadow-sm`} />
+          {/* inner-top shimmer */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-t-[1.75rem] bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+
+          {/* ── Logo-style chrome bar ──────────────────────────────────── */}
+          <div className="flex items-center justify-between px-5 py-2.5 border-b border-white/[0.07] select-none">
+            {/* Left: 3 dots à la logo */}
+            <div className="flex items-center gap-[5px]">
+              {[0, 1, 2].map((i) => (
+                <span
+                  key={i}
+                  className="block rounded-full bg-white/25"
+                  style={{ width: 4, height: 4, opacity: 0.5 + i * 0.2 }}
+                />
               ))}
             </div>
-            <div className="flex-1 rounded-full bg-muted/40 px-4 py-1.5 text-center text-[11px] text-muted-foreground font-mono tracking-tight">
+
+            {/* Center: minimal domain */}
+            <div className="text-[10.5px] font-mono tracking-wide text-white/35 select-none">
               {flowStep >= STEP_PREVIEW && currentSite ? (
                 siteHost(currentSite.url)
               ) : (
-                <><span className="opacity-50">https://</span>webjoz.com<span className="opacity-50">/create</span></>
+                <>webjoz<span className="opacity-50">.com</span></>
               )}
             </div>
+
+            {/* Right: sparkle à la logo */}
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="text-white/30">
+              <path d="M6 0.5L6.9 4.9L11.5 6L6.9 7.1L6 11.5L5.1 7.1L0.5 6L5.1 4.9L6 0.5Z" fill="currentColor"/>
+            </svg>
           </div>
 
           {/* ── Content grid ──────────────────────────────────────────────── */}
           <div
-            className="grid gap-0 grid-rows-[auto_1fr] md:grid-rows-none md:grid-cols-[1fr_1.1fr] overflow-hidden rounded-b-[1.8rem]"
+            className="grid gap-0 grid-rows-[auto_1fr] md:grid-rows-none md:grid-cols-[1fr_1.1fr] overflow-hidden rounded-b-[1.4rem]"
             style={{ transformStyle: "preserve-3d" }}
           >
 
