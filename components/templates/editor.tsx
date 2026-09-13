@@ -9,13 +9,172 @@ import { useI18n } from "@/lib/i18n/context";
 // ---------------------------------------------------------------------------
 // Shared mini SVG wireframe previews (canvas inline gallery)
 // ---------------------------------------------------------------------------
-function VariantWireframeSmall({ variant }: { variant: string }) {
+function VariantWireframeSmall({ variant, section = "" }: { variant: string; section?: string }) {
+  // 1. Header variants
+  if (section === "header" || variant.includes("logo") || variant === "transparent-overlay") {
+    if (variant === "left-logo-inline-nav") {
+      return (
+        <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-1 flex flex-col justify-center overflow-hidden">
+          <div className="h-5 rounded bg-slate-900 border border-white/10 px-1.5 flex items-center justify-between">
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 rounded bg-primary shrink-0" />
+              <div className="w-5 h-0.5 rounded-full bg-slate-200" />
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-0.5 rounded-full bg-slate-400" />
+              <div className="w-3 h-0.5 rounded-full bg-slate-400" />
+            </div>
+            <div className="w-4 h-2 rounded bg-primary/30 border border-primary/50 flex items-center justify-center shrink-0">
+              <div className="w-2 h-0.5 rounded-full bg-primary" />
+            </div>
+          </div>
+        </div>
+      );
+    }
+    if (variant === "centered-logo") {
+      return (
+        <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-1 flex flex-col justify-center overflow-hidden">
+          <div className="h-7 rounded bg-slate-900 border border-white/10 px-1 py-0.5 flex flex-col items-center justify-between">
+            <div className="flex items-center gap-0.5">
+              <div className="w-1.5 h-1.5 rounded bg-primary shrink-0" />
+              <div className="w-6 h-0.5 rounded-full bg-slate-200" />
+            </div>
+            <div className="flex items-center gap-1 pt-0.5 border-t border-white/5 w-full justify-center">
+              <div className="w-3 h-0.5 rounded-full bg-slate-400" />
+              <div className="w-3 h-0.5 rounded-full bg-slate-400" />
+              <div className="w-3 h-0.5 rounded-full bg-slate-400" />
+            </div>
+          </div>
+        </div>
+      );
+    }
+    if (variant === "transparent-overlay") {
+      return (
+        <div className="w-full h-10 rounded bg-gradient-to-br from-primary/30 via-slate-900 to-slate-950 border border-primary/25 p-1 flex flex-col justify-between relative overflow-hidden">
+          <div className="absolute inset-0 bg-black/30" />
+          <div className="relative z-10 h-4 rounded bg-white/10 backdrop-blur-xs border border-white/20 px-1 flex items-center justify-between">
+            <div className="flex items-center gap-0.5">
+              <div className="w-1.5 h-1.5 rounded bg-white shrink-0" />
+              <div className="w-4 h-0.5 rounded-full bg-white/90" />
+            </div>
+            <div className="flex items-center gap-0.5">
+              <div className="w-2.5 h-0.5 rounded-full bg-white/70" />
+              <div className="w-2.5 h-0.5 rounded-full bg-white/70" />
+            </div>
+            <div className="w-3 h-1.5 rounded border border-white/40 flex items-center justify-center shrink-0">
+              <div className="w-1.5 h-0.5 rounded-full bg-white" />
+            </div>
+          </div>
+          <div className="relative z-10 text-[6px] text-white/50 text-center font-mono leading-none">Hero Overlay</div>
+        </div>
+      );
+    }
+    if (variant === "logo-with-cta-button") {
+      return (
+        <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-1 flex flex-col justify-center overflow-hidden">
+          <div className="h-5 rounded bg-slate-900 border border-white/10 px-1 flex items-center justify-between">
+            <div className="w-2 h-2 rounded bg-primary shrink-0" />
+            <div className="flex items-center gap-1">
+              <div className="w-2.5 h-0.5 rounded-full bg-slate-400" />
+              <div className="w-2.5 h-0.5 rounded-full bg-slate-400" />
+            </div>
+            <div className="w-6 h-2.5 rounded bg-primary text-primary-foreground flex items-center justify-center shadow-xs shrink-0">
+              <div className="w-4 h-0.5 rounded-full bg-white" />
+            </div>
+          </div>
+        </div>
+      );
+    }
+    if (variant === "stacked-logo-tagline") {
+      return (
+        <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-1 flex flex-col justify-center overflow-hidden">
+          <div className="h-7 rounded bg-slate-900 border border-white/10 px-1 py-0.5 flex flex-col items-center justify-center gap-0.5">
+            <div className="w-2 h-2 rounded bg-primary shrink-0" />
+            <div className="w-8 h-0.5 rounded-full bg-slate-200" />
+            <div className="w-10 h-0.5 rounded-full bg-slate-500" />
+          </div>
+        </div>
+      );
+    }
+  }
+
+  // 2. Footer variants
+  if (section === "footer" || variant.includes("band") || variant.includes("columns-with")) {
+    if (variant === "minimal-band" || variant === "dark-contrast-band") {
+      return (
+        <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-1 flex flex-col justify-end overflow-hidden">
+          <div className={`h-4 rounded border px-1 flex items-center justify-between ${
+            variant === "dark-contrast-band" ? "bg-black border-primary/40 border-t" : "bg-slate-900 border-white/10"
+          }`}>
+            <div className="flex items-center gap-0.5">
+              <div className="w-1.5 h-1.5 rounded bg-primary shrink-0" />
+              <div className="w-5 h-0.5 rounded-full bg-slate-300" />
+            </div>
+            <div className="w-8 h-0.5 rounded-full bg-slate-500" />
+          </div>
+        </div>
+      );
+    }
+    if (variant === "columns-with-nav" || variant === "columns-with-social") {
+      return (
+        <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-1 flex flex-col justify-between overflow-hidden">
+          <div className="grid grid-cols-3 gap-1">
+            <div className="space-y-0.5">
+              <div className="w-1.5 h-1.5 rounded bg-primary shrink-0" />
+              <div className="w-full h-0.5 rounded-full bg-slate-500" />
+            </div>
+            <div className="space-y-0.5">
+              <div className="w-4 h-0.5 rounded-full bg-slate-400" />
+              <div className="w-3 h-0.5 rounded-full bg-slate-600" />
+            </div>
+            <div className="space-y-0.5">
+              <div className="w-4 h-0.5 rounded-full bg-slate-400" />
+              {variant === "columns-with-social" ? (
+                <div className="flex gap-0.5">
+                  <div className="w-1 h-1 rounded-full bg-primary/50" />
+                  <div className="w-1 h-1 rounded-full bg-primary/50" />
+                </div>
+              ) : (
+                <div className="w-3 h-0.5 rounded-full bg-slate-600" />
+              )}
+            </div>
+          </div>
+          <div className="border-t border-white/5 pt-0.5 flex justify-between">
+            <div className="w-6 h-0.5 rounded-full bg-slate-600" />
+            <div className="w-4 h-0.5 rounded-full bg-slate-600" />
+          </div>
+        </div>
+      );
+    }
+    if (variant === "location-and-hours") {
+      return (
+        <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-1 grid grid-cols-3 gap-0.5 items-center overflow-hidden">
+          <div className="space-y-0.5">
+            <div className="w-2 h-2 rounded bg-primary/30 shrink-0" />
+            <div className="w-full h-0.5 rounded-full bg-slate-400" />
+          </div>
+          <div className="space-y-0.5">
+            <div className="w-3 h-0.5 rounded-full bg-primary" />
+            <div className="w-full h-0.5 rounded-full bg-slate-500" />
+          </div>
+          <div className="space-y-0.5">
+            <div className="w-3 h-0.5 rounded-full bg-emerald-400" />
+            <div className="w-full h-0.5 rounded-full bg-slate-500" />
+          </div>
+        </div>
+      );
+    }
+  }
+
+  // 3. Hero & Split
   if (
     variant === "split" ||
     variant === "split-image" ||
     variant === "split-editorial" ||
     variant === "classic-split" ||
-    variant === "dark-split"
+    variant === "dark-split" ||
+    variant === "minimal-split" ||
+    variant === "split-hero-catalog"
   ) {
     return (
       <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-1 flex items-center gap-1 overflow-hidden">
@@ -56,7 +215,7 @@ function VariantWireframeSmall({ variant }: { variant: string }) {
     );
   }
 
-  if (variant === "bento-grid") {
+  if (variant === "bento-grid" || variant === "bento-photo-grid" || variant === "editorial-grid") {
     return (
       <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-1 grid grid-cols-3 gap-0.5 overflow-hidden">
         <div className="col-span-2 row-span-2 rounded bg-primary/20 border border-primary/25 p-0.5 flex flex-col justify-between">
@@ -121,16 +280,200 @@ function VariantWireframeSmall({ variant }: { variant: string }) {
     );
   }
 
+  if (variant === "compact" || variant === "compact-list" || variant === "text-list") {
+    return (
+      <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-1 flex flex-col justify-center gap-0.5 overflow-hidden">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="flex items-center justify-between py-0.5 border-b border-white/5 last:border-0">
+            <div className="flex items-center gap-1 flex-1">
+              {variant === "compact-list" && <div className="w-1.5 h-1.5 rounded bg-slate-700 shrink-0" />}
+              <div className="w-3/5 h-0.5 rounded-full bg-slate-300" />
+            </div>
+            <div className="w-4 h-0.5 rounded-full bg-primary/80 shrink-0" />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (variant === "tabs-by-category") {
+    return (
+      <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-1 flex flex-col justify-between overflow-hidden">
+        <div className="flex gap-0.5">
+          <div className="w-5 h-1.5 rounded-full bg-primary" />
+          <div className="w-4 h-1.5 rounded-full bg-slate-800" />
+          <div className="w-4 h-1.5 rounded-full bg-slate-800" />
+        </div>
+        <div className="grid grid-cols-2 gap-0.5 flex-1 pt-0.5">
+          <div className="rounded bg-slate-800/60 p-0.5 flex flex-col justify-between">
+            <div className="w-3/4 h-0.5 rounded-full bg-slate-300" />
+            <div className="w-1/2 h-0.5 rounded-full bg-primary/60" />
+          </div>
+          <div className="rounded bg-slate-800/60 p-0.5 flex flex-col justify-between">
+            <div className="w-3/4 h-0.5 rounded-full bg-slate-300" />
+            <div className="w-1/2 h-0.5 rounded-full bg-primary/60" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (variant === "comparison-table") {
+    return (
+      <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-0.5 flex flex-col gap-0.5 justify-center overflow-hidden">
+        <div className="grid grid-cols-3 gap-0.5 pb-0.5 border-b border-white/10">
+          <div className="h-0.5 bg-slate-600 rounded-full" />
+          <div className="h-0.5 bg-primary/80 rounded-full" />
+          <div className="h-0.5 bg-slate-500 rounded-full" />
+        </div>
+        <div className="grid grid-cols-3 gap-0.5 py-0.5 border-b border-white/5">
+          <div className="h-0.5 bg-slate-700 rounded-full" />
+          <div className="h-0.5 bg-emerald-400 rounded-full" />
+          <div className="h-0.5 bg-rose-400/60 rounded-full" />
+        </div>
+        <div className="grid grid-cols-3 gap-0.5 py-0.5">
+          <div className="h-0.5 bg-slate-700 rounded-full" />
+          <div className="h-0.5 bg-emerald-400 rounded-full" />
+          <div className="h-0.5 bg-emerald-400/60 rounded-full" />
+        </div>
+      </div>
+    );
+  }
+
+  if (variant === "single-tier-highlight" || variant === "highlighted-hero-card") {
+    return (
+      <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-1 flex items-center justify-center overflow-hidden">
+        <div className="w-4/5 h-full rounded bg-primary/20 border border-primary/50 p-1 flex flex-col items-center justify-between">
+          <div className="w-1/3 h-0.5 rounded-full bg-primary font-bold" />
+          <div className="w-1/2 h-1 rounded-full bg-white" />
+          <div className="w-2/3 h-1.5 rounded bg-primary flex items-center justify-center">
+            <div className="w-1/2 h-0.5 rounded-full bg-white" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (variant === "marquee") {
+    return (
+      <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-1 flex items-center gap-1 overflow-hidden">
+        <div className="flex gap-1 animate-pulse w-full justify-around">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="w-4 h-3 rounded bg-slate-800 border border-white/10 flex items-center justify-center shrink-0">
+              <div className="w-2 h-0.5 rounded-full bg-slate-400" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   if (variant === "whatsapp-direct") {
     return (
       <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-1 flex flex-col items-center justify-center gap-0.5 overflow-hidden">
         <div className="w-3/4 h-0.5 rounded-full bg-slate-400/60" />
         <div className="w-4/5 h-3 rounded bg-emerald-600/30 border border-emerald-500/50 flex items-center justify-center gap-0.5 px-1">
-          <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+          <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
           <div className="w-8 h-0.5 rounded-full bg-white/90" />
         </div>
       </div>
     );
+  }
+
+  // FAQ variants
+  if (section === "faq") {
+    if (variant === "accordion") {
+      return (
+        <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-1 flex flex-col gap-0.5 justify-center overflow-hidden">
+          <div className="h-2.5 rounded bg-primary/20 border border-primary/30 px-1 flex items-center justify-between">
+            <div className="w-3/5 h-0.5 rounded-full bg-primary/80" />
+            <div className="w-0.5 h-0.5 border-b border-r border-primary transform rotate-45" />
+          </div>
+          <div className="h-2.5 rounded bg-slate-800/60 border border-white/5 px-1 flex items-center justify-between">
+            <div className="w-1/2 h-0.5 rounded-full bg-slate-400/50" />
+            <div className="w-0.5 h-0.5 border-b border-r border-slate-400 transform -rotate-45" />
+          </div>
+          <div className="h-2.5 rounded bg-slate-800/60 border border-white/5 px-1 flex items-center justify-between">
+            <div className="w-2/5 h-0.5 rounded-full bg-slate-400/50" />
+            <div className="w-0.5 h-0.5 border-b border-r border-slate-400 transform -rotate-45" />
+          </div>
+        </div>
+      );
+    }
+    if (variant === "simple") {
+      return (
+        <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-1 flex flex-col gap-0.5 justify-center overflow-hidden">
+          {[1, 2].map((i) => (
+            <div key={i} className="rounded bg-slate-800/40 border border-white/5 p-0.5 flex flex-col gap-0.5">
+              <div className="w-3/5 h-0.5 rounded-full bg-white/70" />
+              <div className="w-4/5 h-0.5 rounded-full bg-slate-500/50" />
+            </div>
+          ))}
+        </div>
+      );
+    }
+    if (variant === "columns") {
+      return (
+        <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-1 grid grid-cols-2 gap-0.5 overflow-hidden">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="rounded bg-slate-800/40 border border-white/5 p-0.5 flex flex-col gap-0.5">
+              <div className="w-3/4 h-0.5 rounded-full bg-white/60" />
+              <div className="w-full h-0.5 rounded-full bg-slate-600/50" />
+            </div>
+          ))}
+        </div>
+      );
+    }
+    if (variant === "sidebar-category") {
+      return (
+        <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-1 flex gap-1 overflow-hidden">
+          <div className="w-6 flex flex-col gap-0.5 pt-0.5">
+            <div className="w-full h-1 rounded-full bg-primary" />
+            <div className="w-full h-0.5 rounded-full bg-slate-700" />
+            <div className="w-full h-0.5 rounded-full bg-slate-700" />
+            <div className="w-full h-0.5 rounded-full bg-slate-700" />
+          </div>
+          <div className="flex-1 flex flex-col gap-0.5">
+            <div className="h-3 rounded bg-slate-800/60 border border-white/5 px-1 flex items-center justify-between">
+              <div className="w-3/4 h-0.5 rounded-full bg-white/60" />
+              <div className="w-0.5 h-0.5 border-b border-r border-primary transform rotate-45" />
+            </div>
+            <div className="h-3 rounded bg-slate-800/40 border border-white/5 px-1 flex items-center justify-between">
+              <div className="w-1/2 h-0.5 rounded-full bg-slate-400/50" />
+              <div className="w-0.5 h-0.5 border-b border-r border-slate-500 transform -rotate-45" />
+            </div>
+          </div>
+        </div>
+      );
+    }
+    if (variant === "two-column-grid") {
+      return (
+        <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-1 grid grid-cols-2 gap-0.5 overflow-hidden">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="rounded bg-slate-800/50 border border-white/10 p-0.5 flex flex-col gap-0.5">
+              <div className="w-3/4 h-0.5 rounded-full bg-white/70" />
+              <div className="w-full h-0.5 rounded-full bg-slate-500/40" />
+            </div>
+          ))}
+        </div>
+      );
+    }
+    if (variant === "chat-bubble-style") {
+      return (
+        <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-1 flex flex-col gap-0.5 justify-center overflow-hidden">
+          <div className="flex justify-end">
+            <div className="w-3/4 h-2.5 rounded-l rounded-br bg-primary/30 border border-primary/40 px-1 flex items-center">
+              <div className="w-4/5 h-0.5 rounded-full bg-primary" />
+            </div>
+          </div>
+          <div className="flex justify-start">
+            <div className="w-4/5 h-2.5 rounded-r rounded-bl bg-slate-800 border border-white/10 px-1 flex items-center">
+              <div className="w-3/4 h-0.5 rounded-full bg-slate-300" />
+            </div>
+          </div>
+        </div>
+      );
+    }
   }
 
   // Default: generic grid
@@ -337,7 +680,7 @@ export const PreviewSectionWrapper: React.FC<{
 
                           {/* Wireframe thumbnail */}
                           <div className="mb-1.5">
-                            <VariantWireframeSmall variant={v.value} />
+                            <VariantWireframeSmall variant={v.value} section={section} />
                           </div>
 
                           {/* Label */}
