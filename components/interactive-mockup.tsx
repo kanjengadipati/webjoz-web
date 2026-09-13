@@ -1264,20 +1264,10 @@ export function InteractiveMockup() {
             transformStyle: "preserve-3d",
             transition: isHovered ? "transform 0.08s linear" : "transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)",
           }}
-          className="relative rounded-[1.75rem] border border-white/[0.09] bg-card/60 p-1.5 shadow-[0_48px_140px_rgba(0,0,0,0.42)] backdrop-blur-2xl"
+          className="relative rounded-[14px] border-2 border-white/35 bg-card/60 p-1.5 shadow-[0_48px_140px_rgba(0,0,0,0.42)] backdrop-blur-2xl"
         >
-          {/* ── Logo-style corner brackets ── */}
-          {/* top-left */}
-          <span className="pointer-events-none absolute top-[9px] left-[9px] w-5 h-5 border-t-2 border-l-2 border-white/60 rounded-tl-[10px]" />
-          {/* top-right */}
-          <span className="pointer-events-none absolute top-[9px] right-[9px] w-5 h-5 border-t-2 border-r-2 border-white/60 rounded-tr-[10px]" />
-          {/* bottom-left */}
-          <span className="pointer-events-none absolute bottom-[9px] left-[9px] w-5 h-5 border-b-2 border-l-2 border-white/60 rounded-bl-[10px]" />
-          {/* bottom-right */}
-          <span className="pointer-events-none absolute bottom-[9px] right-[9px] w-5 h-5 border-b-2 border-r-2 border-white/60 rounded-br-[10px]" />
-
           {/* inner-top shimmer */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-t-[1.75rem] bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-t-[12px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
           {/* ── Logo-style chrome bar ──────────────────────────────────── */}
           <div className="flex items-center justify-between px-5 py-2.5 border-b border-white/[0.07] select-none">
@@ -1309,7 +1299,7 @@ export function InteractiveMockup() {
 
           {/* ── Content grid ──────────────────────────────────────────────── */}
           <div
-            className="grid gap-0 grid-rows-[auto_1fr] md:grid-rows-none md:grid-cols-[1fr_1.1fr] overflow-hidden rounded-b-[1.4rem]"
+            className="grid gap-0 grid-rows-[auto_1fr] md:grid-rows-none md:grid-cols-[1fr_1.1fr] overflow-hidden rounded-b-[10px]"
             style={{ transformStyle: "preserve-3d" }}
           >
 
