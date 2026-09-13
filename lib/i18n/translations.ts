@@ -1475,6 +1475,10 @@ export interface Translations {
       linkCardTitle: string;
       linkCardDesc: string;
       copyLink: string;
+      shareWhatsApp: string;
+      shareEmail: string;
+      copyInviteText: string;
+      inviteTextCopied: string;
       tipsLabel: string;
       tipsText: string;
       programTitle: string;
@@ -3874,6 +3878,10 @@ export const translations: Record<Locale, Translations> = {
         linkCardTitle: "Link Referral Pendaftaran",
         linkCardDesc: "Klien yang mendaftar melalui link ini akan otomatis terhubung ke akun Anda.",
         copyLink: "Salin Link",
+        shareWhatsApp: "Bagikan via WhatsApp",
+        shareEmail: "Bagikan via Email",
+        copyInviteText: "Salin Pesan Ajakan",
+        inviteTextCopied: "Pesan ajakan berhasil disalin ke clipboard",
         tipsLabel: "Tips:",
         tipsText: "Cantumkan link ini di proposal, pesan WhatsApp, atau bio media sosial Anda.",
         programTitle: "Ketentuan Komisi Sales Partner",
@@ -6343,6 +6351,10 @@ export const translations: Record<Locale, Translations> = {
         linkCardTitle: "Signup Referral Link",
         linkCardDesc: "Clients who sign up through this link are automatically connected to your account.",
         copyLink: "Copy Link",
+        shareWhatsApp: "Share via WhatsApp",
+        shareEmail: "Share via Email",
+        copyInviteText: "Copy Invitation Text",
+        inviteTextCopied: "Invitation message copied to clipboard",
         tipsLabel: "Tip:",
         tipsText: "Include this link in your proposal, WhatsApp message, or social media bio.",
         programTitle: "Sales Partner Commission Terms",

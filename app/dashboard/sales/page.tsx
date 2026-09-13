@@ -7,7 +7,7 @@ import { fetchMyReferralCode, regenerateMyReferralCode } from "@/lib/api/referra
 import { getCommissionConfig, CommissionConfig } from "@/lib/api/commissions";
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Dialog } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
-import { Share2, Copy, RefreshCw, Loader2, Check, ShieldAlert, Award, DollarSign, Zap, Gift, Target } from "lucide-react";
+import { Share2, Copy, RefreshCw, Loader2, Check, ShieldAlert, Award, DollarSign, Zap, Gift, Target, MessageCircle, Mail } from "lucide-react";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
 
@@ -22,10 +22,12 @@ export default function SalesReferralPage() {
   const [loading, setLoading] = useState(true);
   const [copiedCode, setCopiedCode] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [copiedInviteText, setCopiedInviteText] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
 
-  const canManage = hasPermission("sales:manage-referral") || role === "superadmin" || role === "admin" || role === "sales";
+  // Available to all authenticated members (Member-Get-Member)
+  const canManage = Boolean(token);
 
   const loadReferralCode = async () => {
     if (!token) return;
@@ -68,6 +70,43 @@ export default function SalesReferralPage() {
     setCopiedLink(true);
     pushToast(t("dashboard.sales.linkCopied"), "success");
     setTimeout(() => setCopiedLink(false), 2000);
+  };
+
+  const getInviteMessage = () => {
+    return `Halo! Mau buat website modern, cepat, dan profesional untuk bisnis atau portofoliomu dalam hitungan menit? Coba buat di Webjoz:
+👉 ${shareableUrl}
+
+Gunakan kode referral saya: *${referralCode}*`;
+  };
+
+  const handleShareWhatsApp = () => {
+    if (!shareableUrl) return;
+    const msg = getInviteMessage();
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, "_blank");
+  };
+
+  const handleShareEmail = () => {
+    if (!shareableUrl) return;
+    const subject = "Rekomendasi Pembuatan Website Modern - Webjoz";
+    const body = `Halo,
+
+Saya ingin merekomendasikan Webjoz, platform pembuat website modern berbasis AI yang cepat, elegan, dan siap online dalam hitungan menit.
+
+Kunjungi dan daftar melalui link ini:
+${shareableUrl}
+
+Atau gunakan kode referral saya saat mendaftar: ${referralCode}
+
+Salam!`;
+    window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, "_blank");
+  };
+
+  const handleCopyInviteText = () => {
+    if (!shareableUrl) return;
+    navigator.clipboard.writeText(getInviteMessage());
+    setCopiedInviteText(true);
+    pushToast(t("dashboard.sales.inviteTextCopied"), "success");
+    setTimeout(() => setCopiedInviteText(false), 2000);
   };
 
   const handleRegenerate = async () => {
@@ -146,7 +185,7 @@ export default function SalesReferralPage() {
           </CardContent>
         </Card>
 
-        {/* Card 2: Shareable Link */}
+        {/* Card 2: Shareable Link & Instant Actions */}
         <Card className="border-border/40 bg-card shadow-sm flex flex-col justify-between rounded-2xl min-w-0 overflow-hidden">
           <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-3">
             <CardTitle className="text-sm sm:text-base font-semibold flex items-center gap-2">
@@ -157,7 +196,7 @@ export default function SalesReferralPage() {
               {t("dashboard.sales.linkCardDesc")}
             </CardDescription>
           </CardHeader>
-          <CardContent className="p-4 sm:p-6 pt-0 space-y-4 min-w-0">
+          <CardContent className="p-4 sm:p-6 pt-0 space-y-3.5 min-w-0">
             <div className="p-3 rounded-xl border border-border/40 bg-muted/30 text-xs font-mono text-muted-foreground flex items-center justify-between gap-2 min-w-0">
               <span className="truncate flex-1 min-w-0">{shareableUrl}</span>
               <Button size="sm" variant="secondary" onClick={handleCopyLink} className="shrink-0 gap-1.5 rounded-lg text-xs cursor-pointer shadow-sm">
@@ -165,9 +204,38 @@ export default function SalesReferralPage() {
                 <span>{copiedLink ? t("dashboard.sales.copied") : t("dashboard.sales.copyLink")}</span>
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground/80 leading-relaxed">
-              💡 <strong>{t("dashboard.sales.tipsLabel")}</strong> {t("dashboard.sales.tipsText")}
-            </p>
+
+            {/* Instant Sharing Buttons: WhatsApp & Email */}
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <Button
+                type="button"
+                onClick={handleShareWhatsApp}
+                className="gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs shadow-sm cursor-pointer"
+              >
+                <MessageCircle className="size-4 shrink-0" />
+                <span className="truncate">{t("dashboard.sales.shareWhatsApp")}</span>
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleShareEmail}
+                className="gap-2 rounded-xl text-xs font-medium cursor-pointer shadow-sm border-border hover:bg-muted"
+              >
+                <Mail className="size-4 shrink-0 text-blue-500" />
+                <span className="truncate">{t("dashboard.sales.shareEmail")}</span>
+              </Button>
+            </div>
+
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={handleCopyInviteText}
+              className="w-full gap-1.5 rounded-xl text-xs text-muted-foreground hover:text-foreground h-8 cursor-pointer"
+            >
+              {copiedInviteText ? <Check className="size-3.5 text-emerald-500" /> : <Copy className="size-3.5" />}
+              <span>{copiedInviteText ? t("dashboard.sales.copied") : t("dashboard.sales.copyInviteText")}</span>
+            </Button>
           </CardContent>
         </Card>
       </div>
