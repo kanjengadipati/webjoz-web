@@ -11,7 +11,7 @@ import {
   Save, Loader2, Zap, Database,
   HelpCircle, AlertCircle,
   Monitor, Smartphone, Tablet, Layout, Globe, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Check, GripVertical, RotateCcw,
-  Eye, EyeOff, Pencil, Send, Rocket, Copy, Sun, Moon, SlidersHorizontal
+  Eye, EyeOff, Pencil, Send, Rocket, Copy, Sun, Moon, SlidersHorizontal, ExternalLink
 } from "lucide-react";
 import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import { Button, Card } from "@/components/ui";
@@ -2683,40 +2683,26 @@ export default function SiteEditorPage() {
             </button>
             {/* Publish button / Live badge — right side */}
             {siteDetails?.status === "published" ? (
-              <div className="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (!siteDetails?.subdomain) return;
-                    const host = typeof window !== "undefined" ? window.location.host : "webjoz.com";
-                    const domainPart = host.includes("localhost") || host.includes("127.0.0.1")
-                      ? "webjoz.com"
-                      : host.substring(host.indexOf(".") + 1);
-                    window.open(`https://${siteDetails.subdomain}.${domainPart}`, "_blank");
-                  }}
-                  className="flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors cursor-pointer"
-                >
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  </span>
-                  Live
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                  setConfirmPublishOpen(true);
-                  setModerationViolations(null);
-                  setAppealed(false);
+              <button
+                type="button"
+                onClick={() => {
+                  if (!siteDetails?.subdomain) return;
+                  const host = typeof window !== "undefined" ? window.location.host : "webjoz.com";
+                  const domainPart = host.includes("localhost") || host.includes("127.0.0.1")
+                    ? "webjoz.com"
+                    : host.substring(host.indexOf(".") + 1);
+                  window.open(`https://${siteDetails.subdomain}.${domainPart}`, "_blank");
                 }}
-                  disabled={publishing}
-                  className="flex h-7 items-center gap-1.5 rounded-lg px-3 text-[11px] font-semibold text-primary-foreground transition-all hover:brightness-110 disabled:opacity-60"
-                  style={{ background: "var(--primary)" }}
-                >
-                  <Rocket className="w-3.5 h-3.5" />
-                  {t("dashboard.sitesEditor.publish")}
-                </button>
-              </div>
+                className="flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors cursor-pointer"
+                title="Buka website live di tab baru"
+              >
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                </span>
+                Live
+                <ExternalLink className="w-3 h-3 text-emerald-400/70" />
+              </button>
             ) : (
               <button
                 type="button"
