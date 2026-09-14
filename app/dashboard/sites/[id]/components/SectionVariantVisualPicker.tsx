@@ -520,7 +520,7 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
         <div className="w-4/5 h-11 rounded-md bg-primary/15 border border-primary/40 p-1 flex flex-col justify-between items-center">
           <div className="w-1/2 h-1 rounded-full bg-primary" />
           <div className="w-2/3 h-1.5 rounded-full bg-white" />
-          <div className="w-3/4 h-2 rounded bg-primary text-[6px] text-white flex items-center justify-center font-bold" />
+          <div className="w-3/4 h-2 rounded bg-primary text-[6px] text-primary-foreground flex items-center justify-center font-bold" />
         </div>
       </div>
     );
