@@ -274,12 +274,12 @@ Salam!`;
               <div className="pt-1 space-y-1.5 min-w-0">
                 <p className="text-[11px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.salesOverview.bonusSchemeTitle")}</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 min-w-0">
-                  <div className="inline-flex items-center gap-1.5 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-1.5 text-xs font-medium text-amber-700 dark:text-amber-300">
-                    <Gift className="size-3.5 shrink-0 text-amber-500" />
+                  <div className="inline-flex items-center gap-1.5 rounded-xl border border-border/40 bg-muted/30 px-3 py-1.5 text-xs font-medium text-foreground">
+                    <Gift className="size-3.5 shrink-0 text-muted-foreground" />
                     <span className="truncate">{t("dashboard.salesOverview.bonusOnboarding")}</span>
                   </div>
-                  <div className="inline-flex items-center gap-1.5 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-1.5 text-xs font-medium text-amber-700 dark:text-amber-300">
-                    <Target className="size-3.5 shrink-0 text-amber-500" />
+                  <div className="inline-flex items-center gap-1.5 rounded-xl border border-border/40 bg-muted/30 px-3 py-1.5 text-xs font-medium text-foreground">
+                    <Target className="size-3.5 shrink-0 text-muted-foreground" />
                     <span className="truncate">{t("dashboard.salesOverview.bonusMilestone")}</span>
                   </div>
                 </div>

@@ -378,8 +378,8 @@ export default function DashboardOverviewPage() {
           {[
             { label: t("dashboard.salesOverview.cardTotal"), value: fmt(grandTotal), desc: t("dashboard.salesOverview.cardTotalDesc"), icon: <Sparkles className="size-3.5 sm:size-4 text-emerald-500" />, cls: "text-emerald-600 dark:text-emerald-400" },
             { label: t("dashboard.salesOverview.cardCommission"), value: fmt(commSummary.total_earned), desc: t("dashboard.salesOverview.cardCommissionDesc", undefined, { t1, t2 }), icon: <DollarSign className="size-3.5 sm:size-4 text-emerald-500" />, cls: "text-foreground" },
-            { label: t("dashboard.salesOverview.cardBonus"), value: fmt(bonusSummary.total_earned), desc: t("dashboard.salesOverview.cardBonusDesc", undefined, { onboarding: String(bonusSummary.onboarding_count), milestone: String(bonusSummary.milestone_count) }), icon: <Award className="size-3.5 sm:size-4 text-amber-500" />, cls: "text-amber-600 dark:text-amber-400" },
-            { label: t("dashboard.salesOverview.cardPending"), value: fmt(grandPending), desc: t("dashboard.salesOverview.cardPendingDesc"), icon: <Clock className="size-3.5 sm:size-4 text-amber-500" />, cls: "text-amber-600 dark:text-amber-400" },
+            { label: t("dashboard.salesOverview.cardBonus"), value: fmt(bonusSummary.total_earned), desc: t("dashboard.salesOverview.cardBonusDesc", undefined, { onboarding: String(bonusSummary.onboarding_count), milestone: String(bonusSummary.milestone_count) }), icon: <Award className="size-3.5 sm:size-4 text-muted-foreground" />, cls: "text-foreground" },
+            { label: t("dashboard.salesOverview.cardPending"), value: fmt(grandPending), desc: t("dashboard.salesOverview.cardPendingDesc"), icon: <Clock className="size-3.5 sm:size-4 text-muted-foreground" />, cls: "text-foreground" },
           ].map((card) => (
             <Card key={card.label} className="border-border/40 shadow-sm bg-card min-w-0 overflow-hidden rounded-2xl">
               <CardHeader className="p-3 sm:p-4 pb-1 sm:pb-2">
@@ -472,12 +472,12 @@ export default function DashboardOverviewPage() {
               <div className="pt-1 space-y-1.5 min-w-0">
                 <p className="text-[11px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.salesOverview.bonusSchemeTitle")}</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 min-w-0">
-                  <div className="inline-flex items-center gap-1.5 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-1.5 text-xs font-medium text-amber-700 dark:text-amber-300">
-                    <Gift className="size-3.5 shrink-0 text-amber-500" />
+                  <div className="inline-flex items-center gap-1.5 rounded-xl border border-border/40 bg-muted/30 px-3 py-1.5 text-xs font-medium text-foreground">
+                    <Gift className="size-3.5 shrink-0 text-muted-foreground" />
                     <span className="truncate">{t("dashboard.salesOverview.bonusOnboarding")}</span>
                   </div>
-                  <div className="inline-flex items-center gap-1.5 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-1.5 text-xs font-medium text-amber-700 dark:text-amber-300">
-                    <Target className="size-3.5 shrink-0 text-amber-500" />
+                  <div className="inline-flex items-center gap-1.5 rounded-xl border border-border/40 bg-muted/30 px-3 py-1.5 text-xs font-medium text-foreground">
+                    <Target className="size-3.5 shrink-0 text-muted-foreground" />
                     <span className="truncate">{t("dashboard.salesOverview.bonusMilestone")}</span>
                   </div>
                 </div>
