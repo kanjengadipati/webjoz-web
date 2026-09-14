@@ -64,7 +64,6 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   const [isProcessingAudio, setIsProcessingAudio] = useState(false);
   const recognitionRef = useRef<any>(null);
   const recordingTimerRef = useRef<any>(null);
-  const fallbackTimerRef = useRef<any>(null);
   const silenceTimerRef = useRef<any>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -131,10 +130,33 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       clearInterval(recordingTimerRef.current);
       recordingTimerRef.current = null;
     }
-    if (fallbackTimerRef.current) {
-      clearTimeout(fallbackTimerRef.current);
-      fallbackTimerRef.current = null;
-    }
+
+    let hasNotifiedDenied = false;
+    const notifyPermissionDenied = () => {
+      if (hasNotifiedDenied) return;
+      hasNotifiedDenied = true;
+      cleanupAudioStream();
+      setIsMicConnecting(false);
+      setIsRecording(false);
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.abort();
+        } catch {}
+        recognitionRef.current = null;
+      }
+      alert(t("dashboard.wizard.micPermissionDenied", "Izin mikrofon diperlukan untuk merekam suara. Silakan aktifkan izin mikrofon pada browser Anda."));
+    };
+
+    // Triggered when audio stream is established and server is ready to listen
+    const handleAudioReady = () => {
+      setIsRecording(true);  // permission granted & audio stream aktif — baru tampilkan UI recording
+      setIsMicConnecting(false);
+      if (!recordingTimerRef.current) {
+        recordingTimerRef.current = setInterval(() => {
+          setRecordingDuration((prev) => prev + 1);
+        }, 1000);
+      }
+    };
 
     // Try starting Web Audio API analyser to measure real-time mic volume
     if (navigator.mediaDevices?.getUserMedia) {
@@ -142,6 +164,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
         .getUserMedia({ audio: true })
         .then((stream) => {
           mediaStreamRef.current = stream;
+          handleAudioReady();
           const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
           if (AudioContextClass) {
             const audioCtx = new AudioContextClass();
@@ -171,7 +194,10 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
           }
         })
         .catch((err) => {
-          console.log("AudioContext fallback to speech recognition events", err);
+          console.log("AudioContext fallback or permission denied", err);
+          if (err?.name === "NotAllowedError" || err?.name === "PermissionDeniedError") {
+            notifyPermissionDenied();
+          }
         });
     }
 
@@ -179,17 +205,6 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     recognition.lang = sttLang;
     recognition.interimResults = true;
     recognition.continuous = true;
-
-    // Triggered when audio stream is established and server is ready to listen
-    const handleAudioReady = () => {
-      setIsRecording(true);  // permission granted & audio stream aktif — baru tampilkan UI recording
-      setIsMicConnecting(false);
-      if (!recordingTimerRef.current) {
-        recordingTimerRef.current = setInterval(() => {
-          setRecordingDuration((prev) => prev + 1);
-        }, 1000);
-      }
-    };
 
     const handleSpeechDetected = () => {
       setIsSpeaking(true);
@@ -225,11 +240,6 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       }
     };
 
-    // Fallback: if browser doesn't fire onaudiostart within 1000ms, start ticking anyway
-    fallbackTimerRef.current = setTimeout(() => {
-      handleAudioReady();
-    }, 1000);
-
     recognition.onresult = (event: any) => {
       handleAudioReady();
       handleSpeechDetected();
@@ -245,10 +255,6 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
     recognition.onend = () => {
       cleanupAudioStream();
-      if (fallbackTimerRef.current) {
-        clearTimeout(fallbackTimerRef.current);
-        fallbackTimerRef.current = null;
-      }
       if (recordingTimerRef.current) {
         clearInterval(recordingTimerRef.current);
         recordingTimerRef.current = null;
@@ -265,10 +271,6 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
     recognition.onerror = (event: any) => {
       cleanupAudioStream();
-      if (fallbackTimerRef.current) {
-        clearTimeout(fallbackTimerRef.current);
-        fallbackTimerRef.current = null;
-      }
       if (recordingTimerRef.current) {
         clearInterval(recordingTimerRef.current);
         recordingTimerRef.current = null;
@@ -278,7 +280,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       recognitionRef.current = null;
 
       if (event?.error === "not-allowed" || event?.error === "service-not-allowed") {
-        alert(t("dashboard.wizard.micPermissionDenied", "Izin mikrofon diperlukan untuk merekam suara. Silakan aktifkan izin mikrofon pada browser Anda."));
+        notifyPermissionDenied();
       }
     };
 
@@ -296,10 +298,6 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     isManualStopRef.current = true;
     setIsMicConnecting(false);
     cleanupAudioStream();
-    if (fallbackTimerRef.current) {
-      clearTimeout(fallbackTimerRef.current);
-      fallbackTimerRef.current = null;
-    }
     if (recordingTimerRef.current) {
       clearInterval(recordingTimerRef.current);
       recordingTimerRef.current = null;
@@ -371,6 +369,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     }
     recordedTranscriptRef.current = "";
     setInterimTranscript("");
+    setIsMicConnecting(false);
     setIsRecording(false);
     setRecordingDuration(0);
   };
