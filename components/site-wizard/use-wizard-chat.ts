@@ -9,11 +9,13 @@ import { capitalizeWords, pickVariant, isLikelyGibberish, suggestTypeFromName, i
 import type { Message, ChatStage, InferenceResult } from "./types";
 import type { WizardResumeChat } from "./wizard-persistence";
 import { useI18n } from "@/lib/i18n/context";
+import { useToast } from "@/components/toast-provider";
 import { refineTranscript, classifyBusiness, processBusinessDescription } from "@/lib/api/ai";
 import { markMicHintAsSeen } from "./mic-onboarding-hint";
 
 export function useWizardChat(prefill?: { businessType?: string; businessSubType?: string }) {
   const { t, locale } = useI18n();
+  const { pushToast } = useToast();
   const initialMessageText = t("dashboard.wizard.initialMessage", INITIAL_MESSAGE);
   const initialMessageWords = useMemo(() => initialMessageText.split(" "), [initialMessageText]);
   const nameAckVariants = (t("dashboard.wizard.nameAckVariants") as unknown as string[]) || NAME_ACK_VARIANTS;
@@ -115,7 +117,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     if (typeof window === "undefined") return;
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      alert(t("dashboard.wizard.voiceNotAvailable", "Browser Anda tidak mendukung fitur Voice/STT."));
+      pushToast(t("dashboard.wizard.voiceNotAvailable", "Browser Anda tidak mendukung fitur Voice/STT."), "error");
       return;
     }
 
@@ -144,7 +146,11 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
         } catch {}
         recognitionRef.current = null;
       }
-      alert(t("dashboard.wizard.micPermissionDenied", "Izin mikrofon diperlukan untuk merekam suara. Silakan aktifkan izin mikrofon pada browser Anda."));
+      pushToast(
+        t("dashboard.wizard.micPermissionDenied", "Izin mikrofon diperlukan untuk merekam suara. Silakan aktifkan izin mikrofon pada browser Anda."),
+        "info"
+      );
+      setTimeout(() => inputRef.current?.focus(), 80);
     };
 
     // Triggered when audio stream is established and server is ready to listen
@@ -312,7 +318,10 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
     const rawTranscript = (recordedTranscriptRef.current || interimTranscript).trim();
     if (!rawTranscript) {
-      alert(t("dashboard.wizard.sttNoVoiceDetected", "Tidak ada suara yang terdeteksi. Silakan coba lagi atau ketik deskripsi Anda secara langsung."));
+      pushToast(
+        t("dashboard.wizard.sttNoVoiceDetected", "Tidak ada suara yang terdeteksi. Silakan coba lagi atau ketik deskripsi Anda secara langsung."),
+        "info"
+      );
       setTimeout(() => inputRef.current?.focus(), 80);
       return;
     }
@@ -372,6 +381,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     setIsMicConnecting(false);
     setIsRecording(false);
     setRecordingDuration(0);
+    setTimeout(() => inputRef.current?.focus(), 80);
   };
 
   const hasAskedNameConfirmRef = useRef(false);
