@@ -170,7 +170,7 @@ export function ConfirmCard(props: ConfirmCardProps) {
                       }}
                         title={labelText}
                         className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border transition-all duration-200 max-w-full"
-                        style={isSubSelected ? { background: "rgba(52,211,153,0.15)", borderColor: "#34d399", color: "#34d399" } : chipDefault}>
+                        style={isSubSelected ? chipActive : chipDefault}>
                         <Tag className="w-2.5 h-2.5 shrink-0" />
                         <span className="text-left">
                           {labelText}
@@ -224,7 +224,7 @@ export function ConfirmCard(props: ConfirmCardProps) {
               <span className="text-[12px] text-slate-300 flex-1 truncate">{props.draftWA || <span className="text-slate-600 italic">—</span>}</span>
               <button type="button" onClick={() => { props.onSetDraftWA(props.whatsapp); props.onSetEditingField("wa"); }}
                 className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded"
-                style={props.draftWA ? editBtn : { color: "#0ea5e9", background: "rgba(14,165,233,0.1)", border: "1px solid rgba(14,165,233,0.25)" }}>
+                style={props.draftWA ? editBtn : { color: "#94a3b8", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)" }}>
                 {props.draftWA ? t("dashboard.wizard.confirmCardBtnChange", "Ubah") : t("dashboard.wizard.confirmCardBtnFill", "Isi")}
               </button>
             </>
@@ -246,7 +246,7 @@ export function ConfirmCard(props: ConfirmCardProps) {
               <span className="text-[12px] text-slate-300 flex-1 truncate">{props.draftServiceArea || <span className="text-slate-600 italic">—</span>}</span>
               <button type="button" onClick={() => { props.onSetDraftServiceArea(props.serviceArea); props.onSetEditingField("service_area"); }}
                 className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded"
-                style={props.draftServiceArea ? editBtn : { color: "#0ea5e9", background: "rgba(14,165,233,0.1)", border: "1px solid rgba(14,165,233,0.25)" }}>
+                style={props.draftServiceArea ? editBtn : { color: "#94a3b8", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)" }}>
                 {props.draftServiceArea ? t("dashboard.wizard.confirmCardBtnChange", "Ubah") : t("dashboard.wizard.confirmCardBtnFill", "Isi")}
               </button>
             </>
@@ -283,7 +283,7 @@ export function ConfirmCard(props: ConfirmCardProps) {
               onClick={props.onGenerate}
               disabled={!!editingField || props.isLoading}
               className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-bold transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-40"
-              style={{ background: props.hasUnsavedEdits ? "linear-gradient(135deg, #059669, #047857)" : "var(--primary)", boxShadow: props.hasUnsavedEdits ? "0 4px 16px rgba(5,150,105,0.3)" : "none", color: props.hasUnsavedEdits ? "#fff" : "var(--primary-foreground)" }}
+              style={{ background: "var(--primary)", boxShadow: props.hasUnsavedEdits ? "0 4px 16px rgba(0,0,0,0.3)" : "none", color: "var(--primary-foreground)" }}
             >
               <Wand2 className="w-4 h-4" />
               {editingField ? t("dashboard.wizard.confirmCardBtnFinishEdit", "Selesai edit dulu ↑")

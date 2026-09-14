@@ -43,11 +43,11 @@ export function BusinessDetailsSheet({
         <p className="text-sm font-semibold text-slate-100 mb-1">{t("dashboard.wizard.businessDetailsTitle", "Lengkapi data bisnis")}</p>
         <p className="text-xs text-slate-500 mb-4 leading-relaxed">{t("dashboard.wizard.businessDetailsSubtitle", "Dua data ini langsung dipakai AI untuk isi tombol kontak dan bikin copy yang lebih relevan.")}</p>
         <div className="flex gap-2 mb-3 flex-wrap">
-          <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full border ${waDraft ? "bg-emerald-900/20 text-emerald-400 border-emerald-700/30" : "bg-amber-900/20 text-amber-400 border-amber-700/30"}`}>
+          <span className="inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full border bg-white/5 text-slate-300 border-white/10">
             <Phone className="w-3 h-3" />
             {waDraft ? t("dashboard.wizard.waSaved", "WA tersimpan") : t("dashboard.wizard.waEmpty", "WA belum diisi")}
           </span>
-          <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full border ${areaDraft ? "bg-emerald-900/20 text-emerald-400 border-emerald-700/30" : "bg-amber-900/20 text-amber-400 border-amber-700/30"}`}>
+          <span className="inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full border bg-white/5 text-slate-300 border-white/10">
             <MapPin className="w-3 h-3" />
             {areaDraft ? areaDraft : t("dashboard.wizard.areaEmpty", "Area belum diisi")}
           </span>

@@ -23,7 +23,6 @@ export function WizardErrorModal({
   message,
   retryLabel,
   cancelLabel,
-  variant = "error",
   onRetry,
   onCancel,
 }: WizardErrorModalProps) {
@@ -34,8 +33,7 @@ export function WizardErrorModal({
   const finalRetry = retryLabel || t("dashboard.wizard.errorModalRetry", "Coba lagi");
   const finalCancel = cancelLabel || t("dashboard.wizard.errorModalCancel", "Batal");
 
-  const isWarning = variant === "warning";
-  const accentClass = isWarning ? "bg-amber-500/20 text-amber-400" : "bg-rose-500/20 text-rose-400";
+  const accentClass = "bg-white/[0.06] text-slate-200";
 
   return (
     <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/60 px-4" onClick={onCancel}>
