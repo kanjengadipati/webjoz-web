@@ -25,15 +25,15 @@ interface Particle {
 }
 
 const COLORS = [
-  "#6366f1",
-  "#8b5cf6",
-  "#a78bfa",
-  "#34d399",
-  "#fbbf24",
-  "#f472b6",
-  "#38bdf8",
-  "#fb923c",
-  "#e879f9",
+  "#f8fafc",
+  "#e2e8f0",
+  "#cbd5e1",
+  "#94a3b8",
+  "#64748b",
+  "#e2e8f0",
+  "#f1f5f9",
+  "#cbd5e1",
+  "#94a3b8",
 ];
 
 function randomBetween(a: number, b: number) {
@@ -274,7 +274,7 @@ export function WizardSuccessToast({
             className="absolute top-0 left-0 h-[3px] rounded-full"
             style={{
               width: `${progress}%`,
-              background: "#34d399",
+              background: "#cbd5e1",
               transition: "none",
             }}
           />
@@ -282,8 +282,8 @@ export function WizardSuccessToast({
           <div className="px-4 pt-5 pb-4">
             {/* Header row */}
             <div className="flex items-start gap-3">
-              <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+              <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/[0.06] border border-white/10">
+                <CheckCircle2 className="h-4 w-4 text-slate-300" />
               </div>
 
               <div className="flex-1 min-w-0">
@@ -313,10 +313,10 @@ export function WizardSuccessToast({
                 dismiss();
                 onGoToEditor();
               }}
-              className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-bold text-white transition-all hover:brightness-110 active:scale-[0.98]"
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-bold text-slate-950 transition-all hover:brightness-110 active:scale-[0.98]"
               style={{
-                background: "linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%)",
-                boxShadow: "0 4px 14px rgba(99,102,241,0.35)",
+                background: "#f8fafc",
+                boxShadow: "0 4px 14px rgba(0,0,0,0.35)",
               }}
             >
               <Pencil className="h-3.5 w-3.5" />

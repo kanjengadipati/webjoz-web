@@ -59,21 +59,21 @@ export function LoadingCard({ loadingStep, businessType }: LoadingCardProps) {
                   className="w-4 h-4 rounded-full flex items-center justify-center shrink-0 transition-all duration-300"
                   style={
                     done
-                      ? { background: "rgba(52,211,153,0.2)", border: "1px solid rgba(52,211,153,0.4)" }
+                      ? { background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.2)" }
                       : active
                         ? { background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.2)" }
                         : { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }
                   }
                 >
                   {done ? (
-                    <span className="text-[8px] text-emerald-400 font-bold">✓</span>
+                    <span className="text-[8px] text-slate-300 font-bold">✓</span>
                   ) : active ? (
                     <Loader2 className="w-2.5 h-2.5 text-primary animate-spin" />
                   ) : null}
                 </div>
                 <span
                   className="text-[11px] font-medium leading-tight"
-                  style={{ color: done ? "#86efac" : active ? "var(--primary)" : "rgba(148,163,184,1)" }}
+                  style={{ color: done ? "#cbd5e1" : active ? "var(--primary)" : "rgba(148,163,184,1)" }}
                 >
                   {label}
                 </span>

@@ -342,7 +342,7 @@ function PreparingWebsiteLoader({ t }: { t: (key: string, fallback: string) => s
       </div>
       <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-primary via-emerald-400 to-primary transition-all duration-500 ease-out shadow-[0_0_10px_rgba(99,102,241,0.5)]"
+          className="h-full rounded-full bg-primary transition-all duration-500 ease-out"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -1114,7 +1114,7 @@ export function SiteWizard({
                 <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-primary-foreground shadow-xs">
                   <SparkleGenAI className="w-[22px] h-[22px]" />
                 </div>
-                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-background" />
+                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-slate-300 border-2 border-background" />
               </div>
 
               <div className="min-w-0 flex flex-col">
@@ -1136,7 +1136,7 @@ export function SiteWizard({
                 <button
                   type="button"
                   onClick={() => device.setMobileScreen("preview")}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold transition-all active:scale-95 cursor-pointer"
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/[0.06] border border-white/10 text-slate-200 text-[10px] font-bold transition-all active:scale-95 cursor-pointer"
                 >
                   Preview &rarr;
                 </button>
@@ -1510,7 +1510,7 @@ export function SiteWizard({
                           {((chat.suggestedHint?.type === bt.value) ||
                             (chat.suggestedHint?.type === "Kreatif & Profesional" && bt.value === "Portofolio & Kreator") ||
                             (chat.suggestedHint?.type === "Portofolio & Kreator" && bt.value === "Kreatif & Profesional")) && !isSelected && (
-                            <span className="text-[9px] font-bold text-amber-300 bg-amber-800/30 px-1.5 py-0.5 rounded-full">Disarankan</span>
+                            <span className="text-[9px] font-bold text-slate-200 bg-white/10 px-1.5 py-0.5 rounded-full">Disarankan</span>
                           )}
                           {isSelected && (
                             <span className="text-primary text-xs font-bold shrink-0">✓</span>
@@ -1542,7 +1542,7 @@ export function SiteWizard({
                                 {labelText}
                               </span>
                               {chat.suggestedHint?.subType === st.value && (
-                                <span className="text-[10px] text-amber-300 shrink-0">Disarankan</span>
+                                <span className="text-[10px] text-slate-300 shrink-0">Disarankan</span>
                               )}
                               {isSubSelected && <span className="text-primary text-[10px] shrink-0">✓</span>}
                             </button>
@@ -1553,8 +1553,8 @@ export function SiteWizard({
                         <button
                           type="button"
                           onClick={() => handleSelectSubType(chat.businessSubType)}
-                          className="mt-2.5 flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white border transition-all hover:bg-emerald-500/10 active:scale-95"
-                          style={{ background: "rgba(16,185,129,0.15)", borderColor: "rgba(16,185,129,0.5)" }}
+                          className="mt-2.5 flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white border transition-all hover:bg-white/5 active:scale-95"
+                          style={{ background: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.15)" }}
                         >
                           {t("dashboard.wizard.btnContinueType", "Lanjut dengan jenis ini →")}
                         </button>
@@ -1574,12 +1574,12 @@ export function SiteWizard({
                       <SparkleGenAI className="w-[21px] h-[21px]" />
                     </div>
                     <div className="max-w-[90%] space-y-2.5">
-                      <div className="rounded-2xl rounded-tl-sm p-4 text-sm leading-relaxed space-y-3 bg-[#131f1a] border border-emerald-500/30 text-slate-200 shadow-xl">
-                        <div className="flex items-center gap-2 text-emerald-400 font-semibold text-xs">
+                      <div className="rounded-2xl rounded-tl-sm p-4 text-sm leading-relaxed space-y-3 bg-[#1a1d24] border border-white/10 text-slate-200 shadow-xl">
+                        <div className="flex items-center gap-2 text-slate-200 font-semibold text-xs">
                           <Mic className="w-4 h-4" />
                           <span>{t("dashboard.wizard.sttReviewTitle", "Berikut yang saya dengar dari Anda:")}</span>
                         </div>
-                        <div className="rounded-xl bg-black/30 border border-emerald-500/20 p-3 text-emerald-100 text-xs sm:text-sm font-medium leading-relaxed italic">
+                        <div className="rounded-xl bg-black/30 border border-white/10 p-3 text-slate-300 text-xs sm:text-sm font-medium leading-relaxed italic">
                           &ldquo;{transcript}&rdquo;
                         </div>
                         <p className="text-xs text-slate-300">
@@ -1784,14 +1784,14 @@ export function SiteWizard({
             style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
           >
             {(chat.isRecording || chat.isMicConnecting) ? (
-              <div className="flex flex-col gap-2.5 p-3 rounded-2xl bg-[#141e19] border border-emerald-500/30 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+              <div className="flex flex-col gap-2.5 p-3 rounded-2xl bg-white/[0.04] border border-white/10 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
                 <div className="flex items-center justify-between gap-3">
                   {/* Status & Timer */}
                   <div className="flex items-center gap-2 shrink-0">
                     {chat.isMicConnecting ? (
                       <>
-                        <Loader2 className="w-3.5 h-3.5 text-amber-400 animate-spin shrink-0" />
-                        <span className="text-xs font-semibold text-amber-300">
+                        <Loader2 className="w-3.5 h-3.5 text-slate-300 animate-spin shrink-0" />
+                        <span className="text-xs font-semibold text-slate-200">
                           {t("dashboard.wizard.sttConnecting", "Menyiapkan mic...")}
                         </span>
                       </>
@@ -1801,7 +1801,7 @@ export function SiteWizard({
                           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                           <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
                         </span>
-                        <span className="text-xs font-semibold text-emerald-300 hidden sm:inline">
+                        <span className="text-xs font-semibold text-slate-200 hidden sm:inline">
                           {t("dashboard.wizard.sttListening", "Mendengarkan...")}
                         </span>
                         <span className="text-xs font-mono font-bold text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20">
@@ -1826,7 +1826,7 @@ export function SiteWizard({
                     <button
                       type="button"
                       onClick={chat.toggleSttLang}
-                      className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold border border-emerald-500/30 bg-white/5 hover:bg-white/10 text-emerald-300 transition-all active:scale-95 cursor-pointer shadow-xs"
+                      className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold border border-white/10 bg-white/5 hover:bg-white/10 text-slate-200 transition-all active:scale-95 cursor-pointer shadow-xs"
                       title={chat.sttLang === "id-ID" ? "Bahasa: Indonesia (Klik untuk ganti ke English)" : "Language: English (Click to switch to Bahasa Indonesia)"}
                     >
                       {chat.sttLang === "id-ID" ? "🇮🇩 ID" : "🇬🇧 EN"}
@@ -1844,17 +1844,17 @@ export function SiteWizard({
                 </div>
 
                 {/* Bottom Action Row: Live Transcript (auto-scrolling to newest speech) + Selesai & Batal */}
-                <div className="flex items-center justify-between pt-1 border-t border-emerald-500/10 gap-2">
+                <div className="flex items-center justify-between pt-1 border-t border-white/10 gap-2">
                   <div
                     ref={transcriptScrollRef}
                     className="text-[11px] text-slate-300 flex-1 font-medium overflow-x-auto whitespace-nowrap scroll-smooth flex items-center min-w-0 pr-1"
                     style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
                   >
                     {chat.interimTranscript ? (
-                      <span className="text-emerald-300 italic flex items-center gap-1">
+                      <span className="text-slate-200 italic flex items-center gap-1">
                         &ldquo;{chat.interimTranscript}&rdquo;
                         {chat.isRecording && (
-                          <span className="inline-block w-1.5 h-3 bg-emerald-400 rounded-xs animate-pulse shrink-0 align-middle" />
+                          <span className="inline-block w-1.5 h-3 bg-slate-300 rounded-xs animate-pulse shrink-0 align-middle" />
                         )}
                       </span>
                     ) : (
@@ -1931,7 +1931,7 @@ export function SiteWizard({
         <div className="px-5 py-3 shrink-0 flex items-center justify-between" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
           <span className="text-[11px] text-slate-500 flex items-center gap-1.5">
             <div
-              className={`w-2 h-2 rounded-full shrink-0 transition-all duration-500 ${preview.previewState === "loading" ? "bg-primary animate-pulse" : "bg-emerald-400"}`}
+              className={`w-2 h-2 rounded-full shrink-0 transition-all duration-500 ${preview.previewState === "loading" ? "bg-primary animate-pulse" : "bg-slate-300"}`}
             />
             <span className="transition-all duration-300">
               {preview.previewState === "wireframe" && (chat.chatStage === "name" || chat.chatStage === "type" || chat.chatStage === "mood") && t("dashboard.wizard.statusWaitingInput", "Menunggu input...")}
@@ -1997,28 +1997,28 @@ export function SiteWizard({
             <div className="relative shrink-0">
               {showRekomendasiHint && (
                   <div className="absolute top-full left-0 mt-2 z-50 pointer-events-auto animate-in fade-in slide-in-from-top-2 duration-300 w-[240px]">
-                    <div className="relative bg-[#162520] border border-emerald-500/40 text-emerald-100 rounded-2xl p-3.5 shadow-[0_12px_32px_rgba(0,0,0,0.6)] backdrop-blur-md">
+                    <div className="relative bg-[#1a1d24] border border-white/10 text-slate-200 rounded-2xl p-3.5 shadow-[0_12px_32px_rgba(0,0,0,0.6)] backdrop-blur-md">
                       <button
                         type="button"
                         onClick={() => setShowRekomendasiHint(false)}
-                        className="absolute top-2.5 right-2.5 text-emerald-400/60 hover:text-emerald-200 transition-colors p-0.5 rounded cursor-pointer"
+                        className="absolute top-2.5 right-2.5 text-slate-500 hover:text-white transition-colors p-0.5 rounded cursor-pointer"
                       >
                         <X className="w-3.5 h-3.5" />
                       </button>
                       <div className="flex items-start gap-2.5">
-                        <div className="w-6 h-6 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shrink-0 mt-0.5">
-                          <RefreshCw className="w-3.5 h-3.5 text-emerald-300" />
+                        <div className="w-6 h-6 rounded-lg bg-white/10 border border-white/15 flex items-center justify-center shrink-0 mt-0.5">
+                          <RefreshCw className="w-3.5 h-3.5 text-slate-200" />
                         </div>
                         <div className="space-y-1 pr-3">
-                          <p className="text-xs font-bold text-emerald-300 leading-tight">
+                          <p className="text-xs font-bold text-slate-100 leading-tight">
                             {t("dashboard.wizard.recommendationHintTitle", "Ada {count} rekomendasi desain!", { count: String(preview.templatePool.length) })}
                           </p>
-                          <p className="text-[11px] text-emerald-200/80 leading-snug">
+                          <p className="text-[11px] text-slate-400 leading-snug">
                             {t("dashboard.wizard.recommendationHintDesc", "Klik untuk lihat pilihan tampilan lain.")}
                           </p>
                         </div>
                       </div>
-                      <div className="absolute -top-1.5 left-[28px] w-3 h-3 bg-[#162520] border-l border-t border-emerald-500/40 transform rotate-45" />
+                      <div className="absolute -top-1.5 left-[28px] w-3 h-3 bg-[#1a1d24] border-l border-t border-white/10 transform rotate-45" />
                     </div>
                   </div>
                 )}
@@ -2041,10 +2041,10 @@ export function SiteWizard({
 
           <div className="flex-1 min-w-0">
             {preview.previewState === "loading" && (
-              <span className="ml-auto text-[10px] font-semibold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded-full w-fit block">Draft Preview</span>
+              <span className="ml-auto text-[10px] font-semibold text-slate-300 bg-white/5 border border-white/10 px-1.5 py-0.5 rounded-full w-fit block">Draft Preview</span>
             )}
             {preview.previewState === "result" && (
-              <span className="ml-auto text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded-full w-fit block">Live Preview</span>
+              <span className="ml-auto text-[10px] font-semibold text-slate-200 bg-white/5 border border-white/10 px-1.5 py-0.5 rounded-full w-fit block">Live Preview</span>
             )}
           </div>
         </div>
@@ -2071,24 +2071,24 @@ export function SiteWizard({
               <div className="relative">
                 {showLengkapiHint && (
                   <div className="absolute bottom-full right-0 mb-3 z-50 pointer-events-auto animate-in fade-in slide-in-from-bottom-2 duration-300 w-[240px]">
-                    <div className="relative bg-[#162520] border border-emerald-500/40 text-emerald-100 rounded-2xl p-3.5 shadow-[0_12px_32px_rgba(0,0,0,0.6)] backdrop-blur-md">
+                    <div className="relative bg-[#1a1d24] border border-white/10 text-slate-200 rounded-2xl p-3.5 shadow-[0_12px_32px_rgba(0,0,0,0.6)] backdrop-blur-md">
                       <button
                         type="button"
                         onClick={() => setShowLengkapiHint(false)}
-                        className="absolute top-2.5 right-2.5 text-emerald-400/60 hover:text-emerald-200 transition-colors p-0.5 rounded cursor-pointer"
+                        className="absolute top-2.5 right-2.5 text-slate-500 hover:text-white transition-colors p-0.5 rounded cursor-pointer"
                       >
                         <X className="w-3.5 h-3.5" />
                       </button>
                       <div className="flex items-start gap-2.5">
-                        <div className="w-6 h-6 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shrink-0 mt-0.5">
-                          <Phone className="w-3.5 h-3.5 text-emerald-300" />
+                        <div className="w-6 h-6 rounded-lg bg-white/10 border border-white/15 flex items-center justify-center shrink-0 mt-0.5">
+                          <Phone className="w-3.5 h-3.5 text-slate-200" />
                         </div>
                         <div className="space-y-1 pr-3">
-                          <p className="text-xs font-bold text-emerald-300 leading-tight">Lengkapi data kontak</p>
-                          <p className="text-[11px] text-emerald-200/80 leading-snug">Tambah nomor WA supaya tombol kontak di website aktif.</p>
+                          <p className="text-xs font-bold text-slate-100 leading-tight">Lengkapi data kontak</p>
+                          <p className="text-[11px] text-slate-400 leading-snug">Tambah nomor WA supaya tombol kontak di website aktif.</p>
                         </div>
                       </div>
-                      <div className="absolute -bottom-1.5 right-[28px] w-3 h-3 bg-[#162520] border-r border-b border-emerald-500/40 transform rotate-45" />
+                      <div className="absolute -bottom-1.5 right-[28px] w-3 h-3 bg-[#1a1d24] border-r border-b border-white/10 transform rotate-45" />
                     </div>
                   </div>
                 )}

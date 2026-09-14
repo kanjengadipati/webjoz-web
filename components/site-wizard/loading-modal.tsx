@@ -90,12 +90,12 @@ export function LoadingModal({ loadingStep, progressPercent, businessType, busin
           <div className="flex items-center justify-between text-[10px] text-slate-400 font-medium">
             <div className="flex items-center gap-1.5 min-w-0">
               {remainingSecs > 0 && !streamDone ? (
-                <span className="inline-flex items-center gap-1 text-amber-300 font-semibold truncate">
+                <span className="inline-flex items-center gap-1 text-slate-300 font-semibold truncate">
                   <Clock className="w-3 h-3 shrink-0" />
                   <span>{t("dashboard.wizard.loadingEstCountdown", undefined, { secs: String(remainingSecs) })}</span>
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1 text-emerald-400 font-semibold truncate">
+                <span className="inline-flex items-center gap-1 text-slate-200 font-semibold truncate">
                   <SparkleIcon className="w-3 h-3 shrink-0" />
                   <span>{t("dashboard.wizard.loadingEstFinalizing", "Sedang merapikan copywriting...")}</span>
                 </span>

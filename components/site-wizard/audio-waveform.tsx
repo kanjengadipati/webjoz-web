@@ -41,23 +41,23 @@ export function AudioWaveform({ isRecording, isConnecting, isSpeaking = true, au
   return (
     <div className="flex items-center justify-center gap-[2.5px] h-9 px-2 overflow-hidden">
       {bars.map((bar, index) => {
-        let barClass = "bg-emerald-400/20 opacity-30 h-1.5";
+        let barClass = "bg-slate-400/20 opacity-30 h-1.5";
         let animDuration = "0ms";
         let transform: string | undefined = "scaleY(0.4)";
 
         if (isConnecting) {
-          barClass = "bg-amber-400/60 animate-pulse h-2";
+          barClass = "bg-slate-400/60 animate-pulse h-2";
           animDuration = "1200ms";
           transform = undefined;
         } else if (isRecording) {
           if (isSpeaking) {
             // User is actively speaking: vibrant jumping bars with glow
-            barClass = `bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.4)] animate-pulse ${bar.height}`;
+            barClass = `bg-slate-300 shadow-[0_0_6px_rgba(148,163,184,0.4)] animate-pulse ${bar.height}`;
             animDuration = `${400 + (index % 5) * 120}ms`;
             transform = undefined;
           } else {
             // User is silent/pausing: calm, settled low bars with subtle resting glow
-            barClass = "bg-emerald-500/35 h-1.5 transition-all duration-300";
+            barClass = "bg-slate-500/35 h-1.5 transition-all duration-300";
             animDuration = "0ms";
             transform = "scaleY(0.6)";
           }

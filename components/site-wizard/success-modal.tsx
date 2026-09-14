@@ -32,7 +32,7 @@ export function WizardSuccessModal({
       >
         <div className="flex flex-col items-center text-center">
           {/* Decorative Icon */}
-          <div className="relative mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+          <div className="relative mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/[0.06] text-slate-300 border border-white/10">
             <CheckCircle2 className="h-8 w-8" />
             <SparkleIcon className="absolute -top-1.5 -right-1.5 h-6 w-6" />
           </div>
