@@ -164,7 +164,9 @@ export default function UsagePage() {
       {overLimit.length > 0 && currentPlanSlug !== "free" && (
         <Card className="border-amber-500/30 bg-amber-500/5">
           <CardContent className="p-4 flex items-start gap-3">
-            <AlertTriangle className="size-5 text-amber-500 shrink-0 mt-0.5" />
+            <div className="size-9 shrink-0 rounded-full bg-amber-500/15 flex items-center justify-center">
+              <AlertTriangle className="size-4.5 text-amber-500" />
+            </div>
             <div className="space-y-1">
               <p className="text-sm font-semibold text-amber-700 dark:text-amber-400">
                 {t("dashboard.usage.limitWarning")}
