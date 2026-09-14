@@ -4,7 +4,7 @@ import React, { useState, useRef, useCallback } from "react";
 import {
   Plus, Trash2, ChevronDown, ChevronUp, GripVertical, Loader2,
   RotateCcw, X, Link as LinkIcon, Image as ImageIcon, Layers,
-  SlidersHorizontal, Sparkles, FolderOpen, CheckCircle2
+  SlidersHorizontal, FolderOpen, CheckCircle2
 } from "lucide-react";
 import { SparkleGenAI } from "@/components/sparkle-icon";
 import FileUpload, { uploadImageFile } from "@/components/file-upload";

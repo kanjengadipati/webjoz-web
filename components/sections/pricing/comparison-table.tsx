@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
-import { Check, X, Sparkles, ArrowRight } from "lucide-react";
+import { Check, X, ArrowRight } from "lucide-react";
+import { SparkleIcon } from "@/components/sparkle-icon";
 import { InlineText } from "../../templates/shared";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 import type { PricingVariantProps } from "./index";
@@ -74,7 +75,7 @@ export default function PricingComparisonTable({
                 marginBottom: "0.5rem",
               }}
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              <SparkleIcon className="w-3.5 h-3.5" />
               {isEditorMode ? (
                 <InlineText
                   section="pricing"

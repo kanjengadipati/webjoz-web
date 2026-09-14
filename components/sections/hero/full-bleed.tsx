@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { ArrowRight, Clock, Sparkles } from "lucide-react";
+import { ArrowRight, Clock } from "lucide-react";
+import { SparkleIcon } from "@/components/sparkle-icon";
 import type { HeroVariantProps } from "./types";
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
 import PhotoCredit from "../PhotoCredit";
@@ -134,7 +135,7 @@ export default function HeroFullBleed({
               boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
             }}
           >
-            <Sparkles className="size-3.5 text-primary" />
+            <SparkleIcon className="size-3.5 text-primary" />
             <InlineText
               section="hero"
               fieldKey="eyebrow"

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { X, ChevronLeft, ChevronRight, Play, Camera, Sparkles, Link2, Loader2, Plus, Trash2, Check } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Play, Camera, Link2, Loader2, Plus, Trash2, Check } from "lucide-react";
 import type { GalleryItem, DesignToken } from "@/components/templates/types";
 import PhotoCredit from "../PhotoCredit";
 import { InlineText, DEFAULT_IMAGE_POOL } from "../../templates/shared";

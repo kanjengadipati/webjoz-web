@@ -1,16 +1,16 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ComponentType } from "react";
 import Link from "next/link";
 import {
   Search,
-  Sparkles,
   Bug,
   Zap,
   Megaphone,
   ChevronDown,
   ChevronRight,
 } from "lucide-react";
+import { SparkleIcon } from "@/components/sparkle-icon";
 
 type ChangeType = "feature" | "fix" | "improvement" | "announcement";
 
@@ -25,11 +25,11 @@ interface ChangelogEntry {
 
 const TYPE_META: Record<
   ChangeType,
-  { label: string; icon: typeof Sparkles; color: string; bg: string }
+  { label: string; icon: ComponentType<{ className?: string }>; color: string; bg: string }
 > = {
   feature: {
     label: "Fitur Baru",
-    icon: Sparkles,
+    icon: SparkleIcon,
     color: "text-violet-600 dark:text-violet-400",
     bg: "bg-violet-500/10",
   },

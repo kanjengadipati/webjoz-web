@@ -17,10 +17,10 @@ import {
   ChevronRight,
   ShieldAlert,
   Award,
-  Sparkles,
   Gift,
   Target,
 } from "lucide-react";
+import { SparkleIcon } from "@/components/sparkle-icon";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
 
@@ -152,7 +152,7 @@ export default function MyCommissionsPage() {
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center justify-between">
               {t("dashboard.salesCommissions.cardTotal")}
-              <Sparkles className="size-4 text-emerald-500" />
+              <SparkleIcon className="size-4 text-emerald-500" />
             </CardTitle>
           </CardHeader>
           <CardContent>

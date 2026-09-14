@@ -5,7 +5,8 @@ import { useParams } from "next/navigation";
 import { request } from "@/lib/api/client";
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
-import { Sparkles, Star, Loader2 } from "lucide-react";
+import { Star, Loader2 } from "lucide-react";
+import { SparkleIcon } from "@/components/sparkle-icon";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
 
@@ -66,7 +67,7 @@ export default function PublicTestimoniPage() {
       <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-b from-primary/5 to-background">
         <Card className="max-w-md w-full text-center">
           <CardContent className="py-12 space-y-3">
-            <Sparkles className="w-12 h-12 text-primary mx-auto" />
+            <SparkleIcon className="w-12 h-12 text-primary mx-auto" />
             {brandName && (
               <p className="text-sm font-semibold text-primary">{brandName}</p>
             )}

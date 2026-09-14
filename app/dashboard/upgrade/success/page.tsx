@@ -6,7 +6,8 @@ import Link from "next/link";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
-import { Loader2, Check, X, ArrowLeft, Zap, Sparkles } from "lucide-react";
+import { Loader2, Check, X, ArrowLeft, Zap } from "lucide-react";
+import { SparkleIcon } from "@/components/sparkle-icon";
 import { Button } from "@/components/ui";
 import { useI18n } from "@/lib/i18n/context";
 import { useToast } from "@/components/toast-provider";
@@ -251,7 +252,7 @@ export default function PaymentSuccessPage() {
             {pendingDraft && (
               <div className="rounded-2xl border-2 border-amber-500/50 bg-gradient-to-b from-amber-500/15 via-amber-500/5 to-transparent p-5 text-left space-y-3 shadow-lg">
                 <div className="flex items-center gap-2 text-amber-400">
-                  <Sparkles className="w-5 h-5 animate-pulse" />
+                  <SparkleIcon className="w-5 h-5 animate-pulse" />
                   <h3 className="font-bold text-sm sm:text-base text-white">
                     Website "{pendingDraft.businessName}" Siap Disimpan!
                   </h3>
