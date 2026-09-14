@@ -3486,9 +3486,9 @@ export default function SiteEditorPage() {
                   style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
                 >
                   {publishing ? <Loader2 className="w-4 h-4 animate-spin" /> : (
-                    <span className="relative flex h-2 w-2">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
-                      <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+                    <span className="relative flex h-2.5 w-2.5 shrink-0">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-80" />
+                      <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.85)] ring-1 ring-black/30" />
                     </span>
                   )}
                   {publishing ? t("dashboard.sitesEditor.applying") : t("dashboard.sitesEditor.applyLive")}
