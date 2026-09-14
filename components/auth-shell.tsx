@@ -143,7 +143,7 @@ export function AuthShell({
           ) : null}
         </div>
 
-        <Card className="bg-card/90 backdrop-blur shadow-2xl animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150 border-border/70">
+        <Card className="bg-card/90 backdrop-blur shadow-2xl animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150 border-border/70 overflow-hidden">
           <CardHeader className="border-b border-border/60 bg-background px-5 py-5 sm:px-6">
             {cardEyebrow && <CardDescription className="text-xs uppercase tracking-wider font-semibold text-primary/80 mb-0.5">{cardEyebrow}</CardDescription>}
             <CardTitle>{cardTitle}</CardTitle>
