@@ -2,7 +2,8 @@
 
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n/context";
-import { Globe, Sparkles, Palette, Wand2 } from "lucide-react";
+import { Globe, Palette, Wand2 } from "lucide-react";
+import { SparkleIcon } from "@/components/sparkle-icon";
 
 export interface UsageData {
   sites: number;
@@ -43,7 +44,7 @@ function remainingText(used: number, max: number, unlimitedLabel: string) {
 
 const METERS = [
   { key: "sites", icon: Globe, color: "bg-primary", textColor: "text-primary" } as const,
-  { key: "generates", icon: Sparkles, color: "bg-amber-500", textColor: "text-amber-500" } as const,
+  { key: "generates", icon: SparkleIcon, color: "bg-amber-500", textColor: "text-amber-500" } as const,
   { key: "sectionRegens", icon: Wand2, color: "bg-violet-500", textColor: "text-violet-500" } as const,
   { key: "designRegens", icon: Palette, color: "bg-cyan-500", textColor: "text-cyan-500" } as const,
 ] as const;
