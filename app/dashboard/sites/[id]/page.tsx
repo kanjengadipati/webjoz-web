@@ -1754,7 +1754,7 @@ export default function SiteEditorPage() {
                     }}
                     title="Scroll ke atas"
                     className={`w-3.5 h-3.5 rounded-full bg-[#161b26] border border-primary/40 flex items-center justify-center text-primary shadow-xs transition-all duration-200 ${
-                      navScrollUp ? "opacity-100 scale-100 pointer-events-auto hover:bg-primary hover:text-white cursor-pointer" : "opacity-0 scale-75 pointer-events-none"
+                      navScrollUp ? "opacity-100 scale-100 pointer-events-auto hover:bg-primary hover:text-primary-foreground cursor-pointer" : "opacity-0 scale-75 pointer-events-none"
                     }`}
                   >
                     <ChevronUp className="w-2.5 h-2.5" />
@@ -1767,7 +1767,7 @@ export default function SiteEditorPage() {
                     }}
                     title="Scroll ke bawah"
                     className={`w-3.5 h-3.5 rounded-full bg-[#161b26] border border-primary/40 flex items-center justify-center text-primary shadow-xs transition-all duration-200 ${
-                      navScrollDown ? "opacity-100 scale-100 pointer-events-auto hover:bg-primary hover:text-white cursor-pointer" : "opacity-0 scale-75 pointer-events-none"
+                      navScrollDown ? "opacity-100 scale-100 pointer-events-auto hover:bg-primary hover:text-primary-foreground cursor-pointer" : "opacity-0 scale-75 pointer-events-none"
                     }`}
                   >
                     <ChevronDown className="w-2.5 h-2.5" />
@@ -2414,7 +2414,7 @@ export default function SiteEditorPage() {
           >
             <span
               className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 shadow-xs"
-              style={{ background: "var(--primary)", color: "white" }}
+              style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
             >
               {pageOrderSections.findIndex(s => s.key === activeTab) + 1 || 1}
             </span>
@@ -3586,7 +3586,7 @@ export default function SiteEditorPage() {
                       setPublishModalOpen(true);
                     }
                   }}
-                  className="flex-1 rounded-xl bg-primary py-2 text-[12px] font-bold text-white hover:bg-primary/90 transition-colors disabled:opacity-60"
+                  className="flex-1 rounded-xl bg-primary py-2 text-[12px] font-bold text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-60"
                 >
                   {publishing ? t("dashboard.sitesEditor.applying") : t("dashboard.sitesEditor.confirmApply")}
                 </button>
