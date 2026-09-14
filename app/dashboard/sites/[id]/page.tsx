@@ -3474,17 +3474,6 @@ export default function SiteEditorPage() {
             <SiteSubNav siteId={siteId!} compact />
             <div className="flex items-center gap-3 flex-shrink-0">
               {siteDetails?.status === "published" ? (
-                <span className="flex items-center gap-1.5 text-[11px]">
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  </span>
-                  <span className="text-emerald-400 font-medium">{t("dashboard.sitesEditor.live")}</span>
-                </span>
-              ) : (
-                <span className="text-[11px] text-slate-500">{t("dashboard.sitesEditor.draft")}</span>
-              )}
-              {siteDetails?.status === "published" ? (
                 <button
                   type="button"
                   onClick={() => {
