@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { Wand2, Loader2, Building2, Calendar, Palette, ShoppingBag, UtensilsCrossed, Tag, Sparkles } from "lucide-react";
+import { Wand2, Loader2, Building2, Calendar, Palette, ShoppingBag, UtensilsCrossed, Tag } from "lucide-react";
+import { SparkleIcon } from "@/components/sparkle-icon";
 import { SparkleGenAI } from "@/components/sparkle-icon";
 import { BUSINESS_TYPES, SUB_TYPES } from "./constants";
 import type { ChatStage, PreviewState } from "./types";
@@ -149,7 +150,7 @@ export function ConfirmCard(props: ConfirmCardProps) {
                     <button key={bt.value} type="button" onClick={() => { props.onSetBusinessType(bt.value); props.onSetBusinessSubType(""); props.onSetDescription(""); props.onSetHasUnsavedEdits(true); }}
                       className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all"
                       style={businessType === bt.value ? chipActive : chipDefault}>
-                      {categoryIconMap[bt.value] || <Sparkles className="w-3 h-3" />}
+                      {categoryIconMap[bt.value] || <SparkleIcon className="w-3 h-3" />}
                       <span>{translatedLabel}</span>
                     </button>
                   );

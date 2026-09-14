@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Loader2, Clock, Sparkles } from "lucide-react";
+import { Loader2, Clock } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { LOADING_CHECKLIST, LOADING_STEPS_PERCENT } from "./constants";
 import { getInsight } from "./helpers";
@@ -96,7 +96,7 @@ export function LoadingModal({ loadingStep, progressPercent, businessType, busin
                 </span>
               ) : (
                 <span className="inline-flex items-center gap-1 text-emerald-400 font-semibold truncate">
-                  <Sparkles className="w-3 h-3 shrink-0" />
+                  <SparkleIcon className="w-3 h-3 shrink-0" />
                   <span>{t("dashboard.wizard.loadingEstFinalizing", "Sedang merapikan copywriting...")}</span>
                 </span>
               )}

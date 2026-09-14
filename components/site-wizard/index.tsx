@@ -60,7 +60,6 @@ import {
   ShoppingCart,
   Shirt,
   Smartphone,
-  Sparkles,
   Square,
   Snowflake,
   Stethoscope,
@@ -146,7 +145,7 @@ const SUB_TYPE_ICONS: Record<string, React.ElementType> = {
   // Toko
   "Fashion & Pakaian":        Shirt,
   "Elektronik":               Smartphone,
-  "Kecantikan & Kosmetik":    Sparkles,
+  "Kecantikan & Kosmetik":    SparkleIcon,
   "Produk Lokal Handmade":    PencilRuler,
   "Toko Online":              ShoppingCart,
   "Minimarket & Sembako":     Store,
@@ -1404,7 +1403,7 @@ export function SiteWizard({
                       const translatedMoodLabel = moodKey ? t(`dashboard.wizard.moods.${moodKey}`, mo.label) : mo.label;
 
                       const moodIconMap: Record<string, { icon: React.ReactNode; bg: string; text: string; glow: string }> = {
-                        "clean-modern":  { icon: <Sparkles  className="w-4 h-4" />, bg: "bg-blue-500/15",    text: "text-blue-400",    glow: "shadow-blue-500/20" },
+                        "clean-modern":  { icon: <SparkleIcon  className="w-4 h-4" />, bg: "bg-blue-500/15",    text: "text-blue-400",    glow: "shadow-blue-500/20" },
                         "warm-earthy":   { icon: <Leaf      className="w-4 h-4" />, bg: "bg-emerald-600/15", text: "text-emerald-400", glow: "shadow-emerald-500/20" },
                         "bold-vibrant":  { icon: <Palette   className="w-4 h-4" />, bg: "bg-orange-500/15",  text: "text-orange-400",  glow: "shadow-orange-500/20" },
                         "dark-premium":  { icon: <Crown     className="w-4 h-4" />, bg: "bg-yellow-500/15",  text: "text-yellow-400",  glow: "shadow-yellow-500/20" },
@@ -1412,7 +1411,7 @@ export function SiteWizard({
                         "retro":         { icon: <Hourglass className="w-4 h-4" />, bg: "bg-amber-600/15",   text: "text-amber-400",   glow: "shadow-amber-600/20" },
                         "futuristic":    { icon: <Bot       className="w-4 h-4" />, bg: "bg-cyan-500/15",    text: "text-cyan-400",    glow: "shadow-cyan-500/20" },
                       };
-                      const cfg = moodIconMap[mo.value] ?? { icon: <Sparkles className="w-4 h-4" />, bg: "bg-white/10", text: "text-slate-300", glow: "" };
+                      const cfg = moodIconMap[mo.value] ?? { icon: <SparkleIcon className="w-4 h-4" />, bg: "bg-white/10", text: "text-slate-300", glow: "" };
 
                       return (
                         <button
@@ -1505,7 +1504,7 @@ export function SiteWizard({
                           }`}
                         >
                           <span className={`transition-colors shrink-0 ${isSelected ? "text-primary" : "text-slate-400 group-hover:text-white"}`}>
-                            {categoryIconMap[bt.value] || <Sparkles className="w-3.5 h-3.5" />}
+                            {categoryIconMap[bt.value] || <SparkleIcon className="w-3.5 h-3.5" />}
                           </span>
                           <span>{translatedLabel}</span>
                           {((chat.suggestedHint?.type === bt.value) ||
@@ -1615,7 +1614,7 @@ export function SiteWizard({
 
             // Mood icon mapping — warna solid supaya kontras di atas bubble putih (bg-primary)
             const moodIconMapMsg: Record<string, { icon: React.ReactNode; bg: string; text: string }> = {
-              "clean-modern": { icon: <Sparkles  className="w-3.5 h-3.5" />, bg: "bg-blue-500",    text: "text-white" },
+              "clean-modern": { icon: <SparkleIcon  className="w-3.5 h-3.5" />, bg: "bg-blue-500",    text: "text-white" },
               "warm-earthy":  { icon: <Leaf      className="w-3.5 h-3.5" />, bg: "bg-emerald-600", text: "text-white" },
               "bold-vibrant": { icon: <Palette   className="w-3.5 h-3.5" />, bg: "bg-orange-500",  text: "text-white" },
               "dark-premium": { icon: <Crown     className="w-3.5 h-3.5" />, bg: "bg-yellow-500",  text: "text-white" },

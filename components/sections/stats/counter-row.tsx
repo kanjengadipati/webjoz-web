@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Sparkles, TrendingUp, Users, Award, Shield, CheckCircle2 } from "lucide-react";
+import { TrendingUp, Users, Award, Shield, CheckCircle2 } from "lucide-react";
 import { DynamicIcon, InlineText } from "../../templates/shared";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 import type { StatsVariantProps } from "./index";

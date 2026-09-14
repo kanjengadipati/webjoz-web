@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
-import { Check, ArrowRight, Sparkles } from "lucide-react";
+import { Check, ArrowRight } from "lucide-react";
+import { SparkleIcon } from "@/components/sparkle-icon";
 import { InlineText } from "../../templates/shared";
 import type { PricingVariantProps } from "./index";
 
@@ -47,7 +48,7 @@ export default function PricingSingleTierHighlight({
               letterSpacing: "0.18em", color: "var(--dt-primary)", marginBottom: "0.75rem",
             }}
           >
-            <Sparkles className="w-3.5 h-3.5" />
+            <SparkleIcon className="w-3.5 h-3.5" />
             {isEditorMode ? (
               <InlineText
                 section="pricing" fieldKey="eyebrow" value={pricing.eyebrow || ""}

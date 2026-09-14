@@ -8,7 +8,8 @@ import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/compo
 import { Dialog } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/toast-provider";
-import { UserPlus, Mail, X, Sparkles, Loader2, Copy } from "lucide-react";
+import { UserPlus, Mail, X, Loader2, Copy } from "lucide-react";
+import { SparkleIcon } from "@/components/sparkle-icon";
 import { useI18n } from "@/lib/i18n/context";
 
 interface Member {
@@ -217,7 +218,7 @@ export default function TeamPage() {
           <>
             <Button variant="outline" onClick={() => setShowUpsell(false)}>{t("dashboard.team.later")}</Button>
             <Button onClick={() => { window.open("/dashboard/upgrade", "_blank"); setShowUpsell(false); }}>
-              <Sparkles className="w-4 h-4" /> {t("dashboard.team.upgradeToPro")}
+              <SparkleIcon className="w-4 h-4" /> {t("dashboard.team.upgradeToPro")}
             </Button>
           </>
         }

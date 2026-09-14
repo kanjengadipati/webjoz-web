@@ -11,7 +11,6 @@ import {
   LayoutList,
   Layers,
   ChevronDown,
-  Sparkles,
   ArrowUpRight,
   Eye,
   Sliders,

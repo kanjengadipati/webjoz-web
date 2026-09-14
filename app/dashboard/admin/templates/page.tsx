@@ -19,7 +19,6 @@ import {
   ChevronRight,
   Plus,
   Loader2,
-  Sparkles,
   X,
   ExternalLink,
   CheckCircle2,
@@ -397,7 +396,7 @@ export default function TemplateGalleryPage() {
                 : "text-muted-foreground hover:text-foreground hover:bg-background/40"
             }`}
           >
-            <Sparkles className="size-3.5 text-primary" />
+            <SparkleIcon className="size-3.5 text-primary" />
             <span>{t("dashboard.adminTemplates.tabSeeds")}</span>
             <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-muted/80 text-muted-foreground font-mono">
               {loading ? "..." : seeds.length}
@@ -438,7 +437,7 @@ export default function TemplateGalleryPage() {
         <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-3 flex flex-col sm:flex-row sm:items-center gap-3">
           <div className="flex items-center gap-2.5 flex-1">
             <div className="shrink-0 size-8 rounded-full bg-amber-500/15 flex items-center justify-center">
-              <Sparkles className="size-4 text-amber-500" />
+              <SparkleIcon className="size-4 text-amber-500" />
             </div>
             <div className="min-w-0">
               <p className="text-xs font-semibold text-foreground">
@@ -463,7 +462,7 @@ export default function TemplateGalleryPage() {
             size="sm"
             className="shrink-0 h-8 text-xs gap-1.5 bg-amber-500 hover:bg-amber-600 text-white border-0"
           >
-            {bulkCritiquing ? <Loader2 className="size-3 animate-spin" /> : <Sparkles className="size-3" />}
+            {bulkCritiquing ? <Loader2 className="size-3 animate-spin" /> : <SparkleIcon className="size-3" />}
             {bulkCritiquing ? t("dashboard.adminTemplates.bulkAestheticRunning") : t("dashboard.adminTemplates.bulkAestheticStart")}
           </Button>
         </div>
@@ -597,7 +596,7 @@ export default function TemplateGalleryPage() {
               {/* Estetika AI group */}
               <div className="flex flex-col gap-1.5 min-w-0">
                 <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 flex items-center gap-1 px-0.5">
-                  <Sparkles className="size-2.5 text-primary/60" />
+                  <SparkleIcon className="size-2.5 text-primary/60" />
                   Estetika AI
                 </span>
                 <div className="inline-flex p-0.5 bg-muted/40 border border-border/40 rounded-lg gap-0.5">
@@ -1068,7 +1067,7 @@ export default function TemplateGalleryPage() {
                           >
                             {critiquingId === seed.id
                               ? <Loader2 className="size-3 animate-spin" />
-                              : <Sparkles className="size-3" />}
+                              : <SparkleIcon className="size-3" />}
                             {critiquingId === seed.id
                               ? t("dashboard.adminTemplates.critiqueRunning")
                               : t("dashboard.adminTemplates.critique")}

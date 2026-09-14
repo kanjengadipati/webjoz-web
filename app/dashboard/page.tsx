@@ -19,10 +19,11 @@ import {
   Building2, Users, Globe, CreditCard, Activity, Megaphone, TrendingUp,
   Loader2, Calendar, Zap, Database, Server, Cpu, ChevronRight,
   BarChart3, ShieldCheck, TicketCheck, UserPlus, ArrowUpRight,
-  LayoutDashboard, DollarSign, Award, Clock, Sparkles, Share2,
+  LayoutDashboard, DollarSign, Award, Clock, Share2,
   Copy, Check, ArrowRight, Gift, Target,
 } from "lucide-react";
 import { UsageMeter } from "@/components/dashboard/usage-meter";
+import { SparkleIcon } from "@/components/sparkle-icon";
 import { EmailPromptBanner } from "@/components/dashboard/email-prompt-banner";
 import type { Profile } from "@/lib/types";
 
@@ -376,7 +377,7 @@ export default function DashboardOverviewPage() {
         {/* ── Summary cards ────────────────────────────────────────────── */}
         <section className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 min-w-0">
           {[
-            { label: t("dashboard.salesOverview.cardTotal"), value: fmt(grandTotal), desc: t("dashboard.salesOverview.cardTotalDesc"), icon: <Sparkles className="size-3.5 sm:size-4 text-emerald-500" />, cls: "text-emerald-600 dark:text-emerald-400" },
+            { label: t("dashboard.salesOverview.cardTotal"), value: fmt(grandTotal), desc: t("dashboard.salesOverview.cardTotalDesc"), icon: <SparkleIcon className="size-3.5 sm:size-4 text-emerald-500" />, cls: "text-emerald-600 dark:text-emerald-400" },
             { label: t("dashboard.salesOverview.cardCommission"), value: fmt(commSummary.total_earned), desc: t("dashboard.salesOverview.cardCommissionDesc", undefined, { t1, t2 }), icon: <DollarSign className="size-3.5 sm:size-4 text-emerald-500" />, cls: "text-foreground" },
             { label: t("dashboard.salesOverview.cardBonus"), value: fmt(bonusSummary.total_earned), desc: t("dashboard.salesOverview.cardBonusDesc", undefined, { onboarding: String(bonusSummary.onboarding_count), milestone: String(bonusSummary.milestone_count) }), icon: <Award className="size-3.5 sm:size-4 text-muted-foreground" />, cls: "text-foreground" },
             { label: t("dashboard.salesOverview.cardPending"), value: fmt(grandPending), desc: t("dashboard.salesOverview.cardPendingDesc"), icon: <Clock className="size-3.5 sm:size-4 text-muted-foreground" />, cls: "text-foreground" },

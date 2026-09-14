@@ -9,8 +9,9 @@ import {
   Loader2, Trash2, Globe, Clock, RefreshCw,
   Server, Copy, Info, Check, Link2, ExternalLink,
   AlertCircle, Search, ShoppingCart, MapPin, ChevronDown,
-  CheckCircle2, Sparkles,
+  CheckCircle2,
 } from "lucide-react";
+import { SparkleIcon } from "@/components/sparkle-icon";
 import { useToast } from "@/components/toast-provider";
 import { Dialog } from "@/components/ui/dialog";
 import Link from "next/link";
@@ -1469,7 +1470,7 @@ export default function DomainsPage() {
               </p>
             </div>
             <div className="p-3 bg-muted/30 border border-border rounded-2xl text-xs text-muted-foreground flex items-center justify-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-primary shrink-0" />
+              <SparkleIcon className="w-3.5 h-3.5 text-primary shrink-0" />
               <span>Mohon jangan menutup atau merefresh halaman ini.</span>
             </div>
           </div>
@@ -1488,7 +1489,7 @@ export default function DomainsPage() {
           }}
           title={
             <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
-              <Sparkles className="w-4 h-4" />
+              <SparkleIcon className="w-4 h-4" />
               <span>Registrasi Berhasil</span>
             </div>
           }
@@ -1505,7 +1506,7 @@ export default function DomainsPage() {
             {/* Title */}
             <div className="space-y-1.5">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 mb-1">
-                <Sparkles className="w-3.5 h-3.5" /> Pembelian & Registrasi Berhasil
+                <SparkleIcon className="w-3.5 h-3.5" /> Pembelian & Registrasi Berhasil
               </div>
               <h2 className="text-xl font-bold text-foreground tracking-tight">
                 {purchasedSuccessData.verificationStatus === "pending_verification"

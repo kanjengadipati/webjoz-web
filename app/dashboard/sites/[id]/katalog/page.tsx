@@ -12,8 +12,9 @@ import { PageLoading, Spinner } from "@/components/ui";
 import Link from "next/link";
 import {
   ChevronLeft, Save, Check, ShoppingBag,
-  Utensils, Sparkles
+  Utensils,
 } from "lucide-react";
+import { SparkleIcon } from "@/components/sparkle-icon";
 import { useI18n } from "@/lib/i18n/context";
 import { decodeSiteId } from "@/lib/sqids";
 import { MenuCatalogForm } from "@/components/menu-catalog-form";
@@ -300,7 +301,7 @@ export default function KatalogManagerPage() {
                 onClick={() => { aiPromptModal.resolve(aiPromptInput.trim() || ""); setAiPromptModal(null); }}
                 className="flex-1 h-10 rounded-xl bg-primary text-primary-foreground text-xs font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
               >
-                <Sparkles className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.generate", "Generate")}
+                <SparkleIcon className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.generate", "Generate")}
               </button>
             </div>
           </div>
