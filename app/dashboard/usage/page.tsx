@@ -15,11 +15,11 @@ import {
   Calendar,
   Clock,
   CreditCard,
-  Sparkles,
   Zap,
   AlertTriangle,
   CheckCircle2,
 } from "lucide-react";
+import { SparkleIcon } from "@/components/sparkle-icon";
 
 interface UsageResponse {
   usage: {
@@ -253,7 +253,7 @@ export default function UsagePage() {
         <Card className="border-border/60 shadow-sm">
           <CardContent className="p-6">
             <h3 className="text-base font-bold mb-4 flex items-center gap-2">
-              <Sparkles className="size-4 text-primary" />
+              <SparkleIcon className="size-4 text-primary" />
               {t("dashboard.usage.allPlans")}
             </h3>
             <div className="overflow-x-auto">
