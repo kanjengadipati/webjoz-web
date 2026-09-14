@@ -1,5 +1,6 @@
 "use client";
 import { Dialog } from "@/components/ui/dialog";
+import CongratsModal from "./[id]/modals/CongratsModal";
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
@@ -877,6 +878,7 @@ export default function SitesPage() {
       {publishedSiteTarget && (
         <CongratsModal
           site={publishedSiteTarget}
+          siteId={publishedSiteTarget.id}
           onClose={() => setPublishedSiteTarget(null)}
           displayDomain={getFriendlyDisplayDomain(publishedSiteTarget)}
           siteUrl={getSiteUrl(publishedSiteTarget)}
@@ -1256,105 +1258,5 @@ export default function SitesPage() {
         </div>
       )}
     </div>
-  );
-}
-
-/* ── Congrats Celebration Modal (Dialog) ─────────────────────────────────── */
-interface CongratsModalProps {
-  site: {
-    name: string;
-  };
-  onClose: () => void;
-  displayDomain: string;
-  siteUrl: string;
-}
-
-function CongratsModal({ site, onClose, displayDomain, siteUrl }: CongratsModalProps) {
-  const { t } = useI18n();
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(siteUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  return (
-    <Dialog
-      open={true}
-      onOpenChange={(open) => {
-        if (!open) onClose();
-      }}
-      title={t("dashboard.sites.congratsTitle")}
-    >
-      <div className="space-y-6 text-center py-4">
-        {/* Celebration Anim/Icon */}
-        <div className="flex justify-center">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#3ddc84] to-primary flex items-center justify-center shadow-[0_0_30px_color-mix(in_srgb,var(--primary)_30%,transparent)] relative">
-            <div className="absolute inset-0 rounded-full border-4 border-border animate-ping" />
-            <Rocket className="w-10 h-10 text-foreground animate-bounce" style={{ animationDuration: "2.5s" }} />
-          </div>
-        </div>
-
-        <div className="space-y-2 max-w-sm mx-auto">
-          <h3 className="text-xl font-bold text-foreground tracking-tight">{t("dashboard.sites.congratsHeading")}</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            {t("dashboard.sites.congratsBody", undefined, { name: site.name })}
-          </p>
-        </div>
-
-        {/* Clickable Subdomain Link Box */}
-        <div className="bg-card border border-border rounded-2xl p-5 space-y-3.5 max-w-md mx-auto relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent blur-xl pointer-events-none" />
-
-          <div className="flex items-center justify-between gap-3 bg-background border border-border rounded-xl px-4 py-3">
-            <div className="flex items-center gap-2.5 min-w-0 flex-1">
-              <Globe className="w-4 h-4 text-primary shrink-0" />
-              <a
-                href={siteUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[14px] text-foreground font-mono font-bold hover:text-primary hover:underline truncate block text-left"
-                title={t("dashboard.sites.openWebsite")}
-              >
-                {displayDomain}
-              </a>
-            </div>
-
-            <button
-              type="button"
-              onClick={handleCopy}
-              className="p-2 bg-muted/50 border border-border text-muted-foreground hover:text-white hover:bg-white/[0.08] rounded-lg transition-all shrink-0 cursor-pointer flex items-center justify-center"
-              title={t("dashboard.sites.copyLinkTitle")}
-            >
-              {copied ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
-            </button>
-          </div>
-
-          <p className="text-[11.5px] text-muted-foreground leading-relaxed m-0 text-left">
-            {t("dashboard.sites.checkTip")}
-          </p>
-        </div>
-
-        {/* CTA Buttons */}
-        <div className="flex gap-3 max-w-sm mx-auto pt-2">
-          <Button
-            type="button"
-            variant="outline"
-            className="flex-1 rounded-xl h-11 text-[13.5px] border-border hover:bg-muted/50"
-            onClick={onClose}
-          >
-            {t("dashboard.sites.done")}
-          </Button>
-          <button
-            type="button"
-            className="btn-primary flex-1 rounded-xl h-11 text-[13.5px] font-bold flex items-center justify-center gap-2"
-            onClick={() => window.open(siteUrl, "_blank")}
-          >
-            <Globe className="w-4 h-4" /> {t("dashboard.sites.openWebsite")}
-          </button>
-        </div>
-      </div>
-    </Dialog>
   );
 }
