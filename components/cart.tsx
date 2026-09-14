@@ -1090,7 +1090,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead }: {
                 disabled={leadLoading}
                 className="w-full min-h-10 py-2.5 font-bold flex items-center justify-center gap-2 cursor-pointer transition-all hover:brightness-110 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
                 style={{
-                  background: !isWaEmpty ? "linear-gradient(135deg, #25D366, #128C7E)" : primaryColor,
+                  background: !isWaEmpty ? "#25D366" : primaryColor,
                   color: !isWaEmpty ? "#fff" : primaryFg,
                   borderRadius: "0.75rem",
                   border: "none",

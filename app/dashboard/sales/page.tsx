@@ -165,7 +165,7 @@ Salam!`;
                 {referralCode || "—"}
               </span>
               <Button size="sm" variant="outline" onClick={handleCopyCode} className="shrink-0 gap-1.5 rounded-lg text-xs cursor-pointer shadow-sm">
-                {copiedCode ? <Check className="size-3.5 text-emerald-500" /> : <Copy className="size-3.5" />}
+                {copiedCode ? <Check className="size-3.5 text-primary" /> : <Copy className="size-3.5" />}
                 <span>{copiedCode ? t("dashboard.sales.copied") : t("dashboard.sales.copyCode")}</span>
               </Button>
             </div>
@@ -200,7 +200,7 @@ Salam!`;
             <div className="p-3 rounded-xl border border-border/40 bg-muted/30 text-xs font-mono text-muted-foreground flex items-center justify-between gap-2 min-w-0">
               <span className="truncate flex-1 min-w-0">{shareableUrl}</span>
               <Button size="sm" variant="secondary" onClick={handleCopyLink} className="shrink-0 gap-1.5 rounded-lg text-xs cursor-pointer shadow-sm">
-                {copiedLink ? <Check className="size-3.5 text-emerald-500" /> : <Copy className="size-3.5" />}
+                {copiedLink ? <Check className="size-3.5 text-primary" /> : <Copy className="size-3.5" />}
                 <span>{copiedLink ? t("dashboard.sales.copied") : t("dashboard.sales.copyLink")}</span>
               </Button>
             </div>
@@ -210,7 +210,7 @@ Salam!`;
               <Button
                 type="button"
                 onClick={handleShareWhatsApp}
-                className="gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs shadow-sm cursor-pointer"
+                className="gap-2 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium text-xs shadow-sm cursor-pointer"
               >
                 <MessageCircle className="size-4 shrink-0" />
                 <span className="truncate">{t("dashboard.sales.shareWhatsApp")}</span>
@@ -221,7 +221,7 @@ Salam!`;
                 onClick={handleShareEmail}
                 className="gap-2 rounded-xl text-xs font-medium cursor-pointer shadow-sm border-border hover:bg-muted"
               >
-                <Mail className="size-4 shrink-0 text-blue-500" />
+                <Mail className="size-4 shrink-0 text-primary" />
                 <span className="truncate">{t("dashboard.sales.shareEmail")}</span>
               </Button>
             </div>
@@ -233,7 +233,7 @@ Salam!`;
               onClick={handleCopyInviteText}
               className="w-full gap-1.5 rounded-xl text-xs text-muted-foreground hover:text-foreground h-8 cursor-pointer"
             >
-              {copiedInviteText ? <Check className="size-3.5 text-emerald-500" /> : <Copy className="size-3.5" />}
+              {copiedInviteText ? <Check className="size-3.5 text-primary" /> : <Copy className="size-3.5" />}
               <span>{copiedInviteText ? t("dashboard.sales.copied") : t("dashboard.sales.copyInviteText")}</span>
             </Button>
           </CardContent>
@@ -247,21 +247,21 @@ Salam!`;
         const months = config?.tier_threshold_months ?? 12;
 
         return (
-          <Card className="border-emerald-500/20 bg-emerald-500/5 shadow-sm min-w-0 overflow-hidden rounded-2xl">
-            <CardHeader className="p-4 pb-3 border-b border-emerald-500/15">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
+          <Card className="border-border/40 bg-card shadow-sm min-w-0 overflow-hidden rounded-2xl">
+            <CardHeader className="p-4 pb-3 border-b border-border/20">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground">
                 <Zap className="size-4" />
                 <span>{t("dashboard.salesOverview.schemeTitle")}</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4 pt-4 space-y-3 min-w-0">
               <div className="space-y-2 min-w-0">
-                <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-2.5">
+                <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-border/40 bg-muted/30 px-4 py-2.5">
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider">Tier 1</p>
+                    <p className="text-xs font-bold text-foreground uppercase tracking-wider">Tier 1</p>
                     <p className="text-[11px] text-muted-foreground truncate">{t("dashboard.salesOverview.tier1Desc", undefined, { months: String(months) })}</p>
                   </div>
-                  <span className="text-xl sm:text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 shrink-0">{t1}%</span>
+                  <span className="text-xl sm:text-2xl font-extrabold text-foreground shrink-0">{t1}%</span>
                 </div>
                 <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-border/40 bg-muted/30 px-4 py-2.5">
                   <div className="min-w-0 flex-1">

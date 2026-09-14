@@ -3557,8 +3557,8 @@ export default function SiteEditorPage() {
           <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
             <div className="w-full max-w-sm rounded-2xl border border-border bg-[#111318] p-6 shadow-2xl space-y-4">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/15">
-                  <Rocket className="h-5 w-5 text-emerald-400" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/15">
+                  <Rocket className="h-5 w-5 text-primary" />
                 </div>
                 <div>
                   <h3 className="text-[14px] font-bold text-slate-100">{t("dashboard.sitesEditor.confirmPublishTitle")}</h3>
@@ -3586,7 +3586,7 @@ export default function SiteEditorPage() {
                       setPublishModalOpen(true);
                     }
                   }}
-                  className="flex-1 rounded-xl bg-emerald-600 py-2 text-[12px] font-bold text-white hover:bg-emerald-500 transition-colors disabled:opacity-60"
+                  className="flex-1 rounded-xl bg-primary py-2 text-[12px] font-bold text-white hover:bg-primary/90 transition-colors disabled:opacity-60"
                 >
                   {publishing ? t("dashboard.sitesEditor.applying") : t("dashboard.sitesEditor.confirmApply")}
                 </button>
