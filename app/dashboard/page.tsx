@@ -101,13 +101,22 @@ const DASHBOARD_CONFIG = {
   TREND_WINDOW_DAYS: 7,
 } as const;
 
+const TINT_CLASSES: Record<string, string> = {
+  "text-blue-500": "bg-blue-500/10",
+  "text-emerald-500": "bg-emerald-500/10",
+  "text-amber-500": "bg-amber-500/10",
+  "text-green-500": "bg-green-500/10",
+  "text-primary": "bg-primary/10",
+  "text-rose-500": "bg-rose-500/10",
+};
+
 function StatCard({ label, value, icon: Icon, href, color, sub }: { label: string; value: string | number; icon: any; href: string; color: string; sub?: string }) {
   return (
     <Link href={href}>
       <div className="group bg-card border border-border/60 shadow-sm rounded-3xl p-6 transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:-translate-y-0.5">
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">{label}</span>
-          <div className={`size-10 rounded-2xl bg-gradient-to-br ${color}/10 ${color}/5 flex items-center justify-center`}>
+          <div className={`size-10 rounded-2xl ${TINT_CLASSES[color] ?? "bg-muted"} flex items-center justify-center`}>
             <Icon className={`size-5 ${color}`} />
           </div>
         </div>
@@ -319,15 +328,11 @@ export default function DashboardOverviewPage() {
       <div className="space-y-8 animate-in fade-in duration-700 w-full min-w-0 max-w-full overflow-hidden">
         <EmailPromptBanner />
         {/* ── Hero header ─────────────────────────────────────────────── */}
-        <section className="relative overflow-hidden rounded-3xl border border-emerald-500/25 bg-gradient-to-br from-emerald-500/10 via-card to-background p-5 sm:p-7 shadow-lg shadow-emerald-500/5 backdrop-blur-xl group min-w-0">
-          {/* Ambient Lighting Glows */}
-          <div className="absolute -right-16 -top-16 size-56 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
-          <div className="absolute -left-16 -bottom-16 size-56 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
-
+        <section className="relative overflow-hidden rounded-3xl border border-emerald-500/25 bg-card p-5 sm:p-7 shadow-lg shadow-emerald-500/5 backdrop-blur-xl group min-w-0">
           <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5 min-w-0">
             <div className="flex items-start sm:items-center gap-4 min-w-0">
-              {/* Glowing Emerald Icon Badge */}
-              <div className="relative flex size-12 sm:size-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-[0_4px_20px_rgba(16,185,129,0.35)] text-white">
+              {/* Emerald Icon Badge */}
+              <div className="relative flex size-12 sm:size-14 shrink-0 items-center justify-center rounded-2xl bg-emerald-500 text-white">
                 <TrendingUp className="size-6 sm:size-7 stroke-[2.5]" />
               </div>
               <div className="space-y-1 min-w-0">
@@ -336,7 +341,7 @@ export default function DashboardOverviewPage() {
                     {t("dashboard.salesOverview.pageTitle")}
                   </h2>
                   <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 tracking-wide">
-                    <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="size-1.5 rounded-full bg-emerald-500" />
                     Partner Active
                   </span>
                 </div>
@@ -487,10 +492,10 @@ export default function DashboardOverviewPage() {
   if (isAdmin) {
     return (
       <div className="space-y-8 animate-in fade-in duration-700">
-        <section className="bg-gradient-to-br from-primary/15 via-primary/5 to-blue-600/10 border border-primary/15 rounded-3xl p-4 sm:p-6 lg:p-8 shadow-sm">
+        <section className="bg-primary/10 border border-primary/15 rounded-3xl p-4 sm:p-6 lg:p-8 shadow-sm">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 lg:gap-6">
             <div className="flex items-center gap-5">
-              <div className="size-16 rounded-2xl bg-gradient-to-br from-primary/20 to-blue-600/20 flex items-center justify-center">
+              <div className="size-16 rounded-2xl bg-primary/15 flex items-center justify-center">
                 <LayoutDashboard className="size-8 text-primary" />
               </div>
               <div>
@@ -577,7 +582,7 @@ export default function DashboardOverviewPage() {
                 {tenants.map((t) => (
                   <Link key={t.id} href={`/dashboard/tenants/${t.id}`} className="flex items-center justify-between p-3.5 rounded-2xl hover:bg-muted/30 transition-all duration-200 group">
                     <div className="flex items-center gap-4">
-                      <div className="size-10 rounded-xl bg-gradient-to-br from-primary/15 to-blue-600/10 flex items-center justify-center text-primary font-bold text-sm">
+                      <div className="size-10 rounded-xl bg-primary/15 flex items-center justify-center text-primary font-bold text-sm">
                         {t.name.charAt(0).toUpperCase()}
                       </div>
                       <div>
@@ -657,10 +662,10 @@ export default function DashboardOverviewPage() {
   // Regular user view
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
-      <section className="bg-gradient-to-r from-primary/20 to-blue-600/20 border border-primary/20 rounded-3xl p-4 sm:p-6 lg:p-8 shadow-sm">
+      <section className="bg-primary/10 border border-primary/20 rounded-3xl p-4 sm:p-6 lg:p-8 shadow-sm">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 lg:gap-6">
           <div>
-            <h2 className="text-3xl font-bold leading-[1.1] tracking-tighter text-balance bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-transparent sm:text-4xl md:text-6xl lg:text-7xl">
+            <h2 className="text-3xl font-bold leading-[1.1] tracking-tighter text-balance text-foreground sm:text-4xl md:text-6xl lg:text-7xl">
               {t("dashboard.welcome", undefined, { name: profile?.name ? `, ${profile.name.split(" ")[0]}` : "" })}
             </h2>
             <p className="text-sm leading-relaxed text-muted-foreground sm:text-base md:text-lg">
@@ -676,7 +681,7 @@ export default function DashboardOverviewPage() {
       </section>
 
       {activeTenant?.tenant.plan === "free" && (
-        <section className="bg-gradient-to-r from-primary/10 to-amber-500/10 border border-primary/20 rounded-3xl p-5 flex items-center justify-between gap-4">
+        <section className="bg-amber-500/10 border border-primary/20 rounded-3xl p-5 flex items-center justify-between gap-4">
           <div className="space-y-1">
             <p className="text-sm font-bold text-foreground">{t("dashboard.usingFreePlan", undefined, { plan: "Free" })}</p>
             <p className="text-xs text-muted-foreground">{t("dashboard.upgradeToProDesc")}</p>
