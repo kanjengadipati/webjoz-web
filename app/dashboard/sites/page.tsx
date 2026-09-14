@@ -1305,16 +1305,16 @@ function CongratsModal({ site, onClose, displayDomain, siteUrl }: CongratsModalP
 
         {/* Clickable Subdomain Link Box */}
         <div className="bg-card border border-border rounded-2xl p-5 space-y-3.5 max-w-md mx-auto relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-tr from-[#3ddc84]/10 to-transparent blur-xl pointer-events-none" />
+          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent blur-xl pointer-events-none" />
 
           <div className="flex items-center justify-between gap-3 bg-background border border-border rounded-xl px-4 py-3">
             <div className="flex items-center gap-2.5 min-w-0 flex-1">
-              <Globe className="w-4 h-4 text-[#3ddc84] shrink-0" />
+              <Globe className="w-4 h-4 text-primary shrink-0" />
               <a
                 href={siteUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[14px] text-foreground font-mono font-bold hover:text-[#3ddc84] hover:underline truncate block text-left"
+                className="text-[14px] text-foreground font-mono font-bold hover:text-primary hover:underline truncate block text-left"
                 title={t("dashboard.sites.openWebsite")}
               >
                 {displayDomain}
@@ -1327,7 +1327,7 @@ function CongratsModal({ site, onClose, displayDomain, siteUrl }: CongratsModalP
               className="p-2 bg-muted/50 border border-border text-muted-foreground hover:text-white hover:bg-white/[0.08] rounded-lg transition-all shrink-0 cursor-pointer flex items-center justify-center"
               title={t("dashboard.sites.copyLinkTitle")}
             >
-              {copied ? <Check className="w-4 h-4 text-[#3ddc84]" /> : <Copy className="w-4 h-4" />}
+              {copied ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
             </button>
           </div>
 

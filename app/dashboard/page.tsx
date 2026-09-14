@@ -329,11 +329,11 @@ export default function DashboardOverviewPage() {
       <div className="space-y-8 animate-in fade-in duration-700 w-full min-w-0 max-w-full overflow-hidden">
         <EmailPromptBanner />
         {/* ── Hero header ─────────────────────────────────────────────── */}
-        <section className="relative overflow-hidden rounded-3xl border border-emerald-500/25 bg-card p-5 sm:p-7 shadow-lg shadow-emerald-500/5 backdrop-blur-xl group min-w-0">
+        <section className="relative overflow-hidden rounded-3xl border border-border/40 bg-card p-5 sm:p-7 shadow-sm backdrop-blur-xl group min-w-0">
           <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5 min-w-0">
             <div className="flex items-start sm:items-center gap-4 min-w-0">
-              {/* Emerald Icon Badge */}
-              <div className="relative flex size-12 sm:size-14 shrink-0 items-center justify-center rounded-2xl bg-emerald-500 text-white">
+              {/* Icon Badge */}
+              <div className="relative flex size-12 sm:size-14 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
                 <TrendingUp className="size-6 sm:size-7 stroke-[2.5]" />
               </div>
               <div className="space-y-1 min-w-0">
@@ -341,8 +341,8 @@ export default function DashboardOverviewPage() {
                   <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground">
                     {t("dashboard.salesOverview.pageTitle")}
                   </h2>
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 tracking-wide">
-                    <span className="size-1.5 rounded-full bg-emerald-500" />
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-muted text-muted-foreground border border-border tracking-wide">
+                    <span className="size-1.5 rounded-full bg-primary" />
                     Partner Active
                   </span>
                 </div>
@@ -355,8 +355,8 @@ export default function DashboardOverviewPage() {
             {/* Action Buttons */}
             <div className="grid grid-cols-2 sm:flex sm:items-center gap-2.5 w-full sm:w-auto pt-2 sm:pt-0">
               <Link href="/dashboard/sales/commissions" className="w-full sm:w-auto">
-                <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-500/30 bg-card hover:bg-emerald-500/10 hover:border-emerald-500/50 px-3.5 py-2.5 text-xs font-bold text-foreground shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer">
-                  <span className="flex size-5 shrink-0 items-center justify-center rounded-md bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-extrabold text-[11px]">
+                <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-border/60 bg-card hover:bg-muted hover:border-border/80 px-3.5 py-2.5 text-xs font-bold text-foreground shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer">
+                  <span className="flex size-5 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary font-extrabold text-[11px]">
                     $
                   </span>
                   <span className="truncate">{t("dashboard.salesOverview.linkCommissionsTitle")}</span>
@@ -377,8 +377,8 @@ export default function DashboardOverviewPage() {
         {/* ── Summary cards ────────────────────────────────────────────── */}
         <section className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 min-w-0">
           {[
-            { label: t("dashboard.salesOverview.cardTotal"), value: fmt(grandTotal), desc: t("dashboard.salesOverview.cardTotalDesc"), icon: <SparkleIcon className="size-3.5 sm:size-4 text-emerald-500" />, cls: "text-emerald-600 dark:text-emerald-400" },
-            { label: t("dashboard.salesOverview.cardCommission"), value: fmt(commSummary.total_earned), desc: t("dashboard.salesOverview.cardCommissionDesc", undefined, { t1, t2 }), icon: <DollarSign className="size-3.5 sm:size-4 text-emerald-500" />, cls: "text-foreground" },
+            { label: t("dashboard.salesOverview.cardTotal"), value: fmt(grandTotal), desc: t("dashboard.salesOverview.cardTotalDesc"), icon: <SparkleIcon className="size-3.5 sm:size-4 text-primary" />, cls: "text-foreground" },
+            { label: t("dashboard.salesOverview.cardCommission"), value: fmt(commSummary.total_earned), desc: t("dashboard.salesOverview.cardCommissionDesc", undefined, { t1, t2 }), icon: <DollarSign className="size-3.5 sm:size-4 text-primary" />, cls: "text-foreground" },
             { label: t("dashboard.salesOverview.cardBonus"), value: fmt(bonusSummary.total_earned), desc: t("dashboard.salesOverview.cardBonusDesc", undefined, { onboarding: String(bonusSummary.onboarding_count), milestone: String(bonusSummary.milestone_count) }), icon: <Award className="size-3.5 sm:size-4 text-muted-foreground" />, cls: "text-foreground" },
             { label: t("dashboard.salesOverview.cardPending"), value: fmt(grandPending), desc: t("dashboard.salesOverview.cardPendingDesc"), icon: <Clock className="size-3.5 sm:size-4 text-muted-foreground" />, cls: "text-foreground" },
           ].map((card) => (
@@ -416,7 +416,7 @@ export default function DashboardOverviewPage() {
                   onClick={handleCopyCode}
                   className="shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold rounded-lg border border-border/60 bg-background px-2.5 py-1.5 sm:px-3 hover:bg-muted transition cursor-pointer shadow-sm"
                 >
-                  {codeCopied ? <Check className="size-3.5 text-emerald-500" /> : <Copy className="size-3.5" />}
+                  {codeCopied ? <Check className="size-3.5 text-primary" /> : <Copy className="size-3.5" />}
                   <span>{codeCopied ? t("dashboard.salesOverview.copied") : t("dashboard.salesOverview.copyCode")}</span>
                 </button>
               </div>
@@ -446,21 +446,21 @@ export default function DashboardOverviewPage() {
           </Card>
 
           {/* Commission scheme */}
-          <Card className="border-emerald-500/20 bg-emerald-500/5 shadow-sm min-w-0 overflow-hidden rounded-2xl">
-            <CardHeader className="p-4 pb-3 border-b border-emerald-500/15">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
+          <Card className="border-border/40 bg-card shadow-sm min-w-0 overflow-hidden rounded-2xl">
+            <CardHeader className="p-4 pb-3 border-b border-border/20">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground">
                 <Zap className="size-4" />
                 {t("dashboard.salesOverview.schemeTitle")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4 pt-4 space-y-3 min-w-0">
               <div className="space-y-2 min-w-0">
-                <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-2.5">
+                <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-border/40 bg-muted/30 px-4 py-2.5">
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider">Tier 1</p>
+                    <p className="text-xs font-bold text-foreground uppercase tracking-wider">Tier 1</p>
                     <p className="text-[11px] text-muted-foreground truncate">{t("dashboard.salesOverview.tier1Desc", undefined, { months: String(months) })}</p>
                   </div>
-                  <span className="text-xl sm:text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 shrink-0">{t1}%</span>
+                  <span className="text-xl sm:text-2xl font-extrabold text-foreground shrink-0">{t1}%</span>
                 </div>
                 <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-border/40 bg-muted/30 px-4 py-2.5">
                   <div className="min-w-0 flex-1">
@@ -531,7 +531,7 @@ export default function DashboardOverviewPage() {
             value={stats?.total_tenants ?? 0}
             icon={Building2}
             href="/dashboard/tenants"
-            color="text-blue-500"
+            color="text-primary"
             sub={stats ? t("dashboard.admin.in7Days", undefined, { count: String(stats.new_tenants_7d) }) : undefined}
           />
           <StatCard
@@ -539,7 +539,7 @@ export default function DashboardOverviewPage() {
             value={stats?.total_users ?? 0}
             icon={Users}
             href="/dashboard/users"
-            color="text-emerald-500"
+            color="text-primary"
             sub={stats ? t("dashboard.admin.in7Days", undefined, { count: String(stats.new_users_7d) }) : undefined}
           />
           <StatCard
@@ -554,14 +554,14 @@ export default function DashboardOverviewPage() {
             value={planCount}
             icon={CreditCard}
             href="/dashboard/admin/plans"
-            color="text-amber-500"
+            color="text-primary"
           />
           <StatCard
             label={t("dashboard.admin.newUsers7d")}
             value={stats?.new_users_7d ?? 0}
             icon={UserPlus}
             href="/dashboard/users"
-            color="text-rose-500"
+            color="text-primary"
           />
         </section>
 
@@ -682,7 +682,7 @@ export default function DashboardOverviewPage() {
       </section>
 
       {activeTenant?.tenant.plan === "free" && (
-        <section className="bg-amber-500/10 border border-primary/20 rounded-3xl p-5 flex items-center justify-between gap-4">
+        <section className="bg-primary/5 border border-primary/20 rounded-3xl p-5 flex items-center justify-between gap-4">
           <div className="space-y-1">
             <p className="text-sm font-bold text-foreground">{t("dashboard.usingFreePlan", undefined, { plan: "Free" })}</p>
             <p className="text-xs text-muted-foreground">{t("dashboard.upgradeToProDesc")}</p>
@@ -695,9 +695,9 @@ export default function DashboardOverviewPage() {
 
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         <StatCard label={t("dashboard.statWebsites")} value={metrics.totalSites} icon={Globe} href="/dashboard/sites" color="text-primary" sub={t("dashboard.sitesPublished", undefined, { count: String(metrics.publishedSites) })} />
-        <StatCard label={t("dashboard.statLeads")} value={metrics.totalLeads} icon={Activity} href="/dashboard/leads" color="text-amber-500" sub={metrics.totalLeads > 0 ? t("dashboard.newProspects") : t("dashboard.setupLeadForm")} />
-        <StatCard label={t("dashboard.statVisitors")} value={metrics.totalViews} icon={TrendingUp} href="/dashboard/analytics" color="text-emerald-500" sub={t("dashboard.thisWeek")} />
-        <StatCard label={t("dashboard.statHealth")} value="100%" icon={ShieldCheck} href="/dashboard/settings" color="text-green-500" sub={t("dashboard.allSystemsNormal")} />
+        <StatCard label={t("dashboard.statLeads")} value={metrics.totalLeads} icon={Activity} href="/dashboard/leads" color="text-primary" sub={metrics.totalLeads > 0 ? t("dashboard.newProspects") : t("dashboard.setupLeadForm")} />
+        <StatCard label={t("dashboard.statVisitors")} value={metrics.totalViews} icon={TrendingUp} href="/dashboard/analytics" color="text-primary" sub={t("dashboard.thisWeek")} />
+        <StatCard label={t("dashboard.statHealth")} value="100%" icon={ShieldCheck} href="/dashboard/settings" color="text-primary" sub={t("dashboard.allSystemsNormal")} />
       </section>
 
       {currentPlan && tenantUsage && (

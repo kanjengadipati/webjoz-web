@@ -152,11 +152,11 @@ export default function MyCommissionsPage() {
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center justify-between">
               {t("dashboard.salesCommissions.cardTotal")}
-              <SparkleIcon className="size-4 text-emerald-500" />
+              <SparkleIcon className="size-4 text-primary" />
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">
+            <div className="text-2xl font-extrabold text-foreground">
               Rp {grandTotalEarned.toLocaleString("id-ID")}
             </div>
             <p className="text-[11px] text-muted-foreground mt-1">{t("dashboard.salesCommissions.cardTotalDesc")}</p>
@@ -167,7 +167,7 @@ export default function MyCommissionsPage() {
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center justify-between">
               {t("dashboard.salesCommissions.cardCommission")}
-              <DollarSign className="size-4 text-emerald-500" />
+              <DollarSign className="size-4 text-primary" />
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -182,11 +182,11 @@ export default function MyCommissionsPage() {
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center justify-between">
               {t("dashboard.salesCommissions.cardBonus")}
-              <Award className="size-4 text-amber-500" />
+              <Award className="size-4 text-primary" />
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">
+            <div className="text-2xl font-bold text-foreground">
               Rp {bonusSummary.total_earned.toLocaleString("id-ID")}
             </div>
             <p className="text-[11px] text-muted-foreground mt-1">
@@ -199,11 +199,11 @@ export default function MyCommissionsPage() {
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center justify-between">
               {t("dashboard.salesCommissions.cardPending")}
-              <Clock className="size-4 text-amber-500" />
+              <Clock className="size-4 text-primary" />
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">
+            <div className="text-2xl font-bold text-foreground">
               Rp {(summary.total_pending + bonusSummary.total_pending).toLocaleString("id-ID")}
             </div>
             <p className="text-[11px] text-muted-foreground mt-1">{t("dashboard.salesCommissions.cardPendingDesc")}</p>
@@ -282,11 +282,11 @@ export default function MyCommissionsPage() {
                         </td>
                         <td className="px-6 py-4 text-center text-xs">
                           <span className="inline-flex flex-col items-center leading-tight">
-                            <span className="font-bold text-emerald-600 dark:text-emerald-400">{t("dashboard.salesCommissions.tierLabel", undefined, { tier: String(c.tier) })}</span>
+                            <span className="font-bold text-foreground">{t("dashboard.salesCommissions.tierLabel", undefined, { tier: String(c.tier) })}</span>
                             <span className="text-[11px] text-muted-foreground">{(c.rate * 100).toFixed(0)}%</span>
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-right font-bold text-emerald-600 dark:text-emerald-400">
+                        <td className="px-6 py-4 text-right font-bold text-foreground">
                           Rp {c.amount.toLocaleString("id-ID")}
                         </td>
                         <td className="px-6 py-4 text-center">
@@ -373,9 +373,9 @@ export default function MyCommissionsPage() {
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2">
                             {b.type === "onboarding" ? (
-                              <Gift className="size-4 text-emerald-500" />
+                              <Gift className="size-4 text-primary" />
                             ) : (
-                              <Target className="size-4 text-amber-500" />
+                              <Target className="size-4 text-primary" />
                             )}
                             <span className="font-semibold capitalize">{t("dashboard.salesCommissions.bonusTypeLabel", undefined, { type: b.type })}</span>
                           </div>
@@ -385,7 +385,7 @@ export default function MyCommissionsPage() {
                             ? t("dashboard.salesCommissions.bonusTenant", undefined, { id: String(b.tenant_id) })
                             : t("dashboard.salesCommissions.bonusPeriod", undefined, { period: b.period || "", tier: String(b.tier) })}
                         </td>
-                        <td className="px-6 py-4 text-right font-bold text-amber-600 dark:text-amber-400">
+                        <td className="px-6 py-4 text-right font-bold text-foreground">
                           Rp {b.amount.toLocaleString("id-ID")}
                         </td>
                         <td className="px-6 py-4 text-center">

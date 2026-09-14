@@ -62,10 +62,10 @@ export default function CongratsModal({ site, siteId, onClose, onContinueEditing
       <div className="space-y-6 text-center py-4">
         {/* Celebration icon */}
         <div className="flex justify-center">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#3ddc84] to-primary flex items-center justify-center shadow-[0_0_30px_rgba(61,220,132,0.4)] relative">
-            <div className="absolute inset-0 rounded-full border-4 border-border animate-ping" />
+          <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-black/20 relative">
+            <div className="absolute inset-0 rounded-full border-2 border-border/40" />
             <Rocket
-              className="w-10 h-10 text-white animate-bounce"
+              className="w-10 h-10 text-primary-foreground animate-bounce"
               style={{ animationDuration: "2.5s" }}
             />
           </div>
@@ -82,16 +82,16 @@ export default function CongratsModal({ site, siteId, onClose, onContinueEditing
 
         {/* Clickable Subdomain Link Box */}
         <div className="bg-card border border-border rounded-2xl p-5 space-y-3.5 max-w-md mx-auto relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-tr from-[#3ddc84]/10 to-transparent blur-xl pointer-events-none" />
+          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-tr from-primary/10 to-transparent blur-xl pointer-events-none" />
 
           <div className="flex items-center justify-between gap-3 bg-background border border-border rounded-xl px-4 py-3">
             <div className="flex items-center gap-2.5 min-w-0 flex-1">
-              <Globe className="w-4 h-4 text-[#3ddc84] shrink-0" />
+              <Globe className="w-4 h-4 text-primary shrink-0" />
               <a
                 href={siteUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[14px] text-white font-mono font-bold hover:text-[#3ddc84] hover:underline truncate block text-left"
+                className="text-[14px] text-white font-mono font-bold hover:text-primary hover:underline truncate block text-left"
                 title={t("dashboard.sites.openWebsite")}
               >
                 {displayDomain}
@@ -105,7 +105,7 @@ export default function CongratsModal({ site, siteId, onClose, onContinueEditing
               title={t("dashboard.sites.copyLinkTitle")}
             >
               {copied ? (
-                <Check className="w-4 h-4 text-[#3ddc84]" />
+                <Check className="w-4 h-4 text-primary" />
               ) : (
                 <Copy className="w-4 h-4" />
               )}
