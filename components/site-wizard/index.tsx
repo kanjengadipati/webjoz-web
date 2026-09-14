@@ -1136,7 +1136,7 @@ export function SiteWizard({
                 <button
                   type="button"
                   onClick={() => device.setMobileScreen("preview")}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold transition-all active:scale-95 animate-pulse cursor-pointer"
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold transition-all active:scale-95 cursor-pointer"
                 >
                   Preview &rarr;
                 </button>
@@ -1510,7 +1510,7 @@ export function SiteWizard({
                           {((chat.suggestedHint?.type === bt.value) ||
                             (chat.suggestedHint?.type === "Kreatif & Profesional" && bt.value === "Portofolio & Kreator") ||
                             (chat.suggestedHint?.type === "Portofolio & Kreator" && bt.value === "Kreatif & Profesional")) && !isSelected && (
-                            <span className="text-[9px] font-bold text-amber-300 bg-amber-800/30 px-1.5 py-0.5 rounded-full">✨ Disarankan</span>
+                            <span className="text-[9px] font-bold text-amber-300 bg-amber-800/30 px-1.5 py-0.5 rounded-full">Disarankan</span>
                           )}
                           {isSelected && (
                             <span className="text-primary text-xs font-bold shrink-0">✓</span>
@@ -1542,7 +1542,7 @@ export function SiteWizard({
                                 {labelText}
                               </span>
                               {chat.suggestedHint?.subType === st.value && (
-                                <span className="text-[10px] text-amber-300 shrink-0">✨</span>
+                                <span className="text-[10px] text-amber-300 shrink-0">Disarankan</span>
                               )}
                               {isSubSelected && <span className="text-primary text-[10px] shrink-0">✓</span>}
                             </button>

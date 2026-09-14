@@ -6,7 +6,7 @@ import React, {
   useCallback,
   useState,
 } from "react";
-import { ArrowRight, Pencil, X } from "lucide-react";
+import { ArrowRight, CheckCircle2, Pencil, X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 
 // ─── Confetti ──────────────────────────────────────────────────────────────
@@ -274,8 +274,7 @@ export function WizardSuccessToast({
             className="absolute top-0 left-0 h-[3px] rounded-full"
             style={{
               width: `${progress}%`,
-              background:
-                "linear-gradient(90deg, #6366f1 0%, #8b5cf6 50%, #34d399 100%)",
+              background: "#34d399",
               transition: "none",
             }}
           />
@@ -283,8 +282,8 @@ export function WizardSuccessToast({
           <div className="px-4 pt-5 pb-4">
             {/* Header row */}
             <div className="flex items-start gap-3">
-              <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-lg select-none">
-                🎉
+              <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
               </div>
 
               <div className="flex-1 min-w-0">

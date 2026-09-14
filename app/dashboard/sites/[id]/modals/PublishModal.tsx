@@ -98,10 +98,9 @@ export default function PublishModal({ site, onConfirm, onCancel, loading, viola
         ) : (
         <>
         {/* Celebration Header Banner */}
-        <div className="bg-gradient-to-tr from-primary/10 to-primary/5 border border-primary/20 rounded-2xl p-4 flex items-center gap-3.5 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 blur-2xl rounded-full pointer-events-none" />
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-primary to-primary/80 flex items-center justify-center shrink-0 shadow-[0_4px_12px_color-mix(in_srgb,var(--primary)_30%,transparent)]">
-            <Rocket className="w-6 h-6 text-white animate-pulse" />
+        <div className="bg-primary/10 border border-primary/20 rounded-2xl p-4 flex items-center gap-3.5 relative overflow-hidden">
+          <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center shrink-0">
+            <Rocket className="w-6 h-6 text-primary-foreground" />
           </div>
           <div>
             <h4 className="text-[13.5px] font-bold text-white leading-snug">

@@ -60,7 +60,7 @@ export function LoadingModal({ loadingStep, progressPercent, businessType, busin
                   ? t("dashboard.wizard.loadingBuildingTitle", "Membangun website...")
                   : businessName
                   ? t("dashboard.wizard.loadingBuildingTitleWithName", undefined, { name: businessName })
-                  : t("dashboard.wizard.loadingBuildingTitleGeneral", "AI sedang membangun website Anda ✨")}
+                  : t("dashboard.wizard.loadingBuildingTitleGeneral", "AI sedang membangun website Anda")}
               </h3>
               {!center && (
                 <p className="text-[11px] text-slate-400 mt-0.5">
