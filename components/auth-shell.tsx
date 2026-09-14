@@ -106,9 +106,6 @@ export function AuthShell({
         <LanguageSwitcher />
       </div>
 
-      {/* Radial top glow */}
-      <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/10 via-transparent to-transparent -z-10 blur-3xl opacity-60" />
-
       {/* Center Main Content */}
       <div className="flex-1 flex flex-col justify-center my-auto w-full max-w-md mx-auto lg:max-w-6xl lg:grid lg:grid-cols-[1fr_0.9fr] lg:gap-8 lg:items-center">
         <div className="hidden space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-1000 lg:block">
@@ -123,13 +120,13 @@ export function AuthShell({
             />
             <Badge
               variant="outline"
-              className="w-fit px-4 py-1.5 border-primary/20 bg-primary/5 text-primary tracking-widest animate-pulse"
+              className="w-fit px-4 py-1.5 border-primary/20 bg-primary/5 text-primary tracking-widest"
             >
               {badge}
             </Badge>
           </div>
 
-          <h1 className="max-w-3xl text-4xl font-bold leading-[1.1] tracking-tighter text-balance bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-transparent sm:text-5xl lg:text-6xl">
+          <h1 className="max-w-3xl text-4xl font-bold leading-[1.1] tracking-tighter text-balance text-foreground sm:text-5xl lg:text-6xl">
             {title}
           </h1>
 
@@ -147,7 +144,7 @@ export function AuthShell({
         </div>
 
         <Card className="bg-card/90 backdrop-blur shadow-2xl animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150 border-border/70">
-          <CardHeader className="border-b border-border/60 bg-gradient-to-br from-background via-background to-primary/8 px-5 py-5 sm:px-6">
+          <CardHeader className="border-b border-border/60 bg-background px-5 py-5 sm:px-6">
             {cardEyebrow && <CardDescription className="text-xs uppercase tracking-wider font-semibold text-primary/80 mb-0.5">{cardEyebrow}</CardDescription>}
             <CardTitle>{cardTitle}</CardTitle>
             <CardDescription>{cardDescription}</CardDescription>
