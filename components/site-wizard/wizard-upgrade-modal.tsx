@@ -77,7 +77,7 @@ export function WizardUpgradeModal({
       role="presentation"
     >
       <div
-        className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-3xl border border-amber-500/30 bg-slate-950 text-slate-100 shadow-2xl shadow-amber-500/10 p-6 sm:p-7 space-y-5 animate-in zoom-in-95 duration-200"
+        className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-3xl border border-amber-500/30 bg-slate-950 text-slate-100 shadow-2xl shadow-black/40 p-6 sm:p-7 space-y-5 animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -95,7 +95,7 @@ export function WizardUpgradeModal({
         {/* Header Banner */}
         <div className="space-y-2 pr-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400 text-xs font-bold">
-            <Crown className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+            <Crown className="w-3.5 h-3.5 text-amber-400" />
             <span>
               {t(
                 "dashboard.wizardUpgrade.badge",
@@ -106,7 +106,7 @@ export function WizardUpgradeModal({
           <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white leading-snug">
             {t(
               "dashboard.wizardUpgrade.title",
-              isEn ? "Website Ready to Save! 🎉" : "Website Siap Disimpan! 🎉"
+              isEn ? "Website Ready to Save!" : "Website Siap Disimpan!"
             )}
           </h2>
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">

@@ -74,7 +74,7 @@ export default function SalesReferralPage() {
 
   const getInviteMessage = () => {
     return `Halo! Mau buat website modern, cepat, dan profesional untuk bisnis atau portofoliomu dalam hitungan menit? Coba buat di Webjoz:
-👉 ${shareableUrl}
+${shareableUrl}
 
 Gunakan kode referral saya: *${referralCode}*`;
   };

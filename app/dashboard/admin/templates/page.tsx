@@ -708,7 +708,7 @@ export default function TemplateGalleryPage() {
       {tab === "components" && (
         filteredTemplates.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3 bg-muted/10 border border-border/30 rounded-2xl">
-            <Layers className="size-10 opacity-30 animate-pulse" />
+            <Layers className="size-10 opacity-30" />
             <p className="text-sm font-medium">{t("dashboard.adminTemplates.noTemplateMatch")}</p>
             <Button variant="outline" size="sm" onClick={() => { setSearchQuery(""); setSelectedCategory("all"); }}>{t("dashboard.adminTemplates.resetFilter")}</Button>
           </div>
@@ -859,7 +859,7 @@ export default function TemplateGalleryPage() {
           </div>
         ) : filteredSeeds.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3 bg-muted/10 border border-border/30 rounded-2xl">
-            <SparkleIcon className="size-10 opacity-30 animate-pulse" />
+            <SparkleIcon className="size-10 opacity-30" />
             <p className="text-sm font-medium">{seeds.length === 0 ? t("dashboard.adminTemplates.noSeedsInDb") : t("dashboard.adminTemplates.noSeedsMatch")}</p>
             {seeds.length > 0 && (
               <Button variant="outline" size="sm" onClick={() => { setSearchQuery(""); setSelectedBusinessType("all"); setSelectedMood("all"); setScoreFilter("all"); setAestheticFilter("all"); }}>{t("dashboard.adminTemplates.resetSearch")}</Button>

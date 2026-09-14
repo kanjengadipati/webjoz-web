@@ -34,12 +34,12 @@ export function WizardSuccessModal({
           {/* Decorative Icon */}
           <div className="relative mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
             <CheckCircle2 className="h-8 w-8" />
-            <SparkleIcon className="absolute -top-1.5 -right-1.5 h-6 w-6 animate-pulse" />
+            <SparkleIcon className="absolute -top-1.5 -right-1.5 h-6 w-6" />
           </div>
 
           {/* Title & Description */}
           <h3 className="mb-3 text-lg font-extrabold text-white tracking-tight">
-            {t("dashboard.wizard.successModalTitle", "Selamat! Website Anda Telah Siap 🎉")}
+            {t("dashboard.wizard.successModalTitle", "Selamat! Website Anda Telah Siap")}
           </h3>
           <p className="mb-6 text-xs leading-relaxed text-slate-300">
             {t(

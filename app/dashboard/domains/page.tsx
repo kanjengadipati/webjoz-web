@@ -1495,11 +1495,8 @@ export default function DomainsPage() {
           }
         >
           <div className="relative p-6 sm:p-8 text-center space-y-6">
-            {/* Background Glow */}
-            <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-48 h-48 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
-
             {/* Icon */}
-            <div className="relative mx-auto w-16 h-16 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-500 shadow-[0_0_24px_rgba(16,185,129,0.2)]">
+            <div className="relative mx-auto w-16 h-16 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-500">
               <CheckCircle2 className="w-8 h-8" />
             </div>
 
