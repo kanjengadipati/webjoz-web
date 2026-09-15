@@ -439,7 +439,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
       )}>
         {!isFullscreenWorkspace && (
           <aside className="hidden lg:block">
-            <Card className="sticky top-6 overflow-hidden border-border/40 shadow-xl shadow-primary/5" style={{ background: "var(--card, oklch(0.15 0 0 / 0.7))" } as React.CSSProperties}>
+            <Card className="sticky top-6 overflow-hidden border-border/40 shadow-xl shadow-primary/5 bg-card dark:bg-card/90 backdrop-blur-md">
               <CardHeader className="space-y-4 border-b border-border/40 bg-gradient-to-br from-primary/10 via-transparent to-transparent p-6">
                 <div className="space-y-1">
                   <div className="flex items-center gap-3">
@@ -459,11 +459,11 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 </div>
               </CardHeader>
               <CardContent className="space-y-6 p-4">
-                <div className="rounded-2xl border border-border/30 bg-background/50 p-4 shadow-inner">
+                <div className="rounded-2xl border border-border/30 bg-muted/40 dark:bg-white/[0.03] p-4 shadow-inner">
                   <div className="flex items-center justify-between gap-3 mb-2">
                     <div className="text-xs font-medium text-muted-foreground/70">{t("dashboard.mode")}</div>
                     <div className="flex items-center gap-2">
-                      <span className="inline-flex items-center rounded-full border border-border/40 bg-muted/60 px-2.5 py-0.5 text-[11px] font-bold text-foreground capitalize">{activeTenant?.tenant.plan || "free"}</span>
+                      <span className="inline-flex items-center rounded-full border border-border/40 bg-muted/60 dark:bg-white/10 px-2.5 py-0.5 text-[11px] font-bold text-foreground capitalize">{activeTenant?.tenant.plan || "free"}</span>
                       {activeTenant?.tenant.plan === "free" && (
                         <Link href="/dashboard/upgrade" className="text-[9px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase tracking-wider leading-none hover:opacity-80 transition-opacity">
                           {t("dashboard.upgradeLabel")}

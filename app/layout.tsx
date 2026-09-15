@@ -72,6 +72,8 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const cookieLocale = (await cookies()).get(LOCALE_STORAGE_KEY)?.value;
+  const cookieTheme = (await cookies()).get("webjoz_theme")?.value;
+  const isDark = cookieTheme === "dark";
   const requestHeaders = await headers();
   const path = requestHeaders.get("x-webjoz-path") || "";
   const pathIsEn = path === "/en" || path.startsWith("/en/");
@@ -79,11 +81,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const defaultLocale: Locale =
     pathIsEn ? "en" : pathIsId ? "id" : cookieLocale === "en" ? "en" : "id";
   return (
-    <html lang={defaultLocale === "en" ? "en-US" : "id-ID"} suppressHydrationWarning data-scroll-behavior="smooth" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html lang={defaultLocale === "en" ? "en-US" : "id-ID"} suppressHydrationWarning data-scroll-behavior="smooth" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased${isDark ? " dark" : ""}`} data-theme={isDark ? "dark" : undefined}>
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var el=document.documentElement;var t=localStorage.getItem("webjoz_theme")||"auto";var dark;if(t==="light"){dark=false;}else if(t==="dark"){dark=true;}else{var h=new Date().getHours();dark=!(h>=6&&h<18);}el.classList.toggle("dark",dark);el.dataset.theme=dark?"dark":"light";el.style.backgroundColor=dark?"#111318":"#f8f8f7";}catch(e){}})();`,
+            __html: `(function(){try{var el=document.documentElement;var t=localStorage.getItem("webjoz_theme")||"auto";var dark;if(t==="light"){dark=false;}else if(t==="dark"){dark=true;}else{var h=new Date().getHours();dark=!(h>=6&&h<18);}el.classList.toggle("dark",dark);el.dataset.theme=dark?"dark":"light";el.style.backgroundColor=dark?"#111318":"#f8f8f7";el.style.colorScheme=dark?"dark":"light";try{document.cookie="webjoz_theme="+(dark?"dark":"light")+"; path=/; max-age=31536000; SameSite=Lax";}catch(e){}}catch(e){}})();`,
           }}
         />
       </head>
