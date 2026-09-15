@@ -14,6 +14,7 @@ import {
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { useToast } from "@/components/toast-provider";
 import { Dialog } from "@/components/ui/dialog";
+import { CustomSelect } from "@/components/ui/custom-select";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
 import { lookupIndonesianPostalCode } from "@/lib/indonesia-regions";
@@ -709,6 +710,12 @@ export default function DomainsPage() {
 
   // Published sites (have a real subdomain)
   const publishedSites = sites.filter(s => s.status === "published" && s.subdomain && !s.subdomain.startsWith("draft-"));
+  const siteOptions = publishedSites.map(s => ({
+    value: s.id.toString(),
+    label: s.name,
+    sublabel: `${s.subdomain}.webjoz.com`,
+    icon: <Globe className="size-4" />,
+  }));
 
 
   // ── Upselling Modal Footer ───────────────────────────────
@@ -847,17 +854,12 @@ export default function DomainsPage() {
                   <label className="block text-[12px] font-semibold text-primary mb-1.5">
                     {t("dashboard.domains.linkToSite")}
                   </label>
-                  <select
+                  <CustomSelect
                     value={siteId}
-                    onChange={e => setSiteId(e.target.value)}
-                    className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-[14px] text-foreground outline-none focus:border-primary cursor-pointer"
-                  >
-                    {publishedSites.map(s => (
-                      <option key={s.id} value={s.id}>
-                        {s.name} ({s.subdomain}.webjoz.com)
-                      </option>
-                    ))}
-                  </select>
+                    onChange={setSiteId}
+                    options={siteOptions}
+                    placeholder={t("dashboard.domains.linkToSite")}
+                  />
                 </div>
 
                 {/* Domain name */}
@@ -1070,17 +1072,12 @@ export default function DomainsPage() {
               <label className="block text-[12px] font-semibold text-primary mb-1.5">
                 {t("dashboard.domains.linkToSite")}
               </label>
-              <select
+              <CustomSelect
                 value={siteId}
-                onChange={e => setSiteId(e.target.value)}
-                className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-[14px] text-foreground outline-none focus:border-primary cursor-pointer"
-              >
-                {publishedSites.map(s => (
-                  <option key={s.id} value={s.id}>
-                    {s.name} ({s.subdomain}.webjoz.com)
-                  </option>
-                ))}
-              </select>
+                onChange={setSiteId}
+                options={siteOptions}
+                placeholder={t("dashboard.domains.linkToSite")}
+              />
             </div>
 
             {/* Custom Domain Input */}
@@ -1324,18 +1321,17 @@ export default function DomainsPage() {
             {/* Negara */}
             <div>
               <label className="block text-[11px] font-semibold text-muted-foreground mb-1">Negara *</label>
-              <div className="relative">
-                <select
-                  value={purchaser.country}
-                  onChange={e => handleCountryChange(e.target.value)}
-                  className="appearance-none w-full bg-muted/30 border border-border rounded-xl pl-3 pr-8 py-2 text-[13px] text-foreground outline-none focus:border-primary cursor-pointer"
-                >
-                  {COUNTRY_LIST.map(c => (
-                    <option key={c.code} value={c.code}>{c.flag} {c.name}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none" />
-              </div>
+              <CustomSelect
+                value={purchaser.country}
+                onChange={handleCountryChange}
+                options={COUNTRY_LIST.map(c => ({
+                  value: c.code,
+                  label: `${c.flag}  ${c.name}`,
+                  sublabel: c.dial,
+                }))}
+                size="sm"
+                triggerClassName="bg-muted/30 border-border"
+              />
             </div>
 
             {/* Alamat */}
