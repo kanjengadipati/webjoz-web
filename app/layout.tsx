@@ -83,7 +83,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var el=document.documentElement;var t=localStorage.getItem("webjoz_theme")||"auto";var dark;if(t==="light"){dark=false;}else if(t==="dark"){dark=true;}else{var h=new Date().getHours();dark=!(h>=6&&h<18);}el.classList.toggle("dark",dark);el.dataset.theme=dark?"dark":"light";}catch(e){}})();`,
+            __html: `(function(){try{var el=document.documentElement;var t=localStorage.getItem("webjoz_theme")||"auto";var dark;if(t==="light"){dark=false;}else if(t==="dark"){dark=true;}else{var h=new Date().getHours();dark=!(h>=6&&h<18);}el.classList.toggle("dark",dark);el.dataset.theme=dark?"dark":"light";el.style.backgroundColor=dark?"#111318":"#f8f8f7";}catch(e){}})();`,
           }}
         />
       </head>
