@@ -1,6 +1,12 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Prevent white flash on hard refresh — hard-code dark background on html
+   before any CSS variable or Tailwind utility loads */
+html {
+  background-color: oklch(0.12 0 0);
+}
+
 :root {
   /* Monochrome Light Theme */
   --background: oklch(0.976 0.007 255);

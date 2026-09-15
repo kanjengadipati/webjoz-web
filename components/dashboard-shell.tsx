@@ -439,7 +439,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
       )}>
         {!isFullscreenWorkspace && (
           <aside className="hidden lg:block">
-            <Card className="sticky top-6 overflow-hidden border-border/40 shadow-xl shadow-primary/5">
+            <Card className="sticky top-6 overflow-hidden border-border/40 shadow-xl shadow-primary/5" style={{ background: "var(--card, oklch(0.15 0 0 / 0.7))" } as React.CSSProperties}>
               <CardHeader className="space-y-4 border-b border-border/40 bg-gradient-to-br from-primary/10 via-transparent to-transparent p-6">
                 <div className="space-y-1">
                   <div className="flex items-center gap-3">
