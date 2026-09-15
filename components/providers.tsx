@@ -93,6 +93,9 @@ export function Providers({ children, defaultLocale = "id", forcedLocale }: { ch
       const effective = resolveEffectiveTheme(theme);
       document.documentElement.classList.toggle("dark", effective === "dark");
       document.documentElement.dataset.theme = effective;
+      try {
+        document.cookie = `webjoz_theme=${effective}; path=/; max-age=31536000; SameSite=Lax`;
+      } catch {}
     }
     applyTheme();
 

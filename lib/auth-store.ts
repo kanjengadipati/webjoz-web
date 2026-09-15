@@ -97,6 +97,10 @@ export function clearAuthSession() {
 
 export function setThemePreference(theme: "auto" | "dark" | "light") {
   setStoredValue(THEME_STORAGE_KEY, theme);
+  if (typeof document !== "undefined") {
+    const effective = resolveEffectiveTheme(theme);
+    document.cookie = `webjoz_theme=${effective}; path=/; max-age=31536000; SameSite=Lax`;
+  }
 }
 
 export function setAccentPreference(accent: "blue" | "monochrome") {

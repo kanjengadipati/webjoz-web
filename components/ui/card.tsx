@@ -19,8 +19,7 @@ export function Card({ children, className, variant = "default", ...props }: Car
   return (
     <section
       className={cn(
-        "rounded-3xl border text-card-foreground backdrop-blur-md hover:bg-card/80 hover:border-primary/20 hover:shadow-[0_20px_80px_-20px_rgba(0,0,0,0.15)]",
-        MOTION.standard,
+        "rounded-3xl border text-card-foreground backdrop-blur-md hover:bg-card/80 hover:border-primary/20 hover:shadow-[0_20px_80px_-20px_rgba(0,0,0,0.15)] transition-shadow transition-transform duration-200",
         CARD_VARIANTS[variant],
         className,
       )}
