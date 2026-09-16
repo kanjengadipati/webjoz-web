@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Button, Card, CardContent, CardHeader, EmptyState, Input, SectionTitle, SkeletonBlock, StatusBadge } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, EmptyState, Input, SectionTitle, SkeletonBlock, StatusBadge, CustomSelect } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
 import { usePermissions } from "@/hooks/use-permissions";
@@ -123,16 +123,18 @@ export default function UsersPage() {
                       <StatusBadge status={user.role} />
                       <StatusBadge status={user.is_verified ? "verified" : "unverified"} />
                     </div>
-                    <select
+                    <CustomSelect
                       value={user.role}
-                      onChange={(e) => void handleChangeRole(user, e.target.value)}
-                      className="h-9 px-3 rounded-xl border border-input bg-background text-xs font-medium cursor-pointer hover:border-primary/50 transition-colors"
-                    >
-                      <option value="user">User</option>
-                      <option value="sales">Sales</option>
-                      <option value="admin">Admin</option>
-                      {currentRole === "superadmin" && <option value="superadmin">Superadmin</option>}
-                    </select>
+                      onChange={(val) => void handleChangeRole(user, val)}
+                      options={[
+                        { value: "user", label: "User" },
+                        { value: "sales", label: "Sales" },
+                        { value: "admin", label: "Admin" },
+                        ...(currentRole === "superadmin" ? [{ value: "superadmin", label: "Superadmin" }] : []),
+                      ]}
+                      size="sm"
+                      className="w-32"
+                    />
                     {canDelete(user) && (
                       <Button
                         variant="destructive"

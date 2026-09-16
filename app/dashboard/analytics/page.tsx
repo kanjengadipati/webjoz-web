@@ -10,7 +10,7 @@ import {
   MousePointerClick, TrendingUp, X
 } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, DatePicker } from "@/components/ui";
+import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, DatePicker, CustomSelect } from "@/components/ui";
 import { Dialog } from "@/components/ui/dialog";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
@@ -330,21 +330,20 @@ export default function AnalyticsPage() {
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <Globe className="w-4 h-4 text-slate-500 shrink-0" />
-          <select
+        <div className="w-full sm:w-56">
+          <CustomSelect
             value={selectedSiteId}
-            onChange={(e) => setSelectedSiteId(e.target.value)}
-            className="w-full sm:w-auto px-3 py-2 border rounded-xl text-sm outline-none focus:border-primary bg-card"
-            aria-label={t("dashboard.analytics.selectSite")}
-          >
-            <option value="all">{t("dashboard.leads.allWebsites")}</option>
-            {sites.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name}
-              </option>
-            ))}
-          </select>
+            onChange={setSelectedSiteId}
+            options={[
+              { value: "all", label: t("dashboard.leads.allWebsites"), icon: <Globe className="w-4 h-4" /> },
+              ...sites.map((s) => ({
+                value: s.id.toString(),
+                label: s.name,
+                icon: <Globe className="w-4 h-4" />,
+              })),
+            ]}
+            size="sm"
+          />
         </div>
 
         <div className="flex items-center gap-2">

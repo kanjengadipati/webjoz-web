@@ -34,7 +34,8 @@ import {
   Button,
   Badge,
   Input,
-  Separator
+  Separator,
+  CustomSelect
 } from "@/components/ui";
 import { useI18n } from "@/lib/i18n/context";
 
@@ -494,59 +495,71 @@ export default function TemplateGalleryPage() {
           
           <div className="flex flex-wrap items-center gap-2">
             {tab === "components" && (
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="h-9 px-3 text-xs font-medium rounded-lg border border-border/40 bg-background/80 text-foreground outline-none focus:border-primary/60 cursor-pointer"
-              >
-                <option value="all">{t("dashboard.adminTemplates.allCategories")}</option>
-                {categories.filter(c => c !== "all").map((cat) => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
+              <div className="w-48">
+                <CustomSelect
+                  value={selectedCategory}
+                  onChange={setSelectedCategory}
+                  options={[
+                    { value: "all", label: t("dashboard.adminTemplates.allCategories") },
+                    ...categories.filter(c => c !== "all").map((cat) => ({ value: cat, label: cat })),
+                  ]}
+                  size="sm"
+                />
+              </div>
             )}
 
             {tab === "seeds" && (
               <>
                 {businessTypes.length > 1 && (
-                  <select
-                    value={selectedBusinessType}
-                    onChange={(e) => setSelectedBusinessType(e.target.value)}
-                    className="h-9 px-3 text-xs font-medium rounded-lg border border-border/40 bg-background/80 text-foreground outline-none focus:border-primary/60 cursor-pointer"
-                  >
-                    <option value="all">{t("dashboard.adminTemplates.allBusinessTypes")} ({businessTypeCounts.all})</option>
-                    {businessTypes.filter(b => b !== "all").map((bt) => (
-                      <option key={bt} value={bt} className="capitalize">{bt} ({businessTypeCounts[bt]})</option>
-                    ))}
-                  </select>
+                  <div className="w-52">
+                    <CustomSelect
+                      value={selectedBusinessType}
+                      onChange={setSelectedBusinessType}
+                      options={[
+                        { value: "all", label: `${t("dashboard.adminTemplates.allBusinessTypes")} (${businessTypeCounts.all})` },
+                        ...businessTypes.filter(b => b !== "all").map((bt) => ({
+                          value: bt,
+                          label: `${bt.charAt(0).toUpperCase() + bt.slice(1)} (${businessTypeCounts[bt]})`,
+                        })),
+                      ]}
+                      size="sm"
+                    />
+                  </div>
                 )}
 
                 {moods.length > 1 && (
-                  <select
-                    value={selectedMood}
-                    onChange={(e) => setSelectedMood(e.target.value)}
-                    className="h-9 px-3 text-xs font-medium rounded-lg border border-border/40 bg-background/80 text-foreground outline-none focus:border-primary/60 cursor-pointer capitalize"
-                  >
-                    <option value="all">{t("dashboard.adminTemplates.allMoods")} ({moodCounts.all})</option>
-                    {moods.filter(m => m !== "all").map((m) => (
-                      <option key={m} value={m} className="capitalize">{m} ({moodCounts[m]})</option>
-                    ))}
-                  </select>
+                  <div className="w-44">
+                    <CustomSelect
+                      value={selectedMood}
+                      onChange={setSelectedMood}
+                      options={[
+                        { value: "all", label: `${t("dashboard.adminTemplates.allMoods")} (${moodCounts.all})` },
+                        ...moods.filter(m => m !== "all").map((m) => ({
+                          value: m,
+                          label: `${m.charAt(0).toUpperCase() + m.slice(1)} (${moodCounts[m]})`,
+                        })),
+                      ]}
+                      size="sm"
+                    />
+                  </div>
                 )}
 
-                {/* Sort — moved here, inline with other dropdowns */}
-                <select
-                  value={sortOrder}
-                  onChange={(e) => setSortOrder(e.target.value as SortOrder)}
-                  className="h-9 px-3 text-xs font-medium rounded-lg border border-border/40 bg-background/80 text-foreground outline-none focus:border-primary/60 cursor-pointer"
-                >
-                  <option value="newest">{t("dashboard.adminTemplates.sortNewest")}</option>
-                  <option value="oldest">{t("dashboard.adminTemplates.sortOldest")}</option>
-                  <option value="score_desc">{t("dashboard.adminTemplates.sortScoreDesc")}</option>
-                  <option value="score_asc">{t("dashboard.adminTemplates.sortScoreAsc")}</option>
-                  <option value="aesthetic_desc">{t("dashboard.adminTemplates.sortAestheticDesc")}</option>
-                  <option value="aesthetic_asc">{t("dashboard.adminTemplates.sortAestheticAsc")}</option>
-                </select>
+                {/* Sort — inline with other dropdowns */}
+                <div className="w-48">
+                  <CustomSelect
+                    value={sortOrder}
+                    onChange={(val) => setSortOrder(val as SortOrder)}
+                    options={[
+                      { value: "newest", label: t("dashboard.adminTemplates.sortNewest") },
+                      { value: "oldest", label: t("dashboard.adminTemplates.sortOldest") },
+                      { value: "score_desc", label: t("dashboard.adminTemplates.sortScoreDesc") },
+                      { value: "score_asc", label: t("dashboard.adminTemplates.sortScoreAsc") },
+                      { value: "aesthetic_desc", label: t("dashboard.adminTemplates.sortAestheticDesc") },
+                      { value: "aesthetic_asc", label: t("dashboard.adminTemplates.sortAestheticAsc") },
+                    ]}
+                    size="sm"
+                  />
+                </div>
               </>
             )}
           </div>

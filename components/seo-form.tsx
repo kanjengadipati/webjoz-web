@@ -6,6 +6,7 @@ import { AiFieldButton } from "@/components/menu-catalog-form";
 import FileUpload from "@/components/file-upload";
 import { GoogleSnippetPreview } from "@/components/google-snippet-preview";
 import { request } from "@/lib/api/client";
+import { CustomSelect } from "@/components/ui";
 
 // ─── generateFieldText ────────────────────────────────────────────────────────
 // Calls AI regenerate-section and plucks back the specific field value.
@@ -429,24 +430,36 @@ export function SeoForm({
       {/* OG Type */}
       <div className="space-y-1">
         <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">OG Type</label>
-        <select value={seo?.og_type || "website"} onChange={(e) => updateField("seo", "og_type", e.target.value)} className={fieldBase}>
-          <option value="website">website</option>
-          <option value="article">article</option>
-          <option value="product">product</option>
-          <option value="profile">profile</option>
-          <option value="business.business">business.business</option>
-        </select>
+        <CustomSelect
+          value={seo?.og_type || "website"}
+          onChange={(val) => updateField("seo", "og_type", val)}
+          options={[
+            { value: "website", label: "website" },
+            { value: "article", label: "article" },
+            { value: "product", label: "product" },
+            { value: "profile", label: "profile" },
+            { value: "business.business", label: "business.business" },
+          ]}
+          size="sm"
+          triggerClassName="border-white/10 bg-black/20 text-slate-200"
+        />
       </div>
 
       {/* Twitter Card */}
       <div className="space-y-1">
         <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Twitter Card</label>
-        <select value={seo?.twitter_card || "summary_large_image"} onChange={(e) => updateField("seo", "twitter_card", e.target.value)} className={fieldBase}>
-          <option value="summary_large_image">summary_large_image</option>
-          <option value="summary">summary</option>
-          <option value="app">app</option>
-          <option value="player">player</option>
-        </select>
+        <CustomSelect
+          value={seo?.twitter_card || "summary_large_image"}
+          onChange={(val) => updateField("seo", "twitter_card", val)}
+          options={[
+            { value: "summary_large_image", label: "summary_large_image" },
+            { value: "summary", label: "summary" },
+            { value: "app", label: "app" },
+            { value: "player", label: "player" },
+          ]}
+          size="sm"
+          triggerClassName="border-white/10 bg-black/20 text-slate-200"
+        />
       </div>
 
       {/* Robots */}
@@ -455,12 +468,18 @@ export function SeoForm({
           <span>Robots</span>
           {renderFieldActions("robots")}
         </label>
-        <select value={seo?.robots || "index, follow"} onChange={(e) => updateField("seo", "robots", e.target.value)} className={fieldBase}>
-          <option value="index, follow">index, follow</option>
-          <option value="noindex, follow">noindex, follow</option>
-          <option value="index, nofollow">index, nofollow</option>
-          <option value="noindex, nofollow">noindex, nofollow</option>
-        </select>
+        <CustomSelect
+          value={seo?.robots || "index, follow"}
+          onChange={(val) => updateField("seo", "robots", val)}
+          options={[
+            { value: "index, follow", label: "index, follow" },
+            { value: "noindex, follow", label: "noindex, follow" },
+            { value: "index, nofollow", label: "index, nofollow" },
+            { value: "noindex, nofollow", label: "noindex, nofollow" },
+          ]}
+          size="sm"
+          triggerClassName="border-white/10 bg-black/20 text-slate-200"
+        />
       </div>
 
       {/* Custom robots.txt (Pro) */}

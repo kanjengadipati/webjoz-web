@@ -5,7 +5,7 @@ import { useAuthToken } from "@/lib/auth-store";
 import { request } from "@/lib/api/client";
 import { usePermissions } from "@/hooks/use-permissions";
 import { Loader2, Plus, Trash2, Megaphone, Info, AlertTriangle, AlertCircle } from "lucide-react";
-import { Button, Card, CardContent, CardHeader, CardTitle, Dialog, FormField, Input, Textarea, Select } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, CardTitle, Dialog, FormField, Input, Textarea, CustomSelect } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
 
@@ -193,11 +193,16 @@ export default function AdminAnnouncementsPage() {
             <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Maintenance scheduled" />
           </FormField>
           <FormField label={t("dashboard.adminAnnouncements.severity")}>
-            <Select value={severity} onChange={(e) => setSeverity(e.target.value)}>
-              <option value="info">{t("dashboard.adminAnnouncements.sevInfo")}</option>
-              <option value="warning">{t("dashboard.adminAnnouncements.sevWarning")}</option>
-              <option value="important">{t("dashboard.adminAnnouncements.sevImportant")}</option>
-            </Select>
+            <CustomSelect
+              value={severity}
+              onChange={setSeverity}
+              options={[
+                { value: "info", label: t("dashboard.adminAnnouncements.sevInfo"), icon: <Info className="size-4 text-blue-500" /> },
+                { value: "warning", label: t("dashboard.adminAnnouncements.sevWarning"), icon: <AlertTriangle className="size-4 text-amber-500" /> },
+                { value: "important", label: t("dashboard.adminAnnouncements.sevImportant"), icon: <AlertCircle className="size-4 text-rose-500" /> },
+              ]}
+              size="default"
+            />
           </FormField>
           <FormField label={t("dashboard.adminAnnouncements.contentField")} required>
             <Textarea value={content} onChange={(e) => setContent(e.target.value)} placeholder="We will be performing maintenance..." rows={4} />

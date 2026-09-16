@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Loader2, Search, ChevronLeft, ChevronRight, RotateCcw, AlertCircle, FileText, ExternalLink } from "lucide-react";
-import { Card } from "@/components/ui";
+import { Card, CustomSelect } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { useAuthToken } from "@/lib/auth-store";
 import { listPayments, forceUpdateStatus, processRefund, type PaymentResponse } from "@/lib/api/payments";
@@ -170,14 +170,22 @@ export default function AdminPaymentsPage() {
               <Search className="size-3.5"/>
             </button>
           </div>
-          <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }}
-            className="px-3 py-1.5 rounded-xl border border-border/60 bg-card/60 text-sm focus:outline-none transition">
-            {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s || "All Status"}</option>)}
-          </select>
-          <select value={gatewayFilter} onChange={e => { setGatewayFilter(e.target.value); setPage(1); }}
-            className="px-3 py-1.5 rounded-xl border border-border/60 bg-card/60 text-sm focus:outline-none transition">
-            {GATEWAY_OPTIONS.map(g => <option key={g} value={g}>{g || "All Gateway"}</option>)}
-          </select>
+          <div className="w-40">
+            <CustomSelect
+              value={statusFilter}
+              onChange={val => { setStatusFilter(val); setPage(1); }}
+              options={STATUS_OPTIONS.map(s => ({ value: s, label: s ? s.charAt(0).toUpperCase() + s.slice(1) : "All Status" }))}
+              size="sm"
+            />
+          </div>
+          <div className="w-40">
+            <CustomSelect
+              value={gatewayFilter}
+              onChange={val => { setGatewayFilter(val); setPage(1); }}
+              options={GATEWAY_OPTIONS.map(g => ({ value: g, label: g ? g.charAt(0).toUpperCase() + g.slice(1) : "All Gateway" }))}
+              size="sm"
+            />
+          </div>
         </div>
 
         {/* Table */}
@@ -278,10 +286,12 @@ export default function AdminPaymentsPage() {
             <div className="space-y-3">
               <div>
                 <label className="text-xs font-semibold block mb-1">New Status</label>
-                <select value={newStatus} onChange={e => setNewStatus(e.target.value as ForceStatus)}
-                  className="w-full px-3 py-2 rounded-xl border border-border/60 bg-background/60 text-sm focus:outline-none transition">
-                  {FORCE_STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                </select>
+                <CustomSelect
+                  value={newStatus}
+                  onChange={val => setNewStatus(val as ForceStatus)}
+                  options={FORCE_STATUS_OPTIONS.map(o => ({ value: o.value, label: o.label }))}
+                  size="default"
+                />
               </div>
               <div>
                 <label className="text-xs font-semibold block mb-1">Reason (audit log)</label>
