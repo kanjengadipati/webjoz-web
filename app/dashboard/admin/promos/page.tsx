@@ -5,7 +5,7 @@ import { useAuthToken } from "@/lib/auth-store";
 import { request } from "@/lib/api/client";
 import { usePermissions } from "@/hooks/use-permissions";
 import { Loader2, Plus, Pencil, Trash2, Percent, Tag, Calendar, Hash, Shield, Ban, CheckCircle, XCircle } from "lucide-react";
-import { Button, Card, CardContent, CardHeader, CardTitle, Dialog, FormField, Input, Textarea, Label, Select } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, CardTitle, Dialog, FormField, Input, Textarea, Label, CustomSelect } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 
 interface PromoCode {
@@ -401,14 +401,15 @@ export default function AdminPromosPage() {
               />
             </FormField>
             <FormField label="Tipe Diskon" required>
-              <select
+              <CustomSelect
                 value={form.discount_type}
-                onChange={(e) => setForm({ ...form, discount_type: e.target.value as "percentage" | "fixed" })}
-                className="flex h-10 w-full rounded-xl border border-border/60 bg-card/60 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-              >
-                <option value="percentage">Persen (%)</option>
-                <option value="fixed">Nominal Tetap (Rp)</option>
-              </select>
+                onChange={(val) => setForm({ ...form, discount_type: val as "percentage" | "fixed" })}
+                options={[
+                  { value: "percentage", label: "Persen (%)" },
+                  { value: "fixed", label: "Nominal Tetap (Rp)" },
+                ]}
+                size="default"
+              />
             </FormField>
           </div>
 
@@ -441,25 +442,27 @@ export default function AdminPromosPage() {
 
           <div className="grid grid-cols-2 gap-4">
             <FormField label="Cakupan Paket">
-              <select
+              <CustomSelect
                 value={form.scope}
-                onChange={(e) => setForm({ ...form, scope: e.target.value })}
-                className="flex h-10 w-full rounded-xl border border-border/60 bg-card/60 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-              >
-                <option value="all">Semua Paket</option>
-                <option value="specific">Paket Tertentu</option>
-              </select>
+                onChange={(val) => setForm({ ...form, scope: val })}
+                options={[
+                  { value: "all", label: "Semua Paket" },
+                  { value: "specific", label: "Paket Tertentu" },
+                ]}
+                size="default"
+              />
             </FormField>
             <FormField label="Cakupan Mata Uang">
-              <select
+              <CustomSelect
                 value={form.currency_scope}
-                onChange={(e) => setForm({ ...form, currency_scope: e.target.value })}
-                className="flex h-10 w-full rounded-xl border border-border/60 bg-card/60 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-              >
-                <option value="both">IDR + USD</option>
-                <option value="idr">IDR Saja</option>
-                <option value="usd">USD Saja</option>
-              </select>
+                onChange={(val) => setForm({ ...form, currency_scope: val })}
+                options={[
+                  { value: "both", label: "IDR + USD" },
+                  { value: "idr", label: "IDR Saja" },
+                  { value: "usd", label: "USD Saja" },
+                ]}
+                size="default"
+              />
             </FormField>
           </div>
 
@@ -475,15 +478,16 @@ export default function AdminPromosPage() {
 
           <div className="grid grid-cols-2 gap-4">
             <FormField label="Cakupan Billing">
-              <select
+              <CustomSelect
                 value={form.billing_cycle_scope}
-                onChange={(e) => setForm({ ...form, billing_cycle_scope: e.target.value })}
-                className="flex h-10 w-full rounded-xl border border-border/60 bg-card/60 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-              >
-                <option value="all">Semua</option>
-                <option value="monthly">Bulanan Saja</option>
-                <option value="yearly">Tahunan Saja</option>
-              </select>
+                onChange={(val) => setForm({ ...form, billing_cycle_scope: val })}
+                options={[
+                  { value: "all", label: "Semua" },
+                  { value: "monthly", label: "Bulanan Saja" },
+                  { value: "yearly", label: "Tahunan Saja" },
+                ]}
+                size="default"
+              />
             </FormField>
             <FormField label="Max Penggunaan/User">
               <Input

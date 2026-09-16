@@ -11,7 +11,7 @@ import {
   ShoppingBag, Search, ExternalLink, MessageCircle,
   Copy, Check, X, DollarSign, Clock, Layers, RefreshCw
 } from "lucide-react";
-import { Button, Card, CardContent, CardHeader, CardTitle, Dialog } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, CardTitle, Dialog, CustomSelect } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
 
@@ -502,19 +502,16 @@ export default function LeadsPage() {
           </div>
 
           {sites.length > 1 && (
-            <div className="flex items-center gap-1.5 shrink-0">
-              <select 
+            <div className="w-48 shrink-0">
+              <CustomSelect 
                 value={selectedSiteId} 
-                onChange={(e) => setSelectedSiteId(e.target.value)}
-                className="px-3 py-2 border border-border/80 rounded-xl text-xs outline-none focus:border-primary bg-card cursor-pointer font-medium"
-              >
-                <option value="all">{t("dashboard.leads.allWebsites")}</option>
-                {sites.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name}
-                  </option>
-                ))}
-              </select>
+                onChange={setSelectedSiteId}
+                options={[
+                  { value: "all", label: t("dashboard.leads.allWebsites") },
+                  ...sites.map((s) => ({ value: s.id.toString(), label: s.name })),
+                ]}
+                size="sm"
+              />
             </div>
           )}
         </div>

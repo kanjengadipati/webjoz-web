@@ -8,7 +8,7 @@ import {
   Loader2, Search, RefreshCw, Copy, Check, ShoppingBag,
   Phone, Mail, MessageSquare, User, Clock, ArrowRight,
 } from "lucide-react";
-import { Badge } from "@/components/ui";
+import { Badge, CustomSelect } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
 
@@ -205,16 +205,16 @@ export default function OrdersPage() {
           </div>
           <div className="flex items-center gap-2">
             <OrderStatusPill status={o.status} />
-            <select
+            <CustomSelect
               value={o.status}
-              onChange={(e) => updateStatus(o, e.target.value as OrderStatus)}
-              className="h-8 rounded-md border border-border bg-background px-2 text-xs"
-            >
-              <option disabled>Ubah status…</option>
-              {STATUS_LIST.map((s) => (
-                <option key={s} value={s}>{STATUS_META[s].label}</option>
-              ))}
-            </select>
+              onChange={(val) => updateStatus(o, val as OrderStatus)}
+              options={STATUS_LIST.map((s) => ({
+                value: s,
+                label: STATUS_META[s].label,
+              }))}
+              size="sm"
+              className="w-36"
+            />
           </div>
         </div>
 
@@ -299,14 +299,28 @@ export default function OrdersPage() {
             className="w-full rounded-lg border border-border bg-background py-2 pl-8 pr-3 text-sm"
           />
         </div>
-        <select value={selectedSiteId} onChange={(e) => setSelectedSiteId(e.target.value)} className="h-9 rounded-lg border border-border bg-background px-2 text-sm">
-          <option value="all">Semua Website</option>
-          {sites.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-        </select>
-        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="h-9 rounded-lg border border-border bg-background px-2 text-sm">
-          <option value="all">Semua Status</option>
-          {STATUS_LIST.map((s) => <option key={s} value={s}>{STATUS_META[s].label}</option>)}
-        </select>
+        <div className="w-48">
+          <CustomSelect
+            value={selectedSiteId}
+            onChange={setSelectedSiteId}
+            options={[
+              { value: "all", label: "Semua Website" },
+              ...sites.map((s) => ({ value: s.id.toString(), label: s.name })),
+            ]}
+            size="sm"
+          />
+        </div>
+        <div className="w-44">
+          <CustomSelect
+            value={statusFilter}
+            onChange={setStatusFilter}
+            options={[
+              { value: "all", label: "Semua Status" },
+              ...STATUS_LIST.map((s) => ({ value: s, label: STATUS_META[s].label })),
+            ]}
+            size="sm"
+          />
+        </div>
       </div>
 
       {/* List */}

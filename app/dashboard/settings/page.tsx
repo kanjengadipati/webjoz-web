@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { PhoneNumberInput, isValidPhoneNumber } from "@/components/phone-number-input";
 import { Can } from "@/components/can";
-import { Badge, Button, Card, CardContent, CardHeader, EmptyState, Input, Label, SectionTitle, SkeletonBlock, StatusBadge } from "@/components/ui";
+import { Badge, Button, Card, CardContent, CardHeader, EmptyState, Input, Label, SectionTitle, SkeletonBlock, StatusBadge, CustomSelect } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { changePassword, fetchProfile, updateProfile } from "@/lib/api";
 import { LinkAccountCard } from "@/components/dashboard/link-account-card";
@@ -564,16 +564,18 @@ function UsersTab() {
                         <StatusBadge status={user.role} />
                         <StatusBadge status={user.is_verified ? "verified" : "unverified"} />
                       </div>
-                      <select
+                      <CustomSelect
                         value={user.role}
-                        onChange={(e) => void handleChangeRole(user, e.target.value)}
-                        className="h-9 px-3 rounded-xl border border-input bg-background text-xs font-medium cursor-pointer hover:border-primary/50 transition-colors"
-                      >
-                        <option value="user">{t("dashboard.settings.roleUser")}</option>
-                        <option value="sales">{t("dashboard.settings.roleSales")}</option>
-                        <option value="admin">{t("dashboard.settings.roleAdmin")}</option>
-                        {currentRole === "superadmin" && <option value="superadmin">{t("dashboard.settings.roleSuperadmin")}</option>}
-                      </select>
+                        onChange={(val) => void handleChangeRole(user, val)}
+                        options={[
+                          { value: "user", label: t("dashboard.settings.roleUser") },
+                          { value: "sales", label: t("dashboard.settings.roleSales") },
+                          { value: "admin", label: t("dashboard.settings.roleAdmin") },
+                          ...(currentRole === "superadmin" ? [{ value: "superadmin", label: t("dashboard.settings.roleSuperadmin") }] : []),
+                        ]}
+                        size="sm"
+                        className="w-36"
+                      />
                       {canDelete(user) && (
                         <Button variant="destructive" size="sm" className="rounded-xl h-9" onClick={() => void handleDeleteUser(user)}>
                           {t("dashboard.settings.delete")}

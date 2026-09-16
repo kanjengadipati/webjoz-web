@@ -5,7 +5,7 @@ import { useAuthToken } from "@/lib/auth-store";
 import { request } from "@/lib/api/client";
 import { usePermissions } from "@/hooks/use-permissions";
 import { Building2, Loader2, Users, Globe, ArrowLeft, Mail, Calendar, Zap, CreditCard } from "lucide-react";
-import { Button, Card, CardContent, CardHeader, CardTitle, Select } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, CardTitle, CustomSelect } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
 import Link from "next/link";
@@ -180,16 +180,17 @@ export default function AdminTenantDetailPage() {
             <div className="flex-1">
               <label className="mb-2 block text-xs font-medium text-muted-foreground">{t("dashboard.tenantDetail.changePlanLabel")}</label>
               <div className="flex gap-2">
-                <select
-                  value={selectedPlanId}
-                  onChange={(e) => setSelectedPlanId(e.target.value)}
-                  className="flex-1 rounded-xl border border-input bg-background px-3 py-2 text-sm"
-                >
-                  <option value="">{t("dashboard.tenantDetail.selectPlan")}</option>
-                  {plans.map((p) => (
-                    <option key={p.id} value={p.id}>{p.name}</option>
-                  ))}
-                </select>
+                <div className="flex-1">
+                  <CustomSelect
+                    value={selectedPlanId}
+                    onChange={setSelectedPlanId}
+                    options={[
+                      { value: "", label: t("dashboard.tenantDetail.selectPlan") },
+                      ...plans.map((p) => ({ value: p.id.toString(), label: p.name })),
+                    ]}
+                    size="sm"
+                  />
+                </div>
                 <Button size="sm" onClick={handleAssignPlan} disabled={!selectedPlanId || assigning}>
                   {assigning ? "..." : t("dashboard.tenantDetail.assign")}
                 </Button>

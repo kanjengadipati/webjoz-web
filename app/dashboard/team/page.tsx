@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
-import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, CardTitle, Input, CustomSelect } from "@/components/ui";
 import { Dialog } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/toast-provider";
@@ -194,14 +194,17 @@ export default function TeamPage() {
                 onChange={e => setInviteEmail(e.target.value)}
               />
             </div>
-            <select
-              value={inviteRole}
-              onChange={e => setInviteRole(e.target.value)}
-              className="px-3 py-2 border rounded-xl text-sm bg-card outline-none"
-            >
-              <option value="editor">{t("dashboard.team.role.editor")}</option>
-              <option value="viewer">{t("dashboard.team.role.viewer")}</option>
-            </select>
+            <div className="w-36 shrink-0">
+              <CustomSelect
+                value={inviteRole}
+                onChange={setInviteRole}
+                options={[
+                  { value: "editor", label: t("dashboard.team.role.editor") },
+                  { value: "viewer", label: t("dashboard.team.role.viewer") },
+                ]}
+                size="default"
+              />
+            </div>
             <Button onClick={handleInvite}>{t("dashboard.team.sendInvite")}</Button>
           </div>
           <p className="text-xs text-muted-foreground mt-2">
