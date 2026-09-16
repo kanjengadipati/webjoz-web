@@ -145,7 +145,60 @@ export async function request<T>(
   return body;
 }
 
-export async function refreshAccessToken() {
+const REFRESH_STATE_KEY = "__webjoz_refresh_state__";
+const REFRESH_COALESCE_MS = 1000;
+const REFRESH_FAIL_COOLDOWN_MS = 10_000;
+
+interface RefreshState {
+  inFlight: Promise<ApiSuccessResponse<LoginResponse>> | null;
+  lastAt: number;
+  lastPromise: Promise<ApiSuccessResponse<LoginResponse>> | null;
+  failCooldownUntil: number;
+}
+
+function refreshState(): RefreshState {
+  const g = globalThis as unknown as Record<string, unknown>;
+  let s = g[REFRESH_STATE_KEY] as RefreshState | undefined;
+  if (!s) {
+    s = { inFlight: null, lastAt: 0, lastPromise: null, failCooldownUntil: 0 };
+    g[REFRESH_STATE_KEY] = s;
+  }
+  return s;
+}
+
+export function refreshAccessToken(): Promise<ApiSuccessResponse<LoginResponse>> {
+  const state = refreshState();
+  const now = Date.now();
+
+  if (state.inFlight) {
+    return state.inFlight;
+  }
+
+  if (state.lastPromise && now - state.lastAt < REFRESH_COALESCE_MS) {
+    return state.lastPromise;
+  }
+
+  if (state.failCooldownUntil > now && state.lastPromise) {
+    return state.lastPromise;
+  }
+
+  const attempt = doRefreshAccessToken().finally(() => {
+    if (state.inFlight === attempt) {
+      state.inFlight = null;
+    }
+  });
+
+  state.inFlight = attempt;
+  state.lastAt = now;
+  state.lastPromise = attempt;
+  attempt.catch(() => {
+    state.failCooldownUntil = Date.now() + REFRESH_FAIL_COOLDOWN_MS;
+  });
+
+  return attempt;
+}
+
+async function doRefreshAccessToken() {
   const refreshResponse = await fetchWithTimeout("/auth/refresh", {
     method: "POST",
     headers: {
