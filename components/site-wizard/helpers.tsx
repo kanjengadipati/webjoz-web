@@ -335,7 +335,7 @@ function matchesKeyword(text: string, keyword: string): boolean {
 import { NAME_TYPE_HINTS } from "./constants";
 import type { InferenceResult } from "./types";
 
-export function suggestTypeFromName(name: string): { type?: string; subType?: string } | null {
+export function suggestTypeFromName(name: string): { type?: string; subType?: string; refinedText?: string } | null {
   const s = (name || "").toLowerCase();
   if (!s) return null;
   for (const key of Object.keys(NAME_TYPE_HINTS)) {
@@ -355,7 +355,7 @@ export function suggestTypeFromName(name: string): { type?: string; subType?: st
  */
 export function generateDescriptionFromBusinessName(
   businessName: string,
-  hint?: { type?: string; subType?: string } | null,
+  hint?: { type?: string; subType?: string; refinedText?: string } | null,
   locale: string = "id"
 ): string {
   const name = businessName.trim();
@@ -410,6 +410,14 @@ export function generateDescriptionFromBusinessName(
         return `Fast, clean, and fragrant laundry care with premium garment washing at ${name}.`;
       case "Jasa Rumah & Kebersihan":
         return `Professional home cleaning, repair, and property maintenance services by ${name}.`;
+      case "Fashion & Pakaian":
+        return /batik|tenun|kebaya/i.test(name)
+          ? `Offering authentic Indonesian batik and traditional wear with elegant motifs, comfortable fabrics, and timeless heritage at ${name}.`
+          : `Offering a stylish collection of modern apparel, comfortable everyday wear, and quality fashion at ${name}.`;
+      case "Toko Online":
+        return `Your trusted online store providing quality products with fast, convenient, and reliable service at ${name}.`;
+      case "Produk Lokal Handmade":
+        return `Showcasing authentic handcrafted local goods, souvenirs, and artisanal creations at ${name}.`;
       default:
         return `Providing premium quality products and trusted professional services at ${name}.`;
     }
@@ -461,6 +469,14 @@ export function generateDescriptionFromBusinessName(
       return `Jasa laundry cepat, bersih, wangi, dan higienis dengan perawatan pakaian terbaik di ${name}.`;
     case "Jasa Rumah & Kebersihan":
       return `Layanan kebersihan rumah, kantor, dan perawatan fasilitas profesional terpercaya bersama ${name}.`;
+    case "Fashion & Pakaian":
+      return /batik|tenun|kebaya/i.test(name)
+        ? `Menyediakan aneka koleksi batik dan busana tradisional berkualitas dengan motif elegan, bahan nyaman, dan sentuhan tradisi terbaik di ${name}.`
+        : `Menyediakan aneka koleksi pakaian dan busana berkualitas dengan desain terkini, bahan nyaman, dan harga terbaik di ${name}.`;
+    case "Toko Online":
+      return `Toko online terpercaya yang menyediakan aneka produk berkualitas pilihan dengan pelayanan cepat dan amanah di ${name}.`;
+    case "Produk Lokal Handmade":
+      return `Menyediakan aneka produk kerajinan tangan dan souvenir lokal berkualitas tinggi dengan sentuhan seni autentik di ${name}.`;
     default:
       return `Menyediakan produk dan layanan berkualitas tinggi yang terpercaya untuk pelanggan setia ${name}.`;
   }
@@ -485,6 +501,8 @@ export function getDynamicDescriptionPlaceholder(
         return "Example: Authentic family recipes, grilled dishes, dine-in & takeaway (Press Enter to skip)";
       case "Kuliner Tradisional & Nusantara":
         return "Example: Traditional heritage dishes, authentic local spices, dine-in & takeaway (Press Enter to skip)";
+      case "Fashion & Pakaian":
+        return "Example: Authentic batik shirts, modern dresses, premium casual wear, retail & wholesale (Press Enter to skip)";
       case "Otomotif & Bengkel":
         return "Example: Periodic engine tune-up, oil change, 24-hour emergency service (Press Enter to skip)";
       case "Rental Mobil & Kendaraan":
@@ -507,6 +525,8 @@ export function getDynamicDescriptionPlaceholder(
       return "Contoh: Menu masakan khas Nusantara, paket hemat makan siang, melayani delivery (Tekan Enter untuk lewati)";
     case "Kuliner Tradisional & Nusantara":
       return "Contoh: Kuliner khas daerah resep warisan, bumbu rempah autentik, melayani pesanan besek/catering (Tekan Enter untuk lewati)";
+    case "Fashion & Pakaian":
+      return "Contoh: Jual aneka batik tulis, kemeja batik pria, dress batik wanita, motif khas (Tekan Enter untuk lewati)";
     case "Otomotif & Bengkel":
       return "Contoh: Melayani servis rutin, ganti oli, tune up mesin, dan panggilan darurat (Tekan Enter untuk lewati)";
     case "Rental Mobil & Kendaraan":
