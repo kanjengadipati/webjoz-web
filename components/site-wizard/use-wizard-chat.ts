@@ -44,7 +44,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   const [isAiTyping, setIsAiTyping] = useState(false);
   const [isAnalyzingDescription, setIsAnalyzingDescription] = useState(false);
   const [awaitingNameConfirm, setAwaitingNameConfirm] = useState(false);
-  const [suggestedHint, setSuggestedHint] = useState<{ type?: string; subType?: string } | null>(null);
+  const [suggestedHint, setSuggestedHint] = useState<{ type?: string; subType?: string; refinedText?: string } | null>(null);
   const [inferenceResult, setInferenceResult] = useState<InferenceResult | null>(null);
   const [awaitingInferenceConfirm, setAwaitingInferenceConfirm] = useState(false);
   const [typeWasInferred, setTypeWasInferred] = useState(false);
@@ -665,6 +665,21 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       const hint = suggestTypeFromName(capitalized);
       setSuggestedHint(hint);
 
+      // Pre-fetch AI analysis of business name in background so skip/inference is instant
+      processBusinessDescription("", capitalized, locale)
+        .then((aiRes) => {
+          const d = aiRes?.data;
+          if (d && d.confidence === "high" && d.type && d.sub_type) {
+            setSuggestedHint((prev) => ({
+              ...prev,
+              type: d.type!.trim(),
+              subType: d.sub_type!.trim(),
+              refinedText: d.refined_text?.trim(),
+            }));
+          }
+        })
+        .catch(() => {});
+
       if (flagged && !hasAskedNameConfirmRef.current) {
         hasAskedNameConfirmRef.current = true;
         setAwaitingNameConfirm(true);
@@ -715,6 +730,21 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     const hint = suggestTypeFromName(capitalized);
     setSuggestedHint(hint);
 
+    // Pre-fetch AI analysis of business name in background so skip/inference is instant
+    processBusinessDescription("", capitalized, locale)
+      .then((aiRes) => {
+        const d = aiRes?.data;
+        if (d && d.confidence === "high" && d.type && d.sub_type) {
+          setSuggestedHint((prev) => ({
+            ...prev,
+            type: d.type!.trim(),
+            subType: d.sub_type!.trim(),
+            refinedText: d.refined_text?.trim(),
+          }));
+        }
+      })
+      .catch(() => {});
+
     setTimeout(() => {
       typeMessage(`${pickVariant(nameAckVariants)} ${t("dashboard.wizard.descriptionPrompt", DESCRIPTION_PROMPT)}`, () => {
         setChatStage("description");
@@ -730,13 +760,13 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     const isSkip = !val || val.toLowerCase() === DESCRIPTION_SKIP_KEYWORD || val.toLowerCase() === t("dashboard.wizard.descriptionSkipKeyword", "lewat").toLowerCase() || val.toLowerCase() === "skip";
     
     // [STEP 1: HANDLING SKIP / EMPTY INPUT]
-    // If the user skips, check if the business name itself is descriptive (e.g. "Kafe Kopi Kenangan", "Bengkel Mobil Sentosa")
+    // If the user skips, check if the business name itself is descriptive (e.g. "Kafe Kopi Kenangan", "Bengkel Mobil Sentosa", "Batik OKA Jogja")
     if (isSkip) {
-      const nameHint = suggestedHint || suggestTypeFromName(businessName);
+      let nameHint = suggestedHint || suggestTypeFromName(businessName);
       
-      // If the business name has a clear category hint, auto-generate a rich description and proceed with high confidence!
+      // If we already have a high-confidence category hint (from local dictionary or pre-fetched AI)
       if (nameHint?.type && nameHint?.subType) {
-        const autoDesc = generateDescriptionFromBusinessName(businessName, nameHint, locale);
+        const autoDesc = nameHint.refinedText || generateDescriptionFromBusinessName(businessName, nameHint, locale);
         const detectedLoc = extractLocationFromDescription(businessName);
         if (detectedLoc && !serviceArea) {
           setServiceArea(detectedLoc);
@@ -745,7 +775,34 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
         return;
       }
 
-      // Fallback for non-descriptive business names (e.g. "Abc", "Delta") -> show manual category chips
+      // AI-First Fallback: If no hint is ready yet, invoke AI to analyze the business name
+      setIsAnalyzingDescription(true);
+      try {
+        const aiRes = await processBusinessDescription("", businessNameRef.current || businessName, locale);
+        const d = aiRes?.data;
+        if (d && d.confidence === "high" && d.type && d.sub_type) {
+          const aiHint = {
+            type: d.type.trim(),
+            subType: d.sub_type.trim(),
+            refinedText: d.refined_text?.trim(),
+          };
+          setSuggestedHint(aiHint);
+          const autoDesc = aiHint.refinedText || generateDescriptionFromBusinessName(businessName, aiHint, locale);
+          const detectedLoc = extractLocationFromDescription(businessName);
+          if (detectedLoc && !serviceArea) {
+            setServiceArea(detectedLoc);
+          }
+          setIsAnalyzingDescription(false);
+          processDescriptionSubmission(autoDesc, { type: aiHint.type, subType: aiHint.subType });
+          return;
+        }
+      } catch (err) {
+        console.warn("AI business name inference failed, falling back to manual chips", err);
+      } finally {
+        setIsAnalyzingDescription(false);
+      }
+
+      // Fallback for truly non-descriptive business names (e.g. "Abc", "Delta", "123") -> show manual category chips
       setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: t("dashboard.wizard.btnNext", "Lanjut") }]);
       setInferenceResult({ confidence: "low" } as InferenceResult);
       setTimeout(() => {

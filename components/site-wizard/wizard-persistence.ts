@@ -16,7 +16,7 @@ export interface WizardResumeChat {
   awaitingNameConfirm: boolean;
   awaitingInferenceConfirm: boolean;
   inferenceResult: InferenceResult | null;
-  suggestedHint: { type?: string; subType?: string } | null;
+  suggestedHint: { type?: string; subType?: string; refinedText?: string } | null;
   typeWasInferred: boolean;
 }
 
