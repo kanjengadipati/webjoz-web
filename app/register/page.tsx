@@ -27,10 +27,12 @@ export default function RegisterPage() {
     setLoading(true);
     setErrorMessage("");
 
+    const redirectParam = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("redirect") : null;
+
     try {
       await register(name, email, phone, password);
       pushToast(t("auth.registerSuccess"), "success");
-      router.push("/login");
+      router.push(redirectParam ? `/login?redirect=${encodeURIComponent(redirectParam)}` : "/login");
     } catch (err: any) {
       const message = err.message || t("auth.errorRegisterFailed");
       setErrorMessage(message);
@@ -39,6 +41,8 @@ export default function RegisterPage() {
       setLoading(false);
     }
   }
+
+  const redirectParam = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("redirect") : null;
 
   return (
     <AuthShell
@@ -50,7 +54,12 @@ export default function RegisterPage() {
       cardDescription={t("auth.registerCardDesc")}
       footer={
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <Link href="/login" className="font-medium text-primary hover:opacity-80">{t("auth.registerFooterLogin")}</Link>
+          <Link
+            href={redirectParam ? `/login?redirect=${encodeURIComponent(redirectParam)}` : "/login"}
+            className="font-medium text-primary hover:opacity-80"
+          >
+            {t("auth.registerFooterLogin")}
+          </Link>
         </div>
       }
     >

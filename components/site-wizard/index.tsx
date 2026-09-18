@@ -836,15 +836,34 @@ export function SiteWizard({
     isSavingRef.current = true;
 
     if (!token) {
-      localStorage.setItem(PENDING_KEY, JSON.stringify({
-        businessName: chat.businessName, businessType: chat.businessType,
-        businessSubType: chat.businessSubType, description: chat.description, whatsapp: chat.whatsapp,
-        service_area: chat.serviceArea || "", mood: chat.mood || "",
-        templateId: preview.previewData?.template_id, previewContent: preview.previewData?.content,
-        previewDesignToken: preview.previewData?.design_token,
-      }));
-      if (onNeedAuth) { onNeedAuth(); }
-      else { router.push("/login?redirect=/create?action=save"); }
+      isSavingRef.current = false;
+      const contentToSave = preview.previewData?.content || preview.streamedSections;
+      const tokenToSave = preview.previewData?.design_token || preview.streamedDesignToken;
+      const templateIdToSave = preview.previewData?.template_id || preview.streamedTemplateId || (preview.streamedDesignToken as any)?.template_id || selectTemplate(chat.businessSubType || chat.businessType);
+
+      try {
+        localStorage.setItem(PENDING_KEY, JSON.stringify({
+          businessName: chat.businessName,
+          businessType: chat.businessType,
+          businessSubType: chat.businessSubType,
+          description: chat.description,
+          whatsapp: chat.whatsapp || "",
+          service_area: chat.serviceArea || "",
+          mood: chat.mood || "",
+          language: chat.siteLanguageRef.current ?? chat.siteLanguage ?? "id",
+          templateId: templateIdToSave,
+          previewContent: contentToSave,
+          previewDesignToken: tokenToSave,
+          savedAt: Date.now(),
+        }));
+        localStorage.setItem("webjoz_login_redirect", "/create?action=save");
+      } catch { /* storage quota */ }
+
+      if (onNeedAuth) {
+        onNeedAuth();
+      } else {
+        router.push(`/login?redirect=${encodeURIComponent("/create?action=save")}`);
+      }
       return;
     }
 
