@@ -1130,22 +1130,22 @@ export function SiteWizard({
                 type="button"
                 onClick={handleBack}
                 aria-label="Kembali"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-300 transition-all hover:border-primary/40 hover:bg-primary/10 hover:text-white active:scale-95 cursor-pointer"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-300 transition-all hover:border-white/20 hover:bg-white/10 hover:text-white active:scale-95 cursor-pointer"
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
 
               <div className="relative shrink-0">
-                <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-primary-foreground shadow-xs">
+                <div className="w-9 h-9 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center text-white shadow-xs">
                   <SparkleGenAI className="w-[22px] h-[22px]" />
                 </div>
-                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-slate-300 border-2 border-background" />
+                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#111318]" />
               </div>
 
               <div className="min-w-0 flex flex-col">
                 <div className="flex items-center gap-1.5">
                   <span className="font-bold text-white text-sm leading-tight truncate">Joz-AI</span>
-                  <span className="text-[9px] font-semibold tracking-wide text-primary bg-primary/10 border border-primary/20 px-1.5 py-0.5 rounded-md leading-none">
+                  <span className="text-[9px] font-bold tracking-wider text-white/90 bg-white/10 border border-white/20 px-1.5 py-0.5 rounded-md leading-none">
                     BETA
                   </span>
                 </div>
@@ -1172,11 +1172,11 @@ export function SiteWizard({
                 href="/help"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer shadow-xs"
+                className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/15 bg-white/[0.06] text-slate-200 hover:text-white hover:bg-white/15 hover:border-white/25 transition-all cursor-pointer shadow-xs active:scale-95"
                 title={t("landing.navHelp", "Pusat Bantuan")}
                 aria-label="Pusat Bantuan"
               >
-                <HelpCircle className="h-4 w-4" />
+                <HelpCircle className="h-[18px] w-[18px] stroke-[2.2]" />
               </Link>
             </div>
           </div>
@@ -1195,9 +1195,9 @@ export function SiteWizard({
             const progressPct = Math.round((stepNum / totalSteps) * 100);
             return (
               <div className="flex items-center gap-3 pb-3">
-                <div className="flex-1 h-[3px] rounded-full bg-white/[0.06] overflow-hidden">
+                <div className="flex-1 h-[3px] rounded-full bg-white/[0.08] overflow-hidden">
                   <div
-                    className="h-full rounded-full bg-primary transition-all duration-500 ease-out"
+                    className="h-full rounded-full bg-white/90 transition-all duration-500 ease-out"
                     style={{ width: `${progressPct}%` }}
                   />
                 </div>
@@ -1996,11 +1996,11 @@ export function SiteWizard({
           }`}
       >
         <div className="h-12 flex items-center px-4 gap-3 shrink-0" style={{ background: "#111318", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
-          <div className="flex shrink-0 items-center gap-0.5 rounded-lg border border-border bg-muted/50 p-0.5">
+          <div className="flex shrink-0 items-center gap-0.5 rounded-lg border border-white/10 bg-white/[0.06] p-0.5">
             <button
               type="button"
               onClick={() => device.setPreviewDevice("desktop")}
-              className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device.previewDevice === "desktop" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"}`}
+              className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-all cursor-pointer ${device.previewDevice === "desktop" ? "bg-white/20 text-white shadow-xs font-semibold" : "text-slate-400 hover:text-white hover:bg-white/[0.06]"}`}
               aria-label="Preview desktop"
             >
               <Monitor className="h-3.5 w-3.5" />
@@ -2008,7 +2008,7 @@ export function SiteWizard({
             <button
               type="button"
               onClick={() => device.setPreviewDevice("tablet")}
-              className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device.previewDevice === "tablet" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"}`}
+              className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-all cursor-pointer ${device.previewDevice === "tablet" ? "bg-white/20 text-white shadow-xs font-semibold" : "text-slate-400 hover:text-white hover:bg-white/[0.06]"}`}
               aria-label="Preview tablet"
             >
               <Tablet className="h-3.5 w-3.5" />
@@ -2016,7 +2016,7 @@ export function SiteWizard({
             <button
               type="button"
               onClick={() => device.setPreviewDevice("mobile")}
-              className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device.previewDevice === "mobile" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"}`}
+              className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-all cursor-pointer ${device.previewDevice === "mobile" ? "bg-white/20 text-white shadow-xs font-semibold" : "text-slate-400 hover:text-white hover:bg-white/[0.06]"}`}
               aria-label="Preview mobile"
             >
               <Smartphone className="h-3.5 w-3.5" />
@@ -2058,7 +2058,7 @@ export function SiteWizard({
                     setShowRekomendasiHint(false);
                     preview.handleSwitchTemplate();
                   }}
-                  className="flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-semibold text-slate-300 border border-border bg-muted/50 transition-all hover:border-primary/40 hover:text-white active:scale-95"
+                  className="flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-semibold text-slate-200 border border-white/10 bg-white/[0.06] transition-all hover:bg-white/10 hover:border-white/20 hover:text-white active:scale-95 cursor-pointer"
                 >
                   <RefreshCw size={11} />
                   {t("dashboard.wizard.btnTryOtherRecommendation", "Coba rekomendasi lain ({current}/{total})", {
