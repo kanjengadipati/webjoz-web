@@ -36,27 +36,53 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
     }
   }, [designToken]);
 
+  // Detect dark vs light mode from design token
+  const isDark = React.useMemo(() => {
+    if (!designToken) return true; // default wireframe is dark
+    if (designToken.theme_mode === "dark") return true;
+    if (designToken.theme_mode === "light") return false;
+    // Fallback: check background luminance
+    const bg = designToken?.palette?.background ?? "#0d0f14";
+    const hex = bg.replace("#", "");
+    if (hex.length !== 6) return true;
+    const r = parseInt(hex.slice(0, 2), 16);
+    const g = parseInt(hex.slice(2, 4), 16);
+    const b = parseInt(hex.slice(4, 6), 16);
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    return luminance < 0.5;
+  }, [designToken]);
+
+  // Skeleton opacities: stronger mix on light backgrounds (text is dark, so low % = near-transparent)
+  const textMix = isDark
+    ? { subtle: "4%", soft: "6%", strong: "8%", panel: "3.5%", panelBorder: "5.5%" }
+    : { subtle: "8%", soft: "12%", strong: "16%", panel: "7%", panelBorder: "11%" };
+
+  const fallbackSubtle  = isDark ? "rgba(255,255,255,0.04)"  : "rgba(0,0,0,0.06)";
+  const fallbackSoft    = isDark ? "rgba(255,255,255,0.06)"  : "rgba(0,0,0,0.09)";
+  const fallbackStrong  = isDark ? "rgba(255,255,255,0.08)"  : "rgba(0,0,0,0.12)";
+  const fallbackPanel   = isDark
+    ? { background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.065)" }
+    : { background: "rgba(0,0,0,0.04)",        border: "1px solid rgba(0,0,0,0.10)" };
+
   const skeletonSubtle = designToken
-    ? { background: "color-mix(in srgb, var(--dt-text) 4%, transparent)" }
-    : { background: "rgba(255,255,255,0.04)" };
+    ? { background: `color-mix(in srgb, var(--dt-text) ${textMix.subtle}, transparent)` }
+    : { background: fallbackSubtle };
 
   const skeletonSoft = designToken
-    ? { background: "color-mix(in srgb, var(--dt-text) 6%, transparent)" }
-    : { background: "rgba(255,255,255,0.06)" };
+    ? { background: `color-mix(in srgb, var(--dt-text) ${textMix.soft}, transparent)` }
+    : { background: fallbackSoft };
 
   const skeletonStrong = designToken
-    ? { background: "color-mix(in srgb, var(--dt-text) 8%, transparent)" }
-    : { background: "rgba(255,255,255,0.08)" };
+    ? { background: `color-mix(in srgb, var(--dt-text) ${textMix.strong}, transparent)` }
+    : { background: fallbackStrong };
 
   const skeletonPanel = designToken
     ? {
-        background: "color-mix(in srgb, var(--dt-text) 3.5%, transparent)",
-        border: "1px solid color-mix(in srgb, var(--dt-text) 5.5%, transparent)"
+        background: `color-mix(in srgb, var(--dt-text) ${textMix.panel}, transparent)`,
+        border: `1px solid color-mix(in srgb, var(--dt-text) ${textMix.panelBorder}, transparent)`
       }
-    : {
-        background: "rgba(255,255,255,0.035)",
-        border: "1px solid rgba(255,255,255,0.065)"
-      };
+    : fallbackPanel;
+
 
   return (
     <div
@@ -162,10 +188,12 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
                   const categoryKeyMap: Record<string, string> = {
                     "Kuliner": "kuliner",
                     "Toko": "tokoUmkm",
+                    "Toko Online & Retail": "tokoUmkm",
                     "Toko & UMKM": "tokoUmkm",
                     "Layanan & Reservasi": "jasaBooking",
                     "Jasa & Booking": "jasaBooking",
                     "Kreatif & Profesional": "portofolioKreator",
+                    "Portofolio": "portofolioKreator",
                     "Portofolio & Kreator": "portofolioKreator",
                     "Company Profile": "company",
                     "Company": "company",
