@@ -1130,9 +1130,9 @@ export function SiteWizard({
                 type="button"
                 onClick={handleBack}
                 aria-label="Kembali"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-300 transition-all hover:border-white/20 hover:bg-white/10 hover:text-white active:scale-95 cursor-pointer"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/15 bg-white/[0.06] text-white transition-all hover:border-white/30 hover:bg-white/15 active:scale-95 cursor-pointer shadow-xs"
               >
-                <ChevronLeft className="h-5 w-5" />
+                <ChevronLeft className="h-5 w-5 text-white" />
               </button>
 
               <div className="relative shrink-0">
@@ -1172,11 +1172,11 @@ export function SiteWizard({
                 href="/help"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/15 bg-white/[0.06] text-slate-200 hover:text-white hover:bg-white/15 hover:border-white/25 transition-all cursor-pointer shadow-xs active:scale-95"
+                className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/15 bg-white/[0.06] text-white hover:text-white hover:bg-white/15 hover:border-white/30 transition-all cursor-pointer shadow-xs active:scale-95"
                 title={t("landing.navHelp", "Pusat Bantuan")}
                 aria-label="Pusat Bantuan"
               >
-                <HelpCircle className="h-[18px] w-[18px] stroke-[2.2]" />
+                <HelpCircle className="h-[18px] w-[18px] text-white stroke-[2.2]" />
               </Link>
             </div>
           </div>
