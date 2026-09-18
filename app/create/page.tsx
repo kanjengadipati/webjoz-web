@@ -313,7 +313,7 @@ function PublicWizardContent() {
   // ── Main wizard page ──────────────────────────────────────────────────────
   return (
     <div
-      className="fixed left-0 top-0 w-screen overflow-hidden bg-[#0d0f14] flex flex-col"
+      className="dark fixed left-0 top-0 w-screen overflow-hidden bg-[#0d0f14] flex flex-col text-foreground"
       style={{ height: "var(--webjoz-app-height, 100dvh)" }}
     >
       {activeReferralCode && (

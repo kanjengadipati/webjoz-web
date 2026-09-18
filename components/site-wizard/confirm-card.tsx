@@ -86,7 +86,7 @@ export function ConfirmCard(props: ConfirmCardProps) {
 
   return (
     <div className="flex gap-2.5 justify-start animate-in fade-in slide-in-from-bottom-2 duration-400">
-      <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5 text-primary-foreground">
+      <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center shrink-0 mt-0.5 text-slate-900 shadow-xs">
         <SparkleGenAI className="w-[18px] h-[18px]" />
       </div>
       <div className="flex-1 min-w-0 rounded-2xl rounded-tl-sm overflow-hidden" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
@@ -284,8 +284,8 @@ export function ConfirmCard(props: ConfirmCardProps) {
             <button
               onClick={props.onGenerate}
               disabled={!!editingField || props.isLoading}
-              className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-bold transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-40"
-              style={{ background: "var(--primary)", boxShadow: props.hasUnsavedEdits ? "0 4px 16px rgba(0,0,0,0.3)" : "none", color: "var(--primary-foreground)" }}
+              className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-bold bg-white text-slate-900 hover:bg-slate-100 transition-all active:scale-[0.98] disabled:opacity-40 cursor-pointer shadow-md"
+              style={{ boxShadow: props.hasUnsavedEdits ? "0 4px 16px rgba(0,0,0,0.3)" : "none" }}
             >
               <Wand2 className="w-4 h-4" />
               {editingField ? t("dashboard.wizard.confirmCardBtnFinishEdit", "Selesai edit dulu ↑")

@@ -1130,7 +1130,7 @@ export function SiteWizard({
 
   return (
     <div
-      className="fixed inset-0 md:relative flex w-screen overflow-hidden bg-background md:h-screen"
+      className="dark fixed inset-0 md:relative flex w-screen overflow-hidden bg-[#0d0f14] md:h-screen text-foreground"
       style={{ height: "var(--webjoz-app-height, 100dvh)", top: "var(--webjoz-app-top, 0px)" }}
     >
       {/* ══ LEFT SIDEBAR: Chat Panel ══════════════════════════════════════════ */}
@@ -1252,7 +1252,7 @@ export function SiteWizard({
                 <button
                   type="button"
                   onClick={handleResume}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-primary text-primary-foreground hover:brightness-110 active:scale-95 transition-all shadow-xs cursor-pointer"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-900 hover:bg-slate-100 active:scale-95 transition-all shadow-xs cursor-pointer"
                 >
                   <span>{t("dashboard.wizard.resumeContinue", "Lanjutkan")}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -1281,7 +1281,7 @@ export function SiteWizard({
                       type="button"
                       onClick={() => !isLocked && chat.handleConfirmName(true)}
                       disabled={isLocked}
-                      className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-primary text-primary-foreground transition-all hover:brightness-110 active:scale-95 disabled:opacity-40 cursor-pointer shadow-xs"
+                      className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-white text-slate-900 transition-all hover:bg-slate-100 active:scale-95 disabled:opacity-40 cursor-pointer shadow-xs"
                     >
                       <span>✓ {t("dashboard.wizard.nameConfirmYes", "Ya")}</span>
                     </button>
@@ -1619,7 +1619,7 @@ export function SiteWizard({
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-3">
                   <div className="flex gap-2.5 justify-start">
-                    <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5 text-primary-foreground">
+                    <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center shrink-0 mt-0.5 text-slate-900 shadow-xs">
                       <SparkleGenAI className="w-[21px] h-[21px]" />
                     </div>
                     <div className="max-w-[90%] space-y-2.5">
@@ -1684,7 +1684,7 @@ export function SiteWizard({
               return (
                 <div key={m.id} className={`flex gap-2.5 ${isUser ? "justify-end" : "justify-start"} w-full animate-in fade-in duration-200`}>
                   {!isUser && (
-                    <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 mt-1 text-primary-foreground">
+                    <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center shrink-0 mt-1 text-slate-900 shadow-xs">
                       <SparkleGenAI className="w-[21px] h-[21px]" />
                     </div>
                   )}
@@ -1728,7 +1728,7 @@ export function SiteWizard({
                           type="button"
                           onClick={() => handleSaveEdit(m.id)}
                           disabled={!editingText.trim()}
-                          className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:brightness-110 active:scale-95 disabled:opacity-40 transition-all cursor-pointer shadow-xs flex items-center gap-1.5"
+                          className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-900 hover:bg-slate-100 active:scale-95 disabled:opacity-40 transition-all cursor-pointer shadow-xs flex items-center gap-1.5"
                         >
                           <Check className="w-3.5 h-3.5" />
                           <span>{t("dashboard.wizard.btnSave", "Simpan")}</span>
@@ -1743,7 +1743,7 @@ export function SiteWizard({
             return (
               <div key={m.id} className={`group flex gap-2 items-center ${isUser ? "justify-end" : "justify-start"}`}>
                 {!isUser && (
-                  <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5 text-primary-foreground self-start">
+                  <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center shrink-0 mt-0.5 text-slate-900 self-start shadow-xs">
                     <SparkleGenAI className="w-[21px] h-[21px]" />
                   </div>
                 )}
@@ -1762,7 +1762,11 @@ export function SiteWizard({
                 )}
 
                 <div
-                  className={`max-w-[78%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${isUser ? "bg-primary text-primary-foreground rounded-tr-sm" : "rounded-tl-sm text-slate-200"}`}
+                  className={`max-w-[78%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
+                    isUser
+                      ? "bg-white text-slate-900 font-medium rounded-tr-sm shadow-xs"
+                      : "rounded-tl-sm text-slate-200"
+                  }`}
                   style={!isUser ? { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.07)" } : {}}
                 >
                   {moodCfgMsg ? (
@@ -1776,7 +1780,7 @@ export function SiteWizard({
                     formatText(messageText, isUser)
                   )}
                   {m.isEdited && (
-                    <span className={`text-[10px] ml-1.5 italic font-normal ${isUser ? "text-primary-foreground/70" : "text-slate-400"}`}>
+                    <span className={`text-[10px] ml-1.5 italic font-normal ${isUser ? "text-slate-500" : "text-slate-400"}`}>
                       {t("dashboard.wizard.editedBadge", "(diedit)")}
                     </span>
                   )}
@@ -1805,7 +1809,7 @@ export function SiteWizard({
 
           {chat.isAnalyzingDescription && (
             <div className="flex gap-2.5 justify-start animate-in fade-in duration-200">
-              <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5 text-primary-foreground">
+              <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center shrink-0 mt-0.5 text-slate-900 shadow-xs">
                 <SparkleGenAI className="w-[21px] h-[21px]" />
               </div>
               <div
@@ -1968,7 +1972,7 @@ export function SiteWizard({
                 <button
                   type="submit"
                   disabled={chat.isInitialTyping || chat.isAiTyping || chat.isAnalyzingDescription || chat.isProcessingAudio || (chat.chatStage === "name" && !chat.inputValue.trim())}
-                  className="w-8 h-8 flex items-center justify-center rounded-xl bg-primary text-primary-foreground transition-all disabled:opacity-30 hover:bg-primary/90 shrink-0 cursor-pointer"
+                  className="w-8 h-8 flex items-center justify-center rounded-xl bg-white text-slate-900 hover:bg-slate-100 transition-all disabled:opacity-30 shrink-0 cursor-pointer shadow-xs"
                 >
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
