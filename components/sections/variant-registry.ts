@@ -41,7 +41,7 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "checklist", label: "Checklist", description: "List centang vertikal, sederhana dan langsung." },
     { value: "comparison-table", label: "Tabel Perbandingan", description: "Perbandingan A vs B dalam tabel (membutuhkan comparison)." },
     { value: "bento-grid", label: "Bento Grid", description: "Grid asimetris ala bento box — kartu berukuran bervariasi, visual dinamis." },
-    { value: "trust-bar", label: "Trust Bar (Toko Online)", group: "E-Commerce", description: "Strip horizontal penjamin kepercayaan belanja: keaslian produk, pengiriman cepat, bayar di tempat, dan garansi retur." },
+    { value: "trust-bar", label: "Trust Bar (Toko Online & Retail)", group: "E-Commerce", description: "Strip horizontal penjamin kepercayaan belanja: keaslian produk, pengiriman cepat, bayar di tempat, dan garansi retur." },
   ],
   testimonials: [
     { value: "carousel", label: "Carousel", description: "Slide otomatis, satu testimoni per tampilan." },
