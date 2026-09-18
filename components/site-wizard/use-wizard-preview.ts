@@ -5,6 +5,7 @@ import { LOADING_STEPS_PERCENT, SECTION_STEP_MAP, TEMPLATE_NAMES } from "./const
 import { getTemplatePool } from "./helpers";
 import type { PreviewData, PreviewState } from "./types";
 import type { StreamSection } from "@/hooks/use-generate-stream";
+import { TEMPLATE_DEFAULT_DESIGN_TOKENS } from "@/lib/template-defaults";
 
 export function useWizardPreview() {
   const [previewState, setPreviewState] = useState<PreviewState>("wireframe");
@@ -228,7 +229,29 @@ export function useWizardPreview() {
     const nextIndex = (templatePoolIndex + 1) % templatePool.length;
     const nextTemplateId = templatePool[nextIndex];
     setTemplatePoolIndex(nextIndex);
-    setPreviewData(prev => prev ? { ...prev, template_id: nextTemplateId } : prev);
+    setPreviewData(prev => {
+      if (!prev) return prev;
+      const targetDefault = TEMPLATE_DEFAULT_DESIGN_TOKENS[nextTemplateId];
+      const nextHeroStyle = targetDefault?.layout?.hero_style;
+      if (nextHeroStyle && prev.design_token?.layout) {
+        return {
+          ...prev,
+          template_id: nextTemplateId,
+          design_token: {
+            ...prev.design_token,
+            layout: {
+              ...prev.design_token.layout,
+              hero_style: nextHeroStyle,
+              section_variants: {
+                ...(prev.design_token.layout.section_variants as any),
+                hero: nextHeroStyle,
+              },
+            },
+          },
+        };
+      }
+      return { ...prev, template_id: nextTemplateId };
+    });
     setTimeout(() => {
       setIsSwitchingTemplate(false);
     }, 450);
