@@ -414,8 +414,6 @@ export function generateDescriptionFromBusinessName(
         return /batik|tenun|kebaya/i.test(name)
           ? `Offering authentic Indonesian batik and traditional wear with elegant motifs, comfortable fabrics, and timeless heritage at ${name}.`
           : `Offering a stylish collection of modern apparel, comfortable everyday wear, and quality fashion at ${name}.`;
-      case "Toko Online":
-        return `Your trusted online store providing quality products with fast, convenient, and reliable service at ${name}.`;
       case "Produk Lokal Handmade":
         return `Showcasing authentic handcrafted local goods, souvenirs, and artisanal creations at ${name}.`;
       default:
@@ -473,8 +471,6 @@ export function generateDescriptionFromBusinessName(
       return /batik|tenun|kebaya/i.test(name)
         ? `Menyediakan aneka koleksi batik dan busana tradisional berkualitas dengan motif elegan, bahan nyaman, dan sentuhan tradisi terbaik di ${name}.`
         : `Menyediakan aneka koleksi pakaian dan busana berkualitas dengan desain terkini, bahan nyaman, dan harga terbaik di ${name}.`;
-    case "Toko Online":
-      return `Toko online terpercaya yang menyediakan aneka produk berkualitas pilihan dengan pelayanan cepat dan amanah di ${name}.`;
     case "Produk Lokal Handmade":
       return `Menyediakan aneka produk kerajinan tangan dan souvenir lokal berkualitas tinggi dengan sentuhan seni autentik di ${name}.`;
     default:
@@ -735,18 +731,6 @@ const DESC_HINTS: DescHintEntry[] = [
       "gerabah", "rotan", "kulit handmade", "cendera mata", "batik tulis", "ukiran",
       // EN
       "handmade", "craft", "artisan", "local craft", "handicraft", "pottery", "weaving", "handcrafted",
-    ],
-    weight: 3,
-  },
-  {
-    type: "Toko",
-    subType: "Toko Online",
-    keywords: [
-      // ID
-      "toko online", "olshop", "jual beli", "reseller", "dropship", "grosir online", "jualan online", "katalog produk",
-      // EN
-      "online shop", "online store", "e-commerce", "ecommerce", "shop", "marketplace", "dropshipping", "wholesale online",
-      "sell online", "product catalog", "webstore",
     ],
     weight: 3,
   },

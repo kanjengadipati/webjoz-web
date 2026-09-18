@@ -4776,8 +4776,8 @@ export const translations: Record<Locale, Translations> = {
         categories: {
           kuliner: "Kuliner",
           kulinerDesc: "Restoran, Warung, Cafe & Catering",
-          tokoUmkm: "Toko",
-          tokoUmkmDesc: "Retail & Produk Fisik",
+          tokoUmkm: "Toko Online & Retail",
+          tokoUmkmDesc: "Katalog produk, jualan online & toko fisik",
           jasaBooking: "Layanan & Reservasi",
           jasaBookingDesc: "Salon, Workshop, Klinik, dll",
           // Kategori "Kreatif & Profesional" mencakup website portofolio, kreator, seniman, agensi, dan profesional
@@ -7276,8 +7276,8 @@ export const translations: Record<Locale, Translations> = {
         categories: {
           kuliner: "Culinary",
           kulinerDesc: "Restaurants, Cafes, Catering",
-          tokoUmkm: "Store",
-          tokoUmkmDesc: "Retail & Physical Products",
+          tokoUmkm: "Online Store & Retail",
+          tokoUmkmDesc: "Product catalog, online store & physical shop",
           jasaBooking: "Services & Booking",
           jasaBookingDesc: "Salons, Workshops, Clinics, etc",
           portofolioKreator: "Creative & Professional",
