@@ -10,7 +10,7 @@ import { SiteWizard } from "@/components/site-wizard";
 import { request } from "@/lib/api/client";
 import { buildFullContent } from "@/lib/build-full-content";
 import { decodeDesignTokenParam } from "@/lib/design-token-library";
-import { WIZARD_RESUME_KEY } from "@/components/site-wizard/wizard-persistence";
+import { WIZARD_RESUME_KEY, loadWizardSnapshot } from "@/components/site-wizard/wizard-persistence";
 import { encodeSiteId } from "@/lib/sqids";
 
 const PENDING_KEY = "webjoz_pending_wizard_data";
@@ -85,26 +85,38 @@ function PublicWizardContent() {
     // Clean up the URL immediately so refresh doesn't re-trigger
     window.history.replaceState(null, "", "/create");
 
-    const raw = localStorage.getItem(PENDING_KEY) || localStorage.getItem("webjoz_pending_upgrade_site");
-    if (!raw) {
-      // No pending wizard data (e.g. magic link opened in different browser/device).
-      router.replace("/dashboard/sites");
-      setPendingSave(false);
-      setAutoSaving(false);
-      return;
+    let raw = localStorage.getItem(PENDING_KEY) || localStorage.getItem("webjoz_pending_upgrade_site");
+    let pending: Record<string, any> | null = null;
+    if (raw) {
+      try {
+        pending = JSON.parse(raw);
+      } catch {
+        /* ignore parse error */
+      }
     }
 
-    let pending: Record<string, any>;
-    try {
-      pending = JSON.parse(raw);
-    } catch {
-      router.replace("/dashboard/sites");
-      setPendingSave(false);
-      setAutoSaving(false);
-      return;
+    // Robust fallback: if PENDING_KEY was empty or missing, recover from wizard resume snapshot
+    if (!pending || !pending.businessName) {
+      const snapshot = loadWizardSnapshot();
+      if (snapshot && snapshot.businessName && (snapshot.preview?.content || snapshot.chat?.description)) {
+        pending = {
+          businessName: snapshot.businessName,
+          businessType: snapshot.chat?.businessType,
+          businessSubType: snapshot.chat?.businessSubType,
+          description: snapshot.chat?.description,
+          whatsapp: snapshot.chat?.whatsapp,
+          service_area: snapshot.chat?.serviceArea,
+          mood: snapshot.chat?.mood,
+          language: snapshot.chat?.siteLanguage || "id",
+          templateId: snapshot.preview?.templateId,
+          previewContent: snapshot.preview?.content,
+          previewDesignToken: snapshot.preview?.designToken,
+        };
+      }
     }
 
-    if (!pending.businessName || !pending.businessType) {
+    if (!pending || !pending.businessName) {
+      // No pending wizard data found
       router.replace("/dashboard/sites");
       setPendingSave(false);
       setAutoSaving(false);
@@ -118,6 +130,9 @@ function PublicWizardContent() {
       setAutoSaveError("");
       try {
         let tenantId = activeTenantId;
+        if (!tenantId && memberships && memberships.length > 0) {
+          tenantId = memberships[0].tenant.id;
+        }
         if (!tenantId && createTenant) {
           const slug =
             pending.businessName.toLowerCase().replace(/[^a-z0-9-]/g, "") +
@@ -146,6 +161,7 @@ function PublicWizardContent() {
                 name: pending.businessName,
                 template_id: pending.templateId || "TEMPLATE_DYNAMIC",
                 subdomain,
+                language: pending.language || "id",
               }),
             },
             token
@@ -173,6 +189,7 @@ function PublicWizardContent() {
                   name: pending.businessName,
                   template_id: pending.templateId || "TEMPLATE_DYNAMIC",
                   subdomain: subdomain2,
+                  language: pending.language || "id",
                 }),
               },
               token
@@ -233,7 +250,7 @@ function PublicWizardContent() {
   // ── Auth redirect handler (called from wizard) ────────────────────────────
   const handleNeedAuth = () => {
     pushToast("Daftar atau login dulu untuk menyimpan & edit website kamu.", "info");
-    router.push("/login?redirect=/create?action=save");
+    router.push(`/login?redirect=${encodeURIComponent("/create?action=save")}`);
   };
 
   // ── Auto-save loading screen ──────────────────────────────────────────────

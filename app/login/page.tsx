@@ -78,22 +78,24 @@ export default function LoginPage() {
     if (!authReady) return;
     if (!token) return;
 
-    // Clear stale redirect/wizard state from previous sessions
-    localStorage.removeItem("webjoz_login_redirect");
-    localStorage.removeItem("webjoz_pending_wizard_data");
-
     const params = new URLSearchParams(window.location.search);
     // Do not auto-redirect if we are in the middle of verifying a magic token
     if (params.get("magic_token")) return;
 
     const redirectParam = params.get("redirect");
+    const storedRedirect = localStorage.getItem("webjoz_login_redirect");
     const pendingWizard = localStorage.getItem("webjoz_pending_wizard_data");
+    const target = redirectParam || storedRedirect;
 
-    if (redirectParam) {
-      router.replace(redirectParam);
+    if (target) {
+      localStorage.removeItem("webjoz_login_redirect");
+      router.replace(target);
     } else if (pendingWizard) {
       router.replace("/create?action=save");
     } else {
+      // Clear stale redirect state from previous sessions for regular login
+      localStorage.removeItem("webjoz_login_redirect");
+      localStorage.removeItem("webjoz_pending_wizard_data");
       router.replace("/dashboard");
     }
   }, [authReady, token, router]);
@@ -102,17 +104,22 @@ export default function LoginPage() {
 
   function finishLogin(email: string, accessToken: string) {
     persistAuthSession(email, accessToken);
-    // Clear redirect/wizard state from previous sessions so regular login always goes to dashboard
-    localStorage.removeItem("webjoz_login_redirect");
-    localStorage.removeItem("webjoz_pending_wizard_data");
     const redirectParam = new URLSearchParams(window.location.search).get("redirect");
+    const storedRedirect = localStorage.getItem("webjoz_login_redirect");
     const pendingWizard = localStorage.getItem("webjoz_pending_wizard_data");
-    if (redirectParam) {
-      router.push(redirectParam);
+    const target = redirectParam || storedRedirect;
+
+    if (target) {
+      localStorage.removeItem("webjoz_login_redirect");
+      // Keep webjoz_pending_wizard_data intact so /create?action=save can read and save the generated site
+      window.location.href = target;
     } else if (pendingWizard) {
-      router.push("/create?action=save");
+      window.location.href = "/create?action=save";
     } else {
-      router.push("/dashboard");
+      // Clear stale redirect state from previous sessions so regular login always goes to dashboard
+      localStorage.removeItem("webjoz_login_redirect");
+      localStorage.removeItem("webjoz_pending_wizard_data");
+      window.location.href = "/dashboard";
     }
   }
 
@@ -630,7 +637,12 @@ export default function LoginPage() {
       footer={
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <Link href="/" className="font-medium text-primary hover:opacity-80">{t("auth.loginFooterHome")}</Link>
-          <Link href="/register" className="font-medium text-primary hover:opacity-80">{t("auth.loginFooterRegister")}</Link>
+          <Link
+            href={typeof window !== "undefined" && new URLSearchParams(window.location.search).get("redirect") ? `/register?redirect=${encodeURIComponent(new URLSearchParams(window.location.search).get("redirect")!)}` : "/register"}
+            className="font-medium text-primary hover:opacity-80"
+          >
+            {t("auth.loginFooterRegister")}
+          </Link>
           <Link href="/forgot-password" className="font-medium text-primary hover:opacity-80">{t("auth.loginFooterForgot")}</Link>
         </div>
       }
