@@ -2305,6 +2305,7 @@ export interface Translations {
       recommendationHintDesc: string;
       inferenceHint: string;
       notThisType: string;
+      changeSubType: string;
       moreSpecific: string;
       chooseMoodHint: string;
       suggestedBadge: string;
@@ -4746,6 +4747,7 @@ export const translations: Record<Locale, Translations> = {
         recommendationHintDesc: "Klik untuk lihat pilihan tampilan lain.",
         inferenceHint: "Klik untuk lanjut, atau pilih kategori lain",
         notThisType: "Bukan ini? Pilih kategori lain",
+        changeSubType: "Pilih jenis lain",
         moreSpecific: "Lebih spesifik:",
         chooseMoodHint: "Pilih mood yang sesuai dengan brand Anda",
         suggestedBadge: "✨ Disarankan",
@@ -7246,6 +7248,7 @@ export const translations: Record<Locale, Translations> = {
         recommendationHintDesc: "Click to explore alternative layouts.",
         inferenceHint: "Tap to continue, or choose a different category",
         notThisType: "Not this? Choose another category",
+        changeSubType: "Choose another type",
         moreSpecific: "More specific:",
         chooseMoodHint: "Choose a mood that fits your brand",
         suggestedBadge: "✨ Suggested",

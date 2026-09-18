@@ -187,6 +187,7 @@ function InferenceConfirmWidget({
   isLocked,
   orderedSubTypes,
   selectedSubType,
+  categoryLabel,
   onConfirmWithSubType,
   onUnlockChips,
   onChangeCategory,
@@ -195,56 +196,75 @@ function InferenceConfirmWidget({
   isLocked: boolean;
   orderedSubTypes: { value: string; label: string; emoji: string }[];
   selectedSubType: string;
+  categoryLabel?: string;
   onConfirmWithSubType: (subType: string) => void;
   onUnlockChips?: () => void;
   onChangeCategory: () => void;
   t: (key: string, fallback?: string) => string;
 }) {
+  // Chips start collapsed — only selected chip shown until user taps "Pilih jenis lain"
+  const [showOthers, setShowOthers] = useState(false);
   const [showAll, setShowAll] = useState(false);
-  // Chips start locked — user must click "Ganti kategori" to enable them
-  const [chipEnabled, setChipEnabled] = useState(false);
 
-  const visibleChips = showAll
-    ? orderedSubTypes
-    : orderedSubTypes.slice(0, INFERENCE_CHIP_LIMIT);
-  const hiddenCount = orderedSubTypes.length - INFERENCE_CHIP_LIMIT;
+  const selectedChip = orderedSubTypes.find((s) => s.value === selectedSubType);
+  const otherChips = orderedSubTypes.filter((s) => s.value !== selectedSubType);
 
-  const effectivelyLocked = isLocked || !chipEnabled;
+  const visibleOtherChips = showAll
+    ? otherChips
+    : otherChips.slice(0, INFERENCE_CHIP_LIMIT - 1);
+  const hiddenCount = otherChips.length - (INFERENCE_CHIP_LIMIT - 1);
 
-  const handleEnableChips = () => {
-    setChipEnabled(true);
+  const effectivelyLocked = isLocked || !showOthers;
+
+  const handleShowOthers = () => {
+    setShowOthers(true);
     onUnlockChips?.();
+  };
+
+  const renderChip = (st: { value: string; label: string; emoji: string }, locked: boolean) => {
+    const isSelected = selectedSubType === st.value;
+    const SubIcon = SUB_TYPE_ICONS[st.value] ?? Tag;
+    const labelText = t(`dashboard.wizard.subtypes.${st.value}`, st.label);
+    return (
+      <button
+        key={st.value}
+        type="button"
+        title={labelText}
+        onClick={() => { if (!locked) onConfirmWithSubType(st.value); }}
+        disabled={locked}
+        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-200 active:scale-95 cursor-pointer max-w-full ${
+          isSelected
+            ? `border-primary/60 bg-primary/20 text-white ring-1 ring-primary/30 ${locked ? "opacity-80" : ""}`
+            : `text-slate-300 border-white/[0.08] bg-white/[0.04] ${locked ? "opacity-35 cursor-default" : "hover:border-white/20 hover:text-white hover:bg-white/[0.08]"}`
+        }`}
+      >
+        <SubIcon className={`w-3 h-3 shrink-0 ${isSelected ? "text-primary" : "text-slate-400"}`} />
+        <span className="text-left">{labelText}</span>
+        {isSelected && <span className="text-primary text-[10px] shrink-0">✓</span>}
+      </button>
+    );
   };
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2">
+      {/* Category breadcrumb */}
+      {categoryLabel && selectedChip && (
+        <div className="flex items-center gap-1 text-[10px] text-slate-500 mb-1">
+          <span>{categoryLabel}</span>
+          <span className="text-slate-600">→</span>
+          <span className="text-slate-400">{t(`dashboard.wizard.subtypes.${selectedChip.value}`, selectedChip.label)}</span>
+        </div>
+      )}
+
+      {/* Chips */}
       <div className="flex flex-wrap gap-1.5">
-        {visibleChips.map((st) => {
-          const isSelected = selectedSubType === st.value;
-          const SubIcon = SUB_TYPE_ICONS[st.value] ?? Tag;
-          const labelText = t(`dashboard.wizard.subtypes.${st.value}`, st.label);
-          return (
-            <button
-              key={st.value}
-              type="button"
-              title={labelText}
-              onClick={() => { if (!effectivelyLocked) onConfirmWithSubType(st.value); }}
-              disabled={effectivelyLocked}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-200 active:scale-95 cursor-pointer max-w-full ${
-                isSelected
-                  ? `border-primary/60 bg-primary/20 text-white ring-1 ring-primary/30 ${effectivelyLocked ? "opacity-80" : ""}`
-                  : `text-slate-300 border-white/[0.08] bg-white/[0.04] ${effectivelyLocked ? "opacity-35 cursor-default" : "hover:border-white/20 hover:text-white hover:bg-white/[0.08]"}`
-              }`}
-            >
-              <SubIcon className={`w-3 h-3 shrink-0 ${isSelected ? "text-primary" : "text-slate-400"}`} />
-              <span className="text-left">
-                {labelText}
-              </span>
-              {isSelected && <span className="text-primary text-[10px] shrink-0">✓</span>}
-            </button>
-          );
-        })}
-        {!showAll && hiddenCount > 0 && chipEnabled && (
+        {/* Always show selected chip */}
+        {selectedChip && renderChip(selectedChip, isLocked)}
+
+        {/* Other chips — only visible after user taps "Pilih jenis lain" */}
+        {showOthers && visibleOtherChips.map((st) => renderChip(st, false))}
+
+        {showOthers && !showAll && hiddenCount > 0 && (
           <button
             type="button"
             onClick={() => setShowAll(true)}
@@ -255,24 +275,29 @@ function InferenceConfirmWidget({
           </button>
         )}
       </div>
+
+      {/* Action links */}
       {!isLocked && (
-        chipEnabled ? (
+        <div className="flex items-center gap-3">
+          {/* Change sub-type within same category */}
+          {!showOthers && (
+            <button
+              type="button"
+              onClick={handleShowOthers}
+              className="text-[10px] text-slate-500 hover:text-slate-300 underline underline-offset-2 transition-colors px-0.5"
+            >
+              {t("dashboard.wizard.changeSubType", "Pilih jenis lain")}
+            </button>
+          )}
+          {/* Change category entirely — always visible when not locked */}
           <button
             type="button"
             onClick={onChangeCategory}
             className="text-[10px] text-slate-500 hover:text-slate-300 underline underline-offset-2 transition-colors px-0.5"
           >
-            {t("dashboard.wizard.notThisType", "Pilih kategori lain")}
+            {t("dashboard.wizard.btnChangeCategory", "Ganti kategori")}
           </button>
-        ) : (
-          <button
-            type="button"
-            onClick={handleEnableChips}
-            className="text-[10px] text-slate-500 hover:text-slate-300 underline underline-offset-2 transition-colors px-0.5"
-          >
-            Ganti kategori
-          </button>
-        )
+        </div>
       )}
     </div>
   );
@@ -1261,6 +1286,8 @@ export function SiteWizard({
               const inferredType = chat.businessType;
               const inferredSubType = chat.businessSubType;
               const availableSubTypes = inferredType ? (SUB_TYPES[inferredType] ?? []) : [];
+              // Category label for breadcrumb (e.g. "Toko Online & Retail")
+              const inferredCategoryLabel = BUSINESS_TYPES.find((bt) => bt.value === inferredType)?.label;
 
               // Reorder: chip terpilih tampil pertama
               const orderedSubTypes = inferredSubType
@@ -1276,6 +1303,7 @@ export function SiteWizard({
                   isLocked={isLocked}
                   orderedSubTypes={orderedSubTypes}
                   selectedSubType={inferredSubType}
+                  categoryLabel={inferredCategoryLabel}
                   onConfirmWithSubType={(subType) => {
                     // Route through the canonical doInjectLanguage stored in the ref.
                     // This ensures exactly ONE language prompt is ever appended,
