@@ -288,26 +288,26 @@ function PublicWizardContent() {
   if (autoSaving) {
     return (
       <div
-      className="min-h-screen text-white flex flex-col relative"
-      style={{ background: "linear-gradient(160deg, #090d1f 0%, #05070f 100%)" }}
-    >
-      {activeReferralCode && (
-        <div className="bg-emerald-500/15 border-b border-emerald-500/30 px-4 py-2 text-center text-xs text-emerald-300 font-semibold flex items-center justify-center gap-2">
-          <span>✨ Mendaftar via Partner Referensi Webjoz (Kode: <span className="font-mono">{activeReferralCode}</span>)</span>
-        </div>
-      )}
-      <div className="flex-1 flex flex-col items-center justify-center gap-8">
-        <div className="relative">
-          <div className="w-20 h-20 rounded-2xl bg-primary/20 border border-primary/30 flex items-center justify-center">
-            <Loader2 className="w-9 h-9 text-primary animate-spin" />
+        className="min-h-screen text-white flex flex-col relative"
+        style={{ background: "linear-gradient(160deg, #090d1f 0%, #05070f 100%)" }}
+      >
+        {activeReferralCode && (
+          <div className="bg-emerald-500/15 border-b border-emerald-500/30 px-4 py-2 text-center text-xs text-emerald-300 font-semibold flex items-center justify-center gap-2">
+            <span>✨ Mendaftar via Partner Referensi Webjoz (Kode: <span className="font-mono">{activeReferralCode}</span>)</span>
           </div>
-          <div className="absolute -inset-2 rounded-3xl border border-primary/20 animate-ping opacity-30" />
-        </div>
-        <div className="text-center space-y-2">
-          <p className="text-white font-semibold text-lg">Menyimpan &amp; Mempublikasikan Website...</p>
+        )}
+        <div className="flex-1 flex flex-col items-center justify-center gap-8">
+          <div className="relative">
+            <div className="w-20 h-20 rounded-2xl bg-primary/20 border border-primary/30 flex items-center justify-center">
+              <Loader2 className="w-9 h-9 text-primary animate-spin" />
+            </div>
+            <div className="absolute -inset-2 rounded-3xl border border-primary/20 animate-ping opacity-30" />
+          </div>
+          <div className="text-center space-y-2">
+            <p className="text-white font-semibold text-lg">Menyimpan &amp; Mempublikasikan Website...</p>
+          </div>
         </div>
       </div>
-    </div>
     );
   }
 
@@ -377,7 +377,7 @@ export default function PublicWizardPage() {
           className="min-h-screen text-white flex flex-col items-center justify-center gap-8"
           style={{ background: "linear-gradient(160deg, #090d1f 0%, #05070f 100%)" }}
         >
-            <div className="relative">
+          <div className="relative">
             <div className="w-20 h-20 rounded-2xl bg-primary/20 border border-primary/30 flex items-center justify-center">
               <Loader2 className="w-9 h-9 text-primary animate-spin" />
             </div>
