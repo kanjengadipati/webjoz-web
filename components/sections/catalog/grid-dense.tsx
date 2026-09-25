@@ -135,13 +135,13 @@ export default function CatalogGridDense({ catalog, onUpdateField, isEditorMode,
                     placeholderStyle={{ background: `color-mix(in srgb, ${p} 8%, transparent)` }}
                     placeholderIconClassName="w-9 h-9"
                     placeholderIconStyle={{ color: `color-mix(in srgb, ${p} 30%, transparent)`, opacity: 0.6 }}
-                    contentClassName="p-3.5 flex flex-col flex-1"
-                    headerClassName="flex items-start justify-between gap-2 mb-1.5"
+                    contentClassName="p-3.5 flex flex-col flex-1 min-w-0"
+                    headerClassName="flex flex-col gap-1 mb-1.5 min-w-0"
                     titleClassName="font-semibold text-[13px] leading-tight line-clamp-2"
                     titleStyle={{ color: text, fontFamily: hFont }}
                     descriptionClassName="text-[11px] leading-relaxed line-clamp-2"
                     descriptionStyle={{ color: `color-mix(in srgb, ${text} 60%, transparent)` }}
-                    priceClassName="text-[11px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap shrink-0"
+                    priceClassName="self-start text-[11px] font-bold px-2 py-0.5 rounded-full"
                     priceStyle={{ background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p }}
                     badgeClassName="inline-block text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full"
                     badgeStyle={{ background: p, color: bg }}

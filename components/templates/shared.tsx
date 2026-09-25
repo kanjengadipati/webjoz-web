@@ -1494,8 +1494,19 @@ function MenuCatalogCard({
           ) : null}
         </div>
         <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".name" : ""} value={itemName ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="h4" className={titleClassName} style={titleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+        {showPrice && headerClassName?.includes("flex-col") && (
+          hasPromo ? (
+            <div className={`${priceClassName ?? ""} flex items-center gap-1.5 flex-wrap mt-1`} style={priceStyle}>
+              <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".discount_label" : ""} value={discountLabel || "Promo"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 16%, transparent)", color: "var(--dt-primary)" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+              <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".promo_price_display" : ""} value={itemPromoPriceDisplay || displayPrice} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+              <span className="line-through opacity-45 text-xs">{displayPrice}</span>
+            </div>
+          ) : (
+            <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".price" : ""} value={displayPrice ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className={priceClassName} style={{ ...priceStyle, marginTop: "0.375rem", display: "inline-block" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+          )
+        )}
       </div>
-      {showPrice && (
+      {showPrice && !headerClassName?.includes("flex-col") && (
         hasPromo ? (
           <div className={`${priceClassName ?? ""} flex items-center gap-1.5 whitespace-nowrap shrink-0`} style={priceStyle}>
             <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".discount_label" : ""} value={discountLabel || "Promo"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 16%, transparent)", color: "var(--dt-primary)" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />

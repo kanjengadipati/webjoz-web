@@ -178,12 +178,12 @@ export default function CatalogTabsByCategory({ catalog, onUpdateField, isEditor
                   placeholderIconClassName="w-12 h-12"
                   placeholderIconStyle={{ color: `color-mix(in srgb, ${p} 30%, transparent)`, opacity: 0.6 }}
                   contentClassName="p-5 flex flex-col flex-1"
-                  headerClassName="flex items-start justify-between gap-3 mb-2"
+                  headerClassName="flex flex-col gap-1.5 mb-2 min-w-0"
                   titleClassName="font-bold text-sm leading-tight line-clamp-2 min-h-[2.5rem]"
                   titleStyle={{ color: text, fontFamily: hFont }}
                   descriptionClassName="text-xs leading-relaxed line-clamp-3 min-h-[3.75rem]"
                   descriptionStyle={{ color: `color-mix(in srgb, ${text} 60%, transparent)` }}
-                  priceClassName="text-xs font-bold px-2.5 py-1 rounded-full whitespace-nowrap shrink-0"
+                  priceClassName="self-start text-xs font-bold px-2.5 py-1 rounded-full"
                   priceStyle={{ background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p }}
                   badgeClassName="inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap"
                   badgeStyle={{ background: p, color: bg }}

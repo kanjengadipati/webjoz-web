@@ -222,8 +222,8 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
                     </div>
 
                     {/* Metadata Area */}
-                    <div className="flex flex-col flex-grow">
-                      <div className="flex justify-between items-start gap-4 mb-2">
+                    <div className="flex flex-col flex-grow min-w-0">
+                      <div className="flex flex-col gap-1 mb-2 min-w-0">
                         <InlineText
                           section="catalog"
                           fieldKey={"categories." + catIdx + ".items." + index + ".name"}
@@ -248,7 +248,7 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
                             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                             onEditingStateChange={onEditingStateChange}
                             as="span"
-                            className="text-sm font-medium tracking-tight"
+                            className="text-sm font-medium tracking-tight self-start"
                             style={{ color: "var(--dt-text)" }}
                           />
                         )}

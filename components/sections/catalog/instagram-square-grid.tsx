@@ -159,8 +159,8 @@ export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isE
                     </div>
 
                     {/* Description & Price Info Area */}
-                    <div className="p-4 flex flex-col flex-grow">
-                      <div className="flex justify-between items-start gap-4 mb-2">
+                    <div className="p-4 flex flex-col flex-grow min-w-0">
+                      <div className="flex flex-col gap-1 mb-2 min-w-0">
                         <InlineText
                           section="catalog"
                           fieldKey={"categories." + catIdx + ".items." + index + ".name"}
@@ -185,7 +185,7 @@ export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isE
                             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                             onEditingStateChange={onEditingStateChange}
                             as="span"
-                            className="text-base font-extrabold tracking-tight shrink-0"
+                            className="text-base font-extrabold tracking-tight self-start"
                             style={{ color: "var(--dt-text)" }}
                           />
                         )}
