@@ -121,6 +121,28 @@ export async function changePassword(token: string, currentPassword: string, new
   }, token);
 }
 
+export async function fetchInvitation(token: string) {
+  return request<{
+    id: number;
+    email: string;
+    role: string;
+    status: string;
+    expires_at?: string;
+  }>(`/invitations/${encodeURIComponent(token)}`, { method: "GET" });
+}
+
+export async function acceptInvitationRegister(token: string, name: string, password: string) {
+  return request<LoginResponse>(`/invitations/${encodeURIComponent(token)}/accept-register`, {
+    method: "POST",
+    body: JSON.stringify({
+      name,
+      password,
+      device_name: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 80) : "browser",
+      trusted_device: true,
+    }),
+  });
+}
+
 export async function socialLogin(provider: string, token: string) {
   return request<LoginResponse>("/auth/social-login", {
     method: "POST",

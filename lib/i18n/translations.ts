@@ -317,6 +317,17 @@ export interface Translations {
     inviteDashboard: string;
     inviteFailedTitle: string;
     inviteBackToLogin: string;
+    inviteRegisterTitle: string;
+    inviteRegisterDesc: string;
+    inviteRegisterEmailLabel: string;
+    inviteRegisterNameLabel: string;
+    inviteRegisterNamePlaceholder: string;
+    inviteRegisterPasswordLabel: string;
+    inviteRegisterPasswordHint: string;
+    inviteRegisterButton: string;
+    inviteRegisterLoading: string;
+    inviteExistingAccount: string;
+    inviteAlreadyRegistered: string;
     loginResetSuccess: string;
     loginPasswordChanged: string;
   };
@@ -2743,6 +2754,17 @@ export const translations: Record<Locale, Translations> = {
       inviteDashboard: "Ke Dashboard",
       inviteFailedTitle: "Gagal",
       inviteBackToLogin: "Kembali ke Login",
+      inviteRegisterTitle: "Buat akun untuk bergabung",
+      inviteRegisterDesc: "Akun Anda akan dibuat otomatis berdasarkan email undangan. Lengkapi data di bawah untuk melanjutkan.",
+      inviteRegisterEmailLabel: "Email",
+      inviteRegisterNameLabel: "Nama",
+      inviteRegisterNamePlaceholder: "Nama lengkap",
+      inviteRegisterPasswordLabel: "Password",
+      inviteRegisterPasswordHint: "Minimal 8 karakter",
+      inviteRegisterButton: "Buat Akun & Bergabung",
+      inviteRegisterLoading: "Membuat akun...",
+      inviteExistingAccount: "Sudah punya akun? Masuk",
+      inviteAlreadyRegistered: "Email ini sudah memiliki akun. Silakan masuk untuk menerima undangan.",
       loginResetSuccess: "Kata sandi diperbarui. Anda dapat masuk sekarang.",
       loginPasswordChanged: "Kata sandi diubah. Silakan masuk kembali.",
     },
@@ -5244,6 +5266,17 @@ export const translations: Record<Locale, Translations> = {
       inviteDashboard: "Go to Dashboard",
       inviteFailedTitle: "Failed",
       inviteBackToLogin: "Back to Login",
+      inviteRegisterTitle: "Create your account to join",
+      inviteRegisterDesc: "Your account will be created automatically from the invitation email. Fill in your details below to continue.",
+      inviteRegisterEmailLabel: "Email",
+      inviteRegisterNameLabel: "Name",
+      inviteRegisterNamePlaceholder: "Full name",
+      inviteRegisterPasswordLabel: "Password",
+      inviteRegisterPasswordHint: "Minimum 8 characters",
+      inviteRegisterButton: "Create Account & Join",
+      inviteRegisterLoading: "Creating account...",
+      inviteExistingAccount: "Already have an account? Sign in",
+      inviteAlreadyRegistered: "This email already has an account. Please sign in to accept the invitation.",
       loginResetSuccess: "Password updated. You can sign in now.",
       loginPasswordChanged: "Password changed. Please sign in again.",
     },
