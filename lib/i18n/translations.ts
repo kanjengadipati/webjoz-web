@@ -1494,6 +1494,12 @@ export interface Translations {
       shareWhatsApp: string;
       shareEmail: string;
       copyInviteText: string;
+      emailInviteLabel: string;
+      emailInvitePlaceholder: string;
+      emailInviteSend: string;
+      emailInviteSent: string;
+      emailInviteFailed: string;
+      emailInviteSending: string;
       inviteTextCopied: string;
       tipsLabel: string;
       tipsText: string;
@@ -3935,6 +3941,12 @@ export const translations: Record<Locale, Translations> = {
         copyLink: "Salin Link",
         shareWhatsApp: "Bagikan via WhatsApp",
         shareEmail: "Bagikan via Email",
+        emailInviteLabel: "Kirim langsung ke email",
+        emailInvitePlaceholder: "teman@penerima.com",
+        emailInviteSend: "Kirim Email",
+        emailInviteSent: "Undangan referral berhasil dikirim!",
+        emailInviteFailed: "Gagal mengirim undangan email",
+        emailInviteSending: "Mengirim...",
         copyInviteText: "Salin Pesan Ajakan",
         inviteTextCopied: "Pesan ajakan berhasil disalin ke clipboard",
         tipsLabel: "Tips:",
@@ -6447,6 +6459,12 @@ export const translations: Record<Locale, Translations> = {
         copyLink: "Copy Link",
         shareWhatsApp: "Share via WhatsApp",
         shareEmail: "Share via Email",
+        emailInviteLabel: "Send directly to an email",
+        emailInvitePlaceholder: "friend@recipient.com",
+        emailInviteSend: "Send Email",
+        emailInviteSent: "Referral invite sent successfully!",
+        emailInviteFailed: "Failed to send email invite",
+        emailInviteSending: "Sending...",
         copyInviteText: "Copy Invitation Text",
         inviteTextCopied: "Invitation message copied to clipboard",
         tipsLabel: "Tip:",

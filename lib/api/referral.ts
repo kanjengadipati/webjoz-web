@@ -11,3 +11,11 @@ export async function regenerateMyReferralCode(token: string) {
     token,
   );
 }
+
+export async function sendReferralEmail(email: string, token: string) {
+  return request<{ email: string }>(
+    "/auth/referral/email",
+    { method: "POST", body: JSON.stringify({ email }) },
+    token,
+  );
+}
