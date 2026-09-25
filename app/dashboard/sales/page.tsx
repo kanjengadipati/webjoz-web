@@ -14,7 +14,7 @@ import { useI18n } from "@/lib/i18n/context";
 export default function SalesReferralPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { hasPermission, role, loading: permLoading } = usePermissions();
 
   const [referralCode, setReferralCode] = useState<string>("");
@@ -116,7 +116,7 @@ Salam!`;
     if (!token || !recipient) return;
     setSendingEmail(true);
     try {
-      await sendReferralEmail(recipient, token);
+      await sendReferralEmail(recipient, token, locale);
       setInviteEmail("");
       pushToast(t("dashboard.sales.emailInviteSent"), "success");
     } catch (err: any) {
