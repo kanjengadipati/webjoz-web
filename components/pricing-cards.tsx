@@ -66,7 +66,7 @@ interface PricingCardsProps {
   customDomainLabel?: string;        // e.g. "Custom Domain"
   customDomainSubtext?: string;      // e.g. "tidak termasuk domain"
   seoLabel?: string;                 // e.g. "SEO Booster"
-  subdomainLabel?: string;           // e.g. "Subdomain .webjoz.app"
+  subdomainLabel?: string;           // e.g. "Subdomain .webjoz.com"
   hostingLabel?: string;             // e.g. "Hosting & SSL gratis"
   // ── CTA label ─────────────────────────────────────────────────────────────
   currentPlanLabel?: string;
@@ -126,7 +126,7 @@ export function PricingCards({
   customDomainLabel = "Custom Domain",
   customDomainSubtext = "tidak termasuk domain",
   seoLabel = "SEO Booster",
-  subdomainLabel = "Subdomain .webjoz.app",
+  subdomainLabel = "Subdomain .webjoz.com",
   hostingLabel = "Hosting & SSL gratis",
   currentPlanLabel = "Paket Saat Ini",
   choosePlanLabel = "Pilih {plan} ({cycle})",
