@@ -22,8 +22,8 @@ export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, 
 
   return (
     <section
-      id="showcase-hero-section"
-      className="w-full py-16 px-4 md:px-8 bg-dt-bg text-dt-text font-dt-body"
+      id="menu"
+      className="w-full py-16 px-4 md:px-8 bg-dt-bg text-dt-text font-dt-body scroll-mt-20"
     >
       <div className="max-w-7xl mx-auto">
         <div id="hero-header" className="text-center mb-20 max-w-3xl mx-auto">

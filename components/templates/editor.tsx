@@ -546,7 +546,14 @@ export const PreviewSectionWrapper: React.FC<{
     }, [variants, selectedGroup]);
 
     if (!isEditorMode) {
-      return <>{children}</>;
+      if (section === "header") {
+        return <>{children}</>;
+      }
+      return (
+        <div id={`section-${section}`} data-section={section} className="scroll-mt-20">
+          {children}
+        </div>
+      );
     }
 
     const isSelected = activeSection === section;
@@ -554,6 +561,7 @@ export const PreviewSectionWrapper: React.FC<{
     return (
       <div
         id={`section-preview-${section}`}
+        data-section={section}
         onClick={(e) => {
           // Do NOT activate section selection when the user clicked inside a
           // contentEditable inline-edit element — that would open the mobile

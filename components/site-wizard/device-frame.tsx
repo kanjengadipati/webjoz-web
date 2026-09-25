@@ -32,7 +32,7 @@ export function DevicePreviewFrame({
     doc.head.appendChild(viewport);
 
     const baseStyle = doc.createElement("style");
-    baseStyle.textContent = "html,body{margin:0;padding:0;width:100%;min-height:100%} html{overflow-y:auto;height:100%} body{overflow:visible}";
+    baseStyle.textContent = "html,body{margin:0;padding:0;width:100%;min-height:100%} html{overflow-y:auto;height:100%;scroll-behavior:smooth} body{overflow:visible}";
     doc.head.appendChild(baseStyle);
 
     // Copy all parent stylesheets (fonts, Tailwind utilities, etc.)
@@ -92,9 +92,26 @@ export function DevicePreviewFrame({
       if (href.startsWith("#")) {
         // Hash link → smooth-scroll to element inside the iframe document
         const id = href.slice(1);
-        const element = doc.getElementById(id);
+        const element =
+          doc.getElementById(`section-${id}`) ||
+          doc.getElementById(id) ||
+          doc.getElementById(`section-preview-${id}`) ||
+          doc.querySelector(`[data-section="${id}"]`) ||
+          doc.querySelector(`[id*="${id}"]`);
+
         if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
+          const header = doc.querySelector("header");
+          const headerHeight = header ? header.getBoundingClientRect().height : 70;
+          const elRect = element.getBoundingClientRect();
+          const win = doc.defaultView || window;
+          const currentScroll = win.pageYOffset || doc.documentElement.scrollTop || doc.body.scrollTop || 0;
+          const targetY = Math.max(0, currentScroll + elRect.top - headerHeight - 12);
+
+          try {
+            win.scrollTo({ top: targetY, behavior: "smooth" });
+          } catch {
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
         }
       } else {
         // External link (WA, https://, tel:, mailto:) → open in a new tab
