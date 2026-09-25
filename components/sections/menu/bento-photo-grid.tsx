@@ -34,8 +34,8 @@ export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSe
 
   return (
     <section
-      id="bento-photo-grid-section"
-      className="w-full py-16 px-4 md:px-8 bg-dt-bg text-dt-text font-dt-body"
+      id="menu"
+      className="w-full py-16 px-4 md:px-8 bg-dt-bg text-dt-text font-dt-body scroll-mt-20"
     >
       <div className="max-w-7xl mx-auto">
         <div id="bento-header" className="text-center mb-16 max-w-2xl mx-auto">

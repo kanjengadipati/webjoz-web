@@ -89,8 +89,8 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
 
   return (
     <section
-      id="scrollspy-menu-section"
-      className="w-full py-16 bg-dt-bg text-dt-text font-dt-body"
+      id="menu"
+      className="w-full py-16 bg-dt-bg text-dt-text font-dt-body scroll-mt-20"
     >
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div id="scrollspy-header" className="mb-16">

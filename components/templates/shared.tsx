@@ -405,11 +405,26 @@ const NavMenu: React.FC<NavMenuProps> = ({
       return;
     }
     const doc = e.currentTarget.ownerDocument || document;
-    let el = doc.getElementById(`section-${item.key}`);
-    if (!el) {
-      el = doc.getElementById(item.key);
+    const win = doc.defaultView || window;
+    let el = doc.getElementById(`section-${item.key}`) ||
+             doc.getElementById(item.key) ||
+             doc.getElementById(`section-preview-${item.key}`) ||
+             doc.querySelector(`[data-section="${item.key}"]`) ||
+             doc.querySelector(`[id*="${item.key}"]`);
+
+    if (el) {
+      const header = doc.querySelector("header");
+      const headerHeight = header ? header.getBoundingClientRect().height : 70;
+      const elRect = el.getBoundingClientRect();
+      const currentScroll = win.pageYOffset || doc.documentElement.scrollTop || doc.body.scrollTop || 0;
+      const targetY = Math.max(0, currentScroll + elRect.top - headerHeight - 12);
+
+      try {
+        win.scrollTo({ top: targetY, behavior: "smooth" });
+      } catch {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     }
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
