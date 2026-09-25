@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import { useAuthToken } from "@/lib/auth-store";
 import { usePermissions } from "@/hooks/use-permissions";
-import { fetchMyReferralCode, regenerateMyReferralCode } from "@/lib/api/referral";
+import { fetchMyReferralCode, regenerateMyReferralCode, sendReferralEmail } from "@/lib/api/referral";
 import { getCommissionConfig, CommissionConfig } from "@/lib/api/commissions";
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Dialog } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
-import { Share2, Copy, RefreshCw, Loader2, Check, ShieldAlert, Award, DollarSign, Zap, Gift, Target, MessageCircle, Mail } from "lucide-react";
+import { Share2, Copy, RefreshCw, Loader2, Check, ShieldAlert, Award, DollarSign, Zap, Gift, Target, MessageCircle, Mail, Send } from "lucide-react";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
 
@@ -23,6 +23,8 @@ export default function SalesReferralPage() {
   const [copiedCode, setCopiedCode] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [copiedInviteText, setCopiedInviteText] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [sendingEmail, setSendingEmail] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
 
@@ -107,6 +109,21 @@ Salam!`;
     setCopiedInviteText(true);
     pushToast(t("dashboard.sales.inviteTextCopied"), "success");
     setTimeout(() => setCopiedInviteText(false), 2000);
+  };
+
+  const handleSendEmailInvite = async () => {
+    const recipient = inviteEmail.trim();
+    if (!token || !recipient) return;
+    setSendingEmail(true);
+    try {
+      await sendReferralEmail(recipient, token);
+      setInviteEmail("");
+      pushToast(t("dashboard.sales.emailInviteSent"), "success");
+    } catch (err: any) {
+      pushToast(err.message || t("dashboard.sales.emailInviteFailed"), "error");
+    } finally {
+      setSendingEmail(false);
+    }
   };
 
   const handleRegenerate = async () => {
@@ -224,6 +241,30 @@ Salam!`;
                 <Mail className="size-4 shrink-0 text-primary" />
                 <span className="truncate">{t("dashboard.sales.shareEmail")}</span>
               </Button>
+            </div>
+
+            <div className="pt-1 space-y-1.5">
+              <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                {t("dashboard.sales.emailInviteLabel")}
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="email"
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                  placeholder={t("dashboard.sales.emailInvitePlaceholder")}
+                  className="flex-1 min-w-0 rounded-xl border border-border/40 bg-muted/30 px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground/60 outline-none focus:border-primary/60 focus:bg-background transition-colors"
+                />
+                <Button
+                  type="button"
+                  onClick={() => void handleSendEmailInvite()}
+                  disabled={sendingEmail || !inviteEmail.trim()}
+                  className="gap-1.5 rounded-xl text-xs font-medium cursor-pointer shadow-sm shrink-0"
+                >
+                  {sendingEmail ? <Loader2 className="size-3.5 animate-spin" /> : <Send className="size-3.5" />}
+                  <span className="truncate">{sendingEmail ? t("dashboard.sales.emailInviteSending") : t("dashboard.sales.emailInviteSend")}</span>
+                </Button>
+              </div>
             </div>
 
             <Button
