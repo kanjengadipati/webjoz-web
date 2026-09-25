@@ -291,11 +291,6 @@ function PublicWizardContent() {
         className="min-h-screen text-white flex flex-col relative"
         style={{ background: "linear-gradient(160deg, #090d1f 0%, #05070f 100%)" }}
       >
-        {activeReferralCode && (
-          <div className="bg-emerald-500/15 border-b border-emerald-500/30 px-4 py-2 text-center text-xs text-emerald-300 font-semibold flex items-center justify-center gap-2">
-            <span>✨ Mendaftar via Partner Referensi Webjoz (Kode: <span className="font-mono">{activeReferralCode}</span>)</span>
-          </div>
-        )}
         <div className="flex-1 flex flex-col items-center justify-center gap-8">
           <div className="relative">
             <div className="w-20 h-20 rounded-2xl bg-primary/20 border border-primary/30 flex items-center justify-center">
@@ -347,11 +342,6 @@ function PublicWizardContent() {
       className="dark fixed left-0 top-0 w-screen overflow-hidden bg-[#0d0f14] flex flex-col text-foreground"
       style={{ height: "var(--webjoz-app-height, 100dvh)" }}
     >
-      {activeReferralCode && (
-        <div className="bg-emerald-500/15 border-b border-emerald-500/30 px-4 py-1.5 text-center text-xs text-emerald-300 font-semibold flex items-center justify-center gap-2 z-50">
-          <span>✨ Mendaftar via Partner Referensi Webjoz (Kode: <span className="font-mono uppercase">{activeReferralCode}</span>)</span>
-        </div>
-      )}
       <SiteWizard
         mode="public"
         token={token}
