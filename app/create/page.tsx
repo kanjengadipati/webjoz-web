@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, Suspense, useMemo } from "react";
+import { useEffect, useState, Suspense, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { useAuthToken, useAuthReady } from "@/lib/auth-store";
@@ -14,6 +14,7 @@ import { WIZARD_RESUME_KEY, loadWizardSnapshot } from "@/components/site-wizard/
 import { encodeSiteId } from "@/lib/sqids";
 
 const PENDING_KEY = "webjoz_pending_wizard_data";
+const SAVE_LOCK_KEY = "webjoz_save_in_progress";
 
 function PublicWizardContent() {
   const router = useRouter();
@@ -52,7 +53,9 @@ function PublicWizardContent() {
   const [pendingSave, setPendingSave] = useState(false);
   const [autoSaving, setAutoSaving] = useState(false);
   const [autoSaveError, setAutoSaveError] = useState("");
-  const isSavingRef = useRef(false);
+  // NOTE: intentionally NOT using useRef here — Suspense can unmount+remount the
+  // component, which resets useRef to false and causes doSave() to run twice.
+  // Using localStorage as a persistent lock that survives remounts.
 
   useEffect(() => {
     document.documentElement.classList.add("webjoz-wizard-active");
@@ -78,9 +81,34 @@ function PublicWizardContent() {
   useEffect(() => {
     if (!pendingSave) return;
     if (!authReady) return;
-    if (!token) return;
+    if (!token) {
+      // Auth is ready but user is not logged in — the loading screen would otherwise
+      // spin forever. Check if there's still pending wizard data to save.
+      const hasPendingData =
+        !!localStorage.getItem(PENDING_KEY) ||
+        !!localStorage.getItem("webjoz_pending_upgrade_site") ||
+        !!(loadWizardSnapshot()?.businessName);
+
+      setAutoSaving(false);
+      setPendingSave(false);
+
+      if (hasPendingData) {
+        // Still have data to save — send to login so they can authenticate and come back
+        localStorage.setItem("webjoz_login_redirect", "/create?action=save");
+        router.replace("/login");
+      } else {
+        // No pending data (already saved or cleared) — just show the wizard
+        router.replace("/create");
+      }
+      return;
+    }
     // Wait for tenant to finish loading (we need activeTenantId or createTenant)
     if (tenantLoading) return;
+
+    // Acquire a cross-render save lock BEFORE any async work.
+    // localStorage survives Suspense unmount/remount; useRef does not.
+    if (localStorage.getItem(SAVE_LOCK_KEY)) return;
+    localStorage.setItem(SAVE_LOCK_KEY, "1");
 
     // Clean up the URL immediately so refresh doesn't re-trigger
     window.history.replaceState(null, "", "/create");
@@ -124,8 +152,6 @@ function PublicWizardContent() {
     }
 
     const doSave = async () => {
-      if (isSavingRef.current) return; // prevent double execution
-      isSavingRef.current = true;
       setAutoSaving(true);
       setAutoSaveError("");
       try {
@@ -229,6 +255,7 @@ function PublicWizardContent() {
         localStorage.removeItem(PENDING_KEY);
         localStorage.removeItem(WIZARD_RESUME_KEY);
         localStorage.removeItem("webjoz_login_redirect");
+        localStorage.removeItem(SAVE_LOCK_KEY); // release lock after successful save
 
         // Redirect langsung ke editor website yang baru dibuat
         router.push(`/dashboard/sites/${encodeSiteId(siteId)}`);
@@ -239,7 +266,7 @@ function PublicWizardContent() {
         setAutoSaveError(msg);
         setAutoSaving(false);
         setPendingSave(false);
-        isSavingRef.current = false; // allow retry
+        localStorage.removeItem(SAVE_LOCK_KEY); // release lock so user can retry
       }
     };
 
@@ -250,7 +277,11 @@ function PublicWizardContent() {
   // ── Auth redirect handler (called from wizard) ────────────────────────────
   const handleNeedAuth = () => {
     pushToast("Daftar atau login dulu untuk menyimpan & edit website kamu.", "info");
-    router.push(`/login?redirect=${encodeURIComponent("/create?action=save")}`);
+    // Use window.location.replace (not router.push/replace) because Next.js App Router's
+    // router.replace doesn't reliably replace native browser history entries.
+    // window.location.replace() is guaranteed by the browser spec to remove /create
+    // from the history stack, so pressing Back from /login returns to / (landing).
+    window.location.replace(`/login?redirect=${encodeURIComponent("/create?action=save")}`);
   };
 
   // ── Auto-save loading screen ──────────────────────────────────────────────

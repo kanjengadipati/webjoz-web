@@ -1657,9 +1657,10 @@ export function SiteWizard({
               );
             }
 
-            const messageText = m.id === "init" && chat.chatStage === "name"
-              ? chat.initialMessageWords.slice(0, chat.initialWordCount).join(" ")
-              : m.text;
+            const messageText =
+              m.id === "init" && chat.chatStage === "name" && chat.isInitialTyping && chat.initialWordCount > 0
+                ? chat.initialMessageWords.slice(0, chat.initialWordCount).join(" ")
+                : m.text;
 
             // Mood icon mapping — warna solid supaya kontras di atas bubble putih (bg-primary)
             const moodIconMapMsg: Record<string, { icon: React.ReactNode; bg: string; text: string }> = {
@@ -1952,7 +1953,7 @@ export function SiteWizard({
                           t("dashboard.wizard.inputPlaceholderName", "Masukkan nama bisnis Anda...")
                   }
                   autoFocus
-                  disabled={chat.isInitialTyping || chat.isAiTyping || chat.isAnalyzingDescription || chat.isProcessingAudio}
+                  disabled={chat.isAiTyping || chat.isAnalyzingDescription || chat.isProcessingAudio}
                   className="flex-1 bg-transparent border-none py-2.5 text-base md:text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50"
                 />
                 {chat.chatStage === "description" && (
@@ -1961,7 +1962,7 @@ export function SiteWizard({
                     <button
                       type="button"
                       onClick={chat.startRecording}
-                      disabled={chat.isInitialTyping || chat.isAiTyping || chat.isAnalyzingDescription || chat.isProcessingAudio}
+                      disabled={chat.isAiTyping || chat.isAnalyzingDescription || chat.isProcessingAudio}
                       className="w-8 h-8 flex items-center justify-center rounded-xl bg-white/[0.06] border border-border text-slate-400 hover:text-white hover:bg-white/[0.12] transition-all disabled:opacity-30 shrink-0 active:scale-95 animate-mic-pulse cursor-pointer"
                       title={t("dashboard.wizard.sttStartRecording", "Bicara dengan mic")}
                     >
@@ -1971,7 +1972,7 @@ export function SiteWizard({
                 )}
                 <button
                   type="submit"
-                  disabled={chat.isInitialTyping || chat.isAiTyping || chat.isAnalyzingDescription || chat.isProcessingAudio || (chat.chatStage === "name" && !chat.inputValue.trim())}
+                  disabled={chat.isAiTyping || chat.isAnalyzingDescription || chat.isProcessingAudio || (chat.chatStage === "name" && !chat.inputValue.trim())}
                   className="w-8 h-8 flex items-center justify-center rounded-xl bg-white text-slate-900 hover:bg-slate-100 transition-all disabled:opacity-30 shrink-0 cursor-pointer shadow-xs"
                 >
                   <ArrowRight className="w-3.5 h-3.5" />

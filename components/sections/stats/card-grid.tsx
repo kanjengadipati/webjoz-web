@@ -131,7 +131,17 @@ export default function StatsCardGrid({
           )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div
+          className={`grid gap-6 ${
+            stats.items.length === 1
+              ? "grid-cols-1 max-w-md mx-auto"
+              : stats.items.length === 2
+              ? "grid-cols-1 sm:grid-cols-2 max-w-2xl mx-auto"
+              : stats.items.length === 4
+              ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+              : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+          }`}
+        >
           {stats.items.map((item, idx) => (
             <div
               key={idx}

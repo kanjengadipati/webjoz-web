@@ -136,7 +136,15 @@ export default function StatsCounterRow({
         )}
 
         <div
-          className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 divide-y md:divide-y-0 md:divide-x divide-white/10"
+          className={`grid gap-6 md:gap-8 ${
+            stats.items.length === 1
+              ? "grid-cols-1 max-w-sm mx-auto"
+              : stats.items.length === 2
+              ? "grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-black/10 dark:divide-white/10"
+              : stats.items.length === 3
+              ? "grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-black/10 dark:divide-white/10"
+              : "grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-black/10 dark:divide-white/10"
+          }`}
           style={{
             background: "var(--dt-surface)",
             borderRadius: "var(--dt-radius-lg, 16px)",
@@ -148,7 +156,7 @@ export default function StatsCounterRow({
           {stats.items.map((item, idx) => (
             <div
               key={idx}
-              className={`flex flex-col items-center text-center p-4 ${idx > 0 ? "pt-6 md:pt-4" : ""}`}
+              className="flex flex-col items-center text-center p-4 h-full"
             >
               {item.icon && (
                 <div
@@ -218,6 +226,7 @@ export default function StatsCounterRow({
                     color: `color-mix(in srgb, ${brandText} 60%, transparent)`,
                     marginTop: "0.25rem",
                     lineHeight: 1.4,
+                    minHeight: "2.4rem",
                   }}
                 >
                   {isEditorMode ? (

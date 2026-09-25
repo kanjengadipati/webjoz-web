@@ -212,9 +212,9 @@ export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField,
                 </div>
 
                 {/* Metadata & Description Area */}
-                <div className="p-5 flex flex-col flex-grow justify-between min-h-[160px]">
+                <div className="p-5 flex flex-col flex-grow justify-between min-h-[160px] min-w-0">
                   <div>
-                    <div className="flex justify-between items-start gap-4 mb-2">
+                    <div className="flex flex-col gap-1 mb-2 min-w-0">
                       <InlineText
                         section="catalog"
                         fieldKey={"categories." + activeCategoryIdx + ".items." + index + ".name"}
@@ -239,7 +239,7 @@ export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField,
                           collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                           onEditingStateChange={onEditingStateChange}
                           as="span"
-                          className="text-sm font-semibold tracking-tight"
+                          className="text-sm font-semibold tracking-tight self-start"
                           style={{ color: "var(--dt-text)" }}
                         />
                       )}

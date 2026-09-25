@@ -180,9 +180,9 @@ export default function CatalogSplitHeroCatalog({ catalog, onUpdateField, isEdit
                     </div>
 
                     {/* Content Column */}
-                    <div className="md:col-span-7 flex flex-col justify-between h-full min-h-[160px]">
+                    <div className="md:col-span-7 flex flex-col justify-between h-full min-h-[160px] min-w-0">
                       <div>
-                        <div className="flex justify-between items-start gap-4 mb-2">
+                        <div className="flex flex-col gap-1 mb-2 min-w-0">
                           <InlineText
                             section="catalog"
                             fieldKey={"categories." + catIdx + ".items." + index + ".name"}
@@ -207,7 +207,7 @@ export default function CatalogSplitHeroCatalog({ catalog, onUpdateField, isEdit
                               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                               onEditingStateChange={onEditingStateChange}
                               as="span"
-                              className="text-base font-semibold tracking-tight shrink-0"
+                              className="text-base font-semibold tracking-tight self-start"
                               style={{ color: "var(--dt-text)" }}
                             />
                           )}

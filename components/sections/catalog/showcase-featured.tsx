@@ -203,13 +203,13 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
                         placeholderStyle={{ background: `color-mix(in srgb, ${p} 8%, transparent)` }}
                         placeholderIconClassName="w-10 h-10"
                         placeholderIconStyle={{ color: `color-mix(in srgb, ${p} 30%, transparent)`, opacity: 0.6 }}
-                        contentClassName="p-4 flex flex-col flex-1"
-                        headerClassName="flex items-start justify-between gap-2 mb-2"
+                        contentClassName="p-4 flex flex-col flex-1 min-w-0"
+                        headerClassName="flex flex-col gap-1.5 mb-2 min-w-0"
                         titleClassName="font-semibold text-sm leading-tight line-clamp-2"
                         titleStyle={{ color: text, fontFamily: hFont }}
                         descriptionClassName="text-xs leading-relaxed line-clamp-3"
                         descriptionStyle={{ color: muted }}
-                        priceClassName="text-xs font-bold px-2 py-0.5 rounded-full whitespace-nowrap shrink-0"
+                        priceClassName="self-start text-xs font-bold px-2 py-0.5 rounded-full"
                         priceStyle={{ background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p }}
                         buttonClassName="w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all hover:brightness-110"
                         buttonStyle={{ background: p, color: bg, border: "none" }}

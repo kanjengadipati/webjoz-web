@@ -26,11 +26,12 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     { id: "init", sender: "ai", text: initialMessageText },
   ]);
   const [inputValue, setInputValue] = useState("");
+  const initialTypingDoneRef = useRef(false);
   const [initialWordCount, setInitialWordCount] = useState(0);
+  const [isInitialTyping, setIsInitialTyping] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const subTypeRef = useRef<HTMLDivElement>(null);
-  const isInitialTyping = chatStage === "name" && initialWordCount < initialMessageWords.length;
 
   const [businessName, setBusinessName] = useState("");
   const [businessType, setBusinessType] = useState(prefill?.businessType ?? "");
@@ -425,34 +426,64 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     }, 100);
   }, [messages, chatStage]);
 
-  // Sync init message if locale changes
+  // Initial typing animation & locale sync
   useEffect(() => {
+    // If not at stage "name" or there are subsequent messages, skip animation entirely
+    if (chatStage !== "name" || messages.length > 1) {
+      setInitialWordCount(initialMessageWords.length);
+      setIsInitialTyping(false);
+      initialTypingDoneRef.current = true;
+      return;
+    }
+
+    // Sync init message text
     setMessages((prev) =>
       prev.map((msg) => (msg.id === "init" ? { ...msg, text: initialMessageText } : msg))
     );
-    setInitialWordCount(0);
-  }, [initialMessageText]);
 
-  // Initial typing animation
-  useEffect(() => {
+    // If initial typing already completed, keep full word count and done state
+    if (initialTypingDoneRef.current) {
+      setInitialWordCount(initialMessageWords.length);
+      setIsInitialTyping(false);
+      return;
+    }
+
+    // Otherwise animate word by word (start with 1 word so bubble is never empty)
+    setIsInitialTyping(true);
+    setInitialWordCount((prev) => (prev > 0 ? prev : 1));
+
     const interval = setInterval(() => {
       setInitialWordCount((count) => {
         if (count >= initialMessageWords.length) {
           clearInterval(interval);
-          return count;
+          setIsInitialTyping(false);
+          initialTypingDoneRef.current = true;
+          return initialMessageWords.length;
         }
         return count + 1;
       });
-    }, 130);
-    return () => clearInterval(interval);
-  }, [initialMessageWords.length]);
+    }, 90);
 
-  // Auto-focus input
+    // Safety fallback: if anything throttles or delays the interval, finish gracefully after 2.5s
+    const safetyTimer = setTimeout(() => {
+      clearInterval(interval);
+      setInitialWordCount(initialMessageWords.length);
+      setIsInitialTyping(false);
+      initialTypingDoneRef.current = true;
+    }, 2500);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(safetyTimer);
+    };
+  }, [initialMessageText, chatStage, messages.length, initialMessageWords.length]);
+
+  // Auto-focus input immediately so user can type without waiting
   useEffect(() => {
-    if (!isInitialTyping && !isAiTyping && (chatStage === "name" || chatStage === "description")) {
+    if (!isAiTyping && (chatStage === "name" || chatStage === "description")) {
       window.setTimeout(() => inputRef.current?.focus(), 0);
     }
-  }, [isInitialTyping, isAiTyping, chatStage]);
+  }, [isAiTyping, chatStage]);
 
   const typeMessage = (fullText: string, onComplete: () => void): (() => void) => {
     if (activeTypingCancellerRef.current) {
@@ -634,7 +665,11 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     onGenerate: (name: string, type: string, overrides: any) => void
   ) => {
     e.preventDefault();
-    if (isInitialTyping) return;
+    if (isInitialTyping) {
+      setIsInitialTyping(false);
+      initialTypingDoneRef.current = true;
+      setInitialWordCount(initialMessageWords.length);
+    }
     if (!inputValue.trim() && chatStage !== "description") return;
     const val = inputValue.trim();
     setInputValue("");
@@ -720,7 +755,11 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   };
 
   const handleSelectStarter = (sampleName: string) => {
-    if (isInitialTyping) return;
+    if (isInitialTyping) {
+      setIsInitialTyping(false);
+      initialTypingDoneRef.current = true;
+      setInitialWordCount(initialMessageWords.length);
+    }
     const capitalized = capitalizeWords(sampleName.trim());
     setInputValue("");
     const msgId = `user-name-${Date.now()}`;
@@ -1063,6 +1102,8 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   };
 
   const hydrate = (snap: WizardResumeChat) => {
+    initialTypingDoneRef.current = true;
+    setIsInitialTyping(false);
     setChatStage(snap.chatStage);
     setMessages(
       Array.isArray(snap.messages) && snap.messages.length > 0
@@ -1112,6 +1153,8 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     setIsProcessingAudio(false);
     setInterimTranscript("");
 
+    initialTypingDoneRef.current = true;
+    setIsInitialTyping(false);
     setChatStage("name");
     setMessages([{ id: "init", sender: "ai", text: initialMessageText }]);
     setInputValue("");
