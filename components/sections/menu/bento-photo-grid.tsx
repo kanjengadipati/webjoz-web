@@ -131,7 +131,7 @@ export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSe
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-transparent transition-opacity duration-300 group-hover:from-black/95"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-transparent transition-opacity duration-300 group-hover:from-black/95 pointer-events-none"></div>
 
                     <div
                       id={`bento-num-${catIndex}-${itemIndex}`}
