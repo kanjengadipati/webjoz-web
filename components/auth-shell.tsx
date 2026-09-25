@@ -181,14 +181,6 @@ export function AuthShell({
         <div className="flex-1 flex flex-col justify-center my-auto w-full max-w-md mx-auto lg:max-w-6xl lg:grid lg:grid-cols-[1fr_0.9fr] lg:gap-8 lg:items-center">
           <div className="hidden space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-1000 lg:block">
             <div className="flex items-center gap-3">
-              <Image
-                src="/logo2.png"
-                alt="Webjoz logo"
-                width={120}
-                height={72}
-                className="h-9 w-auto object-contain"
-                priority
-              />
               <Badge
                 variant="outline"
                 className="w-fit px-4 py-1.5 border-primary/20 bg-primary/5 text-primary tracking-widest"
