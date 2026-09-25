@@ -345,14 +345,6 @@ const NavMenu: React.FC<NavMenuProps> = ({
   };
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>, item: { key: string; label: string; href: string }) => {
-    if (isEditorMode) {
-      const editable = e.currentTarget.querySelector<HTMLElement>("[contenteditable='true']");
-      if (editable) {
-        e.preventDefault();
-        editable.focus();
-        return;
-      }
-    }
     if (item.href === "__blog__") {
       // Editor mode: siteId is set via setEditorSiteId() → use /preview/[id]/blog
       if (EDITOR_SITE_ID) {

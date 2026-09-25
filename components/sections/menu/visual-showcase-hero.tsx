@@ -119,7 +119,7 @@ export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, 
                       />
 
                       {hasBadge && (
-                        <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-black/40 to-transparent"></div>
+                        <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-black/40 to-transparent pointer-events-none"></div>
                       )}
 
                       {badge && (
