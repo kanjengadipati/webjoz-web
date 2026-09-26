@@ -26,6 +26,14 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "work-preview-strip", label: "Strip Karya Unggulan", labelKey: "heroWorkPreviewStrip", group: "Portofolio & Personal", description: "Headline ringkas dengan deretan cuplikan thumbnail proyek langsung di hero." },
     { value: "chronology-badge", label: "Badge Kronologi", labelKey: "heroChronologyBadge", group: "Portofolio & Personal", description: "Hero dengan penanda milestone tahunan atau rekam jejak karier." },
   ],
+  "hero-effect": [
+    { value: "modern-grid", label: "Grid Modern", group: "Efek Visual", description: "Grid modular halus pada latar hero untuk kesan modern dan terstruktur." },
+    { value: "glassmorphism", label: "Kaca (Glassmorphism)", group: "Efek Visual", description: "Panel transparan dengan blur kaca dan tepi halus berkilau." },
+    { value: "neobrutalism", label: "Neo-Brutalis", group: "Efek Visual", description: "Garis tebal, bayangan tajam, dan blok warna berani khas brutalisme." },
+    { value: "scanlines", label: "Garis Scan", group: "Efek Visual", description: "Tekstur garis horizontal tipis ala layar retro CRT / terminal." },
+    { value: "starfield", label: "Luar Angkasa", group: "Efek Visual", description: "Titik bintang berkelap-kelip di latar gelap yang dramatis." },
+    { value: "retro-paper", label: "Kertas Retro", group: "Efek Visual", description: "Tekstur kertas usang dan butiran hangat bergaya vintage." },
+  ],
   about: [
     { value: "classic", label: "Klasik", description: "Teks di kiri, konten bersih tanpa gambar besar." },
     { value: "split-image", label: "Split + Gambar", description: "Teks di kiri, gambar besar di kanan." },
