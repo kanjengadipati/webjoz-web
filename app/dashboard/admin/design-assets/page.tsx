@@ -7,7 +7,7 @@ import {
   ShieldAlert, Type, Palette, Layers, LayoutGrid,
   Eye, EyeOff, Trash2, Plus, RotateCcw, Search,
   Lock, Unlock, ChevronDown, Sun, Moon, Check,
-  SlidersHorizontal,
+  SlidersHorizontal, ArrowRight,
 } from "lucide-react";
 import {
   Card, CardContent, Button, Badge, Input, Separator,
@@ -232,6 +232,457 @@ function VisibilityBadge({ hidden }: { hidden: boolean }) {
   );
 }
 
+// ─── Section Anatomy Blueprint Preview ───────────────────────────────────────
+function SectionBlueprintPreview({ sectionKey }: { sectionKey: string }) {
+  switch (sectionKey) {
+    case "header":
+      return (
+        <div className="w-full h-full flex flex-col justify-between p-3 select-none">
+          <div className="flex items-center justify-between px-2.5 py-1.5 rounded-md bg-card/80 border border-border/40 shadow-xs">
+            <div className="flex items-center gap-1.5">
+              <div className="size-2.5 rounded-full bg-primary" />
+              <div className="w-8 h-1 rounded-full bg-foreground/70" />
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-1 rounded-full bg-muted-foreground/40" />
+              <div className="w-5 h-1 rounded-full bg-muted-foreground/40" />
+              <div className="w-6 h-1 rounded-full bg-muted-foreground/40" />
+            </div>
+            <div className="w-7 h-2.5 rounded-full bg-primary flex items-center justify-center">
+              <div className="w-3.5 h-0.5 rounded-full bg-primary-foreground" />
+            </div>
+          </div>
+          <div className="flex justify-center">
+            <span className="text-[9px] font-mono text-muted-foreground/60 uppercase tracking-widest">Global Navigation Bar</span>
+          </div>
+        </div>
+      );
+
+    case "hero":
+      return (
+        <div className="w-full h-full flex items-center justify-between px-4 py-2 gap-3 select-none">
+          <div className="flex-1 space-y-1.5">
+            <div className="inline-flex px-1.5 py-0.5 rounded-full bg-primary/15 border border-primary/30">
+              <div className="w-6 h-1 rounded-full bg-primary" />
+            </div>
+            <div className="space-y-1">
+              <div className="w-4/5 h-2 rounded-sm bg-foreground/80 font-bold" />
+              <div className="w-3/5 h-1.5 rounded-sm bg-foreground/60" />
+            </div>
+            <div className="w-full h-1 rounded-full bg-muted-foreground/30" />
+            <div className="flex gap-1.5 pt-0.5">
+              <div className="w-8 h-3 rounded-md bg-primary" />
+              <div className="w-7 h-3 rounded-md border border-border/80 bg-background/50" />
+            </div>
+          </div>
+          <div className="w-20 h-16 rounded-lg bg-gradient-to-br from-primary/10 via-muted/40 to-background border border-border/60 p-1.5 flex flex-col justify-between shadow-xs">
+            <div className="flex items-center gap-1">
+              <div className="size-1.5 rounded-full bg-red-400/60" />
+              <div className="size-1.5 rounded-full bg-yellow-400/60" />
+              <div className="size-1.5 rounded-full bg-green-400/60" />
+            </div>
+            <div className="size-6 rounded-full bg-primary/20 self-center flex items-center justify-center">
+              <div className="size-2.5 rounded-full bg-primary" />
+            </div>
+            <div className="w-full h-1 rounded-full bg-muted-foreground/20" />
+          </div>
+        </div>
+      );
+
+    case "about":
+      return (
+        <div className="w-full h-full flex items-center justify-between px-4 py-2.5 gap-3 select-none">
+          <div className="w-18 h-16 rounded-lg bg-muted/60 border border-border/60 p-2 flex flex-col items-center justify-center gap-1 shadow-xs shrink-0">
+            <div className="size-6 rounded-full bg-primary/15 flex items-center justify-center">
+              <div className="size-3 rounded-full bg-primary/40" />
+            </div>
+            <div className="w-8 h-1 rounded-full bg-muted-foreground/40" />
+          </div>
+          <div className="flex-1 space-y-1.5">
+            <div className="w-12 h-1.5 rounded-sm bg-primary/80" />
+            <div className="w-4/5 h-2 rounded-sm bg-foreground/80" />
+            <div className="space-y-0.5">
+              <div className="w-full h-1 rounded-full bg-muted-foreground/30" />
+              <div className="w-5/6 h-1 rounded-full bg-muted-foreground/20" />
+            </div>
+            <div className="flex gap-2 pt-0.5">
+              <div className="flex items-center gap-1">
+                <div className="size-1.5 rounded-full bg-green-500" />
+                <div className="w-6 h-1 rounded-full bg-foreground/60" />
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="size-1.5 rounded-full bg-green-500" />
+                <div className="w-7 h-1 rounded-full bg-foreground/60" />
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+
+    case "benefits":
+      return (
+        <div className="w-full h-full flex flex-col justify-center px-3 py-2 gap-1.5 select-none">
+          <div className="flex items-center justify-center gap-1">
+            <div className="w-16 h-1.5 rounded-full bg-foreground/80" />
+          </div>
+          <div className="grid grid-cols-3 gap-1.5">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="p-1.5 rounded-md bg-card/70 border border-border/50 flex flex-col gap-1">
+                <div className="size-3 rounded-full bg-primary/25 flex items-center justify-center">
+                  <div className="size-1.5 rounded-full bg-primary" />
+                </div>
+                <div className="w-full h-1 rounded-full bg-foreground/70" />
+                <div className="w-4/5 h-0.5 rounded-full bg-muted-foreground/30" />
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+
+    case "stats":
+      return (
+        <div className="w-full h-full flex items-center justify-center px-4 py-2 gap-2 select-none">
+          {[
+            { val: "99%", lbl: "Kepuasan" },
+            { val: "10k+", lbl: "Pengguna" },
+            { val: "24/7", lbl: "Dukungan" },
+          ].map((s, i) => (
+            <div key={i} className="flex-1 p-2 rounded-lg bg-card/70 border border-border/40 text-center flex flex-col items-center justify-center gap-0.5">
+              <span className="text-[12px] font-black tracking-tight leading-none text-primary">{s.val}</span>
+              <span className="text-[7px] font-medium text-muted-foreground uppercase">{s.lbl}</span>
+            </div>
+          ))}
+        </div>
+      );
+
+    case "testimonials":
+      return (
+        <div className="w-full h-full flex flex-col justify-center px-4 py-2 select-none">
+          <div className="p-2 rounded-lg bg-card/80 border border-border/50 space-y-1.5 shadow-xs">
+            <div className="flex items-center justify-between">
+              <div className="flex gap-0.5 text-amber-400 text-[8px] leading-none">★★★★★</div>
+              <div className="w-8 h-1 rounded-full bg-muted-foreground/30" />
+            </div>
+            <div className="space-y-0.5">
+              <div className="w-full h-1 rounded-full bg-foreground/70" />
+              <div className="w-4/5 h-1 rounded-full bg-foreground/40" />
+            </div>
+            <div className="flex items-center gap-1.5 pt-0.5">
+              <div className="size-3 rounded-full bg-primary/30" />
+              <div className="w-12 h-1 rounded-full bg-foreground/80" />
+            </div>
+          </div>
+        </div>
+      );
+
+    case "menu":
+      return (
+        <div className="w-full h-full flex flex-col justify-center px-4 py-2 gap-1.5 select-none">
+          <div className="flex items-center justify-between border-b border-border/40 pb-1">
+            <div className="w-12 h-1.5 rounded-full bg-foreground/80 font-bold" />
+            <div className="px-1 py-0.2 rounded bg-amber-500/15 text-[6px] font-bold text-amber-500">FAVORIT</div>
+          </div>
+          <div className="space-y-1">
+            {[
+              { w: "45%", p: "28k" },
+              { w: "55%", p: "35k" },
+              { w: "40%", p: "22k" },
+            ].map((it, i) => (
+              <div key={i} className="flex items-center justify-between gap-1 text-[8px]">
+                <div className="h-1 rounded-full bg-foreground/70" style={{ width: it.w }} />
+                <div className="flex-1 border-b border-dotted border-border/60 mx-1" />
+                <span className="font-mono text-[7px] font-bold text-primary">{it.p}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+
+    case "catalog":
+      return (
+        <div className="w-full h-full flex items-center justify-center px-3 py-2 gap-1.5 select-none">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex-1 rounded-md bg-card/80 border border-border/50 overflow-hidden shadow-xs">
+              <div className="h-7 bg-muted/60 flex items-center justify-center">
+                <div className="size-3 rounded-full bg-foreground/10" />
+              </div>
+              <div className="p-1 space-y-0.5">
+                <div className="w-full h-1 rounded-full bg-foreground/70" />
+                <div className="flex items-center justify-between pt-0.5">
+                  <div className="w-4 h-1 rounded-full bg-primary" />
+                  <div className="size-2 rounded-xs bg-primary/30" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+
+    case "gallery":
+      return (
+        <div className="w-full h-full grid grid-cols-3 gap-1.5 p-3 select-none">
+          <div className="col-span-2 rounded-md bg-muted/70 border border-border/50 flex items-center justify-center">
+            <div className="size-4 rounded-full bg-foreground/10" />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <div className="flex-1 rounded-md bg-muted/50 border border-border/50" />
+            <div className="flex-1 rounded-md bg-muted/50 border border-border/50" />
+          </div>
+        </div>
+      );
+
+    case "works":
+      return (
+        <div className="w-full h-full flex items-center justify-center px-4 py-2 gap-2 select-none">
+          {[1, 2].map((i) => (
+            <div key={i} className="flex-1 rounded-lg bg-card/80 border border-border/50 p-1.5 space-y-1 shadow-xs">
+              <div className="h-8 rounded bg-muted/60 flex items-center justify-center">
+                <div className="w-6 h-2 rounded-full bg-primary/20" />
+              </div>
+              <div className="w-3/4 h-1.5 rounded-full bg-foreground/80" />
+              <div className="w-1/2 h-1 rounded-full bg-muted-foreground/30" />
+            </div>
+          ))}
+        </div>
+      );
+
+    case "partners":
+      return (
+        <div className="w-full h-full flex flex-col justify-center px-4 py-2 gap-2 select-none">
+          <div className="w-20 h-1.5 rounded-full bg-muted-foreground/40 self-center" />
+          <div className="flex items-center justify-center gap-2">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="px-2 py-1.5 rounded-md bg-card/60 border border-border/40 flex items-center justify-center">
+                <div className="w-7 h-2 rounded-full bg-muted-foreground/30" />
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+
+    case "pricing":
+      return (
+        <div className="w-full h-full flex items-center justify-center px-3 py-2 gap-1.5 select-none">
+          {[
+            { tier: "Free", price: "$0", featured: false },
+            { tier: "Pro", price: "$19", featured: true },
+            { tier: "Biz", price: "$49", featured: false },
+          ].map((p, i) => (
+            <div
+              key={i}
+              className={`flex-1 rounded-md p-1.5 flex flex-col items-center gap-0.5 shadow-xs ${
+                p.featured
+                  ? "bg-primary/10 border border-primary/50 ring-1 ring-primary/20"
+                  : "bg-card/70 border border-border/40"
+              }`}
+            >
+              {p.featured && (
+                <span className="text-[5px] font-black uppercase text-primary tracking-wider">TOP</span>
+              )}
+              <span className="text-[8px] font-black text-foreground">{p.price}</span>
+              <div className="w-4/5 h-0.5 rounded-full bg-muted-foreground/30" />
+              <div className="w-3/5 h-0.5 rounded-full bg-muted-foreground/20" />
+            </div>
+          ))}
+        </div>
+      );
+
+    case "blog":
+      return (
+        <div className="w-full h-full flex items-center justify-center px-4 py-2 gap-2 select-none">
+          {[1, 2].map((i) => (
+            <div key={i} className="flex-1 rounded-md bg-card/70 border border-border/50 p-1.5 space-y-1">
+              <div className="h-6 rounded bg-muted/60" />
+              <div className="w-5 h-1 rounded-full bg-primary/60" />
+              <div className="w-4/5 h-1.5 rounded-full bg-foreground/75" />
+            </div>
+          ))}
+        </div>
+      );
+
+    case "faq":
+      return (
+        <div className="w-full h-full flex flex-col justify-center px-4 py-2 gap-1 select-none">
+          <div className="p-1 rounded bg-card/80 border border-primary/30 space-y-0.5">
+            <div className="flex items-center justify-between">
+              <div className="w-3/5 h-1.5 rounded-full bg-foreground/80 font-bold" />
+              <span className="text-[7px] text-primary leading-none">▲</span>
+            </div>
+            <div className="w-4/5 h-1 rounded-full bg-muted-foreground/40" />
+          </div>
+          <div className="p-1 rounded bg-card/40 border border-border/30 flex items-center justify-between">
+            <div className="w-1/2 h-1.5 rounded-full bg-foreground/60" />
+            <span className="text-[7px] text-muted-foreground leading-none">▼</span>
+          </div>
+          <div className="p-1 rounded bg-card/40 border border-border/30 flex items-center justify-between">
+            <div className="w-2/5 h-1.5 rounded-full bg-foreground/60" />
+            <span className="text-[7px] text-muted-foreground leading-none">▼</span>
+          </div>
+        </div>
+      );
+
+    case "cta":
+      return (
+        <div className="w-full h-full flex flex-col items-center justify-center px-4 py-2 bg-gradient-to-r from-primary/10 via-accent/15 to-primary/10 select-none text-center gap-1.5">
+          <div className="inline-flex px-1.5 py-0.5 rounded-full bg-primary/20 border border-primary/40">
+            <div className="w-8 h-1 rounded-full bg-primary font-bold" />
+          </div>
+          <div className="w-3/5 h-2 rounded-full bg-foreground/90 font-black" />
+          <div className="w-2/5 h-1 rounded-full bg-muted-foreground/40" />
+          <div className="px-3 py-1 rounded-full bg-primary text-primary-foreground shadow-xs">
+            <div className="w-8 h-1 rounded-full bg-primary-foreground" />
+          </div>
+        </div>
+      );
+
+    case "contact":
+      return (
+        <div className="w-full h-full flex items-center justify-between px-4 py-2 gap-2 select-none">
+          <div className="flex-1 space-y-1">
+            <div className="flex items-center gap-1">
+              <div className="size-2 rounded-full bg-green-500" />
+              <div className="w-10 h-1 rounded-full bg-foreground/70" />
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="size-2 rounded-full bg-blue-500" />
+              <div className="w-12 h-1 rounded-full bg-foreground/70" />
+            </div>
+            <div className="w-14 h-1 rounded-full bg-muted-foreground/30" />
+          </div>
+          <div className="w-24 rounded-md bg-card/90 border border-border/60 p-1.5 space-y-1 shadow-xs">
+            <div className="w-full h-2 rounded bg-muted/60 border border-border/30" />
+            <div className="w-full h-2 rounded bg-muted/60 border border-border/30" />
+            <div className="w-8 h-2 rounded bg-primary self-end" />
+          </div>
+        </div>
+      );
+
+    case "footer":
+      return (
+        <div className="w-full h-full flex flex-col justify-between px-4 py-2 bg-zinc-950 text-white select-none">
+          <div className="grid grid-cols-4 gap-2 pt-1">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="space-y-0.5">
+                <div className="w-full h-1 rounded-full bg-white/70" />
+                <div className="w-3/4 h-0.5 rounded-full bg-white/30" />
+                <div className="w-1/2 h-0.5 rounded-full bg-white/20" />
+              </div>
+            ))}
+          </div>
+          <div className="flex items-center justify-between border-t border-white/10 pt-1">
+            <div className="w-16 h-0.5 rounded-full bg-white/30" />
+            <div className="flex gap-1">
+              <div className="size-1.5 rounded-full bg-white/40" />
+              <div className="size-1.5 rounded-full bg-white/40" />
+              <div className="size-1.5 rounded-full bg-white/40" />
+            </div>
+          </div>
+        </div>
+      );
+
+    default:
+      return (
+        <div className="w-full h-full flex flex-col items-center justify-center p-3 select-none">
+          <div className="w-16 h-2 rounded-full bg-foreground/50 mb-1" />
+          <div className="w-24 h-1 rounded-full bg-muted-foreground/30" />
+        </div>
+      );
+  }
+}
+
+// ─── Section Flow Ribbon ──────────────────────────────────────────────────────
+function SectionFlowRibbon({
+  sections,
+  hiddenSections,
+  requiredSections,
+  onSelectSection,
+}: {
+  sections: string[];
+  hiddenSections: Set<string>;
+  requiredSections: Set<string>;
+  onSelectSection?: (key: string) => void;
+}) {
+  const { t } = useI18n();
+  const activeCount = sections.filter((s) => !hiddenSections.has(s)).length;
+  const requiredCount = sections.filter((s) => requiredSections.has(s)).length;
+  const hiddenCount = hiddenSections.size;
+
+  return (
+    <div className="p-4 rounded-xl border border-border/50 bg-gradient-to-r from-card via-muted/20 to-card shadow-xs space-y-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <div className="size-2 rounded-full bg-primary animate-pulse" />
+          <p className="text-xs font-bold uppercase tracking-wider text-foreground">
+            {t("dashboard.adminDesignAssets.flowRibbonTitle", "Alur Standar Landing Page")}
+          </p>
+          <span className="text-[10px] text-muted-foreground/70 hidden md:inline">
+            (Klik bagian untuk lompat ke kartunya)
+          </span>
+        </div>
+        <div className="flex items-center gap-2 text-[10px] font-medium text-muted-foreground">
+          <span className="flex items-center gap-1">
+            <span className="size-1.5 rounded-full bg-green-500" />
+            {activeCount} {t("dashboard.adminDesignAssets.active", "Aktif")}
+          </span>
+          <span>•</span>
+          <span className="flex items-center gap-1 text-amber-500 font-semibold">
+            <Lock className="size-2.5" />
+            {requiredCount} {t("dashboard.adminDesignAssets.required", "Wajib")}
+          </span>
+          <span>•</span>
+          <span className="flex items-center gap-1 text-muted-foreground/70">
+            <EyeOff className="size-2.5" />
+            {hiddenCount} {t("dashboard.adminDesignAssets.hidden", "Disembunyikan")}
+          </span>
+        </div>
+      </div>
+
+      {/* Horizontal Flow Slider */}
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 pt-0.5 no-scrollbar scroll-smooth">
+        {sections.map((key, idx) => {
+          const meta = SECTION_META[key];
+          const Icon = meta?.icon;
+          const isHidden = hiddenSections.has(key);
+          const isRequired = requiredSections.has(key);
+
+          return (
+            <React.Fragment key={key}>
+              <button
+                type="button"
+                onClick={() => {
+                  const el = document.getElementById(`section-card-${key}`);
+                  if (el) {
+                    el.scrollIntoView({ behavior: "smooth", block: "center" });
+                    el.classList.add("ring-2", "ring-primary", "transition-all");
+                    setTimeout(() => el.classList.remove("ring-2", "ring-primary"), 1500);
+                  }
+                  onSelectSection?.(key);
+                }}
+                className={`group shrink-0 px-2.5 py-1.5 rounded-lg border text-xs font-medium flex items-center gap-1.5 transition-all duration-200 cursor-pointer ${
+                  isHidden
+                    ? "border-dashed border-border/40 text-muted-foreground/50 bg-muted/10 hover:border-border"
+                    : isRequired
+                    ? "border-amber-500/40 bg-amber-500/10 text-foreground hover:border-amber-500/80 shadow-xs"
+                    : "border-border/60 bg-card text-foreground hover:border-primary/60 hover:bg-primary/5 shadow-xs"
+                }`}
+                title={`Klik untuk lompat ke ${meta?.label ?? key}`}
+              >
+                {Icon && <Icon className={`size-3.5 ${isRequired ? "text-amber-500" : isHidden ? "opacity-40" : "text-primary"}`} />}
+                <span className="text-[11px] font-semibold">{meta?.label ?? key}</span>
+                {isRequired && <Lock className="size-2.5 text-amber-500" />}
+                {isHidden && <EyeOff className="size-2.5 text-muted-foreground/50" />}
+              </button>
+              {idx < sections.length - 1 && (
+                <ArrowRight className="size-3 text-muted-foreground/40 shrink-0" />
+              )}
+            </React.Fragment>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // ─── Sections Tab ─────────────────────────────────────────────────────────────
 function SectionsTab({
   hiddenSections, requiredSections, hiddenVariants, hiddenMapTiles,
@@ -264,7 +715,14 @@ function SectionsTab({
           </Button>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        <SectionFlowRibbon
+          sections={MANAGEABLE_SECTIONS}
+          hiddenSections={hiddenSections}
+          requiredSections={requiredSections}
+          onSelectSection={(key) => setExpandedSection(key)}
+        />
+
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {MANAGEABLE_SECTIONS.map((key) => {
             const meta = SECTION_META[key];
             const isHidden = hiddenSections.has(key);
@@ -277,48 +735,63 @@ function SectionsTab({
             const isExpanded = expandedSection === key;
 
             return (
-              <Card key={key} className={`border transition-all ${isHidden ? "opacity-50 border-border/30" : "border-border/50 hover:border-border/80"}`}>
-                <CardContent className="p-4 space-y-3">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      {Icon && <Icon className="size-4 text-muted-foreground shrink-0" />}
-                      <div>
-                        <p className="font-semibold text-sm">{meta?.label ?? key}</p>
-                        <p className="text-[10px] font-mono text-muted-foreground uppercase">{key}</p>
+              <Card
+                id={`section-card-${key}`}
+                key={key}
+                className={`overflow-hidden border transition-all flex flex-col ${
+                  isHidden ? "opacity-50 border-border/30" : "border-border/50 hover:border-border/80"
+                }`}
+              >
+                {/* Visual Blueprint Header */}
+                <div className={`h-24 relative overflow-hidden border-b border-border/20 bg-muted/10 ${isHidden ? "opacity-40" : ""}`}>
+                  <SectionBlueprintPreview sectionKey={key} />
+                </div>
+
+                <CardContent className="p-4 space-y-3 flex-1 flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        {Icon && <Icon className="size-4 text-muted-foreground shrink-0" />}
+                        <div>
+                          <p className="font-semibold text-sm">{meta?.label ?? key}</p>
+                          <p className="text-[10px] font-mono text-muted-foreground uppercase">{key}</p>
+                        </div>
                       </div>
+                      <VisibilityBadge hidden={isHidden} />
                     </div>
-                    <VisibilityBadge hidden={isHidden} />
+
+                    <div className="flex flex-wrap gap-1.5">
+                      {isOptional && <Badge variant="secondary" className="text-[9px] h-4 px-1.5 font-semibold">{t("dashboard.adminDesignAssets.optional")}</Badge>}
+                      {isRequired && (
+                        <Badge variant="outline" className="text-[9px] h-4 px-1.5 border-amber-500/40 text-amber-500 font-semibold gap-0.5">
+                          <Lock className="size-2" /> {t("dashboard.adminDesignAssets.required")}
+                        </Badge>
+                      )}
+                      {hasVariants && (
+                        <Badge variant="outline" className="text-[9px] h-4 px-1.5 font-semibold gap-0.5 cursor-pointer hover:bg-muted/50"
+                          onClick={() => setExpandedSection(isExpanded ? null : key)}>
+                          {t("dashboard.adminDesignAssets.variantsActive", undefined, { active: String(variantCount - hiddenVariantCount), total: String(variantCount) })}
+                        </Badge>
+                      )}
+                    </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-1.5">
-                    {isOptional && <Badge variant="secondary" className="text-[9px] h-4 px-1.5 font-semibold">{t("dashboard.adminDesignAssets.optional")}</Badge>}
-                    {isRequired && (
-                      <Badge variant="outline" className="text-[9px] h-4 px-1.5 border-amber-500/40 text-amber-500 font-semibold gap-0.5">
-                        <Lock className="size-2" /> {t("dashboard.adminDesignAssets.required")}
-                      </Badge>
-                    )}
-                    {hasVariants && (
-                      <Badge variant="outline" className="text-[9px] h-4 px-1.5 font-semibold gap-0.5 cursor-pointer hover:bg-muted/50"
-                        onClick={() => setExpandedSection(isExpanded ? null : key)}>
-                        {t("dashboard.adminDesignAssets.variantsActive", undefined, { active: String(variantCount - hiddenVariantCount), total: String(variantCount) })}
-                      </Badge>
-                    )}
-                  </div>
+                  <div className="space-y-2 pt-1">
+                    <Separator className="bg-border/30" />
 
-                  <Separator className="bg-border/30" />
-
-                  <div className="flex gap-2">
-                    <Button size="sm" variant={isHidden ? "default" : "outline"}
-                      className="flex-1 h-7 text-[11px] font-semibold gap-1"
-                      disabled={isRequired && !isHidden}
-                      onClick={() => onToggleHide(key, !isHidden)}>
-                      {isHidden ? <><Eye className="size-3" /> {t("dashboard.adminDesignAssets.show")}</> : <><EyeOff className="size-3" /> {t("dashboard.adminDesignAssets.hide")}</>}
-                    </Button>
-                    <Button size="sm" variant={isRequired ? "secondary" : "outline"}
-                      className="flex-1 h-7 text-[11px] font-semibold gap-1"
-                      onClick={() => onToggleRequired(key, !isRequired)}>
-                      {isRequired ? <><Unlock className="size-3" /> {t("dashboard.adminDesignAssets.unrequire")}</> : <><Lock className="size-3" /> {t("dashboard.adminDesignAssets.require")}</>}
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button size="sm" variant={isHidden ? "default" : "outline"}
+                        className="flex-1 h-7 text-[11px] font-semibold gap-1"
+                        disabled={isRequired && !isHidden}
+                        onClick={() => onToggleHide(key, !isHidden)}>
+                        {isHidden ? <><Eye className="size-3" /> {t("dashboard.adminDesignAssets.show")}</> : <><EyeOff className="size-3" /> {t("dashboard.adminDesignAssets.hide")}</>}
+                      </Button>
+                      <Button size="sm" variant={isRequired ? "secondary" : "outline"}
+                        className="flex-1 h-7 text-[11px] font-semibold gap-1"
+                        onClick={() => onToggleRequired(key, !isRequired)}>
+                        {isRequired ? <><Unlock className="size-3" /> {t("dashboard.adminDesignAssets.unrequire")}</> : <><Lock className="size-3" /> {t("dashboard.adminDesignAssets.require")}</>}
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -574,14 +1047,45 @@ function PairingsTab({
           const isHidden = hiddenPairings.has(pairing.id);
           return (
             <Card key={pairing.id} className={`overflow-hidden transition-all flex flex-col ${isHidden ? "opacity-50 border-border/20" : "border-border/40 hover:border-border/70"}`}>
-              {/* Preview strip */}
-              <div className="h-20 bg-zinc-950 flex flex-col justify-center px-4 border-b border-border/50">
-                <p style={{ fontFamily: `'${pairing.heading_font}', sans-serif`, fontWeight: pairing.heading_weight, fontStyle: pairing.heading_style ?? "normal", textTransform: (pairing.heading_transform ?? "none") as any, letterSpacing: pairing.heading_tracking ?? "normal", fontSize: "16px", color: "rgba(255,255,255,0.9)", margin: 0 }}>
-                  {pairing.name}
-                </p>
-                <p style={{ fontFamily: `'${pairing.body_font}', sans-serif`, fontSize: "11px", color: "rgba(255,255,255,0.4)", margin: 0, marginTop: 4 }}>
-                  {pairing.heading_font} / {pairing.body_font}
-                </p>
+              {/* Type Specimen Card */}
+              <div className="h-28 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 relative overflow-hidden flex flex-col justify-between p-3.5 border-b border-border/40 select-none">
+                {/* Large Glyphs watermark */}
+                <span
+                  className="absolute -right-1 -bottom-4 text-7xl font-bold text-white/5 pointer-events-none select-none"
+                  style={{ fontFamily: `'${pairing.heading_font}', sans-serif` }}
+                >
+                  Aa
+                </span>
+
+                <div className="flex items-center justify-between z-10">
+                  <span className="text-[9px] font-mono uppercase tracking-widest text-primary/80 font-bold">
+                    Type Specimen
+                  </span>
+                  <span className="text-[9px] font-mono text-white/40">
+                    {pairing.heading_weight}w • {pairing.heading_size_hero}
+                  </span>
+                </div>
+
+                <div className="z-10 space-y-1">
+                  <p
+                    className="text-white text-base leading-snug truncate"
+                    style={{
+                      fontFamily: `'${pairing.heading_font}', sans-serif`,
+                      fontWeight: pairing.heading_weight,
+                      fontStyle: pairing.heading_style ?? "normal",
+                      textTransform: (pairing.heading_transform ?? "none") as any,
+                      letterSpacing: pairing.heading_tracking ?? "normal",
+                    }}
+                  >
+                    {pairing.name}
+                  </p>
+                  <p
+                    className="text-[11px] text-white/60 line-clamp-1"
+                    style={{ fontFamily: `'${pairing.body_font}', sans-serif` }}
+                  >
+                    Harmonious typography for editorial and landing page clarity.
+                  </p>
+                </div>
               </div>
 
               <CardContent className="p-3 flex-1 flex flex-col gap-2">
@@ -724,14 +1228,52 @@ function PatternsTab({
           const { total: score } = scoreDesignToken(mockDt);
           return (
             <Card key={pattern.id} className={`overflow-hidden transition-all flex flex-col ${isHidden ? "opacity-50 border-border/20" : "border-border/40 hover:border-border/70"}`}>
-              {/* Colour strip */}
-              <div className="h-20 relative flex items-end p-3 border-b border-border/30"
-                style={{ background: `linear-gradient(135deg, ${pattern.palette.background}, ${pattern.palette.surface})` }}>
-                <div className="flex gap-1.5 p-1.5 rounded-lg bg-black/30 backdrop-blur-sm border border-border/50">
-                  <PaletteStrip palette={pattern.palette} />
+              {/* UI Token Slice */}
+              <div
+                className="h-28 relative overflow-hidden flex flex-col justify-between p-3 border-b border-border/30 select-none"
+                style={{ background: pattern.palette.background }}
+              >
+                {/* Top: Mode badge & Swatches */}
+                <div className="flex items-center justify-between z-10">
+                  <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-black/40 backdrop-blur-md border border-white/10">
+                    <PaletteStrip palette={pattern.palette} />
+                  </div>
+                  <div className="size-6 rounded-md bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center">
+                    {pattern.theme_mode === "dark" ? (
+                      <Moon className="size-3.5 text-white/80" />
+                    ) : (
+                      <Sun className="size-3.5 text-amber-300" />
+                    )}
+                  </div>
                 </div>
-                <div className="absolute top-2 right-2">
-                  {pattern.theme_mode === "dark" ? <Moon className="size-3.5 text-white/50" /> : <Sun className="size-3.5 text-black/40" />}
+
+                {/* Center: Mini UI component card */}
+                <div
+                  className="p-2 rounded-md shadow-xs flex items-center justify-between gap-2 z-10"
+                  style={{ background: pattern.palette.surface, border: `1px solid ${pattern.palette.text}15` }}
+                >
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-bold truncate leading-none" style={{ color: pattern.palette.text }}>
+                      {pattern.name}
+                    </p>
+                    <p className="text-[8px] opacity-60 truncate mt-0.5" style={{ color: pattern.palette.text }}>
+                      Harmonious Palette Slice
+                    </p>
+                  </div>
+                  <div
+                    className="px-2 py-1 rounded text-[8px] font-bold shrink-0 shadow-xs"
+                    style={{ background: pattern.palette.primary, color: pattern.palette.background }}
+                  >
+                    Action
+                  </div>
+                </div>
+
+                {/* Bottom: 60-30-10 Balance Bar */}
+                <div className="flex h-1.5 w-full rounded-full overflow-hidden opacity-80 z-10 shadow-xs">
+                  <div style={{ width: "60%", background: pattern.palette.background }} title="60% Background / Base" />
+                  <div style={{ width: "30%", background: pattern.palette.surface }} title="30% Surface / Structure" />
+                  <div style={{ width: "7%", background: pattern.palette.primary }} title="7% Primary" />
+                  <div style={{ width: "3%", background: pattern.palette.accent }} title="3% Accent" />
                 </div>
               </div>
 
@@ -899,15 +1441,73 @@ function PresetsTab({
 
           return (
             <Card key={preset.id} className={`overflow-hidden transition-all flex flex-col ${isHidden ? "opacity-50 border-border/20" : "border-border/40 hover:border-border/70"}`}>
-              {/* Strip */}
-              <div className="h-20 relative flex flex-col justify-end p-3 border-b border-border/30"
-                style={{ background: pattern ? `linear-gradient(135deg, ${pattern.palette.background}, ${pattern.palette.surface})` : "var(--muted)" }}>
-                {pattern && (
-                  <div className="flex gap-1.5 p-1.5 rounded-lg bg-black/30 backdrop-blur-sm border border-border/50 w-fit">
-                    <PaletteStrip palette={pattern.palette} />
+              {/* Industry Hero Billboard */}
+              <div
+                className="h-28 relative overflow-hidden flex flex-col justify-between p-3.5 border-b border-border/30 select-none"
+                style={{
+                  background: pattern
+                    ? `linear-gradient(135deg, ${pattern.palette.background}, ${pattern.palette.surface})`
+                    : "var(--muted)",
+                }}
+              >
+                <div className="flex items-center justify-between z-10">
+                  <div className="flex items-center gap-1.5">
+                    <div className="size-7 rounded-lg bg-black/30 backdrop-blur-md border border-white/15 flex items-center justify-center text-base shadow-sm">
+                      {preset.icon}
+                    </div>
+                    <span
+                      className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded"
+                      style={{
+                        background: pattern ? `${pattern.palette.primary}25` : "rgba(0,0,0,0.2)",
+                        color: pattern ? pattern.palette.primary : "inherit",
+                      }}
+                    >
+                      Industry Preset
+                    </span>
                   </div>
-                )}
-                <span className="absolute top-2 right-2 text-xl">{preset.icon}</span>
+
+                  {pattern && (
+                    <div className="flex gap-1 p-1 rounded-md bg-black/40 backdrop-blur-md border border-white/10">
+                      <PaletteStrip palette={pattern.palette} />
+                    </div>
+                  )}
+                </div>
+
+                <div className="z-10 flex items-end justify-between gap-2">
+                  <div>
+                    <p
+                      className="text-sm font-bold leading-tight"
+                      style={{
+                        color: pattern?.palette?.text || "inherit",
+                        fontFamily: pairing ? `'${pairing.heading_font}', sans-serif` : "inherit",
+                        fontWeight: pairing?.heading_weight || "700",
+                      }}
+                    >
+                      {preset.name}
+                    </p>
+                    <p
+                      className="text-[10px] opacity-70 mt-0.5"
+                      style={{
+                        color: pattern?.palette?.text || "inherit",
+                        fontFamily: pairing ? `'${pairing.body_font}', sans-serif` : "inherit",
+                      }}
+                    >
+                      {pairing?.heading_font} + {pattern?.name || "Palette"}
+                    </p>
+                  </div>
+
+                  {pattern && (
+                    <div
+                      className="px-2.5 py-1 rounded-md text-[9px] font-bold shadow-xs shrink-0"
+                      style={{
+                        background: pattern.palette.primary,
+                        color: pattern.palette.background,
+                      }}
+                    >
+                      Lihat
+                    </div>
+                  )}
+                </div>
               </div>
 
               <CardContent className="p-3 flex-1 flex flex-col gap-2">
