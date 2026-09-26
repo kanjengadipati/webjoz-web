@@ -72,6 +72,133 @@ type AestheticFilter = "all" | "reviewed" | "unreviewed" | "high" | "mid" | "low
 
 import { scoreDesignToken, scoreBadgeClass } from "@/lib/design-token-score";
 
+// ---------------------------------------------------------------------------
+// MiniWebPreview — renders a tiny website wireframe from design token data
+// ---------------------------------------------------------------------------
+function MiniWebPreview({ palette, typography, layout }: {
+  palette?: Record<string, string>;
+  typography?: { heading_font?: string; body_font?: string; heading_weight?: string };
+  layout?: Record<string, any>;
+}) {
+  const bg = palette?.background || "#0f172a";
+  const surface = palette?.surface || "#1e293b";
+  const primary = palette?.primary || "#6366f1";
+  const accent = palette?.accent || primary;
+  const text = palette?.text || "#f1f5f9";
+  const headingFont = typography?.heading_font || "Inter";
+  const bodyFont = typography?.body_font || headingFont;
+  const headingWeight = typography?.heading_weight || "700";
+  const radius = layout?.corner_radius;
+  const btnRadius = radius === "sharp" ? "0px" : radius === "pill" ? "999px" : radius === "rounded" ? "6px" : "4px";
+
+  // Derive a slightly lighter/darker surface for contrast elements
+  const navBg = surface;
+
+  return (
+    <div
+      className="w-full h-full overflow-hidden select-none"
+      style={{ background: bg, fontFamily: bodyFont }}
+    >
+      {/* Nav bar */}
+      <div
+        className="flex items-center justify-between px-3 py-1.5"
+        style={{ background: navBg, borderBottom: `1px solid ${primary}22` }}
+      >
+        {/* Logo dot */}
+        <div className="flex items-center gap-1.5">
+          <div className="w-3 h-3 rounded-full" style={{ background: primary }} />
+          <div className="w-10 h-1.5 rounded-full opacity-50" style={{ background: text }} />
+        </div>
+        {/* Nav links */}
+        <div className="flex items-center gap-2">
+          {[40, 30, 35].map((w, i) => (
+            <div key={i} className="h-1 rounded-full opacity-30" style={{ width: w, background: text }} />
+          ))}
+        </div>
+        {/* CTA */}
+        <div
+          className="w-8 h-3 rounded-sm flex items-center justify-center"
+          style={{ background: primary, borderRadius: btnRadius }}
+        />
+      </div>
+
+      {/* Hero */}
+      <div
+        className="flex flex-col items-center justify-center gap-2 px-4 py-4"
+        style={{ background: bg }}
+      >
+        {/* Badge */}
+        <div
+          className="px-2 py-0.5 text-[4px] font-bold uppercase tracking-widest rounded-full"
+          style={{ background: `${accent}25`, color: accent, borderRadius: "999px" }}
+        >
+          TAGLINE
+        </div>
+        {/* Heading */}
+        <div
+          className="text-[7px] leading-tight text-center"
+          style={{
+            color: text,
+            fontFamily: headingFont,
+            fontWeight: headingWeight,
+            letterSpacing: "-0.02em",
+          }}
+        >
+          Headline
+          <br />
+          <span style={{ color: accent }}>Preview</span>
+        </div>
+        {/* Body text lines */}
+        <div className="w-full flex flex-col gap-0.5 items-center">
+          {[60, 48, 54].map((w, i) => (
+            <div key={i} className="h-0.5 rounded-full opacity-25" style={{ width: `${w}%`, background: text }} />
+          ))}
+        </div>
+        {/* Buttons */}
+        <div className="flex gap-1.5 mt-1">
+          <div
+            className="px-2.5 py-1"
+            style={{ background: primary, borderRadius: btnRadius, height: 10, width: 32 }}
+          />
+          <div
+            className="px-2.5 py-1"
+            style={{
+              border: `1px solid ${primary}`,
+              borderRadius: btnRadius,
+              height: 10,
+              width: 28,
+              background: "transparent",
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Content cards row */}
+      <div
+        className="flex gap-1.5 px-3 pb-2"
+        style={{ borderTop: `1px solid ${primary}15` }}
+      >
+        {[accent, primary, surface].map((c, i) => (
+          <div
+            key={i}
+            className="flex-1 rounded-sm p-1.5 flex flex-col gap-1"
+            style={{
+              background: i === 0 ? `${c}18` : `${surface}cc`,
+              border: i === 0 ? `1px solid ${c}35` : `1px solid ${text}08`,
+              marginTop: 6,
+              borderRadius: btnRadius === "999px" ? "8px" : btnRadius,
+            }}
+          >
+            <div className="w-2.5 h-2.5 rounded-full" style={{ background: c, opacity: i === 0 ? 1 : 0.4 }} />
+            <div className="h-0.5 rounded-full" style={{ width: "70%", background: text, opacity: 0.4 }} />
+            <div className="h-0.5 rounded-full" style={{ width: "50%", background: text, opacity: 0.2 }} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function TemplateGalleryPage() {
   const [tab, setTab] = useState<Tab>("components");
   const [seeds, setSeeds] = useState<SeedEntry[]>([]);
@@ -743,16 +870,18 @@ export default function TemplateGalleryPage() {
 
               return (
                 <Card key={tpl.id} className="overflow-hidden border-border/40 hover:border-border/80 transition-all duration-300 shadow-sm hover:shadow-md flex flex-col h-[520px]">
-                  {/* Top Color Strip */}
-                  <div className="h-28 relative flex items-end p-4 border-b border-border/30" style={{ background: pal ? `linear-gradient(135deg, ${pal.background || "#111"}, ${pal.surface || "#222"})` : "var(--muted)" }}>
+                  {/* Mini Web Preview */}
+                  <div className="h-44 relative border-b border-border/30 overflow-hidden">
+                    <MiniWebPreview palette={pal} typography={typo} layout={layout} />
+                    {/* Overlay swatches */}
                     {pal && (
-                      <div className="flex gap-1.5 p-1.5 rounded-lg bg-black/40 backdrop-blur-md border border-border/50">
+                      <div className="absolute bottom-2 left-2 flex gap-1 p-1 rounded-md bg-black/50 backdrop-blur-md border border-white/10">
                         {[pal.primary, pal.accent, pal.background, pal.surface, pal.text].filter(Boolean).map((c, i) => (
-                          <div 
-                            key={i} 
-                            className="size-6 rounded-full border border-border shadow-sm transition-transform hover:scale-110" 
-                            style={{ background: c }} 
-                            title={c} 
+                          <div
+                            key={i}
+                            className="size-3.5 rounded-full border border-white/20 shadow-sm"
+                            style={{ background: c }}
+                            title={c}
                           />
                         ))}
                       </div>
@@ -904,9 +1033,21 @@ export default function TemplateGalleryPage() {
 
                 return (
                   <Card key={seed.id} className={`overflow-hidden border-border/40 hover:border-border/80 transition-all duration-300 shadow-sm hover:shadow-md flex flex-col h-[520px] relative ${isSelected ? "ring-2 ring-primary/60 border-primary/40" : ""}`}>
-                    {/* Top Color Strip */}
-                    <div className="h-28 relative flex items-end p-4 border-b border-border/30" style={{ background: pal ? `linear-gradient(135deg, ${pal.background || "#111"}, ${pal.surface || "#222"})` : "var(--muted)" }}>
-                      <label className="absolute top-2 left-2 flex items-center justify-center size-6 rounded-md bg-black/40 backdrop-blur-md border border-border cursor-pointer">
+                    {/* Mini Web Preview */}
+                    <div className="h-44 relative border-b border-border/30 overflow-hidden">
+                      {pal
+                        ? <MiniWebPreview palette={pal} typography={typo} layout={layout} />
+                        : (
+                          <div className="w-full h-full flex items-center justify-center bg-muted/40">
+                            <div className="flex items-center gap-2 text-muted-foreground/50">
+                              <Palette className="size-5" />
+                              <span className="text-xs font-semibold">{t("dashboard.adminTemplates.noPalette")}</span>
+                            </div>
+                          </div>
+                        )
+                      }
+                      {/* Checkbox */}
+                      <label className="absolute top-2 left-2 flex items-center justify-center size-6 rounded-md bg-black/50 backdrop-blur-md border border-white/20 cursor-pointer">
                         <input
                           type="checkbox"
                           checked={isSelected}
@@ -914,22 +1055,17 @@ export default function TemplateGalleryPage() {
                           className="size-3.5 cursor-pointer accent-primary"
                         />
                       </label>
+                      {/* Swatch pills */}
                       {pal && (
-                        <div className="flex gap-1.5 p-1.5 rounded-lg bg-black/40 backdrop-blur-md border border-border/50">
+                        <div className="absolute bottom-2 left-2 flex gap-1 p-1 rounded-md bg-black/50 backdrop-blur-md border border-white/10">
                           {[pal.primary, pal.accent, pal.background, pal.surface, pal.text].filter(Boolean).map((c, i) => (
-                            <div 
-                              key={i} 
-                              className="size-6 rounded-full border border-border shadow-sm transition-transform hover:scale-110" 
-                              style={{ background: c }} 
-                              title={c} 
+                            <div
+                              key={i}
+                              className="size-3.5 rounded-full border border-white/20 shadow-sm"
+                              style={{ background: c }}
+                              title={c}
                             />
                           ))}
-                        </div>
-                      )}
-                      {!pal && (
-                        <div className="flex items-center gap-2 p-2 rounded-lg bg-black/30 backdrop-blur-sm border border-border/50">
-                          <Palette className="size-4 text-white/60" />
-                          <span className="text-[10px] text-white/50 font-semibold">{t("dashboard.adminTemplates.noPalette")}</span>
                         </div>
                       )}
                     </div>
