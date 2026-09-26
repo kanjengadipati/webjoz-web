@@ -9,7 +9,7 @@ import type { TemplateProps, DesignToken } from "../../templates/types";
  * Tabs by Category — each category becomes a clickable tab.
  * Best for menus with 3+ categories where scrolling per-category is too long.
  */
-export default function MenuTabsByCategory({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null; onUpdateField?: (section: string, key: string, value: any) => void; isEditorMode?: boolean; isSelected?: boolean; collapseSheetForInlineEdit?: () => void; onEditingStateChange?: (isEditing: boolean) => void; onAddItem?: (catIdx: number) => void }) {
+export default function MenuTabsByCategory({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null; onUpdateField?: (section: string, key: string, value: any) => void; isEditorMode?: boolean; isSelected?: boolean; collapseSheetForInlineEdit?: () => void; onEditingStateChange?: (isEditing: boolean) => void; onAddItem?: (catIdx: number) => void; onDeleteItem?: (catIdx: number, itemIdx: number) => void }) {
   const [activeIdx, setActiveIdx] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -183,6 +183,7 @@ export default function MenuTabsByCategory({ menu, onUpdateField, isEditorMode, 
                   isSelected={isSelected}
                   collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                   onEditingStateChange={onEditingStateChange}
+                  onDelete={isEditorMode && onDeleteItem ? () => onDeleteItem(activeIdx, originalItemIdx) : undefined}
                 />
               ))}
               {isEditorMode && onAddItem && (

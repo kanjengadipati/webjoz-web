@@ -14,13 +14,14 @@ interface CatalogVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: (catIdx: number) => void;
+  onDeleteItem?: (catIdx: number, itemIdx: number) => void;
 }
 
 /**
  * Tabs by Category — category tabs, shows one category at a time.
  * Best for catalogs with 3+ distinct categories.
  */
-export default function CatalogTabsByCategory({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: CatalogVariantProps) {
+export default function CatalogTabsByCategory({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: CatalogVariantProps) {
   const [activeIdx, setActiveIdx] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -196,6 +197,7 @@ export default function CatalogTabsByCategory({ catalog, onUpdateField, isEditor
                   isSelected={isSelected}
                   collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                   onEditingStateChange={onEditingStateChange}
+                  onDelete={isEditorMode && onDeleteItem ? () => onDeleteItem(activeIdx, originalItemIdx) : undefined}
                 />
               ))}
               {isEditorMode && onAddItem && (

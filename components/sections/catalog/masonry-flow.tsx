@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { InlineText, InlineImage } from "../../templates/shared";
-import { InlineAddTile } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton } from "../inline-add";
 import { AddToCartButton } from "@/components/cart";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
@@ -14,9 +14,10 @@ interface CatalogVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: (catIdx: number) => void;
+  onDeleteItem?: (catIdx: number, itemIdx: number) => void;
 }
 
-export default function CatalogMasonryFlow({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: CatalogVariantProps) {
+export default function CatalogMasonryFlow({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: CatalogVariantProps) {
   if (!catalog) return null;
   const { eyebrow, title, subtitle, categories } = catalog;
 
@@ -256,6 +257,9 @@ export default function CatalogMasonryFlow({ catalog, onUpdateField, isEditorMod
                       />
                     </div>
                   </div>
+                  {isEditorMode && onDeleteItem && (
+                    <InlineDeleteButton onDelete={() => onDeleteItem(catIdx, index)} className="absolute top-2 right-2 z-40" />
+                  )}
                 </div>
               ))}
               {isEditorMode && onAddItem && (

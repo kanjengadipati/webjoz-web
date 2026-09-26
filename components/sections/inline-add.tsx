@@ -1,6 +1,6 @@
 "use client";
 import React, { useCallback } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 
 const NANOID_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -133,5 +133,44 @@ export function InlineAddTile({
         {label}
       </span>
     </div>
+  );
+}
+
+/**
+ * Inline delete button for items in menu, catalog, etc.
+ * Stops propagation on click/pointer/touch so it doesn't trigger parent card handlers.
+ */
+export function InlineDeleteButton({
+  onDelete,
+  title = "Hapus item",
+  className = "",
+  compact = false,
+  style,
+}: {
+  onDelete: () => void;
+  title?: string;
+  className?: string;
+  compact?: boolean;
+  style?: React.CSSProperties;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={(e) => {
+        stop(e);
+        e.preventDefault();
+        onDelete();
+      }}
+      onPointerDown={stop}
+      onTouchStart={stop}
+      title={title}
+      aria-label={title}
+      className={`z-40 flex items-center justify-center rounded-full bg-rose-500/85 hover:bg-rose-600 text-white shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer border border-white/30 opacity-80 hover:opacity-100 group-hover:opacity-100 pointer-coarse:opacity-100 ${
+        compact ? "w-5 h-5" : "w-7 h-7"
+      } ${className}`}
+      style={style}
+    >
+      <Trash2 className={compact ? "w-2.5 h-2.5" : "w-3.5 h-3.5"} />
+    </button>
   );
 }

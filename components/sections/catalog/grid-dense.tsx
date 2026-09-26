@@ -14,13 +14,14 @@ interface CatalogVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: (catIdx: number) => void;
+  onDeleteItem?: (catIdx: number, itemIdx: number) => void;
 }
 
 /**
  * Grid Dense — tighter grid, smaller cards, fits more items per row.
  * Best for catalogs with 20+ items. Cards use minmax(180px, 1fr).
  */
-export default function CatalogGridDense({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: CatalogVariantProps) {
+export default function CatalogGridDense({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: CatalogVariantProps) {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -154,6 +155,7 @@ export default function CatalogGridDense({ catalog, onUpdateField, isEditorMode,
                     isSelected={isSelected}
                     collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                     onEditingStateChange={onEditingStateChange}
+                    onDelete={isEditorMode && onDeleteItem ? () => onDeleteItem(originalCatIdx, originalItemIdx) : undefined}
                   />
                 ))}
                 {isEditorMode && onAddItem && (

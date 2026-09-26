@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { InlineText, isPlaceholderPrice, AddToCartButton, CatalogMenuFilterBar } from "../../templates/shared";
-import { InlineAddTile } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 /**
@@ -9,7 +9,7 @@ import type { TemplateProps, DesignToken } from "../../templates/types";
  * Dotted leader between item name and price.
  * Great for fine dining, cafes, and text-only menus.
  */
-export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null; onUpdateField?: (section: string, key: string, value: any) => void; isEditorMode?: boolean; isSelected?: boolean; collapseSheetForInlineEdit?: () => void; onEditingStateChange?: (isEditing: boolean) => void; onAddItem?: (catIdx: number) => void }) {
+export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null; onUpdateField?: (section: string, key: string, value: any) => void; isEditorMode?: boolean; isSelected?: boolean; collapseSheetForInlineEdit?: () => void; onEditingStateChange?: (isEditing: boolean) => void; onAddItem?: (catIdx: number) => void; onDeleteItem?: (catIdx: number, itemIdx: number) => void }) {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -25,7 +25,6 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
   const query = searchQuery.trim().toLowerCase();
 
   const filteredCategories = categories
-    .filter((cat) => activeCategory === "all" || cat.name === activeCategory)
     .map((cat, originalCatIdx) => {
       const items = (cat.items || [])
         .map((item, originalItemIdx) => ({ item, originalCatIdx, originalItemIdx }))
@@ -38,7 +37,7 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
         });
       return { ...cat, originalCatIdx, filteredItems: items };
     })
-    .filter((cat) => cat.filteredItems.length > 0);
+    .filter((cat) => (activeCategory === "all" || cat.name === activeCategory) && cat.filteredItems.length > 0);
 
   return (
     <section id="menu" style={{ padding: "var(--dt-spacing) 1.5rem", background: `color-mix(in srgb, ${p} 4%, ${bg})`, borderTop: `1px solid color-mix(in srgb, ${p} 12%, transparent)` }}>
@@ -114,10 +113,18 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
                 {cat.filteredItems.map(({ item, originalCatIdx, originalItemIdx }) => {
                   const showPrice = item.price && !isPlaceholderPrice(item.price);
                   return (
-                    <div key={item.id || `menu-tl-${originalCatIdx}-${originalItemIdx}`} style={{
+                    <div key={item.id || `menu-tl-${originalCatIdx}-${originalItemIdx}`} className="relative group" style={{
                       padding: "0.875rem 0",
+                      paddingRight: isEditorMode && onDeleteItem ? "2rem" : 0,
                       borderBottom: `1px solid color-mix(in srgb, ${p} 8%, transparent)`,
                     }}>
+                      {isEditorMode && onDeleteItem && (
+                        <InlineDeleteButton
+                          compact
+                          onDelete={() => onDeleteItem(originalCatIdx, originalItemIdx)}
+                          className="absolute top-2.5 right-0"
+                        />
+                      )}
                       {/* Name + dotted leader + price row */}
                       <div style={{ display: "flex", alignItems: "baseline", gap: "0.5rem" }}>
                         <InlineText section="menu" fieldKey={"categories." + originalCatIdx + ".items." + originalItemIdx + ".name"} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontFamily: hFont, fontWeight: 600, fontSize: "0.9rem", color: text, flexShrink: 0 }} />
