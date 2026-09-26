@@ -2,7 +2,7 @@
 import React from "react";
 import { Utensils } from "lucide-react";
 import { InlineText, InlineImage } from "../../templates/shared";
-import { InlineAddTile } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface MenuVariantProps {
@@ -14,9 +14,10 @@ interface MenuVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: (catIdx: number) => void;
+  onDeleteItem?: (catIdx: number, itemIdx: number) => void;
 }
 
-export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: MenuVariantProps) {
+export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: MenuVariantProps) {
   if (!menu) return null;
   const { eyebrow, title, subtitle, categories } = menu;
 
@@ -140,10 +141,17 @@ export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSe
                       {displayNum}
                     </div>
 
+                    {isEditorMode && onDeleteItem && (
+                      <InlineDeleteButton
+                        onDelete={() => onDeleteItem(catIndex, itemIndex)}
+                        className="absolute top-4 right-4 z-20"
+                      />
+                    )}
+
                     {badge && (
                       <div
                         id={`bento-badge-${catIndex}-${itemIndex}`}
-                        className="absolute top-4 right-4 z-10 bg-dt-primary text-dt-primary-foreground text-[10px] md:text-xs font-semibold tracking-wider uppercase px-2.5 py-1 rounded-full shadow-sm font-dt-heading"
+                        className={`absolute top-4 ${isEditorMode && onDeleteItem ? "right-14" : "right-4"} z-10 bg-dt-primary text-dt-primary-foreground text-[10px] md:text-xs font-semibold tracking-wider uppercase px-2.5 py-1 rounded-full shadow-sm font-dt-heading`}
                       >
                         {badge}
                       </div>

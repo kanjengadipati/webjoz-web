@@ -13,7 +13,7 @@ import { SparkleIcon } from "@/components/sparkle-icon";
 
 import type { TestimonialItem, FaqItem, ImageCredit, BenefitItem } from "./types";
 import PhotoCredit from "../sections/PhotoCredit";
-import { InlineAddTile } from "../sections/inline-add";
+import { InlineAddTile, InlineDeleteButton } from "../sections/inline-add";
 import { useI18n } from "@/lib/i18n/context";
 
 // Global variable to store editorSiteId (only used in dashboard editor)
@@ -281,6 +281,89 @@ const NAV_LABELS_EN: Record<string, string> = {
   contact: "Contact",
 };
 
+// ─── Smooth Scroll to Section Helper ──────────────────────────────────────────
+
+export function smoothScrollToSection(
+  targetKeyOrElement: string | HTMLElement,
+  doc: Document = typeof document !== "undefined" ? document : (null as any)
+) {
+  if (!doc) return false;
+  let el: HTMLElement | null = null;
+  if (typeof targetKeyOrElement === "string") {
+    const rawKey = targetKeyOrElement.replace(/^#/, "");
+    const cleanKey = rawKey.replace(/^section-preview-/, "").replace(/^section-/, "");
+    el =
+      (doc.getElementById(`section-${cleanKey}`) as HTMLElement | null) ||
+      (doc.getElementById(cleanKey) as HTMLElement | null) ||
+      (doc.getElementById(`section-preview-${cleanKey}`) as HTMLElement | null) ||
+      (doc.querySelector(`[data-section="${cleanKey}"]`) as HTMLElement | null) ||
+      (doc.querySelector(`[id*="${cleanKey}"]`) as HTMLElement | null);
+  } else {
+    el = targetKeyOrElement;
+  }
+
+  if (!el) return false;
+
+  const win = doc.defaultView || window;
+  const header = doc.querySelector("header");
+  const headerHeight = header ? header.getBoundingClientRect().height : 70;
+
+  // 1. Check for any scrollable ancestor container (e.g. #preview-scroll-container in editor)
+  let scrollContainer: HTMLElement | null = null;
+  let curr = el.parentElement;
+  while (curr && curr !== doc.body && curr !== doc.documentElement) {
+    const style = doc.defaultView?.getComputedStyle(curr);
+    if (style && (style.overflowY === "auto" || style.overflowY === "scroll") && curr.scrollHeight > curr.clientHeight) {
+      scrollContainer = curr;
+      break;
+    }
+    curr = curr.parentElement;
+  }
+
+  if (scrollContainer) {
+    const containerRect = scrollContainer.getBoundingClientRect();
+    const elRect = el.getBoundingClientRect();
+    const targetY = scrollContainer.scrollTop + (elRect.top - containerRect.top) - headerHeight - 12;
+    scrollContainer.scrollTo({ top: Math.max(0, targetY), behavior: "smooth" });
+    return true;
+  }
+
+  // 2. Document/Window scroll (works in iframes with html{overflow-y:auto;height:100%}, normal public pages, etc.)
+  const elRect = el.getBoundingClientRect();
+  const currentScroll =
+    win.pageYOffset ||
+    doc.documentElement?.scrollTop ||
+    doc.body?.scrollTop ||
+    doc.scrollingElement?.scrollTop ||
+    0;
+  const targetY = Math.max(0, currentScroll + elRect.top - headerHeight - 12);
+
+  let didScroll = false;
+  if (doc.documentElement && typeof doc.documentElement.scrollTo === "function") {
+    doc.documentElement.scrollTo({ top: targetY, behavior: "smooth" });
+    didScroll = true;
+  }
+  if (doc.scrollingElement && doc.scrollingElement !== doc.documentElement && typeof doc.scrollingElement.scrollTo === "function") {
+    doc.scrollingElement.scrollTo({ top: targetY, behavior: "smooth" });
+    didScroll = true;
+  }
+  if (doc.body && doc.body !== doc.documentElement && typeof doc.body.scrollTo === "function") {
+    doc.body.scrollTo({ top: targetY, behavior: "smooth" });
+    didScroll = true;
+  }
+  if (win && typeof win.scrollTo === "function") {
+    win.scrollTo({ top: targetY, behavior: "smooth" });
+    didScroll = true;
+  }
+
+  // Fallback native scroll
+  try {
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  } catch {}
+
+  return true;
+}
+
 interface NavMenuProps {
   sectionOrder: string[];
   hiddenSections?: string[];
@@ -397,26 +480,7 @@ const NavMenu: React.FC<NavMenuProps> = ({
       return;
     }
     const doc = e.currentTarget.ownerDocument || document;
-    const win = doc.defaultView || window;
-    let el = doc.getElementById(`section-${item.key}`) ||
-             doc.getElementById(item.key) ||
-             doc.getElementById(`section-preview-${item.key}`) ||
-             doc.querySelector(`[data-section="${item.key}"]`) ||
-             doc.querySelector(`[id*="${item.key}"]`);
-
-    if (el) {
-      const header = doc.querySelector("header");
-      const headerHeight = header ? header.getBoundingClientRect().height : 70;
-      const elRect = el.getBoundingClientRect();
-      const currentScroll = win.pageYOffset || doc.documentElement.scrollTop || doc.body.scrollTop || 0;
-      const targetY = Math.max(0, currentScroll + elRect.top - headerHeight - 12);
-
-      try {
-        win.scrollTo({ top: targetY, behavior: "smooth" });
-      } catch {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }
+    smoothScrollToSection(item.key, doc);
   };
 
   return (
@@ -1297,6 +1361,7 @@ interface MenuCatalogCardProps {
   onEditingStateChange?: (isEditing: boolean) => void;
   editSection?: string;
   pathBase?: string;
+  onDelete?: () => void;
 }
 
 function MenuCatalogCard({
@@ -1307,7 +1372,7 @@ function MenuCatalogCard({
   contentStyle, headerClassName, headerStyle, titleClassName, titleStyle,
   descriptionClassName, descriptionStyle, priceClassName, priceStyle, badgeClassName,
   badgeStyle, buttonClassName, buttonStyle, features, capacity, tags, delivery_platforms,
-  onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, editSection, pathBase,
+  onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, editSection, pathBase, onDelete,
 }: MenuCatalogCardProps) {
   const { t } = useI18n();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -1592,7 +1657,10 @@ function MenuCatalogCard({
 
   if (layout === "compact") {
     return (
-      <div className={className} style={style}>
+      <div className={`relative group ${className || ""}`} style={style}>
+        {isEditorMode && onDelete && (
+          <InlineDeleteButton onDelete={onDelete} className="absolute top-2.5 right-2.5 z-40" />
+        )}
         <div className="flex items-start gap-4 h-full">
           <div className="flex-shrink-0">{imageNode}</div>
           <div className="min-w-0 flex-1 flex flex-col h-full" style={contentStyle}>
@@ -1623,7 +1691,10 @@ function MenuCatalogCard({
   }
 
   return (
-    <div className={`${className || ""} flex flex-col h-full`} style={style}>
+    <div className={`relative group ${className || ""} flex flex-col h-full`} style={style}>
+      {isEditorMode && onDelete && (
+        <InlineDeleteButton onDelete={onDelete} className="absolute top-2.5 right-2.5 z-40" />
+      )}
       {imageNode}
       <div className={`${contentClassName || ""} flex-grow flex flex-col`} style={contentStyle}>
         {header}
@@ -2782,6 +2853,10 @@ export function InlineText({
     if (parentInteractive) {
       e.preventDefault();
       elementRef.current?.focus();
+      if (fieldKey && fieldKey.startsWith("nav_labels.")) {
+        const sectionKey = fieldKey.replace("nav_labels.", "");
+        smoothScrollToSection(sectionKey, e.currentTarget.ownerDocument || document);
+      }
     }
   };
 

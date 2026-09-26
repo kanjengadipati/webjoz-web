@@ -10,7 +10,7 @@ import type { TemplateProps, DesignToken } from "../../templates/types";
  * Reuses MenuCatalogCard with layout="compact".
  * Good for menus with many items where vertical space is precious.
  */
-export default function MenuCompactList({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null; onUpdateField?: (section: string, key: string, value: any) => void; isEditorMode?: boolean; isSelected?: boolean; collapseSheetForInlineEdit?: () => void; onEditingStateChange?: (isEditing: boolean) => void; onAddItem?: (catIdx: number) => void }) {
+export default function MenuCompactList({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null; onUpdateField?: (section: string, key: string, value: any) => void; isEditorMode?: boolean; isSelected?: boolean; collapseSheetForInlineEdit?: () => void; onEditingStateChange?: (isEditing: boolean) => void; onAddItem?: (catIdx: number) => void; onDeleteItem?: (catIdx: number, itemIdx: number) => void }) {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -25,7 +25,6 @@ export default function MenuCompactList({ menu, onUpdateField, isEditorMode, isS
   const query = searchQuery.trim().toLowerCase();
 
   const filteredCategories = categories
-    .filter((cat) => activeCategory === "all" || cat.name === activeCategory)
     .map((cat, originalCatIdx) => {
       const items = (cat.items || [])
         .map((item, originalItemIdx) => ({ item, originalCatIdx, originalItemIdx }))
@@ -38,7 +37,7 @@ export default function MenuCompactList({ menu, onUpdateField, isEditorMode, isS
         });
       return { ...cat, originalCatIdx, filteredItems: items };
     })
-    .filter((cat) => cat.filteredItems.length > 0);
+    .filter((cat) => (activeCategory === "all" || cat.name === activeCategory) && cat.filteredItems.length > 0);
 
   return (
     <section id="menu" style={{ padding: "var(--dt-spacing) 1.5rem", background: `color-mix(in srgb, ${p} 4%, ${bg})`, borderTop: `1px solid color-mix(in srgb, ${p} 12%, transparent)` }}>
@@ -154,6 +153,7 @@ export default function MenuCompactList({ menu, onUpdateField, isEditorMode, isS
                     isSelected={isSelected}
                     collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                     onEditingStateChange={onEditingStateChange}
+                    onDelete={isEditorMode && onDeleteItem ? () => onDeleteItem(originalCatIdx, originalItemIdx) : undefined}
                   />
                 ))}
               </div>

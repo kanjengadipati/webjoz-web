@@ -2,7 +2,7 @@
 import React from "react";
 import { Plus, Image as ImageIcon } from "lucide-react";
 import { InlineText, InlineImage } from "../../templates/shared";
-import { InlineAddTile } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface CatalogVariantProps {
@@ -14,9 +14,10 @@ interface CatalogVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: (catIdx: number) => void;
+  onDeleteItem?: (catIdx: number, itemIdx: number) => void;
 }
 
-export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: CatalogVariantProps) {
+export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: CatalogVariantProps) {
   if (!catalog) return null;
   const { eyebrow, title, subtitle, categories } = catalog;
 
@@ -118,7 +119,7 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
               {category.items?.map((item, index) => (
                 <div
                   key={index}
-                  className="flex flex-col border-[3px] border-solid transition-all duration-200 hover:-translate-x-1 hover:-translate-y-1 min-w-0"
+                  className="flex flex-col border-[3px] border-solid transition-all duration-200 hover:-translate-x-1 hover:-translate-y-1 min-w-0 relative"
                   style={{
                     borderColor: "var(--dt-border)",
                     backgroundColor: "var(--dt-surface)",
@@ -254,6 +255,12 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
                       </button>
                     </div>
                   </div>
+                  {isEditorMode && onDeleteItem && (
+                    <InlineDeleteButton
+                      onDelete={() => onDeleteItem(catIdx, index)}
+                      className="absolute top-2.5 right-2.5 z-40"
+                    />
+                  )}
                 </div>
               ))}
               {isEditorMode && onAddItem && (

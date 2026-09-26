@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { AddToCartButton, isPlaceholderPrice } from "@/components/cart";
 import { InlineText, InlineImage } from "../../templates/shared";
-import { InlineAddTile } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 /**
@@ -11,7 +11,7 @@ import type { TemplateProps, DesignToken } from "../../templates/types";
  * First category open by default. Compact and space-efficient.
  * Uses plain item rows (no full MenuCatalogCard) to keep it clean.
  */
-export default function MenuAccordionByCategory({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null; onUpdateField?: (section: string, key: string, value: any) => void; isEditorMode?: boolean; isSelected?: boolean; collapseSheetForInlineEdit?: () => void; onEditingStateChange?: (isEditing: boolean) => void; onAddItem?: (catIdx: number) => void }) {
+export default function MenuAccordionByCategory({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null; onUpdateField?: (section: string, key: string, value: any) => void; isEditorMode?: boolean; isSelected?: boolean; collapseSheetForInlineEdit?: () => void; onEditingStateChange?: (isEditing: boolean) => void; onAddItem?: (catIdx: number) => void; onDeleteItem?: (catIdx: number, itemIdx: number) => void }) {
   if (!menu) return null;
   const [openIdx, setOpenIdx] = useState<number>(0);
   const p = "var(--dt-primary)";
@@ -105,16 +105,25 @@ export default function MenuAccordionByCategory({ menu, onUpdateField, isEditorM
                       return (
                         <div
                           key={ii}
+                          className="relative group"
                           style={{
                             display: "flex",
                             alignItems: "flex-start",
                             gap: "0.75rem",
                             padding: "0.875rem 1.25rem",
+                            paddingRight: isEditorMode && onDeleteItem ? "2.5rem" : "1.25rem",
                             borderBottom: ii < (cat.items?.length ?? 0) - 1
                               ? `1px solid color-mix(in srgb, ${p} 7%, transparent)`
                               : "none",
                           }}
                         >
+                          {isEditorMode && onDeleteItem && (
+                            <InlineDeleteButton
+                              compact
+                              onDelete={() => onDeleteItem(ci, ii)}
+                              className="absolute top-3 right-3"
+                            />
+                          )}
                           {/* Item image thumbnail */}
                           {(item.image_url || isEditorMode) && (
                             <InlineImage

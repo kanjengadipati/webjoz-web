@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { InlineText } from "../../templates/shared";
-import { InlineAddTile } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface MenuVariantProps {
@@ -13,9 +13,10 @@ interface MenuVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: (catIdx: number) => void;
+  onDeleteItem?: (catIdx: number, itemIdx: number) => void;
 }
 
-export default function MenuCompact({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: MenuVariantProps) {
+export default function MenuCompact({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: MenuVariantProps) {
   if (!menu) return null;
   const brandPrimary = "var(--dt-primary)";
   const brandText = "var(--dt-text)";
@@ -44,8 +45,15 @@ export default function MenuCompact({ menu, onUpdateField, isEditorMode, isSelec
             <InlineText section="menu" fieldKey={"categories." + catIdx + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h3" style={{ fontFamily: headingFont, fontWeight: 700, color: brandPrimary, fontSize: "1rem", marginBottom: "1rem", paddingBottom: "0.5rem", borderBottom: `2px solid color-mix(in srgb, ${brandPrimary} 18%, transparent)` }} />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "0.5rem" }}>
               {cat.items?.map((item, itemIdx) => (
-                <div key={item.id || itemIdx} style={{ display: "flex", flexDirection: "column", gap: "0.125rem", padding: "0.5rem 0.75rem", borderRadius: "var(--dt-radius)", opacity: item.is_available === false ? 0.6 : 1 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "1rem" }}>
+                <div key={item.id || itemIdx} className="relative group" style={{ display: "flex", flexDirection: "column", gap: "0.125rem", padding: "0.5rem 0.75rem", borderRadius: "var(--dt-radius)", opacity: item.is_available === false ? 0.6 : 1 }}>
+                  {isEditorMode && onDeleteItem && (
+                    <InlineDeleteButton
+                      compact
+                      onDelete={() => onDeleteItem(catIdx, itemIdx)}
+                      className="absolute top-1.5 right-1.5"
+                    />
+                  )}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "1rem", paddingRight: isEditorMode && onDeleteItem ? "1.5rem" : 0 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "0.375rem" }}>
                       <InlineText section="menu" fieldKey={"categories." + catIdx + ".items." + itemIdx + ".name"} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontWeight: 600, fontSize: "0.9rem", color: brandText, fontFamily: headingFont }} />
                       {item.is_available === false && (

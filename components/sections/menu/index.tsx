@@ -23,6 +23,7 @@ type MenuVariantProps = {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: (catIdx: number) => void;
+  onDeleteItem?: (catIdx: number, itemIdx: number) => void;
 };
 
 const variants: Record<string, ComponentType<MenuVariantProps>> = {
@@ -91,6 +92,18 @@ export default function MenuSection({
     [menu?.categories, onUpdateField]
   );
 
+  const onDeleteItem = useCallback(
+    (catIdx: number, itemIdx: number) => {
+      if (!onUpdateField) return;
+      const categories = [...(menu?.categories ?? [])];
+      if (!categories[catIdx]) return;
+      const items = (categories[catIdx].items ?? []).filter((_, i) => i !== itemIdx);
+      categories[catIdx] = { ...categories[catIdx], items };
+      onUpdateField("menu", "categories", categories);
+    },
+    [menu?.categories, onUpdateField]
+  );
+
   return (
     <>
       <Renderer
@@ -102,6 +115,7 @@ export default function MenuSection({
         collapseSheetForInlineEdit={collapseSheetForInlineEdit}
         onEditingStateChange={onEditingStateChange}
         onAddItem={isEditor ? onAddItem : undefined}
+        onDeleteItem={isEditor ? onDeleteItem : undefined}
       />
     </>
   );

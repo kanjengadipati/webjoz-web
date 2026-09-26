@@ -3,6 +3,7 @@ import React from "react";
 import { Image as ImageIcon } from "lucide-react";
 import { MenuCatalogCard, InlineText, InlineImage, isPlaceholderPrice } from "../../templates/shared";
 import { InlineAddTile } from "../inline-add";
+import { InlineDeleteButton } from "../inline-add";
 import { AddToCartButton } from "@/components/cart";
 import PhotoCredit from "../PhotoCredit";
 import type { TemplateProps, DesignToken } from "../../templates/types";
@@ -16,6 +17,7 @@ interface CatalogVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: (catIdx: number) => void;
+  onDeleteItem?: (catIdx: number, itemIdx: number) => void;
 }
 
 /**
@@ -24,7 +26,7 @@ interface CatalogVariantProps {
  * Remaining items shown in standard grid below.
  * Reuses badge field: any item with badge != null/empty is "featured".
  */
-export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: CatalogVariantProps) {
+export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: CatalogVariantProps) {
   if (!catalog) return null;
   const p = "var(--dt-primary)";
   const bg = "var(--dt-bg)";
@@ -89,7 +91,7 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
                     return (
                       <div
                         key={itemIdx}
-                        style={{ background: surface, border: `1.5px solid color-mix(in srgb, ${p} 20%, transparent)`, borderRadius: "16px", overflow: "hidden", display: "flex", flexDirection: "column", boxShadow: `0 4px 20px color-mix(in srgb, ${p} 10%, transparent)` }}
+                        style={{ position: "relative", background: surface, border: `1.5px solid color-mix(in srgb, ${p} 20%, transparent)`, borderRadius: "16px", overflow: "hidden", display: "flex", flexDirection: "column", boxShadow: `0 4px 20px color-mix(in srgb, ${p} 10%, transparent)` }}
                       >
                         {/* Featured image — taller */}
                         <div style={{ position: "relative", height: "15rem" }}>
@@ -161,6 +163,9 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
                               style={{ background: p, color: bg, border: "none" }}
                             />
                           </div>
+                          {isEditorMode && onDeleteItem && (
+                            <InlineDeleteButton onDelete={() => onDeleteItem(ci, itemIdx)} className="absolute top-2.5 right-2.5 z-40" />
+                          )}
                         </div>
                       </div>
                     );
@@ -220,6 +225,7 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
                         isSelected={isSelected}
                         collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                         onEditingStateChange={onEditingStateChange}
+                        onDelete={isEditorMode && onDeleteItem ? () => onDeleteItem(ci, itemIdx) : undefined}
                       />
                     ))}
                   </div>

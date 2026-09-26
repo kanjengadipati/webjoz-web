@@ -14,9 +14,10 @@ interface CatalogVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: (catIdx: number) => void;
+  onDeleteItem?: (catIdx: number, itemIdx: number) => void;
 }
 
-export default function CatalogClassic({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: CatalogVariantProps) {
+export default function CatalogClassic({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: CatalogVariantProps) {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -155,6 +156,7 @@ export default function CatalogClassic({ catalog, onUpdateField, isEditorMode, i
                     isSelected={isSelected}
                     collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                     onEditingStateChange={onEditingStateChange}
+                    onDelete={isEditorMode && onDeleteItem ? () => onDeleteItem(originalCatIdx, originalItemIdx) : undefined}
                   />
                 ))}
                 {isEditorMode && onAddItem && (

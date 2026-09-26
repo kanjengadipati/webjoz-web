@@ -25,6 +25,7 @@ type CatalogVariantProps = {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: (catIdx: number) => void;
+  onDeleteItem?: (catIdx: number, itemIdx: number) => void;
 };
 
 const variants: Record<string, ComponentType<CatalogVariantProps>> = {
@@ -96,6 +97,18 @@ export default function CatalogSection({
     [catalog?.categories, onUpdateField]
   );
 
+  const onDeleteItem = useCallback(
+    (catIdx: number, itemIdx: number) => {
+      if (!onUpdateField) return;
+      const categories = [...(catalog?.categories ?? [])];
+      if (!categories[catIdx]) return;
+      const items = (categories[catIdx].items ?? []).filter((_, i) => i !== itemIdx);
+      categories[catIdx] = { ...categories[catIdx], items };
+      onUpdateField("catalog", "categories", categories);
+    },
+    [catalog?.categories, onUpdateField]
+  );
+
   return (
     <>
       <Renderer
@@ -107,6 +120,7 @@ export default function CatalogSection({
         collapseSheetForInlineEdit={collapseSheetForInlineEdit}
         onEditingStateChange={onEditingStateChange}
         onAddItem={isEditor ? onAddItem : undefined}
+        onDeleteItem={isEditor ? onDeleteItem : undefined}
       />
     </>
   );

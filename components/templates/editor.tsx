@@ -570,7 +570,7 @@ export const PreviewSectionWrapper: React.FC<{
           if (target.closest('[contenteditable="true"]')) return;
           onSelectSection?.(section);
         }}
-        className={`group relative transition-all duration-150 ${isSelected
+        className={`group relative transition-all duration-150 scroll-mt-20 ${isSelected
           ? "outline outline-2 outline-primary/60 outline-offset-[-2px]"
           : "hover:outline hover:outline-1 hover:outline-slate-300/40 hover:outline-offset-[-1px]"
           }`}

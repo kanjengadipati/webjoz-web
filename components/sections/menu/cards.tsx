@@ -14,9 +14,10 @@ interface MenuVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: (catIdx: number) => void;
+  onDeleteItem?: (catIdx: number, itemIdx: number) => void;
 }
 
-export default function MenuCards({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem }: MenuVariantProps) {
+export default function MenuCards({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: MenuVariantProps) {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -31,7 +32,6 @@ export default function MenuCards({ menu, onUpdateField, isEditorMode, isSelecte
   const query = searchQuery.trim().toLowerCase();
 
   const filteredCategories = categories
-    .filter((cat) => activeCategory === "all" || cat.name === activeCategory)
     .map((cat, originalCatIdx) => {
       const items = (cat.items || [])
         .map((item, originalItemIdx) => ({ item, originalCatIdx, originalItemIdx }))
@@ -44,7 +44,7 @@ export default function MenuCards({ menu, onUpdateField, isEditorMode, isSelecte
         });
       return { ...cat, originalCatIdx, filteredItems: items };
     })
-    .filter((cat) => cat.filteredItems.length > 0);
+    .filter((cat) => (activeCategory === "all" || cat.name === activeCategory) && cat.filteredItems.length > 0);
 
   return (
     <section id="menu" style={{ padding: "var(--dt-spacing) 1.5rem", background: `color-mix(in srgb, ${brandPrimary} 4%, ${brandBg})`, borderTop: `1px solid color-mix(in srgb, ${brandPrimary} 12%, transparent)` }}>
@@ -144,6 +144,7 @@ export default function MenuCards({ menu, onUpdateField, isEditorMode, isSelecte
                       isSelected={isSelected}
                       collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                       onEditingStateChange={onEditingStateChange}
+                      onDelete={isEditorMode && onDeleteItem ? () => onDeleteItem(originalCatIdx, originalItemIdx) : undefined}
                     />
                   </div>
                 ))}
