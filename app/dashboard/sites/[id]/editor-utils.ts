@@ -1,5 +1,5 @@
 import { 
-  Layout, User, Award, HelpCircle, Mail, BookOpen, Globe, UtensilsCrossed, ShoppingBag, Star, Camera, MessageCircle, TrendingUp, Handshake, CreditCard, Briefcase
+  Layout, User, Award, HelpCircle, Mail, BookOpen, Globe, UtensilsCrossed, ShoppingBag, Star, Camera, MessageCircle, TrendingUp, Handshake, CreditCard, Briefcase, Sparkles
 } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 
@@ -29,6 +29,7 @@ export const OPTIONAL_SECTION_KEYS = ["menu", "catalog", "stats", "partners", "p
 export const SECTION_META: Record<string, { label: string; icon: any }> = {
   header:       { label: "Header",          icon: Layout },
   hero:         { label: "Hero",            icon: Layout },
+  "hero-effect":{ label: "Efek Visual",     icon: Sparkles },
   about:        { label: "Tentang",         icon: User },
   benefits:     { label: "Keunggulan",      icon: Award },
   stats:        { label: "Statistik",       icon: TrendingUp },
