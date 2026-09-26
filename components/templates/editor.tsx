@@ -582,7 +582,7 @@ export const PreviewSectionWrapper: React.FC<{
             isSelected || isGalleryOpen ? "opacity-100" : "opacity-0 group-hover:opacity-100"
           }`}
         >
-          <span className="bg-slate-900/85 backdrop-blur-sm text-slate-200 border border-white/10 text-[9px] font-bold tracking-widest px-2.5 py-0.5 rounded uppercase select-none shadow-sm">
+          <span className="bg-slate-950 backdrop-blur-sm text-white border border-white/20 text-[9px] font-bold tracking-widest px-2.5 py-1 rounded-md uppercase select-none shadow-md">
             {label}
           </span>
 
@@ -596,10 +596,10 @@ export const PreviewSectionWrapper: React.FC<{
                   setIsGalleryOpen((prev) => !prev);
                   if (!isGalleryOpen) setSelectedGroup("Semua");
                 }}
-                className={`backdrop-blur-sm border text-[9px] font-medium px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer transition-all active:scale-95 shadow-sm ${
+                className={`backdrop-blur-sm border text-[9px] font-medium px-2.5 py-1 rounded-md flex items-center gap-1 cursor-pointer transition-all active:scale-95 shadow-md ${
                   isGalleryOpen
                     ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-slate-900/90 text-slate-300 hover:text-white border-white/10 hover:border-primary/50"
+                    : "bg-slate-950 text-slate-100 hover:text-white border-white/20 hover:border-primary/60"
                 }`}
                 title={t("dashboard.sitesEditor.changeSectionVariant") || "Pilih Variasi Tampilan"}
               >
@@ -735,7 +735,7 @@ export const PreviewSectionWrapper: React.FC<{
             e.stopPropagation();
             onRegenSection?.(section);
           }}
-          className={`absolute top-2.5 right-3 z-20 bg-slate-900/85 backdrop-blur-sm text-primary border border-primary/30 hover:bg-primary hover:text-primary-foreground hover:border-primary text-[9px] font-bold px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer transition-all active:scale-95 duration-150 focus:outline-none focus:ring-1 focus:ring-primary group/regen shadow-sm ${
+          className={`absolute top-2.5 right-3 z-20 bg-slate-950 backdrop-blur-sm text-white border border-white/25 hover:bg-primary hover:text-primary-foreground hover:border-primary text-[9px] font-bold px-2.5 py-1 rounded-lg flex items-center gap-1.5 cursor-pointer transition-all active:scale-95 duration-150 focus:outline-none focus:ring-1 focus:ring-primary group/regen shadow-md ${
             isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
           }`}
         >
