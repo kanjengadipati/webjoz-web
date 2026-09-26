@@ -190,6 +190,217 @@ function VariantPreview({ id }: { id: string }) {
     "contact-dark-split": (
       <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="2" y="2" width="76" height="44" rx="3" fill="currentColor" opacity=".2"/><rect x="2" y="2" width="36" height="44" rx="3" fill="currentColor" opacity=".1"/><rect x="8" y="10" width="24" height="5" rx="1" fill="currentColor" opacity=".3"/>{[18,24,30].map(y=><rect key={y} x="8" y={y} width="20" height="3" rx="1" fill="currentColor" opacity=".2"/>)}<rect x="44" y="8" width="28" height="32" rx="2" fill="currentColor" opacity=".08" stroke="currentColor" strokeWidth="0.5" strokeOpacity=".2"/>{[12,20,28,36].map(y=><rect key={y} x="48" y={y} width="20" height="4" rx="1" fill="currentColor" opacity=".12"/>)}</svg>
     ),
+    "contact-whatsapp-direct": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="12" y="8" width="56" height="32" rx="3" fill="currentColor" opacity=".12"/><circle cx="40" cy="18" r="6" fill="currentColor" opacity=".3"/><rect x="22" y="28" width="36" height="6" rx="2" fill="currentColor" opacity=".35"/></svg>
+    ),
+
+    // About (extended)
+    "about-timeline": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><line x1="16" y1="6" x2="16" y2="42" stroke="currentColor" strokeWidth="1.5" opacity=".2"/>{[10,24,38].map(y=><g key={y}><circle cx="16" cy={y} r="3" fill="currentColor" opacity=".4"/><rect x="24" y={y-3} width="16" height="3" rx="1" fill="currentColor" opacity=".3"/><rect x="24" y={y+2} width="46" height="3" rx="1" fill="currentColor" opacity=".15"/></g>)}</svg>
+    ),
+    "about-team-grid": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[6,26].map(y=>[6,30,54].map(x=><g key={`${x}${y}`}><circle cx={x+8} cy={y+6} r="5" fill="currentColor" opacity=".25"/><rect x={x+2} y={y+13} width="14" height="2.5" rx="1" fill="currentColor" opacity=".2"/></g>))}</svg>
+    ),
+
+    // Benefits (extended)
+    "benefits-featured-grid": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="6" width="34" height="36" rx="3" fill="currentColor" opacity=".2"/><circle cx="14" cy="16" r="4" fill="currentColor" opacity=".4"/><rect x="10" y="24" width="22" height="4" rx="1" fill="currentColor" opacity=".3"/><rect x="10" y="31" width="18" height="3" rx="1" fill="currentColor" opacity=".15"/><rect x="42" y="6" width="34" height="16" rx="2" fill="currentColor" opacity=".12"/><rect x="42" y="26" width="34" height="16" rx="2" fill="currentColor" opacity=".12"/></svg>
+    ),
+    "benefits-icon-row": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><line x1="8" y1="24" x2="72" y2="24" stroke="currentColor" strokeWidth="0.5" opacity=".2"/>{[14,40,66].map(x=><g key={x}><circle cx={x} cy="18" r="6" fill="currentColor" opacity=".25"/><circle cx={x} cy="18" r="3" fill="currentColor" opacity=".4"/><rect x={x-8} y="28" width="16" height="3" rx="1" fill="currentColor" opacity=".2"/><rect x={x-6} y="33" width="12" height="2" rx="1" fill="currentColor" opacity=".12"/></g>)}</svg>
+    ),
+    "benefits-comparison-table": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="6" width="72" height="36" rx="2" fill="currentColor" opacity=".08"/><line x1="4" y1="16" x2="76" y2="16" stroke="currentColor" strokeWidth="0.5" opacity=".2"/><line x1="28" y1="6" x2="28" y2="42" stroke="currentColor" strokeWidth="0.5" opacity=".2"/><line x1="52" y1="6" x2="52" y2="42" stroke="currentColor" strokeWidth="0.5" opacity=".2"/>{[22,30,38].map(y=><g key={y}><rect x="8" y={y-2} width="16" height="2.5" rx="1" fill="currentColor" opacity=".15"/><circle cx="40" cy={y} r="2" fill="currentColor" opacity=".3"/><circle cx="64" cy={y} r="2" fill="currentColor" opacity=".15"/></g>)}</svg>
+    ),
+    "benefits-bento-grid": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="4" width="44" height="22" rx="2" fill="currentColor" opacity=".2"/><rect x="52" y="4" width="24" height="22" rx="2" fill="currentColor" opacity=".12"/><rect x="4" y="30" width="22" height="14" rx="2" fill="currentColor" opacity=".12"/><rect x="30" y="30" width="46" height="14" rx="2" fill="currentColor" opacity=".18"/></svg>
+    ),
+    "benefits-trust-bar": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="2" y="14" width="76" height="20" rx="3" fill="currentColor" opacity=".12"/>{[12,30,48,66].map(x=><g key={x}><circle cx={x} cy="24" r="3.5" fill="currentColor" opacity=".3"/><rect x={x-6} y="30" width="12" height="2" rx="1" fill="currentColor" opacity=".15"/></g>)}</svg>
+    ),
+
+    // Testimonials (extended)
+    "testimonials-logo-wall": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[8,26].map(y=>[6,30,54].map(x=><rect key={`${x}${y}`} x={x} y={y} width="20" height="12" rx="2" fill="currentColor" opacity=".15"/>))}</svg>
+    ),
+    "testimonials-featured-spotlight": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="6" y="6" width="68" height="36" rx="3" fill="currentColor" opacity=".12"/><circle cx="18" cy="18" r="6" fill="currentColor" opacity=".25"/><text x="18" y="16" fontSize="10" textAnchor="middle" fill="currentColor" opacity=".5">“</text><rect x="28" y="14" width="40" height="4" rx="1" fill="currentColor" opacity=".25"/><rect x="28" y="21" width="34" height="3" rx="1" fill="currentColor" opacity=".15"/><rect x="28" y="30" width="20" height="3" rx="1" fill="currentColor" opacity=".2"/></svg>
+    ),
+    "testimonials-google-reviews": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="6" y="8" width="68" height="32" rx="3" fill="currentColor" opacity=".12"/><circle cx="16" cy="18" r="5" fill="currentColor" opacity=".2"/><rect x="25" y="14" width="24" height="3" rx="1" fill="currentColor" opacity=".25"/><text x="25" y="24" fontSize="6" fill="currentColor" opacity=".5">★★★★★</text><circle cx="64" cy="18" r="4" fill="currentColor" opacity=".2"/><text x="64" y="21" fontSize="7" textAnchor="middle" fill="currentColor" opacity=".6">G</text></svg>
+    ),
+
+    // CTA (extended)
+    "cta-split-image": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="6" width="38" height="36" rx="2" fill="currentColor" opacity=".1"/><rect x="8" y="12" width="28" height="5" rx="1" fill="currentColor" opacity=".3"/><rect x="8" y="20" width="22" height="3" rx="1" fill="currentColor" opacity=".15"/><rect x="8" y="28" width="18" height="6" rx="2" fill="currentColor" opacity=".3"/><rect x="46" y="6" width="30" height="36" rx="2" fill="currentColor" opacity=".18"/></svg>
+    ),
+    "cta-inline-lead-form": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="6" width="34" height="36" rx="2" fill="currentColor" opacity=".1"/><rect x="8" y="14" width="26" height="5" rx="1" fill="currentColor" opacity=".25"/><rect x="8" y="22" width="20" height="3" rx="1" fill="currentColor" opacity=".15"/><rect x="42" y="6" width="34" height="36" rx="2" fill="currentColor" opacity=".08"/><rect x="46" y="10" width="26" height="6" rx="1" fill="currentColor" opacity=".15"/><rect x="46" y="18" width="26" height="6" rx="1" fill="currentColor" opacity=".15"/><rect x="46" y="26" width="26" height="6" rx="1" fill="currentColor" opacity=".3"/></svg>
+    ),
+
+    // FAQ (extended)
+    "faq-sidebar-category": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="6" width="22" height="36" rx="2" fill="currentColor" opacity=".12"/>{[12,20,28].map(y=><rect key={y} x="7" y={y} width="16" height="4" rx="1" fill="currentColor" opacity={y===12?".3":".15"}/>)}<rect x="30" y="6" width="46" height="10" rx="2" fill="currentColor" opacity=".15"/><rect x="30" y="19" width="46" height="10" rx="2" fill="currentColor" opacity=".1"/><rect x="30" y="32" width="46" height="10" rx="2" fill="currentColor" opacity=".1"/></svg>
+    ),
+    "faq-two-column-grid": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[6,26].map(y=>[4,42].map(x=><g key={`${x}${y}`}><rect x={x} y={y} width="34" height="16" rx="2" fill="currentColor" opacity=".12"/><rect x={x+4} y={y+3} width="22" height="3" rx="1" fill="currentColor" opacity=".25"/><rect x={x+4} y={y+8} width="26" height="4" rx="1" fill="currentColor" opacity=".1"/></g>))}</svg>
+    ),
+    "faq-chat-bubble-style": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="20" y="6" width="54" height="12" rx="3" fill="currentColor" opacity=".2"/><rect x="24" y="10" width="42" height="4" rx="1" fill="currentColor" opacity=".3"/><rect x="6" y="22" width="54" height="18" rx="3" fill="currentColor" opacity=".12"/><rect x="10" y="26" width="44" height="3" rx="1" fill="currentColor" opacity=".2"/><rect x="10" y="32" width="36" height="3" rx="1" fill="currentColor" opacity=".15"/></svg>
+    ),
+
+    // Gallery (extended)
+    "gallery-lightbox-story": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="6" y="4" width="68" height="34" rx="3" fill="currentColor" opacity=".2"/><circle cx="40" cy="18" r="6" fill="currentColor" opacity=".3"/><text x="40" y="21" fontSize="8" textAnchor="middle" fill="currentColor" opacity=".6">▶</text><rect x="12" y="32" width="30" height="3" rx="1" fill="currentColor" opacity=".25"/><rect x="12" y="42" width="56" height="2" rx="1" fill="currentColor" opacity=".15"/></svg>
+    ),
+
+    // Works
+    "works-grid": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[4,26].map(y=>[4,28,52].map(x=><g key={`${x}${y}`}><rect x={x} y={y} width="22" height="14" rx="2" fill="currentColor" opacity=".2"/><rect x={x} y={y+16} width="16" height="2.5" rx="1" fill="currentColor" opacity=".2"/></g>))}</svg>
+    ),
+    "works-masonry": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="4" width="22" height="26" rx="2" fill="currentColor" opacity=".2"/><rect x="30" y="4" width="22" height="16" rx="2" fill="currentColor" opacity=".2"/><rect x="56" y="4" width="22" height="22" rx="2" fill="currentColor" opacity=".2"/><rect x="30" y="24" width="22" height="18" rx="2" fill="currentColor" opacity=".15"/></svg>
+    ),
+    "works-featured-grid": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="4" width="44" height="40" rx="3" fill="currentColor" opacity=".2"/><rect x="8" y="32" width="24" height="4" rx="1" fill="currentColor" opacity=".3"/><rect x="52" y="4" width="24" height="18" rx="2" fill="currentColor" opacity=".12"/><rect x="52" y="26" width="24" height="18" rx="2" fill="currentColor" opacity=".12"/></svg>
+    ),
+    "works-showcase-featured": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="4" width="72" height="22" rx="3" fill="currentColor" opacity=".2"/><rect x="8" y="16" width="28" height="4" rx="1" fill="currentColor" opacity=".3"/><rect x="4" y="30" width="34" height="14" rx="2" fill="currentColor" opacity=".12"/><rect x="42" y="30" width="34" height="14" rx="2" fill="currentColor" opacity=".12"/></svg>
+    ),
+
+    // Stats
+    "stats-counter-row": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><line x1="28" y1="12" x2="28" y2="36" stroke="currentColor" strokeWidth="0.5" opacity=".2"/><line x1="52" y1="12" x2="52" y2="36" stroke="currentColor" strokeWidth="0.5" opacity=".2"/>{[14,40,66].map((x,i)=><g key={x}><text x={x} y="22" textAnchor="middle" fontSize="9" fontWeight="bold" fill="currentColor" opacity=".5">{["99%","10k","24h"][i]}</text><rect x={x-8} y="26" width="16" height="3" rx="1" fill="currentColor" opacity=".2"/></g>)}</svg>
+    ),
+    "stats-card-grid": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[4,42].map(x=>[4,26].map(y=><rect key={`${x}${y}`} x={x} y={y} width="34" height="18" rx="2" fill="currentColor" opacity=".15"/>))}</svg>
+    ),
+    "stats-minimal-split": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="8" width="30" height="6" rx="1" fill="currentColor" opacity=".3"/><rect x="4" y="17" width="26" height="3" rx="1" fill="currentColor" opacity=".15"/><rect x="42" y="6" width="16" height="16" rx="2" fill="currentColor" opacity=".15"/><rect x="61" y="6" width="16" height="16" rx="2" fill="currentColor" opacity=".15"/><rect x="42" y="26" width="16" height="16" rx="2" fill="currentColor" opacity=".15"/><rect x="61" y="26" width="16" height="16" rx="2" fill="currentColor" opacity=".15"/></svg>
+    ),
+    "stats-big-number-spotlight": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><text x="24" y="26" fontSize="18" fontWeight="bold" fill="currentColor" opacity=".6">99%</text><rect x="6" y="32" width="34" height="4" rx="1" fill="currentColor" opacity=".25"/><rect x="48" y="8" width="28" height="14" rx="2" fill="currentColor" opacity=".12"/><rect x="48" y="26" width="28" height="14" rx="2" fill="currentColor" opacity=".12"/></svg>
+    ),
+
+    // Partners
+    "partners-logo-wall": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[6,26].map(y=>[4,24,44,64].map(x=><rect key={`${x}${y}`} x={x} y={y} width="16" height="14" rx="2" fill="currentColor" opacity=".15"/>))}</svg>
+    ),
+    "partners-marquee": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><line x1="0" y1="12" x2="80" y2="12" stroke="currentColor" strokeWidth="0.5" opacity=".2"/><line x1="0" y1="36" x2="80" y2="36" stroke="currentColor" strokeWidth="0.5" opacity=".2"/>{[2,22,42,62].map(x=><rect key={x} x={x} y="16" width="16" height="16" rx="2" fill="currentColor" opacity=".2"/>)}</svg>
+    ),
+    "partners-pill-grid": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[8,26].map(y=>[4,30,56].map(x=><rect key={`${x}${y}`} x={x} y={y} width="22" height="12" rx="6" fill="currentColor" opacity=".18"/>))}</svg>
+    ),
+    "partners-featured-collab-grid": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="4" width="40" height="40" rx="3" fill="currentColor" opacity=".2"/><rect x="8" y="8" width="18" height="12" rx="2" fill="currentColor" opacity=".3"/><rect x="8" y="24" width="24" height="4" rx="1" fill="currentColor" opacity=".25"/><rect x="48" y="4" width="28" height="18" rx="2" fill="currentColor" opacity=".12"/><rect x="48" y="26" width="28" height="18" rx="2" fill="currentColor" opacity=".12"/></svg>
+    ),
+
+    // Pricing
+    "pricing-cards": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[4,28,52].map((x,i)=><rect key={x} x={x} y={i===1?4:8} width="22" height={i===1?38:34} rx="2" fill="currentColor" opacity={i===1?.22:.12} stroke="currentColor" strokeWidth={i===1?0.8:0} strokeOpacity={i===1?.4:0}/>)}</svg>
+    ),
+    "pricing-horizontal-rows": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[6,20,34].map(y=><rect key={y} x="4" y={y} width="72" height="10" rx="2" fill="currentColor" opacity=".12"/>)}</svg>
+    ),
+    "pricing-comparison-table": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="6" width="72" height="36" rx="2" fill="currentColor" opacity=".08"/><line x1="4" y1="16" x2="76" y2="16" stroke="currentColor" strokeWidth="0.5" opacity=".2"/><line x1="28" y1="6" x2="28" y2="42" stroke="currentColor" strokeWidth="0.5" opacity=".2"/><line x1="52" y1="6" x2="52" y2="42" stroke="currentColor" strokeWidth="0.5" opacity=".2"/></svg>
+    ),
+    "pricing-single-tier-highlight": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="16" y="4" width="48" height="40" rx="3" fill="currentColor" opacity=".2" stroke="currentColor" strokeWidth="1" strokeOpacity=".3"/><rect x="22" y="10" width="36" height="5" rx="1" fill="currentColor" opacity=".3"/><text x="40" y="25" fontSize="10" fontWeight="bold" textAnchor="middle" fill="currentColor" opacity=".6">$49</text><rect x="24" y="30" width="32" height="7" rx="2" fill="currentColor" opacity=".35"/></svg>
+    ),
+
+    // Header
+    "header-left-logo-inline-nav": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="16" width="72" height="16" rx="2" fill="currentColor" opacity=".1"/><circle cx="10" cy="24" r="3" fill="currentColor" opacity=".4"/><rect x="16" y="22" width="10" height="4" rx="1" fill="currentColor" opacity=".25"/><rect x="36" y="22" width="20" height="4" rx="1" fill="currentColor" opacity=".15"/><rect x="62" y="20" width="10" height="8" rx="2" fill="currentColor" opacity=".35"/></svg>
+    ),
+    "header-centered-logo": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><circle cx="40" cy="14" r="5" fill="currentColor" opacity=".4"/><rect x="32" y="22" width="16" height="3" rx="1" fill="currentColor" opacity=".25"/><line x1="16" y1="30" x2="64" y2="30" stroke="currentColor" strokeWidth="0.5" opacity=".2"/><rect x="20" y="34" width="40" height="3" rx="1" fill="currentColor" opacity=".15"/></svg>
+    ),
+    "header-transparent-overlay": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="4" width="72" height="40" rx="2" fill="currentColor" opacity=".18"/><rect x="4" y="4" width="72" height="12" rx="2" fill="currentColor" opacity=".1" stroke="currentColor" strokeWidth="0.5" strokeOpacity=".2"/><circle cx="10" cy="10" r="2.5" fill="currentColor" opacity=".4"/><rect x="15" y="9" width="8" height="2" rx="1" fill="currentColor" opacity=".3"/><rect x="58" y="7" width="12" height="6" rx="1.5" fill="currentColor" opacity=".35"/></svg>
+    ),
+    "header-logo-with-cta-button": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="14" width="72" height="20" rx="2" fill="currentColor" opacity=".12"/><circle cx="12" cy="24" r="4" fill="currentColor" opacity=".4"/><rect x="20" y="22" width="12" height="4" rx="1" fill="currentColor" opacity=".25"/><rect x="52" y="19" width="20" height="10" rx="2" fill="currentColor" opacity=".4"/></svg>
+    ),
+    "header-stacked-logo-tagline": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><circle cx="40" cy="12" r="5" fill="currentColor" opacity=".4"/><rect x="30" y="20" width="20" height="4" rx="1" fill="currentColor" opacity=".3"/><rect x="26" y="27" width="28" height="2.5" rx="1" fill="currentColor" opacity=".15"/><rect x="20" y="35" width="40" height="3" rx="1" fill="currentColor" opacity=".12"/></svg>
+    ),
+
+    // Footer
+    "footer-minimal-band": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="18" width="72" height="14" rx="2" fill="currentColor" opacity=".2"/><circle cx="10" cy="25" r="2.5" fill="currentColor" opacity=".4"/><rect x="16" y="24" width="16" height="2" rx="1" fill="currentColor" opacity=".2"/><rect x="50" y="24" width="22" height="2" rx="1" fill="currentColor" opacity=".15"/></svg>
+    ),
+    "footer-columns-with-nav": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="6" width="20" height="26" rx="2" fill="currentColor" opacity=".15"/>{[28,44,60].map(x=><g key={x}><rect x={x} y="6" width="14" height="4" rx="1" fill="currentColor" opacity=".25"/>{[13,19,25].map(y=><rect key={y} x={x} y={y} width="12" height="2.5" rx="1" fill="currentColor" opacity=".12"/>)}</g>)}<line x1="4" y1="36" x2="76" y2="36" stroke="currentColor" strokeWidth="0.5" opacity=".2"/><rect x="4" y="40" width="24" height="2" rx="1" fill="currentColor" opacity=".15"/></svg>
+    ),
+    "footer-columns-with-social": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="8" width="28" height="24" rx="2" fill="currentColor" opacity=".12"/>{[36,56].map(x=><g key={x}><rect x={x} y="8" width="16" height="4" rx="1" fill="currentColor" opacity=".2"/>{[15,22].map(y=><rect key={y} x={x} y={y} width="14" height="2.5" rx="1" fill="currentColor" opacity=".12"/>)}</g>)}<circle cx="12" cy="38" r="2.5" fill="currentColor" opacity=".3"/><circle cx="19" cy="38" r="2.5" fill="currentColor" opacity=".3"/><circle cx="26" cy="38" r="2.5" fill="currentColor" opacity=".3"/><line x1="4" y1="34" x2="76" y2="34" stroke="currentColor" strokeWidth="0.5" opacity=".2"/></svg>
+    ),
+    "footer-dark-contrast-band": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="2" y="6" width="76" height="36" rx="3" fill="currentColor" opacity=".35"/><rect x="8" y="12" width="24" height="4" rx="1" fill="currentColor" opacity=".5"/><rect x="8" y="19" width="36" height="2.5" rx="1" fill="currentColor" opacity=".25"/><rect x="8" y="32" width="20" height="2" rx="1" fill="currentColor" opacity=".2"/><circle cx="62" cy="14" r="3" fill="currentColor" opacity=".4"/><circle cx="70" cy="14" r="3" fill="currentColor" opacity=".4"/></svg>
+    ),
+    "footer-location-and-hours": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="6" width="34" height="36" rx="2" fill="currentColor" opacity=".15"/><rect x="8" y="10" width="16" height="3.5" rx="1" fill="currentColor" opacity=".3"/><rect x="8" y="16" width="24" height="2.5" rx="1" fill="currentColor" opacity=".15"/><rect x="8" y="22" width="20" height="2.5" rx="1" fill="currentColor" opacity=".15"/><rect x="42" y="6" width="34" height="36" rx="2" fill="currentColor" opacity=".1"/><rect x="46" y="10" width="18" height="3.5" rx="1" fill="currentColor" opacity=".3"/><rect x="46" y="16" width="22" height="2.5" rx="1" fill="currentColor" opacity=".15"/><rect x="46" y="22" width="20" height="2.5" rx="1" fill="currentColor" opacity=".15"/></svg>
+    ),
+
+    // Hero (14 variants)
+    "hero-centered": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="20" y="8" width="40" height="6" rx="1" fill="currentColor" opacity=".35"/><rect x="14" y="17" width="52" height="4" rx="1" fill="currentColor" opacity=".2"/><rect x="24" y="24" width="32" height="3" rx="1" fill="currentColor" opacity=".15"/><rect x="28" y="32" width="24" height="8" rx="2" fill="currentColor" opacity=".4"/></svg>
+    ),
+    "hero-split": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="8" width="34" height="6" rx="1" fill="currentColor" opacity=".35"/><rect x="4" y="17" width="30" height="4" rx="1" fill="currentColor" opacity=".2"/><rect x="4" y="24" width="22" height="3" rx="1" fill="currentColor" opacity=".15"/><rect x="4" y="32" width="18" height="7" rx="2" fill="currentColor" opacity=".35"/><rect x="42" y="6" width="34" height="36" rx="3" fill="currentColor" opacity=".2"/></svg>
+    ),
+    "hero-full-bleed": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="2" y="2" width="76" height="44" rx="3" fill="currentColor" opacity=".25"/><rect x="12" y="14" width="44" height="6" rx="1" fill="currentColor" opacity=".5"/><rect x="12" y="23" width="32" height="3.5" rx="1" fill="currentColor" opacity=".35"/><rect x="12" y="30" width="22" height="7" rx="2" fill="currentColor" opacity=".6"/></svg>
+    ),
+    "hero-minimal": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="8" y="12" width="56" height="7" rx="1" fill="currentColor" opacity=".3"/><rect x="8" y="22" width="42" height="4" rx="1" fill="currentColor" opacity=".15"/><rect x="8" y="30" width="16" height="2" rx="1" fill="currentColor" opacity=".25"/></svg>
+    ),
+    "hero-minimalist-elegant": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><text x="40" y="20" fontSize="11" fontStyle="italic" textAnchor="middle" fill="currentColor" opacity=".45">Editorial</text><line x1="24" y1="24" x2="56" y2="24" stroke="currentColor" strokeWidth="0.5" opacity=".3"/><rect x="20" y="28" width="40" height="3" rx="1" fill="currentColor" opacity=".2"/><rect x="32" y="34" width="16" height="5" rx="1" fill="currentColor" opacity=".25"/></svg>
+    ),
+    "hero-tech-saas": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="28" y="4" width="24" height="3" rx="1.5" fill="currentColor" opacity=".25"/><rect x="16" y="10" width="48" height="5" rx="1" fill="currentColor" opacity=".35"/><rect x="22" y="17" width="36" height="3" rx="1" fill="currentColor" opacity=".18"/><rect x="30" y="23" width="20" height="5" rx="2" fill="currentColor" opacity=".35"/><rect x="10" y="31" width="60" height="15" rx="3" fill="currentColor" opacity=".15" stroke="currentColor" strokeWidth="0.5" strokeOpacity=".3"/></svg>
+    ),
+    "hero-neo-brutalist": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="6" width="40" height="22" rx="1" fill="currentColor" opacity=".25" stroke="currentColor" strokeWidth="1.5" strokeOpacity=".4"/><rect x="8" y="10" width="30" height="5" rx="1" fill="currentColor" opacity=".4"/><rect x="8" y="18" width="18" height="5" rx="1" fill="currentColor" opacity=".3"/><rect x="48" y="12" width="28" height="28" rx="1" fill="currentColor" opacity=".18" stroke="currentColor" strokeWidth="1.5" strokeOpacity=".4"/></svg>
+    ),
+    "hero-bento-grid": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="4" width="44" height="24" rx="2" fill="currentColor" opacity=".2"/><rect x="52" y="4" width="24" height="14" rx="2" fill="currentColor" opacity=".15"/><rect x="52" y="21" width="24" height="23" rx="2" fill="currentColor" opacity=".15"/><rect x="4" y="31" width="22" height="13" rx="2" fill="currentColor" opacity=".12"/><rect x="29" y="31" width="19" height="13" rx="2" fill="currentColor" opacity=".12"/></svg>
+    ),
+    "hero-split-editorial": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><text x="6" y="18" fontSize="12" fontWeight="bold" fill="currentColor" opacity=".4">ISSUE</text><rect x="6" y="24" width="32" height="3" rx="1" fill="currentColor" opacity=".2"/><rect x="6" y="30" width="24" height="3" rx="1" fill="currentColor" opacity=".15"/><rect x="42" y="4" width="34" height="40" rx="2" fill="currentColor" opacity=".22"/></svg>
+    ),
+    "hero-natural-organic": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><ellipse cx="58" cy="24" rx="18" ry="18" fill="currentColor" opacity=".18"/><rect x="6" y="10" width="32" height="6" rx="2" fill="currentColor" opacity=".3"/><rect x="6" y="19" width="28" height="3" rx="1" fill="currentColor" opacity=".18"/><rect x="6" y="25" width="22" height="3" rx="1" fill="currentColor" opacity=".15"/><rect x="6" y="32" width="18" height="6" rx="3" fill="currentColor" opacity=".3"/></svg>
+    ),
+    "hero-personal-billboard": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><circle cx="22" cy="22" r="14" fill="currentColor" opacity=".25"/><rect x="42" y="10" width="34" height="6" rx="1" fill="currentColor" opacity=".35"/><rect x="42" y="19" width="28" height="3.5" rx="1" fill="currentColor" opacity=".2"/><rect x="42" y="26" width="30" height="3" rx="1" fill="currentColor" opacity=".15"/><rect x="42" y="33" width="20" height="6" rx="2" fill="currentColor" opacity=".35"/></svg>
+    ),
+    "hero-portrait-showcase": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="6" y="4" width="28" height="40" rx="3" fill="currentColor" opacity=".2"/><rect x="38" y="12" width="36" height="6" rx="1" fill="currentColor" opacity=".35"/><rect x="38" y="21" width="30" height="3.5" rx="1" fill="currentColor" opacity=".2"/><rect x="38" y="28" width="22" height="6" rx="2" fill="currentColor" opacity=".3"/></svg>
+    ),
+    "hero-work-preview-strip": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="12" y="6" width="56" height="5" rx="1" fill="currentColor" opacity=".3"/><rect x="20" y="13" width="40" height="3" rx="1" fill="currentColor" opacity=".18"/>{[6,29,52].map(x=><rect key={x} x={x} y={20} width="22" height="22" rx="2" fill="currentColor" opacity=".2"/>)}</svg>
+    ),
+    "hero-chronology-badge": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="6" y="8" width="20" height="5" rx="2.5" fill="currentColor" opacity=".25"/><rect x="6" y="16" width="42" height="6" rx="1" fill="currentColor" opacity=".35"/><rect x="6" y="25" width="36" height="3" rx="1" fill="currentColor" opacity=".2"/><rect x="6" y="32" width="20" height="6" rx="2" fill="currentColor" opacity=".35"/><rect x="52" y="8" width="24" height="32" rx="2" fill="currentColor" opacity=".15"/></svg>
+    ),
+
+    // Blog
+    "blog-grid": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[4,28,52].map(x=><g key={x}><rect x={x} y="8" width="22" height="14" rx="2" fill="currentColor" opacity=".2"/><rect x={x} y="25" width="18" height="3" rx="1" fill="currentColor" opacity=".25"/><rect x={x} y={30} width="14" height="2" rx="1" fill="currentColor" opacity=".15"/></g>)}</svg>
+    ),
+    "blog-list": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[6,20,34].map(y=><g key={y}><rect x="6" y={y} width="14" height="10" rx="1" fill="currentColor" opacity=".2"/><rect x="24" y={y+1} width="36" height="3" rx="1" fill="currentColor" opacity=".25"/><rect x="24" y={y+5} width="24" height="2" rx="1" fill="currentColor" opacity=".15"/></g>)}</svg>
+    ),
+    "blog-featured": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="4" width="44" height="40" rx="2" fill="currentColor" opacity=".2"/><rect x="8" y="28" width="28" height="4" rx="1" fill="currentColor" opacity=".3"/><rect x="52" y="4" width="24" height="18" rx="2" fill="currentColor" opacity=".12"/><rect x="52" y="26" width="24" height="18" rx="2" fill="currentColor" opacity=".12"/></svg>
+    ),
+    "blog-minimal": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[6,16,26,36].map(y=><g key={y}><rect x="6" y={y} width="14" height="2.5" rx="1" fill="currentColor" opacity=".15"/><rect x="24" y={y} width="46" height="2.5" rx="1" fill="currentColor" opacity=".25"/><line x1="6" y1={y+6} x2="74" y2={y+6} stroke="currentColor" strokeWidth="0.5" opacity=".1"/></g>)}</svg>
+    ),
   };
 
   const diagram = diagrams[id];

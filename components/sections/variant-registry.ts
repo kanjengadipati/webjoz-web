@@ -82,11 +82,13 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "counter-row", label: "Baris Metrik", description: "Baris metrik horizontal dengan pembatas rapi dan angka besar." },
     { value: "card-grid", label: "Grid Kartu", description: "Kartu statistik melayang dengan ikon dan efek glow aksen." },
     { value: "minimal-split", label: "Split Minimalis", description: "Judul narasi di sisi kiri, matriks 2x2 angka di sisi kanan." },
+    { value: "big-number-spotlight", label: "Sorotan Angka Besar", description: "Satu metrik utama berukuran raksasa dengan sorotan aksen dan sub-metrik pendukung." },
   ],
   partners: [
     { value: "logo-wall", label: "Grid Logo / Brand", description: "Grid logo/brand mitra dengan efek grayscale dan hover berwarna." },
     { value: "marquee", label: "Ticker Berjalan", description: "Banner logo/nama brand berjalan otomatis tanpa henti (infinite loop)." },
     { value: "pill-grid", label: "Grid Pill Interaktif", description: "Koleksi badge/pill brand modern dengan inisial dan tag kategori." },
+    { value: "featured-collab-grid", label: "Kolaborasi Unggulan", description: "Grid mitra/klien dengan kartu sorotan kolaborasi utama dan ringkasan peran." },
   ],
   pricing: [
     { value: "cards", label: "Kartu Paket", description: "Kartu 3 tier klasik dengan penanda paket terpopuler dan tombol aksi." },
