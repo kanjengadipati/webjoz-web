@@ -2218,24 +2218,117 @@ interface LogoImageProps {
 }
 
 const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit }: LogoImageProps) => {
+  const { t } = useI18n();
   const [imgError, setImgError] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [isTouched, setIsTouched] = useState(false);
+  const touchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleTouchReveal = (e: React.TouchEvent) => {
+    e.stopPropagation();
+    if (isTouched) {
+      setIsTouched(false);
+      if (touchTimerRef.current) clearTimeout(touchTimerRef.current);
+    } else {
+      setIsTouched(true);
+      if (touchTimerRef.current) clearTimeout(touchTimerRef.current);
+      touchTimerRef.current = setTimeout(() => setIsTouched(false), 2500);
+    }
+  };
+
+  const handleTriggerUpload = (e: React.MouseEvent | React.TouchEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    collapseSheetForInlineEdit?.();
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !onUpdateField || !section) return;
+    try {
+      setUploading(true);
+      const secureUrl = await uploadImageFile(file);
+      onUpdateField(section, "logo_url", secureUrl);
+      setImgError(false);
+    } catch (err) {
+      console.error("Logo upload error:", err);
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
   if (isEditorMode && onUpdateField && section) {
+    const hasLogo = url && !imgError;
     return (
-      <InlineImage
-        section={section}
-        fieldKey="logo_url"
-        src={url && !imgError ? url : undefined}
-        alt="Logo"
-        onUpdateField={onUpdateField}
-        isEditorMode={isEditorMode}
-        isSelected={isSelected}
-        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-        className={imgClass || iconClass}
-        compact={true}
-        fallbackIcon={<DynamicIcon name={icon} defaultIcon={defaultIcon} className={iconClass} />}
-      />
+      <div
+        className="relative group/logo shrink-0 flex items-center"
+        onClick={(e) => e.stopPropagation()}
+        onPointerDown={(e) => e.stopPropagation()}
+        onTouchStart={handleTouchReveal}
+        title={hasLogo ? t("dashboard.sitesEditor.changePhoto") : t("dashboard.sitesEditor.addPhoto")}
+      >
+        {/* Logo image or empty-state placeholder */}
+        {hasLogo ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={url}
+            alt="Logo"
+            className={imgClass || "h-8 w-auto object-contain"}
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <div
+            className="flex items-center justify-center w-8 h-8 rounded-lg border-2 border-dashed border-primary/40 bg-primary/5 cursor-pointer hover:bg-primary/10 transition-colors"
+            onClick={handleTriggerUpload}
+            title={t("dashboard.sitesEditor.addPhoto")}
+          >
+            <Camera className="w-4 h-4 text-primary/60" />
+          </div>
+        )}
+
+        {/* Hover / touch overlay (only when logo exists) */}
+        {hasLogo && (
+          <div
+            className={`absolute inset-0 z-20 flex items-center justify-center bg-black/55 backdrop-blur-[1px] rounded transition-all duration-150 pointer-events-none ${
+              isSelected || isTouched
+                ? "opacity-100 pointer-events-auto"
+                : "opacity-0 group-hover/logo:opacity-100 group-hover/logo:pointer-events-auto"
+            }`}
+          >
+            <button
+              type="button"
+              onClick={handleTriggerUpload}
+              onPointerDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+              disabled={uploading}
+              className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-900/90 text-white shadow-xl border border-white/20 hover:bg-slate-950 hover:scale-110 active:scale-95 transition-all cursor-pointer disabled:opacity-50"
+            >
+              {uploading ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <Camera className="w-3.5 h-3.5" />
+              )}
+            </button>
+          </div>
+        )}
+
+        {/* Hidden file input */}
+        <input
+          type="file"
+          ref={fileInputRef}
+          onClick={(e) => e.stopPropagation()}
+          onPointerDown={(e) => e.stopPropagation()}
+          onChange={handleFileChange}
+          accept="image/*"
+          className="hidden"
+        />
+      </div>
     );
   }
+
   if (url && !imgError) {
     return <img src={url} className={imgClass} alt="Logo" onError={() => setImgError(true)} />;
   }
