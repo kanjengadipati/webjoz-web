@@ -284,7 +284,17 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
                         <div className="mt-2 flex flex-wrap gap-1">
                           {item.features.map((f: string, fi: number) => (
                             <span key={fi} className="text-[11px] px-2 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 8%, transparent)", color: "var(--dt-primary)" }}>
-                              {f}
+                              <InlineText
+                                section="catalog"
+                                fieldKey={"categories." + catIdx + ".items." + index + ".features." + fi}
+                                value={f}
+                                onUpdateField={onUpdateField}
+                                isEditorMode={isEditorMode}
+                                isSelected={isSelected}
+                                as="span"
+                                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                                onEditingStateChange={onEditingStateChange}
+                              />
                             </span>
                           ))}
                         </div>
