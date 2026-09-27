@@ -871,7 +871,7 @@ export function SiteWizard({
       let tenantId = activeTenantId;
       if (!tenantId && mode === "public" && createTenant) {
         const slug = generateSlug(chat.businessName);
-        const created = await createTenant(chat.businessName + " Workspace", slug);
+        const created = await createTenant(chat.businessName, slug);
         if (created?.id) tenantId = created.id;
         else throw new Error("Gagal membuat workspace.");
       }

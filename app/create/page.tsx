@@ -164,7 +164,7 @@ function PublicWizardContent() {
             pending.businessName.toLowerCase().replace(/[^a-z0-9-]/g, "") +
             "-" +
             Math.floor(Math.random() * 1000);
-          const created = await createTenant(pending.businessName + " Workspace", slug);
+          const created = await createTenant(pending.businessName, slug);
           if (created?.id) tenantId = created.id;
           else throw new Error("Gagal membuat workspace.");
         }
@@ -200,7 +200,7 @@ function PublicWizardContent() {
               pending.businessName.toLowerCase().replace(/[^a-z0-9-]/g, "") +
               "-" +
               Math.floor(Math.random() * 1000);
-            const created = await createTenant(pending.businessName + " Workspace", slug);
+            const created = await createTenant(pending.businessName, slug);
             if (!created?.id) throw new Error("Gagal membuat workspace baru.");
             const subdomain2 =
               pending.businessName.toLowerCase().replace(/[^a-z0-9-]/g, "") +
