@@ -75,7 +75,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
             </Link>
             <Link
               href="/create"
-              className="rounded-full border border-border px-4 py-2 text-xs font-semibold text-foreground transition hover:bg-accent"
+              className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition hover:bg-primary/90 dark:bg-white dark:text-black dark:hover:bg-slate-200"
             >
               Buat Website Gratis
             </Link>
@@ -126,7 +126,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
           </p>
           <Link
             href="/create"
-            className="mt-5 inline-block rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground transition hover:bg-primary/85"
+            className="mt-5 inline-block rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-md transition hover:bg-primary/90 dark:bg-white dark:text-black dark:hover:bg-slate-200"
           >
             Buat Website Sekarang
           </Link>
