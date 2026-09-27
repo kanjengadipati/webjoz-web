@@ -9,6 +9,7 @@ export interface FooterVariantProps {
   };
   design_token?: DesignToken | null;
   brand_name?: string;
+  language?: "id" | "en";
   hasBlog?: boolean;
   contactAddress?: string;
   contactMapsUrl?: string;

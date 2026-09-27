@@ -206,11 +206,11 @@ export interface DesignToken {
     section_variants?: {
       hero?: "full-bleed" | "split" | "centered" | "minimal" | "minimalist-elegant" | "tech-saas" | "neo-brutalist" | "bento-grid" | "split-editorial" | "natural-organic" | "personal-billboard" | "portrait-showcase" | "work-preview-strip" | "chronology-badge";
       about?: "classic" | "split-image" | "stat-heavy" | "timeline" | "team-grid";
-      benefits?: "grid" | "stat-grid" | "checklist" | "comparison-table" | "featured-grid" | "icon-row" | "bento-grid";
+      benefits?: "grid" | "stat-grid" | "checklist" | "comparison-table" | "featured-grid" | "icon-row" | "bento-grid" | "trust-bar" | "how-it-works";
       testimonials?: "carousel" | "compact" | "grid" | "logo-wall" | "featured-spotlight" | "google-reviews";
       cta?: "banner" | "card" | "centered" | "split-image" | "inline-lead-form";
       faq?: "accordion" | "simple" | "columns" | "sidebar-category" | "two-column-grid" | "chat-bubble-style";
-      gallery?: "grid" | "masonry" | "carousel" | "lightbox-story";
+      gallery?: "grid" | "masonry" | "carousel" | "lightbox-story" | "before-after-slider";
       works?: "grid" | "masonry" | "featured-grid" | "showcase-featured";
       menu?: "grid" | "compact" | "cards" | "text-list" | "compact-list" | "tabs-by-category" | "accordion-by-category" | "bento-photo-grid" | "visual-showcase-hero" | "sidebar-scrollspy-photo";
       catalog?: "grid" | "compact" | "cards" | "grid-dense" | "showcase-featured" | "tabs-by-category" | "editorial-grid" | "masonry-flow" | "instagram-square-grid" | "split-hero-catalog" | "neo-brutalist-matrix" | "horizontal-swipe-carousel";
@@ -219,7 +219,7 @@ export interface DesignToken {
       pricing?: "cards" | "horizontal-rows" | "comparison-table" | "single-tier-highlight";
       contact?: "classic-split" | "whatsapp-direct" | "minimal-centered" | "overlay-map" | "bento-grid" | "dark-split";
       header?: "left-logo-inline-nav" | "centered-logo" | "transparent-overlay" | "logo-with-cta-button" | "stacked-logo-tagline";
-      footer?: "minimal-band" | "columns-with-social" | "columns-with-nav" | "dark-contrast-band";
+      footer?: "minimal-band" | "columns-with-social" | "columns-with-nav" | "dark-contrast-band" | "location-and-hours";
     };
     section_order?: string[];
     hidden_sections?: string[];

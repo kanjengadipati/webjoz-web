@@ -658,6 +658,7 @@ export function Lightbox({
   isEditorMode,
   isSelected,
   onUpdateCaption,
+  onUpdateCredit,
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: {
@@ -667,6 +668,7 @@ export function Lightbox({
   isEditorMode?: boolean;
   isSelected?: boolean;
   onUpdateCaption?: (idx: number, val: string) => void;
+  onUpdateCredit?: (idx: number, val: string) => void;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
 }) {
@@ -787,7 +789,16 @@ export function Lightbox({
         {items.length > 1 && (
           <p className="mt-2 text-white/50 text-xs">{current + 1} / {items.length}</p>
         )}
-        <PhotoCredit credit={item.image_credit} className="text-xs text-white/50 mt-2" />
+        <PhotoCredit
+          credit={item.image_credit}
+          className="text-xs text-white/50 mt-2"
+          section="gallery"
+          fieldKey={`items.${current}.image_credit.name`}
+          onUpdateField={(_, __, val) => onUpdateCredit?.(current, val)}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+        />
       </div>
     </div>
   );

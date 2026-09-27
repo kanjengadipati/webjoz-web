@@ -89,7 +89,15 @@ export default function HeroSplitEditorial({
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             />
             <div style={{ position: "absolute", bottom: 8, left: 12, zIndex: 20 }}>
-              <PhotoCredit credit={h.image_credit} />
+              <PhotoCredit
+                  credit={h.image_credit}
+                  section="hero"
+                  fieldKey="image_credit.name"
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                />
             </div>
           </>
         ) : (

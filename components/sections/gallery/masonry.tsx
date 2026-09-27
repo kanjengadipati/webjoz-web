@@ -12,6 +12,7 @@ interface MasonryProps {
   isEditorMode?: boolean;
   isSelected?: boolean;
   onUpdateCaption?: (idx: number, val: string) => void;
+  onUpdateCredit?: (idx: number, val: string) => void;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onReplaceImage?: (idx: number, url: string) => void;
@@ -22,7 +23,7 @@ interface MasonryProps {
 
 export default function GalleryMasonry({
   items, radius, setLightboxIndex,
-  isEditorMode, isSelected, onUpdateCaption,
+  isEditorMode, isSelected, onUpdateCaption, onUpdateCredit,
   collapseSheetForInlineEdit, onEditingStateChange,
   onReplaceImage, onRemoveItem, onMoveItem, onAddItem,
 }: MasonryProps) {
@@ -84,7 +85,16 @@ export default function GalleryMasonry({
             )}
             {item.image_credit?.name && (
               <div className="absolute bottom-1 right-2 z-10">
-                <PhotoCredit credit={item.image_credit} className="text-[10px] text-white/60" />
+                <PhotoCredit
+                  credit={item.image_credit}
+                  className="text-[10px] text-white/60"
+                  section="gallery"
+                  fieldKey={`items.${itemIdx}.image_credit.name`}
+                  onUpdateField={(_, __, val) => onUpdateCredit?.(itemIdx, val)}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                />
               </div>
             )}
             {isEditorMode && (
