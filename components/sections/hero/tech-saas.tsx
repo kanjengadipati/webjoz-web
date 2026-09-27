@@ -13,10 +13,10 @@ const TAB_ICONS: Record<Tab, React.ElementType> = {
   monitor: Shield,
 };
 
-const TAB_LABELS: Record<Tab, string> = {
-  analytics: "Analytics",
-  deploy: "Deploy",
-  monitor: "Monitor",
+const TAB_LABELS: Record<Tab, { id: string; en: string }> = {
+  analytics: { id: "Analisis", en: "Analytics" },
+  deploy: { id: "Deploy", en: "Deploy" },
+  monitor: { id: "Monitor", en: "Monitor" },
 };
 
 /**
@@ -29,6 +29,7 @@ import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
 export default function HeroTechSaaS({
   hero: h,
   design_token,
+  language,
   onUpdateField,
   isEditorMode,
   isSelected,
@@ -42,10 +43,11 @@ export default function HeroTechSaaS({
   const dw = h.dashboard_widget;
   const isHidden = dw?.hidden === true;
 
+  const lang: "id" | "en" = language === "en" ? "en" : "id";
   const tabLabels: Record<Tab, string> = {
-    analytics: dw?.tab_analytics_label || TAB_LABELS.analytics,
-    deploy: dw?.tab_deploy_label || TAB_LABELS.deploy,
-    monitor: dw?.tab_monitor_label || TAB_LABELS.monitor,
+    analytics: dw?.tab_analytics_label || TAB_LABELS.analytics[lang],
+    deploy: dw?.tab_deploy_label || TAB_LABELS.deploy[lang],
+    monitor: dw?.tab_monitor_label || TAB_LABELS.monitor[lang],
   };
 
   // Intercept editing state so we can pause animations locally
