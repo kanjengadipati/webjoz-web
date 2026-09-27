@@ -23,8 +23,8 @@ export default function LeftLogoInlineNav({
           url={header?.logo_url}
           icon={header?.icon}
           defaultIcon={Globe}
-          iconClass="w-5 h-5 shrink-0 text-[var(--dt-primary)]"
-          imgClass="h-8 w-auto shrink-0 object-contain"
+          iconClass="w-7 h-7 shrink-0 text-[var(--dt-primary)]"
+          imgClass="h-10 w-auto max-w-[120px] shrink-0 object-contain"
           section="header"
           onUpdateField={onUpdateField}
           isEditorMode={isEditorMode}
