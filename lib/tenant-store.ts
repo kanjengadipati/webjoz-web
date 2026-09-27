@@ -62,7 +62,10 @@ export function useActiveTenant() {
   const [error, setError] = useState<string | null>(null);
 
   const fetchTenants = async () => {
-    if (!token) return;
+    if (!token) {
+      setLoading(false);
+      return;
+    }
     try {
       setLoading(true);
       const res = await request<TenantMembership[]>("/tenants/me", {}, token);
@@ -93,9 +96,10 @@ export function useActiveTenant() {
           
           if (createRes.status === "success" && createRes.data?.id) {
             const refetched = await request<TenantMembership[]>("/tenants/me", {}, token);
+            const newId = createRes.data.id;
+            setActiveTenantId(newId);
+            setActiveTenantState(newId);
             setMemberships(refetched.data || []);
-            setActiveTenantId(createRes.data.id);
-            setActiveTenantState(createRes.data.id);
           } else {
             setActiveTenantState(null);
           }
