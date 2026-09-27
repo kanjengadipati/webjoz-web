@@ -12,9 +12,11 @@ export default function TransparentOverlay({
   drawerStyle,
   extraLinks,
   language,
+  design_token,
   onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
 }: HeaderVariantProps) {
   const [scrolled, setScrolled] = useState(false);
+  const isDark = design_token?.theme_mode === "dark";
   const defaultCta = language === "en" ? "Get in Touch" : "Hubungi Kami";
 
   useEffect(() => {
@@ -24,22 +26,29 @@ export default function TransparentOverlay({
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const bgUnscrolled = isDark
+    ? "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.28) 55%, transparent 100%)"
+    : "linear-gradient(to bottom, color-mix(in srgb, var(--dt-bg) 94%, transparent) 0%, color-mix(in srgb, var(--dt-bg) 72%, transparent) 60%, transparent 100%)";
+  const borderUnscrolled = isDark
+    ? "1px solid rgba(255,255,255,0.12)"
+    : "1px solid color-mix(in srgb, var(--dt-border) 70%, transparent)";
+
   return (
     <header
       className="sticky top-0 z-50 px-4 sm:px-6 py-4 flex items-center justify-between gap-4 relative transition-all duration-300"
       style={{
         background: scrolled
           ? "color-mix(in srgb, var(--dt-bg) 92%, transparent)"
-          : "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.28) 55%, transparent 100%)",
+          : bgUnscrolled,
         backdropFilter: scrolled ? "blur(12px)" : "blur(6px)",
         borderBottom: scrolled
           ? "1px solid var(--dt-border)"
-          : "1px solid rgba(255,255,255,0.12)",
+          : borderUnscrolled,
       }}
     >
       <div
         className="min-w-0 text-base sm:text-lg font-bold tracking-wide flex items-center gap-2.5"
-        style={{ color: scrolled ? "var(--dt-text)" : "#fff" }}
+        style={{ color: scrolled || !isDark ? "var(--dt-text)" : "#fff" }}
       >
         <LogoImage
           url={header?.logo_url}
@@ -81,7 +90,9 @@ export default function TransparentOverlay({
               style={{
                 color: scrolled
                   ? "var(--dt-text-muted)"
-                  : "color-mix(in srgb, #fff 92%, transparent)",
+                  : isDark
+                    ? "color-mix(in srgb, #fff 92%, transparent)"
+                    : "var(--dt-text-muted)",
               }}
             />
           )}
@@ -92,12 +103,12 @@ export default function TransparentOverlay({
         hiddenSections={hiddenSections}
         extraLinks={extraLinks}
         language={language}
-        linkClass={navLinkClass || (scrolled ? "text-[var(--dt-text)]" : "text-white/90")}
+        linkClass={navLinkClass || (scrolled || !isDark ? "text-[var(--dt-text)]" : "text-white/90")}
         drawerStyle={
           drawerStyle || {
-            background: scrolled ? "var(--dt-bg)" : "rgba(17,18,24,0.96)",
-            color: scrolled ? "var(--dt-text)" : "#fff",
-            borderTop: scrolled ? "1px solid var(--dt-border)" : "1px solid rgba(255,255,255,0.12)",
+            background: scrolled || !isDark ? "var(--dt-bg)" : "rgba(17,18,24,0.96)",
+            color: scrolled || !isDark ? "var(--dt-text)" : "#fff",
+            borderTop: scrolled || !isDark ? "1px solid var(--dt-border)" : "1px solid rgba(255,255,255,0.12)",
           }
         }
         nav_labels={header?.nav_labels}
