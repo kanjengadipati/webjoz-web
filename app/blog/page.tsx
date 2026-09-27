@@ -69,7 +69,7 @@ export default function BlogIndexPage() {
 
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="max-w-2xl">
-          <p className="text-sm font-semibold text-amber-600 dark:text-amber-400">
+          <p className="text-sm font-semibold text-muted-foreground">
             Blog &amp; Panduan
           </p>
           <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-5xl">
@@ -87,7 +87,7 @@ export default function BlogIndexPage() {
             className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card p-6 transition hover:border-foreground/40"
           >
             <div>
-              <p className="text-xs font-semibold text-amber-600 dark:text-amber-400">
+              <p className="text-xs font-semibold text-muted-foreground">
                 Terbaru · {featured.category}
               </p>
               <h2 className="mt-4 text-xl font-bold leading-snug sm:text-2xl">
@@ -121,7 +121,7 @@ export default function BlogIndexPage() {
       <footer className="border-t border-border py-10 text-center">
         <Link
           href="/create"
-          className="rounded-full bg-amber-500 px-6 py-3 text-sm font-bold text-black transition hover:bg-amber-400"
+          className="rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground transition hover:bg-primary/85"
         >
           Buat Website Bisnis Saya — Gratis
         </Link>

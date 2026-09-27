@@ -90,7 +90,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
           </Link>
         </nav>
         <div className="mt-6 flex items-center gap-2 text-xs">
-          <span className="font-semibold text-amber-600 dark:text-amber-400">
+          <span className="font-semibold text-foreground">
             {post.category}
           </span>
           <span className="text-muted-foreground">{post.date}</span>
@@ -126,7 +126,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
           </p>
           <Link
             href="/create"
-            className="mt-5 inline-block rounded-full bg-amber-500 px-6 py-3 text-sm font-bold text-black transition hover:bg-amber-400"
+            className="mt-5 inline-block rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground transition hover:bg-primary/85"
           >
             Buat Website Sekarang
           </Link>
