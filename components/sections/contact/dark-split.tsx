@@ -19,15 +19,6 @@ export default function DarkSplit({ contact: c, onSubmitLead, leadSubmitting, le
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12" style={{ maxWidth: "72rem", margin: "0 auto", position: "relative", zIndex: 1 }}>
         <div className="lg:col-span-5" style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
-              <span style={{ display: "inline-block", padding: "0.25rem 0.75rem", fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: "9999px", background: "color-mix(in srgb, var(--dt-primary) 15%, transparent)", color: "var(--dt-primary)", border: "1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)" }}>
-                Tech Dark Split
-              </span>
-              <span style={{ display: "flex", alignItems: "center", gap: "0.25rem", color: "#10b981", fontSize: "0.6rem", fontWeight: 700 }}>
-                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#10b981", display: "inline-block" }} />
-                {isEN ? "System Active" : "Sistem Aktif"}
-              </span>
-            </div>
             <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)", fontSize: "clamp(1.25rem, 4.5cqw, 2rem)", color: "var(--dt-text)", margin: "0 0 0.75rem" } as any}>
               <InlineText section="contact" fieldKey="title" value={c.title ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             </h2>
