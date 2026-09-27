@@ -17,7 +17,6 @@ export const metadata: Metadata = {
     description: "Masuk ke akun Webjoz untuk mengelola website bisnis Anda.",
     url: siteUrl("/login"),
     siteName: "Webjoz",
-    // opengraph-image.tsx in this directory auto-generates the og:image tag
     locale: "id_ID",
     type: "website",
   },
