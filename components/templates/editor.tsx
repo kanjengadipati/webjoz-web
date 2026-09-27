@@ -578,11 +578,12 @@ export const PreviewSectionWrapper: React.FC<{
         {/* Section Title Badge & Unified Variant Gallery Trigger (Top Left) */}
         <div
           ref={panelRef}
-          className={`absolute top-2.5 left-3 z-30 flex items-center gap-1.5 transition-all duration-150 ${
+          className={`absolute top-2 left-2.5 z-30 flex items-center gap-1 transition-all duration-150 ${
             isSelected || isGalleryOpen ? "opacity-100" : "opacity-0 group-hover:opacity-100"
           }`}
         >
-          <span className="bg-slate-950 backdrop-blur-sm text-white border border-white/20 text-[9px] font-bold tracking-widest px-2.5 py-1 rounded-md uppercase select-none shadow-md">
+          {/* Section label pill */}
+          <span className="h-6 inline-flex items-center bg-slate-950/80 backdrop-blur-md text-white/90 border border-white/15 text-[9px] font-bold tracking-[0.12em] px-2.5 rounded-full uppercase select-none shadow-sm">
             {label}
           </span>
 
@@ -596,18 +597,18 @@ export const PreviewSectionWrapper: React.FC<{
                   setIsGalleryOpen((prev) => !prev);
                   if (!isGalleryOpen) setSelectedGroup("Semua");
                 }}
-                className={`backdrop-blur-sm border text-[9px] font-medium px-2.5 py-1 rounded-md flex items-center gap-1 cursor-pointer transition-all active:scale-95 shadow-md ${
+                className={`h-6 backdrop-blur-md border text-[9px] font-semibold px-2.5 rounded-full flex items-center gap-1 cursor-pointer transition-all active:scale-95 shadow-sm ${
                   isGalleryOpen
                     ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-slate-950 text-slate-100 hover:text-white border-white/20 hover:border-primary/60"
+                    : "bg-slate-950/80 text-slate-200 hover:text-white border-white/15 hover:border-white/40"
                 }`}
                 title={t("dashboard.sitesEditor.changeSectionVariant") || "Pilih Variasi Tampilan"}
               >
-                <LayoutGrid className="w-2.5 h-2.5" />
+                <LayoutGrid className="w-2.5 h-2.5 shrink-0" />
                 <span className="max-w-[80px] truncate">
                   {activeOpt?.label || t("dashboard.sitesEditor.variantLabel") || "Varian"}
                 </span>
-                <ChevronDown className={`w-2.5 h-2.5 transition-transform ${isGalleryOpen ? "rotate-180" : ""}`} />
+                <ChevronDown className={`w-2.5 h-2.5 shrink-0 transition-transform ${isGalleryOpen ? "rotate-180" : ""}`} />
               </button>
 
               {/* Floating Visual Gallery Panel */}
@@ -728,18 +729,18 @@ export const PreviewSectionWrapper: React.FC<{
           )}
         </div>
 
-        {/* Section Action (Top Right) */}
+        {/* Section Action (Top Right) — Regen */}
         <button
           type="button"
           onClick={(e) => {
             e.stopPropagation();
             onRegenSection?.(section);
           }}
-          className={`absolute top-2.5 right-3 z-20 bg-slate-950 backdrop-blur-sm text-white border border-white/25 hover:bg-primary hover:text-primary-foreground hover:border-primary text-[9px] font-bold px-2.5 py-1 rounded-lg flex items-center gap-1.5 cursor-pointer transition-all active:scale-95 duration-150 focus:outline-none focus:ring-1 focus:ring-primary group/regen shadow-md ${
+          className={`absolute top-2 right-2.5 z-20 h-6 inline-flex items-center gap-1.5 bg-primary/90 backdrop-blur-md text-primary-foreground border border-primary/50 hover:bg-primary hover:border-primary text-[9px] font-bold px-2.5 rounded-full cursor-pointer transition-all active:scale-95 duration-150 focus:outline-none focus:ring-1 focus:ring-primary shadow-sm ${
             isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
           }`}
         >
-          <SparkleGenAI className="w-3.5 h-3.5" />
+          <SparkleGenAI className="w-3 h-3 shrink-0" />
           Regen
         </button>
         {children}
