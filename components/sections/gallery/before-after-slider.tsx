@@ -2,6 +2,7 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import type { GalleryVariantProps } from "./shared";
 import { GallerySectionHeader, useGalleryUpload, GalleryAddTile, getRadius } from "./shared";
+import { InlineText } from "../../templates/shared";
 
 interface BeforeAfterItem {
   before_url?: string | null;
@@ -19,19 +20,27 @@ function BeforeAfterSlider({
   beforeUrl,
   afterUrl,
   caption,
+  captionFieldKey,
   radius,
   isEditorMode,
+  isSelected,
+  onUpdateField,
   onReplaceBefore,
   onReplaceAfter,
+  onEditingStateChange,
   collapseSheetForInlineEdit,
 }: {
   beforeUrl: string;
   afterUrl: string;
   caption?: string | null;
+  captionFieldKey: string;
   radius: string;
   isEditorMode?: boolean;
+  isSelected?: boolean;
+  onUpdateField?: (section: string, key: string, value: any) => void;
   onReplaceBefore?: (url: string) => void;
   onReplaceAfter?: (url: string) => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
   collapseSheetForInlineEdit?: () => void;
 }) {
   const [position, setPosition] = useState(50); // percentage 0-100
@@ -278,7 +287,17 @@ function BeforeAfterSlider({
             fontStyle: "italic",
           }}
         >
-          {caption}
+          <InlineText
+            section="gallery"
+            fieldKey={captionFieldKey}
+            value={caption ?? ""}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            as="span"
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
         </p>
       )}
 
@@ -383,29 +402,39 @@ export default function GalleryBeforeAfterSlider({
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "3rem" }}>
-            {pairs.map((pair, idx) => (
-              <BeforeAfterSlider
-                key={idx}
-                beforeUrl={pair.before_url ?? ""}
-                afterUrl={pair.after_url ?? ""}
-                caption={pair.caption}
-                radius={radius}
-                isEditorMode={isEditorMode}
-                onReplaceBefore={(url) => {
-                  const items = [...(gallery.items ?? [])];
-                  const itemIdx = idx * 2;
-                  if (items[itemIdx]) items[itemIdx] = { ...items[itemIdx], image_url: url };
-                  onUpdateField?.("gallery", "items", items);
-                }}
-                onReplaceAfter={(url) => {
-                  const items = [...(gallery.items ?? [])];
-                  const itemIdx = idx * 2 + 1;
-                  if (items[itemIdx]) items[itemIdx] = { ...items[itemIdx], image_url: url };
-                  onUpdateField?.("gallery", "items", items);
-                }}
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              />
-            ))}
+            {pairs.map((pair, idx) => {
+              const explicitPairs = !!(gallery as any).before_after_items?.length;
+              const captionFieldKey = explicitPairs
+                ? `before_after_items.${idx}.caption`
+                : `items.${idx * 2}.caption`;
+              return (
+                <BeforeAfterSlider
+                  key={idx}
+                  beforeUrl={pair.before_url ?? ""}
+                  afterUrl={pair.after_url ?? ""}
+                  caption={pair.caption}
+                  captionFieldKey={captionFieldKey}
+                  radius={radius}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  onUpdateField={onUpdateField}
+                  onReplaceBefore={(url) => {
+                    const items = [...(gallery.items ?? [])];
+                    const itemIdx = idx * 2;
+                    if (items[itemIdx]) items[itemIdx] = { ...items[itemIdx], image_url: url };
+                    onUpdateField?.("gallery", "items", items);
+                  }}
+                  onReplaceAfter={(url) => {
+                    const items = [...(gallery.items ?? [])];
+                    const itemIdx = idx * 2 + 1;
+                    if (items[itemIdx]) items[itemIdx] = { ...items[itemIdx], image_url: url };
+                    onUpdateField?.("gallery", "items", items);
+                  }}
+                  onEditingStateChange={onEditingStateChange}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                />
+              );
+            })}
           </div>
         )}
 

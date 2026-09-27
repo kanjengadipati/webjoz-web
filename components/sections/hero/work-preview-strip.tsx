@@ -74,7 +74,16 @@ export default function HeroWorkPreviewStrip({
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
           />
           <div style={{ position: "absolute", bottom: 4, right: 8, zIndex: 20 }}>
-            <PhotoCredit credit={h.image_credit} language={language} />
+            <PhotoCredit
+              credit={h.image_credit}
+              language={language}
+              section="hero"
+              fieldKey="image_credit.name"
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            />
           </div>
         </div>
       )}

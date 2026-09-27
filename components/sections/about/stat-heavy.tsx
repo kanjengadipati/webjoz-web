@@ -81,7 +81,15 @@ export default function AboutStatHeavy({
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
           />
           <div style={{ position: "absolute", bottom: 4, right: 8, zIndex: 20 }}>
-            <PhotoCredit credit={a.image_credit} />
+            <PhotoCredit
+              credit={a.image_credit}
+              section="about"
+              fieldKey="image_credit.name"
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            />
           </div>
         </div>
       )}

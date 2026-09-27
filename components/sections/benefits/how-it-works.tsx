@@ -210,7 +210,7 @@ export default function BenefitsHowItWorks({
               />
 
               {/* Optional stat badge */}
-              {item.stat && (
+              {item.stat || isEditorMode ? (
                 <span
                   style={{
                     display: "inline-block",
@@ -226,9 +226,19 @@ export default function BenefitsHowItWorks({
                     borderRadius: "999px",
                   }}
                 >
-                  {item.stat}
+                  <InlineText
+                    section="benefits"
+                    fieldKey={`items.${idx}.stat`}
+                    value={item.stat ?? ""}
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="span"
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={onEditingStateChange}
+                  />
                 </span>
-              )}
+              ) : null}
             </div>
           ))}
         </div>

@@ -12,6 +12,7 @@ interface LightboxStoryProps {
   isEditorMode?: boolean;
   isSelected?: boolean;
   onUpdateCaption?: (idx: number, val: string) => void;
+  onUpdateCredit?: (idx: number, val: string) => void;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onReplaceImage?: (idx: number, url: string) => void;
@@ -26,6 +27,7 @@ function StoryLightbox({
   isEditorMode,
   isSelected,
   onUpdateCaption,
+  onUpdateCredit,
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: {
@@ -35,6 +37,7 @@ function StoryLightbox({
   isEditorMode?: boolean;
   isSelected?: boolean;
   onUpdateCaption?: (idx: number, val: string) => void;
+  onUpdateCredit?: (idx: number, val: string) => void;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
 }) {
@@ -148,7 +151,16 @@ function StoryLightbox({
             </div>
           </div>
         )}
-        <PhotoCredit credit={item.image_credit} className="text-xs text-white/40 mt-3" />
+        <PhotoCredit
+          credit={item.image_credit}
+          className="text-xs text-white/40 mt-3"
+          section="gallery"
+          fieldKey={`items.${current}.image_credit.name`}
+          onUpdateField={(_, __, val) => onUpdateCredit?.(current, val)}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+        />
       </div>
     </div>
   );
@@ -156,7 +168,7 @@ function StoryLightbox({
 
 export default function GalleryLightboxStory({
   items, radius,
-  isEditorMode, isSelected, onUpdateCaption,
+  isEditorMode, isSelected, onUpdateCaption, onUpdateCredit,
   collapseSheetForInlineEdit, onEditingStateChange,
   onReplaceImage, onRemoveItem, onMoveItem,
 }: LightboxStoryProps) {
@@ -207,7 +219,16 @@ export default function GalleryLightboxStory({
             )}
             {item.image_credit?.name && (
               <div className="absolute bottom-1 right-2 z-10">
-                <PhotoCredit credit={item.image_credit} className="text-[10px] text-white/60" />
+                <PhotoCredit
+                  credit={item.image_credit}
+                  className="text-[10px] text-white/60"
+                  section="gallery"
+                  fieldKey={`items.${idx}.image_credit.name`}
+                  onUpdateField={(_, __, val) => onUpdateCredit?.(idx, val)}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                />
               </div>
             )}
             {isEditorMode && (
@@ -233,6 +254,7 @@ export default function GalleryLightboxStory({
           isEditorMode={isEditorMode}
           isSelected={isSelected}
           onUpdateCaption={onUpdateCaption}
+          onUpdateCredit={onUpdateCredit}
           collapseSheetForInlineEdit={collapseSheetForInlineEdit}
           onEditingStateChange={onEditingStateChange}
         />

@@ -54,6 +54,21 @@ export default function GallerySection({
     [gallery.items, onUpdateField]
   );
 
+const onUpdateCredit = useCallback(
+    (idx: number, val: string) => {
+      const items = [...(gallery.items || [])];
+      const cur = items[idx];
+      items[idx] = {
+        ...cur,
+        image_credit: cur?.image_credit
+          ? { ...cur.image_credit, name: val }
+          : { name: val, url: "" },
+      };
+      onUpdateField?.("gallery", "items", items);
+    },
+    [gallery.items, onUpdateField]
+  );
+
   const onUpdateItems = useCallback(
     (items: GalleryItem[]) => {
       onUpdateField?.("gallery", "items", items);
@@ -125,6 +140,7 @@ export default function GallerySection({
     isEditorMode,
     isSelected,
     onUpdateCaption,
+    onUpdateCredit,
     collapseSheetForInlineEdit,
     onEditingStateChange,
     onReplaceImage,
@@ -170,6 +186,7 @@ export default function GallerySection({
             isEditorMode={isEditorMode}
             isSelected={isSelected}
             onUpdateCaption={onUpdateCaption}
+            onUpdateCredit={onUpdateCredit}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
             onReplaceImage={onReplaceImage}
@@ -189,6 +206,7 @@ export default function GallerySection({
           isEditorMode={isEditorMode}
           isSelected={isSelected}
           onUpdateCaption={onUpdateCaption}
+          onUpdateCredit={onUpdateCredit}
           collapseSheetForInlineEdit={collapseSheetForInlineEdit}
           onEditingStateChange={onEditingStateChange}
         />

@@ -5,12 +5,13 @@ import type { FooterVariantProps } from "./types";
 import { InlineText } from "../../templates/shared";
 
 export default function LocationAndHours({
-  footer, brand_name, hasBlog,
+  footer, brand_name, hasBlog, language,
   contactAddress, contactMapsUrl, contactOpeningHours,
   onUpdateField, isEditorMode = false, isSelected = false,
   collapseSheetForInlineEdit, onEditingStateChange,
 }: FooterVariantProps) {
-  const displayBrand = brand_name || "Bisnis Kami";
+  const isEN = language === "en";
+  const displayBrand = brand_name || (isEN ? "Our Business" : "Bisnis Kami");
   const displayTagline = footer?.tagline || "";
   const displayCopyright = footer?.copyright_text || `\u00A9 ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`;
   const hasLocation = Boolean(contactAddress) || isEditorMode;
@@ -71,7 +72,7 @@ export default function LocationAndHours({
                 <MapPin style={{ width: 14, height: 14, color: "var(--dt-primary)" }} />
               </div>
               <div>
-                <p style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: "0 0 0.25rem" }}>Alamat</p>
+                <p style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: "0 0 0.25rem" }}>{isEN ? "Address" : "Alamat"}</p>
                 <p style={{ fontSize: "0.8rem", lineHeight: 1.5, margin: 0, color: "var(--dt-text)" }}>
                   <InlineText
                     section="contact"
@@ -106,7 +107,7 @@ export default function LocationAndHours({
                 <Clock style={{ width: 14, height: 14, color: "var(--dt-primary)" }} />
               </div>
               <div>
-                <p style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: "0 0 0.25rem" }}>Jam Operasional</p>
+                <p style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: "0 0 0.25rem" }}>{isEN ? "Opening Hours" : "Jam Operasional"}</p>
                 <p style={{ fontSize: "0.8rem", lineHeight: 1.5, margin: 0, color: "var(--dt-text)", whiteSpace: "pre-line" }}>
                   <InlineText
                     section="contact"

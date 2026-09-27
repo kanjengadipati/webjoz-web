@@ -332,7 +332,15 @@ export default function HeroFullBleed({
       {/* ── 5. Unsplash Photo Credit (Bottom Right) ──────────────────── */}
       {h.image_credit && (
         <div className="absolute bottom-6 sm:bottom-8 right-6 sm:right-12 md:right-16 lg:right-24 z-20">
-          <PhotoCredit credit={h.image_credit} />
+          <PhotoCredit
+            credit={h.image_credit}
+            section="hero"
+            fieldKey="image_credit.name"
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          />
         </div>
       )}
     </section>
