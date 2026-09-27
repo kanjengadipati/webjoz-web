@@ -17,9 +17,10 @@ jangan pernah selesai hanya karena render utama sudah jalan:
 1. **Localization (ID & EN)** — setiap teks/string baru wajib ada di ketiga tempat: `types.ts` (defaults),
    locale ID, dan locale EN. Jangan hardcode string bahasa. Komponen baca bahasa via prop `isEN`/`language`
    dan pilih teks sesuai. Jangan sampai mock/AI default menyuntik teks Indonesia ke output EN (dan sebaliknya).
-2. **inlineEdit** — setiap teks/gambar yang tampil di section wajib punya pendamping inline edit
-   (`InlineText`/`InlineImage`) dengan `fieldKey` yang benar dan nilai konten yang sama yang dirender.
-   Jangan ada text statis yang tidak bisa diedit oleh pengguna.
+2. **inlineEdit — WAJIB untuk SETIAP varian/elemen baru (tanpa kecuali)** — setiap teks/gambar yang tampil
+   di section wajib punya pendamping inline edit (`InlineText`/`InlineImage`) dengan `fieldKey` yang benar
+   dan nilai konten yang sama yang dirender. Jangan ada text statis yang tidak bisa diedit oleh pengguna.
+   Varian baru TIDAK BOLEH selesai/release kalau masih ada teks/gambar plain yang tidak bisa diedit.
 3. **Editor (sidebar)** — setiap field baru section wajib didaftarkan di editor sidebar
    (`app/dashboard/sites/[id]/page.tsx`) untuk DESKTOP dan variant MOBILE editor. Juga update
    `editor-utils.ts` (`BODY_SECTION_KEYS`/`EDITOR_SECTION_KEYS`/`SECTION_META`/`AI_SUGGESTIONS` ID+EN)
@@ -36,6 +37,29 @@ jangan pernah selesai hanya karena render utama sudah jalan:
    (sembunyikan elemen), jangan tampilkan string mentah.
 8. **Verifikasi** — `npx tsc --noEmit` bersih; cek `npm run lint` (hanya error pre-existing yang boleh ada);
    kalau mengubah generator/dummy, run build preview.
+
+> [!IMPORTANT]
+> **CHECKLIST INLINE-EDIT UNTUK VARIANT BARU** — saat menambah varian section (hero/benefits/gallery/footer/dll.),
+> sebelum dianggap selesai pastikan SEMUA poin ini:
+> 1. Setiap teks yang dirender dibungkus `InlineText` (dari `components/templates/shared.tsx`) — headline,
+>    subheadline, badge, label, capsule/badge, nilai stat, caption, chip kategori, dst. Props yang harus
+>    dikirim: `section`, `fieldKey` (dotted path + index array, mis. `items.0.title`), `value`, `onUpdateField`,
+>    `isEditorMode`, `isSelected`, `collapseSheetForInlineEdit`, dan `onEditingStateChange` (bila komponen
+>    menerimanya). Render di editor mode via ternari `value || isEditorMode ? <InlineText .../> : value`
+>    (jangan pakai pola `&&` mentah agar elemen tetap tampil saat kosong di editor).
+> 2. Setiap gambar dirender lewat `InlineImage` (section/fieldKey/src/onUpdateField/isEditorMode/isSelected/
+>    collapseSheetForInlineEdit), atau blocker editor (mis. `pointerEvents`) agar klik memilih field gambar
+>    di editor. Jangan pakai `<img>` private untuk konten yang wajib diedit.
+> 3. `image_credit` (kredit foto) dibungkus `<PhotoCredit>` dengan props inline opsional: `section`, `fieldKey`
+>    (`...image_credit.name`), `onUpdateField`, `isEditorMode`, `isSelected`, `collapseSheetForInlineEdit`.
+> 4. Data yang dirender harus bisa di-update via `onUpdateField`/adapter per-item (mis. `handleUpdateItem`,
+>    `onUpdateCaption`, `onUpdateCredit`) — nilai yang dirender harus IDENTIK dengan nilai yang ditulis.
+> 5. Bidang konten baru juga didaftarkan di editor sidebar (`app/dashboard/sites/[id]/page.tsx`) DESKTOP +
+>    MOBILE dan `editor-utils.ts` bila perlu.
+> 6. Varian baru didaftarkan serentak di `types.ts` union (`section_variants`), `variant-registry.ts`
+>    (`SECTION_VARIANT_OPTIONS`), komponen section, dan — bila teks label/lokal — lokalisasi ID/EN.
+> 7. Tabel audit inline-edit: jika ragu apakah ada "text/elemen yang tidak bisa diedit", jalankan pencarian
+>    di file varian untuk teks hardcoded/jsx child yang tidak lewat `InlineText`/`InlineImage`.
 
 <!-- END:feature-checklist -->
 
