@@ -59,7 +59,7 @@ export default function BlogIndexPage() {
             </Link>
             <Link
               href="/create"
-              className="rounded-full border border-border px-4 py-2 text-xs font-semibold text-foreground transition hover:bg-accent"
+              className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition hover:bg-primary/90 dark:bg-white dark:text-black dark:hover:bg-slate-200"
             >
               Buat Website Gratis
             </Link>
@@ -121,7 +121,7 @@ export default function BlogIndexPage() {
       <footer className="border-t border-border py-10 text-center">
         <Link
           href="/create"
-          className="rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground transition hover:bg-primary/85"
+          className="rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-md transition hover:bg-primary/90 dark:bg-white dark:text-black dark:hover:bg-slate-200"
         >
           Buat Website Bisnis Saya — Gratis
         </Link>
