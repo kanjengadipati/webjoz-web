@@ -34,7 +34,19 @@ export default function BenefitsStatGrid({
       <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
           <span style={{ display: "block", fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)", marginBottom: "0.25rem" }}>{isEN ? "Benefits" : "Keunggulan"}</span>
-          <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>{b.title}</h2>
+          <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>
+            <InlineText
+              section="benefits"
+              fieldKey="title"
+              value={b.title ?? ""}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="span"
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
+          </h2>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(1, 1fr)", gap: "1.5rem" }} className="sm:grid-cols-2 lg:grid-cols-3">
           {b.items?.map((item, idx) => (
@@ -42,8 +54,20 @@ export default function BenefitsStatGrid({
               onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `0 8px 24px color-mix(in srgb, var(--dt-primary) 18%, transparent)`; (e.currentTarget as HTMLElement).style.transform = "translateY(-3px)"; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `0 4px 12px color-mix(in srgb, var(--dt-primary) 10%, transparent)`; (e.currentTarget as HTMLElement).style.transform = "none"; }}
             >
-              {item.stat ? (
-                <p style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 800, fontSize: "2.5rem", color: "var(--dt-primary)", margin: 0, lineHeight: 1 }}>{item.stat}</p>
+              {item.stat || isEditorMode ? (
+                <p style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 800, fontSize: "2.5rem", color: "var(--dt-primary)", margin: 0, lineHeight: 1 }}>
+                  <InlineText
+                    section="benefits"
+                    fieldKey={"items." + idx + ".stat"}
+                    value={item.stat ?? ""}
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="span"
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={onEditingStateChange}
+                  />
+                </p>
               ) : (
                 <div style={{ width: 44, height: 44, background: `color-mix(in srgb, var(--dt-primary) 10%, transparent)`, borderRadius: "var(--dt-radius)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <span style={{ color: "var(--dt-primary)", display: "contents" }}><DynamicIcon name={item.icon} defaultIcon={Star} className="w-5 h-5" /></span>

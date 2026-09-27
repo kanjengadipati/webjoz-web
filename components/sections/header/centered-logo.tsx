@@ -26,6 +26,11 @@ export default function CenteredLogo({
             defaultIcon={Globe}
             iconClass="w-6 h-6 shrink-0 text-[var(--dt-primary)]"
             imgClass="h-9 w-auto shrink-0 object-contain"
+            section="header"
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
           />
           <InlineText
             section="header"

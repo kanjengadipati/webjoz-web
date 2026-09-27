@@ -241,7 +241,7 @@ export default function HeroMinimalistElegant({
         style={{ position: "relative", minHeight: "50vh" }}
         className="hidden lg:block"
       >
-        {h.image_url ? (
+        {(h.image_url || isEditorMode) ? (
           <>
             <InlineImage
               section="hero"

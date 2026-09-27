@@ -112,8 +112,34 @@ export default function BenefitsIconRow({
                     display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column",
                     boxShadow: `0 0 24px color-mix(in srgb, var(--dt-primary) 15%, transparent)`,
                   }}>
-                    <span style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 800, fontSize: "1.25rem", color: "var(--dt-primary)", lineHeight: 1 }}>{item.stat}</span>
-                    {item.stat_label && <span style={{ fontSize: "0.55rem", fontWeight: 700, textTransform: "uppercase", color: "var(--dt-text-muted)", letterSpacing: "0.06em" }}>{item.stat_label}</span>}
+                    <span style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 800, fontSize: "1.25rem", color: "var(--dt-primary)", lineHeight: 1 }}>
+                      <InlineText
+                        section="benefits"
+                        fieldKey={"items." + idx + ".stat"}
+                        value={item.stat ?? ""}
+                        onUpdateField={onUpdateField}
+                        isEditorMode={isEditorMode}
+                        isSelected={isSelected}
+                        as="span"
+                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                        onEditingStateChange={onEditingStateChange}
+                      />
+                    </span>
+                    {item.stat_label && (
+                      <span style={{ fontSize: "0.55rem", fontWeight: 700, textTransform: "uppercase", color: "var(--dt-text-muted)", letterSpacing: "0.06em" }}>
+                        <InlineText
+                          section="benefits"
+                          fieldKey={"items." + idx + ".stat_label"}
+                          value={item.stat_label ?? ""}
+                          onUpdateField={onUpdateField}
+                          isEditorMode={isEditorMode}
+                          isSelected={isSelected}
+                          as="span"
+                          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                          onEditingStateChange={onEditingStateChange}
+                        />
+                      </span>
+                    )}
                   </div>
                 ) : (
                   <div style={{

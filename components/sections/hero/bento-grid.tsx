@@ -43,11 +43,17 @@ export default function HeroBentoGrid({
     return () => clearInterval(interval);
   }, [isInlineEditing]);
 
-  const stats = [
+  const hardcodedStats = [
     { value: "98%", label: "Satisfaction" },
     { value: "10K+", label: "Users" },
     { value: "24/7", label: "Support" },
   ];
+
+  const statSource = h.stats && h.stats.length > 0 ? h.stats : null;
+  const stats = Array.from({ length: Math.max(statSource?.length ?? 0, hardcodedStats.length) }, (_, i) => ({
+    value: statSource?.[i]?.value?.trim() ? statSource[i].value : hardcodedStats[i]?.value ?? "—",
+    label: statSource?.[i]?.label?.trim() ? statSource[i].label : hardcodedStats[i]?.label ?? "",
+  }));
 
   return (
     <section
@@ -239,7 +245,7 @@ export default function HeroBentoGrid({
             }}
             className="hidden lg:block"
           >
-            {h.image_url ? (
+            {(h.image_url || isEditorMode) ? (
               <>
                 <InlineImage
                   section="hero"
@@ -299,10 +305,34 @@ export default function HeroBentoGrid({
           >
             {/* Stats row */}
             <div style={{ display: "flex", gap: "1rem" }}>
-              {stats.map((s) => (
-                <div key={s.label} style={{ flex: 1, textAlign: "center" }}>
-                  <p style={{ margin: 0, fontWeight: 800, fontSize: "1.1rem", color: "var(--dt-primary)" }}>{s.value}</p>
-                  <p style={{ margin: 0, fontSize: "0.55rem", color: "var(--dt-text-muted)", textTransform: "uppercase", letterSpacing: "0.1em" }}>{s.label}</p>
+              {stats.map((s, i) => (
+                <div key={`${s.label}-${i}`} style={{ flex: 1, textAlign: "center" }}>
+                  <p style={{ margin: 0, fontWeight: 800, fontSize: "1.1rem", color: "var(--dt-primary)" }}>
+                    <InlineText
+                      section="hero"
+                      fieldKey={`stats.${i}.value`}
+                      value={s.value}
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={isSelected}
+                      as="span"
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      onEditingStateChange={handleEditingStateChange}
+                    />
+                  </p>
+                  <p style={{ margin: 0, fontSize: "0.55rem", color: "var(--dt-text-muted)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                    <InlineText
+                      section="hero"
+                      fieldKey={`stats.${i}.label`}
+                      value={s.label}
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={isSelected}
+                      as="span"
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      onEditingStateChange={handleEditingStateChange}
+                    />
+                  </p>
                 </div>
               ))}
             </div>

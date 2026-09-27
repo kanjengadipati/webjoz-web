@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Handshake } from "lucide-react";
-import { InlineText } from "../../templates/shared";
+import { InlineText, InlineImage } from "../../templates/shared";
 import type { PartnersVariantProps } from "./index";
 
 export default function PartnersFeaturedCollabGrid({
@@ -72,8 +72,18 @@ export default function PartnersFeaturedCollabGrid({
               className="hover:-translate-y-1"
             >
               <div style={{ width: "3.5rem", height: "3.5rem", margin: "0 auto 0.75rem", borderRadius: "9999px", overflow: "hidden", background: "color-mix(in srgb, var(--dt-primary) 8%, transparent)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                {item.logo_url ? (
-                  <img src={item.logo_url} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                {item.logo_url || isEditorMode ? (
+                  <InlineImage
+                    section="partners"
+                    fieldKey={`items.${idx}.logo_url`}
+                    src={item.logo_url ?? ""}
+                    alt={item.name}
+                    onUpdateField={(_, __, val) => handleUpdateItem(idx, "logo_url", val)}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  />
                 ) : (
                   <span style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 800, fontSize: "1.1rem", color: "var(--dt-primary)" }}>
                     {item.name?.[0]?.toUpperCase() || "?"}

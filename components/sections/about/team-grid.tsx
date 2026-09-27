@@ -1,6 +1,6 @@
 import React from "react";
 import { Users } from "lucide-react";
-import { InlineText } from "../../templates/shared";
+import { InlineText, InlineImage } from "../../templates/shared";
 import { InlineAddTile } from "../inline-add";
 import type { AboutVariantProps } from "./classic";
 
@@ -55,8 +55,18 @@ export default function AboutTeamGrid({
             onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = "translateY(-3px)"; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = "none"; }}
           >
-            {m.photo_url ? (
-              <img src={m.photo_url} alt={m.name} style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover", margin: "0 auto 1rem" }} />
+            {m.photo_url || isEditorMode ? (
+              <InlineImage
+                section="about"
+                fieldKey={`team_members.${ti}.photo_url`}
+                src={m.photo_url ?? ""}
+                alt={m.name}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover", margin: "0 auto 1rem", display: "block" }}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              />
             ) : (
               <div style={{ width: 80, height: 80, borderRadius: "50%", background: `color-mix(in srgb, var(--dt-primary) 12%, var(--dt-bg))`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1rem" }}>
                 <Users style={{ width: 28, height: 28, color: "var(--dt-primary)" }} />

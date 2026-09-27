@@ -309,7 +309,7 @@ export default function HeroNeoBrutalist({
               aspectRatio: "4 / 5",
             }}
           >
-            {h.image_url ? (
+            {(h.image_url || isEditorMode) ? (
               <>
                 <InlineImage
                   section="hero"

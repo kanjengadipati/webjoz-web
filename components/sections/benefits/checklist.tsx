@@ -34,7 +34,19 @@ export default function BenefitsChecklist({
       <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
         <div style={{ textAlign: "left", marginBottom: "2.5rem" }}>
           <span style={{ display: "block", fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)", marginBottom: "0.25rem" }}>{isEN ? "Benefits" : "Keunggulan"}</span>
-          <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>{b.title}</h2>
+          <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>
+            <InlineText
+              section="benefits"
+              fieldKey="title"
+              value={b.title ?? ""}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="span"
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
+          </h2>
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           {b.items?.map((item, idx) => (
@@ -58,9 +70,21 @@ export default function BenefitsChecklist({
                       collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                       onEditingStateChange={onEditingStateChange}
                     />
-                    {item.stat && (
-                      <span style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--dt-primary)", background: `color-mix(in srgb, var(--dt-primary) 10%, transparent)`, padding: "0.15rem 0.6rem", borderRadius: "var(--dt-radius)", whiteSpace: "nowrap" }}>{item.stat}</span>
-                    )}
+                    {item.stat || isEditorMode ? (
+                      <span style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--dt-primary)", background: `color-mix(in srgb, var(--dt-primary) 10%, transparent)`, padding: "0.15rem 0.6rem", borderRadius: "var(--dt-radius)", whiteSpace: "nowrap" }}>
+                        <InlineText
+                          section="benefits"
+                          fieldKey={"items." + idx + ".stat"}
+                          value={item.stat ?? ""}
+                          onUpdateField={onUpdateField}
+                          isEditorMode={isEditorMode}
+                          isSelected={isSelected}
+                          as="span"
+                          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                          onEditingStateChange={onEditingStateChange}
+                        />
+                      </span>
+                    ) : null}
                   </div>
                   <InlineText
                     section="benefits"

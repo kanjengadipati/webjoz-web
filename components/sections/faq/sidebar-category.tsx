@@ -146,12 +146,30 @@ export default function FaqSidebarCategory({
       </div>
       {categories.length > 0 && (
         <div style={{ display: "flex", gap: "0.5rem", marginBottom: "2rem", flexWrap: "wrap", justifyContent: "center" }}>
-          {categories.map(cat => (
-            <button key={cat} onClick={() => setActiveCat(cat)}
-              style={{ padding: "0.4rem 1rem", borderRadius: "2rem", fontSize: "0.8rem", fontWeight: 600, border: `1px solid ${activeCat === cat ? "var(--dt-primary)" : "color-mix(in srgb, var(--dt-primary) 20%, transparent)"}`, background: activeCat === cat ? "var(--dt-primary)" : "transparent", color: activeCat === cat ? "var(--dt-cta-text, #fff)" : "var(--dt-text)", cursor: "pointer", transition: "all 0.2s" }}>
-              {cat}
-            </button>
-          ))}
+          {categories.map(cat => {
+            const catIdx = items.findIndex(i => i.category === cat);
+            return (
+              <button key={cat} onClick={() => setActiveCat(cat)}
+                style={{ padding: "0.4rem 1rem", borderRadius: "2rem", fontSize: "0.8rem", fontWeight: 600, border: `1px solid ${activeCat === cat ? "var(--dt-primary)" : "color-mix(in srgb, var(--dt-primary) 20%, transparent)"}`, background: activeCat === cat ? "var(--dt-primary)" : "transparent", color: activeCat === cat ? "var(--dt-cta-text, #fff)" : "var(--dt-text)", cursor: "pointer", transition: "all 0.2s" }}>
+                {isEditorMode ? (
+                  <InlineText
+                    section="faq"
+                    fieldKey={`items.${catIdx}.category`}
+                    value={cat}
+                    onUpdateField={(_, __, val) => {
+                      handleUpdateItem(catIdx, "category", val);
+                      if (activeCat === cat) setActiveCat(val);
+                    }}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="span"
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={onEditingStateChange}
+                  />
+                ) : cat}
+              </button>
+            );
+          })}
         </div>
       )}
       <div style={{ maxWidth: "48rem", margin: "0 auto", display: "flex", flexDirection: "column", gap: "0.75rem" }}>

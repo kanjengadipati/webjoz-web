@@ -78,7 +78,7 @@ function BentoCard({
         }} />
       )}
 
-      {item.stat ? (
+      {item.stat || isEditorMode ? (
         <div>
           <p style={{
             fontFamily: "var(--dt-heading-font)",
@@ -88,8 +88,18 @@ function BentoCard({
             margin: 0,
             lineHeight: 1,
           }}>
-            {item.stat}
-            {item.stat_label && (
+            <InlineText
+              section="benefits"
+              fieldKey={"items." + itemIndex + ".stat"}
+              value={item.stat ?? ""}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="span"
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
+            {(item.stat_label || isEditorMode) && (
               <span style={{
                 fontSize: highlight ? "0.7rem" : "0.6rem",
                 fontWeight: 700,
@@ -98,7 +108,17 @@ function BentoCard({
                 textTransform: "uppercase",
                 letterSpacing: "0.08em",
               }}>
-                {item.stat_label}
+                <InlineText
+                  section="benefits"
+                  fieldKey={"items." + itemIndex + ".stat_label"}
+                  value={item.stat_label ?? ""}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="span"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
               </span>
             )}
           </p>

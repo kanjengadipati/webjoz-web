@@ -96,11 +96,18 @@ export default function CatalogSplitHeroCatalog({ catalog, onUpdateField, isEdit
               borderColor: "var(--dt-border)"
             }}
           >
-            {brandImage ? (
-              <img
-                src={brandImage}
+            {brandImage || isEditorMode ? (
+              <InlineImage
+                section="catalog"
+                fieldKey="categories.0.items.0.image_url"
+                src={brandImage ?? ""}
                 alt="Catalog visual"
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
                 className="w-full h-full object-cover transition-transform duration-1000 ease-out hover:scale-102"
+                style={{ width: "100%", height: "100%" }}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
               />
             ) : (
               <div className="w-full h-full flex flex-col items-center justify-center p-6 text-neutral-400">
