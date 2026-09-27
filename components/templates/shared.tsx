@@ -2270,7 +2270,7 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
         onTouchStart={handleTouchReveal}
         title={hasLogo ? t("dashboard.sitesEditor.changePhoto") : t("dashboard.sitesEditor.addPhoto")}
       >
-        {/* Logo image or empty-state placeholder */}
+        {/* Logo image or default-icon placeholder */}
         {hasLogo ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -2281,11 +2281,25 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
           />
         ) : (
           <div
-            className="flex items-center justify-center w-8 h-8 rounded-lg border-2 border-dashed border-primary/40 bg-primary/5 cursor-pointer hover:bg-primary/10 transition-colors"
+            className="relative flex items-center justify-center shrink-0 cursor-pointer group/logo-ph active:scale-95 transition-transform"
             onClick={handleTriggerUpload}
+            onPointerDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
             title={t("dashboard.sitesEditor.addPhoto")}
           >
-            <Camera className="w-4 h-4 text-primary/60" />
+            <DynamicIcon name={icon} defaultIcon={defaultIcon} className={iconClass} />
+            {/* Dashed highlight on hover / when selected */}
+            <div
+              className={`absolute -inset-1 rounded-lg border-2 border-dashed border-primary/40 bg-primary/5 transition-opacity pointer-events-none ${
+                isSelected
+                  ? "opacity-100"
+                  : "opacity-0 group-hover/logo-ph:opacity-100"
+              }`}
+            />
+            {/* Small camera badge */}
+            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-slate-900/90 border border-white/30 flex items-center justify-center shadow transition-transform group-hover/logo-ph:scale-110">
+              <Camera className="w-2.5 h-2.5 text-white" />
+            </span>
           </div>
         )}
 
