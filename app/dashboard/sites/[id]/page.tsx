@@ -976,11 +976,6 @@ export default function SiteEditorPage() {
 
   const handlePreviewSelectSection = useCallback((section: string) => {
     selectSection(section, false);
-    if (window.innerWidth < 768) {
-      setSheetCollapsed(false);
-    } else {
-      setDesktopSidebarOpen(true);
-    }
   }, [selectSection]);
 
   const handleAiRegenerateSection = () => handleAiRegenerateForSection(activeTab);
@@ -3736,7 +3731,18 @@ export default function SiteEditorPage() {
                       onClick={() => {
                         if (secKey) {
                           selectSection(secKey);
-                          setSheetCollapsed(false);
+                          if (window.innerWidth < 768) {
+                            setSheetCollapsed(false);
+                          } else {
+                            setDesktopSidebarOpen(true);
+                          }
+                          setTimeout(() => {
+                            const el = document.getElementById(`field-${issue.path}`);
+                            if (el) {
+                              el.focus();
+                              el.scrollIntoView({ behavior: "smooth", block: "center" });
+                            }
+                          }, 150);
                         }
                         setQualityModalOpen(false);
                       }}
