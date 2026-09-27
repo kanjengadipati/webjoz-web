@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { InlineText } from "../../templates/shared";
+import { InlineText, InlineImage } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 import { avatarTextColor } from "../../templates/helpers";
 import { InlineAddTile } from "../inline-add";
@@ -160,11 +160,17 @@ export default function TestimonialsGoogleReviews({
                 <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "0.5rem" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
                     {/* Avatar */}
-                    {hasPhoto ? (
-                      <img
-                        src={anyItem.avatar_url}
+                    {hasPhoto || isEditorMode ? (
+                      <InlineImage
+                        section="testimonials"
+                        fieldKey={`items.${idx}.avatar_url`}
+                        src={anyItem.avatar_url ?? ""}
                         alt={item.name}
+                        onUpdateField={onUpdateField}
+                        isEditorMode={isEditorMode}
+                        isSelected={isSelected}
                         style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)" }}
+                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                       />
                     ) : (
                       <div style={{ width: 40, height: 40, borderRadius: "50%", background: accentColor, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
@@ -176,7 +182,12 @@ export default function TestimonialsGoogleReviews({
                       <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" style={{ fontWeight: 700, color: "var(--dt-text)", fontSize: "0.875rem", margin: 0, lineHeight: 1.3 }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                       {(item.role || item.company || isEditorMode) && (
                         <p style={{ color: "var(--dt-text-muted)", fontSize: "0.75rem", margin: 0, lineHeight: 1.3 }}>
-                          <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={item.role ?? ""} placeholder="Jabatan / Peran" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />{item.company ? ` · ${item.company}` : ""}
+                          <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={item.role ?? ""} placeholder="Jabatan / Peran" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />{item.company && (
+                          <span>
+                            <span> · </span>
+                            <InlineText section="testimonials" fieldKey={`items.${idx}.company`} value={item.company ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                          </span>
+                        )}
                         </p>
                       )}
                     </div>

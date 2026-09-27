@@ -98,7 +98,7 @@ export function HeroDecorations({
     <>
       <div style={{ position: "absolute", top: "-10%", right: "-5%", width: "45%", height: "80%", background: `radial-gradient(circle, color-mix(in srgb, var(--dt-primary) 20%, transparent), transparent 70%)`, borderRadius: "50%", pointerEvents: "none" }} />
       <div style={{ position: "absolute", bottom: "-15%", left: "-5%", width: "35%", height: "60%", background: `radial-gradient(circle, color-mix(in srgb, var(--dt-accent) 12%, transparent), transparent 70%)`, borderRadius: "50%", pointerEvents: "none" }} />
-      {h.image_url && (
+      {(h.image_url || isEditorMode) && (
         <div style={{ position: "absolute", inset: 0, zIndex: 1 }}>
           <InlineImage
             section="hero"

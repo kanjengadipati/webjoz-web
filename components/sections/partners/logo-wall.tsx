@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Handshake, ExternalLink } from "lucide-react";
-import { InlineText } from "../../templates/shared";
+import { InlineText, InlineImage } from "../../templates/shared";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 import type { PartnersVariantProps } from "./index";
 
@@ -146,11 +146,18 @@ export default function PartnersLogoWall({
                   minHeight: "80px",
                 }}
               >
-                {partner.logo_url ? (
-                  <img
-                    src={partner.logo_url}
+                {partner.logo_url || isEditorMode ? (
+                  <InlineImage
+                    section="partners"
+                    fieldKey={`items.${idx}.logo_url`}
+                    src={partner.logo_url ?? ""}
                     alt={partner.name}
+                    onUpdateField={(_, __, val) => handleUpdateItem(idx, "logo_url", val)}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
                     className="max-h-8 max-w-[100px] object-contain opacity-70 group-hover:opacity-100 transition-opacity filter grayscale group-hover:grayscale-0"
+                    style={{ maxHeight: "2rem" }}
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                   />
                 ) : (
                   <div className="flex items-center gap-1.5">

@@ -50,6 +50,41 @@ export default function StatsBigNumberSpotlight({
           </span>
         )}
 
+        {(stats.title || isEditorMode) && (
+          <h2
+            style={{
+              fontFamily: "var(--dt-heading-font)",
+              fontWeight: "var(--dt-heading-weight)" as any,
+              fontSize: "clamp(1.4rem, 4cqw, 2rem)",
+              color: "var(--dt-text)",
+              margin: "0 0 0.5rem",
+            }}
+          >
+            {isEditorMode ? (
+              <InlineText
+                section="stats" fieldKey="title" value={stats.title || ""}
+                placeholder={isEN ? "Section title..." : "Judul section..."}
+                onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange}
+                as="span"
+              />
+            ) : stats.title}
+          </h2>
+        )}
+        {(stats.subtitle || isEditorMode) && (
+          <p style={{ color: "color-mix(in srgb, var(--dt-text) 65%, transparent)", fontSize: "0.95rem", margin: "0 auto 2rem", maxWidth: "36rem" }}>
+            {isEditorMode ? (
+              <InlineText
+                section="stats" fieldKey="subtitle" value={stats.subtitle || ""}
+                placeholder={isEN ? "Section subtitle..." : "Subjudul section..."}
+                onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} multiline
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange}
+                as="span"
+              />
+            ) : stats.subtitle}
+          </p>
+        )}
+
         <div style={{ marginBottom: "2.5rem" }}>
           {hero.icon && (
             <div style={{ display: "flex", justifyContent: "center", marginBottom: "1rem" }}>

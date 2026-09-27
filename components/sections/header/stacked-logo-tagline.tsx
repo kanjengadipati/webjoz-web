@@ -25,6 +25,11 @@ export default function StackedLogoTagline({
           defaultIcon={Globe}
           iconClass="w-7 h-7 shrink-0 text-[var(--dt-primary)]"
           imgClass="h-10 w-auto shrink-0 object-contain"
+          section="header"
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
         />
         <span className="text-lg font-bold text-[var(--dt-text)] tracking-wide text-center">
           <InlineText

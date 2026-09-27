@@ -37,9 +37,17 @@ export default function HeroChronologyBadge({
       })
     : null;
 
-  const showStats = rawStats !== null;
-  const bigYear = rawStats?.[0];
-  const milestones = showStats ? rawStats!.slice(1) : [];
+  const statSource = h.stats && h.stats.length > 0 ? h.stats : rawStats;
+  const stats = statSource
+    ? statSource.map((s, i) => ({
+        value: s?.value?.trim() && s.value !== "—" ? s.value : rawStats?.[i]?.value ?? "—",
+        label: s?.label?.trim() ? s.label : rawStats?.[i]?.label ?? "",
+      }))
+    : [];
+
+  const showStats = rawStats !== null || (Array.isArray(h.stats) && h.stats.length > 0) || isEditorMode;
+  const bigYear = stats[0];
+  const milestones = stats.slice(1);
 
   return (
     <section
@@ -68,7 +76,7 @@ export default function HeroChronologyBadge({
         }}
       >
         {/* Portrait vignette */}
-        {h.image_url && (
+        {(h.image_url || isEditorMode) && (
           <div
             style={{
               position: "absolute",
@@ -109,7 +117,17 @@ export default function HeroChronologyBadge({
                 letterSpacing: "-0.03em",
               }}
             >
-              {bigYear.value}
+              <InlineText
+                section="hero"
+                fieldKey="stats.0.value"
+                value={bigYear.value}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="span"
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
             </p>
             <p
               style={{
@@ -122,7 +140,17 @@ export default function HeroChronologyBadge({
                 color: "var(--dt-text-muted)",
               }}
             >
-              {bigYear.label || yearsFallback}
+              <InlineText
+                section="hero"
+                fieldKey="stats.0.label"
+                value={bigYear.label || yearsFallback}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="span"
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
             </p>
           </div>
         ) : (
@@ -175,7 +203,17 @@ export default function HeroChronologyBadge({
                     minWidth: "3.5rem",
                   }}
                 >
-                  {s.value}
+                  <InlineText
+                    section="hero"
+                    fieldKey={`stats.${i + 1}.value`}
+                    value={s.value}
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="span"
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={onEditingStateChange}
+                  />
                 </span>
                 <span
                   style={{
@@ -186,7 +224,17 @@ export default function HeroChronologyBadge({
                     fontWeight: 600,
                   }}
                 >
-                  {s.label}
+                  <InlineText
+                    section="hero"
+                    fieldKey={`stats.${i + 1}.label`}
+                    value={s.label}
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="span"
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={onEditingStateChange}
+                  />
                 </span>
               </div>
             ))}

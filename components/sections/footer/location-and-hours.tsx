@@ -13,8 +13,8 @@ export default function LocationAndHours({
   const displayBrand = brand_name || "Bisnis Kami";
   const displayTagline = footer?.tagline || "";
   const displayCopyright = footer?.copyright_text || `\u00A9 ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`;
-  const hasLocation = Boolean(contactAddress);
-  const hasHours = Boolean(contactOpeningHours);
+  const hasLocation = Boolean(contactAddress) || isEditorMode;
+  const hasHours = Boolean(contactOpeningHours) || isEditorMode;
 
   return (
     <footer style={{
@@ -72,7 +72,19 @@ export default function LocationAndHours({
               </div>
               <div>
                 <p style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: "0 0 0.25rem" }}>Alamat</p>
-                <p style={{ fontSize: "0.8rem", lineHeight: 1.5, margin: 0, color: "var(--dt-text)" }}>{contactAddress}</p>
+                <p style={{ fontSize: "0.8rem", lineHeight: 1.5, margin: 0, color: "var(--dt-text)" }}>
+                  <InlineText
+                    section="contact"
+                    fieldKey="address"
+                    value={contactAddress ?? ""}
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={onEditingStateChange}
+                    as="span"
+                  />
+                </p>
                 {contactMapsUrl && (
                   <a href={contactMapsUrl} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem", fontSize: "0.7rem", color: "var(--dt-primary)", marginTop: "0.375rem", textDecoration: "none" }}>
                     Lihat peta <ExternalLink style={{ width: 10, height: 10 }} />
@@ -95,7 +107,19 @@ export default function LocationAndHours({
               </div>
               <div>
                 <p style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: "0 0 0.25rem" }}>Jam Operasional</p>
-                <p style={{ fontSize: "0.8rem", lineHeight: 1.5, margin: 0, color: "var(--dt-text)", whiteSpace: "pre-line" }}>{contactOpeningHours}</p>
+                <p style={{ fontSize: "0.8rem", lineHeight: 1.5, margin: 0, color: "var(--dt-text)", whiteSpace: "pre-line" }}>
+                  <InlineText
+                    section="contact"
+                    fieldKey="opening_hours"
+                    value={contactOpeningHours ?? ""}
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={onEditingStateChange}
+                    as="span"
+                  />
+                </p>
               </div>
             </div>
           )}

@@ -107,11 +107,33 @@ export default function BenefitsFeaturedGrid({
               </span>
 
               {/* Stat or icon */}
-              {featured.stat ? (
+              {featured.stat || isEditorMode ? (
                 <span style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 800, fontSize: "2rem", color: "var(--dt-primary)", lineHeight: 1 }}>
-                  {featured.stat}
-                  {featured.stat_label && (
-                    <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--dt-text-muted)", marginLeft: "0.4rem" }}>{featured.stat_label}</span>
+                  <InlineText
+                    section="benefits"
+                    fieldKey="items.0.stat"
+                    value={featured.stat ?? ""}
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="span"
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={onEditingStateChange}
+                  />
+                  {(featured.stat_label || isEditorMode) && (
+                    <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--dt-text-muted)", marginLeft: "0.4rem" }}>
+                      <InlineText
+                        section="benefits"
+                        fieldKey="items.0.stat_label"
+                        value={featured.stat_label ?? ""}
+                        onUpdateField={onUpdateField}
+                        isEditorMode={isEditorMode}
+                        isSelected={isSelected}
+                        as="span"
+                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                        onEditingStateChange={onEditingStateChange}
+                      />
+                    </span>
                   )}
                 </span>
               ) : (
@@ -194,10 +216,34 @@ export default function BenefitsFeaturedGrid({
                   opacity: 0.6,
                 }} />
 
-                {item.stat ? (
+                {item.stat || isEditorMode ? (
                   <div>
-                    <p style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 800, fontSize: "1.75rem", color: "var(--dt-primary)", margin: 0, lineHeight: 1 }}>{item.stat}</p>
-                    {item.stat_label && <p style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: "0.25rem 0 0" }}>{item.stat_label}</p>}
+                    <p style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 800, fontSize: "1.75rem", color: "var(--dt-primary)", margin: 0, lineHeight: 1 }}>
+                      <InlineText
+                        section="benefits"
+                        fieldKey={"items." + (idx + 1) + ".stat"}
+                        value={item.stat ?? ""}
+                        onUpdateField={onUpdateField}
+                        isEditorMode={isEditorMode}
+                        isSelected={isSelected}
+                        as="span"
+                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                        onEditingStateChange={onEditingStateChange}
+                      />
+                    </p>
+                    {(item.stat_label || isEditorMode) && <p style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: "0.25rem 0 0" }}>
+                      <InlineText
+                        section="benefits"
+                        fieldKey={"items." + (idx + 1) + ".stat_label"}
+                        value={item.stat_label ?? ""}
+                        onUpdateField={onUpdateField}
+                        isEditorMode={isEditorMode}
+                        isSelected={isSelected}
+                        as="span"
+                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                        onEditingStateChange={onEditingStateChange}
+                      />
+                    </p>}
                   </div>
                 ) : (
                   <div style={{

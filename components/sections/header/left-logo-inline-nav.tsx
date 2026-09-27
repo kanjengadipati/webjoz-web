@@ -25,6 +25,11 @@ export default function LeftLogoInlineNav({
           defaultIcon={Globe}
           iconClass="w-5 h-5 shrink-0 text-[var(--dt-primary)]"
           imgClass="h-8 w-auto shrink-0 object-contain"
+          section="header"
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
         />
         <div className="min-w-0 flex flex-col justify-center">
           <InlineText

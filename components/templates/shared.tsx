@@ -1453,7 +1453,15 @@ function MenuCatalogCard({
       )}
       {image_credit?.name && (
         <div className="absolute bottom-1 right-2 z-10">
-          <PhotoCredit credit={image_credit} />
+          <PhotoCredit
+            credit={image_credit}
+            section={editSection}
+            fieldKey={pathBase ? pathBase + ".image_credit.name" : undefined}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          />
         </div>
       )}
 
@@ -1514,9 +1522,7 @@ function MenuCatalogCard({
         })}
       </div>
       {category && (
-        <span className="mt-2 text-[10px] font-bold uppercase tracking-wider opacity-60" style={{ color: "var(--dt-text)" }}>
-          {category}
-        </span>
+        <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".category" : ""} value={category ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className="mt-2 text-[10px] font-bold uppercase tracking-wider opacity-60" style={{ color: "var(--dt-text)" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
       )}
 
       {/* Inline photo upload button on placeholder in editor mode */}
@@ -1562,7 +1568,7 @@ function MenuCatalogCard({
               Habis
             </span>
           ) : badge ? (
-            <span className={badgeClassName} style={badgeStyle}>{badge}</span>
+            <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".badge" : ""} value={badge ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className={badgeClassName} style={badgeStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
           ) : null}
         </div>
         <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".name" : ""} value={itemName ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="h4" className={titleClassName} style={titleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
@@ -1621,13 +1627,7 @@ function MenuCatalogCard({
       {tags && tags.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-1.5">
           {tags.map((tag, ti) => (
-            <span
-              key={ti}
-              className="inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md"
-              style={{ background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)" }}
-            >
-              {tag}
-            </span>
+            <InlineText key={ti} section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".tags." + ti : ""} value={tag ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className="inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md" style={{ background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
           ))}
         </div>
       )}
@@ -1647,7 +1647,7 @@ function MenuCatalogCard({
               }}
             >
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-              <span>{dp.name || "Order Online"}</span>
+              <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".delivery_platforms." + di + ".name" : ""} value={dp.name || "Order Online"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             </a>
           ))}
         </div>
@@ -1703,7 +1703,7 @@ function MenuCatalogCard({
           <div className="mt-2">
             <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)" }}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="w-3 h-3"><circle cx="9" cy="7" r="2"/><path d="M3 21v-1a6 6 0 0 1 12 0v1"/><circle cx="17" cy="7" r="2"/><path d="M21 21v-1a5 5 0 0 0-3-4.6"/></svg>
-              s/d {capacity} tamu
+              s/d <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".capacity" : ""} value={String(capacity)} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /> tamu
             </span>
           </div>
         )}
@@ -1711,8 +1711,8 @@ function MenuCatalogCard({
           <ul className="mt-2 flex flex-wrap gap-1.5">
             {features.map((f, fi) => (
               <li key={fi} className="flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 10%, transparent)", color: "var(--dt-primary)" }}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3 h-3 flex-shrink-0"><polyline points="20 6 9 17 4 12"/></svg>
-                {f}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3 h-3 flex-shrink-0 pointer-events-none"><polyline points="20 6 9 17 4 12"/></svg>
+                <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".features." + fi : ""} value={f ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
               </li>
             ))}
           </ul>
@@ -2204,10 +2204,36 @@ const DynamicIcon = ({ name, defaultIcon, className }: { name?: string; defaultI
 
 // ─── Logo Image with Fallback ────────────────────────────────────────────────
 
-const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass }: {
-  url?: string; icon?: string; defaultIcon: any; iconClass: string; imgClass: string;
-}) => {
+interface LogoImageProps {
+  url?: string;
+  icon?: string;
+  defaultIcon: any;
+  iconClass: string;
+  imgClass?: string;
+  section?: string;
+  onUpdateField?: (section: string, key: string, value: any) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+}
+
+const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit }: LogoImageProps) => {
   const [imgError, setImgError] = useState(false);
+  if (isEditorMode && onUpdateField && section) {
+    return (
+      <InlineImage
+        section={section}
+        fieldKey="logo_url"
+        src={url}
+        alt="Logo"
+        onUpdateField={onUpdateField}
+        isEditorMode={isEditorMode}
+        isSelected={isSelected}
+        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+        className={imgClass}
+      />
+    );
+  }
   if (url && !imgError) {
     return <img src={url} className={imgClass} alt="Logo" onError={() => setImgError(true)} />;
   }
@@ -3218,8 +3244,15 @@ export function HeroAccessory({
     return (
       <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", justifyContent, marginTop: "0.25rem" }}>
         {tags.map((tag, idx) => (
-          <span
+          <InlineText
             key={`${tag}-${idx}`}
+            section="hero"
+            fieldKey={`accessory.tags.${idx}`}
+            value={tag ?? ""}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            as="span"
             style={{
               padding: "0.375rem 0.875rem",
               fontSize: "0.75rem",
@@ -3228,10 +3261,11 @@ export function HeroAccessory({
               background: "color-mix(in srgb, var(--dt-surface) 70%, transparent)",
               border: "1px solid color-mix(in srgb, var(--dt-primary) 22%, transparent)",
               borderRadius: "9999px",
+              display: "inline-block",
             }}
-          >
-            {tag}
-          </span>
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
         ))}
       </div>
     );

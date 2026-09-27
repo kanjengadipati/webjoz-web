@@ -148,6 +148,7 @@ export default function HeroTechSaaS({
               isSelected={isSelected}
               as="span"
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={handleEditingStateChange}
             />
           </motion.div>
         )}
@@ -175,6 +176,7 @@ export default function HeroTechSaaS({
               margin: 0,
             }}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={handleEditingStateChange}
           />
         </motion.div>
 
@@ -199,6 +201,7 @@ export default function HeroTechSaaS({
               margin: 0,
             }}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={handleEditingStateChange}
           />
           <HeroAccessory
             accessory={h.accessory}
@@ -206,6 +209,7 @@ export default function HeroTechSaaS({
             isEditorMode={isEditorMode}
             isSelected={isSelected}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={handleEditingStateChange}
           />
         </motion.div>
 
@@ -239,6 +243,7 @@ export default function HeroTechSaaS({
               isSelected={isSelected}
               as="span"
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={handleEditingStateChange}
             /> <ArrowRight style={{ width: 16, height: 16 }} />
           </a>
           {hasSecondary && (
@@ -266,6 +271,7 @@ export default function HeroTechSaaS({
                 isSelected={isSelected}
                 as="span"
                 collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={handleEditingStateChange}
               />
             </a>
           )}
@@ -287,6 +293,7 @@ export default function HeroTechSaaS({
               isSelected={isSelected}
               as="span"
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={handleEditingStateChange}
             />
           </motion.p>
         )}
@@ -434,6 +441,7 @@ export default function HeroTechSaaS({
                     isSelected={isSelected}
                     as="span"
                     collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={handleEditingStateChange}
                   />
                 </button>
               );
@@ -508,6 +516,7 @@ export default function HeroTechSaaS({
                             isSelected={isSelected}
                             as="span"
                             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={handleEditingStateChange}
                           />
                         </span>
                       </div>
@@ -561,6 +570,7 @@ export default function HeroTechSaaS({
                             isSelected={isSelected}
                             as="span"
                             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={handleEditingStateChange}
                           />
                         </p>
                         <p style={{ margin: 0, fontSize: "0.55rem", color: "var(--dt-text-muted)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
@@ -573,6 +583,7 @@ export default function HeroTechSaaS({
                             isSelected={isSelected}
                             as="span"
                             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={handleEditingStateChange}
                           />
                         </p>
                       </div>

@@ -57,12 +57,23 @@ export default function BenefitsTrustBar({
         {/* Optional Section Header: only rendered if title exists or in editor mode */}
         {(b?.title || isEditorMode) && (
           <div className="text-center mb-6 max-w-2xl mx-auto">
-            {b?.eyebrow && (
+            {(b?.eyebrow || isEditorMode) && (
               <span
                 className="block text-[11px] font-extrabold uppercase tracking-wider mb-1"
                 style={{ color: "var(--dt-primary)" }}
               >
-                {b.eyebrow}
+                <InlineText
+                  section="benefits"
+                  fieldKey="eyebrow"
+                  value={b?.eyebrow ?? ""}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="span"
+                  placeholder="..."
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
               </span>
             )}
             <InlineText
@@ -168,7 +179,7 @@ export default function BenefitsTrustBar({
                   />
 
                   {/* Optional stat/badge */}
-                  {item.stat && (
+                  {item.stat || isEditorMode ? (
                     <span
                       className="text-[10px] font-extrabold uppercase px-1.5 py-0.2 rounded-md tracking-wider shrink-0"
                       style={{
@@ -177,9 +188,20 @@ export default function BenefitsTrustBar({
                         border: "1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)",
                       }}
                     >
-                      {item.stat}
+                      <InlineText
+                        section="benefits"
+                        fieldKey={`items.${idx}.stat`}
+                        value={item.stat ?? ""}
+                        onUpdateField={onUpdateField}
+                        isEditorMode={isEditorMode}
+                        isSelected={isSelected}
+                        as="span"
+                        placeholder="..."
+                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                        onEditingStateChange={onEditingStateChange}
+                      />
                     </span>
-                  )}
+                  ) : null}
                 </div>
 
                 <InlineText

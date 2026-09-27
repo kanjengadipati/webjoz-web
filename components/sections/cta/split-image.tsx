@@ -2,7 +2,7 @@
 import React from "react";
 import { ArrowRight } from "lucide-react";
 import type { TemplateProps, DesignToken } from "../../templates/types";
-import { InlineText } from "../../templates/shared";
+import { InlineText, InlineImage } from "../../templates/shared";
 
 interface CtaVariantProps {
   cta: TemplateProps["content"]["cta"];
@@ -88,8 +88,8 @@ export default function CtaSplitImage({
           )}
         </div>
         <div style={{ position: "relative", minHeight: "280px", background: `color-mix(in srgb, var(--dt-primary) 6%, var(--dt-surface))` }}>
-          {c.image_url ? (
-            <img src={c.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute", inset: 0 }} />
+          {c.image_url || isEditorMode ? (
+            <InlineImage section="cta" fieldKey="image_url" src={c.image_url ?? ""} alt="" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute", inset: 0 }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
           ) : (
             <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: `color-mix(in srgb, var(--dt-primary) 6%, var(--dt-surface))` }}>
               <div style={{ width: 64, height: 64, borderRadius: "var(--dt-radius)", background: `color-mix(in srgb, var(--dt-primary) 10%, transparent)`, display: "flex", alignItems: "center", justifyContent: "center" }}>

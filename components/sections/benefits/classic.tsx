@@ -102,11 +102,35 @@ export default function BenefitsClassic({
               />
 
               {/* Icon or Stat */}
-              {item.stat ? (
+              {item.stat || isEditorMode ? (
                 <div>
-                  <p style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 800, fontSize: "2rem", color: "var(--dt-primary)", margin: 0 }}>{item.stat}</p>
-                  {item.stat_label && (
-                    <p style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)" }}>{item.stat_label}</p>
+                  <p style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 800, fontSize: "2rem", color: "var(--dt-primary)", margin: 0 }}>
+                    <InlineText
+                      section="benefits"
+                      fieldKey={"items." + idx + ".stat"}
+                      value={item.stat ?? ""}
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={isSelected}
+                      as="span"
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      onEditingStateChange={onEditingStateChange}
+                    />
+                  </p>
+                  {(item.stat_label || isEditorMode) && (
+                    <p style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)" }}>
+                      <InlineText
+                        section="benefits"
+                        fieldKey={"items." + idx + ".stat_label"}
+                        value={item.stat_label ?? ""}
+                        onUpdateField={onUpdateField}
+                        isEditorMode={isEditorMode}
+                        isSelected={isSelected}
+                        as="span"
+                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                        onEditingStateChange={onEditingStateChange}
+                      />
+                    </p>
                   )}
                 </div>
               ) : (

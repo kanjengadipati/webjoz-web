@@ -34,7 +34,15 @@ export default function HeroPortraitShowcase({
       })
     : null;
 
-  const showStats = rawStats !== null;
+  const statSource = h.stats && h.stats.length > 0 ? h.stats : rawStats;
+  const stats = statSource
+    ? statSource.map((s, i) => ({
+        value: s?.value?.trim() && s.value !== "—" ? s.value : rawStats?.[i]?.value ?? "—",
+        label: s?.label?.trim() ? s.label : rawStats?.[i]?.label ?? "",
+      }))
+    : [];
+
+  const showStats = rawStats !== null || (Array.isArray(h.stats) && h.stats.length > 0) || isEditorMode;
 
   return (
     <section
@@ -55,7 +63,7 @@ export default function HeroPortraitShowcase({
         style={{ position: "relative" }}
         className="min-h-[55vh] lg:min-h-0"
       >
-        {h.image_url ? (
+        {(h.image_url || isEditorMode) ? (
           <>
             <InlineImage
               section="hero"
@@ -311,7 +319,7 @@ export default function HeroPortraitShowcase({
               flexWrap: "wrap",
             }}
           >
-            {rawStats!.map((s, i) => (
+            {stats.map((s, i) => (
               <div
                 key={i}
                 onMouseEnter={() => setActiveStatIdx(i)}
@@ -328,7 +336,17 @@ export default function HeroPortraitShowcase({
                     fontFamily: "var(--dt-heading-font)",
                   }}
                 >
-                  {s.value}
+                  <InlineText
+                    section="hero"
+                    fieldKey={`stats.${i}.value`}
+                    value={s.value}
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="span"
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={onEditingStateChange}
+                  />
                 </p>
                 <p
                   style={{
@@ -340,7 +358,17 @@ export default function HeroPortraitShowcase({
                     fontWeight: 600,
                   }}
                 >
-                  {s.label}
+                  <InlineText
+                    section="hero"
+                    fieldKey={`stats.${i}.label`}
+                    value={s.label}
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="span"
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={onEditingStateChange}
+                  />
                 </p>
               </div>
             ))}
