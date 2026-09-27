@@ -2224,13 +2224,15 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
       <InlineImage
         section={section}
         fieldKey="logo_url"
-        src={url}
+        src={url && !imgError ? url : undefined}
         alt="Logo"
         onUpdateField={onUpdateField}
         isEditorMode={isEditorMode}
         isSelected={isSelected}
         collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-        className={imgClass}
+        className={imgClass || iconClass}
+        compact={true}
+        fallbackIcon={<DynamicIcon name={icon} defaultIcon={defaultIcon} className={iconClass} />}
       />
     );
   }
@@ -2940,6 +2942,8 @@ export interface InlineImageProps {
   className?: string;
   style?: React.CSSProperties;
   collapseSheetForInlineEdit?: () => void;
+  compact?: boolean;
+  fallbackIcon?: React.ReactNode;
 }
 
 export const DEFAULT_IMAGE_POOL = [
@@ -2968,6 +2972,8 @@ export function InlineImage({
   className = "",
   style,
   collapseSheetForInlineEdit,
+  compact,
+  fallbackIcon,
 }: InlineImageProps) {
   const { t } = useI18n();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -2975,6 +2981,30 @@ export function InlineImage({
   const [showUrlInput, setShowUrlInput] = useState(false);
   const [urlInput, setUrlInput] = useState("");
   const urlInputRef = useRef<HTMLInputElement>(null);
+  // Touch device: tap to reveal overlay, auto-dismiss after 2.5s
+  const [isTouched, setIsTouched] = useState(false);
+  const touchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleTouchReveal = (e: React.TouchEvent) => {
+    // Only activate if not already showing URL input
+    if (showUrlInput) return;
+    e.stopPropagation();
+    if (isTouched) {
+      // Second tap: hide overlay
+      setIsTouched(false);
+      if (touchTimerRef.current) clearTimeout(touchTimerRef.current);
+    } else {
+      setIsTouched(true);
+      if (touchTimerRef.current) clearTimeout(touchTimerRef.current);
+      touchTimerRef.current = setTimeout(() => setIsTouched(false), 2500);
+    }
+  };
+
+  const isCompact = compact ?? (
+    fieldKey.toLowerCase().includes("logo") ||
+    fieldKey.toLowerCase().includes("avatar") ||
+    fieldKey.toLowerCase().includes("icon")
+  );
 
   if (!isEditorMode || !onUpdateField) {
     if (!src) return null;
@@ -3050,13 +3080,36 @@ export function InlineImage({
     <div
       onClick={(e) => e.stopPropagation()}
       onPointerDown={(e) => e.stopPropagation()}
-      onTouchStart={(e) => e.stopPropagation()}
+      onTouchStart={handleTouchReveal}
       className={`relative group/inline-img overflow-hidden ${className}`}
       style={style}
     >
       {src ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={src} alt={alt} className="w-full h-full object-cover" />
+        <img
+          src={src}
+          alt={alt}
+          className={`w-full h-full ${isCompact ? "object-contain" : "object-cover"}`}
+        />
+      ) : isCompact ? (
+        <div
+          onClick={handleTriggerUpload}
+          title={t("dashboard.sitesEditor.addPhoto")}
+          className="w-full h-full min-h-[32px] flex items-center justify-center cursor-pointer group/compact-ph"
+        >
+          {fallbackIcon ? (
+            <div className="relative flex items-center justify-center">
+              {fallbackIcon}
+              <div className={`absolute inset-0 flex items-center justify-center bg-black/50 rounded-full transition-opacity ${isTouched ? "opacity-100" : "opacity-0 group-hover/inline-img:opacity-100"}`}>
+                <Camera className="w-3.5 h-3.5 text-white" />
+              </div>
+            </div>
+          ) : (
+            <div className="w-8 h-8 rounded-lg bg-muted/40 border border-dashed border-border flex items-center justify-center text-primary">
+              <Camera className="w-4 h-4" />
+            </div>
+          )}
+        </div>
       ) : (
         <div
           onClick={handleTriggerUpload}
@@ -3107,9 +3160,9 @@ export function InlineImage({
       {(src || showUrlInput) && (
         <div
           className={`absolute inset-0 z-30 flex items-center justify-center bg-black/40 backdrop-blur-[1.5px] transition-all duration-200 pointer-events-none ${
-            isSelected || showUrlInput
+            isSelected || showUrlInput || isTouched
               ? "opacity-100 pointer-events-auto"
-              : "opacity-0 group-hover/inline-img:opacity-100 group-hover/inline-img:pointer-events-auto pointer-coarse:opacity-100 pointer-coarse:pointer-events-auto"
+              : "opacity-0 group-hover/inline-img:opacity-100 group-hover/inline-img:pointer-events-auto"
           }`}
         >
           {showUrlInput ? (
@@ -3156,6 +3209,24 @@ export function InlineImage({
                 className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white shrink-0 transition-colors active:scale-95 cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ) : isCompact ? (
+            <div className="flex items-center justify-center p-0.5">
+              <button
+                type="button"
+                onClick={handleTriggerUpload}
+                onPointerDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+                disabled={uploading}
+                title={src ? t("dashboard.sitesEditor.changePhoto") : t("dashboard.sitesEditor.addPhoto")}
+                className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-900/90 text-white shadow-xl border border-white/20 hover:bg-slate-950 hover:scale-110 active:scale-95 transition-all cursor-pointer disabled:opacity-50 backdrop-blur-md"
+              >
+                {uploading ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
+                ) : (
+                  <Camera className="w-3.5 h-3.5 text-white" />
+                )}
               </button>
             </div>
           ) : (
