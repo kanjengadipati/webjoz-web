@@ -264,6 +264,11 @@ function PublicWizardContent() {
         setAutoSaving(false);
         setPendingSave(false);
         localStorage.removeItem(SAVE_LOCK_KEY); // release lock so user can retry
+        // Clear wizard keys so a failed save doesn't loop back to /create on next login
+        localStorage.removeItem(PENDING_KEY);
+        localStorage.removeItem(WIZARD_RESUME_KEY);
+        localStorage.removeItem("webjoz_pending_upgrade_site");
+        localStorage.removeItem("webjoz_login_redirect");
       }
     };
 
@@ -317,13 +322,26 @@ function PublicWizardContent() {
         </div>
         <div className="flex gap-3">
           <button
-            onClick={() => { setAutoSaveError(""); router.push("/create"); }}
+            onClick={() => {
+              localStorage.removeItem(PENDING_KEY);
+              localStorage.removeItem(WIZARD_RESUME_KEY);
+              localStorage.removeItem("webjoz_pending_upgrade_site");
+              localStorage.removeItem("webjoz_login_redirect");
+              setAutoSaveError("");
+              router.push("/create");
+            }}
             className="px-5 py-2.5 rounded-xl border border-slate-600 text-slate-300 text-sm hover:bg-slate-800 transition-all"
           >
             Buat Ulang Website
           </button>
           <button
-            onClick={() => router.push("/dashboard/sites")}
+            onClick={() => {
+              localStorage.removeItem(PENDING_KEY);
+              localStorage.removeItem(WIZARD_RESUME_KEY);
+              localStorage.removeItem("webjoz_pending_upgrade_site");
+              localStorage.removeItem("webjoz_login_redirect");
+              router.push("/dashboard/sites");
+            }}
             className="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-500 transition-all"
           >
             Ke Dashboard
