@@ -16,6 +16,7 @@ import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
 export default function HeroSplitEditorial({
   hero: h,
   design_token,
+  language,
   onUpdateField,
   isEditorMode,
   isSelected,
@@ -24,6 +25,7 @@ export default function HeroSplitEditorial({
 }: HeroVariantProps) {
   const [activeStatIdx, setActiveStatIdx] = useState<number | null>(null);
   const hasSecondary = h.cta_secondary_text && h.cta_secondary_url;
+  const isEN = language === "en";
 
   const rawStats = h.badge_text?.includes("|")
     ? h.badge_text.split(",").map((s) => {
@@ -33,9 +35,9 @@ export default function HeroSplitEditorial({
     : null;
 
   const fallbackStats = [
-    { value: "—", label: "Projects" },
-    { value: "—", label: "Clients" },
-    { value: "—", label: "Awards" },
+    { value: "—", label: isEN ? "Projects" : "Proyek" },
+    { value: "—", label: isEN ? "Clients" : "Klien" },
+    { value: "—", label: isEN ? "Awards" : "Penghargaan" },
   ];
 
   const statSource = h.stats && h.stats.length > 0 ? h.stats : rawStats;

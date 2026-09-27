@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { motion } from "motion/react";
 import { ArrowRight, Clock } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
@@ -10,27 +10,19 @@ import PhotoCredit from "../PhotoCredit";
 
 /**
  * HeroFullBleed — Cinematic full-bleed photographic hero with dark directional overlay.
- * High-impact left-aligned typography, high-contrast CTA, and bottom-left slider indicators.
+ * High-impact left-aligned typography and high-contrast CTA.
  */
 export default function HeroFullBleed({
   hero: h,
+  language,
   onUpdateField,
   isEditorMode,
   isSelected,
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: HeroVariantProps) {
-  const [activeSlide, setActiveSlide] = useState(0);
   const hasSecondary = Boolean(h.cta_secondary_text && h.cta_secondary_url);
-
-  // Auto-cycle slide indicator gently every 5s if not in editor mode
-  useEffect(() => {
-    if (isEditorMode) return;
-    const interval = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % 3);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [isEditorMode]);
+  const defaultCta = language === "en" ? "Get Started" : "Mulai Sekarang";
 
   return (
     <section
@@ -259,7 +251,7 @@ export default function HeroFullBleed({
             <InlineText
               section="hero"
               fieldKey="cta_text"
-              value={h.cta_text || "Mulai Sekarang"}
+              value={h.cta_text || defaultCta}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -309,27 +301,7 @@ export default function HeroFullBleed({
         />
       </div>
 
-      {/* ── 4. Slide Pagination Indicator (Bottom Left, like in mockup) ── */}
-      <div
-        className="absolute bottom-6 sm:bottom-8 left-6 sm:left-12 md:left-16 lg:left-24 flex items-center gap-2 z-20"
-        style={{ pointerEvents: "auto" }}
-      >
-        {[0, 1, 2].map((i) => (
-          <button
-            key={i}
-            type="button"
-            aria-label={`Slide ${i + 1}`}
-            onClick={() => setActiveSlide(i)}
-            className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-              activeSlide === i
-                ? "w-7 bg-white shadow-[0_0_10px_rgba(255,255,255,0.7)]"
-                : "w-2 bg-white/30 hover:bg-white/60"
-            }`}
-          />
-        ))}
-      </div>
-
-      {/* ── 5. Unsplash Photo Credit (Bottom Right) ──────────────────── */}
+      {/* ── 4. Unsplash Photo Credit (Bottom Right) ──────────────────── */}
       {h.image_credit && (
         <div className="absolute bottom-6 sm:bottom-8 right-6 sm:right-12 md:right-16 lg:right-24 z-20">
           <PhotoCredit
