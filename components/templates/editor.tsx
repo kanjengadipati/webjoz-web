@@ -583,15 +583,15 @@ export const PreviewSectionWrapper: React.FC<{
           }`}
         >
           <div className={`h-6 inline-flex items-center bg-slate-950/80 backdrop-blur-md border shadow-sm rounded-full overflow-hidden ${isGalleryOpen ? "border-primary/60" : "border-white/15"}`}>
-            {/* Label segment */}
-            <span className="inline-flex items-center h-full px-2.5 text-[9px] font-bold tracking-[0.12em] text-white/90 uppercase select-none">
+            {/* Label segment — dimmed prefix */}
+            <span className="inline-flex items-center h-full px-2.5 text-[9px] font-medium tracking-[0.08em] text-white/55 uppercase select-none">
               {label}
             </span>
 
             {hasVariants && (
               <>
                 {/* Divider */}
-                <div className="w-px h-3.5 bg-white/15 shrink-0" />
+                <div className="w-px h-3.5 bg-white/30 shrink-0" />
 
                 {/* Variant trigger segment */}
                 <div className="relative">
@@ -602,13 +602,12 @@ export const PreviewSectionWrapper: React.FC<{
                       setIsGalleryOpen((prev) => !prev);
                       if (!isGalleryOpen) setSelectedGroup("Semua");
                     }}
-                    className={`h-6 inline-flex items-center gap-1 px-2.5 text-[9px] font-semibold cursor-pointer transition-colors ${
-                      isGalleryOpen ? "text-primary" : "text-slate-300 hover:text-white"
+                    className={`h-6 inline-flex items-center gap-1 pl-2 pr-2.5 text-[9px] font-semibold cursor-pointer transition-colors ${
+                      isGalleryOpen ? "text-primary" : "text-slate-200 hover:text-white"
                     }`}
                     title={t("dashboard.sitesEditor.changeSectionVariant") || "Pilih Variasi Tampilan"}
                   >
-                    <LayoutGrid className="w-2.5 h-2.5 shrink-0" />
-                    <span className="max-w-[80px] truncate">
+                    <span className="max-w-[90px] truncate">
                       {activeOpt?.label || t("dashboard.sitesEditor.variantLabel") || "Varian"}
                     </span>
                     <ChevronDown className={`w-2.5 h-2.5 shrink-0 transition-transform ${isGalleryOpen ? "rotate-180" : ""}`} />
