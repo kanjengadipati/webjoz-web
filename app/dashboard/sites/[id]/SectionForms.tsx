@@ -1018,6 +1018,12 @@ export default function SectionForms({
             onChange={(acc) => updateField("hero", "accessory", acc)}
           />
 
+          {/* Hero stats — baris angka di varian Editorial Split, Personal Billboard, dst */}
+          <HeroStatsEditor
+            stats={content.hero?.stats || null}
+            onChange={(stats) => updateField("hero", "stats", stats)}
+          />
+
           {/* Dashboard Widget — preview widget untuk hero tech-saas */}
           <HeroDashboardWidgetEditor
             widget={content.hero?.dashboard_widget || null}
@@ -3731,6 +3737,69 @@ const HERO_ACCESSORY_TYPES: ReadonlyArray<{ value: string; label: string }> = [
   { value: "rating", label: "Rating (undangan/acara)" },
   { value: "menu_highlight", label: "Menu Unggulan (kuliner)" },
 ];
+
+function HeroStatsEditor({
+  stats,
+  onChange,
+}: {
+  stats?: Array<{ value: string; label: string }> | null;
+  onChange: (stats: Array<{ value: string; label: string }>) => void;
+}) {
+  const items = Array.isArray(stats) ? stats : [];
+  const inputClass = "w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600";
+  const setItem = (i: number, patch: { value?: string; label?: string }) =>
+    onChange(items.map((s, idx) => (idx === i ? { ...s, ...patch } : s)));
+  const removeItem = (i: number) => onChange(items.filter((_, idx) => idx !== i));
+  const addItem = () => onChange([...items, { value: "", label: "" }]);
+  return (
+    <div className="space-y-2 rounded-lg border border-border/60 p-2.5 bg-white/[0.02]">
+      <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+        <span>Statistik Hero <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+      </label>
+      <p className="text-[10px] text-slate-600 leading-relaxed">Baris angka (mis. 12 / Projects) di varian Editorial Split, Personal Billboard, Portrait Showcase, dan Chronology Badge. Kosong = baris disembunyikan.</p>
+      {items.length === 0 && (
+        <p className="text-[10px] text-slate-500 italic">Belum ada statistik. Tambahkan nilai dan label, lalu row akan tampil di hero.</p>
+      )}
+      {items.map((s, i) => (
+        <div key={i} className="flex gap-1.5 items-center">
+          <input
+            type="text"
+            value={s.value || ""}
+            onChange={(e) => setItem(i, { value: e.target.value })}
+            placeholder="cth. 12"
+            aria-label={`Nilai statistik ${i + 1}`}
+            className={`${inputClass} w-1/3`}
+          />
+          <input
+            type="text"
+            value={s.label || ""}
+            onChange={(e) => setItem(i, { label: e.target.value })}
+            placeholder="cth. Projects"
+            aria-label={`Label statistik ${i + 1}`}
+            className={`${inputClass} flex-1`}
+          />
+          <button
+            type="button"
+            onClick={() => removeItem(i)}
+            className="px-2 py-1.5 rounded-md text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
+            title="Hapus statistik"
+            aria-label={`Hapus statistik ${i + 1}`}
+          >
+            ✕
+          </button>
+        </div>
+      ))}
+      <button
+        type="button"
+        onClick={addItem}
+        disabled={items.length >= 4}
+        className="w-full px-2 py-1.5 rounded-md text-xs font-semibold border border-dashed border-border text-slate-400 hover:text-slate-200 hover:border-primary/50 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        + Tambah Statistik
+      </button>
+    </div>
+  );
+}
 
 function HeroAccessoryEditor({
   accessory,
