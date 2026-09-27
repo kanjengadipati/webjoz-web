@@ -6,6 +6,7 @@ import GalleryGrid from "./grid";
 import GalleryMasonry from "./masonry";
 import GalleryCarousel from "./carousel";
 import GalleryLightboxStory from "./lightbox-story";
+import GalleryBeforeAfterSlider from "./before-after-slider";
 
 export default function GallerySection({
   gallery,
@@ -22,6 +23,21 @@ export default function GallerySection({
 
   const variant =
     dt?.layout?.section_variants?.gallery || gallery.layout || "grid";
+
+  if (variant === "before-after-slider") {
+    return (
+      <GalleryBeforeAfterSlider
+        gallery={gallery}
+        design_token={design_token}
+        sectionStyle={sectionStyle}
+        onUpdateField={onUpdateField}
+        isEditorMode={isEditorMode}
+        isSelected={isSelected}
+        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+        onEditingStateChange={onEditingStateChange}
+      />
+    );
+  }
 
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 

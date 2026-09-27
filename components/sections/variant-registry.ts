@@ -50,6 +50,7 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "comparison-table", label: "Tabel Perbandingan", description: "Perbandingan A vs B dalam tabel (membutuhkan comparison)." },
     { value: "bento-grid", label: "Bento Grid", description: "Grid asimetris ala bento box — kartu berukuran bervariasi, visual dinamis." },
     { value: "trust-bar", label: "Trust Bar (Toko Online & Retail)", group: "E-Commerce", description: "Strip horizontal penjamin kepercayaan belanja: keaslian produk, pengiriman cepat, bayar di tempat, dan garansi retur." },
+    { value: "how-it-works", label: "Cara Kerja / How It Works", description: "Langkah proses berurutan dengan angka bertahap." },
   ],
   testimonials: [
     { value: "carousel", label: "Carousel", description: "Slide otomatis, satu testimoni per tampilan." },
@@ -79,6 +80,7 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "masonry", label: "Masonry", description: "Tinggi foto bervariasi seperti Pinterest." },
     { value: "carousel", label: "Carousel", description: "Foto slide bergilir otomatis." },
     { value: "lightbox-story", label: "Story Lightbox", description: "Grid foto yang membuka fullscreen dengan narasi besar dan navigasi cerita." },
+    { value: "before-after-slider", label: "Before & After Slider", description: "Komparasi gambar sebelum/sesudah dengan slider drag." },
   ],
   works: [
     { value: "grid", label: "Grid", description: "Kartu proyek seragam dalam grid rapi." },
