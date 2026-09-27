@@ -1811,6 +1811,25 @@ export function SiteWizard({
             );
           })}
 
+          {chat.isPreFetchingName && !chat.isAnalyzingDescription && chat.chatStage === "description" && (
+            <div className="flex gap-2.5 justify-start animate-in fade-in duration-300">
+              <div className="w-7 h-7 rounded-full bg-white/[0.08] border border-white/10 flex items-center justify-center shrink-0 mt-0.5 text-slate-300 shadow-xs">
+                <SparkleGenAI className="w-4 h-4 text-primary animate-pulse" />
+              </div>
+              <div
+                className="rounded-2xl rounded-tl-sm px-3.5 py-2 flex items-center gap-2 text-xs text-slate-300"
+                style={{ background: "rgba(255,255,255,0.04)", border: "1px dashed rgba(255,255,255,0.12)" }}
+              >
+                <span>{t("dashboard.wizard.preFetchingNameHint", "AI menganalisis kategori nama usaha...")}</span>
+                <span className="flex gap-1 items-center">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary/70 animate-bounce [animation-delay:-0.3s]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary/70 animate-bounce [animation-delay:-0.15s]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary/70 animate-bounce" />
+                </span>
+              </div>
+            </div>
+          )}
+
           {chat.isAnalyzingDescription && (
             <div className="flex gap-2.5 justify-start animate-in fade-in duration-200">
               <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center shrink-0 mt-0.5 text-slate-900 shadow-xs">
@@ -1952,7 +1971,11 @@ export function SiteWizard({
                   placeholder={
                     chat.isRecording ? t("dashboard.wizard.sttListening", "Mendengarkan...") :
                       chat.awaitingNameConfirm ? t("dashboard.wizard.nameConfirmPlaceholder", "Ketik 'ya' untuk lanjut, atau nama yang benar...") :
-                        chat.chatStage === "description" ? getDynamicDescriptionPlaceholder(chat.suggestedHint, locale) :
+                        chat.chatStage === "description" ? (
+                          chat.isPreFetchingName
+                            ? t("dashboard.wizard.placeholderAnalyzingName", "Menganalisis nama usaha... atau ketik deskripsi Anda")
+                            : getDynamicDescriptionPlaceholder(chat.suggestedHint, locale)
+                        ) :
                           t("dashboard.wizard.inputPlaceholderName", "Masukkan nama bisnis Anda...")
                   }
                   autoFocus
@@ -1978,7 +2001,11 @@ export function SiteWizard({
                   disabled={chat.isAiTyping || chat.isAnalyzingDescription || chat.isProcessingAudio || (chat.chatStage === "name" && !chat.inputValue.trim())}
                   className="w-8 h-8 flex items-center justify-center rounded-xl bg-white text-slate-900 hover:bg-slate-100 transition-all disabled:opacity-30 shrink-0 cursor-pointer shadow-xs"
                 >
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  {chat.isAnalyzingDescription ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  )}
                 </button>
               </form>
             )}
@@ -1988,10 +2015,18 @@ export function SiteWizard({
         <div className="px-5 py-3 shrink-0 flex items-center justify-between" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
           <span className="text-[11px] text-slate-500 flex items-center gap-1.5">
             <div
-              className={`w-2 h-2 rounded-full shrink-0 transition-all duration-500 ${preview.previewState === "loading" ? "bg-primary animate-pulse" : "bg-slate-300"}`}
+              className={`w-2 h-2 rounded-full shrink-0 transition-all duration-500 ${
+                preview.previewState === "loading" || chat.isAnalyzingDescription || chat.isPreFetchingName
+                  ? "bg-primary animate-pulse"
+                  : "bg-slate-300"
+              }`}
             />
             <span className="transition-all duration-300">
-              {preview.previewState === "wireframe" && (chat.chatStage === "name" || chat.chatStage === "type" || chat.chatStage === "mood") && t("dashboard.wizard.statusWaitingInput", "Menunggu input...")}
+              {preview.previewState === "wireframe" && (chat.chatStage === "name" || chat.chatStage === "description" || chat.chatStage === "type" || chat.chatStage === "mood") && (
+                chat.isAnalyzingDescription || chat.isPreFetchingName
+                  ? t("dashboard.wizard.statusAnalyzingName", "AI menganalisis nama...")
+                  : t("dashboard.wizard.statusWaitingInput", "Menunggu input...")
+              )}
               {preview.previewState === "loading" && t("dashboard.wizard.statusAiGenerating", "AI sedang generate...")}
               {preview.previewState === "result" && t("dashboard.wizard.statusPreviewReady", "Preview siap ✓")}
               {preview.previewState === "wireframe" && chat.chatStage === "done" && t("dashboard.wizard.statusPreparingAi", "Menyiapkan AI...")}
