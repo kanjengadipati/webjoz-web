@@ -45,7 +45,7 @@ export default function HeroChronologyBadge({
       }))
     : [];
 
-  const showStats = rawStats !== null || (Array.isArray(h.stats) && h.stats.length > 0) || isEditorMode;
+  const showStats = rawStats !== null || (Array.isArray(h.stats) && h.stats.length > 0);
   const bigYear = stats[0];
   const milestones = stats.slice(1);
 
