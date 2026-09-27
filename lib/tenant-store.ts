@@ -172,7 +172,7 @@ export function useActiveTenant() {
       }
       const upd = await request<{ id: number }>(`/tenants/${active.tenant.id}`, {
         method: "PUT",
-        body: JSON.stringify({ name: businessName, slug: active.tenant.slug }),
+        body: JSON.stringify({ name: businessName, slug: generateWorkspaceSlug(businessName) }),
       }, token);
       if (upd.status === "success" && upd.data?.id) {
         await fetchTenants();
