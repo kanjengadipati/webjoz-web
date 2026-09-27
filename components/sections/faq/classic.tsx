@@ -16,6 +16,9 @@ const DynamicFaqAccordion: React.FC<{
   onEditingStateChange?: (isEditing: boolean) => void;
 }> = ({ item, index, onUpdateItem, section = "faq", isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }) => {
   const [isOpen, setIsOpen] = useState(false);
+  // In editor mode the panel is always expanded so both question and answer
+  // are reachable for inline editing without having to toggle first.
+  const effectiveOpen = isEditorMode ? true : isOpen;
   const reactId = useId();
   const answerId = `dtfaq-answer-${reactId}`;
   const Header = isEditorMode ? "div" : "button";
@@ -27,20 +30,20 @@ const DynamicFaqAccordion: React.FC<{
         borderRadius: "var(--dt-radius)",
         overflow: "hidden",
         transition: "box-shadow 0.2s ease",
-        boxShadow: isOpen ? "0 2px 12px color-mix(in srgb, var(--dt-primary) 8%, transparent)" : "none",
+        boxShadow: effectiveOpen ? "0 2px 12px color-mix(in srgb, var(--dt-primary) 8%, transparent)" : "none",
       }}
     >
       <Header
         {...(isEditorMode
           ? { role: "button", tabIndex: 0, onKeyDown: (e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") setIsOpen(!isOpen); } }
-          : { type: "button" as const, "aria-expanded": isOpen, "aria-controls": answerId }
+          : { type: "button" as const, "aria-expanded": effectiveOpen, "aria-controls": answerId }
         )}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => { if (!isEditorMode) setIsOpen(!isOpen); }}
         style={{
           width: "100%", padding: "1rem 1.25rem",
           display: "flex", justifyContent: "space-between", alignItems: "center",
-          background: isOpen ? "color-mix(in srgb, var(--dt-primary) 5%, transparent)" : "transparent",
-          cursor: "pointer",
+          background: effectiveOpen ? "color-mix(in srgb, var(--dt-primary) 5%, transparent)" : "transparent",
+          cursor: isEditorMode ? "default" : "pointer",
           fontFamily: "var(--dt-body-font)",
           color: "var(--dt-text)",
           fontWeight: 600,
@@ -67,8 +70,8 @@ const DynamicFaqAccordion: React.FC<{
         <ChevronDown
           style={{
             width: 16, height: 16, flexShrink: 0,
-            color: isOpen ? "var(--dt-primary)" : "var(--dt-text-muted)",
-            transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+            color: effectiveOpen ? "var(--dt-primary)" : "var(--dt-text-muted)",
+            transform: effectiveOpen ? "rotate(180deg)" : "rotate(0deg)",
             transition: "transform 0.28s ease, color 0.2s ease",
           }}
         />
@@ -79,7 +82,7 @@ const DynamicFaqAccordion: React.FC<{
         id={answerId}
         style={{
           display: "grid",
-          gridTemplateRows: isOpen ? "1fr" : "0fr",
+          gridTemplateRows: effectiveOpen ? "1fr" : "0fr",
           transition: "grid-template-rows 0.28s ease",
         }}
       >
