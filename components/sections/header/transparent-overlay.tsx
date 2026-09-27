@@ -30,16 +30,16 @@ export default function TransparentOverlay({
       style={{
         background: scrolled
           ? "color-mix(in srgb, var(--dt-bg) 92%, transparent)"
-          : `linear-gradient(to bottom, color-mix(in srgb, var(--dt-bg) 85%, transparent) 0%, color-mix(in srgb, var(--dt-bg) 45%, transparent) 60%, transparent 100%)`,
-        backdropFilter: scrolled ? "blur(12px)" : "blur(4px)",
+          : "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.28) 55%, transparent 100%)",
+        backdropFilter: scrolled ? "blur(12px)" : "blur(6px)",
         borderBottom: scrolled
           ? "1px solid var(--dt-border)"
-          : "1px solid transparent",
+          : "1px solid rgba(255,255,255,0.12)",
       }}
     >
       <div
         className="min-w-0 text-base sm:text-lg font-bold tracking-wide flex items-center gap-2.5"
-        style={{ color: scrolled ? "var(--dt-text)" : "var(--dt-primary-foreground, #fff)" }}
+        style={{ color: scrolled ? "var(--dt-text)" : "#fff" }}
       >
         <LogoImage
           url={header?.logo_url}
@@ -64,7 +64,7 @@ export default function TransparentOverlay({
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
             as="span"
-            className="truncate block leading-tight text-[var(--dt-text)]"
+            className="truncate block leading-tight"
           />
           {header?.tagline && (
             <InlineText
@@ -79,7 +79,9 @@ export default function TransparentOverlay({
               as="span"
               className="block text-[11px] font-normal tracking-wide truncate leading-tight mt-0.5"
               style={{
-                color: scrolled ? "var(--dt-text-muted)" : "color-mix(in srgb, var(--dt-primary-foreground, #fff) 70%, transparent)",
+                color: scrolled
+                  ? "var(--dt-text-muted)"
+                  : "color-mix(in srgb, #fff 92%, transparent)",
               }}
             />
           )}
@@ -90,11 +92,12 @@ export default function TransparentOverlay({
         hiddenSections={hiddenSections}
         extraLinks={extraLinks}
         language={language}
-        linkClass={navLinkClass || "text-[var(--dt-text)]"}
+        linkClass={navLinkClass || (scrolled ? "text-[var(--dt-text)]" : "text-white/90")}
         drawerStyle={
           drawerStyle || {
-            background: "var(--dt-bg)",
-            borderTop: "1px solid var(--dt-border)",
+            background: scrolled ? "var(--dt-bg)" : "rgba(17,18,24,0.96)",
+            color: scrolled ? "var(--dt-text)" : "#fff",
+            borderTop: scrolled ? "1px solid var(--dt-border)" : "1px solid rgba(255,255,255,0.12)",
           }
         }
         nav_labels={header?.nav_labels}
