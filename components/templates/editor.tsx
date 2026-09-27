@@ -582,19 +582,20 @@ export const PreviewSectionWrapper: React.FC<{
             isSelected || isGalleryOpen ? "opacity-100" : "opacity-0 group-hover:opacity-100"
           }`}
         >
-          <div className={`h-6 inline-flex items-center bg-slate-950/80 backdrop-blur-md border shadow-sm rounded-full overflow-hidden ${isGalleryOpen ? "border-primary/60" : "border-white/15"}`}>
-            {/* Label segment — dimmed prefix */}
-            <span className="inline-flex items-center h-full px-2.5 text-[9px] font-medium tracking-[0.08em] text-white/55 uppercase select-none">
-              {label}
-            </span>
+          {/* Relative wrapper lives OUTSIDE the pill so the gallery panel is not clipped */}
+          <div className="relative">
+            <div className={`h-6 inline-flex items-center bg-slate-950/80 backdrop-blur-md border shadow-sm rounded-full ${isGalleryOpen ? "border-primary/60" : "border-white/15"}`}>
+              {/* Label segment */}
+              <span className="inline-flex items-center h-full px-2.5 text-[9px] font-medium tracking-[0.08em] text-white/55 uppercase select-none">
+                {label}
+              </span>
 
-            {hasVariants && (
-              <>
-                {/* Divider */}
-                <div className="w-px h-3.5 bg-white/30 shrink-0" />
+              {hasVariants && (
+                <>
+                  {/* Divider */}
+                  <div className="w-px h-3.5 bg-white/30 shrink-0" />
 
-                {/* Variant trigger segment */}
-                <div className="relative">
+                  {/* Variant trigger segment */}
                   <button
                     type="button"
                     onClick={(e) => {
@@ -602,7 +603,7 @@ export const PreviewSectionWrapper: React.FC<{
                       setIsGalleryOpen((prev) => !prev);
                       if (!isGalleryOpen) setSelectedGroup("Semua");
                     }}
-                    className={`h-6 inline-flex items-center gap-1 pl-2 pr-2.5 text-[9px] font-semibold cursor-pointer transition-colors ${
+                    className={`h-6 inline-flex items-center gap-1 pl-2 pr-2.5 text-[9px] font-medium cursor-pointer transition-colors rounded-r-full ${
                       isGalleryOpen ? "text-primary" : "text-slate-200 hover:text-white"
                     }`}
                     title={t("dashboard.sitesEditor.changeSectionVariant") || "Pilih Variasi Tampilan"}
@@ -612,6 +613,9 @@ export const PreviewSectionWrapper: React.FC<{
                     </span>
                     <ChevronDown className={`w-2.5 h-2.5 shrink-0 transition-transform ${isGalleryOpen ? "rotate-180" : ""}`} />
                   </button>
+                </>
+              )}
+            </div>
 
                   {/* Floating Visual Gallery Panel */}
                   {isGalleryOpen && (
@@ -716,11 +720,8 @@ export const PreviewSectionWrapper: React.FC<{
                       </div>
                     </div>
                   )}
-                </div>
-              </>
-            )}
-          </div>
-        </div>
+          </div>{/* end relative wrapper */}
+        </div>{/* end outer absolute container */}
 
         {/* Section Action (Top Right) — Regen */}
         <button
