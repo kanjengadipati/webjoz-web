@@ -59,7 +59,7 @@ export default function TransparentOverlay({
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
             as="span"
-            className="truncate block leading-tight"
+            className="truncate block leading-tight text-[var(--dt-text)]"
           />
           {header?.tagline && (
             <InlineText

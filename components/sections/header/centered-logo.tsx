@@ -37,7 +37,7 @@ export default function CenteredLogo({
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
             as="span"
-            className="truncate"
+            className="truncate text-[var(--dt-text)]"
           />
         </span>
         {!header?.nav_cta_hidden && (

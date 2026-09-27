@@ -49,6 +49,8 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   const [inferenceResult, setInferenceResult] = useState<InferenceResult | null>(null);
   const [awaitingInferenceConfirm, setAwaitingInferenceConfirm] = useState(false);
   const [typeWasInferred, setTypeWasInferred] = useState(false);
+  // Race-condition guard: tracks ongoing background name-analysis prefetch
+  const [isPreFetchingName, setIsPreFetchingName] = useState(false);
   // Callback untuk auto-confirm inference chip — user bisa override sebelum timeout
   const inferenceAutoConfirmRef = useRef<((subType: string) => void) | null>(null);
   // ID pesan bubble user yang berisi nama bisnis — dipakai untuk tombol "Ubah nama"
@@ -75,6 +77,10 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   const recordedTranscriptRef = useRef<string>("");
   const sttInferredResultRef = useRef<{ type?: string; subType?: string } | null>(null);
   const isManualStopRef = useRef(false);
+  // Stores the background prefetch promise so skip flow can await it
+  const prefetchPromiseRef = useRef<Promise<void> | null>(null);
+  // Mirror of suggestedHint state — readable inside async closures without stale capture
+  const suggestedHintRef = useRef<{ type?: string; subType?: string; refinedText?: string } | null>(null);
 
   const cleanupAudioStream = () => {
     if (silenceTimerRef.current) {
@@ -424,7 +430,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     setTimeout(() => {
       chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, 100);
-  }, [messages, chatStage]);
+  }, [messages, chatStage, isAnalyzingDescription, isPreFetchingName]);
 
   // Initial typing animation & locale sync
   useEffect(() => {
@@ -698,22 +704,30 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
 
       const flagged = isLikelyGibberish(val);
       const hint = suggestTypeFromName(capitalized);
+      suggestedHintRef.current = hint;
       setSuggestedHint(hint);
 
-      // Pre-fetch AI analysis of business name in background so skip/inference is instant
-      processBusinessDescription("", capitalized, locale)
+      // Pre-fetch AI analysis of business name in background so skip/inference is instant.
+      // We store the promise in prefetchPromiseRef so the skip-flow can await it.
+      setIsPreFetchingName(true);
+      prefetchPromiseRef.current = processBusinessDescription("", capitalized, locale)
         .then((aiRes) => {
           const d = aiRes?.data;
           if (d && d.confidence === "high" && d.type && d.sub_type) {
-            setSuggestedHint((prev) => ({
-              ...prev,
+            const aiHint = {
               type: d.type!.trim(),
               subType: d.sub_type!.trim(),
               refinedText: d.refined_text?.trim(),
-            }));
+            };
+            suggestedHintRef.current = aiHint;
+            setSuggestedHint((prev) => ({ ...prev, ...aiHint }));
           }
         })
-        .catch(() => {});
+        .catch(() => {})
+        .finally(() => {
+          setIsPreFetchingName(false);
+          prefetchPromiseRef.current = null;
+        });
 
       if (flagged && !hasAskedNameConfirmRef.current) {
         hasAskedNameConfirmRef.current = true;
@@ -767,22 +781,29 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     setBusinessName(capitalized);
     setMessages((prev) => [...prev, { id: msgId, sender: "user", text: sampleName }]);
     const hint = suggestTypeFromName(capitalized);
+    suggestedHintRef.current = hint;
     setSuggestedHint(hint);
 
-    // Pre-fetch AI analysis of business name in background so skip/inference is instant
-    processBusinessDescription("", capitalized, locale)
+    // Pre-fetch AI analysis of business name in background so skip/inference is instant.
+    setIsPreFetchingName(true);
+    prefetchPromiseRef.current = processBusinessDescription("", capitalized, locale)
       .then((aiRes) => {
         const d = aiRes?.data;
         if (d && d.confidence === "high" && d.type && d.sub_type) {
-          setSuggestedHint((prev) => ({
-            ...prev,
+          const aiHint = {
             type: d.type!.trim(),
             subType: d.sub_type!.trim(),
             refinedText: d.refined_text?.trim(),
-          }));
+          };
+          suggestedHintRef.current = aiHint;
+          setSuggestedHint((prev) => ({ ...prev, ...aiHint }));
         }
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => {
+        setIsPreFetchingName(false);
+        prefetchPromiseRef.current = null;
+      });
 
     setTimeout(() => {
       typeMessage(`${pickVariant(nameAckVariants)} ${t("dashboard.wizard.descriptionPrompt", DESCRIPTION_PROMPT)}`, () => {
@@ -801,8 +822,20 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     // [STEP 1: HANDLING SKIP / EMPTY INPUT]
     // If the user skips, check if the business name itself is descriptive (e.g. "Kafe Kopi Kenangan", "Bengkel Mobil Sentosa", "Batik OKA Jogja")
     if (isSkip) {
-      let nameHint = suggestedHint || suggestTypeFromName(businessName);
-      
+      // ── RACE-CONDITION FIX ──────────────────────────────────────────────────
+      // If the background AI prefetch is still running, await it first.
+      // This prevents the case where user clicks "Lanjut" before the AI
+      // result has arrived, causing the category to be missed.
+      if (prefetchPromiseRef.current) {
+        setIsAnalyzingDescription(true);
+        await prefetchPromiseRef.current;
+        setIsAnalyzingDescription(false);
+      }
+      // ────────────────────────────────────────────────────────────────────────
+
+      // Use suggestedHintRef (always fresh) — avoids stale closure from state capture
+      let nameHint = suggestedHintRef.current || suggestTypeFromName(businessName);
+
       // If we already have a high-confidence category hint (from local dictionary or pre-fetched AI)
       if (nameHint?.type && nameHint?.subType) {
         const autoDesc = nameHint.refinedText || generateDescriptionFromBusinessName(businessName, nameHint, locale);
@@ -1222,6 +1255,7 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     setSiteLanguage,
     isAiTyping,
     isAnalyzingDescription,
+    isPreFetchingName,
     isInitialTyping,
     awaitingNameConfirm,
     suggestedHint,

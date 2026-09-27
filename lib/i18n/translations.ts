@@ -2333,9 +2333,12 @@ export interface Translations {
       wireframeFeatures: string;
       wireframeContact: string;
       statusWaitingInput: string;
+      statusAnalyzingName: string;
       statusAiGenerating: string;
       statusPreviewReady: string;
       statusPreparingAi: string;
+      preFetchingNameHint: string;
+      placeholderAnalyzingName: string;
       nameConfirmPlaceholder: string;
       nameConfirmYes: string;
       nameConfirmChange: string;
@@ -4792,9 +4795,12 @@ export const translations: Record<Locale, Translations> = {
         wireframeFeatures: "Keunggulan",
         wireframeContact: "Kontak",
         statusWaitingInput: "Menunggu input...",
+        statusAnalyzingName: "AI menganalisis nama...",
         statusAiGenerating: "AI sedang generate...",
         statusPreviewReady: "Preview siap ✓",
         statusPreparingAi: "Menyiapkan AI...",
+        preFetchingNameHint: "AI menganalisis kategori nama usaha...",
+        placeholderAnalyzingName: "Menganalisis nama usaha... atau ketik deskripsi Anda",
         nameConfirmPlaceholder: "Pilih opsi di atas atau ketik nama bisnis...",
         nameConfirmYes: "Ya",
         nameConfirmChange: "Ganti",
@@ -7310,9 +7316,12 @@ export const translations: Record<Locale, Translations> = {
         wireframeFeatures: "Features",
         wireframeContact: "Contact",
         statusWaitingInput: "Waiting for input...",
+        statusAnalyzingName: "AI analyzing name...",
         statusAiGenerating: "AI generating...",
         statusPreviewReady: "Preview ready ✓",
         statusPreparingAi: "Preparing AI...",
+        preFetchingNameHint: "AI analyzing business category...",
+        placeholderAnalyzingName: "Analyzing business name... or type your description",
         nameConfirmPlaceholder: "Choose an option above or type a new name...",
         nameConfirmYes: "Yes",
         nameConfirmChange: "Change",
