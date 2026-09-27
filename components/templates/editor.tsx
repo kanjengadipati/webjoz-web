@@ -578,7 +578,7 @@ export const PreviewSectionWrapper: React.FC<{
         {/* Section label + variant — fused button group (Top Left) */}
         <div
           ref={panelRef}
-          className={`absolute top-2 left-2.5 z-30 transition-all duration-150 ${
+          className={`absolute top-2 left-2.5 z-[60] transition-all duration-150 ${
             isSelected || isGalleryOpen ? "opacity-100" : "opacity-0 group-hover:opacity-100"
           }`}
         >
@@ -730,7 +730,7 @@ export const PreviewSectionWrapper: React.FC<{
             e.stopPropagation();
             onRegenSection?.(section);
           }}
-          className={`absolute top-2 right-2.5 z-20 h-6 inline-flex items-center gap-1.5 bg-primary/90 backdrop-blur-md text-primary-foreground border border-primary/50 hover:bg-primary hover:border-primary text-[9px] font-bold px-2.5 rounded-full cursor-pointer transition-all active:scale-95 duration-150 focus:outline-none focus:ring-1 focus:ring-primary shadow-sm ${
+          className={`absolute top-2 right-2.5 z-[60] h-6 inline-flex items-center gap-1.5 bg-primary/90 backdrop-blur-md text-primary-foreground border border-primary/50 hover:bg-primary hover:border-primary text-[9px] font-bold px-2.5 rounded-full cursor-pointer transition-all active:scale-95 duration-150 focus:outline-none focus:ring-1 focus:ring-primary shadow-sm ${
             isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
           }`}
         >
