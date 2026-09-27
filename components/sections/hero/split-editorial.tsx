@@ -47,7 +47,7 @@ export default function HeroSplitEditorial({
     label: statSource?.[i]?.label?.trim() ? statSource[i].label : fallbackStats[i]?.label ?? "",
   }));
 
-  const showStats = rawStats !== null || !!h.stats || isEditorMode;
+  const showStats = rawStats !== null || (Array.isArray(h.stats) && h.stats.length > 0);
 
   return (
     <section

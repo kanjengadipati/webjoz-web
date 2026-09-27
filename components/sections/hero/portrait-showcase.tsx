@@ -42,7 +42,7 @@ export default function HeroPortraitShowcase({
       }))
     : [];
 
-  const showStats = rawStats !== null || (Array.isArray(h.stats) && h.stats.length > 0) || isEditorMode;
+  const showStats = rawStats !== null || (Array.isArray(h.stats) && h.stats.length > 0);
 
   return (
     <section
