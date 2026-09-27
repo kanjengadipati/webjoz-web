@@ -7,7 +7,7 @@ export function mockTenantRoutes(page: Page) {
       json: {
         status: "success",
         data: [
-          { tenant: { id: 1, name: "Workspace Utama", slug: "workspace-1", plan: "pro", owner_id: 1, member_count: 3, site_count: 2 }, role: "owner" },
+          { tenant: { id: 1, name: "Kopi Nusantara", slug: "workspace-1", plan: "pro", owner_id: 1, member_count: 3, site_count: 2 }, role: "owner" },
           { tenant: { id: 2, name: "Client Workspace", slug: "client-ws", plan: "free", owner_id: 2, member_count: 1, site_count: 0 }, role: "member" },
         ],
       },
