@@ -59,10 +59,21 @@ export default function BenefitsSection({
 
   const onAddItem = useCallback(() => {
     if (!onUpdateField) return;
+    if (variant === "comparison-table") {
+      const comp = benefits?.comparison || {
+        column_a_label: "Kami",
+        column_b_label: "Lainnya",
+        rows: [],
+      };
+      const rows = [...(comp.rows || [])];
+      rows.push({ label: "Fitur / Keunggulan Baru", value_a: "✓", value_b: "✗" });
+      onUpdateField("benefits", "comparison", { ...comp, rows });
+      return;
+    }
     const items = [...(benefits?.items ?? [])];
     items.push({ title: "", description: "", icon: "" });
     onUpdateField("benefits", "items", items);
-  }, [benefits?.items, onUpdateField]);
+  }, [benefits, onUpdateField, variant]);
 
   return (
     <Renderer

@@ -22,7 +22,7 @@ function PublicWizardContent() {
   const { pushToast } = useToast();
   const token = useAuthToken();
   const authReady = useAuthReady();
-  const { activeTenantId, memberships, createTenant, loading: tenantLoading } = useActiveTenant();
+  const { activeTenantId, memberships, createTenant, resolveBusinessTenant, loading: tenantLoading } = useActiveTenant();
 
   const isSaveAction = searchParams.get("action") === "save";
   const initialBusinessType = searchParams.get("businessType") || undefined;
@@ -155,18 +155,15 @@ function PublicWizardContent() {
       setAutoSaving(true);
       setAutoSaveError("");
       try {
-        let tenantId = activeTenantId;
-        if (!tenantId && memberships && memberships.length > 0) {
-          tenantId = memberships[0].tenant.id;
-        }
-        if (!tenantId && createTenant) {
-          const slug =
-            pending.businessName.toLowerCase().replace(/[^a-z0-9-]/g, "") +
-            "-" +
-            Math.floor(Math.random() * 1000);
-          const created = await createTenant(pending.businessName, slug);
-          if (created?.id) tenantId = created.id;
-          else throw new Error("Gagal membuat workspace.");
+        let tenantId: number | null = null;
+        if (resolveBusinessTenant) {
+          tenantId = await resolveBusinessTenant(pending.businessName);
+        } else {
+          const currentId = activeTenantId ? Number(activeTenantId) : null;
+          tenantId = currentId;
+          if (!tenantId && memberships && memberships.length > 0) {
+            tenantId = Number(memberships[0].tenant.id);
+          }
         }
         if (!tenantId) throw new Error("Workspace tidak ditemukan.");
 
@@ -350,6 +347,7 @@ function PublicWizardContent() {
         activeTenantId={activeTenantId}
         memberships={memberships}
         createTenant={createTenant}
+        resolveBusinessTenant={resolveBusinessTenant}
         onNeedAuth={handleNeedAuth}
         initialBusinessType={initialBusinessType}
         initialBusinessSubType={initialBusinessSubType}

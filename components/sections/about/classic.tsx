@@ -13,6 +13,7 @@ export interface AboutVariantProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  onAddItem?: () => void;
 }
 
 export default function AboutClassic({

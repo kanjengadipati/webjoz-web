@@ -380,6 +380,7 @@ export function SiteWizard({
   token,
   activeTenantId,
   createTenant,
+  resolveBusinessTenant,
   onNeedAuth,
   initialBusinessType,
   initialBusinessSubType,
@@ -868,8 +869,10 @@ export function SiteWizard({
     }
 
     try {
-      let tenantId = activeTenantId;
-      if (!tenantId && mode === "public" && createTenant) {
+      let tenantId: number | string | null = activeTenantId;
+      if (mode === "public" && resolveBusinessTenant) {
+        tenantId = await resolveBusinessTenant(chat.businessName);
+      } else if (!tenantId && mode === "public" && createTenant) {
         const slug = generateSlug(chat.businessName);
         const created = await createTenant(chat.businessName, slug);
         if (created?.id) tenantId = created.id;

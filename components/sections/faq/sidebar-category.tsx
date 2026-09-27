@@ -98,9 +98,15 @@ export default function FaqSidebarCategory({
   onEditingStateChange,
   onAddItem,
 }: FaqVariantProps) {
-  const items = faq.items || [];
+  const isEN = language === "en";
+  const rawItems = faq.items || [];
+  const defaultCats = isEN ? ["General", "Services", "Orders"] : ["Umum", "Layanan", "Pemesanan"];
+  const items = rawItems.map((it, idx) => ({
+    ...it,
+    category: it.category || defaultCats[idx % defaultCats.length],
+  }));
   const categories = [...new Set(items.map(i => i.category).filter(Boolean))] as string[];
-  const [activeCat, setActiveCat] = useState(categories[0] || "");
+  const [activeCat, setActiveCat] = useState(categories[0] || (isEN ? "General" : "Umum"));
 
   const handleUpdateItem = (index: number, field: string, value: string) => {
     const nextItems = [...items];
@@ -108,7 +114,16 @@ export default function FaqSidebarCategory({
     onUpdateField?.("faq", "items", nextItems);
   };
 
-  const isEN = language === "en";
+  const handleAddItem = () => {
+    if (!onUpdateField) return;
+    const nextItems = [...items];
+    nextItems.push({
+      question: isEN ? "New Question" : "Pertanyaan Baru",
+      answer: isEN ? "Answer to the question goes here." : "Jawaban pertanyaan Anda di sini.",
+      category: activeCat || (isEN ? "General" : "Umum"),
+    });
+    onUpdateField("faq", "items", nextItems);
+  };
   return (
     <section id="faq" style={{ padding: `var(--dt-spacing) 1.5rem`, maxWidth: "72rem", margin: "0 auto" }}>
       <div style={{ textAlign: "center", marginBottom: "3rem" }}>
@@ -159,7 +174,7 @@ export default function FaqSidebarCategory({
         {isEditorMode && onAddItem && (
           <InlineAddTile
             label={isEN ? "Add question" : "Tambah Pertanyaan"}
-            onClick={onAddItem}
+            onClick={handleAddItem}
             className="w-full"
             style={{ borderRadius: "var(--dt-radius)", color: "var(--dt-text)" }}
           />

@@ -1,6 +1,7 @@
 import React from "react";
 import { Users } from "lucide-react";
 import { InlineText } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 import type { AboutVariantProps } from "./classic";
 
 export default function AboutTeamGrid({
@@ -10,8 +11,14 @@ export default function AboutTeamGrid({
   isSelected,
   collapseSheetForInlineEdit,
   onEditingStateChange,
+  onAddItem,
 }: AboutVariantProps) {
-  const members = a.team_members || [];
+  const members = (a.team_members && a.team_members.length > 0)
+    ? a.team_members
+    : [
+        { name: "Budi Santoso", role: "Founder & Lead Specialist", photo_url: null },
+        { name: "Siti Rahma", role: "Head of Operations & Service", photo_url: null },
+      ];
   return (
     <section id="about" style={{ padding: `var(--dt-spacing) 1.5rem`, maxWidth: "72rem", margin: "0 auto" }}>
       <div style={{ textAlign: "center", marginBottom: "3rem" }}>
@@ -60,6 +67,11 @@ export default function AboutTeamGrid({
           </div>
         ))}
       </div>
+      {isEditorMode && onAddItem && (
+        <div style={{ marginTop: "2rem", display: "flex", justifyContent: "center" }}>
+          <InlineAddTile label="Tambah Anggota Tim" onClick={onAddItem} style={{ borderRadius: "var(--dt-radius)", maxWidth: "24rem" }} />
+        </div>
+      )}
     </section>
   );
 }

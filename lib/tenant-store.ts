@@ -32,6 +32,21 @@ export function getActiveTenantId(): number | null {
   return isNaN(num) ? null : num;
 }
 
+// True for auto-generated placeholder workspaces (e.g. the "Akun Saya" default
+// created for users with zero tenants) so save flows rename/replace them instead
+// of silently leaving every new site inside a generic workspace.
+export function isPlaceholderTenant(tenant?: { name: string; slug: string } | null): boolean {
+  if (!tenant) return true;
+  const name = (tenant.name || "").toLowerCase().trim();
+  if (name === "" || name === "akun saya" || name === "my account" || name === "workspace utama") return true;
+  return (tenant.slug || "").startsWith("workspace-");
+}
+
+function generateWorkspaceSlug(name: string): string {
+  const base = name.toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 24) || "workspace";
+  return `${base}-${Math.floor(Math.random() * 1000)}`;
+}
+
 export function setActiveTenantId(id: number) {
   if (typeof window === "undefined") return;
   localStorage.setItem(TENANT_STORAGE_KEY, id.toString());
@@ -133,6 +148,44 @@ export function useActiveTenant() {
     return res.data;
   };
 
+  /**
+   * Resolve the workspace a new site should be created in:
+   *  - existing real workspace → reuse it;
+   *  - auto-created placeholder ("Akun Saya"/workspace-*) → rename it to the
+   *    business name so the workspace no longer shows the generic label;
+   *  - no workspace at all → create one named after the business.
+   */
+  const resolveBusinessTenant = async (businessName: string): Promise<number | null> => {
+    if (!token) return null;
+    try {
+      const res = await request<TenantMembership[]>("/tenants/me", {}, token);
+      const list = res.data || [];
+      if (list.length === 0) {
+        const created = await createTenant(businessName, generateWorkspaceSlug(businessName));
+        return created ? created.id : null;
+      }
+      const current = getActiveTenantId();
+      const active = list.find((m) => Number(m.tenant.id) === current) || list[0];
+      if (!isPlaceholderTenant(active.tenant)) {
+        selectTenant(Number(active.tenant.id));
+        return Number(active.tenant.id);
+      }
+      const upd = await request<{ id: number }>(`/tenants/${active.tenant.id}`, {
+        method: "PUT",
+        body: JSON.stringify({ name: businessName, slug: active.tenant.slug }),
+      }, token);
+      if (upd.status === "success" && upd.data?.id) {
+        await fetchTenants();
+        selectTenant(Number(upd.data.id));
+        return Number(upd.data.id);
+      }
+      const created = await createTenant(businessName, generateWorkspaceSlug(businessName));
+      return created ? created.id : null;
+    } catch {
+      return null;
+    }
+  };
+
   return {
     activeTenantId,
     activeTenant,
@@ -141,6 +194,7 @@ export function useActiveTenant() {
     error,
     selectTenant,
     createTenant,
+    resolveBusinessTenant,
     refresh: fetchTenants,
   };
 }
