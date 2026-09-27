@@ -1,6 +1,7 @@
 import React from "react";
 import { Calendar } from "lucide-react";
 import { InlineText } from "../../templates/shared";
+import { InlineAddTile } from "../inline-add";
 import type { AboutVariantProps } from "./classic";
 
 export default function AboutTimeline({
@@ -10,8 +11,15 @@ export default function AboutTimeline({
   isSelected,
   collapseSheetForInlineEdit,
   onEditingStateChange,
+  onAddItem,
 }: AboutVariantProps) {
-  const milestones = a.milestones || [];
+  const milestones = (a.milestones && a.milestones.length > 0)
+    ? a.milestones
+    : [
+        { year: "2022", title: "Awal Berdiri", description: "Memulai dedikasi melayani pelanggan dengan komitmen kualitas terbaik." },
+        { year: "2024", title: "Ekspansi Layanan", description: "Memperluas jangkauan dan menghadirkan ragam inovasi baru." },
+        { year: "2026", title: "Inovasi Hari Ini", description: "Menjadi mitra terpercaya dengan standar pelayanan unggul." },
+      ];
   return (
     <section id="about" style={{ padding: `var(--dt-spacing) 1.5rem`, maxWidth: "72rem", margin: "0 auto" }}>
       <div style={{ textAlign: "center", marginBottom: "3rem" }}>
@@ -61,6 +69,11 @@ export default function AboutTimeline({
             </div>
           ))}
         </div>
+        {isEditorMode && onAddItem && (
+          <div style={{ marginTop: "2rem", display: "flex", justifyContent: "center" }}>
+            <InlineAddTile label="Tambah Milestone Perjalanan" onClick={onAddItem} style={{ borderRadius: "var(--dt-radius)", maxWidth: "24rem" }} />
+          </div>
+        )}
       </div>
     </section>
   );

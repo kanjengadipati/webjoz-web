@@ -6,6 +6,8 @@ export interface SiteWizardProps {
   activeTenantId: number | string | null;
   memberships?: { tenant: { id: number | string } }[];
   createTenant?: (name: string, slug: string, referralCode?: string) => Promise<{ id: number | string } | null>;
+  /** Resolve a business-named workspace for a new site (reuse / rename placeholder / create). */
+  resolveBusinessTenant?: (businessName: string) => Promise<number | null>;
   onNeedAuth?: () => void;
   initialBusinessType?: string;
   initialBusinessSubType?: string;
