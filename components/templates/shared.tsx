@@ -2985,13 +2985,9 @@ export function InlineText({
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     const parentInteractive = (e.target as HTMLElement)?.closest("a, button");
-    if (parentInteractive) {
+    if (parentInteractive && !(e.metaKey || e.ctrlKey)) {
       e.preventDefault();
       elementRef.current?.focus();
-      if (fieldKey && fieldKey.startsWith("nav_labels.")) {
-        const sectionKey = fieldKey.replace("nav_labels.", "");
-        smoothScrollToSection(sectionKey, e.currentTarget.ownerDocument || document);
-      }
     }
   };
 
