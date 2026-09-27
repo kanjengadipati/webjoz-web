@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BLOG_POSTS, getBlogPost } from "@/lib/blog/posts";
@@ -64,8 +65,9 @@ export default async function BlogDetailPage({ params }: PageProps) {
     <main className="min-h-screen bg-background text-foreground">
       <header className="border-b border-border">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <Link href="/" className="text-sm font-semibold tracking-tight">
-            Webjoz
+          <Link href="/" className="flex items-center gap-2.5">
+            <Image src="/logo2.png" alt="Webjoz" width={80} height={48} className="h-6 w-auto object-contain" />
+            <span className="text-sm font-semibold tracking-tight">Webjoz</span>
           </Link>
           <div className="flex items-center gap-4">
             <Link href="/template-gallery" className="text-xs font-medium text-muted-foreground transition hover:text-foreground">
