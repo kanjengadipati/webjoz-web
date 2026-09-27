@@ -4,6 +4,7 @@ import CongratsModal from "./[id]/modals/CongratsModal";
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
 import { request, ApiError } from "@/lib/api/client";
@@ -519,6 +520,7 @@ interface Domain {
 }
 
 export default function SitesPage() {
+  const router = useRouter();
   const token = useAuthToken();
   const { pushToast } = useToast();
   const { t, locale } = useI18n();
@@ -1004,7 +1006,8 @@ export default function SitesPage() {
               return (
                 <div
                   key={site.id}
-                  className="bg-card border border-border rounded-2xl p-[18px] flex flex-col gap-3.5 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_16px_32px_-12px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_16px_32px_-12px_rgba(0,0,0,0.5)] group relative"
+                  onClick={() => router.push(`/dashboard/sites/${encodeSiteId(site.id)}`)}
+                  className="bg-card border border-border rounded-2xl p-[18px] flex flex-col gap-3.5 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_16px_32px_-12px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_16px_32px_-12px_rgba(0,0,0,0.5)] group relative cursor-pointer"
                 >
                   {/* Browser Mockup Frame */}
                   <div className="w-full rounded-xl overflow-hidden border border-border/80 bg-muted/30 shadow-sm group-hover:border-primary/30 group-hover:shadow-md transition-all duration-300">
@@ -1125,7 +1128,7 @@ export default function SitesPage() {
                     </div>
                     {isLive && !isDraftSubdomain && (
                       <button
-                        onClick={() => handleCopyLink(site)}
+                        onClick={(e) => { e.stopPropagation(); handleCopyLink(site); }}
                         className={`p-1 text-muted-foreground hover:text-foreground hover:bg-muted/70 rounded transition-all cursor-pointer shrink-0 ${copiedId === site.id ? "text-[#34c77b] bg-[#34c77b]/10" : ""}`}
                         aria-label={t("dashboard.sites.copyLink")}
                       >
@@ -1144,6 +1147,7 @@ export default function SitesPage() {
                   <div className="flex gap-2 border-t border-border pt-3.5 mt-1">
                     <Link
                       href={`/dashboard/sites/${encodeSiteId(site.id)}`}
+                      onClick={(e) => e.stopPropagation()}
                       className="flex-1 py-2 px-1 rounded-xl border border-border text-foreground hover:bg-muted/50 transition-all font-semibold text-[12px] flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
                     >
                       <Edit3 className="w-3.5 h-3.5" /> {t("dashboard.sites.editPreview")}
@@ -1151,7 +1155,7 @@ export default function SitesPage() {
 
                     {isLive ? (
                       <button
-                        onClick={() => window.open(getSiteUrl(site), "_blank")}
+                        onClick={(e) => { e.stopPropagation(); window.open(getSiteUrl(site), "_blank"); }}
                         className="flex-1 py-2 px-1 rounded-xl border border-border bg-muted/60 text-foreground hover:bg-muted/70 transition-all font-semibold text-[12px] cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap"
                       >
                         <Globe className="w-3.5 h-3.5" /> {t("dashboard.sites.viewSite")}
@@ -1159,7 +1163,8 @@ export default function SitesPage() {
                     ) : (
                       <button
                         type="button"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setPublishTarget(site);
                           setModerationViolations(null);
                           setAppealed(false);
@@ -1183,6 +1188,7 @@ export default function SitesPage() {
                     {site.has_catalog && (
                       <Link
                         href={`/dashboard/sites/${encodeSiteId(site.id)}/katalog`}
+                        onClick={(e) => e.stopPropagation()}
                         className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-border/60 bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/70 hover:border-border transition-all text-[11px] font-medium"
                       >
                         <ShoppingBag className="w-3 h-3 text-muted-foreground/80" />
@@ -1192,6 +1198,7 @@ export default function SitesPage() {
                     {site.has_menu && (
                       <Link
                         href={`/dashboard/sites/${encodeSiteId(site.id)}/katalog`}
+                        onClick={(e) => e.stopPropagation()}
                         className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-border/60 bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/70 hover:border-border transition-all text-[11px] font-medium"
                       >
                         <Utensils className="w-3 h-3 text-muted-foreground/80" />
@@ -1200,6 +1207,7 @@ export default function SitesPage() {
                     )}
                     <Link
                       href={`/dashboard/sites/${encodeSiteId(site.id)}/blog`}
+                      onClick={(e) => e.stopPropagation()}
                       className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-border/60 bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/70 hover:border-border transition-all text-[11px] font-medium"
                     >
                       <FileText className="w-3 h-3 text-muted-foreground/80" />
@@ -1207,6 +1215,7 @@ export default function SitesPage() {
                     </Link>
                     <Link
                       href={`/dashboard/sites/${encodeSiteId(site.id)}/seo`}
+                      onClick={(e) => e.stopPropagation()}
                       className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-border/60 bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/70 hover:border-border transition-all text-[11px] font-medium"
                     >
                       <Search className="w-3 h-3 text-muted-foreground/80" />
@@ -1214,6 +1223,7 @@ export default function SitesPage() {
                     </Link>
                     <Link
                       href={`/dashboard/sites/${encodeSiteId(site.id)}/integrations`}
+                      onClick={(e) => e.stopPropagation()}
                       className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-border/60 bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/70 hover:border-border transition-all text-[11px] font-medium"
                     >
                       <Code className="w-3 h-3 text-muted-foreground/80" />
@@ -1221,6 +1231,7 @@ export default function SitesPage() {
                     </Link>
                     <Link
                       href={`/dashboard/sites/${encodeSiteId(site.id)}/testimonials`}
+                      onClick={(e) => e.stopPropagation()}
                       className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-border/60 bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/70 hover:border-border transition-all text-[11px] font-medium"
                     >
                       <Star className="w-3 h-3 text-muted-foreground/80" />
@@ -1233,6 +1244,7 @@ export default function SitesPage() {
                           ? `/dashboard/domains?domain_id=${customDom.id}`
                           : `/dashboard/domains?site_id=${encodeSiteId(site.id)}`;
                       })()}
+                      onClick={(e) => e.stopPropagation()}
                       className="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-primary/35 bg-primary/[0.04] text-primary hover:text-primary hover:bg-primary/[0.08] hover:border-primary/50 transition-all text-[11px] font-semibold"
                     >
                       <Link2 className="w-3 h-3 text-primary" />
