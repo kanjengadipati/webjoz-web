@@ -74,6 +74,11 @@ export default function CatalogSection({
       if (!categories[catIdx]) return;
       const items = [...(categories[catIdx].items ?? [])];
       const itemNumber = items.length + 1;
+      const existingFeatures = items.find((it) => it.features && it.features.length > 0)?.features;
+      const defaultFeatures = existingFeatures && existingFeatures.length > 0
+        ? existingFeatures.map((_, i) => `Fitur ${i + 1}`)
+        : ["Fitur Unggulan 1", "Fitur Unggulan 2", "Garansi Resmi"];
+
       items.push({
         id: genId(),
         name: `Item ${itemNumber}`,
@@ -88,7 +93,7 @@ export default function CatalogSection({
         badge: null,
         image_url: null,
         is_available: true,
-        features: [],
+        features: defaultFeatures,
         capacity: null,
         sort_order: items.length,
       });
