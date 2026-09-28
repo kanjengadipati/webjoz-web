@@ -69,10 +69,11 @@ export default function MenuSection({
       const categories = [...(menu?.categories ?? [])];
       if (!categories[catIdx]) return;
       const items = [...(categories[catIdx].items ?? [])];
+      const itemNumber = items.length + 1;
       items.push({
         id: genId(),
-        name: "",
-        description: "",
+        name: `Item ${itemNumber}`,
+        description: "Deskripsi item",
         price: "",
         price_display: "",
         price_amount: null,
