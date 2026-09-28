@@ -271,10 +271,11 @@ export function MenuCatalogForm({
   const addItem = (catIdx: number) => {
     const next = [...categories];
     const existingItems = next[catIdx].items ?? [];
+    const itemNumber = existingItems.length + 1;
     const newItem: any = {
       id: nanoid(),
-      name: "",
-      description: "",
+      name: `Item ${itemNumber}`,
+      description: "Deskripsi item",
       price: "",
       price_display: "",
       price_amount: null,

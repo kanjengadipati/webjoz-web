@@ -1198,7 +1198,7 @@ export default function SectionForms({
                 <textarea rows={1} value={m.description || ""} onChange={(e) => { const arr = [...(content.about?.milestones || [])]; arr[idx] = { ...arr[idx], description: e.target.value }; updateField("about", "milestones", arr); }} placeholder="Deskripsi (opsional)" className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200 resize-none" />
               </div>
             ))}
-            <button type="button" onClick={() => updateField("about", "milestones", [...(content.about?.milestones || []), { year: "", title: "", description: "" }])} className="flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-primary/80 hover:text-primary cursor-pointer"><Plus className="w-3 h-3" /> Tambah Milestone</button>
+            <button type="button" onClick={() => updateField("about", "milestones", [...(content.about?.milestones || []), { year: new Date().getFullYear().toString(), title: "Milestone Baru", description: "" }])} className="flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-primary/80 hover:text-primary cursor-pointer"><Plus className="w-3 h-3" /> Tambah Milestone</button>
           </CollapsibleGroup>
           {/* Team Members */}
           <CollapsibleGroup label="Anggota Tim" defaultOpen={false}>
@@ -1217,7 +1217,7 @@ export default function SectionForms({
                 <FileUpload label="Foto" value={m.photo_url || ""} onChange={(val) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], photo_url: val }; updateField("about", "team_members", arr); }} placeholder="https://..." maxWidth={400} maxHeight={400} quality={0.85} />
               </div>
             ))}
-            <button type="button" onClick={() => updateField("about", "team_members", [...(content.about?.team_members || []), { name: "", role: "", photo_url: "" }])} className="flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-primary/80 hover:text-primary cursor-pointer"><Plus className="w-3 h-3" /> Tambah Anggota</button>
+            <button type="button" onClick={() => updateField("about", "team_members", [...(content.about?.team_members || []), { name: "Nama Anggota", role: "Jabatan", photo_url: "" }])} className="flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-primary/80 hover:text-primary cursor-pointer"><Plus className="w-3 h-3" /> Tambah Anggota</button>
           </CollapsibleGroup>
         </div>
       )}
@@ -1348,7 +1348,7 @@ export default function SectionForms({
           <button 
             type="button"
             onClick={() => { 
-              const n = [...(content.benefits.items || []), { title: "", description: "" }]; 
+              const n = [...(content.benefits.items || []), { title: "Manfaat Baru", description: "Deskripsi manfaat ini" }]; 
               updateField("benefits", "items", n); 
             }} 
             className="w-full text-[12px] py-1.5 border border-border rounded-lg text-slate-400 hover:bg-white/5 flex items-center justify-center gap-1"
@@ -1454,7 +1454,7 @@ export default function SectionForms({
           <button 
             type="button"
             onClick={() => { 
-              const n = [...(content.faq.items || []), { question: "", answer: "" }]; 
+              const n = [...(content.faq.items || []), { question: "Pertanyaan yang sering ditanya?", answer: "Jawaban pertanyaan di sini" }]; 
               updateField("faq", "items", n); 
             }} 
             className="w-full text-[12px] py-1.5 border border-border rounded-lg text-slate-400 hover:bg-white/5 flex items-center justify-center gap-1"
@@ -1922,7 +1922,7 @@ export default function SectionForms({
             <button
               type="button"
               onClick={() => {
-                const n = [...(content.footer?.social_links || []), { platform: "", url: "" }];
+                const n = [...(content.footer?.social_links || []), { platform: "Instagram", url: "https://instagram.com/" }];
                 updateField("footer", "social_links", n);
               }}
               className="w-full text-center py-1.5 text-[11px] font-semibold text-primary border border-dashed border-border rounded-md hover:border-primary/60 transition-colors"
@@ -2877,7 +2877,8 @@ export default function SectionForms({
               <button
                 type="button"
                 onClick={() => {
-                  const next = [...(content.works?.items || []), { title: "", category: "", year: "", client: "", description: "", image_url: "", project_url: "", alt_text: "" }];
+                  const existingWorks = content.works?.items || [];
+                  const next = [...existingWorks, { title: `Proyek ${existingWorks.length + 1}`, category: "", year: new Date().getFullYear().toString(), client: "", description: "Deskripsi proyek ini", image_url: "", project_url: "", alt_text: "" }];
                   updateField("works", "items", next);
                 }}
                 className="text-[12px] py-1.5 px-3 border border-dashed border-border rounded-xl text-slate-500 hover:bg-white/5 hover:text-slate-300 flex items-center gap-1.5 cursor-pointer transition-colors"
@@ -3750,7 +3751,7 @@ function HeroStatsEditor({
   const setItem = (i: number, patch: { value?: string; label?: string }) =>
     onChange(items.map((s, idx) => (idx === i ? { ...s, ...patch } : s)));
   const removeItem = (i: number) => onChange(items.filter((_, idx) => idx !== i));
-  const addItem = () => onChange([...items, { value: "", label: "" }]);
+  const addItem = () => onChange([...items, { value: "100+", label: "Klien" }]);
   return (
     <div className="space-y-2 rounded-lg border border-border/60 p-2.5 bg-white/[0.02]">
       <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
