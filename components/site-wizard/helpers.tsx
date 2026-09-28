@@ -751,11 +751,12 @@ const DESC_HINTS: DescHintEntry[] = [
     subType: "Perabot & Furnitur",
     keywords: [
       // ID
-      "furnitur", "perabot", "meja", "kursi", "lemari", "kasur", "dekorasi", "mebel", "sofa", "tempat tidur", "rak", "gorden", "sprei", "karpet", "kayu jati",
+      "furnitur", "perabot", "perabotan", "meja", "kursi", "lemari", "kasur", "dekorasi", "mebel", "sofa", "tempat tidur", "rak", "gorden", "sprei", "karpet", "kayu jati",
+      "peralatan rumah", "perlengkapan rumah", "perabot rumah", "perabotan rumah", "perabot rumah tangga", "perabotan rumah tangga",
       // EN
-      "furniture", "interior", "home decor", "home furnishing", "kitchen set", "mattress", "couch", "shelf", "curtain", "carpet",
+      "furniture", "home decor", "home furnishing", "home goods", "kitchen set", "mattress", "couch", "shelf", "curtain", "carpet", "home furniture",
     ],
-    weight: 3,
+    weight: 4,
   },
   {
     type: "Toko",
@@ -1137,10 +1138,10 @@ const DESC_HINTS: DescHintEntry[] = [
     subType: "Properti & Real Estate",
     keywords: [
       // ID
-      "properti", "rumah", "apartemen", "tanah", "perumahan", "agent properti", "jual rumah", "sewa rumah",
+      "properti", "perumahan", "apartemen", "tanah", "agent properti", "jual rumah", "sewa rumah",
       "kontrakan", "kavling", "ruko", "villa properti", "developer properti",
-      // EN
-      "real estate", "property", "housing", "apartment", "house", "land", "rent", "lease", "realty", "condo", "commercial property",
+      // EN — avoid "house"/"home" standalone — too broad; use compound phrases only
+      "real estate", "property developer", "housing developer", "housing estate", "apartment complex", "land for sale", "realty", "condo", "commercial property",
     ],
     weight: 3,
   },
