@@ -702,13 +702,15 @@ const DESC_HINTS: DescHintEntry[] = [
     subType: "Elektronik",
     keywords: [
       // ID
-      "elektronik", "handphone", "hp", "laptop", "komputer", "aksesoris hp", "pulsa", "lampu", "cctv", "printer",
+      "elektronik", "handphone", "hp", "smartphone", "iphone", "android", "hp android", "hp iphone",
+      "laptop", "komputer", "aksesoris hp", "pulsa", "lampu", "cctv", "printer",
       "speaker", "kamera", "sparepart hp", "case hp", "toko hp", "toko komputer", "pc gaming",
+      "jual hp", "jual smartphone", "jual laptop", "jual iphone", "jual android",
       // EN
       "gadget", "electronics", "phone", "mobile", "computer", "audio", "camera", "tech accessories", "gaming", "tablet",
-      "earphones", "headphones", "charger", "powerbank",
+      "earphones", "headphones", "charger", "powerbank", "iphone", "android phone", "smartphone store",
     ],
-    weight: 3,
+    weight: 4,
   },
   {
     type: "Toko",
@@ -1123,11 +1125,11 @@ const DESC_HINTS: DescHintEntry[] = [
     type: "Portofolio",
     subType: "Musisi & Entertainer",
     keywords: [
-      // ID
-      "musisi", "band", "penyanyi", "dj", "mc panggung", "entertainment", "akustik", "wedding band",
-      "grup musik", "komposer", "rekaman", "studio musik", "stand up comedy",
-      // EN
-      "musician", "band", "singer", "dj", "host", "entertainer", "live music", "acoustic", "music production",
+      // ID — use compound phrases; bare "entertainment" is too broad
+      "musisi", "band", "penyanyi", "dj", "mc panggung", "entertainment music", "akustik", "wedding band",
+      "grup musik", "komposer", "rekaman", "studio musik", "stand up comedy", "hiburan musik",
+      // EN — same: avoid standalone "entertainment"
+      "musician", "band", "singer", "dj", "live music host", "entertainer", "live music", "acoustic", "music production",
     ],
     weight: 4,
   },
