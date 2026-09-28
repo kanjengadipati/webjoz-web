@@ -289,7 +289,14 @@ export function MenuCatalogForm({
     };
     if (hasBadge) newItem.badge = null;
     if (sectionKey === "menu") { newItem.tags = []; newItem.delivery_platforms = []; }
-    else { newItem.capacity = null; newItem.features = []; }
+    else {
+      const existingFeatures = existingItems.find((it: any) => it.features && it.features.length > 0)?.features;
+      const defaultFeatures = existingFeatures && existingFeatures.length > 0
+        ? existingFeatures.map((_: any, i: number) => `Fitur ${i + 1}`)
+        : ["Fitur Unggulan 1", "Fitur Unggulan 2", "Garansi Resmi"];
+      newItem.capacity = null;
+      newItem.features = defaultFeatures;
+    }
     next[catIdx] = { ...next[catIdx], items: [...existingItems, newItem] };
     updateCategories(next);
   };
