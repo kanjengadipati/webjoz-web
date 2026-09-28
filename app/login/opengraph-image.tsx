@@ -35,7 +35,6 @@ export default async function Image() {
       >
         {/* Top: wordmark */}
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          {/* Logo — same icon as wizard chat */}
           <div
             style={{
               width: 48,
@@ -57,6 +56,7 @@ export default async function Image() {
           </div>
           <span
             style={{
+              display: "flex",
               fontSize: 28,
               fontWeight: 700,
               color: "#111111",
@@ -69,8 +69,9 @@ export default async function Image() {
 
         {/* Middle: headline */}
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-          <div
+          <span
             style={{
+              display: "flex",
               fontSize: 15,
               fontWeight: 500,
               color: "#888888",
@@ -79,9 +80,11 @@ export default async function Image() {
             }}
           >
             Link Masuk
-          </div>
+          </span>
           <div
             style={{
+              display: "flex",
+              flexDirection: "column",
               fontSize: 80,
               fontWeight: 800,
               color: "#111111",
@@ -89,12 +92,12 @@ export default async function Image() {
               letterSpacing: "-3px",
             }}
           >
-            Masuk ke
-            <br />
-            Dashboard
+            <span style={{ display: "flex" }}>Masuk ke</span>
+            <span style={{ display: "flex" }}>Dashboard</span>
           </div>
-          <div
+          <span
             style={{
+              display: "flex",
               fontSize: 24,
               color: "#666666",
               lineHeight: 1.5,
@@ -103,7 +106,7 @@ export default async function Image() {
             }}
           >
             Klik link ini untuk langsung masuk ke akun Webjoz kamu — tanpa kata sandi.
-          </div>
+          </span>
         </div>
 
         {/* Bottom: domain + expiry */}
@@ -138,11 +141,11 @@ export default async function Image() {
             >
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
             </svg>
-            webjoz.com
+            <span style={{ display: "flex" }}>webjoz.com</span>
           </div>
-          <div style={{ fontSize: 16, color: "#aaaaaa" }}>
+          <span style={{ display: "flex", fontSize: 16, color: "#aaaaaa" }}>
             Berlaku 15 menit · Sekali pakai · Jangan dibagikan
-          </div>
+          </span>
         </div>
       </div>
     ),
