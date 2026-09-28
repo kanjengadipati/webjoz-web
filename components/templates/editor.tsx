@@ -584,16 +584,16 @@ export const PreviewSectionWrapper: React.FC<{
         >
           {/* Relative wrapper lives OUTSIDE the pill so the gallery panel is not clipped */}
           <div className="relative">
-            <div className={`h-6 inline-flex items-center bg-slate-950/80 backdrop-blur-md border shadow-sm rounded-full ${isGalleryOpen ? "border-primary/60" : "border-white/15"}`}>
+            <div className={`h-6 inline-flex items-center bg-slate-950/85 backdrop-blur-md border shadow-sm rounded-full ${isGalleryOpen ? "border-sky-400/80 ring-1 ring-sky-400/40" : "border-white/15"}`}>
               {/* Label segment */}
-              <span className="inline-flex items-center h-full px-2.5 text-[9px] font-medium tracking-[0.08em] text-white/55 uppercase select-none">
+              <span className="inline-flex items-center h-full px-2.5 text-[9px] font-medium tracking-[0.08em] text-white/70 uppercase select-none">
                 {label}
               </span>
 
               {hasVariants && (
                 <>
                   {/* Divider */}
-                  <div className="w-px h-3.5 bg-white/30 shrink-0" />
+                  <div className="w-px h-3.5 bg-white/20 shrink-0" />
 
                   {/* Variant trigger segment */}
                   <button
@@ -603,15 +603,15 @@ export const PreviewSectionWrapper: React.FC<{
                       setIsGalleryOpen((prev) => !prev);
                       if (!isGalleryOpen) setSelectedGroup("Semua");
                     }}
-                    className={`h-6 inline-flex items-center gap-1 pl-2 pr-2.5 text-[9px] font-medium cursor-pointer transition-colors rounded-r-full ${
-                      isGalleryOpen ? "text-primary" : "text-slate-200 hover:text-white"
+                    className={`h-6 inline-flex items-center gap-1 pl-2 pr-2.5 text-[9px] font-semibold cursor-pointer transition-colors rounded-r-full ${
+                      isGalleryOpen ? "text-sky-300" : "text-slate-200 hover:text-white"
                     }`}
                     title={t("dashboard.sitesEditor.changeSectionVariant") || "Pilih Variasi Tampilan"}
                   >
                     <span className="max-w-[90px] truncate">
                       {activeOpt?.label || t("dashboard.sitesEditor.variantLabel") || "Varian"}
                     </span>
-                    <ChevronDown className={`w-2.5 h-2.5 shrink-0 transition-transform ${isGalleryOpen ? "rotate-180" : ""}`} />
+                    <ChevronDown className={`w-2.5 h-2.5 shrink-0 transition-transform ${isGalleryOpen ? "rotate-180 text-sky-400" : "text-slate-400"}`} />
                   </button>
                 </>
               )}
@@ -621,18 +621,18 @@ export const PreviewSectionWrapper: React.FC<{
                   {isGalleryOpen && (
                     <div
                       onClick={(e) => e.stopPropagation()}
-                      className="absolute top-full left-0 mt-1.5 w-72 rounded-2xl bg-slate-950/97 backdrop-blur-xl border border-white/15 p-3 shadow-2xl z-50 space-y-2.5"
+                      className="absolute top-full left-0 mt-1.5 w-72 rounded-2xl bg-slate-950/98 backdrop-blur-xl border border-white/15 p-3 shadow-2xl z-50 space-y-2.5"
                       style={{ animation: "fadeInDown 0.15s ease-out" }}
                     >
                       {/* Header */}
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1.5">
-                          <LayoutGrid className="w-3 h-3 text-primary" />
-                          <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wider">
+                          <LayoutGrid className="w-3 h-3 text-sky-400" />
+                          <span className="text-[10px] font-bold text-slate-100 uppercase tracking-wider">
                             {t("dashboard.sitesEditor.variantLabel") || "Variasi"} {label}
                           </span>
                         </div>
-                        <span className="text-[9px] text-primary font-semibold">
+                        <span className="text-[9px] text-sky-400 font-bold">
                           {variants.length} {t("dashboard.sitesEditor.optionsCount") || "opsi"}
                         </span>
                       </div>
@@ -643,10 +643,10 @@ export const PreviewSectionWrapper: React.FC<{
                           <button
                             type="button"
                             onClick={() => setSelectedGroup("Semua")}
-                            className={`px-2 py-0.5 rounded-full text-[9px] font-medium transition whitespace-nowrap cursor-pointer shrink-0 ${
+                            className={`px-2 py-0.5 rounded-full text-[9px] transition whitespace-nowrap cursor-pointer shrink-0 ${
                               selectedGroup === "Semua"
-                                ? "bg-primary text-primary-foreground font-bold"
-                                : "bg-slate-800/70 text-slate-400 hover:text-slate-200"
+                                ? "bg-sky-500 text-slate-950 font-black shadow-xs"
+                                : "bg-slate-800/80 text-slate-300 hover:text-white font-medium"
                             }`}
                           >
                             {t("dashboard.sitesEditor.allVariants") || "Semua"}
@@ -656,10 +656,10 @@ export const PreviewSectionWrapper: React.FC<{
                               key={grp}
                               type="button"
                               onClick={() => setSelectedGroup(grp)}
-                              className={`px-2 py-0.5 rounded-full text-[9px] font-medium transition whitespace-nowrap cursor-pointer shrink-0 ${
+                              className={`px-2 py-0.5 rounded-full text-[9px] transition whitespace-nowrap cursor-pointer shrink-0 ${
                                 selectedGroup === grp
-                                  ? "bg-primary text-primary-foreground font-bold"
-                                  : "bg-slate-800/70 text-slate-400 hover:text-slate-200"
+                                  ? "bg-sky-500 text-slate-950 font-black shadow-xs"
+                                  : "bg-slate-800/80 text-slate-300 hover:text-white font-medium"
                               }`}
                             >
                               {grp}
@@ -682,23 +682,23 @@ export const PreviewSectionWrapper: React.FC<{
                               }}
                               className={`group/card relative flex flex-col text-left p-1.5 rounded-xl border transition-all duration-150 cursor-pointer ${
                                 isActive
-                                  ? "bg-primary/15 border-primary shadow-md ring-1 ring-primary/40"
-                                  : "bg-[#0b0f19]/80 border-white/5 hover:border-primary/40 hover:bg-[#111728]"
+                                  ? "bg-sky-500/15 border-sky-400 ring-2 ring-sky-400/50 shadow-[0_0_12px_rgba(56,189,248,0.25)]"
+                                  : "bg-[#0b0f19]/90 border-white/10 hover:border-sky-400/50 hover:bg-[#111728]"
                               }`}
                             >
                               {isActive && (
-                                <div className="absolute top-1.5 right-1.5 z-10 w-3.5 h-3.5 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-xs">
-                                  <Check className="w-2 h-2 stroke-[3]" />
+                                <div className="absolute top-1.5 right-1.5 z-10 w-4 h-4 rounded-full bg-sky-500 text-slate-950 flex items-center justify-center shadow-md font-bold">
+                                  <Check className="w-2.5 h-2.5 stroke-[3]" />
                                 </div>
                               )}
                               <div className="mb-1.5">
                                 <VariantWireframeSmall variant={v.value} section={section} />
                               </div>
-                              <span className={`text-[10px] font-bold line-clamp-1 leading-tight ${isActive ? "text-primary" : "text-slate-200 group-hover/card:text-white"}`}>
+                              <span className={`text-[10px] font-bold line-clamp-1 leading-tight ${isActive ? "text-sky-300 font-extrabold" : "text-slate-200 group-hover/card:text-white"}`}>
                                 {v.label}
                               </span>
                               {v.group && (
-                                <span className="text-[8px] text-slate-500 mt-0.5 leading-none">{v.group}</span>
+                                <span className={`text-[8px] mt-0.5 leading-none ${isActive ? "text-sky-400/80 font-medium" : "text-slate-400"}`}>{v.group}</span>
                               )}
                             </button>
                           );
@@ -706,14 +706,14 @@ export const PreviewSectionWrapper: React.FC<{
                       </div>
 
                       {/* Footer hint */}
-                      <div className="flex items-center justify-between pt-1.5 border-t border-white/5">
-                        <span className="text-[9px] text-slate-500">
+                      <div className="flex items-center justify-between pt-1.5 border-t border-white/10">
+                        <span className="text-[9px] text-slate-400">
                           {t("dashboard.sitesEditor.variantPreviewHint") || "Klik untuk pratinjau langsung."}
                         </span>
                         <button
                           type="button"
                           onClick={() => setIsGalleryOpen(false)}
-                          className="text-[9px] text-primary hover:underline font-semibold cursor-pointer"
+                          className="text-[10px] text-sky-400 hover:text-sky-300 hover:underline font-bold px-1.5 py-0.5 rounded cursor-pointer"
                         >
                           {t("dashboard.sitesEditor.done") || "Selesai"}
                         </button>

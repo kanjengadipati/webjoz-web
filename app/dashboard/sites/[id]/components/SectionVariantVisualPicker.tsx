@@ -908,8 +908,8 @@ export default function SectionVariantVisualPicker({
       data-edu="variant-picker"
       className={`rounded-xl border transition-all duration-200 mb-2.5 overflow-hidden ${
         isExpanded
-          ? "border-primary/40 bg-slate-900/90 shadow-md"
-          : "border-border/70 bg-[#0c0f16]/80 hover:border-primary/40 hover:bg-[#10141e]"
+          ? "border-sky-500/50 bg-slate-900/95 shadow-md ring-1 ring-sky-500/20"
+          : "border-border/70 bg-[#0c0f16]/80 hover:border-sky-500/40 hover:bg-[#10141e]"
       }`}
     >
       {/* Active Variant Pill — tap to open gallery */}
@@ -925,7 +925,7 @@ export default function SectionVariantVisualPicker({
             {getOptionLabel(currentOpt)}
           </span>
           {currentOpt.group && (
-            <span className="text-[9px] font-medium px-1.5 py-0.5 rounded bg-primary/20 text-primary border border-primary/30 shrink-0">
+            <span className="text-[9px] font-medium px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30 shrink-0">
               {currentOpt.group}
             </span>
           )}
@@ -939,7 +939,7 @@ export default function SectionVariantVisualPicker({
               : `${t("dashboard.sitesEditor.pickVariant") || "Pilih Varian"} (${enabledOpts.length})`}
           </span>
           <ChevronDown
-            className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${isExpanded ? "rotate-180 text-primary" : ""}`}
+            className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${isExpanded ? "rotate-180 text-sky-400" : ""}`}
           />
         </div>
       </button>
@@ -955,8 +955,8 @@ export default function SectionVariantVisualPicker({
                 onClick={() => setSelectedGroup("Semua")}
                 className={`px-2 py-0.5 rounded-full text-[10px] font-medium transition whitespace-nowrap cursor-pointer ${
                   selectedGroup === "Semua"
-                    ? "bg-primary text-primary-foreground font-bold shadow-xs"
-                    : "bg-slate-800/70 text-slate-400 hover:text-slate-200 hover:bg-slate-700"
+                    ? "bg-sky-500 text-slate-950 font-bold shadow-xs"
+                    : "bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-700"
                 }`}
               >
                 {t("dashboard.sitesEditor.allVariants") || "Semua"} ({enabledOpts.length})
@@ -970,8 +970,8 @@ export default function SectionVariantVisualPicker({
                     onClick={() => setSelectedGroup(grp)}
                     className={`px-2 py-0.5 rounded-full text-[10px] font-medium transition whitespace-nowrap cursor-pointer ${
                       selectedGroup === grp
-                        ? "bg-primary text-primary-foreground font-bold shadow-xs"
-                        : "bg-slate-800/70 text-slate-400 hover:text-slate-200 hover:bg-slate-700"
+                        ? "bg-sky-500 text-slate-950 font-bold shadow-xs"
+                        : "bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-700"
                     }`}
                   >
                     {grp} ({count})
@@ -993,13 +993,13 @@ export default function SectionVariantVisualPicker({
                   onClick={() => updateSectionVariant(sectionKey, opt.value)}
                   className={`group relative flex flex-col text-left p-2 rounded-xl border-2 transition-all duration-150 cursor-pointer ${
                     isActive
-                      ? "bg-primary/20 border-primary shadow-[0_0_0_1px_var(--tw-shadow-color)] shadow-primary/50"
-                      : "bg-[#0b0f19]/80 border-white/10 hover:border-primary/50 hover:bg-[#111728]"
+                      ? "bg-sky-500/15 border-sky-400 ring-2 ring-sky-400/50 shadow-[0_0_12px_rgba(56,189,248,0.25)]"
+                      : "bg-[#0b0f19]/80 border-white/10 hover:border-sky-400/50 hover:bg-[#111728]"
                   }`}
                 >
                   {/* Selected Indicator Badge */}
                   {isActive && (
-                    <div className="absolute top-1.5 right-1.5 z-10 flex items-center gap-1 bg-primary text-primary-foreground text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-md">
+                    <div className="absolute top-1.5 right-1.5 z-10 flex items-center gap-1 bg-sky-500 text-slate-950 text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-md">
                       <Check className="w-2.5 h-2.5 stroke-[3]" />
                       <span>Aktif</span>
                     </div>
@@ -1014,7 +1014,7 @@ export default function SectionVariantVisualPicker({
                   <div className="flex items-center justify-between gap-1 mb-1">
                     <span
                       className={`text-[11px] font-bold line-clamp-1 ${
-                        isActive ? "text-primary font-extrabold" : "text-slate-200 group-hover:text-white"
+                        isActive ? "text-sky-300 font-extrabold" : "text-slate-200 group-hover:text-white"
                       }`}
                     >
                       {getOptionLabel(opt)}
@@ -1023,7 +1023,7 @@ export default function SectionVariantVisualPicker({
 
                   {/* Group Tag */}
                   {opt.group && (
-                    <span className="text-[8px] font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                    <span className={`text-[8px] font-semibold uppercase tracking-wider mb-1 ${isActive ? "text-sky-400/80" : "text-slate-400"}`}>
                       {opt.group}
                     </span>
                   )}
@@ -1044,7 +1044,7 @@ export default function SectionVariantVisualPicker({
             <button
               type="button"
               onClick={() => setIsExpanded(false)}
-              className="text-primary hover:underline font-semibold cursor-pointer"
+              className="text-[10px] text-sky-400 hover:text-sky-300 hover:underline font-bold px-1.5 py-0.5 rounded cursor-pointer"
             >
               {t("dashboard.sitesEditor.done") || "Selesai"}
             </button>

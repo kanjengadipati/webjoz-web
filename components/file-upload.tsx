@@ -13,7 +13,7 @@ interface FileUploadProps {
   maxWidth?: number;
   maxHeight?: number;
   quality?: number;
-  previewSize?: "sm" | "md" | "lg";
+  previewSize?: "sm" | "md" | "lg" | "xl";
 }
 
 // Client-side image compression helper using Canvas
@@ -165,7 +165,7 @@ export default function FileUpload({
     fileInputRef.current?.click();
   };
 
-  const previewHeightClass = previewSize === "sm" ? "h-20" : previewSize === "lg" ? "h-48" : "h-32";
+  const previewHeightClass = previewSize === "sm" ? "h-20" : previewSize === "lg" ? "h-48" : previewSize === "xl" ? "h-60" : "h-32";
   const hasPreview = value && value.startsWith("http") && !imgError;
 
   return (

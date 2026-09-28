@@ -1405,7 +1405,7 @@ export function ItemPhotoGalleryEditor({
         maxWidth={800}
         maxHeight={600}
         quality={0.8}
-        previewSize="sm"
+        previewSize={mode === "page" ? "xl" : "sm"}
       />
 
       {/* Multi-Photo Manager Accordion */}
