@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import { SECTION_VARIANT_OPTIONS } from "@/components/sections/variant-registry";
 import {
   Check,
@@ -843,6 +843,7 @@ export default function SectionVariantVisualPicker({
 }: SectionVariantVisualPickerProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<string>("Semua");
+  const activeCardRef = useRef<HTMLButtonElement | null>(null);
 
   const allVars = SECTION_VARIANT_OPTIONS[sectionKey] || [];
   const enabledOpts = useMemo(() => {
@@ -877,6 +878,22 @@ export default function SectionVariantVisualPicker({
       : designToken?.layout?.section_variants?.[sectionKey]) || enabledOpts[0]?.value;
 
   const currentOpt = enabledOpts.find((o) => o.value === currentVal) || enabledOpts[0];
+
+  // When the picker opens, switch to the group containing the active variant
+  // and scroll the active card into view.
+  useEffect(() => {
+    if (!isExpanded) return;
+    if (currentOpt?.group) {
+      setSelectedGroup(currentOpt.group);
+    } else {
+      setSelectedGroup("Semua");
+    }
+    // Scroll after a short paint delay so the grid has rendered
+    const id = setTimeout(() => {
+      activeCardRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }, 80);
+    return () => clearTimeout(id);
+  }, [isExpanded]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getOptionLabel = (opt: { value: string; label: string; labelKey?: string }) => {
     if (t && opt.labelKey) {
@@ -971,6 +988,7 @@ export default function SectionVariantVisualPicker({
               return (
                 <button
                   key={opt.value}
+                  ref={isActive ? activeCardRef : null}
                   type="button"
                   onClick={() => updateSectionVariant(sectionKey, opt.value)}
                   className={`group relative flex flex-col text-left p-2 rounded-xl border transition-all duration-150 cursor-pointer ${
