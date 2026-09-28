@@ -570,7 +570,9 @@ export const PreviewSectionWrapper: React.FC<{
           if (target.closest('[contenteditable="true"]')) return;
           onSelectSection?.(section);
         }}
-        className={`group relative transition-all duration-150 scroll-mt-20 ${isSelected
+        className={`group relative transition-all duration-150 scroll-mt-20 ${
+          isGalleryOpen ? "z-[80]" : isSelected ? "z-20" : "z-10"
+        } ${isSelected
           ? "outline outline-2 outline-primary/60 outline-offset-[-2px]"
           : "hover:outline hover:outline-1 hover:outline-slate-300/40 hover:outline-offset-[-1px]"
           }`}
@@ -578,40 +580,41 @@ export const PreviewSectionWrapper: React.FC<{
         {/* Section label + variant — fused button group (Top Left) */}
         <div
           ref={panelRef}
-          className={`absolute top-2 left-2.5 z-[60] transition-all duration-150 ${
-            isSelected || isGalleryOpen ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+          className={`absolute top-2 left-2.5 ${isGalleryOpen ? "z-[90]" : "z-[30]"} transition-all duration-150 ${
+            isSelected || isGalleryOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto"
           }`}
         >
           {/* Relative wrapper lives OUTSIDE the pill so the gallery panel is not clipped */}
           <div className="relative">
-            <div className={`h-6 inline-flex items-center bg-slate-950/85 backdrop-blur-md border shadow-sm rounded-full ${isGalleryOpen ? "border-sky-400/80 ring-1 ring-sky-400/40" : "border-white/15"}`}>
+            <div className={`h-[26px] inline-flex items-center bg-slate-950/90 backdrop-blur-md border shadow-sm rounded-full transition-all duration-150 ${isGalleryOpen ? "border-sky-400/80 ring-1 ring-sky-400/30 shadow-[0_0_10px_rgba(56,189,248,0.2)]" : "border-white/15"}`}>
               {/* Label segment */}
-              <span className="inline-flex items-center h-full px-2.5 text-[9px] font-medium tracking-[0.08em] text-white/70 uppercase select-none">
+              <span className="inline-flex items-center h-full px-2.5 text-[8.5px] font-bold tracking-[0.1em] text-slate-400 uppercase select-none">
                 {label}
               </span>
 
               {hasVariants && (
                 <>
                   {/* Divider */}
-                  <div className="w-px h-3.5 bg-white/20 shrink-0" />
+                  <div className="w-px h-3 bg-white/15 shrink-0" />
 
                   {/* Variant trigger segment */}
                   <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
+                      onSelectSection?.(section);
                       setIsGalleryOpen((prev) => !prev);
                       if (!isGalleryOpen) setSelectedGroup("Semua");
                     }}
-                    className={`h-6 inline-flex items-center gap-1 pl-2 pr-2.5 text-[9px] font-semibold cursor-pointer transition-colors rounded-r-full ${
-                      isGalleryOpen ? "text-sky-300" : "text-slate-200 hover:text-white"
+                    className={`h-full inline-flex items-center gap-1.5 pl-2 pr-2.5 rounded-r-full text-[9.5px] font-medium cursor-pointer transition-colors outline-none focus:outline-none focus-visible:outline-none select-none ${
+                      isGalleryOpen ? "text-sky-300 bg-sky-500/10" : "text-slate-200 hover:text-white hover:bg-white/5"
                     }`}
                     title={t("dashboard.sitesEditor.changeSectionVariant") || "Pilih Variasi Tampilan"}
                   >
-                    <span className="max-w-[90px] truncate">
+                    <span className="max-w-[150px] truncate leading-none">
                       {activeOpt?.label || t("dashboard.sitesEditor.variantLabel") || "Varian"}
                     </span>
-                    <ChevronDown className={`w-2.5 h-2.5 shrink-0 transition-transform ${isGalleryOpen ? "rotate-180 text-sky-400" : "text-slate-400"}`} />
+                    <ChevronDown className={`w-2.5 h-2.5 shrink-0 transition-transform duration-200 ${isGalleryOpen ? "rotate-180 text-sky-400" : "text-slate-400"}`} />
                   </button>
                 </>
               )}
@@ -619,106 +622,116 @@ export const PreviewSectionWrapper: React.FC<{
 
                   {/* Floating Visual Gallery Panel */}
                   {isGalleryOpen && (
-                    <div
-                      onClick={(e) => e.stopPropagation()}
-                      className="absolute top-full left-0 mt-1.5 w-72 rounded-2xl bg-slate-950/98 backdrop-blur-xl border border-white/15 p-3 shadow-2xl z-50 space-y-2.5"
-                      style={{ animation: "fadeInDown 0.15s ease-out" }}
-                    >
-                      {/* Header */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5">
-                          <LayoutGrid className="w-3 h-3 text-sky-400" />
-                          <span className="text-[10px] font-bold text-slate-100 uppercase tracking-wider">
-                            {t("dashboard.sitesEditor.variantLabel") || "Variasi"} {label}
+                    <>
+                      {/* Fixed backdrop to prevent underlying sections from receiving hover events & handle dismiss */}
+                      <div
+                        className="fixed inset-0 z-40 bg-black/10"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsGalleryOpen(false);
+                        }}
+                      />
+                      <div
+                        onClick={(e) => e.stopPropagation()}
+                        className="absolute top-full left-0 mt-1.5 w-72 rounded-2xl bg-slate-950/98 backdrop-blur-xl border border-white/15 p-3 shadow-2xl z-50 space-y-2.5"
+                        style={{ animation: "fadeInDown 0.15s ease-out" }}
+                      >
+                        {/* Header */}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5">
+                            <LayoutGrid className="w-3 h-3 text-sky-400" />
+                            <span className="text-[10px] font-bold text-slate-100 uppercase tracking-wider">
+                              {t("dashboard.sitesEditor.variantLabel") || "Variasi"} {label}
+                            </span>
+                          </div>
+                          <span className="text-[9px] text-sky-400 font-bold">
+                            {variants.length} {t("dashboard.sitesEditor.optionsCount") || "opsi"}
                           </span>
                         </div>
-                        <span className="text-[9px] text-sky-400 font-bold">
-                          {variants.length} {t("dashboard.sitesEditor.optionsCount") || "opsi"}
-                        </span>
-                      </div>
 
-                      {/* Group Filter Chips */}
-                      {groups.length > 0 && (
-                        <div className="flex items-center gap-1 overflow-x-auto pb-0.5">
-                          <button
-                            type="button"
-                            onClick={() => setSelectedGroup("Semua")}
-                            className={`px-2 py-0.5 rounded-full text-[9px] transition whitespace-nowrap cursor-pointer shrink-0 ${
-                              selectedGroup === "Semua"
-                                ? "bg-sky-500 text-slate-950 font-black shadow-xs"
-                                : "bg-slate-800/80 text-slate-300 hover:text-white font-medium"
-                            }`}
-                          >
-                            {t("dashboard.sitesEditor.allVariants") || "Semua"}
-                          </button>
-                          {groups.map((grp) => (
+                        {/* Group Filter Chips */}
+                        {groups.length > 0 && (
+                          <div className="flex items-center gap-1 overflow-x-auto pb-0.5">
                             <button
-                              key={grp}
                               type="button"
-                              onClick={() => setSelectedGroup(grp)}
+                              onClick={() => setSelectedGroup("Semua")}
                               className={`px-2 py-0.5 rounded-full text-[9px] transition whitespace-nowrap cursor-pointer shrink-0 ${
-                                selectedGroup === grp
+                                selectedGroup === "Semua"
                                   ? "bg-sky-500 text-slate-950 font-black shadow-xs"
                                   : "bg-slate-800/80 text-slate-300 hover:text-white font-medium"
                               }`}
                             >
-                              {grp}
+                              {t("dashboard.sitesEditor.allVariants") || "Semua"}
                             </button>
-                          ))}
-                        </div>
-                      )}
+                            {groups.map((grp) => (
+                              <button
+                                key={grp}
+                                type="button"
+                                onClick={() => setSelectedGroup(grp)}
+                                className={`px-2 py-0.5 rounded-full text-[9px] transition whitespace-nowrap cursor-pointer shrink-0 ${
+                                  selectedGroup === grp
+                                    ? "bg-sky-500 text-slate-950 font-black shadow-xs"
+                                    : "bg-slate-800/80 text-slate-300 hover:text-white font-medium"
+                                }`}
+                              >
+                                {grp}
+                              </button>
+                            ))}
+                          </div>
+                        )}
 
-                      {/* Visual Card Grid */}
-                      <div className="grid grid-cols-2 gap-1.5 max-h-64 overflow-y-auto pr-0.5">
-                        {filteredVariants.map((v) => {
-                          const isActive = v.value === (currentVariant || variants[0]?.value);
-                          return (
-                            <button
-                              key={v.value}
-                              type="button"
-                              onClick={() => {
-                                onUpdateVariant?.(section, v.value);
-                                setIsGalleryOpen(false);
-                              }}
-                              className={`group/card relative flex flex-col text-left p-1.5 rounded-xl border transition-all duration-150 cursor-pointer ${
-                                isActive
-                                  ? "bg-sky-500/15 border-sky-400 ring-2 ring-sky-400/50 shadow-[0_0_12px_rgba(56,189,248,0.25)]"
-                                  : "bg-[#0b0f19]/90 border-white/10 hover:border-sky-400/50 hover:bg-[#111728]"
-                              }`}
-                            >
-                              {isActive && (
-                                <div className="absolute top-1.5 right-1.5 z-10 w-4 h-4 rounded-full bg-sky-500 text-slate-950 flex items-center justify-center shadow-md font-bold">
-                                  <Check className="w-2.5 h-2.5 stroke-[3]" />
+                        {/* Visual Card Grid */}
+                        <div className="grid grid-cols-2 gap-1.5 max-h-64 overflow-y-auto pr-0.5">
+                          {filteredVariants.map((v) => {
+                            const isActive = v.value === (currentVariant || variants[0]?.value);
+                            return (
+                              <button
+                                key={v.value}
+                                type="button"
+                                onClick={() => {
+                                  onUpdateVariant?.(section, v.value);
+                                  setIsGalleryOpen(false);
+                                }}
+                                className={`group/card relative flex flex-col text-left p-1.5 rounded-xl border transition-all duration-150 cursor-pointer ${
+                                  isActive
+                                    ? "bg-sky-500/15 border-sky-400 ring-2 ring-sky-400/50 shadow-[0_0_12px_rgba(56,189,248,0.25)]"
+                                    : "bg-[#0b0f19]/90 border-white/10 hover:border-sky-400/50 hover:bg-[#111728]"
+                                }`}
+                              >
+                                {isActive && (
+                                  <div className="absolute top-1.5 right-1.5 z-10 w-4 h-4 rounded-full bg-sky-500 text-slate-950 flex items-center justify-center shadow-md font-bold">
+                                    <Check className="w-2.5 h-2.5 stroke-[3]" />
+                                  </div>
+                                )}
+                                <div className="mb-1.5">
+                                  <VariantWireframeSmall variant={v.value} section={section} />
                                 </div>
-                              )}
-                              <div className="mb-1.5">
-                                <VariantWireframeSmall variant={v.value} section={section} />
-                              </div>
-                              <span className={`text-[10px] font-bold line-clamp-1 leading-tight ${isActive ? "text-sky-300 font-extrabold" : "text-slate-200 group-hover/card:text-white"}`}>
-                                {v.label}
-                              </span>
-                              {v.group && (
-                                <span className={`text-[8px] mt-0.5 leading-none ${isActive ? "text-sky-400/80 font-medium" : "text-slate-400"}`}>{v.group}</span>
-                              )}
-                            </button>
-                          );
-                        })}
-                      </div>
+                                <span className={`text-[10px] font-bold line-clamp-1 leading-tight ${isActive ? "text-sky-300 font-extrabold" : "text-slate-200 group-hover/card:text-white"}`}>
+                                  {v.label}
+                                </span>
+                                {v.group && (
+                                  <span className={`text-[8px] mt-0.5 leading-none ${isActive ? "text-sky-400/80 font-medium" : "text-slate-400"}`}>{v.group}</span>
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
 
-                      {/* Footer hint */}
-                      <div className="flex items-center justify-between pt-1.5 border-t border-white/10">
-                        <span className="text-[9px] text-slate-400">
-                          {t("dashboard.sitesEditor.variantPreviewHint") || "Klik untuk pratinjau langsung."}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => setIsGalleryOpen(false)}
-                          className="text-[10px] text-sky-400 hover:text-sky-300 hover:underline font-bold px-1.5 py-0.5 rounded cursor-pointer"
-                        >
-                          {t("dashboard.sitesEditor.done") || "Selesai"}
-                        </button>
+                        {/* Footer hint */}
+                        <div className="flex items-center justify-between pt-1.5 border-t border-white/10">
+                          <span className="text-[9px] text-slate-400">
+                            {t("dashboard.sitesEditor.variantPreviewHint") || "Klik untuk pratinjau langsung."}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setIsGalleryOpen(false)}
+                            className="text-[10px] text-sky-400 hover:text-sky-300 hover:underline font-bold px-1.5 py-0.5 rounded cursor-pointer"
+                          >
+                            {t("dashboard.sitesEditor.done") || "Selesai"}
+                          </button>
+                        </div>
                       </div>
-                    </div>
+                    </>
                   )}
           </div>{/* end relative wrapper */}
         </div>{/* end outer absolute container */}
