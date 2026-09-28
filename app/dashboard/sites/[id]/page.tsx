@@ -2420,7 +2420,7 @@ export default function SiteEditorPage() {
 
         {/* ════ RIGHT CANVAS ════ */}
         <div
-          className="relative flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-background"
+          className="relative flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-background text-foreground"
           style={{
             // Mobile: float above the bottom sheet drawer
             // Desktop: float just above the sticky publish footer (~56px = 3.5rem)
@@ -2432,7 +2432,7 @@ export default function SiteEditorPage() {
             <button
               type="button"
               onClick={() => router.push("/dashboard/sites")}
-              className="flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-card/70 dark:bg-muted/50 text-foreground/80 dark:text-slate-300 transition-all active:scale-95 shadow-xs"
+              className="flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-card/70 dark:bg-muted/50 text-slate-700 dark:text-slate-300 transition-all active:scale-95 shadow-xs"
               aria-label={t("dashboard.sitesEditor.back")}
             >
               <ChevronLeft className="h-4 w-4" />
@@ -2517,11 +2517,11 @@ export default function SiteEditorPage() {
             <button
               type="button"
               onClick={() => router.push("/dashboard/sites")}
-              className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-card/70 dark:bg-muted/40 px-2.5 text-[11px] font-medium text-foreground/80 dark:text-slate-300 transition-all hover:bg-muted hover:text-foreground active:scale-95 cursor-pointer shadow-xs"
+              className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-card/70 dark:bg-muted/40 px-2.5 text-[11px] font-semibold text-slate-700 dark:text-slate-200 transition-all hover:bg-muted hover:text-slate-900 dark:hover:text-white active:scale-95 cursor-pointer shadow-xs"
               title={t("dashboard.sitesEditor.backToSites")}
               aria-label={t("dashboard.sitesEditor.backToSites")}
             >
-              <ChevronLeft className="w-3.5 h-3.5 flex-shrink-0 text-foreground/70 dark:text-slate-400" />
+              <ChevronLeft className="w-3.5 h-3.5 flex-shrink-0 text-slate-600 dark:text-slate-400" />
               <span>{t("dashboard.sitesEditor.back")}</span>
             </button>
 
@@ -2534,8 +2534,8 @@ export default function SiteEditorPage() {
                 <button
                   onClick={() => setDevice("desktop")}
                   className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device === "desktop"
-                    ? "bg-background text-foreground shadow-xs font-semibold dark:bg-white/15 dark:text-white"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-card text-slate-900 dark:text-white shadow-xs font-semibold"
+                    : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
                     }`}
                   aria-label={t("dashboard.sitesEditor.previewDesktop")}
                 >
@@ -2549,8 +2549,8 @@ export default function SiteEditorPage() {
                 <button
                   onClick={() => setDevice("tablet")}
                   className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device === "tablet"
-                    ? "bg-background text-foreground shadow-xs font-semibold dark:bg-white/15 dark:text-white"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-card text-slate-900 dark:text-white shadow-xs font-semibold"
+                    : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
                     }`}
                   aria-label={t("dashboard.sitesEditor.previewTablet")}
                 >
@@ -2564,8 +2564,8 @@ export default function SiteEditorPage() {
                 <button
                   onClick={() => setDevice("mobile")}
                   className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device === "mobile"
-                    ? "bg-background text-foreground shadow-xs font-semibold dark:bg-white/15 dark:text-white"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-card text-slate-900 dark:text-white shadow-xs font-semibold"
+                    : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
                     }`}
                   aria-label={t("dashboard.sitesEditor.previewMobile")}
                 >
@@ -2591,13 +2591,13 @@ export default function SiteEditorPage() {
                     theme_mode: effectiveThemeIsDark ? 'light' : 'dark',
                   }));
                 }}
-                className={`flex h-7 items-center gap-1.5 rounded-lg border px-2.5 text-[11px] font-medium transition-colors shadow-xs ${effectiveThemeIsDark
+                className={`flex h-7 items-center gap-1.5 rounded-lg border px-2.5 text-[11px] font-semibold transition-colors shadow-xs ${effectiveThemeIsDark
                   ? 'border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300'
-                  : 'border-border bg-card/70 dark:bg-white/5 text-foreground/80 dark:text-slate-300 hover:bg-muted hover:text-foreground'
+                  : 'border-border bg-card/70 dark:bg-white/5 text-slate-700 dark:text-slate-200 hover:bg-muted hover:text-slate-900 dark:hover:text-white'
                   }`}
                 aria-label={t("dashboard.sitesEditor.toggleDarkAria")}
               >
-                {effectiveThemeIsDark ? <Sun className="w-3.5 h-3.5 text-amber-600 dark:text-amber-300" /> : <Moon className="w-3.5 h-3.5 text-foreground/70 dark:text-slate-400" />}
+                {effectiveThemeIsDark ? <Sun className="w-3.5 h-3.5 text-amber-600 dark:text-amber-300" /> : <Moon className="w-3.5 h-3.5 text-slate-600 dark:text-slate-400" />}
                 {effectiveThemeIsDark ? t("dashboard.sitesEditor.light") : t("dashboard.sitesEditor.dark")}
               </button>
               <span className="pointer-events-none absolute -bottom-7 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded bg-slate-800 px-2 py-0.5 text-[11px] text-white opacity-0 transition-opacity group-hover:opacity-100">
@@ -2636,9 +2636,9 @@ export default function SiteEditorPage() {
                 onClick={handleGlobalUndo}
                 aria-label={t("dashboard.sitesEditor.undo")}
                 title={t("dashboard.sitesEditor.undoAllTitle")}
-                className="flex h-6 items-center gap-1 rounded-md border border-border bg-card/70 dark:bg-muted/50 px-2 text-[10px] font-medium text-foreground/75 dark:text-slate-400 transition-colors hover:bg-muted hover:text-foreground shadow-xs"
+                className="flex h-6 items-center gap-1 rounded-md border border-border bg-card/70 dark:bg-muted/50 px-2 text-[10px] font-semibold text-slate-700 dark:text-slate-300 transition-colors hover:bg-muted hover:text-slate-900 dark:hover:text-white shadow-xs"
               >
-                <RotateCcw className="h-3 w-3 text-foreground/60 dark:text-slate-400" />
+                <RotateCcw className="h-3 w-3 text-slate-600 dark:text-slate-400" />
                 {t("dashboard.sitesEditor.undo")}
               </button>
             )}
@@ -2666,9 +2666,9 @@ export default function SiteEditorPage() {
               href={previewHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-card/70 dark:bg-white/5 px-3 text-[11px] font-medium text-foreground/80 dark:text-slate-300 transition-colors hover:bg-muted hover:text-foreground shadow-xs"
+              className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-card/70 dark:bg-white/5 px-3 text-[11px] font-semibold text-slate-700 dark:text-slate-200 transition-colors hover:bg-muted hover:text-slate-900 dark:hover:text-white shadow-xs"
             >
-              <Globe className="h-3.5 w-3.5 text-foreground/70 dark:text-slate-400" />
+              <Globe className="h-3.5 w-3.5 text-slate-600 dark:text-slate-400" />
               {t("dashboard.sitesEditor.preview")}
             </a>
 

@@ -55,12 +55,12 @@ export function SiteSubNav({ siteId, compact, hasCatalog, hasMenu, className = "
               transition-all duration-200 whitespace-nowrap select-none outline-none
               ${isActive
                 ? "bg-primary text-primary-foreground shadow-sm scale-[1.02]"
-                : "bg-card/90 dark:bg-muted/50 border border-border text-foreground/80 dark:text-slate-300 hover:text-foreground hover:bg-accent dark:hover:bg-white/[0.09] hover:border-border hover:scale-[1.02] active:scale-[0.98] shadow-xs"
+                : "bg-muted/80 hover:bg-muted border border-border text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:scale-[1.02] active:scale-[0.98] shadow-xs"
               }
             `}
           >
             {Icon && (
-              <Icon className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${isActive ? "opacity-95" : "text-muted-foreground group-hover:text-foreground opacity-80 group-hover:opacity-100"}`} />
+              <Icon className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${isActive ? "opacity-95" : "text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200"}`} />
             )}
             {label}
             {isActive && (
