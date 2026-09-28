@@ -44,7 +44,7 @@ export default function FaqSection({
   const onAddItem = useCallback(() => {
     if (!onUpdateField) return;
     const items = [...(faq?.items ?? [])];
-    items.push({ question: "", answer: "", category: null });
+    items.push({ question: "Pertanyaan yang sering ditanya?", answer: "Jawaban pertanyaan di sini", category: null });
     onUpdateField("faq", "items", items);
   }, [faq?.items, onUpdateField]);
 
