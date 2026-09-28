@@ -991,16 +991,17 @@ export default function SectionVariantVisualPicker({
                   ref={isActive ? activeCardRef : null}
                   type="button"
                   onClick={() => updateSectionVariant(sectionKey, opt.value)}
-                  className={`group relative flex flex-col text-left p-2 rounded-xl border transition-all duration-150 cursor-pointer ${
+                  className={`group relative flex flex-col text-left p-2 rounded-xl border-2 transition-all duration-150 cursor-pointer ${
                     isActive
-                      ? "bg-primary/15 border-primary shadow-md ring-1 ring-primary/40"
-                      : "bg-[#0b0f19]/80 border-white/5 hover:border-primary/40 hover:bg-[#111728]"
+                      ? "bg-primary/20 border-primary shadow-[0_0_0_1px_var(--tw-shadow-color)] shadow-primary/50"
+                      : "bg-[#0b0f19]/80 border-white/10 hover:border-primary/50 hover:bg-[#111728]"
                   }`}
                 >
                   {/* Selected Indicator Badge */}
                   {isActive && (
-                    <div className="absolute top-2 right-2 z-10 w-4 h-4 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-xs">
+                    <div className="absolute top-1.5 right-1.5 z-10 flex items-center gap-1 bg-primary text-primary-foreground text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-md">
                       <Check className="w-2.5 h-2.5 stroke-[3]" />
+                      <span>Aktif</span>
                     </div>
                   )}
 

@@ -41,7 +41,7 @@ export function SiteSubNav({ siteId, compact, hasCatalog, hasMenu, className = "
   ];
 
   return (
-    <nav className={`flex gap-1.5 overflow-x-auto no-scrollbar ${compact ? "" : "border-b border-white/[0.06] pb-3 mb-6"} ${className}`}>
+    <nav className={`flex gap-1.5 overflow-x-auto no-scrollbar ${compact ? "" : "border-b border-border pb-3 mb-6"} ${className}`}>
       {allTabs.map(({ href, label, icon: Icon }) => {
         const isActive = href === ""
           ? current === ""
@@ -54,13 +54,13 @@ export function SiteSubNav({ siteId, compact, hasCatalog, hasMenu, className = "
               group relative flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] font-semibold shrink-0
               transition-all duration-200 whitespace-nowrap select-none outline-none
               ${isActive
-                ? "bg-primary text-primary-foreground shadow-[0_0_12px_rgba(var(--primary-rgb,99,102,241)/0.45)] scale-[1.02]"
-                : "bg-muted/50 border border-white/[0.07] text-slate-400 hover:text-slate-100 hover:bg-white/[0.09] hover:border-border hover:scale-[1.02] active:scale-[0.98]"
+                ? "bg-primary text-primary-foreground shadow-sm scale-[1.02]"
+                : "bg-card/90 dark:bg-muted/50 border border-border text-foreground/80 dark:text-slate-300 hover:text-foreground hover:bg-accent dark:hover:bg-white/[0.09] hover:border-border hover:scale-[1.02] active:scale-[0.98] shadow-xs"
               }
             `}
           >
             {Icon && (
-              <Icon className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${isActive ? "opacity-90" : "opacity-60 group-hover:opacity-90"}`} />
+              <Icon className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${isActive ? "opacity-95" : "text-muted-foreground group-hover:text-foreground opacity-80 group-hover:opacity-100"}`} />
             )}
             {label}
             {isActive && (
