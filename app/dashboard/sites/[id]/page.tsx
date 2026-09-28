@@ -2428,18 +2428,18 @@ export default function SiteEditorPage() {
             "--floating-bottom-desktop": "5rem",
           } as React.CSSProperties}
         >          {/* Mobile topbar */}
-          <div className="flex md:hidden h-10 flex-shrink-0 items-center gap-2 border-b border-border bg-[#111318] px-3">
+          <div className="flex md:hidden h-10 flex-shrink-0 items-center gap-2 border-b border-border bg-background px-3">
             <button
               type="button"
               onClick={() => router.push("/dashboard/sites")}
-              className="flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-muted/50 text-slate-300 transition-all active:scale-95"
+              className="flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-card/70 dark:bg-muted/50 text-foreground/80 dark:text-slate-300 transition-all active:scale-95 shadow-xs"
               aria-label={t("dashboard.sitesEditor.back")}
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
-            <div className="h-4 w-px bg-white/10" />
+            <div className="h-4 w-px bg-border" />
             <div className="min-w-0 flex-1">
-              <h1 className="truncate text-[13px] font-bold tracking-tight text-slate-100">{siteDetails?.name}</h1>
+              <h1 className="truncate text-[13px] font-bold tracking-tight text-foreground">{siteDetails?.name}</h1>
             </div>
             <div className="flex items-center gap-1.5">
               {autosaveStatus !== "idle" && (
@@ -2447,10 +2447,10 @@ export default function SiteEditorPage() {
                   title={autosaveStatus === "saving" ? t("dashboard.sitesEditor.saving") : autosaveStatus === "saved" ? t("dashboard.sitesEditor.saved") : t("dashboard.sitesEditor.autosaveFailed")}
                   aria-label={autosaveStatus === "saving" ? t("dashboard.sitesEditor.saving") : autosaveStatus === "saved" ? t("dashboard.sitesEditor.saved") : t("dashboard.sitesEditor.autosaveFailed")}
                   className={`flex h-6 w-6 items-center justify-center rounded-full border ${autosaveStatus === "saving"
-                      ? "border-amber-500/30 bg-amber-500/10 text-amber-300"
+                      ? "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-300"
                       : autosaveStatus === "saved"
-                        ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
-                        : "border-red-500/30 bg-red-500/10 text-red-300"
+                        ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                        : "border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-300"
                     }`}
                   data-edu="autosave"
                 >
@@ -2461,7 +2461,7 @@ export default function SiteEditorPage() {
               )}
               {siteDetails?.status === "published" ? (
                 <span className="flex items-center gap-1.5">
-                  <span className="flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-400">
+                  <span className="flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
                     <span className="relative flex h-1.5 w-1.5">
                       <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                       <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
@@ -2504,7 +2504,7 @@ export default function SiteEditorPage() {
 
           {/* Mobile site sub-nav bar */}
           {siteId && (
-            <div className="md:hidden flex-shrink-0 border-b border-border/70 bg-[#111318]/95 py-1.5 backdrop-blur z-10">
+            <div className="md:hidden flex-shrink-0 border-b border-border/70 bg-background/95 py-1.5 backdrop-blur z-10">
               <div className="px-3 overflow-x-auto no-scrollbar">
                 <SiteSubNav siteId={siteId} compact className="w-max min-w-full" />
               </div>
@@ -2517,23 +2517,25 @@ export default function SiteEditorPage() {
             <button
               type="button"
               onClick={() => router.push("/dashboard/sites")}
-              className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-muted/40 px-2.5 text-[11px] font-medium text-slate-300 transition-all hover:bg-white/10 hover:text-white active:scale-95 cursor-pointer"
+              className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-card/70 dark:bg-muted/40 px-2.5 text-[11px] font-medium text-foreground/80 dark:text-slate-300 transition-all hover:bg-muted hover:text-foreground active:scale-95 cursor-pointer shadow-xs"
               title={t("dashboard.sitesEditor.backToSites")}
               aria-label={t("dashboard.sitesEditor.backToSites")}
             >
-              <ChevronLeft className="w-3.5 h-3.5 flex-shrink-0" />
+              <ChevronLeft className="w-3.5 h-3.5 flex-shrink-0 text-foreground/70 dark:text-slate-400" />
               <span>{t("dashboard.sitesEditor.back")}</span>
             </button>
 
             {/* Separator */}
-            <div className="h-5 w-px bg-white/10" />
+            <div className="h-5 w-px bg-border" />
 
             {/* Device switcher */}
-            <div className="flex items-center gap-0.5 rounded-lg border border-border bg-muted/50 p-0.5">
+            <div className="flex items-center gap-0.5 rounded-lg border border-border bg-muted/60 p-0.5">
               <div className="relative group">
                 <button
                   onClick={() => setDevice("desktop")}
-                  className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device === "desktop" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"
+                  className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device === "desktop"
+                    ? "bg-background text-foreground shadow-xs font-semibold dark:bg-white/15 dark:text-white"
+                    : "text-muted-foreground hover:text-foreground"
                     }`}
                   aria-label={t("dashboard.sitesEditor.previewDesktop")}
                 >
@@ -2546,7 +2548,9 @@ export default function SiteEditorPage() {
               <div className="relative group">
                 <button
                   onClick={() => setDevice("tablet")}
-                  className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device === "tablet" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"
+                  className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device === "tablet"
+                    ? "bg-background text-foreground shadow-xs font-semibold dark:bg-white/15 dark:text-white"
+                    : "text-muted-foreground hover:text-foreground"
                     }`}
                   aria-label={t("dashboard.sitesEditor.previewTablet")}
                 >
@@ -2559,7 +2563,9 @@ export default function SiteEditorPage() {
               <div className="relative group">
                 <button
                   onClick={() => setDevice("mobile")}
-                  className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device === "mobile" ? "bg-white/15 text-white" : "text-slate-500 hover:text-slate-300"
+                  className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device === "mobile"
+                    ? "bg-background text-foreground shadow-xs font-semibold dark:bg-white/15 dark:text-white"
+                    : "text-muted-foreground hover:text-foreground"
                     }`}
                   aria-label={t("dashboard.sitesEditor.previewMobile")}
                 >
@@ -2572,7 +2578,7 @@ export default function SiteEditorPage() {
             </div>
 
             {/* Separator */}
-            <div className="h-5 w-px bg-white/10" />
+            <div className="h-5 w-px bg-border" />
 
             {/* Theme toggle */}
             <div className="relative group">
@@ -2585,13 +2591,13 @@ export default function SiteEditorPage() {
                     theme_mode: effectiveThemeIsDark ? 'light' : 'dark',
                   }));
                 }}
-                className={`flex h-7 items-center gap-1.5 rounded-lg border px-2.5 text-[11px] font-medium transition-colors ${effectiveThemeIsDark
-                  ? 'border-amber-500/30 bg-amber-500/10 text-amber-300'
-                  : 'border-border bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white'
+                className={`flex h-7 items-center gap-1.5 rounded-lg border px-2.5 text-[11px] font-medium transition-colors shadow-xs ${effectiveThemeIsDark
+                  ? 'border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300'
+                  : 'border-border bg-card/70 dark:bg-white/5 text-foreground/80 dark:text-slate-300 hover:bg-muted hover:text-foreground'
                   }`}
                 aria-label={t("dashboard.sitesEditor.toggleDarkAria")}
               >
-                {effectiveThemeIsDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+                {effectiveThemeIsDark ? <Sun className="w-3.5 h-3.5 text-amber-600 dark:text-amber-300" /> : <Moon className="w-3.5 h-3.5 text-foreground/70 dark:text-slate-400" />}
                 {effectiveThemeIsDark ? t("dashboard.sitesEditor.light") : t("dashboard.sitesEditor.dark")}
               </button>
               <span className="pointer-events-none absolute -bottom-7 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded bg-slate-800 px-2 py-0.5 text-[11px] text-white opacity-0 transition-opacity group-hover:opacity-100">
@@ -2603,7 +2609,7 @@ export default function SiteEditorPage() {
             <button
               type="button"
               onClick={openGuide}
-              className="flex h-7 items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-2.5 text-[11px] font-bold text-primary hover:bg-primary/20 transition-all cursor-pointer active:scale-95"
+              className="flex h-7 items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-2.5 text-[11px] font-bold text-primary hover:bg-primary/20 transition-all cursor-pointer active:scale-95 shadow-xs"
               title="Buka Panduan Editor"
             >
               <HelpCircle className="w-3.5 h-3.5" />
@@ -2611,14 +2617,14 @@ export default function SiteEditorPage() {
             </button>
 
             {/* Separator */}
-            <div className="h-5 w-px bg-white/10" />
+            <div className="h-5 w-px bg-border" />
 
             {/* Completion score */}
             <span className={`flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold ${quality.score >= 85
-              ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-300"
+              ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
               : quality.score >= 65
-                ? "border-amber-500/20 bg-amber-500/10 text-amber-300"
-                : "border-red-500/20 bg-red-500/10 text-red-300"
+                ? "border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300"
+                : "border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-300"
               }`} title={quality.issues.slice(0, 5).map((issue) => issue.label).join(", ")}>
               {quality.score < 100 ? "⚠️" : "✓"} {quality.score}%
             </span>
@@ -2630,9 +2636,9 @@ export default function SiteEditorPage() {
                 onClick={handleGlobalUndo}
                 aria-label={t("dashboard.sitesEditor.undo")}
                 title={t("dashboard.sitesEditor.undoAllTitle")}
-                className="flex h-6 items-center gap-1 rounded-md border border-border bg-muted/50 px-2 text-[10px] font-medium text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
+                className="flex h-6 items-center gap-1 rounded-md border border-border bg-card/70 dark:bg-muted/50 px-2 text-[10px] font-medium text-foreground/75 dark:text-slate-400 transition-colors hover:bg-muted hover:text-foreground shadow-xs"
               >
-                <RotateCcw className="h-3 w-3" />
+                <RotateCcw className="h-3 w-3 text-foreground/60 dark:text-slate-400" />
                 {t("dashboard.sitesEditor.undo")}
               </button>
             )}
@@ -2642,9 +2648,9 @@ export default function SiteEditorPage() {
 
             {/* Autosave status */}
             {autosaveStatus !== "idle" && (
-              <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1 transition-all ${autosaveStatus === "saving" ? "text-amber-300" :
-                autosaveStatus === "saved" ? "text-emerald-400" :
-                  "text-red-300"
+              <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 transition-all ${autosaveStatus === "saving" ? "text-amber-600 dark:text-amber-300" :
+                autosaveStatus === "saved" ? "text-emerald-600 dark:text-emerald-400" :
+                  "text-red-600 dark:text-red-300"
                 }`}>
                 {autosaveStatus === "saving" && <Loader2 className="w-2.5 h-2.5 animate-spin" />}
                 {autosaveStatus === "saved" && <Check className="w-2.5 h-2.5" />}
@@ -2660,9 +2666,9 @@ export default function SiteEditorPage() {
               href={previewHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-white/5 px-3 text-[11px] font-medium text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
+              className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-card/70 dark:bg-white/5 px-3 text-[11px] font-medium text-foreground/80 dark:text-slate-300 transition-colors hover:bg-muted hover:text-foreground shadow-xs"
             >
-              <Globe className="h-3.5 w-3.5" />
+              <Globe className="h-3.5 w-3.5 text-foreground/70 dark:text-slate-400" />
               {t("dashboard.sitesEditor.preview")}
             </a>
 
@@ -2670,7 +2676,7 @@ export default function SiteEditorPage() {
             <button
               onClick={handleSaveContent}
               disabled={saving}
-              className="flex h-7 items-center gap-1.5 rounded-lg px-3 text-[11px] font-semibold text-primary-foreground transition-colors hover:brightness-110 disabled:opacity-60"
+              className="flex h-7 items-center gap-1.5 rounded-lg px-3 text-[11px] font-semibold text-primary-foreground transition-colors hover:brightness-110 disabled:opacity-60 shadow-xs"
               style={{ background: "var(--primary)" }}
             >
               {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
@@ -2688,7 +2694,7 @@ export default function SiteEditorPage() {
                     : host.substring(host.indexOf(".") + 1);
                   window.open(`https://${siteDetails.subdomain}.${domainPart}`, "_blank");
                 }}
-                className="flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/20 transition-colors cursor-pointer shadow-xs"
                 title="Buka website live di tab baru"
               >
                 <span className="relative flex h-1.5 w-1.5">
@@ -2696,7 +2702,7 @@ export default function SiteEditorPage() {
                   <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
                 </span>
                 Live
-                <ExternalLink className="w-3 h-3 text-emerald-400/70" />
+                <ExternalLink className="w-3 h-3 text-emerald-700/70 dark:text-emerald-400/70" />
               </button>
             ) : (
               <button
@@ -2706,7 +2712,7 @@ export default function SiteEditorPage() {
                   setModerationViolations(null);
                   setAppealed(false);
                 }}
-                className="flex h-7 items-center gap-1.5 rounded-lg px-3 text-[11px] font-semibold text-primary-foreground transition-colors hover:brightness-110"
+                className="flex h-7 items-center gap-1.5 rounded-lg px-3 text-[11px] font-semibold text-primary-foreground transition-colors hover:brightness-110 shadow-xs"
                 style={{ background: "var(--primary)" }}
               >
                 <Rocket className="w-3.5 h-3.5" />
