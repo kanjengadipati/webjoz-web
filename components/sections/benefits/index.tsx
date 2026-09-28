@@ -73,7 +73,12 @@ export default function BenefitsSection({
       return;
     }
     const items = [...(benefits?.items ?? [])];
-    items.push({ title: "", description: "", icon: "" });
+    const itemNumber = items.length + 1;
+    items.push({
+      title: `Keunggulan ${itemNumber}`,
+      description: "Deskripsi keunggulan layanan atau produk kami.",
+      icon: "Star",
+    });
     onUpdateField("benefits", "items", items);
   }, [benefits, onUpdateField, variant]);
 

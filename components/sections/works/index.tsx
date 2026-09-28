@@ -75,7 +75,9 @@ export default function WorksSection({
 
   const onAddItem = useCallback(
     (url: string) => {
-      onUpdateItems([...(works.items || []), { title: "", image_url: url }]);
+      const items = works.items || [];
+      const itemNumber = items.length + 1;
+      onUpdateItems([...items, { title: `Proyek ${itemNumber}`, image_url: url }]);
     },
     [works.items, onUpdateItems]
   );

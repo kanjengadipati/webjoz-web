@@ -143,10 +143,20 @@ export default function CatalogTabsByCategory({ catalog, onUpdateField, isEditor
 
         {active && (
           activeItems.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "4rem 1rem", opacity: 0.75 }}>
+            <div style={{ textAlign: "center", padding: "4rem 1rem", opacity: 0.85 }}>
               <p style={{ fontWeight: 600, fontSize: "1rem", color: text }}>
-                Tidak ada produk yang cocok dengan pencarian "{searchQuery}".
+                {searchQuery ? `Tidak ada produk yang cocok dengan pencarian "${searchQuery}".` : "Belum ada item di kategori ini."}
               </p>
+              {isEditorMode && onAddItem && (
+                <div style={{ marginTop: "1.5rem", display: "flex", justifyContent: "center" }}>
+                  <InlineAddTile
+                    label="Tambah Item"
+                    variant="card"
+                    className="rounded-2xl max-w-xs"
+                    onClick={() => onAddItem(activeIdx)}
+                  />
+                </div>
+              )}
             </div>
           ) : (
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "1.25rem", alignItems: "stretch" }}>
