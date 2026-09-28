@@ -174,14 +174,20 @@ export function useActiveTenant() {
         selectTenant(Number(active.tenant.id));
         return Number(active.tenant.id);
       }
-      const upd = await request<{ id: number }>(`/tenants/${active.tenant.id}`, {
-        method: "PUT",
-        body: JSON.stringify({ name: businessName, slug: generateWorkspaceSlug(businessName) }),
-      }, token);
-      if (upd.status === "success" && upd.data?.id) {
-        await fetchTenants();
-        selectTenant(Number(upd.data.id));
-        return Number(upd.data.id);
+      // Rename auto-created placeholder ("Akun Saya") to the business name so
+      // the workspace shows the real brand. API route is PATCH /tenants/:id.
+      try {
+        const upd = await request<{ id: number }>(`/tenants/${active.tenant.id}`, {
+          method: "PATCH",
+          body: JSON.stringify({ name: businessName, slug: generateWorkspaceSlug(businessName) }),
+        }, token);
+        if (upd.status === "success" && upd.data?.id) {
+          await fetchTenants();
+          selectTenant(Number(upd.data.id));
+          return Number(upd.data.id);
+        }
+      } catch {
+        // rename failed — fall through and create a dedicated workspace instead
       }
       const created = await createTenant(businessName, generateWorkspaceSlug(businessName));
       return created ? created.id : null;
