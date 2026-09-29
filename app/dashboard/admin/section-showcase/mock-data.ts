@@ -240,8 +240,9 @@ export const MOCK_SHOWCASE_DATA = {
     },
   },
   about: {
-    headline: "Mendedikasikan Diri untuk Standar Visual Terbaik",
-    description: "Kami adalah tim desainer, engineer, dan strategis digital yang berdedikasi menciptakan pengalaman web berkelas tinggi. Setiap detail dirancang untuk memberikan dampak nyata pada pertumbuhan bisnis Anda.",
+    eyebrow: "Tentang Kami",
+    title: "Mendedikasikan Diri untuk Standar Visual Terbaik",
+    body: "Kami adalah tim desainer, engineer, dan strategis digital yang berdedikasi menciptakan pengalaman web berkelas tinggi. Setiap detail dirancang untuk memberikan dampak nyata pada pertumbuhan bisnis Anda.",
     image_url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1000&auto=format&fit=crop&q=80",
     highlights: [
       "Lebih dari 8 tahun pengalaman dalam rekayasa website",
@@ -282,8 +283,9 @@ export const MOCK_SHOWCASE_DATA = {
     ],
   },
   benefits: {
-    headline: "Mengapa Memilih Layanan Kami?",
-    subheadline: "Fitur dan keunggulan dirancang untuk memberi Anda daya saing maksimal di pasar digital.",
+    eyebrow: "Keunggulan Kami",
+    title: "Mengapa Memilih Layanan Kami?",
+    subtitle: "Fitur dan keunggulan dirancang untuk memberi Anda daya saing maksimal di pasar digital.",
     items: [
       {
         title: "Performa Kecepatan Tinggi",
@@ -339,8 +341,9 @@ export const MOCK_SHOWCASE_DATA = {
     },
   },
   menu: {
-    headline: "Daftar Menu Pilihan",
-    subheadline: "Diracik dari bahan berkualitas tinggi untuk sensasi rasa tak terlupakan.",
+    eyebrow: "Menu Kami",
+    title: "Daftar Menu Pilihan",
+    subtitle: "Diracik dari bahan berkualitas tinggi untuk sensasi rasa tak terlupakan.",
     categories: [
       {
         id: "cat-1",
@@ -402,8 +405,9 @@ export const MOCK_SHOWCASE_DATA = {
     ],
   },
   catalog: {
-    headline: "Koleksi Produk Unggulan",
-    subheadline: "Eksplorasi ragam pilihan produk berkualitas yang siap memenuhi kebutuhan Anda.",
+    eyebrow: "Pilihan Terbaik",
+    title: "Koleksi Produk Unggulan",
+    subtitle: "Eksplorasi ragam pilihan produk berkualitas yang siap memenuhi kebutuhan Anda.",
     categories: [
       {
         id: "cat-p1",
@@ -411,25 +415,25 @@ export const MOCK_SHOWCASE_DATA = {
         items: [
           {
             id: "c-1",
-            name: "Ergonomic Desk Chair Pro",
-            description: "Kursi ergonomis dengan lumbar support adaptif dan breathable mesh fabric.",
+            name: "Kursi Ergonomis Pro",
+            description: "Lumbar support adaptif dan breathable mesh fabric untuk kerja seharian.",
             price: "Rp 2.499.000",
             promo_price: "Rp 1.999.000",
             badge: "Paling Laris",
-            features: ["Garansi 5 Tahun", "Adjustable Armrest", "Bahan Breathable Mesh"],
+            features: ["Garansi 5 Tahun", "Adjustable Armrest", "Breathable Mesh"],
             image_url: "https://images.unsplash.com/photo-1580481077195-c328a37db71a?w=600&auto=format&fit=crop&q=80",
           },
           {
             id: "c-2",
-            name: "Minimalist Solid Oak Desk",
-            description: "Meja kerja kayu ek solid dengan manajemen kabel tersembunyi.",
+            name: "Meja Kayu Ek Solid",
+            description: "Meja kerja minimalis dengan manajemen kabel tersembunyi.",
             price: "Rp 3.850.000",
             features: ["Kayu Ek Solid", "Kabel Organizer", "Finishing Tahan Air"],
             image_url: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=600&auto=format&fit=crop&q=80",
           },
           {
             id: "c-3",
-            name: "Studio Monitor Stand",
+            name: "Monitor Stand Aluminium",
             description: "Dudukan monitor ganda dari paduan aluminium anodized matte.",
             price: "Rp 850.000",
             promo_price: "Rp 720.000",
@@ -446,7 +450,7 @@ export const MOCK_SHOWCASE_DATA = {
           {
             id: "c-4",
             name: "Desk Mat Kulit Vegan",
-            description: "Alas meja kerja halus tahan tumpahan air dengan jahitan presisi.",
+            description: "Alas meja tahan tumpahan air dengan jahitan presisi.",
             price: "Rp 275.000",
             features: ["Waterproof", "Lembut untuk Mouse", "Mudah Dibersihkan"],
             image_url: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=600&auto=format&fit=crop&q=80",
@@ -456,8 +460,9 @@ export const MOCK_SHOWCASE_DATA = {
     ],
   },
   works: {
-    headline: "Portofolio & Proyek Pilihan",
-    subheadline: "Cuplikan karya terpilih yang telah membantu klien kami mencapai tujuan bisnisnya.",
+    eyebrow: "Portofolio",
+    title: "Portofolio & Proyek Pilihan",
+    subtitle: "Cuplikan karya terpilih yang telah membantu klien kami mencapai tujuan bisnisnya.",
     items: [
       {
         title: "Redesain Platform FinTech Nusantara",
@@ -498,8 +503,8 @@ export const MOCK_SHOWCASE_DATA = {
     ],
   },
   gallery: {
-    headline: "Galeri Visual & Suasana",
-    subheadline: "Dokumentasi visual ruang kerja, proses pembuatan, dan momen kebersamaan tim kami.",
+    eyebrow: "Galeri",
+    title: "Galeri Visual & Suasana",
     items: [
       {
         image_url: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&auto=format&fit=crop&q=80",
@@ -534,8 +539,9 @@ export const MOCK_SHOWCASE_DATA = {
     },
   },
   stats: {
-    headline: "Pencapaian dalam Angka",
-    subheadline: "Metrik nyata yang mencerminkan dedikasi dan kepercayaan dari para pengguna kami.",
+    eyebrow: "Angka Nyata",
+    title: "Pencapaian dalam Angka",
+    subtitle: "Metrik nyata yang mencerminkan dedikasi dan kepercayaan dari para pengguna kami.",
     items: [
       { value: "1,500+", label: "Website Aktif", description: "Melayani puluhan ribu pengunjung setiap hari" },
       { value: "99.98%", label: "Tingkat Uptime", description: "Infrastruktur cloud berstandar enterprise" },
@@ -544,8 +550,9 @@ export const MOCK_SHOWCASE_DATA = {
     ],
   },
   testimonials: {
-    headline: "Apa Kata Mereka?",
-    subheadline: "Cerita sukses dan pengalaman nyata dari mereka yang telah mempercayakan kehadiran webnya kepada kami.",
+    eyebrow: "Testimoni",
+    title: "Apa Kata Mereka?",
+    subtitle: "Cerita sukses dan pengalaman nyata dari mereka yang telah mempercayakan kehadiran webnya kepada kami.",
     items: [
       {
         quote: "Website baru kami meningkatkan lead pelanggan masuk hingga 3 kali lipat dalam bulan pertama peluncuran. Desainnya sangat profesional!",
@@ -580,8 +587,9 @@ export const MOCK_SHOWCASE_DATA = {
     ],
   },
   partners: {
-    headline: "Dipercaya oleh Brand Terkemuka",
-    subheadline: "Berkolaborasi bersama berbagai perusahaan inovatif di seluruh nusantara.",
+    eyebrow: "Mitra Kami",
+    title: "Dipercaya oleh Brand Terkemuka",
+    subtitle: "Berkolaborasi bersama berbagai perusahaan inovatif di seluruh nusantara.",
     items: [
       { name: "Bank Mandiri", category: "Finansial" },
       { name: "Telkomsel", category: "Telekomunikasi" },
@@ -592,8 +600,9 @@ export const MOCK_SHOWCASE_DATA = {
     ],
   },
   pricing: {
-    headline: "Pilihan Paket Investasi",
-    subheadline: "Harga transparan tanpa biaya tersembunyi. Pilih paket yang paling pas untuk skala usaha Anda.",
+    eyebrow: "Harga",
+    title: "Pilihan Paket Investasi",
+    subtitle: "Harga transparan tanpa biaya tersembunyi. Pilih paket yang paling pas untuk skala usaha Anda.",
     plans: [
       {
         name: "Starter",
@@ -647,8 +656,7 @@ export const MOCK_SHOWCASE_DATA = {
     ],
   },
   faq: {
-    headline: "Pertanyaan yang Sering Diajukan",
-    subheadline: "Temukan jawaban cepat seputar proses, biaya, dan kemudahan pengelolaan website Anda.",
+    title: "Pertanyaan yang Sering Diajukan",
     items: [
       {
         question: "Berapa lama waktu yang dibutuhkan hingga website siap tayang?",
@@ -682,8 +690,9 @@ export const MOCK_SHOWCASE_DATA = {
     image_url: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1000&auto=format&fit=crop&q=80",
   },
   contact: {
-    headline: "Hubungi Kami",
-    description: "Kami siap mendengar ide dan kebutuhan Anda. Kunjungi kantor kami atau kirim pesan cepat melalui WhatsApp.",
+    eyebrow: "Kontak",
+    title: "Hubungi Kami",
+    subtitle: "Kami siap mendengar ide dan kebutuhan Anda. Kunjungi kantor kami atau kirim pesan cepat melalui WhatsApp.",
     phone: "+62 812-3456-7890",
     email: "halo@webjoz.id",
     address: "Jl. Giwangan No. 45, Umbulharjo, D.I. Yogyakarta 55163",
