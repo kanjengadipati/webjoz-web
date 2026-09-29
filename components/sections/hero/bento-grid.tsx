@@ -1,6 +1,6 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import PhotoCredit from "../PhotoCredit";
@@ -15,6 +15,7 @@ import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
 
 export default function HeroBentoGrid({
   hero: h,
+  language,
   design_token,
   onUpdateField,
   isEditorMode,
@@ -22,7 +23,6 @@ export default function HeroBentoGrid({
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: HeroVariantProps) {
-  const [metricValue, setMetricValue] = useState(72);
   const [isInlineEditing, setIsInlineEditing] = useState(false);
   const hasSecondary = h.cta_secondary_text && h.cta_secondary_url;
 
@@ -31,29 +31,11 @@ export default function HeroBentoGrid({
     onEditingStateChange?.(editing);
   }, [onEditingStateChange]);
 
-  // Auto-animate metric bar — pause when inline editing is active
-  useEffect(() => {
-    if (isInlineEditing) return;
-    const values = [72, 88, 61, 95, 79, 84];
-    let i = 0;
-    const interval = setInterval(() => {
-      i = (i + 1) % values.length;
-      setMetricValue(values[i]);
-    }, 2000);
-    return () => clearInterval(interval);
-  }, [isInlineEditing]);
-
-  const hardcodedStats = [
-    { value: "98%", label: "Satisfaction" },
-    { value: "10K+", label: "Users" },
-    { value: "24/7", label: "Support" },
-  ];
-
+  // Only real stats — no fabricated 98%/10K+/24/7 claims on the public site.
   const statSource = h.stats && h.stats.length > 0 ? h.stats : null;
-  const stats = Array.from({ length: Math.max(statSource?.length ?? 0, hardcodedStats.length) }, (_, i) => ({
-    value: statSource?.[i]?.value?.trim() ? statSource[i].value : hardcodedStats[i]?.value ?? "—",
-    label: statSource?.[i]?.label?.trim() ? statSource[i].label : hardcodedStats[i]?.label ?? "",
-  }));
+  const stats = (statSource ?? [])
+    .map((s) => ({ value: s?.value?.trim() ?? "", label: s?.label?.trim() ?? "" }))
+    .filter((s) => s.value || s.label);
 
   return (
     <section
@@ -262,6 +244,7 @@ export default function HeroBentoGrid({
                 <div style={{ position: "absolute", bottom: 8, right: 8, zIndex: 20 }}>
                   <PhotoCredit
                     credit={h.image_credit}
+                    language={language}
                     section="hero"
                     fieldKey="image_credit.name"
                     onUpdateField={onUpdateField}
@@ -312,6 +295,7 @@ export default function HeroBentoGrid({
             }}
           >
             {/* Stats row */}
+            {(stats.length > 0 || isEditorMode) && (
             <div style={{ display: "flex", gap: "1rem" }}>
               {stats.map((s, i) => (
                 <div key={`${s.label}-${i}`} style={{ flex: 1, textAlign: "center" }}>
@@ -344,36 +328,7 @@ export default function HeroBentoGrid({
                 </div>
               ))}
             </div>
-            {/* Animated metric bar */}
-            <div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.375rem" }}>
-                <span style={{ fontSize: "0.6rem", color: "var(--dt-text-muted)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                  Performance
-                </span>
-                <AnimatePresence mode="wait">
-                  <motion.span
-                    key={metricValue}
-                    initial={{ opacity: 0, y: -4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 4 }}
-                    style={{ fontSize: "0.65rem", fontWeight: 800, color: "var(--dt-primary)" }}
-                  >
-                    {metricValue}%
-                  </motion.span>
-                </AnimatePresence>
-              </div>
-              <div style={{ height: 6, background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", borderRadius: 9999 }}>
-                <motion.div
-                  animate={{ width: `${metricValue}%` }}
-                  transition={{ duration: 0.6, ease: "easeInOut" }}
-                  style={{
-                    height: "100%",
-                    background: "var(--dt-primary)",
-                    borderRadius: 9999,
-                  }}
-                />
-              </div>
-            </div>
+            )}
             {h.badge_text && (
               <p style={{ margin: 0, fontSize: "0.65rem", color: "var(--dt-text-muted)" }}>
                 <InlineText

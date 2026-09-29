@@ -20,8 +20,6 @@ export default function MinimalCentered({
 }: ContactVariantProps) {
   const isEN = language === "en";
   const hasLeadForm = Boolean(c.show_lead_form && onSubmitLead);
-  const displayPhone = c.phone || "+62 812-3456-7890";
-  const displayEmail = c.email || "hello@domain.com";
 
   return (
     <section id="contact" style={{ padding: "var(--dt-spacing) 1.5rem", background: "color-mix(in srgb, var(--dt-primary) 4%, var(--dt-bg))", borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)" }}>
@@ -71,8 +69,8 @@ export default function MinimalCentered({
         )}
 
         <div style={{ marginTop: "1.5rem", paddingTop: "1rem", borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)", display: "flex", justifyContent: "center", gap: "1.5rem", fontSize: "0.75rem", color: "var(--dt-text-muted)" }}>
-          <span><Mail style={{ width: 12, height: 12, display: "inline", marginRight: "0.25rem", verticalAlign: "middle" }} /> <InlineText section="contact" fieldKey="email" value={displayEmail ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></span>
-          <span><Phone style={{ width: 12, height: 12, display: "inline", marginRight: "0.25rem", verticalAlign: "middle" }} /> <InlineText section="contact" fieldKey="phone" value={displayPhone ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></span>
+          <span><Mail style={{ width: 12, height: 12, display: "inline", marginRight: "0.25rem", verticalAlign: "middle" }} /> <InlineText section="contact" fieldKey="email" value={c.email ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></span>
+          <span><Phone style={{ width: 12, height: 12, display: "inline", marginRight: "0.25rem", verticalAlign: "middle" }} /> <InlineText section="contact" fieldKey="phone" value={c.phone ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></span>
         </div>
       </div>
     </section>

@@ -22,9 +22,6 @@ export default function ClassicSplit({
   const isEN = language === "en";
   const hasLeadForm = Boolean(c.show_lead_form && onSubmitLead);
   const showMap = c.show_map !== false;
-  const displayAddress = c.address || "Jl. Malioboro No. 123, Yogyakarta, Indonesia";
-  const displayPhone = c.phone || "+62 812-3456-7890";
-  const displayEmail = c.email || "hello@domain.com";
   const [mapCoords] = useState({ lat: -6.2088, lng: 106.8456 });
 
   const iconBox: React.CSSProperties = {
@@ -81,25 +78,25 @@ export default function ClassicSplit({
               onEditingStateChange={onEditingStateChange}
             />
             <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-              {c.phone && (
+              {c.phone || isEditorMode ? (
                 <div style={{ display: "flex", alignItems: "flex-start", gap: "1rem" }}>
                   <div style={iconBox}><Phone style={{ width: 18, height: 18 }} /></div>
                   <div>
                     <h4 style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: 0 }}>{isEN ? "Phone" : "Telepon / WhatsApp"}</h4>
-                    <InlineText section="contact" fieldKey="phone" value={displayPhone ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} style={{ fontSize: "0.875rem", color: "var(--dt-text)", margin: "0.125rem 0 0" }} />
+                    <InlineText section="contact" fieldKey="phone" value={c.phone ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} style={{ fontSize: "0.875rem", color: "var(--dt-text)", margin: "0.125rem 0 0" }} />
                   </div>
                 </div>
-              )}
-              {c.email && (
+              ) : null}
+              {c.email || isEditorMode ? (
                 <div style={{ display: "flex", alignItems: "flex-start", gap: "1rem" }}>
                   <div style={iconBox}><Mail style={{ width: 18, height: 18 }} /></div>
                   <div>
                     <h4 style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: 0 }}>Email</h4>
-                    <InlineText section="contact" fieldKey="email" value={displayEmail ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} style={{ fontSize: "0.875rem", color: "var(--dt-text)", margin: "0.125rem 0 0" }} />
+                    <InlineText section="contact" fieldKey="email" value={c.email ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} style={{ fontSize: "0.875rem", color: "var(--dt-text)", margin: "0.125rem 0 0" }} />
                   </div>
                 </div>
-              )}
-              {c.address && (
+              ) : null}
+              {c.address || isEditorMode ? (
                 <div style={{ display: "flex", alignItems: "flex-start", gap: "1rem" }}>
                   <div style={iconBox}><MapPin style={{ width: 18, height: 18 }} /></div>
                   <div style={{ flexGrow: 1 }}>
@@ -118,7 +115,7 @@ export default function ClassicSplit({
                     )}
                   </div>
                 </div>
-              )}
+              ) : null}
             </div>
           </div>
         </div>

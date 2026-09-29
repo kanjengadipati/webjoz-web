@@ -14,6 +14,7 @@ import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
 
 export default function HeroNaturalOrganic({
   hero: h,
+  language,
   design_token,
   onUpdateField,
   isEditorMode,
@@ -99,7 +100,7 @@ export default function HeroNaturalOrganic({
         }}
       >
         {/* Badge */}
-        {(h.eyebrow || h.badge_text) && (
+        {(h.eyebrow || h.badge_text || isEditorMode) && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -122,7 +123,7 @@ export default function HeroNaturalOrganic({
             <Leaf style={{ width: 10, height: 10 }} />
             <InlineText
               section="hero"
-              fieldKey="eyebrow"
+              fieldKey={h.eyebrow ? "eyebrow" : "badge_text"}
               value={h.eyebrow || h.badge_text}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
@@ -339,6 +340,7 @@ export default function HeroNaturalOrganic({
             <div style={{ position: "absolute", bottom: 8, right: 8, zIndex: 20 }}>
               <PhotoCredit
                   credit={h.image_credit}
+                  language={language}
                   section="hero"
                   fieldKey="image_credit.name"
                   onUpdateField={onUpdateField}

@@ -114,7 +114,7 @@ export default function HeroFullBleed({
         }}
       >
         {/* Eyebrow / Badge */}
-        {(h.eyebrow || h.badge_text) && (
+        {(h.eyebrow || h.badge_text || isEditorMode) && (
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
@@ -130,7 +130,7 @@ export default function HeroFullBleed({
             <SparkleIcon className="size-3.5 text-primary" />
             <InlineText
               section="hero"
-              fieldKey="eyebrow"
+              fieldKey={h.eyebrow ? "eyebrow" : "badge_text"}
               value={h.eyebrow || h.badge_text}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
@@ -306,6 +306,7 @@ export default function HeroFullBleed({
         <div className="absolute bottom-6 sm:bottom-8 right-6 sm:right-12 md:right-16 lg:right-24 z-20">
           <PhotoCredit
             credit={h.image_credit}
+            language={language}
             section="hero"
             fieldKey="image_credit.name"
             onUpdateField={onUpdateField}

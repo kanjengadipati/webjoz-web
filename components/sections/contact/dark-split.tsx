@@ -10,8 +10,6 @@ export default function DarkSplit({ contact: c, onSubmitLead, leadSubmitting, le
   const isEN = language === "en";
   const hasLeadForm = Boolean(c.show_lead_form && onSubmitLead);
   const showMap = c.show_map !== false;
-  const displayAddress = c.address || "Jl. Malioboro No. 123, Yogyakarta, Indonesia";
-  const displayEmail = c.email || "hello@domain.com";
 
   return (
     <section id="contact" className="relative overflow-hidden" style={{ padding: "var(--dt-spacing) 1.5rem", background: "color-mix(in srgb, var(--dt-bg) 98%, #000)", borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)" }}>
@@ -28,10 +26,12 @@ export default function DarkSplit({ contact: c, onSubmitLead, leadSubmitting, le
           {showMap && (
             <div style={{ borderRadius: "0.75rem", overflow: "hidden", border: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)", height: "11rem", position: "relative" }}>
               <LeafletMap tileStyle={c.map_tile_style} invertTiles opacity={0.6} style={{ height: "100%" }} />
-              <a href={`https://maps.google.com/?q=${encodeURIComponent(c.address || "Monas, Jakarta, Indonesia")}`} target="_blank" rel="noopener noreferrer"
-                style={{ position: "absolute", bottom: "0.5rem", right: "0.5rem", padding: "0.375rem 0.75rem", borderRadius: "0.5rem", background: "color-mix(in srgb, var(--dt-bg) 95%, transparent)", border: "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)", color: "var(--dt-text-muted)", textDecoration: "none", fontSize: "0.6rem", display: "flex", alignItems: "center", gap: "0.25rem" }}>
-                <Navigation style={{ width: 12, height: 12 }} /> Maps
-              </a>
+              {c.address && (
+                <a href={`https://maps.google.com/?q=${encodeURIComponent(c.address)}`} target="_blank" rel="noopener noreferrer"
+                  style={{ position: "absolute", bottom: "0.5rem", right: "0.5rem", padding: "0.375rem 0.75rem", borderRadius: "0.5rem", background: "color-mix(in srgb, var(--dt-bg) 95%, transparent)", border: "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)", color: "var(--dt-text-muted)", textDecoration: "none", fontSize: "0.6rem", display: "flex", alignItems: "center", gap: "0.25rem" }}>
+                  <Navigation style={{ width: 12, height: 12 }} /> Maps
+                </a>
+              )}
             </div>
           )}
 
@@ -43,7 +43,7 @@ export default function DarkSplit({ contact: c, onSubmitLead, leadSubmitting, le
               <div>
                 <p style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-text-muted)", margin: 0 }}>{isEN ? "Physical HQ" : "Markas Fisik"}</p>
                 <p style={{ fontSize: "0.8rem", color: "var(--dt-text)", margin: "0.125rem 0 0" }}>
-                  <InlineText section="contact" fieldKey="address" value={displayAddress ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                  <InlineText section="contact" fieldKey="address" value={c.address ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                 </p>
               </div>
             </div>
@@ -54,7 +54,7 @@ export default function DarkSplit({ contact: c, onSubmitLead, leadSubmitting, le
               <div>
                 <p style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-text-muted)", margin: 0 }}>Email</p>
                 <p style={{ fontSize: "0.8rem", color: "var(--dt-text)", margin: "0.125rem 0 0" }}>
-                  <InlineText section="contact" fieldKey="email" value={displayEmail ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                  <InlineText section="contact" fieldKey="email" value={c.email ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                 </p>
               </div>
             </div>
