@@ -5,7 +5,7 @@ import { HeroContent } from "./shared";
 import PhotoCredit from "../PhotoCredit";
 import { InlineImage } from "../../templates/shared";
 
-export default function HeroSplit({ hero, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: HeroVariantProps) {
+export default function HeroSplit({ hero, language, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: HeroVariantProps) {
   const hasImage = Boolean(hero.image_url) || Boolean(isEditorMode);
   return (
     <section
@@ -46,6 +46,7 @@ export default function HeroSplit({ hero, onUpdateField, isEditorMode, isSelecte
             <div style={{ position: "absolute", bottom: 12, right: 12, zIndex: 20 }}>
               <PhotoCredit
                 credit={hero.image_credit}
+                language={language}
                 section="hero"
                 fieldKey="image_credit.name"
                 onUpdateField={onUpdateField}

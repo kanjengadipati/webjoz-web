@@ -13,13 +13,8 @@ export default function AboutTimeline({
   onEditingStateChange,
   onAddItem,
 }: AboutVariantProps) {
-  const milestones = (a.milestones && a.milestones.length > 0)
-    ? a.milestones
-    : [
-        { year: "2022", title: "Awal Berdiri", description: "Memulai dedikasi melayani pelanggan dengan komitmen kualitas terbaik." },
-        { year: "2024", title: "Ekspansi Layanan", description: "Memperluas jangkauan dan menghadirkan ragam inovasi baru." },
-        { year: "2026", title: "Inovasi Hari Ini", description: "Menjadi mitra terpercaya dengan standar pelayanan unggul." },
-      ];
+  // Never invent milestones on the public site — only real data from the payload.
+  const milestones = a.milestones ?? [];
   return (
     <section id="about" style={{ padding: `var(--dt-spacing) 1.5rem`, maxWidth: "72rem", margin: "0 auto" }}>
       <div style={{ textAlign: "center", marginBottom: "3rem" }}>
@@ -50,6 +45,7 @@ export default function AboutTimeline({
           onEditingStateChange={onEditingStateChange}
         />
       </div>
+      {(milestones.length > 0 || isEditorMode) && (
       <div style={{ position: "relative" }}>
         <div style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", width: "2px", height: "100%", background: `linear-gradient(to bottom, var(--dt-primary), color-mix(in srgb, var(--dt-accent) 60%, transparent))`, opacity: 0.3 }} />
         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
@@ -75,6 +71,7 @@ export default function AboutTimeline({
           </div>
         )}
       </div>
+      )}
     </section>
   );
 }

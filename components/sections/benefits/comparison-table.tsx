@@ -14,6 +14,7 @@ interface BenefitsVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: () => void;
+  language?: "id" | "en";
 }
 
 export default function BenefitsComparisonTable({
@@ -24,17 +25,14 @@ export default function BenefitsComparisonTable({
   collapseSheetForInlineEdit,
   onEditingStateChange,
   onAddItem,
+  language = "id",
 }: BenefitsVariantProps) {
   const comp = b.comparison;
-  const rows = (comp?.rows && comp.rows.length > 0)
-    ? comp.rows
-    : (b.items && b.items.length > 0)
-      ? b.items.map(it => ({ label: it.title || "Keunggulan Layanan", value_a: "✓", value_b: "✗" }))
-      : [
-          { label: "Jaminan Kualitas & Garansi", value_a: "✓", value_b: "✗" },
-          { label: "Pengerjaan Tepat Waktu", value_a: "✓", value_b: "✗" },
-          { label: "Transparansi Biaya & Proses", value_a: "✓", value_b: "✗" },
-        ];
+  // Only real comparison rows — never fabricate claims, and never derive rows from
+  // benefits.items (those are a different data shape and would write to a
+  // non-existent comparison.rows.* path).
+  const rows = comp?.rows ?? [];
+  const showTable = rows.length > 0 || isEditorMode;
 
   return (
     <section id="benefits" style={{ padding: `var(--dt-spacing) 1.5rem`, background: `color-mix(in srgb, var(--dt-primary) 4%, var(--dt-bg))`, borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)`, borderBottom: `1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)` }}>
@@ -70,6 +68,7 @@ export default function BenefitsComparisonTable({
             </p>
           )}
         </div>
+        {showTable && (
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", borderRadius: "var(--dt-radius-lg)", overflow: "hidden", border: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)` }}>
             <thead>
@@ -189,6 +188,12 @@ export default function BenefitsComparisonTable({
             </tbody>
           </table>
         </div>
+        )}
+        {!showTable && (
+          <p style={{ textAlign: "center", color: "var(--dt-text-muted)", fontSize: "0.85rem", margin: 0 }}>
+            {language === "en" ? "No comparison rows yet." : "Belum ada baris perbandingan."}
+          </p>
+        )}
         {isEditorMode && onAddItem && (
           <div style={{ marginTop: "1.25rem" }}>
             <InlineAddTile label="Tambah Baris Perbandingan" onClick={onAddItem} style={{ borderRadius: "var(--dt-radius)" }} />

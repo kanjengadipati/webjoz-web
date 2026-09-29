@@ -77,6 +77,7 @@ export default function HeroChronologyBadge({
       >
         {/* Portrait vignette */}
         {(h.image_url || isEditorMode) && (
+          <>
           <div
             style={{
               position: "absolute",
@@ -103,6 +104,27 @@ export default function HeroChronologyBadge({
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             />
           </div>
+          <div
+            style={{
+              position: "absolute",
+              top: "calc(2rem + clamp(4rem, 8vw, 6.5rem) + 0.35rem)",
+              right: "2rem",
+              zIndex: 2,
+              width: "clamp(4rem, 8vw, 6.5rem)",
+            }}
+          >
+            <PhotoCredit
+              credit={h.image_credit}
+              language={language}
+              section="hero"
+              fieldKey="image_credit.name"
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            />
+          </div>
+          </>
         )}
         {showStats && bigYear ? (
           <div style={{ position: "relative", zIndex: 1 }}>

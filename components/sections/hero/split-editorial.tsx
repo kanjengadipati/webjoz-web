@@ -25,7 +25,6 @@ export default function HeroSplitEditorial({
 }: HeroVariantProps) {
   const [activeStatIdx, setActiveStatIdx] = useState<number | null>(null);
   const hasSecondary = h.cta_secondary_text && h.cta_secondary_url;
-  const isEN = language === "en";
 
   const rawStats = h.badge_text?.includes("|")
     ? h.badge_text.split(",").map((s) => {
@@ -34,22 +33,17 @@ export default function HeroSplitEditorial({
       })
     : null;
 
-  const fallbackStats = [
-    { value: "—", label: isEN ? "Projects" : "Proyek" },
-    { value: "—", label: isEN ? "Clients" : "Klien" },
-    { value: "—", label: isEN ? "Awards" : "Penghargaan" },
-  ];
-
+  // Only render real stat rows — never pad with placeholder "—" values that would
+  // render as fake data on the public site (zero-state rule).
   const statSource = h.stats && h.stats.length > 0 ? h.stats : rawStats;
-  const stats = Array.from({ length: Math.max(statSource?.length ?? 0, fallbackStats.length) }, (_, i) => ({
-    value:
-      statSource?.[i]?.value?.trim() && statSource[i].value !== "—"
-        ? statSource[i].value
-        : fallbackStats[i]?.value ?? "—",
-    label: statSource?.[i]?.label?.trim() ? statSource[i].label : fallbackStats[i]?.label ?? "",
-  }));
+  const stats = (statSource ?? [])
+    .map((s) => ({
+      value: s?.value?.trim() && s.value !== "—" ? s.value : "",
+      label: s?.label?.trim() ?? "",
+    }))
+    .filter((s) => s.value || s.label);
 
-  const showStats = rawStats !== null || (Array.isArray(h.stats) && h.stats.length > 0);
+  const showStats = stats.length > 0 || isEditorMode;
 
   return (
     <section
@@ -93,6 +87,7 @@ export default function HeroSplitEditorial({
             <div style={{ position: "absolute", bottom: 8, left: 12, zIndex: 20 }}>
               <PhotoCredit
                   credit={h.image_credit}
+                  language={language}
                   section="hero"
                   fieldKey="image_credit.name"
                   onUpdateField={onUpdateField}
