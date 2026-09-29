@@ -15,7 +15,11 @@ AI-powered website builder for Indonesian UMKM. Build professional business webs
 |---|---|
 | `/` | Landing page — bilingual (id / en) |
 | `/create` | Public AI wizard |
+| `/template-gallery` | Browsable website template gallery |
+| `/blog` | Blog & tips articles |
+| `/changelog` | Product changelog |
 | `/login` | Multi-method auth (WhatsApp, Email OTP, Password) |
+| `/contact` | Contact page |
 | `/dashboard` | Overview with stats and activity |
 | `/dashboard/sites` | Site management grid |
 | `/dashboard/sites/[id]` | Site editor |
@@ -54,17 +58,18 @@ Set `NEXT_PUBLIC_API_BASE_URL` to point at the Webjoz API.
 
 ## Documentation
 
-This repo now includes the following docs:
+Live documentation lives in this repo:
 
-- **`FEATURES.md`** — comprehensive feature inventory (public pages, dashboard, site editor, AI wizard, API modules)
-- **`docs/API.md`** — Go API endpoint reference (all modules, methods, paths, auth status)
-- **`docs/DATA_MODEL.md`** — entity-relationship overview (key DB tables, indexes, GORM patterns)
-- **`web/AGENTS.md`** — architecture overview (26 API modules, template system, build commands)
+- **`docs/ARCHITECTURE.md`** — project structure (routes, layouts, components, state)
+- **`docs/API_INTEGRATION.md`** — frontend ↔ Go API integration guide
+- **`docs/DESIGN_SYSTEM.md`** — design tokens, theming, and styling conventions
+- **`docs/QA-Manual-Testing.md`** — manual QA checklist for critical business flows
+- **`AGENTS.md`** — agent coding rules & feature work checklist
 
-All docs are generated from code audit (June 2026) and kept in sync with the repository.
+The API itself is documented in the sibling repo under `api/` (see `api/AGENTS.md`).
 
 ---
 
 ## License
 
-MIT License — see root `LICENSE` for details.
+This project does not ship a public license. Contact the repository owner for usage and distribution rights.
