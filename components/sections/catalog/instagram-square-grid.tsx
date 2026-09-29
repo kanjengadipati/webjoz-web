@@ -34,7 +34,7 @@ export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isE
       {/* Header */}
       <div className="mb-16 border-b-2 pb-6 flex flex-col md:flex-row md:items-end md:justify-between gap-4" style={{ borderColor: "var(--dt-border)" }}>
         <div>
-          {eyebrow && (
+          {(eyebrow || isEditorMode) && (
             <InlineText
               section="catalog"
               fieldKey="eyebrow"
@@ -66,7 +66,7 @@ export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isE
             }}
           />
         </div>
-        {subtitle && (
+        {(subtitle || isEditorMode) && (
           <InlineText
             section="catalog"
             fieldKey="subtitle"
@@ -154,7 +154,7 @@ export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isE
                             color: "var(--dt-primary-foreground)",
                           }}
                         >
-                          {item.badge}
+                          <InlineText section="catalog" fieldKey={"categories." + catIdx + ".items." + index + ".badge"} value={item.badge ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
                         </div>
                       )}
                     </div>
@@ -212,7 +212,7 @@ export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isE
                       {item.capacity != null && item.capacity > 0 && (
                         <div className="mt-2">
                           <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5" style={{ background: "var(--dt-primary)", color: "var(--dt-primary-foreground)" }}>
-                            s/d {item.capacity} tamu
+                            s/d <InlineText section="catalog" fieldKey={"categories." + catIdx + ".items." + index + ".capacity"} value={item.capacity != null ? String(item.capacity) : ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" /> tamu
                           </span>
                         </div>
                       )}

@@ -70,7 +70,7 @@ export default function AboutClassic({
               </div>
             )}
           </div>
-          {a.image_url && (
+          {(a.image_url || isEditorMode) && (
             <div style={{ position: "absolute", inset: 0, zIndex: 2 }}>
               <InlineImage
                 section="about"

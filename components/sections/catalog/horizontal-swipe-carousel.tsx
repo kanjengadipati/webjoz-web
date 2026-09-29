@@ -51,7 +51,7 @@ export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField,
       {/* Header */}
       <div className="mb-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
         <div className="max-w-xl">
-          {eyebrow && (
+          {(eyebrow || isEditorMode) && (
             <InlineText
               section="catalog"
               fieldKey="eyebrow"
@@ -82,7 +82,7 @@ export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField,
               fontFamily: "var(--dt-heading-font, serif)"
             }}
           />
-          {subtitle && (
+          {(subtitle || isEditorMode) && (
             <InlineText
               section="catalog"
               fieldKey="subtitle"
@@ -207,7 +207,7 @@ export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField,
                         borderRadius: "var(--dt-radius)",
                       }}
                     >
-                      {item.badge}
+                      <InlineText section="catalog" fieldKey={"categories." + activeCategoryIdx + ".items." + index + ".badge"} value={item.badge ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
                     </div>
                   )}
                 </div>
@@ -266,7 +266,7 @@ export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField,
                     {item.capacity != null && item.capacity > 0 && (
                       <div className="mt-2">
                         <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 10%, transparent)", color: "var(--dt-primary)" }}>
-                          s/d {item.capacity} tamu
+                          s/d <InlineText section="catalog" fieldKey={"categories." + activeCategoryIdx + ".items." + index + ".capacity"} value={item.capacity != null ? String(item.capacity) : ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" /> tamu
                         </span>
                       </div>
                     )}

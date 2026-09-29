@@ -114,7 +114,7 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
                           )}
                           {/* Badge pill overlay */}
                           <span style={{ position: "absolute", top: "0.75rem", left: "0.75rem", background: p, color: bg, padding: "0.25rem 0.625rem", borderRadius: "9999px", fontSize: "0.65rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em" }}>
-                            {item.badge}
+                            <InlineText section="catalog" fieldKey={"categories." + ci + ".items." + itemIdx + ".badge"} value={item.badge ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
                           </span>
                         </div>
                         {/* Content */}
@@ -132,7 +132,7 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
                             <div style={{ marginTop: "0.25rem" }}>
                               <span style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem", fontSize: "0.7rem", fontWeight: 600, padding: "0.15rem 0.5rem", borderRadius: "9999px", background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p }}>
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" style={{ width: "0.75rem", height: "0.75rem" }}><circle cx="9" cy="7" r="2"/><path d="M3 21v-1a6 6 0 0 1 12 0v1"/><circle cx="17" cy="7" r="2"/><path d="M21 21v-1a5 5 0 0 0-3-4.6"/></svg>
-                                s/d {item.capacity} tamu
+                                s/d <InlineText section="catalog" fieldKey={"categories." + ci + ".items." + itemIdx + ".capacity"} value={item.capacity != null ? String(item.capacity) : ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" /> tamu
                               </span>
                             </div>
                           )}

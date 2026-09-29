@@ -30,7 +30,20 @@ export default function TestimonialsLogoWall({
   return (
     <section id="testimonials" style={{ padding: `var(--dt-spacing) 1.5rem`, background: `color-mix(in srgb, var(--dt-primary) 4%, var(--dt-bg))`, borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)` }}>
       <div style={{ maxWidth: "72rem", margin: "0 auto", textAlign: "center" }}>
-        <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>Klien Kami</span>
+        {(t.eyebrow || isEditorMode) && (
+          <InlineText
+            section="testimonials"
+            fieldKey="eyebrow"
+            value={t.eyebrow ?? ""}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            as="span"
+            style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)", display: "block" }}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
+        )}
         <InlineText
           section="testimonials"
           fieldKey="title"
@@ -43,7 +56,7 @@ export default function TestimonialsLogoWall({
           collapseSheetForInlineEdit={collapseSheetForInlineEdit}
           onEditingStateChange={onEditingStateChange}
         />
-        {t.subtitle && (
+        {(t.subtitle || isEditorMode) && (
           <InlineText
             section="testimonials"
             fieldKey="subtitle"

@@ -149,12 +149,23 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
                         <InlineText section="menu" fieldKey={"categories." + originalCatIdx + ".items." + originalItemIdx + ".description"} value={item.description ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="p" multiline style={{ margin: "0.3rem 0 0.6rem", fontSize: "0.78rem", color: muted, lineHeight: 1.55 }} />
                       )}
                       {/* Tags & Platforms */}
-                      {item.tags && item.tags.length > 0 && (
+                      {(item.tags?.length || isEditorMode) && (
                         <div className="flex flex-wrap gap-1.5 mb-2">
-                          {item.tags.map((tag: string, ti: number) => (
-                            <span key={ti} className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md" style={{ background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p }}>
-                              {tag}
-                            </span>
+                          {(item.tags ?? []).map((tag: string, ti: number) => (
+                            <InlineText
+                              key={ti}
+                              section="menu"
+                              fieldKey={"categories." + originalCatIdx + ".items." + originalItemIdx + ".tags." + ti}
+                              value={tag ?? ""}
+                              onUpdateField={onUpdateField}
+                              isEditorMode={isEditorMode}
+                              isSelected={isSelected}
+                              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                              onEditingStateChange={onEditingStateChange}
+                              as="span"
+                              className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md"
+                              style={{ background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p }}
+                            />
                           ))}
                         </div>
                       )}
@@ -170,7 +181,18 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
                               style={{ borderColor: `color-mix(in srgb, ${p} 25%, transparent)`, background: `color-mix(in srgb, ${p} 8%, transparent)`, color: p }}
                             >
                               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-                              <span>{dp.name || "Order Online"}</span>
+                              <InlineText
+                                section="menu"
+                                fieldKey={"categories." + originalCatIdx + ".items." + originalItemIdx + ".delivery_platforms." + di + ".name"}
+                                value={dp.name ?? ""}
+                                placeholder="Order Online"
+                                onUpdateField={onUpdateField}
+                                isEditorMode={isEditorMode}
+                                isSelected={isSelected}
+                                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                                onEditingStateChange={onEditingStateChange}
+                                as="span"
+                              />
                             </a>
                           ))}
                         </div>

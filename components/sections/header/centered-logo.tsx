@@ -102,7 +102,7 @@ export default function CenteredLogo({
           </a>
         )}
       </div>
-      {header?.tagline && (
+      {(header?.tagline || isEditorMode) && (
         <p className="text-[11px] text-[var(--dt-text-muted)] text-center w-full -mt-1">
           <InlineText
             section="header"

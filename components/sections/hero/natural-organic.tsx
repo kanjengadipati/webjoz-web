@@ -280,7 +280,7 @@ export default function HeroNaturalOrganic({
         </motion.div>
 
         {/* Opening hours if set */}
-        {h.opening_hours && (
+        {(h.opening_hours || isEditorMode) && (
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

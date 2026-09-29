@@ -76,7 +76,7 @@ export default function BenefitsHowItWorks({
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
           />
-          {b.subtitle && (
+          {(b.subtitle || isEditorMode) && (
             <InlineText
               section="benefits"
               fieldKey="subtitle"

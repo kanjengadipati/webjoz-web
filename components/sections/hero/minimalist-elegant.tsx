@@ -47,7 +47,7 @@ export default function HeroMinimalistElegant({
           zIndex: 1,
         }}
       >
-        {h.eyebrow && (
+        {(h.eyebrow || isEditorMode) && (
           <motion.span
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -212,7 +212,7 @@ export default function HeroMinimalistElegant({
           )}
         </motion.div>
 
-        {h.badge_text && (
+        {(h.badge_text || isEditorMode) && (
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

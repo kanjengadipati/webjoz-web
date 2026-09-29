@@ -46,7 +46,7 @@ export default function CtaCentered({
           <InlineText
             section="cta"
             fieldKey="button_text"
-            value={c.button_text || (isEN ? "Contact Us" : "Hubungi Kami")}
+            value={isEditorMode ? (c.button_text ?? "") : (c.button_text || (isEN ? "Contact Us" : "Hubungi Kami"))} placeholder={(isEN ? "Contact Us" : "Hubungi Kami")}
             onUpdateField={onUpdateField}
             isEditorMode={isEditorMode}
             isSelected={isSelected}

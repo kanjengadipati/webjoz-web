@@ -93,7 +93,7 @@ export default function BenefitsTrustBar({
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
               onEditingStateChange={onEditingStateChange}
             />
-            {b?.subtitle && (
+            {(b?.subtitle || isEditorMode) && (
               <InlineText
                 section="benefits"
                 fieldKey="subtitle"

@@ -28,7 +28,7 @@ export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, 
     >
       <div className="max-w-7xl mx-auto">
         <div id="hero-header" className="text-center mb-20 max-w-3xl mx-auto">
-          {eyebrow && (
+          {(eyebrow || isEditorMode) && (
             <InlineText
               section="menu"
               fieldKey="eyebrow"
@@ -55,7 +55,7 @@ export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, 
             className="text-4xl md:text-6xl font-light tracking-tight mb-6 text-dt-text font-dt-heading"
           />
           <div className="w-16 h-[2px] bg-dt-primary mx-auto mb-6"></div>
-          {subtitle && (
+          {(subtitle || isEditorMode) && (
             <InlineText
               section="menu"
               fieldKey="subtitle"
@@ -123,12 +123,22 @@ export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, 
                         <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-black/40 to-transparent pointer-events-none"></div>
                       )}
 
-                      {badge && (
+                      {(badge || isEditorMode) && (
                         <div
                           id={`hero-badge-${catIndex}-${itemIndex}`}
                           className="absolute top-4 left-4 bg-white/90 dark:bg-black/80 backdrop-blur-xs text-dt-text text-[10px] font-semibold tracking-widest uppercase px-3 py-1.5 border border-dt-border rounded-none shadow-xs font-dt-heading"
                         >
-                          {badge}
+                          <InlineText
+                          section="menu"
+                          fieldKey={"categories." + catIndex + ".items." + itemIndex + ".badge"}
+                          value={badge ?? ""}
+                          onUpdateField={onUpdateField}
+                          isEditorMode={isEditorMode}
+                          isSelected={isSelected}
+                          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                          onEditingStateChange={onEditingStateChange}
+                          as="span"
+                        />
                         </div>
                       )}
 

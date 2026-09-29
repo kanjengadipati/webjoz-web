@@ -669,19 +669,39 @@ export function WorksCard({
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
           />
         )}
-        {item.year && (
+        {(item.year || isEditorMode) && (
           <span
             className="absolute top-3 left-3 z-10 px-2.5 py-1 text-[11px] font-bold rounded-full text-white bg-black/55 backdrop-blur-sm"
           >
-            {item.year}
+            <InlineText
+              section="works"
+              fieldKey={`items.${idx}.year`}
+              value={item.year ?? ""}
+              onUpdateField={upd("year")}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="span"
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
           </span>
         )}
       </div>
 
       <div className={`flex flex-col gap-3 p-5 md:p-6 flex-1 ${featured ? "lg:justify-center" : ""}`}>
-        {item.category && (
+        {(item.category || isEditorMode) && (
           <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: "var(--dt-primary)" }}>
-            {item.category}
+            <InlineText
+              section="works"
+              fieldKey={`items.${idx}.category`}
+              value={item.category ?? ""}
+              onUpdateField={upd("category")}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="span"
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
           </span>
         )}
         <h3 className="text-lg md:text-xl font-bold leading-snug" style={{ color: "var(--dt-text)", fontFamily: "var(--dt-heading-font)" }}>

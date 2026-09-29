@@ -83,7 +83,7 @@ export default function HeroBentoGrid({
               gap: "1.25rem",
             }}
           >
-            {h.eyebrow && (
+            {(h.eyebrow || isEditorMode) && (
               <span
                 style={{
                   display: "inline-block",
@@ -329,7 +329,7 @@ export default function HeroBentoGrid({
               ))}
             </div>
             )}
-            {h.badge_text && (
+            {(h.badge_text || isEditorMode) && (
               <p style={{ margin: 0, fontSize: "0.65rem", color: "var(--dt-text-muted)" }}>
                 <InlineText
                   section="hero"

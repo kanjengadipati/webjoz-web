@@ -43,7 +43,7 @@ export default function ClassicSplit({
             <InlineText
               section="contact"
               fieldKey="eyebrow"
-              value={c.eyebrow || (isEN ? "Contact Us" : "Hubungi Kami")}
+              value={c.eyebrow ?? ""}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -67,7 +67,7 @@ export default function ClassicSplit({
             <InlineText
               section="contact"
               fieldKey="subtitle"
-              value={c.subtitle || (isEN ? "Have a question or want to discuss? Send a message and we'll respond within 24 hours." : "Punya pertanyaan atau ingin diskusi? Kirim pesan dan kami akan merespons dalam waktu 24 jam.")}
+              value={c.subtitle ?? ""}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -125,7 +125,7 @@ export default function ClassicSplit({
               <InlineText
                 section="contact"
                 fieldKey="form_title"
-                value={c.form_title || (isEN ? "Contact Us" : "Hubungi Kami")}
+                value={c.form_title ?? ""}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}

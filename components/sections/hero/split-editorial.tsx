@@ -135,7 +135,7 @@ export default function HeroSplitEditorial({
           gap: "2rem",
         }}
       >
-        {h.eyebrow && (
+        {(h.eyebrow || isEditorMode) && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}

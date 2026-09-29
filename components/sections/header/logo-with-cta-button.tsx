@@ -44,7 +44,7 @@ export default function LogoWithCtaButton({
             as="span"
             className="truncate block leading-tight text-[var(--dt-text)]"
           />
-          {header?.tagline && (
+          {(header?.tagline || isEditorMode) && (
             <InlineText
               section="header"
               fieldKey="tagline"

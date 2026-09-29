@@ -175,8 +175,8 @@ export default function PricingCards({
                         <InlineText
                           section="pricing"
                           fieldKey={`plans.${idx}.badge`}
-                          value={plan.badge || (isFeatured ? (isEN ? "Most Popular" : "Paling Populer") : "")}
-                          placeholder="Badge..."
+                          value={plan.badge ?? ""}
+                          placeholder={isFeatured ? (isEN ? "Most Popular" : "Paling Populer") : "Badge..."}
                           onUpdateField={(_, __, val) => handleUpdatePlan(idx, "badge", val)}
                           isEditorMode={isEditorMode}
                           isSelected={isSelected}
@@ -349,7 +349,7 @@ export default function PricingCards({
                     <InlineText
                       section="pricing"
                       fieldKey={`plans.${idx}.cta_text`}
-                      value={plan.cta_text || (isEN ? "Choose Plan" : "Pilih Paket")}
+                      value={isEditorMode ? (plan.cta_text ?? "") : (plan.cta_text || (isEN ? "Choose Plan" : "Pilih Paket"))} placeholder={(isEN ? "Choose Plan" : "Pilih Paket")}
                       onUpdateField={(_, __, val) => handleUpdatePlan(idx, "cta_text", val)}
                       isEditorMode={isEditorMode}
                       isSelected={isSelected}

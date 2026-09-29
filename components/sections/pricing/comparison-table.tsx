@@ -338,7 +338,7 @@ export default function PricingComparisonTable({
                           <InlineText
                             section="pricing"
                             fieldKey={`plans.${pIdx}.cta_text`}
-                            value={plan.cta_text || (isEN ? "Choose" : "Pilih")}
+                            value={isEditorMode ? (plan.cta_text ?? "") : (plan.cta_text || (isEN ? "Choose" : "Pilih"))} placeholder={(isEN ? "Choose" : "Pilih")}
                             onUpdateField={(_, __, val) => handleUpdatePlan(pIdx, "cta_text", val)}
                             isEditorMode={isEditorMode}
                             isSelected={isSelected}

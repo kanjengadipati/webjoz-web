@@ -40,7 +40,7 @@ export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSe
     >
       <div className="max-w-7xl mx-auto">
         <div id="bento-header" className="text-center mb-16 max-w-2xl mx-auto">
-          {eyebrow && (
+          {(eyebrow || isEditorMode) && (
             <InlineText
               section="menu"
               fieldKey="eyebrow"
@@ -66,7 +66,7 @@ export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSe
             as="h2"
             className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-dt-text font-dt-heading"
           />
-          {subtitle && (
+          {(subtitle || isEditorMode) && (
             <InlineText
               section="menu"
               fieldKey="subtitle"
@@ -148,12 +148,22 @@ export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSe
                       />
                     )}
 
-                    {badge && (
+                    {(badge || isEditorMode) && (
                       <div
                         id={`bento-badge-${catIndex}-${itemIndex}`}
                         className={`absolute top-4 ${isEditorMode && onDeleteItem ? "right-14" : "right-4"} z-10 bg-dt-primary text-dt-primary-foreground text-[10px] md:text-xs font-semibold tracking-wider uppercase px-2.5 py-1 rounded-full shadow-sm font-dt-heading`}
                       >
-                        {badge}
+                        <InlineText
+                          section="menu"
+                          fieldKey={"categories." + catIndex + ".items." + itemIndex + ".badge"}
+                          value={badge ?? ""}
+                          onUpdateField={onUpdateField}
+                          isEditorMode={isEditorMode}
+                          isSelected={isSelected}
+                          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                          onEditingStateChange={onEditingStateChange}
+                          as="span"
+                        />
                       </div>
                     )}
 

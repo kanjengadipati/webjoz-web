@@ -90,7 +90,7 @@ export default function DynamicLeadForm({
             <InlineText
               section={sectionKey}
               fieldKey="button_text"
-              value={buttonText || (isEN ? "Send Message" : "Kirim Pesan")}
+              value={isEditorMode ? (buttonText ?? "") : (buttonText || (isEN ? "Send Message" : "Kirim Pesan"))} placeholder={(isEN ? "Send Message" : "Kirim Pesan")}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}

@@ -57,7 +57,7 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
     >
       {/* Header */}
       <div className="mb-16 max-w-2xl">
-        {eyebrow && (
+        {(eyebrow || isEditorMode) && (
           <InlineText
             section="catalog"
             fieldKey="eyebrow"
@@ -89,7 +89,7 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
             fontWeight: "var(--dt-heading-weight, 300)" as any,
           }}
         />
-        {subtitle && (
+        {(subtitle || isEditorMode) && (
           <InlineText
             section="catalog"
             fieldKey="subtitle"
@@ -193,7 +193,7 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
                             borderRadius: "var(--dt-radius)",
                           }}
                         >
-                          {item.badge}
+                          <InlineText section="catalog" fieldKey={"categories." + catIdx + ".items." + index + ".badge"} value={item.badge ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
                         </div>
                       )}
 
@@ -275,7 +275,7 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
                       {item.capacity != null && item.capacity > 0 && (
                         <div className="mt-2">
                           <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 10%, transparent)", color: "var(--dt-primary)" }}>
-                            s/d {item.capacity} tamu
+                            s/d <InlineText section="catalog" fieldKey={"categories." + catIdx + ".items." + index + ".capacity"} value={item.capacity != null ? String(item.capacity) : ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" /> tamu
                           </span>
                         </div>
                       )}
