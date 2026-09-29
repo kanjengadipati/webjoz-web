@@ -192,8 +192,8 @@ export default function PricingHorizontalRows({
                           <InlineText
                             section="pricing"
                             fieldKey={`plans.${idx}.badge`}
-                            value={plan.badge || (isFeatured ? (isEN ? "Featured" : "Pilihan Utama") : "")}
-                            placeholder="Badge..."
+                            value={plan.badge ?? ""}
+                            placeholder={isFeatured ? (isEN ? "Featured" : "Pilihan Utama") : "Badge..."}
                             onUpdateField={(_, __, val) => handleUpdatePlan(idx, "badge", val)}
                             isEditorMode={isEditorMode}
                             isSelected={isSelected}
@@ -318,7 +318,7 @@ export default function PricingHorizontalRows({
                       <InlineText
                         section="pricing"
                         fieldKey={`plans.${idx}.cta_text`}
-                        value={plan.cta_text || (isEN ? "Select" : "Pilih")}
+                        value={isEditorMode ? (plan.cta_text ?? "") : (plan.cta_text || (isEN ? "Select" : "Pilih"))} placeholder={(isEN ? "Select" : "Pilih")}
                         onUpdateField={(_, __, val) => handleUpdatePlan(idx, "cta_text", val)}
                         isEditorMode={isEditorMode}
                         isSelected={isSelected}

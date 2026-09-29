@@ -44,7 +44,7 @@ export default function StackedLogoTagline({
             as="span"
           />
         </span>
-        {header?.tagline && (
+        {(header?.tagline || isEditorMode) && (
           <span className="text-[11px] text-[var(--dt-text-muted)] text-center italic tracking-wide">
             <InlineText
               section="header"

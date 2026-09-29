@@ -47,7 +47,7 @@ export function HeroContent({
         collapseSheetForInlineEdit={collapseSheetForInlineEdit}
         onEditingStateChange={onEditingStateChange}
       />
-      {h.opening_hours && (
+      {(h.opening_hours || isEditorMode) && (
         <span className="px-3 py-1 md:px-4 md:py-1.5 text-xs md:text-sm font-semibold" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "var(--dt-surface)", borderRadius: "9999px", color: "var(--dt-text)", border: "1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}>
           <Clock style={{ width: 14, height: 14, color: "var(--dt-text-muted)" }} />
           <InlineText section="hero" fieldKey="opening_hours" value={h.opening_hours ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />

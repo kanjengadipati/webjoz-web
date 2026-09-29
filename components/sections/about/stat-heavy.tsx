@@ -66,7 +66,7 @@ export default function AboutStatHeavy({
           onEditingStateChange={onEditingStateChange}
         />
       </div>
-      {a.image_url && (
+      {(a.image_url || isEditorMode) && (
         <div style={{ position: "relative", marginTop: "2.5rem", borderRadius: "var(--dt-radius-lg)", overflow: "hidden", maxHeight: "300px" }}>
           <InlineImage
             section="about"

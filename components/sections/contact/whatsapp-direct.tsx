@@ -54,7 +54,7 @@ export default function WhatsAppDirect({
           <InlineText
             section="contact"
             fieldKey="title"
-            value={c.title || (isEN ? "Get in Touch Directly" : "Konsultasi & Pesan Langsung")}
+            value={c.title ?? ""}
             onUpdateField={onUpdateField}
             isEditorMode={isEditorMode}
             isSelected={isSelected}
@@ -69,7 +69,7 @@ export default function WhatsAppDirect({
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
           />
-          <InlineText section="contact" fieldKey="subtitle" value={c.subtitle || (isEN ? "Chat with our team directly on WhatsApp for instant assistance, orders, and inquiries." : "Hubungi tim kami langsung melalui WhatsApp untuk konsultasi cepat, pemesanan, dan informasi lengkap.")} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" multiline style={{ color: "var(--dt-text-muted)", fontSize: "0.95rem", maxWidth: "34rem", margin: "0 auto", lineHeight: 1.6 } as any} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+          <InlineText section="contact" fieldKey="subtitle" value={c.subtitle ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" multiline style={{ color: "var(--dt-text-muted)", fontSize: "0.95rem", maxWidth: "34rem", margin: "0 auto", lineHeight: 1.6 } as any} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
         </div>
 
         {/* Main Grid: WhatsApp Hero Card + Optional Secondary Form/Info */}
@@ -199,7 +199,7 @@ export default function WhatsAppDirect({
               }}
             >
               <h3 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "1.1rem", marginBottom: "1rem" }}>
-                <InlineText section="contact" fieldKey="secondary_form_title" value={c.secondary_form_title || (isEN ? "Or Send Message" : "Atau Kirim Pesan")} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                <InlineText section="contact" fieldKey="secondary_form_title" value={c.secondary_form_title ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
               </h3>
               <DynamicLeadForm
                 buttonText={c.button_text}

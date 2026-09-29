@@ -217,7 +217,7 @@ export default function GalleryLightboxStory({
                 )}
               </div>
             )}
-            {item.image_credit?.name && (
+            {(item.image_credit?.name || isEditorMode) && (
               <div className="absolute bottom-1 right-2 z-10">
                 <PhotoCredit
                   credit={item.image_credit}

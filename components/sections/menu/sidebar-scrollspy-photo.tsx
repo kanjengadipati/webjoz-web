@@ -95,7 +95,7 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
     >
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div id="scrollspy-header" className="mb-16">
-          {eyebrow && (
+          {(eyebrow || isEditorMode) && (
             <InlineText
               section="menu"
               fieldKey="eyebrow"
@@ -121,7 +121,7 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
             as="h2"
             className="text-3xl md:text-5xl font-bold tracking-tight text-dt-text font-dt-heading"
           />
-          {subtitle && (
+          {(subtitle || isEditorMode) && (
             <InlineText
               section="menu"
               fieldKey="subtitle"
@@ -143,9 +143,6 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
             id="scrollspy-desktop-sidebar"
             className="hidden lg:block sticky top-24 w-64 shrink-0 border-l border-dt-border pl-6"
           >
-            <h3 className="text-xs font-bold uppercase tracking-wider text-dt-text-muted mb-6 font-dt-heading">
-              Menu Categories
-            </h3>
             <nav className="flex flex-col gap-4">
               {categories.map((category, index) => {
                 const isActive = activeCategory === category.name;
@@ -231,12 +228,22 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
                           />
 
-                          {badge && (
+                          {(badge || isEditorMode) && (
                             <div
                               id={`scrollspy-badge-${index}-${itemIndex}`}
                               className="absolute top-3 left-3 bg-dt-primary text-dt-primary-foreground text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs font-dt-heading"
                             >
-                              {badge}
+                              <InlineText
+                                section="menu"
+                                fieldKey={"categories." + index + ".items." + itemIndex + ".badge"}
+                                value={badge ?? ""}
+                                onUpdateField={onUpdateField}
+                                isEditorMode={isEditorMode}
+                                isSelected={isSelected}
+                                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                                onEditingStateChange={onEditingStateChange}
+                                as="span"
+                              />
                             </div>
                           )}
                         </div>
@@ -255,13 +262,6 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
                             )}
                           </div>
 
-                          {badge && (
-                            <div className="mt-4 pt-3 border-t border-dt-border/50">
-                              <span className="text-[10px] font-semibold text-dt-primary uppercase tracking-widest font-dt-heading">
-                                Featured Culinary Highlight
-                              </span>
-                            </div>
-                          )}
                         </div>
 
                       </div>

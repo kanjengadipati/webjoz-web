@@ -75,7 +75,7 @@ export default function TransparentOverlay({
             as="span"
             className="truncate block leading-tight"
           />
-          {header?.tagline && (
+          {(header?.tagline || isEditorMode) && (
             <InlineText
               section="header"
               fieldKey="tagline"

@@ -42,7 +42,7 @@ export default function CtaCard({
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
           />
-          {c.subheadline && (
+          {(c.subheadline || isEditorMode) && (
             <InlineText
               section="cta"
               fieldKey="subheadline"
@@ -63,7 +63,7 @@ export default function CtaCard({
             <InlineText
               section="cta"
               fieldKey="button_text"
-              value={c.button_text || (isEN ? "Contact Us" : "Hubungi Kami")}
+              value={isEditorMode ? (c.button_text ?? "") : (c.button_text || (isEN ? "Contact Us" : "Hubungi Kami"))} placeholder={(isEN ? "Contact Us" : "Hubungi Kami")}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -73,7 +73,7 @@ export default function CtaCard({
               onEditingStateChange={onEditingStateChange}
             /> <ArrowRight style={{ width: 16, height: 16, flexShrink: 0 }} />
           </a>
-          {c.trust_signal && (
+          {(c.trust_signal || isEditorMode) && (
             <InlineText
               section="cta"
               fieldKey="trust_signal"

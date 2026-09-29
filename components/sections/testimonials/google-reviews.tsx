@@ -76,7 +76,7 @@ export default function TestimonialsGoogleReviews({
 
         {/* Section header */}
         <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
-          {t.eyebrow && (
+          {(t.eyebrow || isEditorMode) && (
             <InlineText
               section="testimonials"
               fieldKey="eyebrow"
@@ -102,7 +102,7 @@ export default function TestimonialsGoogleReviews({
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
           />
-          {t.subtitle && (
+          {(t.subtitle || isEditorMode) && (
             <InlineText
               section="testimonials"
               fieldKey="subtitle"
@@ -182,7 +182,7 @@ export default function TestimonialsGoogleReviews({
                       <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" style={{ fontWeight: 700, color: "var(--dt-text)", fontSize: "0.875rem", margin: 0, lineHeight: 1.3 }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                       {(item.role || item.company || isEditorMode) && (
                         <p style={{ color: "var(--dt-text-muted)", fontSize: "0.75rem", margin: 0, lineHeight: 1.3 }}>
-                          <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={item.role ?? ""} placeholder="Jabatan / Peran" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />{item.company && (
+                          <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={item.role ?? ""} placeholder="Jabatan / Peran" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />{(item.company || isEditorMode) && (
                           <span>
                             <span> · </span>
                             <InlineText section="testimonials" fieldKey={`items.${idx}.company`} value={item.company ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />

@@ -202,7 +202,7 @@ export default function HeroFullBleed({
         </motion.div>
 
         {/* Opening Hours Badge (optional) */}
-        {h.opening_hours && (
+        {(h.opening_hours || isEditorMode) && (
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}

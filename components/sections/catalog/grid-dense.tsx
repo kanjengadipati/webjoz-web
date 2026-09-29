@@ -59,7 +59,7 @@ export default function CatalogGridDense({ catalog, onUpdateField, isEditorMode,
           <InlineText
             section="catalog"
             fieldKey="eyebrow"
-            value={catalog.eyebrow ?? "Koleksi Produk"}
+            value={catalog.eyebrow ?? ""}
             onUpdateField={onUpdateField}
             isEditorMode={isEditorMode}
             isSelected={isSelected}

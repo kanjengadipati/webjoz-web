@@ -40,13 +40,15 @@ export default function OverlayMap({ contact: c, onSubmitLead, leadSubmitting, l
       <div className="relative z-10" style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", minHeight: "580px", padding: "1.5rem" }}>
         {hasLeadForm && (
           <div style={{ width: "100%", maxWidth: "420px", background: "color-mix(in srgb, var(--dt-surface) 92%, transparent)", backdropFilter: "blur(12px)", padding: "1.5rem 2rem", borderRadius: "var(--dt-radius-lg)", border: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)" }}>
-            <span style={{ display: "inline-block", padding: "0.2rem 0.6rem", fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: "9999px", background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)", marginBottom: "0.75rem" }}>
-              {isEN ? "Overlay Map" : "Peta Overlay"}
-            </span>
+            {isEditorMode && (
+              <span style={{ display: "inline-block", padding: "0.2rem 0.6rem", fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: "9999px", background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)", marginBottom: "0.75rem" }}>
+                {isEN ? "Overlay Map" : "Peta Overlay"}
+              </span>
+            )}
             <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)", fontSize: "1.25rem", color: "var(--dt-text)", margin: "0 0 0.25rem" } as any}>
               <InlineText section="contact" fieldKey="title" value={c.title ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             </h2>
-            <InlineText section="contact" fieldKey="subtitle" value={c.subtitle || (isEN ? "Need a quote or partnership info? Fill in the form, the map shows our office location." : "Butuh penawaran atau info kerja sama? Isi formulir di bawah, peta di latar menunjukkan lokasi kantor kami.")} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" multiline style={{ fontSize: "0.75rem", color: "var(--dt-text-muted)", marginBottom: "1.25rem", lineHeight: 1.5 } as any} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+            <InlineText section="contact" fieldKey="subtitle" value={c.subtitle ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" multiline style={{ fontSize: "0.75rem", color: "var(--dt-text-muted)", marginBottom: "1.25rem", lineHeight: 1.5 } as any} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             <DynamicLeadForm
               buttonText={c.button_text}
               onUpdateField={onUpdateField}

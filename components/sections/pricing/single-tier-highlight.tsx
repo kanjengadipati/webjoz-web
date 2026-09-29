@@ -93,14 +93,14 @@ export default function PricingSingleTierHighlight({
               {isEditorMode ? (
                 <InlineText
                   section="pricing" fieldKey={`plans.${planIdx}.badge`}
-                  value={plan.badge || (isEN ? "Most Popular" : "Paling Populer")}
-                  placeholder={isEN ? "Badge..." : "Badge..."}
+                  value={plan.badge ?? ""}
+                  placeholder={isEN ? "Most Popular" : "Paling Populer"}
                   onUpdateField={(_, __, val) => handleUpdatePlan("badge", val)}
                   isEditorMode={isEditorMode} isSelected={isSelected}
                   collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange}
                   as="span"
                 />
-              ) : (plan.badge || (isEN ? "Most Popular" : "Paling Populer"))}
+              ) : plan.badge}
             </span>
           )}
 
@@ -128,7 +128,7 @@ export default function PricingSingleTierHighlight({
                 />
               ) : plan.price}
             </span>
-            {plan.period && (
+            {(plan.period || isEditorMode) && (
               <span style={{ color: "color-mix(in srgb, var(--dt-text) 60%, transparent)", fontSize: "1rem" }}>
                 {isEditorMode ? (
                   <InlineText
@@ -183,8 +183,7 @@ export default function PricingSingleTierHighlight({
           >
             {isEditorMode ? (
               <InlineText
-                section="pricing" fieldKey={`plans.${planIdx}.cta_text`} value={plan.cta_text || (isEN ? "Get Started" : "Mulai Sekarang")}
-                placeholder={isEN ? "Button text..." : "Teks tombol..."}
+                section="pricing" fieldKey={`plans.${planIdx}.cta_text`} value={isEditorMode ? (plan.cta_text ?? "") : (plan.cta_text || (isEN ? "Get Started" : "Mulai Sekarang"))} placeholder={(isEN ? "Get Started" : "Mulai Sekarang")}
                 onUpdateField={(_, __, val) => handleUpdatePlan("cta_text", val)}
                 isEditorMode={isEditorMode} isSelected={isSelected}
                 collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange}

@@ -111,7 +111,7 @@ export default function HeroTechSaaS({
       />
 
       <div style={{ position: "relative", zIndex: 1, maxWidth: "720px", display: "flex", flexDirection: "column", alignItems: "center", gap: "1.5rem" }}>
-        {h.eyebrow && (
+        {(h.eyebrow || isEditorMode) && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -279,7 +279,7 @@ export default function HeroTechSaaS({
           )}
         </motion.div>
 
-        {h.badge_text && (
+        {(h.badge_text || isEditorMode) && (
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

@@ -41,7 +41,7 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
           borderRadius: "var(--dt-radius, 0px)"
         }}
       >
-        {eyebrow && (
+        {(eyebrow || isEditorMode) && (
           <InlineText
             section="catalog"
             fieldKey="eyebrow"
@@ -76,7 +76,7 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
             fontFamily: "var(--dt-heading-font, sans-serif)"
           }}
         />
-        {subtitle && (
+        {(subtitle || isEditorMode) && (
           <InlineText
             section="catalog"
             fieldKey="subtitle"
@@ -151,7 +151,7 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
                           borderColor: "var(--dt-border)"
                         }}
                       >
-                        {item.badge}
+                        <InlineText section="catalog" fieldKey={"categories." + catIdx + ".items." + index + ".badge"} value={item.badge ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
                       </div>
                     )}
                   </div>
@@ -218,7 +218,7 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
                       {item.capacity != null && item.capacity > 0 && (
                         <div className="mb-2">
                           <span className="inline-flex items-center gap-1 text-[11px] font-black uppercase px-2 py-0.5 border-2" style={{ borderColor: "var(--dt-border)", background: "var(--dt-accent)", color: "var(--dt-primary-foreground)" }}>
-                            s/d {item.capacity} tamu
+                            s/d <InlineText section="catalog" fieldKey={"categories." + catIdx + ".items." + index + ".capacity"} value={item.capacity != null ? String(item.capacity) : ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" /> tamu
                           </span>
                         </div>
                       )}

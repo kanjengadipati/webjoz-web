@@ -79,7 +79,7 @@ export default function HeroNeoBrutalist({
       >
         {/* Left */}
         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-          {h.eyebrow && (
+          {(h.eyebrow || isEditorMode) && (
             <motion.div
               initial={{ opacity: 0, x: -16 }}
               animate={{ opacity: 1, x: 0 }}
@@ -261,7 +261,7 @@ export default function HeroNeoBrutalist({
             )}
           </motion.div>
 
-          {h.badge_text && (
+          {(h.badge_text || isEditorMode) && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

@@ -100,13 +100,11 @@ export default function FaqSidebarCategory({
 }: FaqVariantProps) {
   const isEN = language === "en";
   const rawItems = faq.items || [];
-  const defaultCats = isEN ? ["General", "Services", "Orders"] : ["Umum", "Layanan", "Pemesanan"];
-  const items = rawItems.map((it, idx) => ({
-    ...it,
-    category: it.category || defaultCats[idx % defaultCats.length],
-  }));
+  // Never invent category names on the public site — only categories the user
+  // actually authored. Items without a category simply have no pill.
+  const items = rawItems.map((it) => ({ ...it, category: it.category || "" }));
   const categories = [...new Set(items.map(i => i.category).filter(Boolean))] as string[];
-  const [activeCat, setActiveCat] = useState(categories[0] || (isEN ? "General" : "Umum"));
+  const [activeCat, setActiveCat] = useState(categories[0] || "");
 
   const handleUpdateItem = (index: number, field: string, value: string) => {
     const nextItems = [...items];
@@ -120,7 +118,7 @@ export default function FaqSidebarCategory({
     nextItems.push({
       question: isEN ? "New Question" : "Pertanyaan Baru",
       answer: isEN ? "Answer to the question goes here." : "Jawaban pertanyaan Anda di sini.",
-      category: activeCat || (isEN ? "General" : "Umum"),
+      category: activeCat,
     });
     onUpdateField("faq", "items", nextItems);
   };
