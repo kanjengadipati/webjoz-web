@@ -18,7 +18,6 @@ export default function MinimalCentered({
   onEditingStateChange,
   language = "id",
 }: ContactVariantProps) {
-  const isEN = language === "en";
   const hasLeadForm = Boolean(c.show_lead_form && onSubmitLead);
 
   return (
