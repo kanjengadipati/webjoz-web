@@ -571,7 +571,7 @@ export const PreviewSectionWrapper: React.FC<{
           onSelectSection?.(section);
         }}
         className={`group relative transition-all duration-150 scroll-mt-20 ${
-          isGalleryOpen ? "z-[80]" : isSelected ? "z-20" : "z-10"
+          isGalleryOpen ? "z-[80]" : section === "header" ? (isSelected ? "z-40" : "z-30") : (isSelected ? "z-20" : "z-10")
         } ${isSelected
           ? "outline outline-2 outline-primary/60 outline-offset-[-2px]"
           : "hover:outline hover:outline-1 hover:outline-slate-300/40 hover:outline-offset-[-1px]"
@@ -580,7 +580,7 @@ export const PreviewSectionWrapper: React.FC<{
         {/* Section label + variant — fused button group (Top Left) */}
         <div
           ref={panelRef}
-          className={`absolute top-2 left-2.5 ${isGalleryOpen ? "z-[90]" : "z-[30]"} transition-all duration-150 ${
+          className={`absolute top-2 left-2.5 ${isGalleryOpen ? "z-[90]" : "z-[70]"} transition-all duration-150 ${
             isSelected || isGalleryOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto"
           }`}
         >
@@ -743,7 +743,7 @@ export const PreviewSectionWrapper: React.FC<{
             e.stopPropagation();
             onRegenSection?.(section);
           }}
-          className={`absolute top-2 right-2.5 z-[60] h-6 inline-flex items-center gap-1.5 bg-primary/90 backdrop-blur-md text-primary-foreground border border-primary/50 hover:bg-primary hover:border-primary text-[9px] font-bold px-2.5 rounded-full cursor-pointer transition-all active:scale-95 duration-150 focus:outline-none focus:ring-1 focus:ring-primary shadow-sm ${
+          className={`absolute top-2 right-2.5 z-[70] h-6 inline-flex items-center gap-1.5 bg-primary/90 backdrop-blur-md text-primary-foreground border border-primary/50 hover:bg-primary hover:border-primary text-[9px] font-bold px-2.5 rounded-full cursor-pointer transition-all active:scale-95 duration-150 focus:outline-none focus:ring-1 focus:ring-primary shadow-sm ${
             isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
           }`}
         >
