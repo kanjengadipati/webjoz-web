@@ -2093,7 +2093,7 @@ export default function SectionForms({
                     )}
                   </div>
                   <div className="px-3 py-2 space-y-0.5 bg-[#232630]">
-                    <p className="text-[9px] uppercase tracking-widest text-slate-500">{ogDomain}</p>
+                    <p className="text-[9px] uppercase tracking-widest text-slate-500 truncate">{ogDomain}</p>
                     <p className={`text-[12px] font-bold leading-snug line-clamp-2 ${ogTitle ? "text-slate-100" : "text-slate-600 italic"}`}>
                       {ogTitle || "Judul belum diisi"}
                     </p>
