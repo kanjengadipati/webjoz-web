@@ -621,6 +621,7 @@ export default function SiteEditorPage() {
 
       if (nextSection !== activeTabRef.current) {
         shouldScrollToActiveRef.current = false;
+        const prevSection = activeTabRef.current;
         activeTabRef.current = nextSection;
         setActiveTab(nextSection);
         if (nextSection === "seo") {
@@ -628,6 +629,12 @@ export default function SiteEditorPage() {
             setSheetCollapsed(false);
           } else {
             setDesktopSidebarOpen(true);
+          }
+        } else if (prevSection === "seo") {
+          if (window.innerWidth < 768) {
+            setSheetCollapsed(true);
+          } else {
+            setDesktopSidebarOpen(false);
           }
         }
       }
@@ -646,7 +653,7 @@ export default function SiteEditorPage() {
     };
   }, [device, pendingDiff]);
 
-  // Open sidebar editor when requested (e.g. from SEO preview banner)
+  // Open/close sidebar editor when SEO section scrolls in/out of view
   useEffect(() => {
     const handleOpenSeo = () => {
       setActiveTab("seo");
@@ -658,9 +665,19 @@ export default function SiteEditorPage() {
       }
     };
 
+    const handleCloseSeo = () => {
+      if (window.innerWidth < 768) {
+        setSheetCollapsed(true);
+      } else {
+        setDesktopSidebarOpen(false);
+      }
+    };
+
     window.addEventListener("webjoz:open-seo-editor", handleOpenSeo);
+    window.addEventListener("webjoz:close-seo-editor", handleCloseSeo);
     return () => {
       window.removeEventListener("webjoz:open-seo-editor", handleOpenSeo);
+      window.removeEventListener("webjoz:close-seo-editor", handleCloseSeo);
     };
   }, []);
 
