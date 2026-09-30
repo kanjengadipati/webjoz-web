@@ -2324,7 +2324,7 @@ export default function SiteEditorPage() {
                           </div>
                           <div className="h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
                             <div
-                              className="h-full rounded-full bg-amber-500 transition-all duration-500"
+                              className="h-full rounded-full bg-primary transition-all duration-500"
                               style={{
                                 width: tenantUsage.max_ai_generates <= 0
                                   ? 100
@@ -2342,7 +2342,7 @@ export default function SiteEditorPage() {
                           </div>
                           <div className="h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
                             <div
-                              className="h-full rounded-full bg-violet-500 transition-all duration-500"
+                              className="h-full rounded-full bg-primary transition-all duration-500"
                               style={{
                                 width: `${(tenantUsage.max_section_regens ?? 0) <= 0
                                   ? 100
@@ -2360,7 +2360,7 @@ export default function SiteEditorPage() {
                           </div>
                           <div className="h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
                             <div
-                              className="h-full rounded-full bg-cyan-500 transition-all duration-500"
+                              className="h-full rounded-full bg-primary transition-all duration-500"
                               style={{
                                 width: `${tenantUsage.max_design_regens <= 0
                                   ? 100
@@ -3471,13 +3471,12 @@ export default function SiteEditorPage() {
             {tenantUsage && (
               <div className="flex-shrink-0 border-t border-border px-3.5 py-2 bg-[#111318]">
                 <div className="flex items-center gap-2.5">
-                  <SparkleGenAI className="h-3.5 w-3.5 text-primary flex-shrink-0" />
-                  <span className="text-[9px] font-bold uppercase tracking-widest text-primary shrink-0">{t("dashboard.sitesEditor.aiUsage")}</span>
+                  <span className="text-[9px] font-medium text-muted-foreground shrink-0">{t("dashboard.sitesEditor.aiUsage")}</span>
                   <div className="flex flex-1 items-center gap-3">
                     {[
-                      { label: "Gen", count: tenantUsage.usage.generate_count ?? 0, max: tenantUsage.max_ai_generates, color: "bg-amber-500" },
-                      { label: "Section", count: tenantUsage.usage.section_regen_count ?? 0, max: tenantUsage.max_section_regens ?? 0, color: "bg-violet-500" },
-                      { label: "Design", count: tenantUsage.usage.design_regen_count ?? 0, max: tenantUsage.max_design_regens ?? 0, color: "bg-cyan-500" },
+                      { label: "Gen", count: tenantUsage.usage.generate_count ?? 0, max: tenantUsage.max_ai_generates, color: "bg-primary" },
+                      { label: "Section", count: tenantUsage.usage.section_regen_count ?? 0, max: tenantUsage.max_section_regens ?? 0, color: "bg-primary" },
+                      { label: "Design", count: tenantUsage.usage.design_regen_count ?? 0, max: tenantUsage.max_design_regens ?? 0, color: "bg-primary" },
                     ].map(({ label, count, max, color }) => (
                       <div key={label} className="flex-1 flex items-center gap-1.5 min-w-0">
                         <span className="text-[9px] text-slate-500 shrink-0">{label}</span>
@@ -3508,14 +3507,10 @@ export default function SiteEditorPage() {
                   setAppealed(false);
                 }}
                   disabled={publishing}
-                  className="flex items-center gap-2 rounded-full px-5 py-2 text-sm font-extrabold text-primary-foreground shadow-[0_8px_24px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 disabled:opacity-70"
-                  style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
+                  className="flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold bg-primary text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
                 >
                   {publishing ? <Loader2 className="w-4 h-4 animate-spin" /> : (
-                    <span className="relative flex h-2.5 w-2.5 shrink-0">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-80" />
-                      <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.85)] ring-1 ring-black/30" />
-                    </span>
+                    <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-500" />
                   )}
                   {publishing ? t("dashboard.sitesEditor.applying") : t("dashboard.sitesEditor.applyLive")}
                 </button>
@@ -3527,10 +3522,9 @@ export default function SiteEditorPage() {
                   setModerationViolations(null);
                   setAppealed(false);
                 }}
-                  className="flex items-center gap-2 rounded-full px-5 py-2 text-sm font-extrabold text-primary-foreground shadow-[0_8px_24px_color-mix(in_srgb,var(--primary)_35%,transparent)] transition-all hover:scale-105 active:scale-95 hover:brightness-110"
-                  style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #000))" }}
+                  className="flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold bg-primary text-primary-foreground transition-colors hover:bg-primary/90"
                 >
-                  <Rocket className="w-4 h-4 animate-bounce" style={{ animationDuration: "2.8s" }} />
+                  <Rocket className="w-4 h-4" />
                   {t("dashboard.sitesEditor.publish")}
                 </button>
               )}
