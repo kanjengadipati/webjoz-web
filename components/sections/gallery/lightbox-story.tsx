@@ -197,7 +197,7 @@ export default function GalleryLightboxStory({
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
             {(item.caption || isEditorMode) && (
-              <div className="absolute inset-x-0 bottom-0 p-3 md:p-4">
+              <div className={`absolute inset-x-0 bottom-0 p-3 md:p-4 ${isEditorMode ? "z-30 pointer-events-auto" : ""}`}>
                 {isEditorMode ? (
                   <InlineText
                     section="gallery"

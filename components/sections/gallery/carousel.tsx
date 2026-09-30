@@ -83,7 +83,7 @@ export default function GalleryCarousel({
               />
             )}
             {(item.caption || isEditorMode) && (
-              <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
+              <div className={`absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent ${isEditorMode ? "z-30 pointer-events-auto" : ""}`}>
                 {isEditorMode ? (
                   <InlineText
                     section="gallery"

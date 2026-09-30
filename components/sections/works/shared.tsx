@@ -671,7 +671,7 @@ export function WorksCard({
         )}
         {(item.year || isEditorMode) && (
           <span
-            className="absolute top-3 left-3 z-10 px-2.5 py-1 text-[11px] font-bold rounded-full text-white bg-black/55 backdrop-blur-sm"
+            className={`absolute top-3 left-3 px-2.5 py-1 text-[11px] font-bold rounded-full text-white bg-black/55 backdrop-blur-sm ${isEditorMode ? "z-30 pointer-events-auto" : "z-10"}`}
           >
             <InlineText
               section="works"
