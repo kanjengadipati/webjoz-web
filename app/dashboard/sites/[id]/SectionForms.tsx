@@ -3,6 +3,7 @@ import { AiFieldButton, EMOJI_GROUPS, MCF_INPUT_BASE as inputBase_mcf, MCF_INPUT
 import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, RefreshCw, Loader2, Star, Zap, Shield, Award, Heart, CheckCircle, Clock, Globe, Users, TrendingUp, Leaf, Flame, Lightbulb, Target, Truck, ThumbsUp, Lock, Phone, Mail, MapPin, Camera, Utensils, Coffee, ShoppingBag, Wrench, Stethoscope, BookOpen, Home, Building2, Briefcase, Search, Check, RotateCcw, BarChart2, Eye, EyeOff } from "lucide-react";
 import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import FileUpload from "@/components/file-upload";
+import { SIDEBAR_FIELD_CLASS, SIDEBAR_FIELD_CLASS_ICON } from "@/lib/editor-field-class";
 import LocationPicker from "@/components/location-picker";
 import { GoogleSnippetPreview } from "@/components/google-snippet-preview";
 import { isPlaceholderValue, AI_SUGGESTIONS, getAiSuggestions } from "./editor-utils";
@@ -378,12 +379,12 @@ function LinkTypeInput({
   const handleWaChange = (val: string) => {
     const digitsOnly = val.replace(/\D/g, "");
     setWaInput(digitsOnly);
-    
+
     let formattedDigits = digitsOnly;
     if (formattedDigits.startsWith("0")) {
       formattedDigits = "62" + formattedDigits.slice(1);
     }
-    
+
     if (formattedDigits) {
       updateUrl(`https://wa.me/${formattedDigits}`);
     } else {
@@ -399,7 +400,7 @@ function LinkTypeInput({
         digits = defaultWaNumber.replace(/\D/g, "");
         setWaInput(digits);
       }
-      
+
       let formattedDigits = digits;
       if (formattedDigits.startsWith("0")) {
         formattedDigits = "62" + formattedDigits.slice(1);
@@ -456,7 +457,8 @@ function LinkTypeInput({
               value={waInput}
               onChange={(e) => handleWaChange(e.target.value)}
               placeholder="628123456789"
-              className={fieldClass(path, "w-full pl-6 pr-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")}
+              className={fieldClass(path, SIDEBAR_FIELD_CLASS_ICON)}
+
             />
           </div>
           <p className="text-[10px] text-slate-500 leading-normal">
@@ -473,7 +475,7 @@ function LinkTypeInput({
             type="text"
             value={urlValue}
             onChange={(e) => updateUrl(e.target.value)}
-            className={fieldClass(path, "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")}
+            className={fieldClass(path, SIDEBAR_FIELD_CLASS)}
             placeholder="#contact atau https://..."
           />
         </div>
@@ -693,21 +695,22 @@ export default function SectionForms({
               <span>Nama Brand {needsAttention("header.brand_name") && <span className="text-amber-300">⚠️</span>}</span>
               {renderFieldActions("header", "brand_name")}
             </label>
-            <input 
+            <input
               id="field-header.brand_name"
-              type="text" 
-              value={content.header?.brand_name || ""} 
-              onChange={(e) => updateField("header", "brand_name", e.target.value)} 
-              className={fieldClass("header.brand_name", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
+              type="text"
+              value={content.header?.brand_name || ""}
+              onChange={(e) => updateField("header", "brand_name", e.target.value)}
+              className={fieldClass("header.brand_name", SIDEBAR_FIELD_CLASS)}
+
             />
           </div>
           <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-2.5">
             <span className="text-[12px] font-medium text-slate-200">Tampilkan Tombol Navigasi</span>
-            <input 
-              type="checkbox" 
-              checked={!(content.header as any)?.nav_cta_hidden} 
-              onChange={(e) => updateField("header", "nav_cta_hidden", !e.target.checked)} 
-              className="w-4 h-4 accent-primary cursor-pointer" 
+            <input
+              type="checkbox"
+              checked={!(content.header as any)?.nav_cta_hidden}
+              onChange={(e) => updateField("header", "nav_cta_hidden", !e.target.checked)}
+              className="w-4 h-4 accent-primary cursor-pointer"
             />
           </div>
 
@@ -724,7 +727,8 @@ export default function SectionForms({
                   value={content.header?.nav_cta_text || ""}
                   onChange={(e) => updateField("header", "nav_cta_text", e.target.value)}
                   placeholder="cth. Hubungi Kami"
-                  className={fieldClass("header.nav_cta_text", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600")}
+                  className={fieldClass("header.nav_cta_text", `${SIDEBAR_FIELD_CLASS} text-slate-300 placeholder-slate-600`)}
+
                 />
               </div>
 
@@ -842,7 +846,8 @@ export default function SectionForms({
               <span className="flex items-center gap-1">
                 Gambar Hero {needsAttention("hero.image_url") && <span className="text-amber-300">⚠️</span>}
               </span>
-              <AiImageButton businessType={bType} onSelect={(url) => handleAiImage("hero", "image_url", url)} />
+              <AiImageButton businessType={bType} onSelect={(url) => handleAiImage("hero", "image_url", url)}
+ />
             </label>
             <FileUpload label="" value={content.hero.image_url || ""} onChange={(val) => updateField("hero", "image_url", val)} placeholder="https://..." maxWidth={1600} maxHeight={1200} quality={0.8} />
           </div>
@@ -876,12 +881,13 @@ export default function SectionForms({
                 />
               ))}
             </label>
-            <input 
+            <input
               id="field-hero.headline"
-              type="text" 
-              value={content.hero.headline || ""} 
-              onChange={(e) => updateField("hero", "headline", e.target.value)} 
-              className={fieldClass("hero.headline", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
+              type="text"
+              value={content.hero.headline || ""}
+              onChange={(e) => updateField("hero", "headline", e.target.value)}
+              className={fieldClass("hero.headline", SIDEBAR_FIELD_CLASS)}
+
             />
           </div>
           <div className="space-y-1">
@@ -913,12 +919,13 @@ export default function SectionForms({
                 />
               ))}
             </label>
-            <textarea 
+            <textarea
               id="field-hero.subheadline"
-              rows={2} 
-              value={content.hero.subheadline || ""} 
-              onChange={(e) => updateField("hero", "subheadline", e.target.value)} 
-              className={fieldClass("hero.subheadline", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 resize-none bg-transparent")} 
+              rows={2}
+              value={content.hero.subheadline || ""}
+              onChange={(e) => updateField("hero", "subheadline", e.target.value)}
+              className={fieldClass("hero.subheadline", `${SIDEBAR_FIELD_CLASS} resize-none`)}
+
             />
           </div>
           <div className="space-y-1">
@@ -926,15 +933,16 @@ export default function SectionForms({
               <span>Teks Tombol CTA {needsAttention("hero.cta_text") && <span className="text-amber-300">⚠️</span>}</span>
               {renderFieldActions("hero", "cta_text")}
             </label>
-            <input 
+            <input
               id="field-hero.cta_text"
-              type="text" 
-              value={content.hero.cta_text || ""} 
-              onChange={(e) => updateField("hero", "cta_text", e.target.value)} 
-              className={fieldClass("hero.cta_text", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
+              type="text"
+              value={content.hero.cta_text || ""}
+              onChange={(e) => updateField("hero", "cta_text", e.target.value)}
+              className={fieldClass("hero.cta_text", SIDEBAR_FIELD_CLASS)}
+
             />
           </div>
-          <LinkTypeInput 
+          <LinkTypeInput
             urlValue={content.hero.cta_url || ""}
             updateUrl={(val) => {
               updateField("hero", "cta_url", val);
@@ -1016,18 +1024,21 @@ export default function SectionForms({
           <HeroAccessoryEditor
             accessory={content.hero?.accessory || null}
             onChange={(acc) => updateField("hero", "accessory", acc)}
+
           />
 
           {/* Hero stats — baris angka di varian Editorial Split, Personal Billboard, dst */}
           <HeroStatsEditor
             stats={content.hero?.stats || null}
             onChange={(stats) => updateField("hero", "stats", stats)}
+
           />
 
           {/* Dashboard Widget — preview widget untuk hero tech-saas */}
           <HeroDashboardWidgetEditor
             widget={content.hero?.dashboard_widget || null}
             onChange={(dw) => updateField("hero", "dashboard_widget", dw)}
+
           />
         </div>
       )}
@@ -1066,7 +1077,8 @@ export default function SectionForms({
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
               <span>Gambar Tentang</span>
-              <AiImageButton businessType={bType} onSelect={(url) => handleAiImage("about", "image_url", url)} />
+              <AiImageButton businessType={bType} onSelect={(url) => handleAiImage("about", "image_url", url)}
+ />
             </label>
             <FileUpload label="" value={content.about.image_url || ""} onChange={(val) => updateField("about", "image_url", val)} placeholder="https://..." maxWidth={1000} maxHeight={1000} quality={0.8} />
           </div>
@@ -1116,12 +1128,13 @@ export default function SectionForms({
                 />
               ))}
             </label>
-            <input 
+            <input
               id="field-about.title"
-              type="text" 
-              value={content.about.title || ""} 
-              onChange={(e) => updateField("about", "title", e.target.value)} 
-              className={fieldClass("about.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
+              type="text"
+              value={content.about.title || ""}
+              onChange={(e) => updateField("about", "title", e.target.value)}
+              className={fieldClass("about.title", SIDEBAR_FIELD_CLASS)}
+
             />
           </div>
           <div className="space-y-1">
@@ -1138,12 +1151,13 @@ export default function SectionForms({
                 />
               ))}
             </label>
-            <textarea 
+            <textarea
               id="field-about.body"
-              rows={3} 
-              value={content.about.body || ""} 
-              onChange={(e) => updateField("about", "body", e.target.value)} 
-              className={fieldClass("about.body", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 resize-none bg-transparent")} 
+              rows={3}
+              value={content.about.body || ""}
+              onChange={(e) => updateField("about", "body", e.target.value)}
+              className={fieldClass("about.body", `${SIDEBAR_FIELD_CLASS} resize-none`)}
+
             />
           </div>
           {/* Highlight Stats */}
@@ -1239,12 +1253,13 @@ export default function SectionForms({
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
               Judul Section {needsAttention("benefits.title") && <span className="text-amber-300">⚠️</span>}
             </label>
-            <input 
+            <input
               id="field-benefits.title"
-              type="text" 
-              value={content.benefits.title || ""} 
-              onChange={(e) => updateField("benefits", "title", e.target.value)} 
-              className={fieldClass("benefits.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
+              type="text"
+              value={content.benefits.title || ""}
+              onChange={(e) => updateField("benefits", "title", e.target.value)}
+              className={fieldClass("benefits.title", SIDEBAR_FIELD_CLASS)}
+
             />
           </div>
           <div className="space-y-1">
@@ -1280,37 +1295,39 @@ export default function SectionForms({
             <div key={idx} className="border border-border p-2.5 rounded-lg space-y-2 bg-muted/40">
               <div className="flex justify-between items-center">
                 <span className="text-[10px] uppercase font-bold text-slate-400">#{idx + 1}</span>
-                <button 
+                <button
                   type="button"
-                  onClick={() => { 
-                    const n = content.benefits.items.filter((_: any, i: number) => i !== idx); 
-                    updateField("benefits", "items", n); 
-                  }} 
+                  onClick={() => {
+                    const n = content.benefits.items.filter((_: any, i: number) => i !== idx);
+                    updateField("benefits", "items", n);
+                  }}
                   className="text-red-400 text-[11px]"
                 >
                   Hapus
                 </button>
               </div>
-              <input 
-                type="text" 
-                value={item.title || ""} 
-                onChange={(e) => { 
-                  const n = [...content.benefits.items]; 
-                  n[idx].title = e.target.value; 
-                  updateField("benefits", "items", n); 
-                }} 
-                placeholder="Judul" 
-                className={fieldClass(`benefits.items.${idx}.title`, "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")}              />
-              <textarea 
-                rows={2} 
-                value={item.description || ""} 
-                onChange={(e) => { 
-                  const n = [...content.benefits.items]; 
-                  n[idx].description = e.target.value; 
-                  updateField("benefits", "items", n); 
-                }} 
-                placeholder="Deskripsi" 
-                className={fieldClass(`benefits.items.${idx}.description`, "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 resize-none bg-transparent")}              />
+              <input
+                type="text"
+                value={item.title || ""}
+                onChange={(e) => {
+                  const n = [...content.benefits.items];
+                  n[idx].title = e.target.value;
+                  updateField("benefits", "items", n);
+                }}
+                placeholder="Judul"
+                className={fieldClass(`benefits.items.${idx}.title`, SIDEBAR_FIELD_CLASS)}
+              />
+              <textarea
+                rows={2}
+                value={item.description || ""}
+                onChange={(e) => {
+                  const n = [...content.benefits.items];
+                  n[idx].description = e.target.value;
+                  updateField("benefits", "items", n);
+                }}
+                placeholder="Deskripsi"
+                className={fieldClass(`benefits.items.${idx}.description`, `${SIDEBAR_FIELD_CLASS} resize-none`)}
+              />
               {/* Icon + Stat row */}
               <div className="space-y-1.5">
                 <label className="text-[10px] text-slate-500 uppercase">Icon</label>
@@ -1343,12 +1360,12 @@ export default function SectionForms({
               </div>
             </div>
           ))}
-          <button 
+          <button
             type="button"
-            onClick={() => { 
-              const n = [...(content.benefits.items || []), { title: "Manfaat Baru", description: "Deskripsi manfaat ini" }]; 
-              updateField("benefits", "items", n); 
-            }} 
+            onClick={() => {
+              const n = [...(content.benefits.items || []), { title: "Manfaat Baru", description: "Deskripsi manfaat ini" }];
+              updateField("benefits", "items", n);
+            }}
             className="w-full text-[12px] py-1.5 border border-border rounded-lg text-slate-400 hover:bg-white/5 flex items-center justify-center gap-1"
           >
             <Plus className="w-3.5 h-3.5" /> Tambah
@@ -1392,67 +1409,70 @@ export default function SectionForms({
               <span>Judul Section {needsAttention("faq.title") && <span className="text-amber-300">⚠️</span>}</span>
               {renderFieldActions("faq", "title")}
             </label>
-            <input 
-              type="text" 
-              value={content.faq.title || ""} 
-              onChange={(e) => updateField("faq", "title", e.target.value)} 
-              className={fieldClass("faq.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60")} 
+            <input
+              type="text"
+              value={content.faq.title || ""}
+              onChange={(e) => updateField("faq", "title", e.target.value)}
+              className={fieldClass("faq.title", SIDEBAR_FIELD_CLASS)}
+
             />
           </div>
           {content.faq.items?.map((item: any, idx: number) => (
             <div key={idx} className="border border-border p-2.5 rounded-lg space-y-2 bg-muted/40">
               <div className="flex justify-between items-center">
                 <span className="text-[10px] uppercase font-bold text-slate-400">FAQ #{idx + 1}</span>
-                <button 
+                <button
                   type="button"
-                  onClick={() => { 
-                    const n = content.faq.items.filter((_: any, i: number) => i !== idx); 
-                    updateField("faq", "items", n); 
-                  }} 
+                  onClick={() => {
+                    const n = content.faq.items.filter((_: any, i: number) => i !== idx);
+                    updateField("faq", "items", n);
+                  }}
                   className="text-red-400 text-[11px]"
                 >
                   Hapus
                 </button>
               </div>
-              <input 
-                type="text" 
-                value={item.question || ""} 
-                onChange={(e) => { 
-                  const n = [...content.faq.items]; 
-                  n[idx].question = e.target.value; 
-                  updateField("faq", "items", n); 
-                }} 
-                placeholder="Pertanyaan" 
-                className={fieldClass(`faq.items.${idx}.question`, "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")}              />
-              <textarea 
-                rows={2} 
-                value={item.answer || ""} 
-                onChange={(e) => { 
-                  const n = [...content.faq.items]; 
-                  n[idx].answer = e.target.value; 
-                  updateField("faq", "items", n); 
-                }} 
-                placeholder="Jawaban" 
-                className={fieldClass(`faq.items.${idx}.answer`, "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 resize-none bg-transparent")}              />
-              <input 
-                type="text" 
-                value={item.category || ""} 
-                onChange={(e) => { 
-                  const n = [...content.faq.items]; 
-                  n[idx] = { ...n[idx], category: e.target.value }; 
-                  updateField("faq", "items", n); 
-                }} 
-                placeholder="Kategori (opsional, untuk variant sidebar-category)" 
-                className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200" 
+              <input
+                type="text"
+                value={item.question || ""}
+                onChange={(e) => {
+                  const n = [...content.faq.items];
+                  n[idx].question = e.target.value;
+                  updateField("faq", "items", n);
+                }}
+                placeholder="Pertanyaan"
+                className={fieldClass(`faq.items.${idx}.question`, SIDEBAR_FIELD_CLASS)}
+              />
+              <textarea
+                rows={2}
+                value={item.answer || ""}
+                onChange={(e) => {
+                  const n = [...content.faq.items];
+                  n[idx].answer = e.target.value;
+                  updateField("faq", "items", n);
+                }}
+                placeholder="Jawaban"
+                className={fieldClass(`faq.items.${idx}.answer`, `${SIDEBAR_FIELD_CLASS} resize-none`)}
+              />
+              <input
+                type="text"
+                value={item.category || ""}
+                onChange={(e) => {
+                  const n = [...content.faq.items];
+                  n[idx] = { ...n[idx], category: e.target.value };
+                  updateField("faq", "items", n);
+                }}
+                placeholder="Kategori (opsional, untuk variant sidebar-category)"
+                className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
               />
             </div>
           ))}
-          <button 
+          <button
             type="button"
-            onClick={() => { 
-              const n = [...(content.faq.items || []), { question: "Pertanyaan yang sering ditanya?", answer: "Jawaban pertanyaan di sini" }]; 
-              updateField("faq", "items", n); 
-            }} 
+            onClick={() => {
+              const n = [...(content.faq.items || []), { question: "Pertanyaan yang sering ditanya?", answer: "Jawaban pertanyaan di sini" }];
+              updateField("faq", "items", n);
+            }}
             className="w-full text-[12px] py-1.5 border border-border rounded-lg text-slate-400 hover:bg-white/5 flex items-center justify-center gap-1"
           >
             <Plus className="w-3.5 h-3.5" /> Tambah FAQ
@@ -1475,12 +1495,13 @@ export default function SectionForms({
                 onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
             </label>
-            <input 
+            <input
               id="field-cta.headline"
-              type="text" 
-              value={content.cta.headline || ""} 
-              onChange={(e) => updateField("cta", "headline", e.target.value)} 
-              className={fieldClass("cta.headline", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
+              type="text"
+              value={content.cta.headline || ""}
+              onChange={(e) => updateField("cta", "headline", e.target.value)}
+              className={fieldClass("cta.headline", SIDEBAR_FIELD_CLASS)}
+
             />
           </div>
           <div className="space-y-1">
@@ -1521,15 +1542,16 @@ export default function SectionForms({
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
               Teks Tombol {needsAttention("cta.button_text") && <span className="text-amber-300">⚠️</span>}
             </label>
-            <input 
+            <input
               id="field-cta.button_text"
-              type="text" 
-              value={content.cta.button_text || ""} 
-              onChange={(e) => updateField("cta", "button_text", e.target.value)} 
-              className={fieldClass("cta.button_text", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
+              type="text"
+              value={content.cta.button_text || ""}
+              onChange={(e) => updateField("cta", "button_text", e.target.value)}
+              className={fieldClass("cta.button_text", SIDEBAR_FIELD_CLASS)}
+
             />
           </div>
-          <LinkTypeInput 
+          <LinkTypeInput
             urlValue={content.cta.button_url || ""}
             updateUrl={(val) => {
               updateField("cta", "button_url", val);
@@ -1580,38 +1602,40 @@ export default function SectionForms({
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
               Judul {needsAttention("contact.title") && <span className="text-amber-300">⚠️</span>}
             </label>
-            <input 
+            <input
               id="field-contact.title"
-              type="text" 
-              value={content.contact.title || ""} 
-              onChange={(e) => updateField("contact", "title", e.target.value)} 
-              className={fieldClass("contact.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
+              type="text"
+              value={content.contact.title || ""}
+              onChange={(e) => updateField("contact", "title", e.target.value)}
+              className={fieldClass("contact.title", SIDEBAR_FIELD_CLASS)}
+
             />
           </div>
           <div className="space-y-1">
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
               Alamat <span className="text-slate-600 normal-case font-normal">(opsional)</span>
             </label>
-            <input 
+            <input
               id="field-contact.address"
-              type="text" 
-              value={content.contact.address || ""} 
-              onChange={(e) => updateField("contact", "address", e.target.value)} 
-              className={fieldClass("contact.address", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
+              type="text"
+              value={content.contact.address || ""}
+              onChange={(e) => updateField("contact", "address", e.target.value)}
+              className={fieldClass("contact.address", SIDEBAR_FIELD_CLASS)}
+
             />
           </div>
           <div className="space-y-1">
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
               Nomor WhatsApp <span className="text-slate-600 normal-case font-normal">(opsional)</span> {needsAttention("contact.phone") && <span className="text-amber-300">⚠️</span>}
             </label>
-            <input 
+            <input
               id="field-contact.phone"
-              type="text" 
-              value={content.contact.phone || ""} 
+              type="text"
+              value={content.contact.phone || ""}
               onChange={(e) => {
                 const val = e.target.value;
                 updateField("contact", "phone", val);
-                
+
                 // Keep Hero/CTA buttons in sync if they are currently set as WhatsApp links
                 const digits = val.replace(/\D/g, "");
                 if (digits) {
@@ -1619,7 +1643,7 @@ export default function SectionForms({
                   if (formattedDigits.startsWith("0")) {
                     formattedDigits = "62" + formattedDigits.slice(1);
                   }
-                  
+
                   if (/wa\.me|whatsapp\.com/i.test(content.hero?.cta_url || "")) {
                     updateField("hero", "cta_url", `https://wa.me/${formattedDigits}`);
                   }
@@ -1627,8 +1651,9 @@ export default function SectionForms({
                     updateField("cta", "button_url", `https://wa.me/${formattedDigits}`);
                   }
                 }
-              }} 
-              className={fieldClass("contact.phone", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
+              }}
+              className={fieldClass("contact.phone", SIDEBAR_FIELD_CLASS)}
+
             />
             <p className="text-[10px] text-slate-500 leading-relaxed">
               Jika kosong, pesanan dari keranjang masuk ke <strong className="text-slate-400">Kotak Masuk Pesan</strong> di dashboard.
@@ -1638,39 +1663,40 @@ export default function SectionForms({
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
               Email <span className="text-slate-600 normal-case font-normal">(opsional)</span>
             </label>
-            <input 
+            <input
               id="field-contact.email"
-              type="email" 
-              value={content.contact.email || ""} 
-              onChange={(e) => updateField("contact", "email", e.target.value)} 
-              className={fieldClass("contact.email", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
+              type="email"
+              value={content.contact.email || ""}
+              onChange={(e) => updateField("contact", "email", e.target.value)}
+              className={fieldClass("contact.email", SIDEBAR_FIELD_CLASS)}
+
             />
           </div>
           <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-2.5">
             <span className="text-[12px] font-medium text-slate-200">Formulir Kontak</span>
-            <input 
-              type="checkbox" 
-              checked={content.contact.show_lead_form !== false} 
-              onChange={(e) => updateField("contact", "show_lead_form", e.target.checked)} 
-              className="w-4 h-4 accent-primary cursor-pointer" 
+            <input
+              type="checkbox"
+              checked={content.contact.show_lead_form !== false}
+              onChange={(e) => updateField("contact", "show_lead_form", e.target.checked)}
+              className="w-4 h-4 accent-primary cursor-pointer"
             />
           </div>
           <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-2.5">
             <span className="text-[12px] font-medium text-slate-200">Peta Lokasi</span>
-            <input 
-              type="checkbox" 
-              checked={content.contact.show_map !== false} 
-              onChange={(e) => updateField("contact", "show_map", e.target.checked)} 
-              className="w-4 h-4 accent-primary cursor-pointer" 
+            <input
+              type="checkbox"
+              checked={content.contact.show_map !== false}
+              onChange={(e) => updateField("contact", "show_map", e.target.checked)}
+              className="w-4 h-4 accent-primary cursor-pointer"
             />
           </div>
           <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-2.5">
             <span className="text-[12px] font-medium text-slate-200">Kartu WhatsApp</span>
-            <input 
-              type="checkbox" 
-              checked={content.contact.show_whatsapp_card !== false} 
-              onChange={(e) => updateField("contact", "show_whatsapp_card", e.target.checked)} 
-              className="w-4 h-4 accent-primary cursor-pointer" 
+            <input
+              type="checkbox"
+              checked={content.contact.show_whatsapp_card !== false}
+              onChange={(e) => updateField("contact", "show_whatsapp_card", e.target.checked)}
+              className="w-4 h-4 accent-primary cursor-pointer"
             />
           </div>
           <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-2.5">
@@ -1825,6 +1851,7 @@ export default function SectionForms({
               onClose={() => setShowLocationPicker(false)}
               currentUrl={content.contact.maps_url}
               onSave={(url) => updateField("contact", "maps_url", url)}
+
             />
           </div>
         </div>
@@ -1835,22 +1862,22 @@ export default function SectionForms({
         <div className="space-y-3">
           <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Tagline</label>
-            <input 
+            <input
               id="field-footer.tagline"
-              type="text" 
-              value={content.footer?.tagline || ""} 
-              onChange={(e) => updateField("footer", "tagline", e.target.value)} 
-              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent" 
+              type="text"
+              value={content.footer?.tagline || ""}
+              onChange={(e) => updateField("footer", "tagline", e.target.value)}
+              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
             />
           </div>
           <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Copyright</label>
-            <input 
+            <input
               id="field-footer.copyright_text"
-              type="text" 
-              value={content.footer?.copyright_text || ""} 
-              onChange={(e) => updateField("footer", "copyright_text", e.target.value)} 
-              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent" 
+              type="text"
+              value={content.footer?.copyright_text || ""}
+              onChange={(e) => updateField("footer", "copyright_text", e.target.value)}
+              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
             />
           </div>
           <div className="space-y-2">
@@ -1954,12 +1981,13 @@ export default function SectionForms({
                 />
               )}
             </label>
-            <input 
+            <input
               id="field-seo.title"
-              type="text" 
-              value={content.seo?.title || ""} 
-              onChange={(e) => updateField("seo", "title", e.target.value)} 
-              className={fieldClass("seo.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")} 
+              type="text"
+              value={content.seo?.title || ""}
+              onChange={(e) => updateField("seo", "title", e.target.value)}
+              className={fieldClass("seo.title", SIDEBAR_FIELD_CLASS)}
+
             />
             <div className="flex justify-end">
               <span className={`text-[10px] font-mono ${(content.seo?.title?.length || 0) > 60 ? "text-red-500" : "text-slate-500"}`}>
@@ -1983,12 +2011,13 @@ export default function SectionForms({
                 />
               )}
             </label>
-            <textarea 
+            <textarea
               id="field-seo.description"
-              rows={3} 
-              value={content.seo?.description || ""} 
-              onChange={(e) => updateField("seo", "description", e.target.value)} 
-              className={fieldClass("seo.description", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 resize-none bg-transparent")} 
+              rows={3}
+              value={content.seo?.description || ""}
+              onChange={(e) => updateField("seo", "description", e.target.value)}
+              className={fieldClass("seo.description", `${SIDEBAR_FIELD_CLASS} resize-none`)}
+
             />
             <div className="flex justify-end">
               <span className={`text-[10px] font-mono ${(content.seo?.description?.length || 0) > 155 ? "text-red-500" : "text-slate-500"}`}>
@@ -2623,7 +2652,7 @@ export default function SectionForms({
               id="field-gallery.title"
               type="text" value={content.gallery?.title || ""}
               onChange={(e) => updateField("gallery", "title", e.target.value)}
-              className={fieldClass("gallery.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")}
+              className={fieldClass("gallery.title", SIDEBAR_FIELD_CLASS)}
               placeholder="Galeri Kami"
             />
           </div>
@@ -2811,7 +2840,7 @@ export default function SectionForms({
               id="field-works.title"
               type="text" value={content.works?.title || ""}
               onChange={(e) => updateField("works", "title", e.target.value)}
-              className={fieldClass("works.title", "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")}
+              className={fieldClass("works.title", SIDEBAR_FIELD_CLASS)}
               placeholder="Proyek Kami"
             />
           </div>
@@ -3743,7 +3772,7 @@ function HeroStatsEditor({
   onChange: (stats: Array<{ value: string; label: string }>) => void;
 }) {
   const items = Array.isArray(stats) ? stats : [];
-  const inputClass = "w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600";
+  const inputClass = `${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`;
   const setItem = (i: number, patch: { value?: string; label?: string }) =>
     onChange(items.map((s, idx) => (idx === i ? { ...s, ...patch } : s)));
   const removeItem = (i: number) => onChange(items.filter((_, idx) => idx !== i));
@@ -3810,7 +3839,7 @@ function HeroAccessoryEditor({
   const set = (patch: Record<string, unknown>) => onChange({ type: acc?.type ?? "", ...acc, ...patch });
   const hasText = acc?.type === "price" || acc?.type === "availability" || acc?.type === "rating";
   const hasTags = acc?.type === "skill_tags" || acc?.type === "menu_highlight";
-  const inputClass = "w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600";
+  const inputClass = `${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`;
   return (
     <div className="space-y-2 rounded-lg border border-border/60 p-2.5 bg-white/[0.02]">
       <div className="space-y-1">
@@ -3872,8 +3901,7 @@ function HeroDashboardWidgetEditor({
     });
   };
 
-  const inputClass =
-    "w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600";
+  const inputClass = `${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`;
 
   return (
     <div className="space-y-3 rounded-xl border border-border/70 p-3 bg-white/[0.02]">

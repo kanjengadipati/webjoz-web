@@ -3,6 +3,7 @@
 import React, { useRef, useState } from "react";
 import { Upload, Loader2, Link2, Check, AlertCircle, X, ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui";
+import { SIDEBAR_FIELD_CLASS_ICON } from "@/lib/editor-field-class";
 
 interface FileUploadProps {
   label: string;
@@ -242,7 +243,7 @@ export default function FileUpload({
             value={value}
             onChange={(e) => { onChange(e.target.value); setImgError(false); }}
             placeholder={placeholder}
-            className="w-full pl-9 pr-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+            className={`${SIDEBAR_FIELD_CLASS_ICON} pl-9 pr-2.5`}
           />
         </div>
 
