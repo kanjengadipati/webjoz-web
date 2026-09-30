@@ -81,7 +81,7 @@ export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, 
             id={`hero-category-${catIndex}`}
             className="mb-24 last:mb-0"
           >
-            <div className="text-center mb-12">
+            <div className="flex items-center justify-center gap-3 mb-12">
               <InlineText
                 section="menu"
                 fieldKey={"categories." + catIndex + ".name"}

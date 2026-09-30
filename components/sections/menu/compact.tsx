@@ -45,16 +45,17 @@ export default function MenuCompact({ menu, onUpdateField, isEditorMode, isSelec
           />
         </div>
         {menu.categories?.map((cat, catIdx) => (
-          <div key={catIdx} style={{ marginBottom: "2.5rem" }}>
-            <InlineText section="menu" fieldKey={"categories." + catIdx + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h3" style={{ fontFamily: headingFont, fontWeight: 700, color: brandPrimary, fontSize: "1rem", marginBottom: "1rem", paddingBottom: "0.5rem", borderBottom: `2px solid color-mix(in srgb, ${brandPrimary} 18%, transparent)` }} />
-            {isEditorMode && onDeleteCategory && (
-              <InlineDeleteButton
-                compact
-                onDelete={() => onDeleteCategory(catIdx)}
-                title={isEN ? "Delete Category" : "Hapus Kategori"}
-              />
-            )}
-
+            <div key={catIdx} style={{ marginBottom: "2.5rem" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem", paddingBottom: "0.5rem", borderBottom: `2px solid color-mix(in srgb, ${brandPrimary} 18%, transparent)` }}>
+                <InlineText section="menu" fieldKey={"categories." + catIdx + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h3" style={{ fontFamily: headingFont, fontWeight: 700, color: brandPrimary, fontSize: "1rem" }} />
+                {isEditorMode && onDeleteCategory && (
+                  <InlineDeleteButton
+                    compact
+                    onDelete={() => onDeleteCategory(catIdx)}
+                    title={isEN ? "Delete Category" : "Hapus Kategori"}
+                  />
+                )}
+              </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "0.5rem" }}>
               {cat.items?.map((item, itemIdx) => (

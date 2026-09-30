@@ -89,7 +89,7 @@ export default function CatalogMasonryFlow({ catalog, onUpdateField, isEditorMod
       <div className="space-y-24">
         {categories?.map((category, catIdx) => (
           <div key={catIdx} className="space-y-8">
-            <div className="border-b pb-3" style={{ borderColor: "var(--dt-border)" }}>
+            <div className="border-b pb-3 flex items-center gap-2" style={{ borderColor: "var(--dt-border)" }}>
               <InlineText
                 section="catalog"
                 fieldKey={"categories." + catIdx + ".name"}

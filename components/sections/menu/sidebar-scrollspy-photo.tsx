@@ -150,32 +150,47 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
             <nav className="flex flex-col gap-4">
               {categories.map((category, index) => {
                 const isActive = activeCategory === category.name;
+                const canDelete = Boolean(isEditorMode && onDeleteCategory);
                 return (
-                  <button
-                    key={category.name}
-                    id={`desktop-nav-pill-${index}`}
-                    onClick={() => handleNavClick(category.name, index)}
-                    className={`flex items-center justify-between text-left py-1 text-sm font-medium transition-all duration-200 group border-l-2 pl-3 -ml-[26px] ${
-                      isActive
-                        ? "text-dt-primary border-dt-primary font-bold pl-4"
-                        : "text-dt-text-muted border-transparent hover:text-dt-text hover:border-dt-border"
-                    }`}
-                  >
-                  <InlineText section="menu" fieldKey={"categories." + index + ".name"} value={category.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
-                    <ChevronRight
-                      className={`w-4 h-4 transition-transform duration-200 ${
-                        isActive ? "translate-x-0 opacity-100 text-dt-primary" : "translate-x-[-4px] opacity-0 group-hover:opacity-55"
+                  <div key={category.name} className="relative">
+                    <button
+                      id={`desktop-nav-pill-${index}`}
+                      onClick={() => handleNavClick(category.name, index)}
+                      className={`flex items-center justify-between text-left py-1 text-sm font-medium transition-all duration-200 group border-l-2 pl-3 -ml-[26px] ${
+                        canDelete ? "pr-8" : ""
+                      } ${
+                        isActive
+                          ? "text-dt-primary border-dt-primary font-bold pl-4"
+                          : "text-dt-text-muted border-transparent hover:text-dt-text hover:border-dt-border"
                       }`}
-                    />
-                  </button>
+                    >
+                    <InlineText section="menu" fieldKey={"categories." + index + ".name"} value={category.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
+                      <ChevronRight
+                        className={`w-4 h-4 transition-transform duration-200 ${
+                          isActive ? "translate-x-0 opacity-100 text-dt-primary" : "translate-x-[-4px] opacity-0 group-hover:opacity-55"
+                        }`}
+                      />
+                    </button>
+                    {canDelete && (
+                      <InlineDeleteButton
+                        compact
+                        onDelete={() => onDeleteCategory?.(index)}
+                        title={isEN ? "Delete Category" : "Hapus Kategori"}
+                        className="absolute top-1/2 -translate-y-1/2 right-0 z-40"
+                      />
+                    )}
+                  </div>
                 );
               })}
+              {isEditorMode && onAddCategory && (
+                <CategoryAddButton
+                  onAdd={onAddCategory}
+                  isEN={isEN}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  className="-ml-[26px]"
+                />
+              )}
             </nav>
-            {isEditorMode && onAddCategory && (
-              <div className="mt-4">
-                <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
-              </div>
-            )}
           </aside>
 
           <div
@@ -184,19 +199,31 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
           >
             {categories.map((category, index) => {
               const isActive = activeCategory === category.name;
+              const canDelete = Boolean(isEditorMode && onDeleteCategory);
               return (
-                <button
-                  key={category.name}
-                  id={`mobile-nav-pill-${index}`}
-                  onClick={() => handleNavClick(category.name, index)}
-                  className={`shrink-0 px-4 py-2 text-xs font-semibold tracking-wider uppercase rounded-full border transition-all duration-200 ${
-                    isActive
-                      ? "bg-dt-primary text-dt-primary-foreground border-dt-primary shadow-xs"
-                      : "bg-dt-surface text-dt-text-muted border-dt-border hover:text-dt-text hover:border-dt-border"
-                  }`}
-                  >
-                    <InlineText section="menu" fieldKey={"categories." + index + ".name"} value={category.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
+                <div key={category.name} className="relative shrink-0">
+                  <button
+                    id={`mobile-nav-pill-${index}`}
+                    onClick={() => handleNavClick(category.name, index)}
+                    className={`shrink-0 px-4 py-2 text-xs font-semibold tracking-wider uppercase rounded-full border transition-all duration-200 ${
+                      canDelete ? "pr-9" : ""
+                    } ${
+                      isActive
+                        ? "bg-dt-primary text-dt-primary-foreground border-dt-primary shadow-xs"
+                        : "bg-dt-surface text-dt-text-muted border-dt-border hover:text-dt-text hover:border-dt-border"
+                    }`}
+                    >
+                      <InlineText section="menu" fieldKey={"categories." + index + ".name"} value={category.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
                   </button>
+                  {canDelete && (
+                    <InlineDeleteButton
+                      compact
+                      onDelete={() => onDeleteCategory?.(index)}
+                      title={isEN ? "Delete Category" : "Hapus Kategori"}
+                      className="absolute top-1/2 -translate-y-1/2 right-1 z-10"
+                    />
+                  )}
+                </div>
 );
                 })}
           </div>
@@ -211,13 +238,6 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
               >
                 <div className="flex items-center gap-4 mb-8">
                   <InlineText section="menu" fieldKey={"categories." + index + ".name"} value={category.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h3" className="text-xl md:text-2xl font-bold tracking-tight font-dt-heading text-dt-text" />
-                  {isEditorMode && onDeleteCategory && (
-                    <InlineDeleteButton
-                      compact
-                      onDelete={() => onDeleteCategory(index)}
-                      title={isEN ? "Delete Category" : "Hapus Kategori"}
-                    />
-                  )}
                   <div className="h-[1px] flex-1 bg-dt-border"></div>
                 </div>
 
