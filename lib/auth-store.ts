@@ -56,6 +56,24 @@ export function resolveEffectiveTheme(preference: string): "dark" | "light" {
   return getTimeBasedTheme();
 }
 
+/**
+ * Hydration-safe resolved theme.
+ *
+ * `resolveEffectiveTheme` falls back to `getTimeBasedTheme`, which reads the
+ * local hour and therefore cannot run on the server. Calling it during render
+ * made SSR always emit "dark" while the client rendered the real local time,
+ * so every visitor in 06:00-18:00 hit a hydration mismatch. Going through
+ * useSyncExternalStore makes React use the server snapshot for the hydration
+ * render and swap to the real value afterwards.
+ */
+export function useResolvedTheme(): "dark" | "light" {
+  return useSyncExternalStore(
+    (callback) => subscribeToKeys([THEME_STORAGE_KEY], callback),
+    () => resolveEffectiveTheme(readStorageValue(THEME_STORAGE_KEY, "auto")),
+    () => "dark",
+  );
+}
+
 export function useThemePreference() {
   return useSyncExternalStore(
     (callback) => subscribeToKeys([THEME_STORAGE_KEY], callback),

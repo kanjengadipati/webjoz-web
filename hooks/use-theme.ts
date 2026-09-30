@@ -5,8 +5,8 @@ import {
   setAccentPreference,
   setThemePreference,
   useAccentPreference,
+  useResolvedTheme,
   useThemePreference,
-  resolveEffectiveTheme,
 } from "@/lib/auth-store";
 
 export function useTheme() {
@@ -14,7 +14,7 @@ export function useTheme() {
   const accent = useAccentPreference();
 
   // Effective resolved theme (what the UI actually shows right now)
-  const theme = resolveEffectiveTheme(preference) as "light" | "dark";
+  const theme = useResolvedTheme();
 
   // Direct 1-click toggle between Light and Dark based on current effective theme
   const toggleTheme = useCallback(() => {

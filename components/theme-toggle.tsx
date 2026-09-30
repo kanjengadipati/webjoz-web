@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useTheme } from "@/hooks/use-theme";
-import { Moon, Sun, SunMoon } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 
 /**
@@ -10,8 +10,28 @@ import { useI18n } from "@/lib/i18n/context";
  * Shows a colour-dot accent toggle alongside when showAccent is true.
  */
 export function ThemeToggle({ className = "", showAccent = false }: { className?: string; showAccent?: boolean }) {
-  const { theme, preference, isAuto, isMonochrome, toggleTheme, toggleAccent } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const { theme, isMonochrome, toggleTheme, toggleAccent } = useTheme();
   const { t } = useI18n();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="inline-flex items-center gap-1">
+        {showAccent && (
+          <div className={`inline-flex items-center justify-center size-8 rounded-lg border border-border/50 bg-card/60 ${className}`}>
+            <div className="size-3.5 rounded-full border-2 bg-primary border-primary" />
+          </div>
+        )}
+        <div className={`inline-flex items-center justify-center size-8 rounded-lg border border-border/50 bg-card/60 ${className}`}>
+          <div className="size-4" />
+        </div>
+      </div>
+    );
+  }
 
   const themeLabel =
     theme === "dark"
@@ -19,7 +39,6 @@ export function ThemeToggle({ className = "", showAccent = false }: { className?
       : t("dashboard.switchDark", "Ganti ke Mode Gelap");
 
   const ThemeIcon = theme === "dark" ? Sun : Moon;
-
   const themeIconClass = theme === "dark" ? "text-white" : "text-black";
 
   return (
@@ -56,8 +75,21 @@ export function ThemeToggle({ className = "", showAccent = false }: { className?
 }
 
 export function AccentToggle({ className = "" }: { className?: string }) {
+  const [mounted, setMounted] = useState(false);
   const { isMonochrome, toggleAccent } = useTheme();
   const { t } = useI18n();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className={`inline-flex items-center justify-center size-8 rounded-lg border border-border/50 bg-card/60 ${className}`}>
+        <div className="size-3.5 rounded-full border-2 bg-primary border-primary" />
+      </div>
+    );
+  }
 
   return (
     <button
