@@ -15,12 +15,12 @@ const ADMIN_PASSWORD = process.env.TEST_ADMIN_PASSWORD || "AdminPassword123!";
 async function ensureUser(request: any, email: string, password: string, name: string): Promise<string | null> {
   try {
     // Try register (ignore if already exists)
-    await request.post(`${API_URL}/api/auth/register`, {
+    await request.post(`${API_URL}/auth/register`, {
       data: { name, email, phone: "+6281234567890", password },
     }).catch(() => {});
 
     // Try login
-    const res = await request.post(`${API_URL}/api/auth/login`, {
+    const res = await request.post(`${API_URL}/auth/login`, {
       data: { email, password },
     });
     const body = await res.json();
