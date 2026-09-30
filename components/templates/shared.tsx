@@ -2424,33 +2424,6 @@ const SeoEditorPreview = ({
   const [copiedUrl, setCopiedUrl] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
   const [isReloading, setIsReloading] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
-
-  // Auto-open sidebar editor when user scrolls to this SEO section
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-
-    const scrollContainer = document.getElementById("preview-scroll-container");
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            window.dispatchEvent(new CustomEvent("webjoz:open-seo-editor"));
-          } else {
-            window.dispatchEvent(new CustomEvent("webjoz:reset-seo-opened"));
-          }
-        }
-      },
-      {
-        root: scrollContainer || null,
-        threshold: 0.15,
-      }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
 
   const cleanDomain = domain ? domain.replace(/^https?:\/\//, "").replace(/\/$/, "") : "kopijozzjogja.webjoz.com";
   const siteBrand = seo?.title?.split("-")[0]?.trim() || cleanDomain.split(".")[0] || "Webjoz";
@@ -2504,7 +2477,7 @@ const SeoEditorPreview = ({
   };
 
   return (
-    <section ref={sectionRef} className="bg-background px-4 sm:px-6 py-10 border-t border-white/5">
+    <section className="bg-background px-4 sm:px-6 py-10 border-t border-white/5">
       <div className="max-w-4xl mx-auto space-y-5">
 
         {/* Top Info & Quick Actions Banner */}
