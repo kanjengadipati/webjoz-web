@@ -5,7 +5,7 @@ import { headingVars, avatarTextColor } from "./helpers";
 import {
   Check, ArrowRight, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Star, Menu, X, Send,
   MapPin, Phone, Mail, Globe, Pencil, Upload, Loader2, Camera, Link2, ImagePlus, Trash2,
-  Search, Lock, RotateCw, Copy, ExternalLink, Sparkles, MessageCircle, MoreVertical, ShieldCheck, Share2, Code2,
+  Search, Lock, RotateCw, Copy, ExternalLink, Sparkles, MessageCircle, MoreVertical, ShieldCheck, Share2, Code2, Info,
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/components/cart";
@@ -2424,6 +2424,31 @@ const SeoEditorPreview = ({
   const [copiedUrl, setCopiedUrl] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
   const [isReloading, setIsReloading] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Auto-open/close sidebar when SEO section scrolls into/out of view
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const scrollContainer = document.getElementById("preview-scroll-container");
+    let hasIntersected = false;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            hasIntersected = true;
+            window.dispatchEvent(new CustomEvent("webjoz:open-seo-editor"));
+          } else if (hasIntersected) {
+            hasIntersected = false;
+            window.dispatchEvent(new CustomEvent("webjoz:close-seo-editor"));
+          }
+        }
+      },
+      { root: scrollContainer || null, threshold: 0.15 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const cleanDomain = domain ? domain.replace(/^https?:\/\//, "").replace(/\/$/, "") : "kopijozzjogja.webjoz.com";
   const siteBrand = seo?.title?.split("-")[0]?.trim() || cleanDomain.split(".")[0] || "Webjoz";
@@ -2477,7 +2502,7 @@ const SeoEditorPreview = ({
   };
 
   return (
-    <section className="bg-background px-4 sm:px-6 py-10 border-t border-white/5">
+    <section ref={sectionRef} className="bg-background px-4 sm:px-6 py-10 border-t border-white/5">
       <div className="max-w-4xl mx-auto space-y-5">
 
         {/* Top Info & Quick Actions Banner */}
