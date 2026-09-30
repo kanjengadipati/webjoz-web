@@ -2481,19 +2481,14 @@ const SeoEditorPreview = ({
       <div className="max-w-4xl mx-auto space-y-5">
 
         {/* Top Info & Quick Actions Banner */}
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl px-4 py-3 text-xs bg-indigo-500/10 border border-indigo-500/20 backdrop-blur-sm">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-5 h-5 rounded-full bg-indigo-500/20 flex items-center justify-center shrink-0">
-              <Sparkles className="w-3 h-3 text-indigo-400" />
-            </div>
-            <p className="text-indigo-200 leading-relaxed truncate sm:whitespace-normal">
-              <span className="font-semibold text-indigo-100">Pratinjau SEO & Metadata:</span> Hanya dibaca mesin pencari & saat link dibagikan di media sosial.
-            </p>
-          </div>
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl px-4 py-3 text-xs bg-muted/40 border border-border backdrop-blur-sm">
+          <p className="text-muted-foreground leading-relaxed truncate sm:whitespace-normal min-w-0">
+            <span className="font-semibold text-foreground">Pratinjau SEO & Metadata:</span> Hanya dibaca mesin pencari & saat link dibagikan di media sosial.
+          </p>
           <button
             type="button"
             onClick={triggerOpenSidebar}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs shadow-sm shadow-indigo-900/30 transition-all active:scale-95 cursor-pointer ml-auto sm:ml-0 shrink-0"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-foreground hover:opacity-80 text-background font-medium text-xs shadow-sm transition-all active:scale-95 cursor-pointer ml-auto sm:ml-0 shrink-0"
           >
             <Pencil className="w-3 h-3" />
             <span>Edit di Sidebar</span>
