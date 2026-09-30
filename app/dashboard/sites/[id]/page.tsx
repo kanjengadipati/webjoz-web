@@ -646,9 +646,12 @@ export default function SiteEditorPage() {
     };
   }, [device, pendingDiff]);
 
-  // Open sidebar editor when requested (e.g. from SEO preview banner)
+  // Auto-open sidebar editor when SEO is scrolled into view via custom event
   useEffect(() => {
+    let wasOpened = false;
     const handleOpenSeo = () => {
+      if (wasOpened) return;
+      wasOpened = true;
       setActiveTab("seo");
       activeTabRef.current = "seo";
       if (window.innerWidth < 768) {
@@ -658,9 +661,15 @@ export default function SiteEditorPage() {
       }
     };
 
+    const handleResetSeo = () => {
+      wasOpened = false;
+    };
+
     window.addEventListener("webjoz:open-seo-editor", handleOpenSeo);
+    window.addEventListener("webjoz:reset-seo-opened", handleResetSeo);
     return () => {
       window.removeEventListener("webjoz:open-seo-editor", handleOpenSeo);
+      window.removeEventListener("webjoz:reset-seo-opened", handleResetSeo);
     };
   }, []);
 
