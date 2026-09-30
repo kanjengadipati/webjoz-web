@@ -2,7 +2,7 @@
 import React from "react";
 import { Utensils } from "lucide-react";
 import { InlineText, InlineImage } from "../../templates/shared";
-import { InlineAddTile, InlineDeleteButton } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface MenuVariantProps {
@@ -15,9 +15,13 @@ interface MenuVariantProps {
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: (catIdx: number) => void;
   onDeleteItem?: (catIdx: number, itemIdx: number) => void;
+  onAddCategory?: () => void;
+  onDeleteCategory?: (catIdx: number) => void;
+  language?: "id" | "en";
 }
 
-export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: MenuVariantProps) {
+export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id" }: MenuVariantProps) {
+  const isEN = language === "en";
   if (!menu) return null;
   const { eyebrow, title, subtitle, categories } = menu;
 
@@ -90,6 +94,15 @@ export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, 
                 as="h3"
                 className="text-2xl md:text-3xl font-normal tracking-wide text-dt-text font-dt-heading inline-block relative pb-2 after:content-[''] after:absolute after:bottom-0 after:left-1/4 after:right-1/4 after:h-[1px] after:bg-dt-border"
               />
+              {isEditorMode && onDeleteCategory && (
+                <InlineDeleteButton
+                  compact
+                  onDelete={() => onDeleteCategory(catIndex)}
+                  title={isEN ? "Delete Category" : "Hapus Kategori"}
+                />
+              )}
+
+
             </div>
 
             <div
@@ -178,6 +191,9 @@ export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, 
             </div>
           </div>
         ))}
+      {isEditorMode && onAddCategory && (
+        <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+      )}
       </div>
     </section>
   );

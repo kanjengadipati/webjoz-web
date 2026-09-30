@@ -2,7 +2,7 @@
 import React from "react";
 import { Plus, Image as ImageIcon } from "lucide-react";
 import { InlineText, InlineImage } from "../../templates/shared";
-import { InlineAddTile, InlineDeleteButton } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface CatalogVariantProps {
@@ -15,9 +15,13 @@ interface CatalogVariantProps {
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: (catIdx: number) => void;
   onDeleteItem?: (catIdx: number, itemIdx: number) => void;
+  onAddCategory?: () => void;
+  onDeleteCategory?: (catIdx: number) => void;
+  language?: "id" | "en";
 }
 
-export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: CatalogVariantProps) {
+export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: CatalogVariantProps) {
+  const isEN = language === "en";
   if (!catalog) return null;
   const { eyebrow, title, subtitle, categories } = catalog;
 
@@ -103,6 +107,15 @@ export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isE
                 onEditingStateChange={onEditingStateChange}
                 as="h3"
               />
+              {isEditorMode && onDeleteCategory && (
+                <InlineDeleteButton
+                  compact
+                  onDelete={() => onDeleteCategory(catIdx)}
+                  title={isEN ? "Delete Category" : "Hapus Kategori"}
+                />
+              )}
+
+
             </div>
 
             {/* Grid */}
@@ -258,6 +271,9 @@ export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isE
             </div>
           </div>
         ))}
+      {isEditorMode && onAddCategory && (
+        <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+      )}
       </div>
     </section>
   );

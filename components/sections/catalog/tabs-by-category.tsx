@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Image as ImageIcon, X } from "lucide-react";
 import { MenuCatalogCard, InlineText } from "../../templates/shared";
-import { InlineAddTile } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface CatalogVariantProps {
@@ -15,13 +15,17 @@ interface CatalogVariantProps {
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: (catIdx: number) => void;
   onDeleteItem?: (catIdx: number, itemIdx: number) => void;
+  onAddCategory?: () => void;
+  onDeleteCategory?: (catIdx: number) => void;
+  language?: "id" | "en";
 }
 
 /**
  * Tabs by Category — category tabs, shows one category at a time.
  * Best for catalogs with 3+ distinct categories.
  */
-export default function CatalogTabsByCategory({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: CatalogVariantProps) {
+export default function CatalogTabsByCategory({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: CatalogVariantProps) {
+  const isEN = language === "en";
   const [activeIdx, setActiveIdx] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -33,7 +37,8 @@ export default function CatalogTabsByCategory({ catalog, onUpdateField, isEditor
   const hFont = "var(--dt-heading-font)";
   const hWeight = "var(--dt-heading-weight)";
   const cats = catalog.categories ?? [];
-  const active = cats[activeIdx];
+  const safeActiveIdx = cats.length > 0 ? Math.min(activeIdx, cats.length - 1) : 0;
+  const active = cats[safeActiveIdx];
   const query = searchQuery.trim().toLowerCase();
 
   const activeItems = (active?.items || [])
@@ -119,27 +124,42 @@ export default function CatalogTabsByCategory({ catalog, onUpdateField, isEditor
           {cats.map((cat, i) => {
             const isActive = i === activeIdx;
             return (
-              <button
-                key={i}
-                onClick={() => setActiveIdx(i)}
-                style={{
-                  padding: "0.5rem 1.25rem",
-                  borderRadius: "9999px",
-                  fontSize: "0.78rem",
-                  fontWeight: isActive ? 700 : 500,
-                  background: isActive ? p : `color-mix(in srgb, ${p} 8%, ${surface})`,
-                  color: isActive ? "var(--dt-cta-text, #fff)" : `color-mix(in srgb, ${text} 70%, transparent)`,
-                  border: isActive ? `1.5px solid ${p}` : `1.5px solid color-mix(in srgb, ${p} 20%, transparent)`,
-                  cursor: "pointer",
-                  transition: "all 0.18s",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                <InlineText section="catalog" fieldKey={"categories." + i + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontSize: "0.78rem", fontWeight: isActive ? 700 : 500, color: isActive ? "var(--dt-cta-text, #fff)" : `color-mix(in srgb, ${text} 70%, transparent)`, whiteSpace: "nowrap" as const }} />
-              </button>
+              <span key={i} className="relative inline-flex items-center">
+                <button
+                  onClick={() => setActiveIdx(i)}
+                  style={{
+                    padding: "0.5rem 1.25rem",
+                    borderRadius: "9999px",
+                    fontSize: "0.78rem",
+                    fontWeight: isActive ? 700 : 500,
+                    background: isActive ? p : `color-mix(in srgb, ${p} 8%, ${surface})`,
+                    color: isActive ? "var(--dt-cta-text, #fff)" : `color-mix(in srgb, ${text} 70%, transparent)`,
+                    border: isActive ? `1.5px solid ${p}` : `1.5px solid color-mix(in srgb, ${p} 20%, transparent)`,
+                    cursor: "pointer",
+                    transition: "all 0.18s",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  <InlineText section="catalog" fieldKey={"categories." + i + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontSize: "0.78rem", fontWeight: isActive ? 700 : 500, color: isActive ? "var(--dt-cta-text, #fff)" : `color-mix(in srgb, ${text} 70%, transparent)`, whiteSpace: "nowrap" as const }} />
+                </button>
+                {isEditorMode && onDeleteCategory && (
+                  <InlineDeleteButton
+                    compact
+                    className="absolute -top-1.5 -right-1.5 z-40"
+                    onDelete={() => onDeleteCategory(i)}
+                    title={isEN ? "Delete Category" : "Hapus Kategori"}
+                  />
+                )}
+                </span>
             );
           })}
         </div>
+
+        {isEditorMode && onAddCategory && (
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: "2rem" }}>
+            <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+          </div>
+        )}
 
         {active && (
           activeItems.length === 0 ? (
@@ -153,7 +173,7 @@ export default function CatalogTabsByCategory({ catalog, onUpdateField, isEditor
                     label="Tambah Item"
                     variant="card"
                     className="rounded-2xl max-w-xs"
-                    onClick={() => onAddItem(activeIdx)}
+                    onClick={() => onAddItem(safeActiveIdx)}
                   />
                 </div>
               )}
