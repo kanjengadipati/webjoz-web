@@ -5,6 +5,7 @@ import { headingVars, avatarTextColor } from "./helpers";
 import {
   Check, ArrowRight, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Star, Menu, X, Send,
   MapPin, Phone, Mail, Globe, Pencil, Upload, Loader2, Camera, Link2, ImagePlus, Trash2,
+  Search, Lock, RotateCw, Copy, ExternalLink, Sparkles, MessageCircle, MoreVertical, ShieldCheck, Share2, Code2,
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/components/cart";
@@ -2399,93 +2400,611 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
   return <DynamicIcon name={icon} defaultIcon={defaultIcon} className={iconClass} />;
 };
 
-// ─── SEO Editor Preview ───────────────────────────────────────────────────────
+// ─── SEO Editor Preview (Realistic Browser Mockup) ───────────────────────────
 
-const SeoEditorPreview = ({ seo, domain }: { seo?: { title?: string; description?: string; favicon_url?: string; og_image_url?: string; keywords?: string[]; og_type?: string; twitter_card?: string; robots?: string; canonical_path?: string }; domain?: string }) => (
-  <section className="bg-background px-5 py-8 border-t border-white/5">
-    <div className="max-w-2xl mx-auto space-y-6">
+const SeoEditorPreview = ({
+  seo,
+  domain,
+}: {
+  seo?: {
+    title?: string;
+    description?: string;
+    favicon_url?: string;
+    og_image_url?: string;
+    keywords?: string[];
+    og_type?: string;
+    twitter_card?: string;
+    robots?: string;
+    canonical_path?: string;
+  };
+  domain?: string;
+}) => {
+  const [activeTab, setActiveTab] = useState<"google" | "whatsapp" | "meta">("google");
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [copiedUrl, setCopiedUrl] = useState(false);
+  const [copiedCode, setCopiedCode] = useState(false);
+  const [isReloading, setIsReloading] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
 
-      {/* Info banner */}
-      <div className="flex items-start gap-2.5 rounded-lg px-3.5 py-3 text-[11px]" style={{ background: "rgba(99,102,241,0.08)", border: "1px solid rgba(99,102,241,0.2)" }}>
-        <svg className="w-3.5 h-3.5 mt-0.5 shrink-0 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10" /><path strokeLinecap="round" d="M12 16v-4M12 8h.01" /></svg>
-        <span className="text-indigo-300 leading-relaxed">SEO tidak tampil di halaman publik — hanya dibaca mesin pencari & saat link dibagikan.</span>
-      </div>
+  // Auto-open sidebar editor when user scrolls to this SEO section
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
 
-      {/* Google search preview */}
-      <div>
-        <p className="text-[10px] uppercase tracking-widest font-semibold text-slate-500 mb-2">Preview di Google</p>
-        <div className="rounded-xl p-4 space-y-1" style={{ background: "#fff", border: "1px solid #e2e8f0" }}>
-          {/* Favicon + URL bar */}
-          {domain && (
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden">
-                {seo?.favicon_url ? (
-                  <img src={seo.favicon_url} alt="" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                ) : (
-                  <span className="text-[8px] text-slate-500 font-bold">W</span>
+    const scrollContainer = document.getElementById("preview-scroll-container");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            window.dispatchEvent(new CustomEvent("webjoz:open-seo-editor"));
+          } else {
+            window.dispatchEvent(new CustomEvent("webjoz:reset-seo-opened"));
+          }
+        }
+      },
+      {
+        root: scrollContainer || null,
+        threshold: 0.15,
+      }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const cleanDomain = domain ? domain.replace(/^https?:\/\//, "").replace(/\/$/, "") : "kopijozzjogja.webjoz.com";
+  const siteBrand = seo?.title?.split("-")[0]?.trim() || cleanDomain.split(".")[0] || "Webjoz";
+  const searchQuery = seo?.title || cleanDomain;
+  const titleLen = seo?.title?.length || 0;
+  const descLen = seo?.description?.length || 0;
+
+  const handleCopyUrl = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigator.clipboard?.writeText(`https://${cleanDomain}`);
+    setCopiedUrl(true);
+    setTimeout(() => setCopiedUrl(false), 2000);
+  };
+
+  const handleCopyMeta = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const metaHtml = `<!-- Primary Meta Tags -->
+<title>${seo?.title || siteBrand}</title>
+<meta name="title" content="${seo?.title || siteBrand}">
+<meta name="description" content="${seo?.description || ""}">
+<meta name="keywords" content="${(seo?.keywords || []).join(", ")}">
+<meta name="robots" content="${seo?.robots || "index, follow"}">
+<link rel="canonical" href="https://${cleanDomain}${seo?.canonical_path || ""}">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="${seo?.og_type || "website"}">
+<meta property="og:url" content="https://${cleanDomain}">
+<meta property="og:title" content="${seo?.title || siteBrand}">
+<meta property="og:description" content="${seo?.description || ""}">
+<meta property="og:image" content="${seo?.og_image_url || ""}">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="${seo?.twitter_card || "summary_large_image"}">
+<meta property="twitter:url" content="https://${cleanDomain}">
+<meta property="twitter:title" content="${seo?.title || siteBrand}">
+<meta property="twitter:description" content="${seo?.description || ""}">
+<meta property="twitter:image" content="${seo?.og_image_url || ""}">`;
+    navigator.clipboard?.writeText(metaHtml);
+    setCopiedCode(true);
+    setTimeout(() => setCopiedCode(false), 2000);
+  };
+
+  const handleReload = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsReloading(true);
+    setTimeout(() => setIsReloading(false), 600);
+  };
+
+  const triggerOpenSidebar = () => {
+    window.dispatchEvent(new CustomEvent("webjoz:open-seo-editor"));
+  };
+
+  return (
+    <section ref={sectionRef} className="bg-background px-4 sm:px-6 py-10 border-t border-white/5">
+      <div className="max-w-4xl mx-auto space-y-5">
+
+        {/* Top Info & Quick Actions Banner */}
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl px-4 py-3 text-xs bg-indigo-500/10 border border-indigo-500/20 backdrop-blur-sm">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-5 h-5 rounded-full bg-indigo-500/20 flex items-center justify-center shrink-0">
+              <Sparkles className="w-3 h-3 text-indigo-400" />
+            </div>
+            <p className="text-indigo-200 leading-relaxed truncate sm:whitespace-normal">
+              <span className="font-semibold text-indigo-100">Pratinjau SEO & Metadata:</span> Hanya dibaca mesin pencari & saat link dibagikan di media sosial.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={triggerOpenSidebar}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs shadow-sm shadow-indigo-900/30 transition-all active:scale-95 cursor-pointer ml-auto sm:ml-0 shrink-0"
+          >
+            <Pencil className="w-3 h-3" />
+            <span>Edit di Sidebar</span>
+          </button>
+        </div>
+
+        {/* ════ REALISTIC BROWSER WINDOW ════ */}
+        <div className="rounded-2xl border border-slate-700/80 bg-[#1e2029] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.6)] overflow-hidden transition-all duration-200">
+
+          {/* Browser Titlebar & Tabs Strip */}
+          <div className="bg-[#181a22] border-b border-black/40 flex items-center justify-between px-3 pt-2.5 pb-0 gap-2 select-none overflow-x-auto">
+            {/* Mac Traffic Lights Window Controls */}
+            <div className="flex items-center gap-2 pl-1 pr-3 pb-2.5 shrink-0">
+              <div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]/50 shadow-xs" title="Tutup" />
+              <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]/50 shadow-xs" title="Kecilkan" />
+              <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]/50 shadow-xs" title="Perbesar" />
+            </div>
+
+            {/* Browser Tabs */}
+            <div className="flex items-end gap-1.5 flex-1 min-w-0">
+              {/* Tab 1: Google SERP */}
+              <button
+                type="button"
+                onClick={() => setActiveTab("google")}
+                className={`group relative flex items-center gap-2 px-3.5 py-2 rounded-t-xl text-[12px] font-medium transition-all max-w-[210px] min-w-[130px] border-t border-x cursor-pointer ${
+                  activeTab === "google"
+                    ? "bg-[#ffffff] text-slate-900 border-slate-300 shadow-sm font-semibold"
+                    : "bg-[#14151c]/80 text-slate-400 hover:text-slate-200 border-white/5 hover:bg-[#191b24]"
+                }`}
+              >
+                {/* Google "G" icon */}
+                <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.04h3.88c2.28-2.09 3.66-5.18 3.66-9.14z"/>
+                  <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.04c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.27v3.13C3.25 21.31 7.31 24 12 24z"/>
+                  <path fill="#FBBC05" d="M5.28 14.28c-.24-.72-.38-1.49-.38-2.28s.14-1.56.38-2.28V6.59H1.27C.46 8.21 0 10.04 0 12s.46 3.79 1.27 5.41l4.01-3.13z"/>
+                  <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.69 1.27 6.59l4.01 3.13c.95-2.83 3.6-4.97 6.72-4.97z"/>
+                </svg>
+                <span className="truncate">Google Search</span>
+                <span className="ml-auto text-[10px] text-slate-400 opacity-60 group-hover:opacity-100">✕</span>
+              </button>
+
+              {/* Tab 2: WhatsApp / Sosmed */}
+              <button
+                type="button"
+                onClick={() => setActiveTab("whatsapp")}
+                className={`group relative flex items-center gap-2 px-3.5 py-2 rounded-t-xl text-[12px] font-medium transition-all max-w-[210px] min-w-[130px] border-t border-x cursor-pointer ${
+                  activeTab === "whatsapp"
+                    ? "bg-[#0b141a] text-emerald-300 border-emerald-500/30 shadow-sm font-semibold"
+                    : "bg-[#14151c]/80 text-slate-400 hover:text-slate-200 border-white/5 hover:bg-[#191b24]"
+                }`}
+              >
+                {/* WhatsApp icon */}
+                <svg className="w-3.5 h-3.5 fill-[#25D366] shrink-0" viewBox="0 0 24 24">
+                  <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.983.541 1.767.818 2.791.818 3.182 0 5.768-2.587 5.768-5.768.001-3.18-2.585-5.764-5.768-5.764zm3.376 8.204c-.144.405-.837.774-1.17.824-.312.045-.694.079-2.128-.488-1.833-.726-3.003-2.593-3.094-2.715-.09-.122-.745-.992-.745-1.892 0-.899.467-1.343.633-1.525.166-.182.364-.228.485-.228.122 0 .243.002.349.007.111.005.259-.042.405.309.151.364.515 1.258.56 1.35.045.091.076.197.015.318-.06.121-.09.197-.181.303-.09.106-.19.237-.272.318-.09.091-.184.19-.079.371.106.182.47 1.157 1.009 1.637.694.618 1.28.81 1.462.901.182.091.288.076.394-.045.106-.121.455-.53.576-.712.121-.182.242-.152.405-.091.164.061 1.036.488 1.213.579.177.091.297.136.339.212.043.076.043.439-.101.844z"/>
+                </svg>
+                <span className="truncate">WhatsApp Share</span>
+                <span className="ml-auto text-[10px] text-slate-400 opacity-60 group-hover:opacity-100">✕</span>
+              </button>
+
+              {/* Tab 3: Meta Tags Inspector */}
+              <button
+                type="button"
+                onClick={() => setActiveTab("meta")}
+                className={`group relative flex items-center gap-2 px-3.5 py-2 rounded-t-xl text-[12px] font-medium transition-all max-w-[210px] min-w-[130px] border-t border-x cursor-pointer ${
+                  activeTab === "meta"
+                    ? "bg-[#0d1117] text-sky-300 border-sky-500/30 shadow-sm font-semibold"
+                    : "bg-[#14151c]/80 text-slate-400 hover:text-slate-200 border-white/5 hover:bg-[#191b24]"
+                }`}
+              >
+                <Code2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                <span className="truncate">Meta Tags & Kode</span>
+                <span className="ml-auto text-[10px] text-slate-400 opacity-60 group-hover:opacity-100">✕</span>
+              </button>
+            </div>
+
+            {/* New Tab Button */}
+            <div className="pb-2">
+              <button
+                type="button"
+                onClick={() => setActiveTab(activeTab === "google" ? "whatsapp" : activeTab === "whatsapp" ? "meta" : "google")}
+                className="w-6 h-6 rounded-lg flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                title="Ganti Tampilan"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          {/* Browser Omnibox Toolbar (Address bar) */}
+          <div className="bg-[#121319] border-b border-white/5 px-3 py-2 flex items-center gap-2 select-none">
+            {/* Nav Arrows */}
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-colors"
+                title="Kembali"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-600 cursor-not-allowed"
+                title="Maju"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={handleReload}
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-colors cursor-pointer"
+                title="Muat Ulang Halaman"
+              >
+                <RotateCw className={`w-3.5 h-3.5 ${isReloading ? "animate-spin text-sky-400" : ""}`} />
+              </button>
+            </div>
+
+            {/* Omnibox Address Input Pill */}
+            <div className="flex-1 bg-[#090b0e] border border-white/10 rounded-full px-3.5 py-1.5 flex items-center gap-2 text-xs min-w-0 shadow-inner group">
+              <Lock className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <span className="text-slate-500 font-mono select-none">https://</span>
+              <span className="text-slate-200 font-mono truncate flex-1">
+                {activeTab === "google" && `www.google.com/search?q=${encodeURIComponent(searchQuery)}`}
+                {activeTab === "whatsapp" && `web.whatsapp.com`}
+                {activeTab === "meta" && `${cleanDomain}${seo?.canonical_path || "/"}`}
+              </span>
+
+              {/* Omnibox Action Icons */}
+              <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={handleCopyUrl}
+                  className="p-1 rounded-md text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                  title={copiedUrl ? "Tersalin!" : "Salin URL"}
+                >
+                  {copiedUrl ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsBookmarked(!isBookmarked)}
+                  className={`p-1 rounded-md transition-colors ${
+                    isBookmarked ? "text-amber-400" : "text-slate-400 hover:text-white hover:bg-white/10"
+                  }`}
+                  title={isBookmarked ? "Bookmark disimpan" : "Tambahkan Bookmark"}
+                >
+                  <Star className={`w-3.5 h-3.5 ${isBookmarked ? "fill-amber-400" : ""}`} />
+                </button>
+              </div>
+            </div>
+
+            {/* Browser Right Menu */}
+            <div className="flex items-center gap-1 pl-1">
+              <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-[10px] font-bold text-white shadow-xs">
+                W
+              </div>
+              <button
+                type="button"
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-colors"
+                title="Menu Browser"
+              >
+                <MoreVertical className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* ════ BROWSER VIEWPORT ════ */}
+          <div className="relative">
+
+            {/* ── VIEW 1: GOOGLE SEARCH RESULTS (SERP) ── */}
+            {activeTab === "google" && (
+              <div className="bg-[#ffffff] text-slate-900 p-5 sm:p-8 min-h-[420px] transition-all">
+
+                {/* Google Header bar */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4 pb-4 border-b border-slate-200/80">
+                  {/* Google Logo */}
+                  <div className="flex items-center gap-3">
+                    <span className="text-[26px] font-bold tracking-tight select-none">
+                      <span className="text-[#4285F4]">G</span>
+                      <span className="text-[#EA4335]">o</span>
+                      <span className="text-[#FBBC05]">o</span>
+                      <span className="text-[#4285F4]">g</span>
+                      <span className="text-[#34A853]">l</span>
+                      <span className="text-[#EA4335]">e</span>
+                    </span>
+                  </div>
+
+                  {/* Google Search Bar Mockup */}
+                  <div className="flex-1 max-w-xl flex items-center justify-between rounded-full border border-slate-300 shadow-sm hover:shadow-md px-4 py-2 bg-white transition-shadow">
+                    <span className="text-sm font-medium text-slate-800 truncate mr-2">
+                      {searchQuery}
+                    </span>
+                    <div className="flex items-center gap-3 text-slate-500 shrink-0">
+                      <span className="text-slate-300 text-xs">✕</span>
+                      <div className="w-px h-4 bg-slate-200" />
+                      {/* Mic icon */}
+                      <svg className="w-4 h-4" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                        <path fill="#34A853" d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                      </svg>
+                      {/* Search icon */}
+                      <svg className="w-4 h-4 text-[#4285F4]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.35-4.35"/>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Google Categories Tab Bar */}
+                <div className="flex items-center gap-6 text-[13px] font-medium text-slate-600 pt-3 pb-2.5 overflow-x-auto select-none">
+                  <div className="flex items-center gap-1.5 text-[#1a73e8] border-b-2 border-[#1a73e8] pb-1 font-semibold shrink-0 cursor-pointer">
+                    <Search className="w-3.5 h-3.5" />
+                    <span>Semua</span>
+                  </div>
+                  <span className="hover:text-slate-900 cursor-pointer pb-1 shrink-0">Gambar</span>
+                  <span className="hover:text-slate-900 cursor-pointer pb-1 shrink-0">Berita</span>
+                  <span className="hover:text-slate-900 cursor-pointer pb-1 shrink-0">Maps</span>
+                  <span className="hover:text-slate-900 cursor-pointer pb-1 shrink-0">Video</span>
+                  <span className="hover:text-slate-900 cursor-pointer pb-1 shrink-0">Lainnya</span>
+                </div>
+
+                {/* Results Count Line */}
+                <p className="text-[11px] text-slate-500 py-3 border-b border-slate-100">
+                  Sekitar 124.000 hasil (0,32 detik)
+                </p>
+
+                {/* ── THE ORGANIC RESULT ITEM (THE USER'S WEBSITE) ── */}
+                <div className="pt-5 max-w-2xl space-y-2">
+                  {/* Site Header: Favicon + Domain Breadcrumb */}
+                  <div className="flex items-center gap-3">
+                    <div className="w-7 h-7 rounded-full bg-slate-100 border border-slate-200/80 flex items-center justify-center overflow-hidden shrink-0 shadow-xs">
+                      {seo?.favicon_url ? (
+                        <img
+                          src={seo.favicon_url}
+                          alt="Favicon"
+                          className="w-full h-full object-cover"
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <span className="text-[11px] font-bold text-slate-700 uppercase">
+                          {siteBrand.slice(0, 1)}
+                        </span>
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[13px] font-semibold text-slate-900 leading-none truncate">
+                          {siteBrand}
+                        </span>
+                        <MoreVertical className="w-3.5 h-3.5 text-slate-400 shrink-0 cursor-pointer" />
+                      </div>
+                      <p className="text-[11px] text-slate-500 font-mono truncate leading-tight pt-0.5">
+                        https://{cleanDomain}{seo?.canonical_path ? ` › ${seo.canonical_path.replace(/^\//, "")}` : ""}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Title Link */}
+                  <h3
+                    onClick={triggerOpenSidebar}
+                    className="text-[19px] sm:text-[20px] font-medium leading-snug cursor-pointer group hover:underline text-[#1a0dab] pt-0.5"
+                    title="Klik untuk edit di sidebar"
+                  >
+                    {seo?.title ? (
+                      seo.title
+                    ) : (
+                      <span className="text-slate-400 italic font-normal">
+                        Tambahkan SEO Title di sidebar editor...
+                      </span>
+                    )}
+                  </h3>
+
+                  {/* Meta Description Snippet */}
+                  <p className="text-[13px] text-[#4d5156] leading-relaxed">
+                    {seo?.description ? (
+                      seo.description.length > 160 ? seo.description.slice(0, 157) + "..." : seo.description
+                    ) : (
+                      <span className="text-slate-400 italic">
+                        Meta description belum diisi. Tambahkan deskripsi yang relevan di sidebar editor agar calon pengunjung tertarik mengklik link website Anda di hasil pencarian.
+                      </span>
+                    )}
+                  </p>
+
+                  {/* Sitelinks Grid (Google Sub-links preview) */}
+                  <div className="pt-3 grid grid-cols-2 gap-3 max-w-lg border-t border-slate-100 mt-3">
+                    <div className="space-y-0.5">
+                      <p className="text-[13px] font-medium text-[#1a0dab] hover:underline cursor-pointer">Tentang Kami</p>
+                      <p className="text-[11px] text-slate-500 line-clamp-1">Kenali profil dan layanan terbaik kami.</p>
+                    </div>
+                    <div className="space-y-0.5">
+                      <p className="text-[13px] font-medium text-[#1a0dab] hover:underline cursor-pointer">Kontak & Lokasi</p>
+                      <p className="text-[11px] text-slate-500 line-clamp-1">Hubungi WhatsApp atau kunjungi langsung.</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* SEO Diagnostics Bar */}
+                <div className="mt-8 pt-4 border-t border-slate-200/90 flex flex-wrap items-center justify-between gap-3 text-xs bg-slate-50 -mx-5 -mb-5 sm:-mx-8 sm:-mb-8 p-4 rounded-b-2xl">
+                  <div className="flex flex-wrap items-center gap-4">
+                    {/* Title length check */}
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-semibold text-slate-600">Title:</span>
+                      <span className={`font-mono font-medium px-2 py-0.5 rounded-full text-[11px] ${
+                        titleLen >= 30 && titleLen <= 60
+                          ? "bg-emerald-100 text-emerald-800"
+                          : titleLen > 60
+                            ? "bg-red-100 text-red-800"
+                            : "bg-amber-100 text-amber-800"
+                      }`}>
+                        {titleLen}/60 char {titleLen >= 30 && titleLen <= 60 ? "✓ Optimal" : titleLen > 60 ? "⚠️ Kepanjangan" : "ℹ️ Terlalu pendek"}
+                      </span>
+                    </div>
+
+                    {/* Desc length check */}
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-semibold text-slate-600">Deskripsi:</span>
+                      <span className={`font-mono font-medium px-2 py-0.5 rounded-full text-[11px] ${
+                        descLen >= 70 && descLen <= 155
+                          ? "bg-emerald-100 text-emerald-800"
+                          : descLen > 155
+                            ? "bg-red-100 text-red-800"
+                            : "bg-amber-100 text-amber-800"
+                      }`}>
+                        {descLen}/155 char {descLen >= 70 && descLen <= 155 ? "✓ Optimal" : descLen > 155 ? "⚠️ Kepanjangan" : "ℹ️ Terlalu pendek"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={triggerOpenSidebar}
+                    className="text-[11px] font-semibold text-indigo-600 hover:text-indigo-800 hover:underline flex items-center gap-1 cursor-pointer"
+                  >
+                    <span>Sesuaikan di Panel Editor</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </button>
+                </div>
+
+              </div>
+            )}
+
+            {/* ── VIEW 2: WHATSAPP / SOSMED SHARE PREVIEW ── */}
+            {activeTab === "whatsapp" && (
+              <div className="bg-[#0b141a] text-slate-100 p-4 sm:p-7 min-h-[420px] transition-all">
+
+                {/* WhatsApp Chat Topbar */}
+                <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full bg-emerald-600/30 border border-emerald-500/40 flex items-center justify-center font-bold text-emerald-400">
+                      P
+                    </div>
+                    <div>
+                      <p className="text-[13px] font-semibold text-white leading-tight">Calon Pelanggan / Teman</p>
+                      <p className="text-[11px] text-emerald-400 leading-tight">online</p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] px-2.5 py-1 rounded-full bg-white/10 text-slate-300 font-mono">
+                    WhatsApp Chat
+                  </span>
+                </div>
+
+                {/* Chat Bubble Container */}
+                <div className="max-w-md mx-auto space-y-4">
+                  <div className="rounded-2xl bg-[#005c4b] text-white p-3.5 shadow-lg space-y-2.5 border border-emerald-400/20">
+                    <p className="text-[13px] leading-relaxed">
+                      Halo! Cek website resmi kami di sini ya:{" "}
+                      <span className="text-emerald-300 underline font-mono">https://{cleanDomain}</span>
+                    </p>
+
+                    {/* Open Graph Rich Card */}
+                    <div className="rounded-xl overflow-hidden bg-[#025142] border border-emerald-400/30 shadow-md">
+                      {seo?.og_image_url ? (
+                        <div className="w-full h-44 bg-slate-900 overflow-hidden relative group">
+                          <img
+                            src={seo.og_image_url}
+                            alt="OG Share Preview"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                          />
+                        </div>
+                      ) : (
+                        <div
+                          onClick={triggerOpenSidebar}
+                          className="w-full h-36 bg-emerald-950/60 border-b border-emerald-500/20 flex flex-col items-center justify-center gap-1.5 cursor-pointer hover:bg-emerald-950/80 transition-colors"
+                        >
+                          <ImagePlus className="w-7 h-7 text-emerald-400/70" />
+                          <span className="text-xs text-emerald-300 font-medium">Belum ada OG Image share</span>
+                          <span className="text-[10px] text-emerald-400/80 underline">Klik untuk upload di sidebar</span>
+                        </div>
+                      )}
+
+                      <div className="p-3 space-y-1 bg-[#02473a]">
+                        <p className="text-[10px] uppercase font-bold tracking-wider text-emerald-300/80 truncate">
+                          {cleanDomain.toUpperCase()}
+                        </p>
+                        <p className="text-[13px] font-semibold text-white leading-snug line-clamp-1">
+                          {seo?.title || siteBrand}
+                        </p>
+                        <p className="text-[11px] text-emerald-100/70 line-clamp-2 leading-relaxed">
+                          {seo?.description || "Deskripsi website yang menarik akan muncul di sini saat tautan dibagikan."}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-1 pt-1 text-[10px] text-emerald-200/70">
+                      <span>14:30</span>
+                      {/* Double Blue Check */}
+                      <svg className="w-3.5 h-3.5 text-sky-400" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M12.354 4.354a.5.5 0 0 0-.708-.708L5 10.293 1.854 7.146a.5.5 0 1 0-.708.708l3.5 3.5a.5.5 0 0 0 .708 0l7-7zm-4 0a.5.5 0 0 0-.708-.708L5 6.293 6.646 7.94l2.708-2.708z"/>
+                      </svg>
+                    </div>
+                  </div>
+
+                  {/* Recommendation Note */}
+                  <div className="rounded-xl p-3.5 bg-emerald-950/30 border border-emerald-500/20 text-xs text-emerald-200/90 leading-relaxed flex items-start gap-2.5">
+                    <Sparkles className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-white">Tips Gambar Open Graph:</p>
+                      <p className="text-[11px] text-emerald-300/80 mt-0.5">
+                        Ukuran ideal: <strong className="text-white">1200 × 630 px</strong> (rasio 1.91:1). Gambar ini otomatis dipakai oleh WhatsApp, Telegram, Facebook, X (Twitter), dan LinkedIn saat link Anda dibagikan.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            )}
+
+            {/* ── VIEW 3: META TAGS INSPECTOR (<HEAD>) ── */}
+            {activeTab === "meta" && (
+              <div className="bg-[#0d1117] text-slate-200 p-5 sm:p-7 min-h-[420px] font-mono text-[12px] leading-relaxed transition-all">
+                <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+                  <div className="flex items-center gap-2">
+                    <Code2 className="w-4 h-4 text-sky-400" />
+                    <span className="font-bold text-white text-xs">HTML &lt;head&gt; SEO Inspector</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleCopyMeta}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 border border-sky-500/30 text-sky-300 text-xs font-sans transition-all cursor-pointer"
+                  >
+                    {copiedCode ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedCode ? "Tersalin!" : "Salin Kode HTML"}</span>
+                  </button>
+                </div>
+
+                <div className="rounded-xl p-4 bg-[#05070a] border border-white/5 overflow-x-auto space-y-1 text-slate-300 text-[11px] leading-relaxed">
+                  <p className="text-slate-500">&lt;!-- Primary Meta Tags --&gt;</p>
+                  <p><span className="text-sky-400">&lt;title&gt;</span>{seo?.title || siteBrand}<span className="text-sky-400">&lt;/title&gt;</span></p>
+                  <p><span className="text-sky-400">&lt;meta</span> <span className="text-amber-300">name</span>=<span className="text-emerald-300">&quot;title&quot;</span> <span className="text-amber-300">content</span>=<span className="text-emerald-300">&quot;{seo?.title || siteBrand}&quot;</span> <span className="text-sky-400">/&gt;</span></p>
+                  <p><span className="text-sky-400">&lt;meta</span> <span className="text-amber-300">name</span>=<span className="text-emerald-300">&quot;description&quot;</span> <span className="text-amber-300">content</span>=<span className="text-emerald-300">&quot;{seo?.description || ""}&quot;</span> <span className="text-sky-400">/&gt;</span></p>
+                  <p><span className="text-sky-400">&lt;meta</span> <span className="text-amber-300">name</span>=<span className="text-emerald-300">&quot;robots&quot;</span> <span className="text-amber-300">content</span>=<span className="text-emerald-300">&quot;{seo?.robots || "index, follow"}&quot;</span> <span className="text-sky-400">/&gt;</span></p>
+                  <p><span className="text-sky-400">&lt;link</span> <span className="text-amber-300">rel</span>=<span className="text-emerald-300">&quot;canonical&quot;</span> <span className="text-amber-300">href</span>=<span className="text-emerald-300">&quot;https://{cleanDomain}{seo?.canonical_path || ""}&quot;</span> <span className="text-sky-400">/&gt;</span></p>
+                  <br />
+                  <p className="text-slate-500">&lt;!-- Open Graph / Facebook / WhatsApp --&gt;</p>
+                  <p><span className="text-sky-400">&lt;meta</span> <span className="text-amber-300">property</span>=<span className="text-emerald-300">&quot;og:type&quot;</span> <span className="text-amber-300">content</span>=<span className="text-emerald-300">&quot;{seo?.og_type || "website"}&quot;</span> <span className="text-sky-400">/&gt;</span></p>
+                  <p><span className="text-sky-400">&lt;meta</span> <span className="text-amber-300">property</span>=<span className="text-emerald-300">&quot;og:title&quot;</span> <span className="text-amber-300">content</span>=<span className="text-emerald-300">&quot;{seo?.title || siteBrand}&quot;</span> <span className="text-sky-400">/&gt;</span></p>
+                  <p><span className="text-sky-400">&lt;meta</span> <span className="text-amber-300">property</span>=<span className="text-emerald-300">&quot;og:description&quot;</span> <span className="text-amber-300">content</span>=<span className="text-emerald-300">&quot;{seo?.description || ""}&quot;</span> <span className="text-sky-400">/&gt;</span></p>
+                  <p><span className="text-sky-400">&lt;meta</span> <span className="text-amber-300">property</span>=<span className="text-emerald-300">&quot;og:image&quot;</span> <span className="text-amber-300">content</span>=<span className="text-emerald-300">&quot;{seo?.og_image_url || ""}&quot;</span> <span className="text-sky-400">/&gt;</span></p>
+                </div>
+
+                {/* Keywords Preview */}
+                {(seo?.keywords?.length || 0) > 0 && (
+                  <div className="mt-4 pt-3 border-t border-white/10 font-sans">
+                    <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest mb-2">Target Kata Kunci (Keywords):</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {(seo?.keywords || []).map((kw, idx) => (
+                        <span key={idx} className="px-2.5 py-1 rounded-md text-[11px] font-medium bg-sky-500/10 text-sky-300 border border-sky-500/20">
+                          #{kw}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 )}
               </div>
-              <span className="text-[11px] text-slate-500 truncate">{domain}</span>
-            </div>
-          )}
-          {/* Title */}
-          <p className="text-[15px] font-medium leading-snug truncate" style={{ color: "#1a0dab" }}>
-            {seo?.title || <span className="text-slate-300 italic">Tambahkan SEO title...</span>}
-          </p>
-          {/* Description */}
-          <p className="text-[12px] leading-relaxed" style={{ color: "#4d5156" }}>
-            {seo?.description
-              ? (seo.description.length > 160 ? seo.description.slice(0, 157) + "..." : seo.description)
-              : <span className="text-slate-400 italic">Tambahkan meta description...</span>
-            }
-          </p>
-          {/* Char counters */}
-          <div className="flex gap-4 pt-1">
-            <span className={`text-[10px] font-mono ${(seo?.title?.length || 0) > 60 ? "text-red-500" : "text-slate-400"}`}>
-              Title: {seo?.title?.length || 0}/60
-            </span>
-            <span className={`text-[10px] font-mono ${(seo?.description?.length || 0) > 155 ? "text-red-500" : "text-slate-400"}`}>
-              Desc: {seo?.description?.length || 0}/155
-            </span>
+            )}
+
           </div>
+
         </div>
+
       </div>
-
-      {/* OG / WhatsApp share preview */}
-      <div>
-        <p className="text-[10px] uppercase tracking-widest font-semibold text-slate-500 mb-2">Preview saat link dibagikan (WhatsApp / Sosmed)</p>
-        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.08)" }}>
-          {seo?.og_image_url
-            ? <img src={seo.og_image_url} alt="OG" className="w-full h-36 object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-            : <div className="w-full h-28 flex items-center justify-center" style={{ background: "rgba(255,255,255,0.04)" }}>
-              <span className="text-[11px] text-slate-600">Tidak ada OG image</span>
-            </div>
-          }
-          <div className="px-3 py-2.5 space-y-0.5" style={{ background: "rgba(255,255,255,0.03)" }}>
-            <p className="text-[10px] uppercase tracking-widest text-slate-500">{seo?.og_type || "website"}</p>
-            <p className="text-[12px] font-semibold text-slate-200 leading-tight truncate">{seo?.title || "–"}</p>
-            <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed">{seo?.description || "–"}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Keywords Preview */}
-      {(seo?.keywords?.length || 0) > 0 && (
-        <div>
-          <p className="text-[10px] uppercase tracking-widest font-semibold text-slate-500 mb-2">Keywords</p>
-          <div className="flex flex-wrap gap-1.5">
-            {(seo?.keywords || []).map((kw, idx) => (
-              <span key={idx} className="px-2 py-0.5 rounded-full text-[10px] font-medium" style={{ background: "rgba(99,102,241,0.15)", color: "rgb(165, 180, 252)" }}>
-                {kw}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 function parseGoogleMapsCoords(url?: string | null): { lat: number; lng: number } | null {
   if (!url) return null;
