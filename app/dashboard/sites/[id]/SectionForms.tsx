@@ -1936,9 +1936,9 @@ export default function SectionForms({
       {/* SEO FORM */}
       {activeTab === "seo" && (
         <div className="space-y-3">
-          <div className="rounded-lg border border-cyan-400/20 bg-cyan-400/10 px-3 py-2.5 text-[12px] leading-relaxed text-cyan-100">
-            <p className="font-semibold text-cyan-50">SEO tidak tampil sebagai section di halaman publik.</p>
-            <p className="mt-1 text-cyan-100/80">
+          <div className="rounded-lg border border-border bg-muted/40 px-3 py-2.5 text-[12px] leading-relaxed text-muted-foreground">
+            <p className="font-semibold text-foreground">SEO tidak tampil sebagai section di halaman publik.</p>
+            <p className="mt-1 text-muted-foreground">
               Data ini dipakai mesin pencari dan preview saat link dibagikan, seperti judul Google, deskripsi, favicon, dan gambar share.
             </p>
           </div>
@@ -3592,7 +3592,7 @@ export default function SectionForms({
                     <p className="text-[11px] font-bold text-slate-200 leading-tight">{opt.label}</p>
                     <p className="text-[10px] text-slate-500 mt-0.5 leading-tight">{opt.desc}</p>
                     {opt.value === "chat_bubble" && <span className="absolute top-1.5 right-1.5 text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">PRO</span>}
-                    {isActive && <span className="absolute bottom-1.5 right-1.5 w-2 h-2 rounded-full bg-primary shadow-[0_0_6px_currentColor]" />}
+                    {isActive && <span className="absolute bottom-1.5 right-1.5 w-2 h-2 rounded-full bg-primary" />}
                   </button>
                 );
               })}
