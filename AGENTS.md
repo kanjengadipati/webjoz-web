@@ -31,11 +31,20 @@ jangan pernah selesai hanya karena render utama sudah jalan:
 5. **Sinkronisasi variants/registry** — daftar variant baru (mis. `hero_style`) harus serentak di update di:
    `types.ts` union, registry dropdown (`variant-registry.ts` → `HERO_STYLE_OPTIONS`), komponen section,
    dan dummy data kalau ada.
-6. **Semua template** — kalau section/variant baru, pastikan SEMUA template mewariskan props/language yang
+6. **Showcase section** — variant/section baru WAJIB dirender di showcase internal, kalau tidak varian itu
+   tidak pernah terlihat atau dites visual sebelum publikasi. Dua tempat:
+   - `app/dashboard/admin/section-showcase/mock-data.ts` → `MOCK_SHOWCASE_DATA`. Tab varian otomatis muncul
+     dari `SECTION_VARIANT_OPTIONS`, tapi isi mock-nya diambil dari `switch (sectionKey)` di `page.tsx` — jadi
+     tanpa entri mock, varian baru tampil kosong atau memakai data section lain. Untuk section yang benar-benar
+     baru, tambahkan juga `case` + entri `SECTION_CONFIG_LIST` (`page.tsx:68`), kalau tidak tidak dirender sama sekali.
+   - Kalau section/variant punya opsi gaya atau preset visual baru, daftarkan juga ke
+     `lib/design-assets-config.ts` (`hidden_variants`, `hidden_sections`, atau `required_sections`) supaya
+     registry design assets dan `app/dashboard/admin/design-assets/page.tsx` ikut sinkron.
+7. **Semua template** — kalau section/variant baru, pastikan SEMUA template mewariskan props/language yang
    sama (bukan cuma 1-2 template). Cek `dynamic.tsx` karena pakai pendekatan CSS-variable yang beda.
-7. **Zero-state** — kalau field konten kosong (mis. `badge_text` tanpa format `|`), UI harus tetap rapi
+8. **Zero-state** — kalau field konten kosong (mis. `badge_text` tanpa format `|`), UI harus tetap rapi
    (sembunyikan elemen), jangan tampilkan string mentah.
-8. **Verifikasi** — `npx tsc --noEmit` bersih; cek `npm run lint` (hanya error pre-existing yang boleh ada);
+9. **Verifikasi** — `npx tsc --noEmit` bersih; cek `npm run lint` (hanya error pre-existing yang boleh ada);
    kalau mengubah generator/dummy, run build preview.
 
 > [!IMPORTANT]
