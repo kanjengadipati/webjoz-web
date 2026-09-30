@@ -250,9 +250,9 @@ export default function SectionShowcasePage() {
   }[viewport];
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-20">
-      {/* Top Header & Sticky Control Bar */}
-      <div className="sticky top-0 z-40 bg-card/90 backdrop-blur-md border-b border-border/80 shadow-xs">
+    <div className="min-h-screen bg-background text-foreground pb-20 lg:flex lg:h-screen lg:flex-col lg:overflow-hidden lg:pb-0">
+      {/* Top Header & Sticky Control Bar — static at lg, the panes below scroll on their own */}
+      <div className="sticky top-0 z-40 shrink-0 bg-card/90 backdrop-blur-md border-b border-border/80 shadow-xs lg:static">
         <div className="px-4 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="size-9 rounded-xl bg-gradient-to-br from-primary/20 via-primary/10 to-transparent border border-primary/30 flex items-center justify-center shadow-xs">
@@ -390,9 +390,9 @@ export default function SectionShowcasePage() {
       </div>
 
       {/* Main Layout Container */}
-      <div className="flex flex-col lg:flex-row gap-6 px-4 lg:px-8 py-6">
+      <div className="flex flex-col lg:flex-row gap-6 px-4 lg:px-8 py-6 lg:flex-1 lg:min-h-0 lg:overflow-hidden">
         {/* Left Sidebar: Section Categories */}
-        <div className="w-full lg:w-64 shrink-0 space-y-4 lg:sticky lg:top-24 lg:self-start">
+        <div className="w-full lg:w-64 shrink-0 space-y-4 lg:h-full lg:overflow-y-auto lg:overscroll-contain lg:pr-1">
           <div className="bg-card border border-border/80 rounded-xl p-3 shadow-xs space-y-2">
             <div className="flex items-center justify-between px-2 pt-1 pb-2 border-b border-border/60">
               <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Pilih Section</span>
@@ -401,7 +401,7 @@ export default function SectionShowcasePage() {
               </span>
             </div>
 
-            <div className="grid grid-cols-2 lg:grid-cols-1 gap-1 pr-1 lg:max-h-[calc(100vh-25rem)] lg:overflow-y-auto lg:overscroll-contain">
+            <div className="grid grid-cols-2 lg:grid-cols-1 gap-1 pr-1">
               {SECTION_CONFIG_LIST.map((sec) => {
                 const count = (SECTION_VARIANT_OPTIONS[sec.id] ?? []).length;
                 const hiddenCountForSec = (hiddenVariants[sec.id] ?? []).length;
@@ -508,7 +508,7 @@ export default function SectionShowcasePage() {
         </div>
 
         {/* Right Content Area: Variant Renderers */}
-        <div className="flex-1 min-w-0 space-y-6">
+        <div className="flex-1 min-w-0 space-y-6 lg:h-full lg:overflow-y-auto lg:overscroll-contain lg:pr-1">
           {/* Section Toolbar, Filter & Search */}
           <div className="bg-card border border-border/80 rounded-xl p-4 shadow-xs flex flex-wrap items-center justify-between gap-3">
             <div className="space-y-0.5">
