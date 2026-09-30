@@ -2537,213 +2537,216 @@ export default function SiteEditorPage() {
           )}
 
           {/* Canvas topbar */}
-          <div className="hidden md:flex h-10 flex-shrink-0 items-center gap-2 border-b border-border bg-background px-3">
-            {/* Back to sites shortcut */}
-            <button
-              type="button"
-              onClick={() => router.push("/dashboard/sites")}
-              className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-card/70 dark:bg-muted/40 px-2.5 text-[11px] font-semibold text-slate-700 dark:text-slate-200 transition-all hover:bg-muted hover:text-slate-900 dark:hover:text-white active:scale-95 cursor-pointer shadow-xs"
-              title={t("dashboard.sitesEditor.backToSites")}
-              aria-label={t("dashboard.sitesEditor.backToSites")}
-            >
-              <ChevronLeft className="w-3.5 h-3.5 flex-shrink-0 text-slate-600 dark:text-slate-400" />
-              <span>{t("dashboard.sitesEditor.back")}</span>
-            </button>
-
-            {/* Separator */}
-            <div className="h-5 w-px bg-border" />
-
-            {/* Device switcher */}
-            <div className="flex items-center gap-0.5 rounded-lg border border-border bg-muted/60 p-0.5">
-              <div className="relative group">
-                <button
-                  onClick={() => setDevice("desktop")}
-                  className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device === "desktop"
-                    ? "bg-card text-slate-900 dark:text-white shadow-xs font-semibold"
-                    : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
-                    }`}
-                  aria-label={t("dashboard.sitesEditor.previewDesktop")}
-                >
-                  <Monitor className="w-3.5 h-3.5" />
-                </button>
-                <span className="pointer-events-none absolute -bottom-7 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded bg-slate-800 px-2 py-0.5 text-[11px] text-white opacity-0 transition-opacity group-hover:opacity-100">
-                  Desktop
-                </span>
-              </div>
-              <div className="relative group">
-                <button
-                  onClick={() => setDevice("tablet")}
-                  className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device === "tablet"
-                    ? "bg-card text-slate-900 dark:text-white shadow-xs font-semibold"
-                    : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
-                    }`}
-                  aria-label={t("dashboard.sitesEditor.previewTablet")}
-                >
-                  <Tablet className="w-4 h-4" />
-                </button>
-                <span className="pointer-events-none absolute -bottom-7 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded bg-slate-800 px-2 py-0.5 text-[11px] text-white opacity-0 transition-opacity group-hover:opacity-100">
-                  Tablet
-                </span>
-              </div>
-              <div className="relative group">
-                <button
-                  onClick={() => setDevice("mobile")}
-                  className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-colors ${device === "mobile"
-                    ? "bg-card text-slate-900 dark:text-white shadow-xs font-semibold"
-                    : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
-                    }`}
-                  aria-label={t("dashboard.sitesEditor.previewMobile")}
-                >
-                  <Smartphone className="w-3.5 h-3.5" />
-                </button>
-                <span className="pointer-events-none absolute -bottom-7 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded bg-slate-800 px-2 py-0.5 text-[11px] text-white opacity-0 transition-opacity group-hover:opacity-100">
-                  Mobile
-                </span>
-              </div>
-            </div>
-
-            {/* Separator */}
-            <div className="h-5 w-px bg-border" />
-
-            {/* Theme toggle */}
-            <div className="relative group">
+          <div className="hidden md:flex h-11 flex-shrink-0 items-center gap-1.5 border-b border-border/60 bg-background/95 backdrop-blur-sm px-3 z-10">
+            {/* LEFT GROUP: Back + Device Switcher */}
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              {/* Back button */}
               <button
-                onClick={() => {
-                  pushGlobalUndo({ force: true });
-                  pushDesignUndo();
-                  setDesignToken((prev: any) => ({
-                    ...(prev || {}),
-                    theme_mode: effectiveThemeIsDark ? 'light' : 'dark',
-                  }));
-                }}
-                className={`flex h-7 items-center gap-1.5 rounded-lg border px-2.5 text-[11px] font-semibold transition-colors shadow-xs ${effectiveThemeIsDark
-                  ? 'border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300'
-                  : 'border-border bg-card/70 dark:bg-white/5 text-slate-700 dark:text-slate-200 hover:bg-muted hover:text-slate-900 dark:hover:text-white'
+                type="button"
+                onClick={() => router.push("/dashboard/sites")}
+                className="flex h-7 items-center gap-1 rounded-md px-2 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:scale-95 cursor-pointer"
+                title={t("dashboard.sitesEditor.backToSites")}
+                aria-label={t("dashboard.sitesEditor.backToSites")}
+              >
+                <ChevronLeft className="w-3.5 h-3.5 flex-shrink-0" />
+                <span>{t("dashboard.sitesEditor.back")}</span>
+              </button>
+
+              {/* Separator */}
+              <div className="h-4 w-px bg-border/60" />
+
+              {/* Device switcher */}
+              <div className="flex items-center gap-0 rounded-md border border-border/70 bg-muted/40 p-0.5">
+                <div className="relative group">
+                  <button
+                    onClick={() => setDevice("desktop")}
+                    className={`flex h-6 w-7 items-center justify-center rounded text-[12px] transition-all ${device === "desktop"
+                      ? "bg-background text-foreground shadow-xs"
+                      : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    aria-label={t("dashboard.sitesEditor.previewDesktop")}
+                  >
+                    <Monitor className="w-3.5 h-3.5" />
+                  </button>
+                  <span className="pointer-events-none absolute -bottom-7 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded bg-foreground/90 px-2 py-0.5 text-[10px] text-background opacity-0 transition-opacity group-hover:opacity-100">
+                    Desktop
+                  </span>
+                </div>
+                <div className="relative group">
+                  <button
+                    onClick={() => setDevice("tablet")}
+                    className={`flex h-6 w-7 items-center justify-center rounded text-[12px] transition-all ${device === "tablet"
+                      ? "bg-background text-foreground shadow-xs"
+                      : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    aria-label={t("dashboard.sitesEditor.previewTablet")}
+                  >
+                    <Tablet className="w-3.5 h-3.5" />
+                  </button>
+                  <span className="pointer-events-none absolute -bottom-7 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded bg-foreground/90 px-2 py-0.5 text-[10px] text-background opacity-0 transition-opacity group-hover:opacity-100">
+                    Tablet
+                  </span>
+                </div>
+                <div className="relative group">
+                  <button
+                    onClick={() => setDevice("mobile")}
+                    className={`flex h-6 w-7 items-center justify-center rounded text-[12px] transition-all ${device === "mobile"
+                      ? "bg-background text-foreground shadow-xs"
+                      : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    aria-label={t("dashboard.sitesEditor.previewMobile")}
+                  >
+                    <Smartphone className="w-3.5 h-3.5" />
+                  </button>
+                  <span className="pointer-events-none absolute -bottom-7 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded bg-foreground/90 px-2 py-0.5 text-[10px] text-background opacity-0 transition-opacity group-hover:opacity-100">
+                    Mobile
+                  </span>
+                </div>
+              </div>
+
+              {/* Separator */}
+              <div className="h-4 w-px bg-border/60" />
+
+              {/* Theme toggle */}
+              <div className="relative group">
+                <button
+                  onClick={() => {
+                    pushGlobalUndo({ force: true });
+                    pushDesignUndo();
+                    setDesignToken((prev: any) => ({
+                      ...(prev || {}),
+                      theme_mode: effectiveThemeIsDark ? 'light' : 'dark',
+                    }));
+                  }}
+                  className={`flex h-7 items-center gap-1.5 rounded-md border px-2.5 text-[11px] font-medium transition-all ${effectiveThemeIsDark
+                    ? 'border-border/60 bg-muted/40 text-foreground'
+                    : 'border-border/60 bg-muted/40 text-foreground'
+                    }`}
+                  aria-label={t("dashboard.sitesEditor.toggleDarkAria")}
+                >
+                  {effectiveThemeIsDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+                  <span>{effectiveThemeIsDark ? t("dashboard.sitesEditor.light") : t("dashboard.sitesEditor.dark")}</span>
+                </button>
+                <span className="pointer-events-none absolute -bottom-7 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded bg-foreground/90 px-2 py-0.5 text-[10px] text-background opacity-0 transition-opacity group-hover:opacity-100">
+                  {designToken?.theme_mode === 'dark' ? t("dashboard.sitesEditor.switchLight") : t("dashboard.sitesEditor.switchDark")}
+                </span>
+              </div>
+
+              {/* Guide */}
+              <button
+                type="button"
+                onClick={openGuide}
+                className="flex h-7 items-center gap-1.5 rounded-md border border-border/60 bg-muted/40 px-2.5 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer active:scale-95"
+                title="Buka Panduan Editor"
+              >
+                <HelpCircle className="w-3.5 h-3.5" />
+                <span>Panduan</span>
+              </button>
+
+              {/* Quality score */}
+              <span
+                className={`flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold ${quality.score >= 85
+                  ? "border-border/60 bg-muted/40 text-muted-foreground"
+                  : quality.score >= 65
+                    ? "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                    : "border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400"
                   }`}
-                aria-label={t("dashboard.sitesEditor.toggleDarkAria")}
+                title={quality.issues.slice(0, 5).map((issue) => issue.label).join(", ")}
               >
-                {effectiveThemeIsDark ? <Sun className="w-3.5 h-3.5 text-amber-600 dark:text-amber-300" /> : <Moon className="w-3.5 h-3.5 text-slate-600 dark:text-slate-400" />}
-                {effectiveThemeIsDark ? t("dashboard.sitesEditor.light") : t("dashboard.sitesEditor.dark")}
-              </button>
-              <span className="pointer-events-none absolute -bottom-7 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded bg-slate-800 px-2 py-0.5 text-[11px] text-white opacity-0 transition-opacity group-hover:opacity-100">
-                {designToken?.theme_mode === 'dark' ? t("dashboard.sitesEditor.switchLight") : t("dashboard.sitesEditor.switchDark")}
+                {quality.score < 100 ? "⚠" : "✓"} {quality.score}%
               </span>
+
+              {/* Global undo */}
+              {globalUndo.length > 0 && (
+                <button
+                  type="button"
+                  onClick={handleGlobalUndo}
+                  aria-label={t("dashboard.sitesEditor.undo")}
+                  title={t("dashboard.sitesEditor.undoAllTitle")}
+                  className="flex h-7 w-7 items-center justify-center rounded-md border border-border/60 bg-muted/40 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" />
+                </button>
+              )}
             </div>
 
-            {/* Panduan & Bantuan */}
-            <button
-              type="button"
-              onClick={openGuide}
-              className="flex h-7 items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-2.5 text-[11px] font-bold text-primary hover:bg-primary/20 transition-all cursor-pointer active:scale-95 shadow-xs"
-              title="Buka Panduan Editor"
-            >
-              <HelpCircle className="w-3.5 h-3.5" />
-              <span>Panduan</span>
-            </button>
+            {/* CENTER: Site name */}
+            <div className="flex-1 flex items-center justify-center min-w-0 px-4">
+              <p className="text-[12px] font-semibold text-foreground/70 truncate">{siteDetails.name}</p>
+            </div>
 
-            {/* Separator */}
-            <div className="h-5 w-px bg-border" />
-
-            {/* Completion score */}
-            <span className={`flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold ${quality.score >= 85
-              ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
-              : quality.score >= 65
-                ? "border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300"
-                : "border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-300"
-              }`} title={quality.issues.slice(0, 5).map((issue) => issue.label).join(", ")}>
-              {quality.score < 100 ? "⚠️" : "✓"} {quality.score}%
-            </span>
-
-            {/* Global undo */}
-            {globalUndo.length > 0 && (
-              <button
-                type="button"
-                onClick={handleGlobalUndo}
-                aria-label={t("dashboard.sitesEditor.undo")}
-                title={t("dashboard.sitesEditor.undoAllTitle")}
-                className="flex h-6 items-center gap-1 rounded-md border border-border bg-card/70 dark:bg-muted/50 px-2 text-[10px] font-semibold text-slate-700 dark:text-slate-300 transition-colors hover:bg-muted hover:text-slate-900 dark:hover:text-white shadow-xs"
-              >
-                <RotateCcw className="h-3 w-3 text-slate-600 dark:text-slate-400" />
-                {t("dashboard.sitesEditor.undo")}
-              </button>
-            )}
-
-            {/* Spacer */}
-            <div className="flex-1" />
-
-            {/* Autosave status */}
-            {autosaveStatus !== "idle" && (
-              <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 transition-all ${autosaveStatus === "saving" ? "text-amber-600 dark:text-amber-300" :
-                autosaveStatus === "saved" ? "text-emerald-600 dark:text-emerald-400" :
-                  "text-red-600 dark:text-red-300"
-                }`}>
-                {autosaveStatus === "saving" && <Loader2 className="w-2.5 h-2.5 animate-spin" />}
-                {autosaveStatus === "saved" && <Check className="w-2.5 h-2.5" />}
-                {autosaveStatus === "error" && <AlertCircle className="w-2.5 h-2.5" />}
-                {autosaveStatus === "saving" ? t("dashboard.sitesEditor.saving") :
-                  autosaveStatus === "saved" ? t("dashboard.sitesEditor.saved") :
-                    t("dashboard.sitesEditor.autosaveFailed")}
-              </span>
-            )}
-
-            {/* Preview link — opens draft content */}
-            <a
-              href={previewHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-card/70 dark:bg-white/5 px-3 text-[11px] font-semibold text-slate-700 dark:text-slate-200 transition-colors hover:bg-muted hover:text-slate-900 dark:hover:text-white shadow-xs"
-            >
-              <Globe className="h-3.5 w-3.5 text-slate-600 dark:text-slate-400" />
-              {t("dashboard.sitesEditor.preview")}
-            </a>
-
-            {/* Save button */}
-            <button
-              onClick={handleSaveContent}
-              disabled={saving}
-              className="flex h-7 items-center gap-1.5 rounded-lg px-3 text-[11px] font-semibold text-primary-foreground transition-colors hover:brightness-110 disabled:opacity-60 shadow-xs"
-              style={{ background: "var(--primary)" }}
-            >
-              {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-              {t("dashboard.sitesEditor.save")}
-            </button>
-            {/* Publish button / Live badge — right side */}
-            {siteDetails?.status === "published" ? (
-              <button
-                type="button"
-                onClick={() => {
-                  if (!siteDetails?.subdomain) return;
-                  const host = typeof window !== "undefined" ? window.location.host : "webjoz.com";
-                  const domainPart = host.includes("localhost") || host.includes("127.0.0.1")
-                    ? "webjoz.com"
-                    : host.substring(host.indexOf(".") + 1);
-                  window.open(`https://${siteDetails.subdomain}.${domainPart}`, "_blank");
-                }}
-                className="flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/20 transition-colors cursor-pointer shadow-xs"
-                title="Buka website live di tab baru"
-              >
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            {/* RIGHT GROUP: Autosave + Preview + Save + Publish */}
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              {/* Autosave status */}
+              {autosaveStatus !== "idle" && (
+                <span className={`text-[10px] font-medium flex items-center gap-1 transition-all ${autosaveStatus === "saving" ? "text-muted-foreground" :
+                  autosaveStatus === "saved" ? "text-muted-foreground" :
+                    "text-red-500"
+                  }`}>
+                  {autosaveStatus === "saving" && <Loader2 className="w-2.5 h-2.5 animate-spin" />}
+                  {autosaveStatus === "saved" && <Check className="w-2.5 h-2.5" />}
+                  {autosaveStatus === "error" && <AlertCircle className="w-2.5 h-2.5" />}
+                  {autosaveStatus === "saving" ? t("dashboard.sitesEditor.saving") :
+                    autosaveStatus === "saved" ? t("dashboard.sitesEditor.saved") :
+                      t("dashboard.sitesEditor.autosaveFailed")}
                 </span>
-                Live
-                <ExternalLink className="w-3 h-3 text-emerald-700/70 dark:text-emerald-400/70" />
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => {
-                  setPublishModalOpen(true);
-                  setModerationViolations(null);
-                  setAppealed(false);
-                }}
-                className="flex h-7 items-center gap-1.5 rounded-lg px-3 text-[11px] font-semibold text-primary-foreground transition-colors hover:brightness-110 shadow-xs"
-                style={{ background: "var(--primary)" }}
+              )}
+
+              {/* Preview link */}
+              <a
+                href={previewHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-7 items-center gap-1.5 rounded-md border border-border/70 bg-muted/40 px-2.5 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               >
-                <Rocket className="w-3.5 h-3.5" />
-                {t("dashboard.sitesEditor.publish")}
+                <Globe className="h-3.5 w-3.5" />
+                {t("dashboard.sitesEditor.preview")}
+              </a>
+
+              {/* Save button */}
+              <button
+                onClick={handleSaveContent}
+                disabled={saving}
+                className="flex h-7 items-center gap-1.5 rounded-md border border-border/70 bg-foreground px-3 text-[11px] font-semibold text-background transition-all hover:opacity-80 disabled:opacity-50"
+              >
+                {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+                {t("dashboard.sitesEditor.save")}
               </button>
-            )}
+
+              {/* Publish / Live */}
+              {siteDetails?.status === "published" ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!siteDetails?.subdomain) return;
+                    const host = typeof window !== "undefined" ? window.location.host : "webjoz.com";
+                    const domainPart = host.includes("localhost") || host.includes("127.0.0.1")
+                      ? "webjoz.com"
+                      : host.substring(host.indexOf(".") + 1);
+                    window.open(`https://${siteDetails.subdomain}.${domainPart}`, "_blank");
+                  }}
+                  className="flex items-center gap-1.5 rounded-md border border-border/70 bg-muted/40 px-2.5 py-1 text-[11px] font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
+                  title="Buka website live di tab baru"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
+                  Live
+                  <ExternalLink className="w-3 h-3" />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPublishModalOpen(true);
+                    setModerationViolations(null);
+                    setAppealed(false);
+                  }}
+                  className="flex h-7 items-center gap-1.5 rounded-md border border-border/70 bg-foreground px-3 text-[11px] font-semibold text-background transition-all hover:opacity-80"
+                >
+                  <Rocket className="w-3.5 h-3.5" />
+                  {t("dashboard.sitesEditor.publish")}
+                </button>
+              )}
+            </div>
           </div>
 
           {pendingDiff && (
