@@ -623,13 +623,6 @@ export default function SiteEditorPage() {
         shouldScrollToActiveRef.current = false;
         activeTabRef.current = nextSection;
         setActiveTab(nextSection);
-        if (nextSection === "seo") {
-          if (window.innerWidth < 768) {
-            setSheetCollapsed(false);
-          } else {
-            setDesktopSidebarOpen(true);
-          }
-        }
       }
     };
 
@@ -645,33 +638,6 @@ export default function SiteEditorPage() {
       if (frame) cancelAnimationFrame(frame);
     };
   }, [device, pendingDiff]);
-
-  // Auto-open sidebar editor when SEO is scrolled into view via custom event
-  useEffect(() => {
-    let wasOpened = false;
-    const handleOpenSeo = () => {
-      if (wasOpened) return;
-      wasOpened = true;
-      setActiveTab("seo");
-      activeTabRef.current = "seo";
-      if (window.innerWidth < 768) {
-        setSheetCollapsed(false);
-      } else {
-        setDesktopSidebarOpen(true);
-      }
-    };
-
-    const handleResetSeo = () => {
-      wasOpened = false;
-    };
-
-    window.addEventListener("webjoz:open-seo-editor", handleOpenSeo);
-    window.addEventListener("webjoz:reset-seo-opened", handleResetSeo);
-    return () => {
-      window.removeEventListener("webjoz:open-seo-editor", handleOpenSeo);
-      window.removeEventListener("webjoz:reset-seo-opened", handleResetSeo);
-    };
-  }, []);
 
   // Scroll preview to pending diff section when it changes
   useEffect(() => {
@@ -1010,13 +976,6 @@ export default function SiteEditorPage() {
 
   const handlePreviewSelectSection = useCallback((section: string) => {
     selectSection(section, false);
-    if (section === "seo") {
-      if (window.innerWidth < 768) {
-        setSheetCollapsed(false);
-      } else {
-        setDesktopSidebarOpen(true);
-      }
-    }
   }, [selectSection]);
 
   const handleAiRegenerateSection = () => handleAiRegenerateForSection(activeTab);
@@ -2857,13 +2816,6 @@ export default function SiteEditorPage() {
               }
               if (bestSection !== activeTab && bestDistance < containerHeight * 0.6) {
                 setActiveTab(bestSection);
-                if (bestSection === "seo") {
-                  if (window.innerWidth < 768) {
-                    setSheetCollapsed(false);
-                  } else {
-                    setDesktopSidebarOpen(true);
-                  }
-                }
               }
             }}
           >
