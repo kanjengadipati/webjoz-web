@@ -277,7 +277,7 @@ function BeforeAfterSlider({
         </div>
       )}
 
-      {caption && (
+      {(caption || isEditorMode) && (
         <p
           style={{
             textAlign: "center",

@@ -63,7 +63,7 @@ export default function GalleryMasonry({
               </div>
             )}
             {(item.caption || isEditorMode) && (
-              <div className={`absolute inset-x-0 bottom-0 p-3 md:p-4 bg-gradient-to-t from-black/70 to-transparent ${isEditorMode ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity duration-300`}>
+              <div className={`absolute inset-x-0 bottom-0 p-3 md:p-4 bg-gradient-to-t from-black/70 to-transparent ${isEditorMode ? "opacity-100 z-30 pointer-events-auto" : "opacity-0 group-hover:opacity-100"} transition-opacity duration-300`}>
                 {isEditorMode ? (
                   <InlineText
                     section="gallery"
