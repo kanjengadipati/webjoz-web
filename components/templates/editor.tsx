@@ -586,16 +586,16 @@ export const PreviewSectionWrapper: React.FC<{
         >
           {/* Relative wrapper lives OUTSIDE the pill so the gallery panel is not clipped */}
           <div className="relative">
-            <div className={`h-[26px] inline-flex items-center bg-slate-950/90 backdrop-blur-md border shadow-sm rounded-full transition-all duration-150 ${isGalleryOpen ? "border-sky-400/80 ring-1 ring-sky-400/30 shadow-[0_0_10px_rgba(56,189,248,0.2)]" : "border-white/15"}`}>
+            <div className={`h-[22px] sm:h-[26px] inline-flex items-center bg-slate-950/90 backdrop-blur-md border shadow-sm rounded-full transition-all duration-150 ${isGalleryOpen ? "border-sky-400/80 ring-1 ring-sky-400/30 shadow-[0_0_10px_rgba(56,189,248,0.2)]" : "border-white/15"}`}>
               {/* Label segment */}
-              <span className="inline-flex items-center h-full px-2.5 text-[8.5px] font-bold tracking-[0.1em] text-slate-400 uppercase select-none">
+              <span className={`${hasVariants ? "hidden sm:inline-flex" : "inline-flex"} items-center h-full px-2 sm:px-2.5 text-[8px] sm:text-[8.5px] font-bold tracking-[0.1em] text-slate-400 uppercase select-none`}>
                 {label}
               </span>
 
               {hasVariants && (
                 <>
                   {/* Divider */}
-                  <div className="w-px h-3 bg-white/15 shrink-0" />
+                  <div className="hidden sm:block w-px h-3 bg-white/15 shrink-0" />
 
                   {/* Variant trigger segment */}
                   <button
@@ -606,12 +606,11 @@ export const PreviewSectionWrapper: React.FC<{
                       setIsGalleryOpen((prev) => !prev);
                       if (!isGalleryOpen) setSelectedGroup("Semua");
                     }}
-                    className={`h-full inline-flex items-center gap-1.5 pl-2 pr-2.5 rounded-r-full text-[9.5px] font-medium cursor-pointer transition-colors outline-none focus:outline-none focus-visible:outline-none select-none ${
+                    className={`h-full inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:pl-2 sm:pr-2.5 rounded-full sm:rounded-none sm:rounded-r-full text-[9px] sm:text-[9.5px] font-medium cursor-pointer transition-colors outline-none focus:outline-none focus-visible:outline-none select-none ${
                       isGalleryOpen ? "text-sky-300 bg-sky-500/10" : "text-slate-200 hover:text-white hover:bg-white/5"
                     }`}
-                    title={t("dashboard.sitesEditor.changeSectionVariant") || "Pilih Variasi Tampilan"}
                   >
-                    <span className="max-w-[150px] truncate leading-none">
+                    <span className="max-w-[85px] sm:max-w-[150px] truncate leading-none">
                       {activeOpt?.label || t("dashboard.sitesEditor.variantLabel") || "Varian"}
                     </span>
                     <ChevronDown className={`w-2.5 h-2.5 shrink-0 transition-transform duration-200 ${isGalleryOpen ? "rotate-180 text-sky-400" : "text-slate-400"}`} />
