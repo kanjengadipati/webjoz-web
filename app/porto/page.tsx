@@ -93,24 +93,22 @@ export default function PortoPage() {
   return (
     <main className="min-h-screen pb-20">
       <section className="relative overflow-hidden px-4 pb-14 pt-14 sm:px-6 lg:px-10 lg:pb-20 lg:pt-20">
-        <div className="absolute left-1/2 top-0 -z-10 h-[520px] w-full -translate-x-1/2 bg-gradient-to-b from-primary/10 via-transparent to-transparent opacity-60 blur-3xl" />
-
         <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1fr_420px]">
           <div className="space-y-8 text-center lg:text-left">
             <div className="flex justify-center lg:justify-start">
-                <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 text-primary shadow-lg shadow-primary/5 backdrop-blur sm:flex-nowrap sm:gap-3">
+                <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-full border border-border/60 bg-card px-4 py-2 text-foreground sm:flex-nowrap sm:gap-3">
                 <div className="flex size-10 items-center justify-center rounded-full border border-primary/20 bg-background/70 text-sm font-black text-foreground">
                   H
                 </div>
                 <div className="text-sm font-semibold uppercase tracking-[0.2em] text-foreground/90">Heriyadi</div>
-                <Badge variant="outline" className="border-primary/20 bg-background/60 text-primary">
+                <Badge variant="outline" className="border-border/60 bg-background/60 text-foreground">
                   Portfolio
                 </Badge>
               </div>
             </div>
 
             <div className="space-y-5">
-              <h1 className="bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-4xl font-bold leading-[1.08] tracking-tighter text-transparent text-balance sm:text-5xl md:text-7xl">
+              <h1 className="text-4xl font-bold leading-[1.08] tracking-tighter text-balance text-foreground sm:text-5xl md:text-7xl">
                 Senior frontend engineer building products that scale.
               </h1>
               <p className="mx-auto max-w-3xl text-base leading-8 text-muted-foreground sm:text-lg md:text-xl lg:mx-0">
@@ -124,7 +122,7 @@ export default function PortoPage() {
                 href="mailto:heriyadisst@gmail.com"
                 className={buttonClassName({
                   size: "lg",
-                  className: "rounded-full px-8 py-6 text-base font-bold shadow-xl shadow-primary/20 hover:opacity-90",
+                  className: "rounded-full px-8 py-6 text-base font-bold shadow-sm hover:opacity-90",
                 })}
                 style={{ backgroundColor: "var(--foreground)", color: "var(--background)" }}
               >
@@ -150,7 +148,7 @@ export default function PortoPage() {
             </div>
           </div>
 
-          <Card className="overflow-hidden border-primary/20 bg-gradient-to-br from-primary/10 via-card/70 to-card/90 shadow-2xl shadow-primary/10">
+          <Card className="overflow-hidden border-border/60 bg-card shadow-sm">
             <div className="border-b border-border/50 px-5 py-4">
               <div className="flex items-center justify-between gap-4">
                 <div>
@@ -163,7 +161,7 @@ export default function PortoPage() {
               </div>
             </div>
             <div className="p-4">
-              <div className="overflow-hidden rounded-2xl border border-border/60 bg-background/70 shadow-2xl shadow-black/10">
+              <div className="overflow-hidden rounded-2xl border border-border/60 bg-background/70 shadow-sm">
                 <Image
                   src="/heriyadi-cv-preview-latest.png"
                   alt="Preview of Heriyadi CV"
@@ -179,10 +177,10 @@ export default function PortoPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-10">
-        <Card className="overflow-hidden border-primary/20 bg-gradient-to-br from-primary/10 via-card/70 to-card/90 shadow-2xl shadow-primary/10">
+        <Card className="overflow-hidden border-border/60 bg-card shadow-sm">
           <div className="grid gap-0 lg:grid-cols-[0.95fr_1.05fr]">
             <div className="space-y-7 p-8 lg:p-12">
-              <Badge variant="outline" className="border-primary/20 bg-background/50 text-primary">
+              <Badge variant="outline" className="border-border/60 bg-background/50 text-foreground">
                 Profile
               </Badge>
               <div className="space-y-4">
@@ -229,7 +227,7 @@ export default function PortoPage() {
         <div className="grid gap-5">
           {experience.map((item) => (
             <Card key={`${item.company}-${item.period}`} className="overflow-hidden border-border/40 hover:border-primary/30">
-              <CardHeader className="bg-gradient-to-br from-primary/5 via-transparent to-transparent">
+              <CardHeader className="bg-muted/30">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <CardTitle className="text-2xl font-bold">{item.role}</CardTitle>
@@ -257,7 +255,7 @@ export default function PortoPage() {
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-10">
         <div className="grid gap-8 lg:grid-cols-[0.75fr_1.25fr]">
           <div className="space-y-4">
-            <Badge variant="outline" className="border-primary/20 bg-background/50 text-primary">
+            <Badge variant="outline" className="border-border/60 bg-background/50 text-foreground">
               Skills
             </Badge>
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Modern product engineering toolkit.</h2>
@@ -282,7 +280,7 @@ export default function PortoPage() {
       </section>
 
       <section className="mx-auto max-w-4xl px-4 py-12 text-center sm:px-6">
-        <div className="space-y-8 rounded-[28px] border border-border/40 bg-gradient-to-br from-background via-card/70 to-primary/5 px-8 py-12 shadow-xl shadow-primary/5">
+        <div className="space-y-8 rounded-2xl border border-border/60 bg-card px-8 py-12 shadow-sm">
           <div className="space-y-3">
             <h2 className="text-3xl font-bold tracking-tighter">Let&apos;s build something reliable.</h2>
             <p className="mx-auto max-w-2xl text-base leading-8 text-muted-foreground">
@@ -294,7 +292,7 @@ export default function PortoPage() {
               href="mailto:heriyadisst@gmail.com"
               className={buttonClassName({
                 size: "lg",
-                className: "rounded-full px-8 shadow-lg shadow-primary/20 hover:opacity-90",
+                className: "rounded-full px-8 shadow-sm hover:opacity-90",
               })}
               style={{ backgroundColor: "var(--foreground)", color: "var(--background)" }}
             >
