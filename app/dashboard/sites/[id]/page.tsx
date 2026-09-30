@@ -623,13 +623,6 @@ export default function SiteEditorPage() {
         shouldScrollToActiveRef.current = false;
         activeTabRef.current = nextSection;
         setActiveTab(nextSection);
-        if (nextSection === "seo") {
-          if (window.innerWidth < 768) {
-            setSheetCollapsed(false);
-          } else {
-            setDesktopSidebarOpen(true);
-          }
-        }
       }
     };
 
@@ -1438,7 +1431,7 @@ export default function SiteEditorPage() {
         >
           {/* Main 380px Collapsible Drawer Body */}
           <div
-            className={`h-full flex-shrink-0 flex flex-col overflow-hidden bg-[#111318] border-r border-border/70 transition-[width] duration-300 ease-in-out ${
+            className={`dark h-full flex-shrink-0 flex flex-col overflow-hidden bg-[#111318] border-r border-border/70 transition-[width] duration-300 ease-in-out ${
               desktopSidebarOpen ? "w-[380px]" : "w-0 border-r-0"
             }`}
             style={{ borderColor: "rgba(255,255,255,0.07)" }}
@@ -2848,13 +2841,6 @@ export default function SiteEditorPage() {
               }
               if (bestSection !== activeTab && bestDistance < containerHeight * 0.6) {
                 setActiveTab(bestSection);
-                if (bestSection === "seo") {
-                  if (window.innerWidth < 768) {
-                    setSheetCollapsed(false);
-                  } else {
-                    setDesktopSidebarOpen(true);
-                  }
-                }
               }
             }}
           >
@@ -2984,7 +2970,7 @@ export default function SiteEditorPage() {
           {/* Mobile bottom sheet */}
           <div
             data-mobile-sheet
-            className="md:hidden absolute bottom-0 left-0 right-0 z-50 flex flex-col bg-[#111318] border-t border-border rounded-t-[22px] shadow-[0_-20px_60px_rgba(0,0,0,0.5)] transition-all duration-300 ease-out overflow-hidden pb-[env(safe-area-inset-bottom)]"
+            className="dark md:hidden absolute bottom-0 left-0 right-0 z-50 flex flex-col bg-[#111318] border-t border-border rounded-t-[22px] shadow-[0_-20px_60px_rgba(0,0,0,0.5)] transition-all duration-300 ease-out overflow-hidden pb-[env(safe-area-inset-bottom)]"
             style={{
               display: device === "mobile" ? "flex" : undefined,
               maxHeight: sheetCollapsed ? "calc(36px + env(safe-area-inset-bottom))" : sheetExpanded ? "88%" : "48%",
