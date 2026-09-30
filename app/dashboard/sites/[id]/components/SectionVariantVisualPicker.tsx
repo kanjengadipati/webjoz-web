@@ -867,10 +867,6 @@ export default function SectionVariantVisualPicker({
     return enabledOpts.filter((opt) => opt.group === selectedGroup);
   }, [enabledOpts, selectedGroup]);
 
-  if (!isDynamic || !SECTION_VARIANT_OPTIONS[sectionKey] || enabledOpts.length <= 1) {
-    return null;
-  }
-
   // Derive current variant for hero or normal section
   const currentVal =
     (sectionKey === "hero"
@@ -893,7 +889,11 @@ export default function SectionVariantVisualPicker({
       activeCardRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
     }, 80);
     return () => clearTimeout(id);
-  }, [isExpanded]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isExpanded, currentOpt?.group]);
+
+  if (!isDynamic || !SECTION_VARIANT_OPTIONS[sectionKey] || enabledOpts.length <= 1) {
+    return null;
+  }
 
   const getOptionLabel = (opt: { value: string; label: string; labelKey?: string }) => {
     if (t && opt.labelKey) {
