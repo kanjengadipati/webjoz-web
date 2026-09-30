@@ -765,7 +765,7 @@ export default function SectionForms({
               value={content.header?.tagline || ""}
               onChange={(e) => updateField("header", "tagline", e.target.value)}
               placeholder="cth. Cita Rasa Nusantara"
-              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
             />
           </div>
           <div className="space-y-1">
@@ -778,7 +778,7 @@ export default function SectionForms({
           </div>
           <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Nama Ikon</label>
-            <input id="field-header.icon" type="text" value={content.header?.icon || ""} onChange={(e) => updateField("header", "icon", e.target.value)} className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent" placeholder="cth. Utensils" />
+            <input id="field-header.icon" type="text" value={content.header?.icon || ""} onChange={(e) => updateField("header", "icon", e.target.value)} className={SIDEBAR_FIELD_CLASS} placeholder="cth. Utensils" />
           </div>
 
           {/* Nav Menu Items */}
@@ -863,7 +863,7 @@ export default function SectionForms({
               value={content.hero?.eyebrow || ""}
               onChange={(e) => updateField("hero", "eyebrow", e.target.value)}
               placeholder="cth. Tersedia Sekarang"
-              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
             />
             <p className="text-[10px] text-slate-600 leading-relaxed">Label kecil di atas headline (dipakai oleh beberapa template).</p>
           </div>
@@ -901,7 +901,7 @@ export default function SectionForms({
               value={content.hero?.matra || ""}
               onChange={(e) => updateField("hero", "matra", e.target.value)}
               placeholder="cth. Cita Rasa Jogja · Sejak 2010"
-              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
             />
             <p className="text-[10px] text-slate-600 leading-relaxed">Slogan singkat yang muncul di antara headline and subheadline dengan garis dekoratif.</p>
           </div>
@@ -969,7 +969,7 @@ export default function SectionForms({
               value={content.hero?.cta_secondary_text || ""}
               onChange={(e) => updateField("hero", "cta_secondary_text", e.target.value)}
               placeholder="cth. Pelajari Lebih Lanjut"
-              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
             />
             <p className="text-[10px] text-slate-600 leading-relaxed">Tombol kedua di samping tombol utama (dipakai oleh beberapa template).</p>
           </div>
@@ -985,7 +985,7 @@ export default function SectionForms({
               value={content.hero?.cta_secondary_url || ""}
               onChange={(e) => updateField("hero", "cta_secondary_url", e.target.value)}
               placeholder="cth. #about atau https://..."
-              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
             />
             <p className="text-[10px] text-slate-600 leading-relaxed">Link tujuan tombol CTA kedua (section anchor, URL, atau WhatsApp).</p>
           </div>
@@ -1001,7 +1001,7 @@ export default function SectionForms({
               value={content.hero?.badge_text || ""}
               onChange={(e) => updateField("hero", "badge_text", e.target.value)}
               placeholder="cth. Buka 7 Hari · Jam 07.00–22.00"
-              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
             />
             <p className="text-[10px] text-slate-600 leading-relaxed">Teks kecil yang muncul di bawah tombol CTA (jam buka, info singkat, dll).</p>
           </div>
@@ -1017,7 +1017,7 @@ export default function SectionForms({
               value={content.hero?.opening_hours || ""}
               onChange={(e) => updateField("hero", "opening_hours", e.target.value)}
               placeholder="cth. Buka Setiap Hari 07.00 – 22.00"
-              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
             />
           </div>
           {/* Accessory — info bisnis di hero (see HERO_ACCESSORY_PLAN.md) */}
@@ -1111,7 +1111,7 @@ export default function SectionForms({
               value={content.about?.eyebrow || ""}
               onChange={(e) => updateField("about", "eyebrow", e.target.value)}
               placeholder="cth. Tentang Kami"
-              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
             />
           </div>
           <div className="space-y-1">
@@ -1246,7 +1246,7 @@ export default function SectionForms({
               value={content.benefits?.eyebrow || ""}
               onChange={(e) => updateField("benefits", "eyebrow", e.target.value)}
               placeholder="cth. Kenapa Pilih Kami"
-              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
             />
           </div>
           <div className="space-y-1">
@@ -1269,7 +1269,7 @@ export default function SectionForms({
               value={content.benefits?.subtitle || ""}
               onChange={(e) => updateField("benefits", "subtitle", e.target.value)}
               placeholder="cth. Berbagai alasan mengapa pelanggan mempercayai kami"
-              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
             />
           </div>
           <div className="space-y-1">
@@ -1511,7 +1511,7 @@ export default function SectionForms({
               value={content.cta?.eyebrow || ""}
               onChange={(e) => updateField("cta", "eyebrow", e.target.value)}
               placeholder="cth. Mulai Sekarang"
-              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
             />
           </div>
           <div className="space-y-1">
@@ -1521,7 +1521,7 @@ export default function SectionForms({
               value={content.cta?.subheadline || ""}
               onChange={(e) => updateField("cta", "subheadline", e.target.value)}
               placeholder="cth. Dapatkan penawaran spesial sebelum kehabisan!"
-              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
             />
           </div>
           <div className="space-y-1">
@@ -1531,7 +1531,7 @@ export default function SectionForms({
               value={content.cta?.trust_signal || ""}
               onChange={(e) => updateField("cta", "trust_signal", e.target.value)}
               placeholder="cth. ✅ Lebih dari 500 pelanggan puas"
-              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
             />
           </div>
           <div className="space-y-1">
@@ -1867,7 +1867,7 @@ export default function SectionForms({
               type="text"
               value={content.footer?.tagline || ""}
               onChange={(e) => updateField("footer", "tagline", e.target.value)}
-              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+              className={SIDEBAR_FIELD_CLASS}
             />
           </div>
           <div className="space-y-1">
@@ -1877,7 +1877,7 @@ export default function SectionForms({
               type="text"
               value={content.footer?.copyright_text || ""}
               onChange={(e) => updateField("footer", "copyright_text", e.target.value)}
-              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+              className={SIDEBAR_FIELD_CLASS}
             />
           </div>
           <div className="space-y-2">
@@ -2146,7 +2146,7 @@ export default function SectionForms({
             <select
               value={content.seo?.og_type || "website"}
               onChange={(e) => updateField("seo", "og_type", e.target.value)}
-              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+              className={`${SIDEBAR_FIELD_CLASS} text-slate-200`}
             >
               <option value="website">Website</option>
               <option value="article">Article</option>
@@ -2170,7 +2170,7 @@ export default function SectionForms({
             <select
               value={content.seo?.twitter_card || "summary_large_image"}
               onChange={(e) => updateField("seo", "twitter_card", e.target.value)}
-              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+              className={`${SIDEBAR_FIELD_CLASS} text-slate-200`}
             >
               <option value="summary_large_image">summary_large_image</option>
               <option value="summary">summary</option>
@@ -2185,7 +2185,7 @@ export default function SectionForms({
             <select
               value={content.seo?.robots || "index, follow"}
               onChange={(e) => updateField("seo", "robots", e.target.value)}
-              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+              className={`${SIDEBAR_FIELD_CLASS} text-slate-200`}
             >
               <option value="index, follow">index, follow</option>
               <option value="noindex, follow">noindex, follow</option>
@@ -2201,7 +2201,7 @@ export default function SectionForms({
               type="text"
               value={content.seo?.og_locale || "id_ID"}
               onChange={(e) => updateField("seo", "og_locale", e.target.value)}
-              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+              className={SIDEBAR_FIELD_CLASS}
               placeholder="id_ID"
             />
           </div>
@@ -2213,7 +2213,7 @@ export default function SectionForms({
               type="text"
               value={content.seo?.og_site_name || ""}
               onChange={(e) => updateField("seo", "og_site_name", e.target.value)}
-              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+              className={SIDEBAR_FIELD_CLASS}
               placeholder="Nama bisnis"
             />
           </div>
@@ -2225,7 +2225,7 @@ export default function SectionForms({
               type="text"
               value={content.seo?.canonical_path || "/"}
               onChange={(e) => updateField("seo", "canonical_path", e.target.value)}
-              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+              className={`${SIDEBAR_FIELD_CLASS} text-slate-200`}
               placeholder="/"
             />
           </div>
@@ -2421,7 +2421,7 @@ export default function SectionForms({
               value={content.testimonials?.eyebrow || ""}
               onChange={(e) => updateField("testimonials", "eyebrow", e.target.value)}
               placeholder="cth. Testimoni"
-              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
             />
           </div>
           <div className="space-y-1">
@@ -2434,7 +2434,7 @@ export default function SectionForms({
               value={content.testimonials?.title || ""}
               onChange={(e) => updateField("testimonials", "title", e.target.value)}
               placeholder="cth. Cerita dari Pelanggan Kami"
-              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200 placeholder-slate-600`}
             />
           </div>
           <div className="space-y-1">
@@ -2447,7 +2447,7 @@ export default function SectionForms({
               value={content.testimonials?.subtitle || ""}
               onChange={(e) => updateField("testimonials", "subtitle", e.target.value)}
               placeholder="cth. Ulasan dari pelanggan setia kami"
-              className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300 placeholder-slate-600"
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
             />
           </div>
           {(content.testimonials?.items || []).map((item: any, idx: number) => (
@@ -2477,7 +2477,7 @@ export default function SectionForms({
                     updateField("testimonials", "items", n);
                   }}
                   placeholder="Tulis kutipan spesifik dan believable..."
-                  className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600 resize-none"
+                  className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200 placeholder-slate-600 resize-none`}
                 />
               </div>
               {/* Name + Role row */}
@@ -2493,7 +2493,7 @@ export default function SectionForms({
                       updateField("testimonials", "items", n);
                     }}
                     placeholder="cth. Budi Santoso"
-                    className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
+                    className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200 placeholder-slate-600`}
                   />
                 </div>
                 <div>
@@ -2507,7 +2507,7 @@ export default function SectionForms({
                       updateField("testimonials", "items", n);
                     }}
                     placeholder="cth. Pelanggan tetap"
-                    className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
+                    className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200 placeholder-slate-600`}
                   />
                 </div>
               </div>
@@ -2525,7 +2525,7 @@ export default function SectionForms({
                       updateField("testimonials", "items", n);
                     }}
                     placeholder="BS"
-                    className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600 uppercase"
+                    className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200 placeholder-slate-600 uppercase`}
                   />
                 </div>
                 <div>
@@ -2571,7 +2571,7 @@ export default function SectionForms({
                       updateField("testimonials", "items", n);
                     }}
                     placeholder="cth. PT Maju Jaya"
-                    className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
+                    className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200 placeholder-slate-600`}
                   />
                 </div>
                 <div>
@@ -2585,7 +2585,7 @@ export default function SectionForms({
                       updateField("testimonials", "items", n);
                     }}
                     placeholder="https://..."
-                    className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
+                    className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200 placeholder-slate-600`}
                   />
                 </div>
               </div>
@@ -2665,7 +2665,7 @@ export default function SectionForms({
               id="field-gallery.eyebrow"
               type="text" value={content.gallery?.eyebrow || ""}
               onChange={(e) => updateField("gallery", "eyebrow", e.target.value)}
-              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+              className={SIDEBAR_FIELD_CLASS}
               placeholder="DOKUMENTASI"
             />
           </div>
@@ -2706,7 +2706,7 @@ export default function SectionForms({
                   type="number" min={1000} max={15000} step={500}
                   value={content.gallery?.autoplay_speed ?? 4000}
                   onChange={(e) => updateField("gallery", "autoplay_speed", parseInt(e.target.value) || 4000)}
-                  className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+                  className={SIDEBAR_FIELD_CLASS}
                 />
               </div>
               <label className="flex items-center gap-2 cursor-pointer">
@@ -2790,7 +2790,7 @@ export default function SectionForms({
                       next[idx] = { ...next[idx], caption: e.target.value };
                       updateField("gallery", "items", next);
                     }}
-                    className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+                    className={SIDEBAR_FIELD_CLASS}
                     placeholder="Suasana nyaman di dalam"
                   />
                 </div>
@@ -2803,7 +2803,7 @@ export default function SectionForms({
                       next[idx] = { ...next[idx], alt_text: e.target.value };
                       updateField("gallery", "items", next);
                     }}
-                    className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+                    className={SIDEBAR_FIELD_CLASS}
                     placeholder="Deskripsi singkat gambar"
                   />
                 </div>
@@ -2853,7 +2853,7 @@ export default function SectionForms({
               id="field-works.eyebrow"
               type="text" value={content.works?.eyebrow || ""}
               onChange={(e) => updateField("works", "eyebrow", e.target.value)}
-              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+              className={SIDEBAR_FIELD_CLASS}
               placeholder="PORTFOLIO"
             />
           </div>
@@ -2863,7 +2863,7 @@ export default function SectionForms({
               rows={2}
               value={content.works?.subtitle || ""}
               onChange={(e) => updateField("works", "subtitle", e.target.value)}
-              className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent resize-none"
+              className={`${SIDEBAR_FIELD_CLASS} resize-none`}
               placeholder="Beberapa proyek terbaik yang pernah kami kerjakan."
             />
           </div>
@@ -2935,7 +2935,7 @@ export default function SectionForms({
                       next[idx] = { ...next[idx], title: e.target.value };
                       updateField("works", "items", next);
                     }}
-                    className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+                    className={SIDEBAR_FIELD_CLASS}
                     placeholder="cth. Rebranding Toko Kopi Ketan"
                   />
                 </div>
@@ -2950,7 +2950,7 @@ export default function SectionForms({
                         next[idx] = { ...next[idx], category: e.target.value };
                         updateField("works", "items", next);
                       }}
-                      className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+                      className={SIDEBAR_FIELD_CLASS}
                       placeholder="Branding"
                     />
                     <datalist id="works-category-suggestions">
@@ -2974,7 +2974,7 @@ export default function SectionForms({
                         next[idx] = { ...next[idx], year: e.target.value };
                         updateField("works", "items", next);
                       }}
-                      className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+                      className={SIDEBAR_FIELD_CLASS}
                       placeholder="2025"
                     />
                   </div>
@@ -2989,7 +2989,7 @@ export default function SectionForms({
                         next[idx] = { ...next[idx], client: e.target.value };
                         updateField("works", "items", next);
                       }}
-                      className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+                      className={SIDEBAR_FIELD_CLASS}
                       placeholder="cth. Kedai Kopi Nusantara"
                     />
                   </div>
@@ -3002,7 +3002,7 @@ export default function SectionForms({
                         next[idx] = { ...next[idx], project_url: e.target.value };
                         updateField("works", "items", next);
                       }}
-                      className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent font-mono"
+                      className={`${SIDEBAR_FIELD_CLASS} font-mono`}
                       placeholder="https://..."
                     />
                   </div>
@@ -3017,7 +3017,7 @@ export default function SectionForms({
                       next[idx] = { ...next[idx], description: e.target.value };
                       updateField("works", "items", next);
                     }}
-                    className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent resize-none"
+                    className={`${SIDEBAR_FIELD_CLASS} resize-none`}
                     placeholder="Ceritakan ruang lingkup dan hasil proyek ini..."
                   />
                 </div>
@@ -3050,7 +3050,7 @@ export default function SectionForms({
                       next[idx] = { ...next[idx], alt_text: e.target.value };
                       updateField("works", "items", next);
                     }}
-                    className="w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
+                    className={SIDEBAR_FIELD_CLASS}
                     placeholder="Deskripsi singkat gambar proyek"
                   />
                 </div>
@@ -3114,7 +3114,7 @@ export default function SectionForms({
                 value={content.stats?.eyebrow || ""}
                 onChange={(e) => updateField("stats", "eyebrow", e.target.value)}
                 placeholder="cth. DALAM ANGKA"
-                className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200`}
               />
             </div>
             <div className="space-y-1">
@@ -3124,7 +3124,7 @@ export default function SectionForms({
                 value={content.stats?.title || ""}
                 onChange={(e) => updateField("stats", "title", e.target.value)}
                 placeholder="cth. Pencapaian yang Berbicara"
-                className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200`}
               />
             </div>
             <div className="space-y-1">
@@ -3134,7 +3134,7 @@ export default function SectionForms({
                 value={content.stats?.subtitle || ""}
                 onChange={(e) => updateField("stats", "subtitle", e.target.value)}
                 placeholder="cth. Hasil nyata dari dedikasi dan kerja keras kami"
-                className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200`}
               />
             </div>
           </div>
@@ -3250,7 +3250,7 @@ export default function SectionForms({
                 value={content.partners?.eyebrow || ""}
                 onChange={(e) => updateField("partners", "eyebrow", e.target.value)}
                 placeholder="cth. DIPERCAYA OLEH"
-                className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200`}
               />
             </div>
             <div className="space-y-1">
@@ -3260,7 +3260,7 @@ export default function SectionForms({
                 value={content.partners?.title || ""}
                 onChange={(e) => updateField("partners", "title", e.target.value)}
                 placeholder="cth. Brand yang Telah Berkolaborasi"
-                className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200`}
               />
             </div>
             <div className="space-y-1">
@@ -3270,7 +3270,7 @@ export default function SectionForms({
                 value={content.partners?.subtitle || ""}
                 onChange={(e) => updateField("partners", "subtitle", e.target.value)}
                 placeholder="cth. Lebih dari 50+ brand telah mempercayai karya kami"
-                className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200`}
               />
             </div>
           </div>
@@ -3373,7 +3373,7 @@ export default function SectionForms({
                 value={content.pricing?.eyebrow || ""}
                 onChange={(e) => updateField("pricing", "eyebrow", e.target.value)}
                 placeholder="cth. RATE CARD / PILIHAN PAKET"
-                className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200`}
               />
             </div>
             <div className="space-y-1">
@@ -3383,7 +3383,7 @@ export default function SectionForms({
                 value={content.pricing?.title || ""}
                 onChange={(e) => updateField("pricing", "title", e.target.value)}
                 placeholder="cth. Paket Kolaborasi & Jasa"
-                className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200`}
               />
             </div>
             <div className="space-y-1">
@@ -3393,7 +3393,7 @@ export default function SectionForms({
                 value={content.pricing?.subtitle || ""}
                 onChange={(e) => updateField("pricing", "subtitle", e.target.value)}
                 placeholder="cth. Pilih paket yang paling sesuai dengan kebutuhan kampanye Anda"
-                className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200`}
               />
             </div>
           </div>
@@ -3643,7 +3643,7 @@ export default function SectionForms({
                   }
                 }}
                 placeholder="cth. 628123456789 atau 08123456789"
-                className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
+                className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200 placeholder-slate-600`}
               />
               {!content?.contact?.phone && <p className="text-[10px] text-red-400/80 mt-1">Nomor WA wajib diisi agar tombol berfungsi.</p>}
               <p className="text-[10px] text-slate-600">Nomor ini juga dipakai di tombol WA lain di seluruh halaman.</p>
@@ -3849,7 +3849,7 @@ function HeroAccessoryEditor({
         <select
           value={acc?.type || ""}
           onChange={(e) => onChange(e.target.value ? { type: e.target.value } : null)}
-          className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-300"
+          className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300`}
         >
           <option value="">— Tidak Ada —</option>
           {HERO_ACCESSORY_TYPES.map((o) => (

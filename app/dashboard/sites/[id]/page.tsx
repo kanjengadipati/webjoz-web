@@ -994,14 +994,14 @@ export default function SiteEditorPage() {
 
   const handlePreviewSelectSection = useCallback((section: string) => {
     selectSection(section, false);
-    if (section === "seo") {
-      if (window.innerWidth < 768) {
+    if (section === "seo" || section === "header") {
+      if (typeof window !== "undefined" && (window.innerWidth < 768 || device === "mobile")) {
         setSheetCollapsed(false);
       } else {
         setDesktopSidebarOpen(true);
       }
     }
-  }, [selectSection]);
+  }, [selectSection, device]);
 
   const handleAiRegenerateSection = () => handleAiRegenerateForSection(activeTab);
   const handleRegenWithPremiumCheck = useCallback((section: string) => {
