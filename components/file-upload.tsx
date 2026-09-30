@@ -242,7 +242,7 @@ export default function FileUpload({
             value={value}
             onChange={(e) => { onChange(e.target.value); setImgError(false); }}
             placeholder={placeholder}
-            className="w-full pl-9 pr-3 py-2 border rounded-xl text-xs outline-none focus:border-primary transition-all bg-white text-slate-800"
+            className="w-full pl-9 pr-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent"
           />
         </div>
 
@@ -259,7 +259,7 @@ export default function FileUpload({
           variant="outline"
           onClick={triggerSelectFile}
           disabled={uploading}
-          className="h-8.5 rounded-xl text-xs gap-1.5 px-3 hover:bg-slate-50 border border-slate-200 transition-all font-semibold flex items-center shrink-0 cursor-pointer shadow-sm"
+          className="h-8.5 rounded-md text-xs gap-1.5 px-3 hover:bg-muted border-border transition-colors font-semibold flex items-center shrink-0 cursor-pointer"
         >
           {uploading ? (
             <Loader2 className="w-3.5 h-3.5 animate-spin text-slate-400" />
