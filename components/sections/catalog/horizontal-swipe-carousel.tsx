@@ -137,37 +137,39 @@ export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField,
         {categories?.map((category, idx) => {
           const isActive = idx === activeCategoryIdx;
           return (
-            <button
-              key={idx}
-              onClick={() => {
-                setActiveCategoryIdx(idx);
-                if (scrollContainerRef.current) {
-                  scrollContainerRef.current.scrollLeft = 0;
-                }
-              }}
-              className="py-4 px-6 text-sm font-medium uppercase tracking-wider relative whitespace-nowrap transition-colors duration-200"
-              style={{
-                color: isActive ? "var(--dt-text)" : "var(--dt-text-muted)",
-                fontFamily: "var(--dt-heading-font)"
-              }}
-            >
-              <InlineText section="catalog" fieldKey={"categories." + idx + ".name"} value={category.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ color: isActive ? "var(--dt-text)" : "var(--dt-text-muted)", fontFamily: "var(--dt-heading-font)" }} />
+            <span key={idx} className="relative inline-block">
+              <button
+                onClick={() => {
+                  setActiveCategoryIdx(idx);
+                  if (scrollContainerRef.current) {
+                    scrollContainerRef.current.scrollLeft = 0;
+                  }
+                }}
+                className="py-4 px-6 text-sm font-medium uppercase tracking-wider relative whitespace-nowrap transition-colors duration-200"
+                style={{
+                  color: isActive ? "var(--dt-text)" : "var(--dt-text-muted)",
+                  fontFamily: "var(--dt-heading-font)"
+                }}
+              >
+                <InlineText section="catalog" fieldKey={"categories." + idx + ".name"} value={category.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ color: isActive ? "var(--dt-text)" : "var(--dt-text-muted)", fontFamily: "var(--dt-heading-font)" }} />
+
+
+                {isActive && (
+                  <span
+                    className="absolute bottom-0 left-0 right-0 h-0.5"
+                    style={{ backgroundColor: "var(--dt-accent)" }}
+                  />
+                )}
+              </button>
               {isEditorMode && onDeleteCategory && (
                 <InlineDeleteButton
                   compact
+                  className="absolute -top-1.5 -right-1.5 z-40"
                   onDelete={() => onDeleteCategory(idx)}
                   title={isEN ? "Delete Category" : "Hapus Kategori"}
                 />
               )}
-
-
-              {isActive && (
-                <span
-                  className="absolute bottom-0 left-0 right-0 h-0.5"
-                  style={{ backgroundColor: "var(--dt-accent)" }}
-                />
-              )}
-            </button>
+            </span>
           );
         })}
       {isEditorMode && onAddCategory && (

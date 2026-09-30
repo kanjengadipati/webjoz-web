@@ -101,31 +101,31 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
       <div className="space-y-24">
         {categories?.map((category, catIdx) => (
           <div key={catIdx} className="space-y-8">
-            <InlineText
-              section="catalog"
-              fieldKey={"categories." + catIdx + ".name"}
-              value={category.name ?? ""}
-              onUpdateField={onUpdateField}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
-              as="h3"
-              className="text-2xl font-black uppercase tracking-wider inline-block border-b-4 pb-1"
-              style={{
-                fontFamily: "var(--dt-heading-font)",
-                borderColor: "var(--dt-accent)"
-              }}
-            />
-            {isEditorMode && onDeleteCategory && (
-              <InlineDeleteButton
-                compact
-                onDelete={() => onDeleteCategory(catIdx)}
-                title={isEN ? "Delete Category" : "Hapus Kategori"}
+            <div className="flex items-center gap-3">
+              <InlineText
+                section="catalog"
+                fieldKey={"categories." + catIdx + ".name"}
+                value={category.name ?? ""}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+                as="h3"
+                className="text-2xl font-black uppercase tracking-wider inline-block border-b-4 pb-1"
+                style={{
+                  fontFamily: "var(--dt-heading-font)",
+                  borderColor: "var(--dt-accent)"
+                }}
               />
-            )}
-
-
+              {isEditorMode && onDeleteCategory && (
+                <InlineDeleteButton
+                  compact
+                  onDelete={() => onDeleteCategory(catIdx)}
+                  title={isEN ? "Delete Category" : "Hapus Kategori"}
+                />
+              )}
+            </div>
 
             {/* Matrix Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">

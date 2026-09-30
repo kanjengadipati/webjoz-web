@@ -102,27 +102,27 @@ export default function CatalogCards({ catalog, onUpdateField, isEditorMode, isS
         ) : (
           filteredCategories.map((cat, renderedIdx) => (
             <div key={renderedIdx} style={{ marginBottom: "4rem" }}>
-              <InlineText
-                section="catalog"
-                fieldKey={"categories." + cat.originalCatIdx + ".name"}
-                value={cat.name ?? ""}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={isSelected}
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                onEditingStateChange={onEditingStateChange}
-                as="h3"
-                style={{ fontFamily: headingFont, fontWeight: 700, color: brandPrimary, fontSize: "1.1rem", marginBottom: "1.5rem", textAlign: "center" }}
-              />
-              {isEditorMode && onDeleteCategory && (
-                <InlineDeleteButton
-                  compact
-                  onDelete={() => onDeleteCategory(cat.originalCatIdx)}
-                  title={isEN ? "Delete Category" : "Hapus Kategori"}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.75rem", marginBottom: "1.5rem" }}>
+                <InlineText
+                  section="catalog"
+                  fieldKey={"categories." + cat.originalCatIdx + ".name"}
+                  value={cat.name ?? ""}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                  as="h3"
+                  style={{ fontFamily: headingFont, fontWeight: 700, color: brandPrimary, fontSize: "1.1rem" }}
                 />
-              )}
-
-
+                {isEditorMode && onDeleteCategory && (
+                  <InlineDeleteButton
+                    compact
+                    onDelete={() => onDeleteCategory(cat.originalCatIdx)}
+                    title={isEN ? "Delete Category" : "Hapus Kategori"}
+                  />
+                )}
+              </div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: "2rem" }}>
                 {cat.filteredItems.map(({ item, originalCatIdx, originalItemIdx }) => (
                   <MenuCatalogCard
