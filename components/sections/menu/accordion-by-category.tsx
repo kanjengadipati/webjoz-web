@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { AddToCartButton, isPlaceholderPrice } from "@/components/cart";
 import { InlineText, InlineImage } from "../../templates/shared";
-import { InlineAddTile, InlineDeleteButton } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 /**
@@ -11,7 +11,8 @@ import type { TemplateProps, DesignToken } from "../../templates/types";
  * First category open by default. Compact and space-efficient.
  * Uses plain item rows (no full MenuCatalogCard) to keep it clean.
  */
-export default function MenuAccordionByCategory({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null; onUpdateField?: (section: string, key: string, value: any) => void; isEditorMode?: boolean; isSelected?: boolean; collapseSheetForInlineEdit?: () => void; onEditingStateChange?: (isEditing: boolean) => void; onAddItem?: (catIdx: number) => void; onDeleteItem?: (catIdx: number, itemIdx: number) => void }) {
+export default function MenuAccordionByCategory({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id" }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null; onUpdateField?: (section: string, key: string, value: any) => void; isEditorMode?: boolean; isSelected?: boolean; collapseSheetForInlineEdit?: () => void; onEditingStateChange?: (isEditing: boolean) => void; onAddItem?: (catIdx: number) => void; onDeleteItem?: (catIdx: number, itemIdx: number) => void; onAddCategory?: () => void; onDeleteCategory?: (catIdx: number) => void; language?: "id" | "en"; }) {
+  const isEN = language === "en";
   if (!menu) return null;
   const [openIdx, setOpenIdx] = useState<number>(0);
   const p = "var(--dt-primary)";
@@ -61,6 +62,7 @@ export default function MenuAccordionByCategory({ menu, onUpdateField, isEditorM
             return (
               <div
                 key={ci}
+                className="relative"
                 style={{
                   border: `1.5px solid ${isOpen ? p : `color-mix(in srgb, ${p} 18%, transparent)`}`,
                   borderRadius: "12px",
@@ -69,6 +71,14 @@ export default function MenuAccordionByCategory({ menu, onUpdateField, isEditorM
                   background: surface,
                 }}
               >
+                {isEditorMode && onDeleteCategory && (
+                  <InlineDeleteButton
+                    compact
+                    className="absolute top-2.5 right-2.5 z-40"
+                    onDelete={() => onDeleteCategory(ci)}
+                    title={isEN ? "Delete Category" : "Hapus Kategori"}
+                  />
+                )}
                 {/* Accordion header */}
                 <button
                   onClick={() => setOpenIdx(isOpen ? -1 : ci)}
@@ -78,6 +88,7 @@ export default function MenuAccordionByCategory({ menu, onUpdateField, isEditorM
                     alignItems: "center",
                     justifyContent: "space-between",
                     padding: "1rem 1.25rem",
+                    paddingRight: isEditorMode && onDeleteCategory ? "2.75rem" : "1.25rem",
                     background: isOpen ? `color-mix(in srgb, ${p} 6%, ${surface})` : "transparent",
                     border: "none",
                     cursor: "pointer",
@@ -185,6 +196,11 @@ export default function MenuAccordionByCategory({ menu, onUpdateField, isEditorM
               </div>
             );
           })}
+          {isEditorMode && onAddCategory && (
+            <div style={{ display: "flex", justifyContent: "center", marginTop: "1.5rem" }}>
+              <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+            </div>
+          )}
         </div>
       </div>
     </section>

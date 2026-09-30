@@ -24,6 +24,9 @@ type MenuVariantProps = {
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: (catIdx: number) => void;
   onDeleteItem?: (catIdx: number, itemIdx: number) => void;
+  onAddCategory?: () => void;
+  onDeleteCategory?: (catIdx: number) => void;
+  language?: "id" | "en";
 };
 
 const variants: Record<string, ComponentType<MenuVariantProps>> = {
@@ -49,6 +52,7 @@ export default function MenuSection({
   isSelected,
   collapseSheetForInlineEdit,
   onEditingStateChange,
+  language = "id",
 }: {
   menu: TemplateProps["content"]["menu"];
   design_token?: DesignToken | null;
@@ -57,6 +61,7 @@ export default function MenuSection({
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  language?: "id" | "en";
 }) {
   const variant = design_token?.layout?.section_variants?.menu ?? "grid";
   const Renderer = variants[variant] ?? MenuClassic;
@@ -105,6 +110,28 @@ export default function MenuSection({
     [menu?.categories, onUpdateField]
   );
 
+  const onAddCategory = useCallback(() => {
+    if (!onUpdateField) return;
+    const categories = [...(menu?.categories ?? [])];
+    const number = categories.length + 1;
+    categories.push({
+      id: genId(),
+      name: language === "en" ? `Category ${number}` : `Kategori ${number}`,
+      items: [],
+      sort_order: categories.length,
+    });
+    onUpdateField("menu", "categories", categories);
+  }, [menu?.categories, language, onUpdateField]);
+
+  const onDeleteCategory = useCallback(
+    (catIdx: number) => {
+      if (!onUpdateField) return;
+      const categories = (menu?.categories ?? []).filter((_, i) => i !== catIdx);
+      onUpdateField("menu", "categories", categories);
+    },
+    [menu?.categories, onUpdateField]
+  );
+
   return (
     <>
       <Renderer
@@ -117,6 +144,9 @@ export default function MenuSection({
         onEditingStateChange={onEditingStateChange}
         onAddItem={isEditor ? onAddItem : undefined}
         onDeleteItem={isEditor ? onDeleteItem : undefined}
+        onAddCategory={isEditor ? onAddCategory : undefined}
+        onDeleteCategory={isEditor ? onDeleteCategory : undefined}
+        language={language}
       />
     </>
   );

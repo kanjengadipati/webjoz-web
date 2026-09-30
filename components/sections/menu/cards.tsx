@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Utensils } from "lucide-react";
 import { MenuCatalogCard, InlineText, CatalogMenuFilterBar } from "../../templates/shared";
-import { InlineAddTile } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface MenuVariantProps {
@@ -15,9 +15,13 @@ interface MenuVariantProps {
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: (catIdx: number) => void;
   onDeleteItem?: (catIdx: number, itemIdx: number) => void;
+  onAddCategory?: () => void;
+  onDeleteCategory?: (catIdx: number) => void;
+  language?: "id" | "en";
 }
 
-export default function MenuCards({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: MenuVariantProps) {
+export default function MenuCards({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: MenuVariantProps) {
+  const isEN = language === "en";
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -44,14 +48,24 @@ export default function MenuCards({ menu, onUpdateField, isEditorMode, isSelecte
         });
       return { ...cat, originalCatIdx, filteredItems: items };
     })
-    .filter((cat) => (activeCategory === "all" || cat.name === activeCategory) && cat.filteredItems.length > 0);
+    .filter((cat) => (activeCategory === "all" || cat.name === activeCategory) && (isEditorMode || cat.filteredItems.length > 0));
 
   return (
     <section id="menu" style={{ padding: "var(--dt-spacing) 1.5rem", background: `color-mix(in srgb, ${brandPrimary} 4%, ${brandBg})`, borderTop: `1px solid color-mix(in srgb, ${brandPrimary} 12%, transparent)` }}>
       <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.18em", color: brandPrimary, background: `color-mix(in srgb, ${brandPrimary} 10%, transparent)`, padding: "0.45rem 0.85rem", borderRadius: "9999px" }}>
-            {menu.eyebrow || "Pilihan Menu"}
+          <InlineText
+            section="menu"
+            fieldKey="eyebrow"
+            value={menu.eyebrow ?? "Pilihan Menu"}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+            as="span"
+          />
           </span>
           <InlineText
             section="menu"
@@ -99,6 +113,15 @@ export default function MenuCards({ menu, onUpdateField, isEditorMode, isSelecte
                 as="h3"
                 style={{ fontFamily: headingFont, fontWeight: 700, color: brandPrimary, fontSize: "1.1rem", marginBottom: "1.5rem", textAlign: "center" }}
               />
+              {isEditorMode && onDeleteCategory && (
+                <InlineDeleteButton
+                  compact
+                  onDelete={() => onDeleteCategory(cat.originalCatIdx)}
+                  title={isEN ? "Delete Category" : "Hapus Kategori"}
+                />
+              )}
+
+
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))", gap: "2rem" }}>
                 {cat.filteredItems.map(({ item, originalCatIdx, originalItemIdx }) => (
                   <div key={item.id || `${cat.name}__${item.name}__${originalCatIdx}_${originalItemIdx}`} className="flex flex-col">
@@ -160,6 +183,9 @@ export default function MenuCards({ menu, onUpdateField, isEditorMode, isSelecte
             </div>
           ))
         )}
+      {isEditorMode && onAddCategory && (
+        <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+      )}
       </div>
     </section>
   );

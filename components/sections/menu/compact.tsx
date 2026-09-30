@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { InlineText } from "../../templates/shared";
-import { InlineAddTile, InlineDeleteButton } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface MenuVariantProps {
@@ -14,9 +14,13 @@ interface MenuVariantProps {
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: (catIdx: number) => void;
   onDeleteItem?: (catIdx: number, itemIdx: number) => void;
+  onAddCategory?: () => void;
+  onDeleteCategory?: (catIdx: number) => void;
+  language?: "id" | "en";
 }
 
-export default function MenuCompact({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: MenuVariantProps) {
+export default function MenuCompact({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: MenuVariantProps) {
+  const isEN = language === "en";
   if (!menu) return null;
   const brandPrimary = "var(--dt-primary)";
   const brandText = "var(--dt-text)";
@@ -43,6 +47,15 @@ export default function MenuCompact({ menu, onUpdateField, isEditorMode, isSelec
         {menu.categories?.map((cat, catIdx) => (
           <div key={catIdx} style={{ marginBottom: "2.5rem" }}>
             <InlineText section="menu" fieldKey={"categories." + catIdx + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h3" style={{ fontFamily: headingFont, fontWeight: 700, color: brandPrimary, fontSize: "1rem", marginBottom: "1rem", paddingBottom: "0.5rem", borderBottom: `2px solid color-mix(in srgb, ${brandPrimary} 18%, transparent)` }} />
+            {isEditorMode && onDeleteCategory && (
+              <InlineDeleteButton
+                compact
+                onDelete={() => onDeleteCategory(catIdx)}
+                title={isEN ? "Delete Category" : "Hapus Kategori"}
+              />
+            )}
+
+
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "0.5rem" }}>
               {cat.items?.map((item, itemIdx) => (
                 <div key={item.id || itemIdx} className="relative group" style={{ display: "flex", flexDirection: "column", gap: "0.125rem", padding: "0.5rem 0.75rem", borderRadius: "var(--dt-radius)", opacity: item.is_available === false ? 0.6 : 1 }}>
@@ -76,6 +89,9 @@ export default function MenuCompact({ menu, onUpdateField, isEditorMode, isSelec
             </div>
           </div>
         ))}
+      {isEditorMode && onAddCategory && (
+        <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+      )}
       </div>
     </section>
   );

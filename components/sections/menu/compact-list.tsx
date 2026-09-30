@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Utensils } from "lucide-react";
 import { MenuCatalogCard, InlineText, CatalogMenuFilterBar } from "../../templates/shared";
-import { InlineAddTile } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 /**
@@ -10,7 +10,8 @@ import type { TemplateProps, DesignToken } from "../../templates/types";
  * Reuses MenuCatalogCard with layout="compact".
  * Good for menus with many items where vertical space is precious.
  */
-export default function MenuCompactList({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null; onUpdateField?: (section: string, key: string, value: any) => void; isEditorMode?: boolean; isSelected?: boolean; collapseSheetForInlineEdit?: () => void; onEditingStateChange?: (isEditing: boolean) => void; onAddItem?: (catIdx: number) => void; onDeleteItem?: (catIdx: number, itemIdx: number) => void }) {
+export default function MenuCompactList({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id" }: { menu: TemplateProps["content"]["menu"]; design_token?: DesignToken | null; onUpdateField?: (section: string, key: string, value: any) => void; isEditorMode?: boolean; isSelected?: boolean; collapseSheetForInlineEdit?: () => void; onEditingStateChange?: (isEditing: boolean) => void; onAddItem?: (catIdx: number) => void; onDeleteItem?: (catIdx: number, itemIdx: number) => void; onAddCategory?: () => void; onDeleteCategory?: (catIdx: number) => void; language?: "id" | "en"; }) {
+  const isEN = language === "en";
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -37,7 +38,7 @@ export default function MenuCompactList({ menu, onUpdateField, isEditorMode, isS
         });
       return { ...cat, originalCatIdx, filteredItems: items };
     })
-    .filter((cat) => (activeCategory === "all" || cat.name === activeCategory) && cat.filteredItems.length > 0);
+    .filter((cat) => (activeCategory === "all" || cat.name === activeCategory) && (isEditorMode || cat.filteredItems.length > 0));
 
   return (
     <section id="menu" style={{ padding: "var(--dt-spacing) 1.5rem", background: `color-mix(in srgb, ${p} 4%, ${bg})`, borderTop: `1px solid color-mix(in srgb, ${p} 12%, transparent)` }}>
@@ -103,6 +104,15 @@ export default function MenuCompactList({ menu, onUpdateField, isEditorMode, isS
                   as="h3"
                   style={{ fontFamily: hFont, fontWeight: 700, color: p, fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em", whiteSpace: "nowrap" }}
                 />
+                {isEditorMode && onDeleteCategory && (
+                  <InlineDeleteButton
+                    compact
+                    onDelete={() => onDeleteCategory(cat.originalCatIdx)}
+                    title={isEN ? "Delete Category" : "Hapus Kategori"}
+                  />
+                )}
+
+
                 <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, ${p} 18%, transparent)` }} />
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
@@ -165,6 +175,9 @@ export default function MenuCompactList({ menu, onUpdateField, isEditorMode, isS
             </div>
           ))
         )}
+      {isEditorMode && onAddCategory && (
+        <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+      )}
       </div>
     </section>
   );

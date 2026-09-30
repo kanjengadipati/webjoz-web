@@ -2,7 +2,7 @@
 import React, { useState, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { InlineText, InlineImage } from "../../templates/shared";
-import { InlineAddTile, InlineDeleteButton } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import { AddToCartButton } from "@/components/cart";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
@@ -16,9 +16,13 @@ interface CatalogVariantProps {
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: (catIdx: number) => void;
   onDeleteItem?: (catIdx: number, itemIdx: number) => void;
+  onAddCategory?: () => void;
+  onDeleteCategory?: (catIdx: number) => void;
+  language?: "id" | "en";
 }
 
-export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: CatalogVariantProps) {
+export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: CatalogVariantProps) {
+  const isEN = language === "en";
   if (!catalog) return null;
   const { eyebrow, title, subtitle, categories } = catalog;
 
@@ -148,6 +152,15 @@ export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField,
               }}
             >
               <InlineText section="catalog" fieldKey={"categories." + idx + ".name"} value={category.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ color: isActive ? "var(--dt-text)" : "var(--dt-text-muted)", fontFamily: "var(--dt-heading-font)" }} />
+              {isEditorMode && onDeleteCategory && (
+                <InlineDeleteButton
+                  compact
+                  onDelete={() => onDeleteCategory(idx)}
+                  title={isEN ? "Delete Category" : "Hapus Kategori"}
+                />
+              )}
+
+
               {isActive && (
                 <span
                   className="absolute bottom-0 left-0 right-0 h-0.5"
@@ -157,6 +170,9 @@ export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField,
             </button>
           );
         })}
+      {isEditorMode && onAddCategory && (
+        <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+      )}
       </div>
 
       {/* Carousel Snap Row Container */}

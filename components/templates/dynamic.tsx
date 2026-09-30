@@ -309,6 +309,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
                 <MenuSectionInner
                   menu={mm}
                   design_token={dt}
+            language={language}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={activeSection === "menu"}
@@ -330,6 +331,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
                 <CatalogSectionInner
                   catalog={cc}
                   design_token={dt}
+            language={language}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={activeSection === "catalog"}

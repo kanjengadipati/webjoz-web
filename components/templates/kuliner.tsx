@@ -257,6 +257,7 @@ export const TemplateKuliner: React.FC<TemplateProps> = ({
           <MenuSectionInner
             menu={m}
             design_token={dt}
+            language={language}
             onUpdateField={onUpdateField}
             isEditorMode={isEditorMode}
             isSelected={activeSection === "menu"}

@@ -126,7 +126,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
     menu: menu ? (
       <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={menu} render={(m) => (
-          <MenuSectionInner menu={m} design_token={dt} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "menu"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+          <MenuSectionInner menu={m} design_token={dt} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "menu"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
         )} />
       </MemoPreviewSectionWrapper>
     ) : null,
@@ -134,7 +134,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
     catalog: catalog ? (
       <MemoPreviewSectionWrapper section="catalog" label={language === "en" ? "Catalog" : "Katalog"} activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
         <MemoSectionContent content={catalog} render={(c) => (
-          <CatalogSectionInner catalog={c} design_token={dt} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "catalog"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+          <CatalogSectionInner catalog={c} design_token={dt} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "catalog"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
         )} />
       </MemoPreviewSectionWrapper>
     ) : null,

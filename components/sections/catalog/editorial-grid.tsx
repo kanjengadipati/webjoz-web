@@ -2,7 +2,7 @@
 import React from "react";
 import { Image as ImageIcon } from "lucide-react";
 import { InlineText, InlineImage } from "../../templates/shared";
-import { InlineAddTile, InlineDeleteButton } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import { AddToCartButton } from "@/components/cart";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
@@ -16,9 +16,13 @@ interface CatalogVariantProps {
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: (catIdx: number) => void;
   onDeleteItem?: (catIdx: number, itemIdx: number) => void;
+  onAddCategory?: () => void;
+  onDeleteCategory?: (catIdx: number) => void;
+  language?: "id" | "en";
 }
 
-export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: CatalogVariantProps) {
+export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: CatalogVariantProps) {
+  const isEN = language === "en";
   if (!catalog) return null;
   const { eyebrow, title, subtitle, categories } = catalog;
 
@@ -129,6 +133,15 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
                   fontFamily: "var(--dt-heading-font)",
                 }}
               />
+              {isEditorMode && onDeleteCategory && (
+                <InlineDeleteButton
+                  compact
+                  onDelete={() => onDeleteCategory(catIdx)}
+                  title={isEN ? "Delete Category" : "Hapus Kategori"}
+                />
+              )}
+
+
               <span className="text-xs font-mono" style={{ color: "var(--dt-text-muted)" }}>
                 {category.items?.length || 0} ITEMS
               </span>
@@ -340,6 +353,9 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
             </div>
           </div>
         ))}
+      {isEditorMode && onAddCategory && (
+        <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+      )}
       </div>
     </section>
   );

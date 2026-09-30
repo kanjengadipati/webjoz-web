@@ -259,6 +259,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
           <MenuSectionInner
             menu={m}
             design_token={dt}
+            language={language}
             onUpdateField={onUpdateField}
             isEditorMode={isEditorMode}
             isSelected={activeSection === "menu"}
@@ -274,6 +275,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
           <CatalogSectionInner
             catalog={c}
             design_token={dt}
+            language={language}
             onUpdateField={onUpdateField}
             isEditorMode={isEditorMode}
             isSelected={activeSection === "catalog"}

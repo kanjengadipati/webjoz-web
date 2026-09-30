@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Utensils, ChevronRight } from "lucide-react";
 import { InlineText, InlineImage } from "../../templates/shared";
-import { InlineAddTile, InlineDeleteButton } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface MenuVariantProps {
@@ -15,9 +15,13 @@ interface MenuVariantProps {
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: (catIdx: number) => void;
   onDeleteItem?: (catIdx: number, itemIdx: number) => void;
+  onAddCategory?: () => void;
+  onDeleteCategory?: (catIdx: number) => void;
+  language?: "id" | "en";
 }
 
-export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: MenuVariantProps) {
+export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id" }: MenuVariantProps) {
+  const isEN = language === "en";
   if (!menu) return null;
   const { eyebrow, title, subtitle, categories } = menu;
 
@@ -202,6 +206,13 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
               >
                 <div className="flex items-center gap-4 mb-8">
                   <InlineText section="menu" fieldKey={"categories." + index + ".name"} value={category.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h3" className="text-xl md:text-2xl font-bold tracking-tight font-dt-heading text-dt-text" />
+                  {isEditorMode && onDeleteCategory && (
+                    <InlineDeleteButton
+                      compact
+                      onDelete={() => onDeleteCategory(index)}
+                      title={isEN ? "Delete Category" : "Hapus Kategori"}
+                    />
+                  )}
                   <div className="h-[1px] flex-1 bg-dt-border"></div>
                 </div>
 
@@ -275,6 +286,11 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
                 </div>
               </div>
             ))}
+            {isEditorMode && onAddCategory && (
+              <div className="flex justify-center pt-4">
+                <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+              </div>
+            )}
           </div>
 
         </div>

@@ -26,6 +26,9 @@ type CatalogVariantProps = {
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: (catIdx: number) => void;
   onDeleteItem?: (catIdx: number, itemIdx: number) => void;
+  onAddCategory?: () => void;
+  onDeleteCategory?: (catIdx: number) => void;
+  language?: "id" | "en";
 };
 
 const variants: Record<string, ComponentType<CatalogVariantProps>> = {
@@ -53,6 +56,7 @@ export default function CatalogSection({
   isSelected,
   collapseSheetForInlineEdit,
   onEditingStateChange,
+  language = "id",
 }: {
   catalog: TemplateProps["content"]["catalog"];
   design_token?: DesignToken | null;
@@ -61,6 +65,7 @@ export default function CatalogSection({
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  language?: "id" | "en";
 }) {
   const variant = design_token?.layout?.section_variants?.catalog ?? "grid";
   const Renderer = variants[variant] ?? CatalogClassic;
@@ -115,6 +120,28 @@ export default function CatalogSection({
     [catalog?.categories, onUpdateField]
   );
 
+  const onAddCategory = useCallback(() => {
+    if (!onUpdateField) return;
+    const categories = [...(catalog?.categories ?? [])];
+    const number = categories.length + 1;
+    categories.push({
+      id: genId(),
+      name: language === "en" ? `Category ${number}` : `Kategori ${number}`,
+      items: [],
+      sort_order: categories.length,
+    });
+    onUpdateField("catalog", "categories", categories);
+  }, [catalog?.categories, language, onUpdateField]);
+
+  const onDeleteCategory = useCallback(
+    (catIdx: number) => {
+      if (!onUpdateField) return;
+      const categories = (catalog?.categories ?? []).filter((_, i) => i !== catIdx);
+      onUpdateField("catalog", "categories", categories);
+    },
+    [catalog?.categories, onUpdateField]
+  );
+
   return (
     <>
       <Renderer
@@ -127,6 +154,9 @@ export default function CatalogSection({
         onEditingStateChange={onEditingStateChange}
         onAddItem={isEditor ? onAddItem : undefined}
         onDeleteItem={isEditor ? onDeleteItem : undefined}
+        onAddCategory={isEditor ? onAddCategory : undefined}
+        onDeleteCategory={isEditor ? onDeleteCategory : undefined}
+        language={language}
       />
     </>
   );

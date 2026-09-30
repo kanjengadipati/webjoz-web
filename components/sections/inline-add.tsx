@@ -137,6 +137,51 @@ export function InlineAddTile({
 }
 
 /**
+ * Section-level "add category" button for menu & catalog variants.
+ * Lives next to the category list so a brand new category can be created straight
+ * on the canvas instead of forcing a detour through the sidebar form.
+ * Editor-only: render it behind `isEditorMode && onAddCategory`.
+ */
+export function CategoryAddButton({
+  onAdd,
+  isEN,
+  collapseSheetForInlineEdit,
+  className = "",
+}: {
+  onAdd: () => void;
+  isEN?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  className?: string;
+}) {
+  const label = isEN ? "Add Category" : "Tambah Kategori";
+  return (
+    <div className={`inline-block ${className}`}>
+      <button
+        type="button"
+        onClick={(e) => {
+          stop(e);
+          collapseSheetForInlineEdit?.();
+          onAdd();
+        }}
+        onPointerDown={stop}
+        onTouchStart={stop}
+        title={label}
+        aria-label={label}
+        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold shadow-sm transition-all active:scale-95 cursor-pointer"
+        style={{
+          background: "color-mix(in srgb, var(--dt-primary, #6366f1) 10%, transparent)",
+          color: "var(--dt-primary, #6366f1)",
+          border: "1px solid color-mix(in srgb, var(--dt-primary, #6366f1) 30%, transparent)",
+        }}
+      >
+        <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+        {label}
+      </button>
+    </div>
+  );
+}
+
+/**
  * Inline delete button for items in menu, catalog, etc.
  * Stops propagation on click/pointer/touch so it doesn't trigger parent card handlers.
  */

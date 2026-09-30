@@ -2,8 +2,7 @@
 import React from "react";
 import { Image as ImageIcon } from "lucide-react";
 import { MenuCatalogCard, InlineText, InlineImage, isPlaceholderPrice } from "../../templates/shared";
-import { InlineAddTile } from "../inline-add";
-import { InlineDeleteButton } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import { AddToCartButton } from "@/components/cart";
 import PhotoCredit from "../PhotoCredit";
 import type { TemplateProps, DesignToken } from "../../templates/types";
@@ -18,6 +17,9 @@ interface CatalogVariantProps {
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: (catIdx: number) => void;
   onDeleteItem?: (catIdx: number, itemIdx: number) => void;
+  onAddCategory?: () => void;
+  onDeleteCategory?: (catIdx: number) => void;
+  language?: "id" | "en";
 }
 
 /**
@@ -26,7 +28,8 @@ interface CatalogVariantProps {
  * Remaining items shown in standard grid below.
  * Reuses badge field: any item with badge != null/empty is "featured".
  */
-export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem }: CatalogVariantProps) {
+export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: CatalogVariantProps) {
+  const isEN = language === "en";
   if (!catalog) return null;
   const p = "var(--dt-primary)";
   const bg = "var(--dt-bg)";
@@ -80,6 +83,15 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
               <div style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "1.75rem" }}>
                 <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, ${p} 18%, transparent)` }} />
                 <InlineText section="catalog" fieldKey={"categories." + ci + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h3" style={{ fontFamily: hFont, fontWeight: 700, color: p, fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em", whiteSpace: "nowrap" }} />
+                {isEditorMode && onDeleteCategory && (
+                  <InlineDeleteButton
+                    compact
+                    onDelete={() => onDeleteCategory(ci)}
+                    title={isEN ? "Delete Category" : "Hapus Kategori"}
+                  />
+                )}
+
+
                 <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, ${p} 18%, transparent)` }} />
               </div>
 
@@ -242,6 +254,9 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
             </div>
           );
         })}
+      {isEditorMode && onAddCategory && (
+        <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+      )}
       </div>
     </section>
   );
