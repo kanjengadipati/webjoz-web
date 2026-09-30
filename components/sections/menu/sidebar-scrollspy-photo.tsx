@@ -171,6 +171,11 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
                 );
               })}
             </nav>
+            {isEditorMode && onAddCategory && (
+              <div className="mt-4">
+                <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+              </div>
+            )}
           </aside>
 
           <div
@@ -286,11 +291,6 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
                 </div>
               </div>
             ))}
-            {isEditorMode && onAddCategory && (
-              <div className="flex justify-center pt-4">
-                <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
-              </div>
-            )}
           </div>
 
         </div>
