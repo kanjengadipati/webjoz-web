@@ -1300,8 +1300,7 @@ export default function SectionForms({
                   updateField("benefits", "items", n); 
                 }} 
                 placeholder="Judul" 
-                className={fieldClass(`benefits.items.${idx}.title`, "w-full px-2 py-1 bg-white border rounded text-[12px] outline-none focus:border-primary/60")} 
-              />
+                className={fieldClass(`benefits.items.${idx}.title`, "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")}              />
               <textarea 
                 rows={2} 
                 value={item.description || ""} 
@@ -1311,8 +1310,7 @@ export default function SectionForms({
                   updateField("benefits", "items", n); 
                 }} 
                 placeholder="Deskripsi" 
-                className={fieldClass(`benefits.items.${idx}.description`, "w-full px-2 py-1 bg-white border rounded text-[12px] outline-none focus:border-primary/60 resize-none")} 
-              />
+                className={fieldClass(`benefits.items.${idx}.description`, "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 resize-none bg-transparent")}              />
               {/* Icon + Stat row */}
               <div className="space-y-1.5">
                 <label className="text-[10px] text-slate-500 uppercase">Icon</label>
@@ -1425,8 +1423,7 @@ export default function SectionForms({
                   updateField("faq", "items", n); 
                 }} 
                 placeholder="Pertanyaan" 
-                className={fieldClass(`faq.items.${idx}.question`, "w-full px-2 py-1 bg-white border rounded text-[12px] outline-none focus:border-primary/60")} 
-              />
+                className={fieldClass(`faq.items.${idx}.question`, "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent")}              />
               <textarea 
                 rows={2} 
                 value={item.answer || ""} 
@@ -1436,8 +1433,7 @@ export default function SectionForms({
                   updateField("faq", "items", n); 
                 }} 
                 placeholder="Jawaban" 
-                className={fieldClass(`faq.items.${idx}.answer`, "w-full px-2 py-1 bg-white border rounded text-[12px] outline-none focus:border-primary/60 resize-none")} 
-              />
+                className={fieldClass(`faq.items.${idx}.answer`, "w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 resize-none bg-transparent")}              />
               <input 
                 type="text" 
                 value={item.category || ""} 
@@ -2237,12 +2233,12 @@ export default function SectionForms({
 
           {/* ── SEO Booster Upsell Card ── */}
           {isPremium ? (
-            <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-2.5 text-[12px] leading-relaxed">
-              <div className="flex items-center gap-2 font-semibold text-emerald-400">
-                <CheckCircle className="w-4 h-4" />
+            <div className="rounded-lg border border-border bg-muted/40 px-3 py-2.5 text-[12px] leading-relaxed">
+              <div className="flex items-center gap-2 font-semibold text-foreground">
+                <CheckCircle className="w-4 h-4 text-primary" />
                 SEO Booster Aktif
               </div>
-              <p className="mt-1 text-emerald-200/80">
+              <p className="mt-1 text-muted-foreground">
                 Structured data rich snippet otomatis dipasang di situs Anda. Google akan menampilkan rating, harga, dan informasi bisnis langsung di hasil pencarian.
               </p>
             </div>
@@ -2283,10 +2279,10 @@ export default function SectionForms({
                     </div>
                   </div>
                   <div className="relative">
-                    <div className="absolute -top-2 -right-2 bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
+                    <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
                       ✨ Rich Result
                     </div>
-                    <p className="text-xs font-bold text-emerald-400 mb-2">DENGAN SEO BOOSTER</p>
+                    <p className="text-xs font-bold text-primary mb-2">DENGAN SEO BOOSTER</p>
                     <GoogleSnippetPreview variant="rich" business={demoBusiness} />
                   </div>
                 </div>
@@ -3895,7 +3891,7 @@ function HeroDashboardWidgetEditor({
           className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
             isHidden
               ? "border-white/10 bg-white/5 text-slate-400 hover:text-white"
-              : "border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20"
+              : "border-primary/30 bg-primary/10 text-primary hover:bg-primary/20"
           }`}
           title={isHidden ? "Tampilkan widget" : "Sembunyikan widget"}
         >
