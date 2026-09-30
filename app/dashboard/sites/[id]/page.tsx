@@ -11,7 +11,7 @@ import {
   Save, Loader2, Zap, Database,
   HelpCircle, AlertCircle,
   Monitor, Smartphone, Tablet, Layout, Globe, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Check, GripVertical, RotateCcw,
-  Eye, EyeOff, Pencil, Send, Rocket, Copy, Sun, Moon, SlidersHorizontal, ExternalLink, Lock
+  Eye, EyeOff, Pencil, Send, Rocket, Copy, Sun, Moon, SlidersHorizontal, ExternalLink
 } from "lucide-react";
 import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import { Button, Card } from "@/components/ui";
@@ -156,9 +156,6 @@ export default function SiteEditorPage() {
   const { isOpen: onboardingOpen, openGuide, handleClose: closeOnboarding } = useEditorOnboarding();
 
   const isInlineEditingRef = useRef(false);
-  // SEO has no canvas node, so scroll-based auto-selection must not steal the
-  // tab back once the user opens it from the browser chrome bar.
-  const seoTabPinnedRef = useRef(false);
   const collapseSheetForInlineEdit = useCallback(() => {
     setSheetCollapsed(true);
     setSheetExpanded(false);
@@ -562,7 +559,6 @@ export default function SiteEditorPage() {
 
   const selectSection = useCallback((section: string, scrollToPreview = true) => {
     shouldScrollToActiveRef.current = scrollToPreview;
-    seoTabPinnedRef.current = section === "seo";
     activeTabRef.current = section;
     setActiveTab(section);
   }, []);
@@ -1803,7 +1799,6 @@ export default function SiteEditorPage() {
                     }}
                     onDragEnd={() => setDraggingSection(null)}
                     onClick={() => { if (!pendingDiff) selectSection(key, true); }}
-                    data-section-pill={key}
                     className={`group flex items-center gap-1.5 px-2.5 py-1 cursor-pointer transition-colors ${activeTab === key
                       ? "bg-primary/15 text-primary"
                       : hiddenSections.includes(key)
@@ -2802,7 +2797,6 @@ export default function SiteEditorPage() {
             }}
             onScroll={() => {
               if (isInlineEditingRef.current) return;
-              if (seoTabPinnedRef.current) return;
               if (sheetExpanded) { setSheetExpanded(false); return; }
               const container = document.getElementById("preview-scroll-container");
               if (!container) return;
@@ -2846,54 +2840,6 @@ export default function SiteEditorPage() {
                 }
               `}} />
             )}
-
-            {/* Editor-only browser chrome — SEO metadata never renders on the page,
-                so this is where the title/address the visitor sees are exposed. */}
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                selectSection("seo", false);
-                requestAnimationFrame(() => {
-                  document
-                    .querySelector('[data-section-pill="seo"]')
-                    ?.scrollIntoView({ behavior: "smooth", block: "center" });
-                });
-              }}
-              title={t("dashboard.sitesEditor.seoBarEdit")}
-              aria-label={t("dashboard.sitesEditor.seoBarEdit")}
-              className={`group sticky top-0 z-30 mx-auto mt-3 flex w-fit max-w-[min(92%,760px)] items-center gap-2 rounded-full border bg-card/90 px-3 py-1.5 shadow-sm backdrop-blur transition-colors hover:bg-card ${
-                activeTab === "seo" ? "border-primary/60" : "border-border/60 hover:border-primary/40"
-              }`}
-            >
-              <span
-                className="flex h-4 w-4 shrink-0 items-center justify-center overflow-hidden rounded-[3px] bg-muted bg-cover bg-center"
-                style={content?.seo?.favicon_url
-                  ? { backgroundImage: `url(${JSON.stringify(content.seo.favicon_url)})` }
-                  : undefined}
-              >
-                {!content?.seo?.favicon_url && (
-                  <Globe className="h-2.5 w-2.5 text-slate-500" />
-                )}
-              </span>
-
-              <span className="min-w-0 truncate text-[11px] font-medium text-slate-200 group-hover:text-white">
-                {content?.seo?.title || siteDetails?.name}
-              </span>
-
-              <span className="hidden h-3 w-px shrink-0 bg-border sm:block" />
-
-              <span className="hidden min-w-0 items-center gap-1 sm:flex">
-                <Lock className="h-2.5 w-2.5 shrink-0 text-emerald-500/80" />
-                <span className="truncate text-[10px] text-slate-500">
-                  {siteDetails?.subdomain ? tenantHost(siteDetails.subdomain) : "—"}
-                </span>
-              </span>
-
-              <span className="shrink-0 rounded-full bg-primary/15 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider leading-none text-primary">
-                SEO
-              </span>
-            </button>
 
             {device === "mobile" ? (
               /* Mobile: centered with some margin */
