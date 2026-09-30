@@ -392,7 +392,7 @@ export default function SectionShowcasePage() {
       {/* Main Layout Container */}
       <div className="flex flex-col lg:flex-row gap-6 px-4 lg:px-8 py-6">
         {/* Left Sidebar: Section Categories */}
-        <div className="w-full lg:w-64 shrink-0 space-y-4">
+        <div className="w-full lg:w-64 shrink-0 space-y-4 lg:sticky lg:top-24 lg:self-start">
           <div className="bg-card border border-border/80 rounded-xl p-3 shadow-xs space-y-2">
             <div className="flex items-center justify-between px-2 pt-1 pb-2 border-b border-border/60">
               <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Pilih Section</span>
@@ -401,7 +401,7 @@ export default function SectionShowcasePage() {
               </span>
             </div>
 
-            <div className="grid grid-cols-2 lg:grid-cols-1 gap-1 max-h-[70vh] overflow-y-auto pr-1">
+            <div className="grid grid-cols-2 lg:grid-cols-1 gap-1 pr-1 lg:max-h-[calc(100vh-25rem)] lg:overflow-y-auto lg:overscroll-contain">
               {SECTION_CONFIG_LIST.map((sec) => {
                 const count = (SECTION_VARIANT_OPTIONS[sec.id] ?? []).length;
                 const hiddenCountForSec = (hiddenVariants[sec.id] ?? []).length;
