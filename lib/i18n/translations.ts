@@ -2123,6 +2123,7 @@ export interface Translations {
       optionsCount: string;
       variantLabel: string;
       selectSectionAria: string;
+      seoBarEdit: string;
       openSheet: string;
       closeSheet: string;
       publish: string;
@@ -4574,6 +4575,7 @@ export const translations: Record<Locale, Translations> = {
         optionsCount: "opsi",
         variantLabel: "Varian",
         selectSectionAria: "Pilih Bagian",
+        seoBarEdit: "Edit judul & deskripsi halaman (SEO)",
         openSheet: "Buka sheet",
         closeSheet: "Tutup sheet",
         publish: "Publikasikan",
@@ -7095,6 +7097,7 @@ export const translations: Record<Locale, Translations> = {
         optionsCount: "options",
         variantLabel: "Variant",
         selectSectionAria: "Select Section",
+        seoBarEdit: "Edit page title & description (SEO)",
         openSheet: "Open sheet",
         closeSheet: "Close sheet",
         publish: "Publish",
