@@ -12,7 +12,7 @@ export interface BusinessPreview {
   rating: string;
   reviewCount: string;
   priceRange: string;
-  status: string;
+  isOpen: boolean;
 }
 
 interface GoogleSnippetPreviewProps {
@@ -69,9 +69,11 @@ export function GoogleSnippetPreview({ variant, business }: GoogleSnippetPreview
         <div className="flex items-center gap-2 text-[11px] text-[#4d5156] animate-pulse-once font-normal mt-1">
           <span>💰 {business.priceRange}</span>
           <span className="text-slate-300 select-none">•</span>
-          <span className="text-[#188038] font-semibold flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#188038] inline-block animate-pulse"></span>
-            {business.status === "Buka" ? t("sitesEditor.seoBusinessOpenStatus") : business.status}
+          <span className={`${business.isOpen ? "text-[#188038]" : "text-[#5f6368]"} font-semibold flex items-center gap-1`}>
+            <span
+              className={`w-1.5 h-1.5 rounded-full inline-block ${business.isOpen ? "bg-[#188038] animate-pulse" : "bg-[#9aa0a6]"}`}
+            ></span>
+            {business.isOpen ? t("sitesEditor.seoBusinessOpenStatus") : t("sitesEditor.seoBusinessClosedStatus")}
           </span>
         </div>
       )}

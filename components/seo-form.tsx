@@ -567,7 +567,7 @@ export function SeoForm({
           rating: "4.8",
           reviewCount: "128",
           priceRange: "Rp50.000–Rp200.000",
-          status: "Buka",
+          isOpen: true,
         };
 
         return (
