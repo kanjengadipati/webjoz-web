@@ -2354,6 +2354,15 @@ export interface Translations {
       loadingChecklist3: string;
       loadingChecklist4: string;
       loadingChecklist5: string;
+      loadingCardChecklist0: string;
+      loadingCardChecklist1: string;
+      loadingCardChecklist2: string;
+      loadingCardChecklist3: string;
+      loadingCardChecklist4: string;
+      loadingCardChecklist5: string;
+      resetChatBtn: string;
+      resetChatTooltip: string;
+      untitledDraft: string;
       inputPlaceholderName: string;
       inputPlaceholderDesc: string;
       inputPlaceholderGeneral: string;
@@ -4913,6 +4922,15 @@ export const translations: Record<Locale, Translations> = {
         loadingChecklist3: "Menyiapkan testimoni & FAQ",
         loadingChecklist4: "Menyusun katalog & galeri",
         loadingChecklist5: "Optimasi SEO & finalisasi",
+        loadingCardChecklist0: "Analisis bisnis & target pasar",
+        loadingCardChecklist1: "Menyusun struktur halaman",
+        loadingCardChecklist2: "Menulis headline & copywriting",
+        loadingCardChecklist3: "Optimasi SEO on-page",
+        loadingCardChecklist4: "Memilih palet warna & tipografi",
+        loadingCardChecklist5: "Website siap dipublish!",
+        resetChatBtn: "Reset Chat",
+        resetChatTooltip: "Mulai ulang chat dari awal",
+        untitledDraft: "Draft Tanpa Nama",
         inputPlaceholderName: "Masukkan nama bisnis Anda...",
         inputPlaceholderDesc: "Ceritakan singkat tentang bisnis Anda...",
         inputPlaceholderGeneral: "Ketik nama bisnis atau jawaban...",
@@ -7531,6 +7549,15 @@ export const translations: Record<Locale, Translations> = {
         loadingChecklist3: "Preparing testimonials & FAQ",
         loadingChecklist4: "Setting up catalog & gallery",
         loadingChecklist5: "SEO optimization & finalization",
+        loadingCardChecklist0: "Analyzing business & target market",
+        loadingCardChecklist1: "Structuring the page layout",
+        loadingCardChecklist2: "Writing headlines & copy",
+        loadingCardChecklist3: "On-page SEO optimization",
+        loadingCardChecklist4: "Choosing colors & typography",
+        loadingCardChecklist5: "Website ready to publish!",
+        resetChatBtn: "Reset Chat",
+        resetChatTooltip: "Start the chat over from the beginning",
+        untitledDraft: "Untitled Draft",
         inputPlaceholderName: "Enter your business name...",
         inputPlaceholderDesc: "Briefly describe your business...",
         inputPlaceholderGeneral: "Type business name or answer...",

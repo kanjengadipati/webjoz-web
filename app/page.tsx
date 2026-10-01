@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     siteName: "Webjoz",
     images: [{ url: "/opengraph-image.png", width: 1200, height: 630 }],
     locale: "id_ID",
+    alternateLocale: ["en_US"],
     type: "website",
   },
   twitter: {
