@@ -8,7 +8,7 @@ import {
 } from "./shared";
 import { BlogPostsSection } from "./blog-section";
 
-import { buildCssVars, loadGoogleFont, filterEmptySections } from "./helpers";
+import { buildCssVars, loadGoogleFont, filterEmptySections, getSectionVariant } from "./helpers";
 import type { TemplateProps, DesignToken, ContentSection } from "./types";
 
 // Section components (Phase 1 extraction)
@@ -119,12 +119,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
     containerType: "inline-size",
   };
 
-  const getSectionVariant = (secKey: string) => {
-    if (secKey === "hero") {
-      return (dt?.layout?.section_variants?.hero as string | undefined) || dt?.layout?.hero_style || "centered";
-    }
-    return (dt?.layout?.section_variants as any)?.[secKey];
-  };
+  const getVariantFor = (secKey: string) => getSectionVariant(dt, secKey);
 
   const renderSectionFromContent = (sec: ContentSection) => {
     const key = sec.type;
@@ -136,7 +131,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       pricing: "Paket & Harga", blog: "Blog", works: "Portofolio",
     };
     const label = labelMap[key] || key;
-    const secVariant = getSectionVariant(key);
+    const secVariant = getVariantFor(key);
 
     switch (key) {
       case "hero": {
@@ -451,7 +446,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
         const renderedSectionOrder = renderedSections.map((sec) => sec.type);
         return (
           <>
-            <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} currentVariant={getSectionVariant("header")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+            <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} currentVariant={getVariantFor("header")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
               <HeaderSection header={header} design_token={dt} sectionOrder={renderedSectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "header"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             </MemoPreviewSectionWrapper>
 
@@ -476,7 +471,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
         );
       })()}
 
-      <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} currentVariant={getSectionVariant("footer")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} currentVariant={getVariantFor("footer")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
         <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} language={language} hasBlog={!!(content.blog?.posts?.length)} contactAddress={content.contact?.address} contactMapsUrl={content.contact?.maps_url ?? undefined} contactOpeningHours={content.contact?.opening_hours} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "footer"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
       </MemoPreviewSectionWrapper>
 
