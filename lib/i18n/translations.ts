@@ -2299,6 +2299,7 @@ export interface Translations {
       seoGscSaveBtn: string;
       seoReviewsCount: string;
       seoBusinessOpenStatus: string;
+      seoBusinessClosedStatus: string;
     };
     wizard: {
       initialMessage: string;
@@ -4846,6 +4847,7 @@ export const translations: Record<Locale, Translations> = {
         seoGscSaveBtn: "Simpan & Verifikasi",
         seoReviewsCount: "ulasan",
         seoBusinessOpenStatus: "Buka",
+        seoBusinessClosedStatus: "Tutup",
       },
       wizard: {
         initialMessage: "Halo! Saya Joz-AI, asisten pembuat website Anda 🚀 Mari kita mulai: apa nama bisnis atau brand Anda?",
@@ -7463,6 +7465,7 @@ export const translations: Record<Locale, Translations> = {
         seoGscSaveBtn: "Save & Verify",
         seoReviewsCount: "reviews",
         seoBusinessOpenStatus: "Open",
+        seoBusinessClosedStatus: "Closed",
       },
       wizard: {
         initialMessage: "Hi! I'm Joz-AI, your website building assistant 🚀 Let's get started: what's the name of your business or brand?",
