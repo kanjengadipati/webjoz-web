@@ -2,6 +2,7 @@
 
 import React from "react";
 import { BASE_DOMAIN } from "@/lib/site-config";
+import { useI18n } from "@/lib/i18n/context";
 
 export interface BusinessPreview {
   name: string;
@@ -20,6 +21,7 @@ interface GoogleSnippetPreviewProps {
 }
 
 export function GoogleSnippetPreview({ variant, business }: GoogleSnippetPreviewProps) {
+  const { t } = useI18n();
   const faviconLetter = business.name.charAt(0).toUpperCase() || "W";
 
   return (
@@ -52,7 +54,7 @@ export function GoogleSnippetPreview({ variant, business }: GoogleSnippetPreview
             <span className="text-slate-300 text-xs">★</span>
           </div>
           <span className="text-[#4d5156] text-[11px]">
-            <strong>{business.rating}</strong> · ({business.reviewCount} ulasan)
+            <strong>{business.rating}</strong> · ({business.reviewCount} {t("sitesEditor.seoReviewsCount")})
           </span>
         </div>
       )}
@@ -69,7 +71,7 @@ export function GoogleSnippetPreview({ variant, business }: GoogleSnippetPreview
           <span className="text-slate-300 select-none">•</span>
           <span className="text-[#188038] font-semibold flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-[#188038] inline-block animate-pulse"></span>
-            {business.status}
+            {business.status === "Buka" ? t("sitesEditor.seoBusinessOpenStatus") : business.status}
           </span>
         </div>
       )}

@@ -12,6 +12,7 @@ import { tenantHost } from "@/lib/site-config";
 import { getEnabledMapTiles } from "@/lib/design-assets-config";
 import { SocialPlatformSelect, SOCIAL_PLATFORMS, SocialIcon } from "@/components/sections/social-platforms";
 import { useToast } from "@/components/toast-provider";
+import { useI18n } from "@/lib/i18n/context";
 
 const ALL_MAP_TILES = [
   { key: "default", label: "OSM" },
@@ -192,6 +193,7 @@ interface KeywordsInputProps {
 }
 
 function KeywordsInput({ keywords, onChange, aiLoading, onAiGenerate, isPremium, onUpgradeRequired, renderFieldActions }: KeywordsInputProps) {
+  const { t } = useI18n();
   const [input, setInput] = useState("");
 
   const addKeyword = (kw: string) => {
@@ -215,7 +217,7 @@ function KeywordsInput({ keywords, onChange, aiLoading, onAiGenerate, isPremium,
   return (
     <div className="space-y-1">
       <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-        <span>Keywords</span>
+        <span>{t("sitesEditor.seoKeywordsLabel")}</span>
         {renderFieldActions ? (
           renderFieldActions("seo", "keywords", onAiGenerate && (
             <AiFieldButton
@@ -256,7 +258,7 @@ function KeywordsInput({ keywords, onChange, aiLoading, onAiGenerate, isPremium,
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={keywords.length === 0 ? "Ketik keyword lalu Enter..." : "Tambah keyword..."}
+          placeholder={keywords.length === 0 ? t("sitesEditor.seoKeywordsPlaceholderEmpty") : t("sitesEditor.seoKeywordsPlaceholderMore")}
           className="flex-1 min-w-[120px] bg-transparent outline-none text-[12px] text-slate-200 placeholder-slate-600"
         />
       </div>
@@ -504,6 +506,7 @@ export default function SectionForms({
   undoField,
 }: SectionFormsProps) {
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const renderFieldActions = (section: string, key: string, aiButton?: React.ReactNode) => {
     const fieldPath = `${section}.${key}`;
     const stack = fieldUndoStacks?.[fieldPath] || [];
@@ -1960,9 +1963,9 @@ export default function SectionForms({
       {activeTab === "seo" && (
         <div className="space-y-3">
           <div className="rounded-lg border border-border bg-muted/40 px-3 py-2.5 text-[12px] leading-relaxed text-muted-foreground">
-            <p className="font-semibold text-foreground">SEO tidak tampil sebagai section di halaman publik.</p>
+            <p className="font-semibold text-foreground">{t("sitesEditor.seoNotPublicTitle")}</p>
             <p className="mt-1 text-muted-foreground">
-              Data ini dipakai mesin pencari dan preview saat link dibagikan, seperti judul Google, deskripsi, favicon, dan gambar share.
+              {t("sitesEditor.seoNotPublicDesc")}
             </p>
           </div>
 
@@ -1975,8 +1978,8 @@ export default function SectionForms({
               {isPremium && (
                 <AiFieldButton
                   loading={aiLoadingField === "seo.title"}
-                  onGenerate={() => handleAiText("seo", "title", "Buat SEO title yang mengandung nama bisnis, lokasi, dan layanan utama. Maks 60 karakter.", "Meta Title")}
-                  title="AI: generate SEO title"
+                  onGenerate={() => handleAiText("seo", "title", t("sitesEditor.seoAiTitlePrompt"), "Meta Title")}
+                  title={t("sitesEditor.seoAiTitleBtn")}
                   onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
                 />
               )}
@@ -2005,8 +2008,8 @@ export default function SectionForms({
               {isPremium && (
                 <AiFieldButton
                   loading={aiLoadingField === "seo.description"}
-                  onGenerate={() => handleAiText("seo", "description", "Buat meta description yang menarik klik di Google. Maks 155 karakter, sertakan nama bisnis dan value proposition.", "Meta Description")}
-                  title="AI: generate meta description"
+                  onGenerate={() => handleAiText("seo", "description", t("sitesEditor.seoAiDescPrompt"), "Meta Description")}
+                  title={t("sitesEditor.seoAiDescBtn")}
                   onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
                 />
               )}
@@ -2031,13 +2034,13 @@ export default function SectionForms({
             keywords={content.seo?.keywords || []}
             onChange={(keywords) => updateField("seo", "keywords", keywords)}
             aiLoading={aiLoadingField === "seo.keywords"}
-            onAiGenerate={isPremium ? () => handleAiText("seo", "keywords", "Generate 3-8 keyword SEO yang relevan untuk bisnis ini, fokus pada produk, layanan, dan lokasi.", "Keywords SEO") : undefined}
+            onAiGenerate={isPremium ? () => handleAiText("seo", "keywords", t("sitesEditor.seoAiKeywordsPrompt"), t("sitesEditor.seoKeywordsLabel")) : undefined}
             onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
           />
 
           {/* Favicon + OG Image row */}
-          <FileUpload label="Favicon" value={content.seo?.favicon_url || ""} onChange={(val) => updateField("seo", "favicon_url", val)} placeholder="https://..." accept=".ico,.png,.jpg,.jpeg" maxWidth={128} maxHeight={128} quality={0.9} />
-          <FileUpload label="OG Image" value={content.seo?.og_image_url || ""} onChange={(val) => updateField("seo", "og_image_url", val)} placeholder="https://..." maxWidth={1200} maxHeight={630} quality={0.85} />
+          <FileUpload label={t("sitesEditor.seoFaviconLabel")} value={content.seo?.favicon_url || ""} onChange={(val) => updateField("seo", "favicon_url", val)} placeholder="https://..." accept=".ico,.png,.jpg,.jpeg" maxWidth={128} maxHeight={128} quality={0.9} />
+          <FileUpload label={t("sitesEditor.seoOgImageLabel")} value={content.seo?.og_image_url || ""} onChange={(val) => updateField("seo", "og_image_url", val)} placeholder="https://..." maxWidth={1200} maxHeight={630} quality={0.85} />
 
           {/* ── Social Share Preview ── */}
           {(() => {
@@ -2047,7 +2050,7 @@ export default function SectionForms({
             const ogDomain = subdomain ? tenantHost(subdomain) : "namabisnis.webjoz.com";
             return (
               <div className="space-y-2">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Preview Saat Link Dibagikan</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{t("sitesEditor.seoSharePreviewTitle")}</p>
 
                 {/* WhatsApp / iMessage style */}
                 <div className="rounded-xl overflow-hidden border border-border bg-[#1a1d26]">
@@ -2068,10 +2071,10 @@ export default function SectionForms({
                     <div className="flex-1 px-3 py-2 space-y-0.5 min-w-0">
                       <p className="text-[10px] text-slate-500 truncate">{ogDomain}</p>
                       <p className={`text-[12px] font-semibold leading-tight line-clamp-2 ${ogTitle ? "text-slate-100" : "text-slate-600 italic"}`}>
-                        {ogTitle || "Judul belum diisi"}
+                        {ogTitle || t("sitesEditor.seoSharePlaceholderTitle")}
                       </p>
                       <p className={`text-[10px] leading-tight line-clamp-2 ${ogDesc ? "text-slate-400" : "text-slate-600 italic"}`}>
-                        {ogDesc || "Deskripsi belum diisi"}
+                        {ogDesc || t("sitesEditor.seoSharePlaceholderDesc")}
                       </p>
                     </div>
                   </div>
@@ -2088,17 +2091,17 @@ export default function SectionForms({
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center gap-1">
                         <span className="text-[28px] opacity-20">🖼️</span>
-                        <p className="text-[10px] text-slate-600 italic">OG Image belum diatur (1200×630 px)</p>
+                        <p className="text-[10px] text-slate-600 italic">{t("sitesEditor.seoShareOgNotSet")}</p>
                       </div>
                     )}
                   </div>
                   <div className="px-3 py-2 space-y-0.5 bg-[#232630]">
                     <p className="text-[9px] uppercase tracking-widest text-slate-500 truncate">{ogDomain}</p>
                     <p className={`text-[12px] font-bold leading-snug line-clamp-2 ${ogTitle ? "text-slate-100" : "text-slate-600 italic"}`}>
-                      {ogTitle || "Judul belum diisi"}
+                      {ogTitle || t("sitesEditor.seoSharePlaceholderTitle")}
                     </p>
                     <p className={`text-[10px] leading-snug line-clamp-2 ${ogDesc ? "text-slate-400" : "text-slate-600 italic"}`}>
-                      {ogDesc || "Deskripsi belum diisi"}
+                      {ogDesc || t("sitesEditor.seoSharePlaceholderDesc")}
                     </p>
                   </div>
                 </div>
@@ -2120,14 +2123,14 @@ export default function SectionForms({
                     </div>
                     <div className="absolute bottom-0 left-0 right-0 px-3 py-1.5 bg-black/60 backdrop-blur-sm">
                       <p className={`text-[11px] font-semibold leading-tight truncate ${ogTitle ? "text-white" : "text-slate-500 italic"}`}>
-                        {ogTitle || "Judul belum diisi"}
+                        {ogTitle || t("sitesEditor.seoSharePlaceholderTitle")}
                       </p>
                       <p className="text-[9px] text-slate-400 truncate">{ogDomain}</p>
                     </div>
                   </div>
                 </div>
 
-                <p className="text-[10px] text-slate-600 text-center">Preview otomatis diperbarui saat Anda mengisi Meta Title, Deskripsi, &amp; OG Image.</p>
+                <p className="text-[10px] text-slate-600 text-center">{t("sitesEditor.seoShareAutoUpdate")}</p>
               </div>
             );
           })()}
@@ -2138,8 +2141,8 @@ export default function SectionForms({
               <span>OG Type</span>
               <AiFieldButton
                 loading={aiLoadingField === "seo.og_type"}
-                onGenerate={() => handleAiText("seo", "og_type", "Pilih og_type yang paling sesuai: website, article, product, profile.", "OG Type")}
-                title="AI: suggest OG type"
+                onGenerate={() => handleAiText("seo", "og_type", t("sitesEditor.seoAiOgTypePrompt"), "OG Type")}
+                title={t("sitesEditor.seoAiOgTypeBtn")}
                 onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
             </label>
@@ -2162,8 +2165,8 @@ export default function SectionForms({
               <span>Twitter Card</span>
               <AiFieldButton
                 loading={aiLoadingField === "seo.twitter_card"}
-                onGenerate={() => handleAiText("seo", "twitter_card", "Pilih Twitter card: summary_large_image untuk kebanyakan bisnis.", "Twitter Card")}
-                title="AI: suggest Twitter card"
+                onGenerate={() => handleAiText("seo", "twitter_card", t("sitesEditor.seoAiTwitterCardPrompt"), "Twitter Card")}
+                title={t("sitesEditor.seoAiTwitterCardBtn")}
                 onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
             </label>
@@ -2234,7 +2237,7 @@ export default function SectionForms({
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
               <span className="flex items-center gap-1.5">
-                Custom Robots.txt
+                {t("sitesEditor.seoRobotsTxtTitle")}
                 {!isPremium && <span className="text-[9px] font-bold uppercase bg-amber-500/10 text-amber-400 px-1.5 py-0.5 rounded-full border border-amber-500/30">Pro</span>}
               </span>
             </label>
@@ -2253,9 +2256,9 @@ export default function SectionForms({
               >
                 <div className="flex items-center gap-2 text-amber-400 font-semibold mb-1">
                   <Lock className="w-3 h-3" />
-                  Kustomisasi robots.txt untuk situs Anda
+                  {t("sitesEditor.seoRobotsTxtLockedTitle")}
                 </div>
-                <p>Kontrol halaman mana yang di-index Google, blok AI crawler, dan atur sitemap rules.</p>
+                <p>{t("sitesEditor.seoRobotsTxtLockedDesc")}</p>
               </div>
             )}
           </div>
@@ -2265,10 +2268,10 @@ export default function SectionForms({
             <div className="rounded-lg border border-border bg-muted/40 px-3 py-2.5 text-[12px] leading-relaxed">
               <div className="flex items-center gap-2 font-semibold text-foreground">
                 <CheckCircle className="w-4 h-4 text-primary" />
-                SEO Booster Aktif
+                {t("sitesEditor.seoBoosterActiveTitle")}
               </div>
               <p className="mt-1 text-muted-foreground">
-                Structured data rich snippet otomatis dipasang di situs Anda. Google akan menampilkan rating, harga, dan informasi bisnis langsung di hasil pencarian.
+                {t("sitesEditor.seoBoosterActiveDesc")}
               </p>
             </div>
           ) : (() => {
@@ -2293,7 +2296,7 @@ export default function SectionForms({
                 <div className="flex items-center justify-between px-5 py-4 border-b border-border/50">
                   <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
                     <Search className="w-4 h-4 text-amber-400" />
-                    <span>SEO BOOSTER (PRO)</span>
+                    <span>{t("sitesEditor.seoBoosterProTitle")}</span>
                   </div>
                   <span className="text-[10px] font-bold uppercase bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded-full border border-amber-500/30">
                     Premium
@@ -2302,7 +2305,7 @@ export default function SectionForms({
 
                 <div className="grid grid-cols-2 gap-4 p-5">
                   <div>
-                    <p className="text-xs font-bold text-slate-500 mb-2">TANPA SEO BOOSTER</p>
+                    <p className="text-xs font-bold text-slate-500 mb-2">{t("sitesEditor.seoBoosterWithout")}</p>
                     <div className="opacity-60 grayscale-[30%]">
                       <GoogleSnippetPreview variant="plain" business={demoBusiness} />
                     </div>
@@ -2311,14 +2314,14 @@ export default function SectionForms({
                     <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
                       ✨ Rich Result
                     </div>
-                    <p className="text-xs font-bold text-primary mb-2">DENGAN SEO BOOSTER</p>
+                    <p className="text-xs font-bold text-primary mb-2">{t("sitesEditor.seoBoosterWith")}</p>
                     <GoogleSnippetPreview variant="rich" business={demoBusiness} />
                   </div>
                 </div>
 
                 <div className="px-5 pb-5">
                   <p className="text-xs text-amber-200/70 text-center mb-2">
-                    Kompetitor Anda mungkin sudah tampil seperti contoh kanan di pencarian Google.
+                    {t("sitesEditor.seoBoosterCompetitor")}
                   </p>
                   <button
                     type="button"
@@ -2326,7 +2329,7 @@ export default function SectionForms({
                     className="w-full bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <Lock className="w-3.5 h-3.5" />
-                    🔓 Upgrade ke Pro — Tampil Lebih Menonjol di Google
+                    {t("sitesEditor.seoBoosterUpgradeBtn")}
                   </button>
                 </div>
               </div>
@@ -2348,8 +2351,8 @@ export default function SectionForms({
                     </svg>
                   </div>
                   <div>
-                    <p className="text-[13px] font-bold text-slate-100">Google Search Console</p>
-                    <p className="text-[11px] text-slate-500">Verifikasi kepemilikan domain Anda di GSC</p>
+                    <p className="text-[13px] font-bold text-slate-100">{t("sitesEditor.seoGscTitle")}</p>
+                    <p className="text-[11px] text-slate-500">{t("sitesEditor.seoGscSubtitle")}</p>
                   </div>
                 </div>
                 {!isPremium && (
@@ -2359,13 +2362,13 @@ export default function SectionForms({
 
               {/* How-to steps */}
               <div className="rounded-lg bg-muted/40 border border-border/50 px-3 py-2.5 space-y-1.5 text-[11px] text-slate-400">
-                <p className="font-semibold text-slate-300">Cara mendapatkan kode verifikasi:</p>
+                <p className="font-semibold text-slate-300">{t("sitesEditor.seoGscHowToTitle")}</p>
                 <ol className="space-y-1 list-decimal list-inside">
-                  <li>Buka <a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Google Search Console</a></li>
-                  <li>Klik <strong className="text-slate-200">Tambah properti</strong> → pilih <strong className="text-slate-200">Awalan URL</strong></li>
-                  <li>Masukkan URL website Anda, lalu pilih metode <strong className="text-slate-200">Tag HTML</strong></li>
-                  <li>Salin nilai <code className="bg-white/5 px-1 rounded text-slate-300">content</code> dari meta tag yang diberikan</li>
-                  <li>Tempel di field di bawah, lalu klik Simpan &amp; Verifikasi</li>
+                  <li>{t("sitesEditor.seoGscStep1")} (<a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Google Search Console</a>)</li>
+                  <li>{t("sitesEditor.seoGscStep2")}</li>
+                  <li>{t("sitesEditor.seoGscStep3")}</li>
+                  <li>{t("sitesEditor.seoGscStep4")}</li>
+                  <li>{t("sitesEditor.seoGscStep5")}</li>
                 </ol>
               </div>
 
@@ -2382,7 +2385,7 @@ export default function SectionForms({
                   type="text"
                   value={gscInput}
                   onChange={(e) => setGscInput(e.target.value)}
-                  placeholder="Tempel kode verifikasi di sini..."
+                  placeholder={t("sitesEditor.seoGscPlaceholder")}
                   className="flex-1 px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
                 />
                 <button
@@ -2395,11 +2398,11 @@ export default function SectionForms({
                   className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-[12px] font-semibold hover:bg-primary/90 disabled:opacity-50 transition-colors"
                 >
                   {gscSaving ? (
-                    <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Menyimpan...</>
+                    <><Loader2 className="w-3.5 h-3.5 animate-spin" /> {t("sitesEditor.seoGscSaving")}</>
                   ) : gscSaved ? (
-                    <><Check className="w-3.5 h-3.5" /> Tersimpan</>
+                    <><Check className="w-3.5 h-3.5" /> {t("sitesEditor.seoGscSaved")}</>
                   ) : (
-                    "Simpan & Verifikasi"
+                    t("sitesEditor.seoGscSaveBtn")
                   )}
                 </button>
               </div>

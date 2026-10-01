@@ -2203,6 +2203,102 @@ export interface Translations {
       weightMedium: string;
       weightRegular: string;
       weightSemiBold: string;
+      // SEO Preview & Form
+      seoPreviewBannerTitle: string;
+      seoPreviewBannerDesc: string;
+      seoEditInSidebar: string;
+      windowClose: string;
+      windowMinimize: string;
+      windowMaximize: string;
+      browserBack: string;
+      browserForward: string;
+      browserReload: string;
+      browserMenu: string;
+      copyUrl: string;
+      copied: string;
+      bookmarkSaved: string;
+      bookmarkAdd: string;
+      seoTabGoogle: string;
+      seoTabWhatsApp: string;
+      seoTabMetaTags: string;
+      seoSwitchView: string;
+      seoGoogleAll: string;
+      seoGoogleImages: string;
+      seoGoogleNews: string;
+      seoGoogleMaps: string;
+      seoGoogleVideos: string;
+      seoGoogleMore: string;
+      seoGoogleResultsCount: string;
+      seoGoogleClickToEdit: string;
+      seoGooglePlaceholderTitle: string;
+      seoGooglePlaceholderDesc: string;
+      seoSitelinkAbout: string;
+      seoSitelinkAboutDesc: string;
+      seoSitelinkContact: string;
+      seoSitelinkContactDesc: string;
+      seoDiagTitle: string;
+      seoDiagDesc: string;
+      seoDiagOptimal: string;
+      seoDiagTooLong: string;
+      seoDiagTooShort: string;
+      seoAdjustInSidebar: string;
+      seoWaChatWith: string;
+      seoWaOnline: string;
+      seoWaChatBadge: string;
+      seoWaMessage: string;
+      seoWaNoOgImage: string;
+      seoWaClickUpload: string;
+      seoWaDefaultDesc: string;
+      seoOgTipsTitle: string;
+      seoOgTipsDesc: string;
+      seoInspectorTitle: string;
+      seoCopyHtml: string;
+      seoTargetKeywords: string;
+      seoNotPublicTitle: string;
+      seoNotPublicDesc: string;
+      seoAiTitlePrompt: string;
+      seoAiTitleBtn: string;
+      seoAiDescPrompt: string;
+      seoAiDescBtn: string;
+      seoAiKeywordsPrompt: string;
+      seoKeywordsLabel: string;
+      seoKeywordsPlaceholderEmpty: string;
+      seoKeywordsPlaceholderMore: string;
+      seoFaviconLabel: string;
+      seoOgImageLabel: string;
+      seoSharePreviewTitle: string;
+      seoSharePlaceholderTitle: string;
+      seoSharePlaceholderDesc: string;
+      seoShareOgNotSet: string;
+      seoShareAutoUpdate: string;
+      seoAiOgTypePrompt: string;
+      seoAiOgTypeBtn: string;
+      seoAiTwitterCardPrompt: string;
+      seoAiTwitterCardBtn: string;
+      seoRobotsTxtTitle: string;
+      seoRobotsTxtLockedTitle: string;
+      seoRobotsTxtLockedDesc: string;
+      seoBoosterActiveTitle: string;
+      seoBoosterActiveDesc: string;
+      seoBoosterProTitle: string;
+      seoBoosterWithout: string;
+      seoBoosterWith: string;
+      seoBoosterCompetitor: string;
+      seoBoosterUpgradeBtn: string;
+      seoGscTitle: string;
+      seoGscSubtitle: string;
+      seoGscHowToTitle: string;
+      seoGscStep1: string;
+      seoGscStep2: string;
+      seoGscStep3: string;
+      seoGscStep4: string;
+      seoGscStep5: string;
+      seoGscPlaceholder: string;
+      seoGscSaving: string;
+      seoGscSaved: string;
+      seoGscSaveBtn: string;
+      seoReviewsCount: string;
+      seoBusinessOpenStatus: string;
     };
     wizard: {
       initialMessage: string;
@@ -4654,6 +4750,102 @@ export const translations: Record<Locale, Translations> = {
         weightMedium: "Medium",
         weightRegular: "Regular",
         weightSemiBold: "Semi-Bold",
+        // SEO Preview & Form
+        seoPreviewBannerTitle: "Pratinjau SEO & Metadata:",
+        seoPreviewBannerDesc: "Hanya dibaca mesin pencari & saat link dibagikan di media sosial.",
+        seoEditInSidebar: "Edit di Sidebar",
+        windowClose: "Tutup",
+        windowMinimize: "Kecilkan",
+        windowMaximize: "Perbesar",
+        browserBack: "Kembali",
+        browserForward: "Maju",
+        browserReload: "Muat Ulang Halaman",
+        browserMenu: "Menu Browser",
+        copyUrl: "Salin URL",
+        copied: "Tersalin!",
+        bookmarkSaved: "Bookmark disimpan",
+        bookmarkAdd: "Tambahkan Bookmark",
+        seoTabGoogle: "Google Search",
+        seoTabWhatsApp: "WhatsApp Share",
+        seoTabMetaTags: "Meta Tags & Kode",
+        seoSwitchView: "Ganti Tampilan",
+        seoGoogleAll: "Semua",
+        seoGoogleImages: "Gambar",
+        seoGoogleNews: "Berita",
+        seoGoogleMaps: "Maps",
+        seoGoogleVideos: "Video",
+        seoGoogleMore: "Lainnya",
+        seoGoogleResultsCount: "Sekitar 124.000 hasil (0,32 detik)",
+        seoGoogleClickToEdit: "Klik untuk edit di sidebar",
+        seoGooglePlaceholderTitle: "Tambahkan SEO Title di sidebar editor...",
+        seoGooglePlaceholderDesc: "Meta description belum diisi. Tambahkan deskripsi yang relevan di sidebar editor agar calon pengunjung tertarik mengklik link website Anda di hasil pencarian.",
+        seoSitelinkAbout: "Tentang Kami",
+        seoSitelinkAboutDesc: "Kenali profil dan layanan terbaik kami.",
+        seoSitelinkContact: "Kontak & Lokasi",
+        seoSitelinkContactDesc: "Hubungi WhatsApp atau kunjungi langsung.",
+        seoDiagTitle: "Title:",
+        seoDiagDesc: "Deskripsi:",
+        seoDiagOptimal: "✓ Optimal",
+        seoDiagTooLong: "⚠️ Kepanjangan",
+        seoDiagTooShort: "ℹ️ Terlalu pendek",
+        seoAdjustInSidebar: "Sesuaikan di Panel Editor",
+        seoWaChatWith: "Calon Pelanggan / Teman",
+        seoWaOnline: "online",
+        seoWaChatBadge: "WhatsApp Chat",
+        seoWaMessage: "Halo! Cek website resmi kami di sini ya:",
+        seoWaNoOgImage: "Belum ada OG Image share",
+        seoWaClickUpload: "Klik untuk upload di sidebar",
+        seoWaDefaultDesc: "Deskripsi website yang menarik akan muncul di sini saat tautan dibagikan.",
+        seoOgTipsTitle: "Tips Gambar Open Graph:",
+        seoOgTipsDesc: "Ukuran ideal: 1200 × 630 px (rasio 1.91:1). Gambar ini otomatis dipakai oleh WhatsApp, Telegram, Facebook, X (Twitter), dan LinkedIn saat link Anda dibagikan.",
+        seoInspectorTitle: "HTML <head> SEO Inspector",
+        seoCopyHtml: "Salin Kode HTML",
+        seoTargetKeywords: "Target Kata Kunci (Keywords):",
+        seoNotPublicTitle: "SEO tidak tampil sebagai section di halaman publik.",
+        seoNotPublicDesc: "Data ini dipakai mesin pencari dan preview saat link dibagikan, seperti judul Google, deskripsi, favicon, dan gambar share.",
+        seoAiTitlePrompt: "Buat SEO title yang mengandung nama bisnis, lokasi, dan layanan utama. Maks 60 karakter.",
+        seoAiTitleBtn: "AI: generate SEO title",
+        seoAiDescPrompt: "Buat meta description yang menarik klik di Google. Maks 155 karakter, sertakan nama bisnis dan value proposition.",
+        seoAiDescBtn: "AI: generate meta description",
+        seoAiKeywordsPrompt: "Generate 3-8 keyword SEO yang relevan untuk bisnis ini, fokus pada produk, layanan, dan lokasi.",
+        seoKeywordsLabel: "Keywords SEO",
+        seoKeywordsPlaceholderEmpty: "Ketik keyword lalu Enter...",
+        seoKeywordsPlaceholderMore: "Tambah keyword...",
+        seoFaviconLabel: "Favicon",
+        seoOgImageLabel: "OG Image",
+        seoSharePreviewTitle: "Preview Saat Link Dibagikan",
+        seoSharePlaceholderTitle: "Judul belum diisi",
+        seoSharePlaceholderDesc: "Deskripsi belum diisi",
+        seoShareOgNotSet: "OG Image belum diatur (1200×630 px)",
+        seoShareAutoUpdate: "Preview otomatis diperbarui saat Anda mengisi Meta Title, Deskripsi, & OG Image.",
+        seoAiOgTypePrompt: "Pilih og_type yang paling sesuai: website, article, product, profile.",
+        seoAiOgTypeBtn: "AI: suggest OG type",
+        seoAiTwitterCardPrompt: "Pilih Twitter card: summary_large_image untuk kebanyakan bisnis.",
+        seoAiTwitterCardBtn: "AI: suggest Twitter card",
+        seoRobotsTxtTitle: "Custom Robots.txt",
+        seoRobotsTxtLockedTitle: "Kustomisasi robots.txt untuk situs Anda",
+        seoRobotsTxtLockedDesc: "Kontrol halaman mana yang di-index Google, blok AI crawler, dan atur sitemap rules.",
+        seoBoosterActiveTitle: "SEO Booster Aktif",
+        seoBoosterActiveDesc: "Structured data rich snippet otomatis dipasang di situs Anda. Google akan menampilkan rating, harga, dan informasi bisnis langsung di hasil pencarian.",
+        seoBoosterProTitle: "SEO BOOSTER (PRO)",
+        seoBoosterWithout: "TANPA SEO BOOSTER",
+        seoBoosterWith: "DENGAN SEO BOOSTER",
+        seoBoosterCompetitor: "Kompetitor Anda mungkin sudah tampil seperti contoh kanan di pencarian Google.",
+        seoBoosterUpgradeBtn: "🔓 Upgrade ke Pro — Tampil Lebih Menonjol di Google",
+        seoGscTitle: "Google Search Console",
+        seoGscSubtitle: "Verifikasi kepemilikan domain Anda di GSC",
+        seoGscHowToTitle: "Cara mendapatkan kode verifikasi:",
+        seoGscStep1: "Buka Google Search Console",
+        seoGscStep2: "Tambah properti → pilih Awalan URL",
+        seoGscStep3: "Masukkan URL website Anda, lalu pilih metode Tag HTML",
+        seoGscStep4: "Salin nilai content dari meta tag yang diberikan",
+        seoGscStep5: "Tempel di field di bawah, lalu klik Simpan & Verifikasi",
+        seoGscPlaceholder: "Tempel kode verifikasi di sini...",
+        seoGscSaving: "Menyimpan...",
+        seoGscSaved: "Tersimpan",
+        seoGscSaveBtn: "Simpan & Verifikasi",
+        seoReviewsCount: "ulasan",
+        seoBusinessOpenStatus: "Buka",
       },
       wizard: {
         initialMessage: "Halo! Saya Joz-AI, asisten pembuat website Anda 🚀 Mari kita mulai: apa nama bisnis atau brand Anda?",
@@ -7175,6 +7367,102 @@ export const translations: Record<Locale, Translations> = {
         weightMedium: "Medium",
         weightRegular: "Regular",
         weightSemiBold: "Semi-Bold",
+        // SEO Preview & Form
+        seoPreviewBannerTitle: "SEO & Metadata Preview:",
+        seoPreviewBannerDesc: "Only read by search engines & when links are shared on social media.",
+        seoEditInSidebar: "Edit in Sidebar",
+        windowClose: "Close",
+        windowMinimize: "Minimize",
+        windowMaximize: "Maximize",
+        browserBack: "Back",
+        browserForward: "Forward",
+        browserReload: "Reload Page",
+        browserMenu: "Browser Menu",
+        copyUrl: "Copy URL",
+        copied: "Copied!",
+        bookmarkSaved: "Bookmark saved",
+        bookmarkAdd: "Add Bookmark",
+        seoTabGoogle: "Google Search",
+        seoTabWhatsApp: "WhatsApp Share",
+        seoTabMetaTags: "Meta Tags & Code",
+        seoSwitchView: "Switch View",
+        seoGoogleAll: "All",
+        seoGoogleImages: "Images",
+        seoGoogleNews: "News",
+        seoGoogleMaps: "Maps",
+        seoGoogleVideos: "Videos",
+        seoGoogleMore: "More",
+        seoGoogleResultsCount: "About 124,000 results (0.32 seconds)",
+        seoGoogleClickToEdit: "Click to edit in sidebar",
+        seoGooglePlaceholderTitle: "Add SEO Title in the sidebar editor...",
+        seoGooglePlaceholderDesc: "Meta description is not set yet. Add a relevant description in the sidebar editor so visitors are enticed to click your site in search results.",
+        seoSitelinkAbout: "About Us",
+        seoSitelinkAboutDesc: "Learn about our profile and best services.",
+        seoSitelinkContact: "Contact & Location",
+        seoSitelinkContactDesc: "Reach out on WhatsApp or visit us in person.",
+        seoDiagTitle: "Title:",
+        seoDiagDesc: "Description:",
+        seoDiagOptimal: "✓ Optimal",
+        seoDiagTooLong: "⚠️ Too long",
+        seoDiagTooShort: "ℹ️ Too short",
+        seoAdjustInSidebar: "Adjust in Editor Panel",
+        seoWaChatWith: "Prospective Customer / Friend",
+        seoWaOnline: "online",
+        seoWaChatBadge: "WhatsApp Chat",
+        seoWaMessage: "Hello! Check out our official website here:",
+        seoWaNoOgImage: "No OG Image set yet",
+        seoWaClickUpload: "Click to upload in sidebar",
+        seoWaDefaultDesc: "An engaging website description will appear here when the link is shared.",
+        seoOgTipsTitle: "Open Graph Image Tips:",
+        seoOgTipsDesc: "Ideal size: 1200 × 630 px (1.91:1 ratio). This image is automatically used by WhatsApp, Telegram, Facebook, X (Twitter), and LinkedIn when your link is shared.",
+        seoInspectorTitle: "HTML <head> SEO Inspector",
+        seoCopyHtml: "Copy HTML Code",
+        seoTargetKeywords: "Target Keywords:",
+        seoNotPublicTitle: "SEO does not appear as a section on the public page.",
+        seoNotPublicDesc: "This data is used by search engines and link preview cards, such as Google title, description, favicon, and social share image.",
+        seoAiTitlePrompt: "Create an SEO title containing the business name, location, and primary service. Max 60 characters.",
+        seoAiTitleBtn: "AI: generate SEO title",
+        seoAiDescPrompt: "Create a meta description that drives clicks on Google. Max 155 characters, include business name and value proposition.",
+        seoAiDescBtn: "AI: generate meta description",
+        seoAiKeywordsPrompt: "Generate 3-8 relevant SEO keywords for this business, focusing on products, services, and location.",
+        seoKeywordsLabel: "SEO Keywords",
+        seoKeywordsPlaceholderEmpty: "Type keyword and press Enter...",
+        seoKeywordsPlaceholderMore: "Add keyword...",
+        seoFaviconLabel: "Favicon",
+        seoOgImageLabel: "OG Image",
+        seoSharePreviewTitle: "Link Share Preview",
+        seoSharePlaceholderTitle: "Title not filled",
+        seoSharePlaceholderDesc: "Description not filled",
+        seoShareOgNotSet: "OG Image not configured (1200×630 px)",
+        seoShareAutoUpdate: "Preview automatically updates when you fill Meta Title, Description, & OG Image.",
+        seoAiOgTypePrompt: "Select the most suitable og_type: website, article, product, profile.",
+        seoAiOgTypeBtn: "AI: suggest OG type",
+        seoAiTwitterCardPrompt: "Select Twitter card: summary_large_image for most businesses.",
+        seoAiTwitterCardBtn: "AI: suggest Twitter card",
+        seoRobotsTxtTitle: "Custom Robots.txt",
+        seoRobotsTxtLockedTitle: "Customize robots.txt for your site",
+        seoRobotsTxtLockedDesc: "Control which pages Google indexes, block AI crawlers, and configure sitemap rules.",
+        seoBoosterActiveTitle: "SEO Booster Active",
+        seoBoosterActiveDesc: "Structured data rich snippet is automatically enabled on your site. Google will display rating, price, and business info directly in search results.",
+        seoBoosterProTitle: "SEO BOOSTER (PRO)",
+        seoBoosterWithout: "WITHOUT SEO BOOSTER",
+        seoBoosterWith: "WITH SEO BOOSTER",
+        seoBoosterCompetitor: "Your competitors might already appear like the right example in Google search.",
+        seoBoosterUpgradeBtn: "🔓 Upgrade to Pro — Stand Out on Google",
+        seoGscTitle: "Google Search Console",
+        seoGscSubtitle: "Verify your domain ownership in GSC",
+        seoGscHowToTitle: "How to get the verification code:",
+        seoGscStep1: "Open Google Search Console",
+        seoGscStep2: "Add property → select URL prefix",
+        seoGscStep3: "Enter your website URL, then select HTML Tag method",
+        seoGscStep4: "Copy the content value from the provided meta tag",
+        seoGscStep5: "Paste in the field below, then click Save & Verify",
+        seoGscPlaceholder: "Paste verification code here...",
+        seoGscSaving: "Saving...",
+        seoGscSaved: "Saved",
+        seoGscSaveBtn: "Save & Verify",
+        seoReviewsCount: "reviews",
+        seoBusinessOpenStatus: "Open",
       },
       wizard: {
         initialMessage: "Hi! I'm Joz-AI, your website building assistant 🚀 Let's get started: what's the name of your business or brand?",

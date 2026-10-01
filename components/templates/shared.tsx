@@ -2419,6 +2419,7 @@ const SeoEditorPreview = ({
   };
   domain?: string;
 }) => {
+  const { t } = useI18n();
   const [activeTab, setActiveTab] = useState<"google" | "whatsapp" | "meta">("google");
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [copiedUrl, setCopiedUrl] = useState(false);
@@ -2483,7 +2484,7 @@ const SeoEditorPreview = ({
         {/* Top Info & Quick Actions Banner */}
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl px-4 py-3 text-xs bg-muted/40 border border-border backdrop-blur-sm">
           <p className="text-muted-foreground leading-relaxed truncate sm:whitespace-normal min-w-0">
-            <span className="font-semibold text-foreground">Pratinjau SEO & Metadata:</span> Hanya dibaca mesin pencari & saat link dibagikan di media sosial.
+            <span className="font-semibold text-foreground">{t("sitesEditor.seoPreviewBannerTitle")}</span> {t("sitesEditor.seoPreviewBannerDesc")}
           </p>
           <button
             type="button"
@@ -2491,7 +2492,7 @@ const SeoEditorPreview = ({
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-foreground hover:opacity-80 text-background font-medium text-xs shadow-sm transition-all active:scale-95 cursor-pointer ml-auto sm:ml-0 shrink-0"
           >
             <Pencil className="w-3 h-3" />
-            <span>Edit di Sidebar</span>
+            <span>{t("sitesEditor.seoEditInSidebar")}</span>
           </button>
         </div>
 
@@ -2502,9 +2503,9 @@ const SeoEditorPreview = ({
           <div className="bg-[#181a22] border-b border-black/40 flex items-center justify-between px-3 pt-2.5 pb-0 gap-2 select-none overflow-x-auto">
             {/* Mac Traffic Lights Window Controls */}
             <div className="flex items-center gap-2 pl-1 pr-3 pb-2.5 shrink-0">
-              <div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]/50 shadow-xs" title="Tutup" />
-              <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]/50 shadow-xs" title="Kecilkan" />
-              <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]/50 shadow-xs" title="Perbesar" />
+              <div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]/50 shadow-xs" title={t("sitesEditor.windowClose")} />
+              <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]/50 shadow-xs" title={t("sitesEditor.windowMinimize")} />
+              <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]/50 shadow-xs" title={t("sitesEditor.windowMaximize")} />
             </div>
 
             {/* Browser Tabs */}
@@ -2526,7 +2527,7 @@ const SeoEditorPreview = ({
                   <path fill="#FBBC05" d="M5.28 14.28c-.24-.72-.38-1.49-.38-2.28s.14-1.56.38-2.28V6.59H1.27C.46 8.21 0 10.04 0 12s.46 3.79 1.27 5.41l4.01-3.13z"/>
                   <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.69 1.27 6.59l4.01 3.13c.95-2.83 3.6-4.97 6.72-4.97z"/>
                 </svg>
-                <span className="truncate">Google Search</span>
+                <span className="truncate">{t("sitesEditor.seoTabGoogle")}</span>
                 <span className="ml-auto text-[10px] text-slate-400 opacity-60 group-hover:opacity-100">✕</span>
               </button>
 
@@ -2544,7 +2545,7 @@ const SeoEditorPreview = ({
                 <svg className="w-3.5 h-3.5 fill-[#25D366] shrink-0" viewBox="0 0 24 24">
                   <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.983.541 1.767.818 2.791.818 3.182 0 5.768-2.587 5.768-5.768.001-3.18-2.585-5.764-5.768-5.764zm3.376 8.204c-.144.405-.837.774-1.17.824-.312.045-.694.079-2.128-.488-1.833-.726-3.003-2.593-3.094-2.715-.09-.122-.745-.992-.745-1.892 0-.899.467-1.343.633-1.525.166-.182.364-.228.485-.228.122 0 .243.002.349.007.111.005.259-.042.405.309.151.364.515 1.258.56 1.35.045.091.076.197.015.318-.06.121-.09.197-.181.303-.09.106-.19.237-.272.318-.09.091-.184.19-.079.371.106.182.47 1.157 1.009 1.637.694.618 1.28.81 1.462.901.182.091.288.076.394-.045.106-.121.455-.53.576-.712.121-.182.242-.152.405-.091.164.061 1.036.488 1.213.579.177.091.297.136.339.212.043.076.043.439-.101.844z"/>
                 </svg>
-                <span className="truncate">WhatsApp Share</span>
+                <span className="truncate">{t("sitesEditor.seoTabWhatsApp")}</span>
                 <span className="ml-auto text-[10px] text-slate-400 opacity-60 group-hover:opacity-100">✕</span>
               </button>
 
@@ -2559,7 +2560,7 @@ const SeoEditorPreview = ({
                 }`}
               >
                 <Code2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                <span className="truncate">Meta Tags & Kode</span>
+                <span className="truncate">{t("sitesEditor.seoTabMetaTags")}</span>
                 <span className="ml-auto text-[10px] text-slate-400 opacity-60 group-hover:opacity-100">✕</span>
               </button>
             </div>
@@ -2570,7 +2571,7 @@ const SeoEditorPreview = ({
                 type="button"
                 onClick={() => setActiveTab(activeTab === "google" ? "whatsapp" : activeTab === "whatsapp" ? "meta" : "google")}
                 className="w-6 h-6 rounded-lg flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
-                title="Ganti Tampilan"
+                title={t("sitesEditor.seoSwitchView")}
               >
                 +
               </button>
@@ -2584,14 +2585,14 @@ const SeoEditorPreview = ({
               <button
                 type="button"
                 className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-colors"
-                title="Kembali"
+                title={t("sitesEditor.browserBack")}
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <button
                 type="button"
                 className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-600 cursor-not-allowed"
-                title="Maju"
+                title={t("sitesEditor.browserForward")}
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -2599,7 +2600,7 @@ const SeoEditorPreview = ({
                 type="button"
                 onClick={handleReload}
                 className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-colors cursor-pointer"
-                title="Muat Ulang Halaman"
+                title={t("sitesEditor.browserReload")}
               >
                 <RotateCw className={`w-3.5 h-3.5 ${isReloading ? "animate-spin text-sky-400" : ""}`} />
               </button>
@@ -2621,7 +2622,7 @@ const SeoEditorPreview = ({
                   type="button"
                   onClick={handleCopyUrl}
                   className="p-1 rounded-md text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
-                  title={copiedUrl ? "Tersalin!" : "Salin URL"}
+                  title={copiedUrl ? t("sitesEditor.copied") : t("sitesEditor.copyUrl")}
                 >
                   {copiedUrl ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                 </button>
@@ -2631,7 +2632,7 @@ const SeoEditorPreview = ({
                   className={`p-1 rounded-md transition-colors ${
                     isBookmarked ? "text-amber-400" : "text-slate-400 hover:text-white hover:bg-white/10"
                   }`}
-                  title={isBookmarked ? "Bookmark disimpan" : "Tambahkan Bookmark"}
+                  title={isBookmarked ? t("sitesEditor.bookmarkSaved") : t("sitesEditor.bookmarkAdd")}
                 >
                   <Star className={`w-3.5 h-3.5 ${isBookmarked ? "fill-amber-400" : ""}`} />
                 </button>
@@ -2646,7 +2647,7 @@ const SeoEditorPreview = ({
               <button
                 type="button"
                 className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-colors"
-                title="Menu Browser"
+                title={t("sitesEditor.browserMenu")}
               >
                 <MoreVertical className="w-4 h-4" />
               </button>
@@ -2700,18 +2701,18 @@ const SeoEditorPreview = ({
                 <div className="flex items-center gap-6 text-[13px] font-medium text-slate-600 pt-3 pb-2.5 overflow-x-auto select-none">
                   <div className="flex items-center gap-1.5 text-[#1a73e8] border-b-2 border-[#1a73e8] pb-1 font-semibold shrink-0 cursor-pointer">
                     <Search className="w-3.5 h-3.5" />
-                    <span>Semua</span>
+                    <span>{t("sitesEditor.seoGoogleAll")}</span>
                   </div>
-                  <span className="hover:text-slate-900 cursor-pointer pb-1 shrink-0">Gambar</span>
-                  <span className="hover:text-slate-900 cursor-pointer pb-1 shrink-0">Berita</span>
-                  <span className="hover:text-slate-900 cursor-pointer pb-1 shrink-0">Maps</span>
-                  <span className="hover:text-slate-900 cursor-pointer pb-1 shrink-0">Video</span>
-                  <span className="hover:text-slate-900 cursor-pointer pb-1 shrink-0">Lainnya</span>
+                  <span className="hover:text-slate-900 cursor-pointer pb-1 shrink-0">{t("sitesEditor.seoGoogleImages")}</span>
+                  <span className="hover:text-slate-900 cursor-pointer pb-1 shrink-0">{t("sitesEditor.seoGoogleNews")}</span>
+                  <span className="hover:text-slate-900 cursor-pointer pb-1 shrink-0">{t("sitesEditor.seoGoogleMaps")}</span>
+                  <span className="hover:text-slate-900 cursor-pointer pb-1 shrink-0">{t("sitesEditor.seoGoogleVideos")}</span>
+                  <span className="hover:text-slate-900 cursor-pointer pb-1 shrink-0">{t("sitesEditor.seoGoogleMore")}</span>
                 </div>
 
                 {/* Results Count Line */}
                 <p className="text-[11px] text-slate-500 py-3 border-b border-slate-100">
-                  Sekitar 124.000 hasil (0,32 detik)
+                  {t("sitesEditor.seoGoogleResultsCount")}
                 </p>
 
                 {/* ── THE ORGANIC RESULT ITEM (THE USER'S WEBSITE) ── */}
@@ -2749,13 +2750,13 @@ const SeoEditorPreview = ({
                   <h3
                     onClick={triggerOpenSidebar}
                     className="text-[19px] sm:text-[20px] font-medium leading-snug cursor-pointer group hover:underline text-[#1a0dab] pt-0.5"
-                    title="Klik untuk edit di sidebar"
+                    title={t("sitesEditor.seoGoogleClickToEdit")}
                   >
                     {seo?.title ? (
                       seo.title
                     ) : (
                       <span className="text-slate-400 italic font-normal">
-                        Tambahkan SEO Title di sidebar editor...
+                        {t("sitesEditor.seoGooglePlaceholderTitle")}
                       </span>
                     )}
                   </h3>
@@ -2766,7 +2767,7 @@ const SeoEditorPreview = ({
                       seo.description.length > 160 ? seo.description.slice(0, 157) + "..." : seo.description
                     ) : (
                       <span className="text-slate-400 italic">
-                        Meta description belum diisi. Tambahkan deskripsi yang relevan di sidebar editor agar calon pengunjung tertarik mengklik link website Anda di hasil pencarian.
+                        {t("sitesEditor.seoGooglePlaceholderDesc")}
                       </span>
                     )}
                   </p>
@@ -2774,12 +2775,12 @@ const SeoEditorPreview = ({
                   {/* Sitelinks Grid (Google Sub-links preview) */}
                   <div className="pt-3 grid grid-cols-2 gap-3 max-w-lg border-t border-slate-100 mt-3">
                     <div className="space-y-0.5">
-                      <p className="text-[13px] font-medium text-[#1a0dab] hover:underline cursor-pointer">Tentang Kami</p>
-                      <p className="text-[11px] text-slate-500 line-clamp-1">Kenali profil dan layanan terbaik kami.</p>
+                      <p className="text-[13px] font-medium text-[#1a0dab] hover:underline cursor-pointer">{t("sitesEditor.seoSitelinkAbout")}</p>
+                      <p className="text-[11px] text-slate-500 line-clamp-1">{t("sitesEditor.seoSitelinkAboutDesc")}</p>
                     </div>
                     <div className="space-y-0.5">
-                      <p className="text-[13px] font-medium text-[#1a0dab] hover:underline cursor-pointer">Kontak & Lokasi</p>
-                      <p className="text-[11px] text-slate-500 line-clamp-1">Hubungi WhatsApp atau kunjungi langsung.</p>
+                      <p className="text-[13px] font-medium text-[#1a0dab] hover:underline cursor-pointer">{t("sitesEditor.seoSitelinkContact")}</p>
+                      <p className="text-[11px] text-slate-500 line-clamp-1">{t("sitesEditor.seoSitelinkContactDesc")}</p>
                     </div>
                   </div>
                 </div>
@@ -2789,7 +2790,7 @@ const SeoEditorPreview = ({
                   <div className="flex flex-wrap items-center gap-4">
                     {/* Title length check */}
                     <div className="flex items-center gap-1.5">
-                      <span className="font-semibold text-slate-600">Title:</span>
+                      <span className="font-semibold text-slate-600">{t("sitesEditor.seoDiagTitle")}</span>
                       <span className={`font-mono font-medium px-2 py-0.5 rounded-full text-[11px] ${
                         titleLen >= 30 && titleLen <= 60
                           ? "bg-emerald-100 text-emerald-800"
@@ -2797,13 +2798,13 @@ const SeoEditorPreview = ({
                             ? "bg-red-100 text-red-800"
                             : "bg-amber-100 text-amber-800"
                       }`}>
-                        {titleLen}/60 char {titleLen >= 30 && titleLen <= 60 ? "✓ Optimal" : titleLen > 60 ? "⚠️ Kepanjangan" : "ℹ️ Terlalu pendek"}
+                        {titleLen}/60 char {titleLen >= 30 && titleLen <= 60 ? t("sitesEditor.seoDiagOptimal") : titleLen > 60 ? t("sitesEditor.seoDiagTooLong") : t("sitesEditor.seoDiagTooShort")}
                       </span>
                     </div>
 
                     {/* Desc length check */}
                     <div className="flex items-center gap-1.5">
-                      <span className="font-semibold text-slate-600">Deskripsi:</span>
+                      <span className="font-semibold text-slate-600">{t("sitesEditor.seoDiagDesc")}</span>
                       <span className={`font-mono font-medium px-2 py-0.5 rounded-full text-[11px] ${
                         descLen >= 70 && descLen <= 155
                           ? "bg-emerald-100 text-emerald-800"
@@ -2811,7 +2812,7 @@ const SeoEditorPreview = ({
                             ? "bg-red-100 text-red-800"
                             : "bg-amber-100 text-amber-800"
                       }`}>
-                        {descLen}/155 char {descLen >= 70 && descLen <= 155 ? "✓ Optimal" : descLen > 155 ? "⚠️ Kepanjangan" : "ℹ️ Terlalu pendek"}
+                        {descLen}/155 char {descLen >= 70 && descLen <= 155 ? t("sitesEditor.seoDiagOptimal") : descLen > 155 ? t("sitesEditor.seoDiagTooLong") : t("sitesEditor.seoDiagTooShort")}
                       </span>
                     </div>
                   </div>
@@ -2821,7 +2822,7 @@ const SeoEditorPreview = ({
                     onClick={triggerOpenSidebar}
                     className="text-[11px] font-semibold text-indigo-600 hover:text-indigo-800 hover:underline flex items-center gap-1 cursor-pointer"
                   >
-                    <span>Sesuaikan di Panel Editor</span>
+                    <span>{t("sitesEditor.seoAdjustInSidebar")}</span>
                     <ArrowRight className="w-3 h-3" />
                   </button>
                 </div>
@@ -2840,12 +2841,12 @@ const SeoEditorPreview = ({
                       P
                     </div>
                     <div>
-                      <p className="text-[13px] font-semibold text-white leading-tight">Calon Pelanggan / Teman</p>
-                      <p className="text-[11px] text-emerald-400 leading-tight">online</p>
+                      <p className="text-[13px] font-semibold text-white leading-tight">{t("sitesEditor.seoWaChatWith")}</p>
+                      <p className="text-[11px] text-emerald-400 leading-tight">{t("sitesEditor.seoWaOnline")}</p>
                     </div>
                   </div>
                   <span className="text-[10px] px-2.5 py-1 rounded-full bg-white/10 text-slate-300 font-mono">
-                    WhatsApp Chat
+                    {t("sitesEditor.seoWaChatBadge")}
                   </span>
                 </div>
 
@@ -2853,7 +2854,7 @@ const SeoEditorPreview = ({
                 <div className="max-w-md mx-auto space-y-4">
                   <div className="rounded-2xl bg-[#005c4b] text-white p-3.5 shadow-lg space-y-2.5 border border-emerald-400/20">
                     <p className="text-[13px] leading-relaxed">
-                      Halo! Cek website resmi kami di sini ya:{" "}
+                      {t("sitesEditor.seoWaMessage")}{" "}
                       <span className="text-emerald-300 underline font-mono">https://{cleanDomain}</span>
                     </p>
 
@@ -2874,8 +2875,8 @@ const SeoEditorPreview = ({
                           className="w-full h-36 bg-emerald-950/60 border-b border-emerald-500/20 flex flex-col items-center justify-center gap-1.5 cursor-pointer hover:bg-emerald-950/80 transition-colors"
                         >
                           <ImagePlus className="w-7 h-7 text-emerald-400/70" />
-                          <span className="text-xs text-emerald-300 font-medium">Belum ada OG Image share</span>
-                          <span className="text-[10px] text-emerald-400/80 underline">Klik untuk upload di sidebar</span>
+                          <span className="text-xs text-emerald-300 font-medium">{t("sitesEditor.seoWaNoOgImage")}</span>
+                          <span className="text-[10px] text-emerald-400/80 underline">{t("sitesEditor.seoWaClickUpload")}</span>
                         </div>
                       )}
 
@@ -2887,7 +2888,7 @@ const SeoEditorPreview = ({
                           {seo?.title || siteBrand}
                         </p>
                         <p className="text-[11px] text-emerald-100/70 line-clamp-2 leading-relaxed">
-                          {seo?.description || "Deskripsi website yang menarik akan muncul di sini saat tautan dibagikan."}
+                          {seo?.description || t("sitesEditor.seoWaDefaultDesc")}
                         </p>
                       </div>
                     </div>
@@ -2905,9 +2906,9 @@ const SeoEditorPreview = ({
                   <div className="rounded-xl p-3.5 bg-emerald-950/30 border border-emerald-500/20 text-xs text-emerald-200/90 leading-relaxed flex items-start gap-2.5">
                     <Sparkles className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-semibold text-white">Tips Gambar Open Graph:</p>
+                      <p className="font-semibold text-white">{t("sitesEditor.seoOgTipsTitle")}</p>
                       <p className="text-[11px] text-emerald-300/80 mt-0.5">
-                        Ukuran ideal: <strong className="text-white">1200 × 630 px</strong> (rasio 1.91:1). Gambar ini otomatis dipakai oleh WhatsApp, Telegram, Facebook, X (Twitter), dan LinkedIn saat link Anda dibagikan.
+                        {t("sitesEditor.seoOgTipsDesc")}
                       </p>
                     </div>
                   </div>
@@ -2922,7 +2923,7 @@ const SeoEditorPreview = ({
                 <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
                   <div className="flex items-center gap-2">
                     <Code2 className="w-4 h-4 text-sky-400" />
-                    <span className="font-bold text-white text-xs">HTML &lt;head&gt; SEO Inspector</span>
+                    <span className="font-bold text-white text-xs">{t("sitesEditor.seoInspectorTitle")}</span>
                   </div>
                   <button
                     type="button"
@@ -2930,7 +2931,7 @@ const SeoEditorPreview = ({
                     className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 border border-sky-500/30 text-sky-300 text-xs font-sans transition-all cursor-pointer"
                   >
                     {copiedCode ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copiedCode ? "Tersalin!" : "Salin Kode HTML"}</span>
+                    <span>{copiedCode ? t("sitesEditor.copied") : t("sitesEditor.seoCopyHtml")}</span>
                   </button>
                 </div>
 
@@ -2952,7 +2953,7 @@ const SeoEditorPreview = ({
                 {/* Keywords Preview */}
                 {(seo?.keywords?.length || 0) > 0 && (
                   <div className="mt-4 pt-3 border-t border-white/10 font-sans">
-                    <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest mb-2">Target Kata Kunci (Keywords):</p>
+                    <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest mb-2">{t("sitesEditor.seoTargetKeywords")}</p>
                     <div className="flex flex-wrap gap-1.5">
                       {(seo?.keywords || []).map((kw, idx) => (
                         <span key={idx} className="px-2.5 py-1 rounded-md text-[11px] font-medium bg-sky-500/10 text-sky-300 border border-sky-500/20">
