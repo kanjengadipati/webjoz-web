@@ -602,7 +602,13 @@ export const PreviewSectionWrapper: React.FC<{
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      onSelectSection?.(section);
+                      // Opening the sidebar is a mobile-only affordance: on mobile the
+                      // drawer is the only way to reach the section form, so picking a
+                      // variant has to reveal it. On desktop the sidebar is already
+                      // docked and would just cover the dropdown we are opening.
+                      if (typeof window !== "undefined" && window.innerWidth < 768) {
+                        onSelectSection?.(section);
+                      }
                       setIsGalleryOpen((prev) => !prev);
                       if (!isGalleryOpen) setSelectedGroup("Semua");
                     }}
