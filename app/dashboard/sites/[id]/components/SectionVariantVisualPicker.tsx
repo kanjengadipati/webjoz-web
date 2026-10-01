@@ -9,12 +9,10 @@ import {
 
 interface SectionVariantVisualPickerProps {
   sectionKey: string;
-  isDynamic: boolean;
   designToken: any;
   updateSectionVariant: (section: string, value: string) => void;
   getEnabledVariants: (section: string, variants: string[]) => string[];
   t: any;
-  compact?: boolean;
 }
 
 // Mini SVG wireframe illustrations for section layouts
@@ -834,12 +832,10 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
 
 export default function SectionVariantVisualPicker({
   sectionKey,
-  isDynamic,
   designToken,
   updateSectionVariant,
   getEnabledVariants,
   t,
-  compact = false,
 }: SectionVariantVisualPickerProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<string>("Semua");
@@ -847,11 +843,11 @@ export default function SectionVariantVisualPicker({
 
   const allVars = SECTION_VARIANT_OPTIONS[sectionKey] || [];
   const enabledOpts = useMemo(() => {
-    if (!isDynamic || !SECTION_VARIANT_OPTIONS[sectionKey]) return [];
+    if (!SECTION_VARIANT_OPTIONS[sectionKey]) return [];
     return allVars.filter((opt) =>
       getEnabledVariants(sectionKey, allVars.map((o) => o.value)).includes(opt.value)
     );
-  }, [allVars, getEnabledVariants, isDynamic, sectionKey]);
+  }, [allVars, getEnabledVariants, sectionKey]);
 
   // Unique groups for filtering
   const groups = useMemo(() => {
@@ -891,7 +887,7 @@ export default function SectionVariantVisualPicker({
     return () => clearTimeout(id);
   }, [isExpanded, currentOpt?.group]);
 
-  if (!isDynamic || !SECTION_VARIANT_OPTIONS[sectionKey] || enabledOpts.length <= 1) {
+  if (!SECTION_VARIANT_OPTIONS[sectionKey] || enabledOpts.length <= 1) {
     return null;
   }
 

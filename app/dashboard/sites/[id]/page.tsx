@@ -2137,7 +2137,6 @@ export default function SiteEditorPage() {
                         <PageLayoutHub
                           content={content}
                           designToken={designToken}
-                          isDynamic={isDynamic}
                           updateSectionVariant={updateSectionVariant}
                           getEnabledVariants={getEnabledVariants}
                           onSelectSection={(sec) => {
@@ -2254,12 +2253,10 @@ export default function SiteEditorPage() {
                   {/* Variasi tampilan per section — diletakkan di paling atas form */}
                   <SectionVariantPicker
                     sectionKey={activeTab}
-                    isDynamic={isDynamic}
                     designToken={designToken}
                     updateSectionVariant={updateSectionVariant}
                     getEnabledVariants={getEnabledVariants}
                     t={t}
-                    compact={true}
                   />
 
                   <SectionForms
@@ -3191,7 +3188,6 @@ export default function SiteEditorPage() {
                   {/* Variasi tampilan per section — diletakkan di paling atas form */}
                   <SectionVariantPicker
                     sectionKey={activeTab}
-                    isDynamic={isDynamic}
                     designToken={designToken}
                     updateSectionVariant={updateSectionVariant}
                     getEnabledVariants={getEnabledVariants}
@@ -3454,7 +3450,6 @@ export default function SiteEditorPage() {
                         <PageLayoutHub
                           content={content}
                           designToken={designToken}
-                          isDynamic={isDynamic}
                           updateSectionVariant={updateSectionVariant}
                           getEnabledVariants={getEnabledVariants}
                           onSelectSection={(sec) => {

@@ -21,7 +21,6 @@ import { SECTION_META } from "../editor-utils";
 interface PageLayoutHubProps {
   content: any;
   designToken: any;
-  isDynamic: boolean;
   updateSectionVariant: (section: string, value: string) => void;
   getEnabledVariants: (section: string, variants: string[]) => string[];
   onSelectSection?: (section: string) => void;
@@ -31,15 +30,12 @@ interface PageLayoutHubProps {
 export default function PageLayoutHub({
   content,
   designToken,
-  isDynamic,
   updateSectionVariant,
   getEnabledVariants,
   onSelectSection,
   t,
 }: PageLayoutHubProps) {
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
-
-  if (!isDynamic) return null;
 
   // Determine sections present in current site content
   const activeSections = Object.keys(SECTION_VARIANT_OPTIONS).filter((secKey) => {
@@ -125,7 +121,6 @@ export default function PageLayoutHub({
                   <div className="pt-2">
                     <SectionVariantVisualPicker
                       sectionKey={secKey}
-                      isDynamic={isDynamic}
                       designToken={designToken}
                       updateSectionVariant={updateSectionVariant}
                       getEnabledVariants={getEnabledVariants}
