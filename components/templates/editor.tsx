@@ -568,7 +568,9 @@ export const PreviewSectionWrapper: React.FC<{
           // bottom drawer and overlap the editing surface.
           const target = e.target as HTMLElement;
           if (target.closest('[contenteditable="true"]')) return;
-          onSelectSection?.(section);
+          if (typeof window !== "undefined" && window.innerWidth < 768) {
+            onSelectSection?.(section);
+          }
         }}
         className={`group relative transition-all duration-150 scroll-mt-20 ${
           isGalleryOpen ? "z-[80]" : section === "header" ? (isSelected ? "z-40" : "z-30") : (isSelected ? "z-20" : "z-10")
