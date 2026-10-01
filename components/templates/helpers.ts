@@ -312,6 +312,13 @@ export function loadGoogleFont(headingFont?: string, bodyFont?: string) {
   document.head.appendChild(link);
 }
 
+export function getSectionVariant(dt: any, secKey: string): string | undefined {
+  if (secKey === "hero") {
+    return (dt?.layout?.section_variants?.hero as string | undefined) || dt?.layout?.hero_style || "centered";
+  }
+  return (dt?.layout?.section_variants as any)?.[secKey];
+}
+
 export function filterEmptySections(sectionOrder: string[], content: any, isEditorMode: boolean): string[] {
   if (isEditorMode) return sectionOrder;
   return sectionOrder.filter((key) => {
