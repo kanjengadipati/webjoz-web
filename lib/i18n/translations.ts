@@ -2189,6 +2189,11 @@ export interface Translations {
       manualFineTune: string;
       orChoosePairing: string;
       orChoosePalette: string;
+      scrollUp: string;
+      scrollDown: string;
+      viewLiveSite: string;
+      activeSectionTitle: string;
+      activeBadge: string;
       orChoosePreset: string;
       pageSections: string;
       sizeLarge: string;
@@ -4746,6 +4751,11 @@ export const translations: Record<Locale, Translations> = {
         manualFineTune: "Fine-tune manual",
         orChoosePairing: "— atau pilih pasangan font favorit Anda —",
         orChoosePalette: "— atau pilih palet favorit Anda —",
+        scrollUp: "Scroll ke atas",
+        scrollDown: "Scroll ke bawah",
+        viewLiveSite: "Buka website live di tab baru",
+        activeSectionTitle: "Bagian: {label}",
+        activeBadge: "Dipakai",
         orChoosePreset: "— atau pilih paket tampilan favorit Anda —",
         pageSections: "Bagian Halaman",
         sizeLarge: "Besar",
@@ -7373,6 +7383,11 @@ export const translations: Record<Locale, Translations> = {
         manualFineTune: "Manual fine-tune",
         orChoosePairing: "— or choose your favorite font pairing —",
         orChoosePalette: "— or choose your favorite palette —",
+        scrollUp: "Scroll up",
+        scrollDown: "Scroll down",
+        viewLiveSite: "Open live website in a new tab",
+        activeSectionTitle: "Section: {label}",
+        activeBadge: "In use",
         orChoosePreset: "— or choose your favorite preset —",
         pageSections: "Page Sections",
         sizeLarge: "Large",

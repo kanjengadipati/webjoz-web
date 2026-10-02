@@ -663,7 +663,7 @@ export const PreviewSectionWrapper: React.FC<{
                               className={`px-2 py-0.5 rounded-full text-[9px] transition whitespace-nowrap cursor-pointer shrink-0 ${
                                 selectedGroup === "Semua"
                                   ? "bg-sky-500 text-slate-950 font-black shadow-xs"
-                                  : "bg-slate-800/80 text-slate-300 hover:text-white font-medium"
+                                  : "bg-white/10 text-slate-300 hover:text-white hover:bg-white/20 font-medium"
                               }`}
                             >
                               {t("dashboard.sitesEditor.allVariants") || "Semua"}
@@ -676,7 +676,7 @@ export const PreviewSectionWrapper: React.FC<{
                                 className={`px-2 py-0.5 rounded-full text-[9px] transition whitespace-nowrap cursor-pointer shrink-0 ${
                                   selectedGroup === grp
                                     ? "bg-sky-500 text-slate-950 font-black shadow-xs"
-                                    : "bg-slate-800/80 text-slate-300 hover:text-white font-medium"
+                                    : "bg-white/10 text-slate-300 hover:text-white hover:bg-white/20 font-medium"
                                 }`}
                               >
                                 {grp}
@@ -700,7 +700,7 @@ export const PreviewSectionWrapper: React.FC<{
                                 className={`group/card relative flex flex-col text-left p-1.5 rounded-xl border transition-all duration-150 cursor-pointer ${
                                   isActive
                                     ? "bg-sky-500/15 border-sky-400 ring-2 ring-sky-400/50 shadow-[0_0_12px_rgba(56,189,248,0.25)]"
-                                    : "bg-[#0b0f19]/90 border-white/10 hover:border-sky-400/50 hover:bg-[#111728]"
+                                    : "bg-white/[0.06] border-white/15 hover:border-sky-400/50 hover:bg-white/[0.12]"
                                 }`}
                               >
                                 {isActive && (

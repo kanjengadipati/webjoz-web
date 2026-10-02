@@ -33,6 +33,18 @@
   --input: oklch(0.845 0 0);
   --ring: oklch(0.15 0 0 / 0.4);
   --radius: 1rem;
+
+  /* Editor sidebar — kept separate from --card so toggling the theme moves the
+     panel without dragging the preview canvas along with it. */
+  --sidebar: oklch(0.995 0 0);
+  --sidebar-foreground: oklch(0.18 0.025 255);
+  --sidebar-muted: oklch(0.94 0 0);
+  --sidebar-muted-foreground: oklch(0.40 0 0);
+  --sidebar-subtle-foreground: oklch(0.52 0.012 255);
+  --sidebar-border: oklch(0.885 0 0);
+  /* Form surfaces. <option> inherits this from its <select>, so a single token
+     keeps the open dropdown list from falling back to the dark browser default. */
+  --sidebar-input: oklch(1 0 0);
 }
 
 .dark {
@@ -60,6 +72,16 @@
   --border: oklch(0.25 0 0);
   --input: oklch(0.25 0 0);
   --ring: oklch(0.98 0 0 / 0.4);
+
+  /* Editor sidebar — matches the previous hardcoded #111318 surface so the dark
+     editor looks unchanged after the theme tokens land. */
+  --sidebar: oklch(0.18 0.01 255);
+  --sidebar-foreground: oklch(0.96 0 0);
+  --sidebar-muted: oklch(0.24 0.01 255);
+  --sidebar-muted-foreground: oklch(0.78 0.01 255);
+  --sidebar-subtle-foreground: oklch(0.63 0.01 255);
+  --sidebar-border: oklch(0.28 0.01 255);
+  --sidebar-input: oklch(0.13 0.01 255);
 }
 
 /* Hide Next.js dev overlay indicator from covering mobile dashboard UI */
@@ -86,6 +108,13 @@ nextjs-portal, [data-nextjs-toast], [data-nextjs-dev-overlay], #__next-build-wat
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-muted: var(--sidebar-muted);
+  --color-sidebar-muted-foreground: var(--sidebar-muted-foreground);
+  --color-sidebar-subtle-foreground: var(--sidebar-subtle-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-input: var(--sidebar-input);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -385,7 +414,9 @@ body.webjoz-wizard-active {
 
 .theme-blue.dark {
   --primary: oklch(0.65 0.22 260);
-  --primary-foreground: oklch(0.98 0.01 260);
+  /* Dark foreground: the brightened primary above needs dark text to clear AA.
+     A near-white foreground here measured 3.33:1 against this primary. */
+  --primary-foreground: oklch(0.15 0.03 260);
   --secondary: oklch(0.22 0.02 260);
   --secondary-foreground: oklch(0.95 0.01 260);
   --muted: oklch(0.2 0.02 260);

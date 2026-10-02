@@ -22,7 +22,7 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
     if (variant === "left-logo-inline-nav") {
       return (
         <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-2 flex flex-col justify-center overflow-hidden">
-          <div className="h-6 rounded bg-slate-900 border border-white/10 px-2 flex items-center justify-between">
+          <div className="h-6 rounded bg-slate-900 border border-border px-2 flex items-center justify-between">
             <div className="flex items-center gap-1">
               <div className="w-2.5 h-2.5 rounded bg-primary" />
               <div className="w-8 h-1 rounded-full bg-slate-200" />
@@ -41,7 +41,7 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
     if (variant === "centered-logo") {
       return (
         <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-2 flex flex-col justify-center overflow-hidden">
-          <div className="h-9 rounded bg-slate-900 border border-white/10 px-2 py-1 flex flex-col items-center justify-between">
+          <div className="h-9 rounded bg-slate-900 border border-border px-2 py-1 flex flex-col items-center justify-between">
             <div className="flex items-center gap-1">
               <div className="w-2.5 h-2.5 rounded bg-primary" />
               <div className="w-10 h-1 rounded-full bg-slate-200" />
@@ -79,7 +79,7 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
     if (variant === "logo-with-cta-button") {
       return (
         <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-2 flex flex-col justify-center overflow-hidden">
-          <div className="h-6 rounded bg-slate-900 border border-white/10 px-2 flex items-center justify-between">
+          <div className="h-6 rounded bg-slate-900 border border-border px-2 flex items-center justify-between">
             <div className="w-2.5 h-2.5 rounded bg-primary" />
             <div className="flex items-center gap-1">
               <div className="w-3.5 h-0.5 rounded-full bg-slate-400" />
@@ -95,7 +95,7 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
     if (variant === "stacked-logo-tagline") {
       return (
         <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-2 flex flex-col justify-center overflow-hidden">
-          <div className="h-9 rounded bg-slate-900 border border-white/10 px-2 py-1 flex flex-col items-center justify-center gap-0.5">
+          <div className="h-9 rounded bg-slate-900 border border-border px-2 py-1 flex flex-col items-center justify-center gap-0.5">
             <div className="w-2.5 h-2.5 rounded bg-primary" />
             <div className="w-12 h-1 rounded-full bg-slate-200" />
             <div className="w-14 h-0.5 rounded-full bg-slate-500" />
@@ -111,7 +111,7 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
       return (
         <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-2 flex flex-col justify-end overflow-hidden">
           <div className={`h-6 rounded border px-2 flex items-center justify-between ${
-            variant === "dark-contrast-band" ? "bg-black border-primary/40 border-t-2" : "bg-slate-900 border-white/10"
+            variant === "dark-contrast-band" ? "bg-black border-primary/40 border-t-2" : "bg-slate-900 border-border"
           }`}>
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 rounded bg-primary" />
@@ -229,10 +229,10 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
           <div className="w-3/4 h-1 rounded-full bg-primary/70" />
           <div className="w-full h-1 rounded-full bg-slate-500/40" />
         </div>
-        <div className="rounded bg-slate-800/60 border border-white/10 p-1">
+        <div className="rounded bg-slate-800/60 border border-border p-1">
           <div className="w-full h-1 rounded-full bg-slate-400/50" />
         </div>
-        <div className="rounded bg-slate-800/60 border border-white/10 p-1">
+        <div className="rounded bg-slate-800/60 border border-border p-1">
           <div className="w-2/3 h-1 rounded-full bg-slate-400/50" />
         </div>
       </div>
@@ -244,7 +244,7 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
       <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex flex-col items-center justify-between overflow-hidden">
         <div className="w-1/3 h-1 rounded-full bg-primary/80" />
         <div className="w-4/5 h-1.5 rounded-full bg-white/80" />
-        <div className="w-full h-6 rounded-t-md bg-slate-800/80 border border-slate-700/60 p-1 flex gap-1 items-start">
+        <div className="w-full h-6 rounded-t-md bg-muted border border-slate-700/60 p-1 flex gap-1 items-start">
           <div className="w-1.5 h-1.5 rounded-full bg-rose-500/60" />
           <div className="w-1.5 h-1.5 rounded-full bg-amber-500/60" />
           <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/60" />
@@ -308,7 +308,7 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
   if (variant === "comparison-table") {
     return (
       <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1 flex flex-col gap-0.5 justify-center overflow-hidden">
-        <div className="grid grid-cols-3 gap-0.5 pb-0.5 border-b border-white/10">
+        <div className="grid grid-cols-3 gap-0.5 pb-0.5 border-b border-border">
           <div className="h-1 bg-slate-600 rounded-full" />
           <div className="h-1 bg-primary/80 rounded-full" />
           <div className="h-1 bg-slate-500 rounded-full" />
@@ -400,7 +400,7 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
     return (
       <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 grid grid-cols-2 gap-1 overflow-hidden">
         {[1, 2].map((i) => (
-          <div key={i} className="rounded bg-slate-800/60 border border-white/10 p-1 flex flex-col justify-between">
+          <div key={i} className="rounded bg-slate-800/60 border border-border p-1 flex flex-col justify-between">
             <div className="w-full h-4 rounded bg-slate-700/70 relative">
               <div className="absolute top-0.5 right-0.5 w-3 h-1 rounded-xs bg-primary/80" />
             </div>
@@ -442,7 +442,7 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
   if (variant === "sidebar-scrollspy-photo") {
     return (
       <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex gap-1 overflow-hidden">
-        <div className="w-1/4 rounded bg-slate-800/80 p-0.5 flex flex-col gap-0.5">
+        <div className="w-1/4 rounded bg-muted p-0.5 flex flex-col gap-0.5">
           <div className="w-full h-1 rounded-full bg-primary" />
           <div className="w-full h-0.5 rounded-full bg-slate-600" />
           <div className="w-full h-0.5 rounded-full bg-slate-600" />
@@ -458,7 +458,7 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
   if (variant === "marquee") {
     return (
       <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex flex-col justify-center gap-1 overflow-hidden">
-        <div className="h-5 rounded bg-slate-900 border border-white/10 flex items-center gap-1.5 px-2 overflow-hidden">
+        <div className="h-5 rounded bg-slate-900 border border-border flex items-center gap-1.5 px-2 overflow-hidden">
           <div className="w-7 h-2 rounded bg-primary/30 shrink-0" />
           <div className="w-7 h-2 rounded bg-slate-700 shrink-0" />
           <div className="w-7 h-2 rounded bg-primary/30 shrink-0" />
@@ -574,9 +574,9 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
       <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1 flex flex-col justify-between overflow-hidden">
         <div className="w-1/2 h-1.5 rounded-full bg-white ml-1 mt-0.5" />
         <div className="grid grid-cols-3 gap-1">
-          <div className="h-6 rounded bg-slate-800 border border-white/10" />
+          <div className="h-6 rounded bg-slate-800 border border-border" />
           <div className="h-6 rounded bg-primary/30 border border-primary/40" />
-          <div className="h-6 rounded bg-slate-800 border border-white/10" />
+          <div className="h-6 rounded bg-slate-800 border border-border" />
         </div>
       </div>
     );
@@ -683,7 +683,7 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
       return (
         <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 grid grid-cols-2 gap-1 overflow-hidden">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="rounded-md bg-slate-800/50 border border-white/10 p-1 flex flex-col gap-0.5">
+            <div key={i} className="rounded-md bg-slate-800/50 border border-border p-1 flex flex-col gap-0.5">
               <div className="w-3/4 h-1 rounded-full bg-white/70" />
               <div className="w-full h-0.5 rounded-full bg-slate-500/50" />
               <div className="w-2/3 h-0.5 rounded-full bg-slate-600/50" />
@@ -702,7 +702,7 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
             </div>
           </div>
           <div className="flex justify-start">
-            <div className="w-4/5 h-3 rounded-r-lg rounded-bl-lg bg-slate-800 border border-white/10 px-1 flex items-center">
+            <div className="w-4/5 h-3 rounded-r-lg rounded-bl-lg bg-slate-800 border border-border px-1 flex items-center">
               <div className="w-3/4 h-0.5 rounded-full bg-slate-300" />
             </div>
           </div>
@@ -722,16 +722,16 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
       return (
         <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex gap-1 items-start overflow-hidden">
           <div className="flex flex-col gap-1 flex-1">
-            <div className="h-6 rounded bg-slate-800 border border-white/10" />
-            <div className="h-4 rounded bg-slate-700/60 border border-white/10" />
+            <div className="h-6 rounded bg-slate-800 border border-border" />
+            <div className="h-4 rounded bg-slate-700/60 border border-border" />
           </div>
           <div className="flex flex-col gap-1 flex-1">
             <div className="h-4 rounded bg-primary/20 border border-primary/30" />
-            <div className="h-5 rounded bg-slate-800 border border-white/10" />
+            <div className="h-5 rounded bg-slate-800 border border-border" />
           </div>
           <div className="flex flex-col gap-1 flex-1">
-            <div className="h-5 rounded bg-slate-700/60 border border-white/10" />
-            <div className="h-4 rounded bg-slate-800 border border-white/10" />
+            <div className="h-5 rounded bg-slate-700/60 border border-border" />
+            <div className="h-4 rounded bg-slate-800 border border-border" />
           </div>
         </div>
       );
@@ -766,7 +766,7 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
           </div>
           <div className="grid grid-cols-3 gap-1">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-4 rounded bg-slate-800 border border-white/10" />
+              <div key={i} className="h-4 rounded bg-slate-800 border border-border" />
             ))}
           </div>
         </div>
@@ -801,10 +801,10 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
             <div className="w-full h-0.5 rounded-full bg-slate-500/50" />
           </div>
           <div className="w-1/2 flex flex-col gap-0.5">
-            <div className="h-2 rounded bg-slate-800 border border-white/10 px-1 flex items-center">
+            <div className="h-2 rounded bg-slate-800 border border-border px-1 flex items-center">
               <div className="w-3/4 h-0.5 rounded-full bg-slate-500" />
             </div>
-            <div className="h-2 rounded bg-slate-800 border border-white/10 px-1 flex items-center">
+            <div className="h-2 rounded bg-slate-800 border border-border px-1 flex items-center">
               <div className="w-2/3 h-0.5 rounded-full bg-slate-500" />
             </div>
             <div className="h-2 rounded bg-primary flex items-center justify-center">
@@ -921,7 +921,7 @@ export default function SectionVariantVisualPicker({
             {getOptionLabel(currentOpt)}
           </span>
           {currentOpt.group && (
-            <span className="text-[9px] font-medium px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30 shrink-0">
+            <span className="text-[9px] font-medium px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-700 dark:text-sky-300 border border-sky-500/30 shrink-0">
               {currentOpt.group}
             </span>
           )}
@@ -929,20 +929,20 @@ export default function SectionVariantVisualPicker({
 
         {/* Right: "Pilih Varian (N)" + chevron */}
         <div className="flex items-center gap-1 shrink-0">
-          <span className="text-[10px] font-semibold text-slate-400">
+          <span className="text-[10px] font-semibold text-muted-foreground">
             {isExpanded
               ? (t("dashboard.sitesEditor.closeGallery") || "Tutup")
               : `${t("dashboard.sitesEditor.pickVariant") || "Pilih Varian"} (${enabledOpts.length})`}
           </span>
           <ChevronDown
-            className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${isExpanded ? "rotate-180 text-sky-400" : ""}`}
+            className={`w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 ${isExpanded ? "rotate-180 text-sky-600 dark:text-sky-400" : ""}`}
           />
         </div>
       </button>
 
       {/* Visual Cards Grid (Expandable Mode) */}
       {isExpanded && (
-        <div className="p-2.5 pt-1 border-t border-white/10 space-y-2.5">
+        <div className="p-2.5 pt-1 border-t border-border space-y-2.5">
           {/* Category Filter Chips if multiple groups exist */}
           {groups.length > 0 && (
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
@@ -952,7 +952,7 @@ export default function SectionVariantVisualPicker({
                 className={`px-2 py-0.5 rounded-full text-[10px] font-medium transition whitespace-nowrap cursor-pointer ${
                   selectedGroup === "Semua"
                     ? "bg-sky-500 text-slate-950 font-bold shadow-xs"
-                    : "bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-700"
+                    : "bg-muted text-muted-foreground hover:text-foreground hover:bg-muted"
                 }`}
               >
                 {t("dashboard.sitesEditor.allVariants") || "Semua"} ({enabledOpts.length})
@@ -967,7 +967,7 @@ export default function SectionVariantVisualPicker({
                     className={`px-2 py-0.5 rounded-full text-[10px] font-medium transition whitespace-nowrap cursor-pointer ${
                       selectedGroup === grp
                         ? "bg-sky-500 text-slate-950 font-bold shadow-xs"
-                        : "bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-700"
+                        : "bg-muted text-muted-foreground hover:text-foreground hover:bg-muted"
                     }`}
                   >
                     {grp} ({count})
@@ -990,7 +990,7 @@ export default function SectionVariantVisualPicker({
                   className={`group relative flex flex-col text-left p-2 rounded-xl border-2 transition-all duration-150 cursor-pointer ${
                     isActive
                       ? "bg-sky-500/15 border-sky-400 ring-2 ring-sky-400/50 shadow-[0_0_12px_rgba(56,189,248,0.25)]"
-                      : "bg-[#0b0f19]/80 border-white/10 hover:border-sky-400/50 hover:bg-[#111728]"
+                      : "bg-card/80 border-border hover:border-sky-400/50 hover:bg-muted"
                   }`}
                 >
                   {/* Selected Indicator Badge */}
@@ -1010,7 +1010,7 @@ export default function SectionVariantVisualPicker({
                   <div className="flex items-center justify-between gap-1 mb-1">
                     <span
                       className={`text-[11px] font-bold line-clamp-1 ${
-                        isActive ? "text-sky-300 font-extrabold" : "text-slate-200 group-hover:text-white"
+                        isActive ? "text-sky-700 dark:text-sky-300 font-extrabold" : "text-foreground group-hover:text-foreground"
                       }`}
                     >
                       {getOptionLabel(opt)}
@@ -1019,14 +1019,14 @@ export default function SectionVariantVisualPicker({
 
                   {/* Group Tag */}
                   {opt.group && (
-                    <span className={`text-[8px] font-semibold uppercase tracking-wider mb-1 ${isActive ? "text-sky-400/80" : "text-slate-400"}`}>
+                    <span className={`text-[8px] font-semibold uppercase tracking-wider mb-1 ${isActive ? "text-sky-700 dark:text-sky-400/80" : "text-muted-foreground"}`}>
                       {opt.group}
                     </span>
                   )}
 
                   {/* Description */}
                   {opt.description && (
-                    <p className="text-[10px] text-slate-400 line-clamp-2 leading-relaxed">
+                    <p className="text-[10px] text-muted-foreground line-clamp-2 leading-relaxed">
                       {opt.description}
                     </p>
                   )}
@@ -1035,12 +1035,12 @@ export default function SectionVariantVisualPicker({
             })}
           </div>
 
-          <div className="flex items-center justify-between text-[10px] text-slate-400 px-1 pt-1 border-t border-white/5">
+          <div className="flex items-center justify-between text-[10px] text-muted-foreground px-1 pt-1 border-t border-white/5">
             <span>{t("dashboard.sitesEditor.variantPreviewHint") || "Klik varian untuk pratinjau langsung di kanvas."}</span>
             <button
               type="button"
               onClick={() => setIsExpanded(false)}
-              className="text-[10px] text-sky-400 hover:text-sky-300 hover:underline font-bold px-1.5 py-0.5 rounded cursor-pointer"
+              className="text-[10px] text-sky-700 dark:text-sky-400 hover:text-sky-800 dark:hover:text-sky-300 hover:underline font-bold px-1.5 py-0.5 rounded cursor-pointer"
             >
               {t("dashboard.sitesEditor.done") || "Selesai"}
             </button>

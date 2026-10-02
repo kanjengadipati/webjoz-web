@@ -67,11 +67,11 @@ function IconPicker({ value, onChange }: { value?: string; onChange: (name: stri
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
-        className="flex items-center gap-2 px-2 py-1.5 border border-border rounded text-[11px] text-slate-300 hover:bg-white/5 transition-all w-full"
+        className="flex items-center gap-2 px-2 py-1.5 border border-border rounded text-[11px] text-sidebar-foreground hover:bg-sidebar-muted transition-all w-full"
       >
         <SelectedIcon className="w-4 h-4 text-primary shrink-0" />
         <span className="flex-1 text-left truncate">{value || "Pilih icon"}</span>
-        <ChevronDown className="w-3 h-3 text-slate-500 shrink-0" />
+        <ChevronDown className="w-3 h-3 text-sidebar-subtle-foreground shrink-0" />
       </button>
       {open && (
         <div className="absolute z-50 top-full mt-1 left-0 right-0 bg-[#1a1d26] border border-border rounded-lg p-2 shadow-xl">
@@ -84,7 +84,7 @@ function IconPicker({ value, onChange }: { value?: string; onChange: (name: stri
                 onClick={() => { onChange(name); setOpen(false); }}
                 className={`flex items-center justify-center p-2 rounded transition-all hover:bg-primary/20 ${value === name ? "bg-primary/30 ring-1 ring-primary" : ""}`}
               >
-                <Icon className={`w-4 h-4 ${value === name ? "text-primary" : "text-slate-400"}`} />
+                <Icon className={`w-4 h-4 ${value === name ? "text-primary" : "text-sidebar-muted-foreground"}`} />
               </button>
             ))}
           </div>
@@ -172,7 +172,7 @@ function CollapsibleGroup({ label, defaultOpen = false, children }: { label: str
   const [open, setOpen] = useState(defaultOpen);
   return (
     <div className="border border-border rounded-md bg-muted/30">
-      <button type="button" onClick={() => setOpen(o => !o)} className="flex items-center justify-between w-full px-3 py-2 text-[11px] uppercase tracking-wide font-semibold text-slate-400 cursor-pointer">
+      <button type="button" onClick={() => setOpen(o => !o)} className="flex items-center justify-between w-full px-3 py-2 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground cursor-pointer">
         <span>{label}</span>
         {open ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
       </button>
@@ -216,7 +216,7 @@ function KeywordsInput({ keywords, onChange, aiLoading, onAiGenerate, isPremium,
 
   return (
     <div className="space-y-1">
-      <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+      <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
         <span>{t("sitesEditor.seoKeywordsLabel")}</span>
         {renderFieldActions ? (
           renderFieldActions("seo", "keywords", onAiGenerate && (
@@ -259,7 +259,7 @@ function KeywordsInput({ keywords, onChange, aiLoading, onAiGenerate, isPremium,
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={keywords.length === 0 ? t("sitesEditor.seoKeywordsPlaceholderEmpty") : t("sitesEditor.seoKeywordsPlaceholderMore")}
-          className="flex-1 min-w-[120px] bg-transparent outline-none text-[12px] text-slate-200 placeholder-slate-600"
+          className="flex-1 min-w-[120px] bg-transparent outline-none text-[12px] text-sidebar-foreground placeholder-sidebar-subtle-foreground"
         />
       </div>
     </div>
@@ -283,7 +283,7 @@ function AiImageButton({ businessType, onSelect }: AiImageButtonProps) {
       type="button"
       onClick={handleClick}
       title="Pilih foto acak dari Unsplash"
-      className="flex items-center gap-1 px-2 h-7 rounded-md bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white text-[10px] font-semibold transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-slate-400 border border-border"
+      className="flex items-center gap-1 px-2 h-7 rounded-md bg-sidebar-muted text-sidebar-foreground hover:bg-sidebar-border hover:text-sidebar-foreground text-[10px] font-semibold transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-slate-400 border border-border"
     >
       <RefreshCw className="w-3 h-3" />
       Random foto
@@ -416,7 +416,7 @@ function LinkTypeInput({
   return (
     <div className="space-y-2 pt-2 border-t border-border/50 mt-2">
       <div className="flex items-center justify-between">
-        <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+        <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
           Tipe Aksi Tombol
         </label>
         <div className="flex p-0.5 rounded bg-muted/50 border border-border/50">
@@ -426,7 +426,7 @@ function LinkTypeInput({
             className={`px-2 py-0.5 text-[10px] font-medium rounded transition cursor-pointer ${
               linkType === "whatsapp"
                 ? "bg-primary text-primary-foreground font-bold"
-                : "text-slate-400 hover:text-slate-200"
+                : "text-sidebar-muted-foreground hover:text-sidebar-foreground"
             }`}
           >
             WhatsApp
@@ -437,7 +437,7 @@ function LinkTypeInput({
             className={`px-2 py-0.5 text-[10px] font-medium rounded transition cursor-pointer ${
               linkType === "custom"
                 ? "bg-primary text-primary-foreground font-bold"
-                : "text-slate-400 hover:text-slate-200"
+                : "text-sidebar-muted-foreground hover:text-sidebar-foreground"
             }`}
           >
             Link Kustom
@@ -447,11 +447,11 @@ function LinkTypeInput({
 
       {linkType === "whatsapp" ? (
         <div className="space-y-1">
-          <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+          <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
             Nomor WhatsApp {needsAttention && <span className="text-amber-300">⚠️</span>}
           </label>
           <div className="relative flex items-center">
-            <span className="absolute left-2.5 text-xs text-slate-500 font-semibold select-none">+</span>
+            <span className="absolute left-2.5 text-xs text-sidebar-subtle-foreground font-semibold select-none">+</span>
             <input
               id={`field-${path}`}
               type="text"
@@ -463,13 +463,13 @@ function LinkTypeInput({
 
             />
           </div>
-          <p className="text-[10px] text-slate-500 leading-normal">
+          <p className="text-[10px] text-sidebar-subtle-foreground leading-normal">
             Masukkan nomor dengan kode negara (cth. 628123456789 atau 08123456789).
           </p>
         </div>
       ) : (
         <div className="space-y-1">
-          <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+          <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
             {label} {needsAttention && <span className="text-amber-300">⚠️</span>}
           </label>
           <input
@@ -517,7 +517,7 @@ export default function SectionForms({
           <button
             type="button"
             onClick={() => undoField?.(section, key)}
-            className="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-md bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition-all cursor-pointer focus:outline-none"
+            className="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-md bg-sidebar-muted text-sidebar-muted-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground transition-all cursor-pointer focus:outline-none"
             title={`Undo perubahan field ini (${stack.length} kali)`}
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -694,7 +694,7 @@ export default function SectionForms({
       {activeTab === "header" && (
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>Nama Brand {needsAttention("header.brand_name") && <span className="text-amber-300">⚠️</span>}</span>
               {renderFieldActions("header", "brand_name")}
             </label>
@@ -708,7 +708,7 @@ export default function SectionForms({
             />
           </div>
           <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-2.5">
-            <span className="text-[12px] font-medium text-slate-200">Tampilkan Tombol Navigasi</span>
+            <span className="text-[12px] font-medium text-sidebar-foreground">Tampilkan Tombol Navigasi</span>
             <input
               type="checkbox"
               checked={!(content.header as any)?.nav_cta_hidden}
@@ -720,7 +720,7 @@ export default function SectionForms({
           {!(content.header as any)?.nav_cta_hidden && (
             <>
               <div className="space-y-1">
-                <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+                <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
                   <span>Teks Tombol Nav {needsAttention("header.nav_cta_text") && <span className="text-amber-300">⚠️</span>}</span>
                   {renderFieldActions("header", "nav_cta_text")}
                 </label>
@@ -730,17 +730,17 @@ export default function SectionForms({
                   value={content.header?.nav_cta_text || ""}
                   onChange={(e) => updateField("header", "nav_cta_text", e.target.value)}
                   placeholder="cth. Hubungi Kami"
-                  className={fieldClass("header.nav_cta_text", `${SIDEBAR_FIELD_CLASS} text-slate-300 placeholder-slate-600`)}
+                  className={fieldClass("header.nav_cta_text", `${SIDEBAR_FIELD_CLASS} text-sidebar-foreground placeholder-sidebar-subtle-foreground`)}
 
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Link ke Section</label>
+                <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Link ke Section</label>
                 <select
                   value={(content.header as any)?.nav_cta_href || ""}
                   onChange={(e) => updateField("header", "nav_cta_href", e.target.value)}
-                  className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-slate-900 text-slate-300"
+                  className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-sidebar-input text-sidebar-foreground"
                 >
                   <option value="">— Otomatis dari teks —</option>
                   <option value="#hero">Hero (Atas)</option>
@@ -754,7 +754,7 @@ export default function SectionForms({
                   <option value="#faq">FAQ</option>
                   <option value="#contact">Kontak</option>
                 </select>
-                <p className="text-[10px] text-slate-500 mt-0.5 leading-snug">
+                <p className="text-[10px] text-sidebar-subtle-foreground mt-0.5 leading-snug">
                   Biarkan kosong untuk mendeteksi section otomatis berdasarkan teks tombol.
                 </p>
               </div>
@@ -762,33 +762,33 @@ export default function SectionForms({
           )}
 
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Tagline <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Tagline <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></label>
             <input
               type="text"
               value={content.header?.tagline || ""}
               onChange={(e) => updateField("header", "tagline", e.target.value)}
               placeholder="cth. Cita Rasa Nusantara"
-              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Logo URL</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Logo URL</label>
             <FileUpload label="" value={content.header?.logo_url || ""} onChange={(val) => updateField("header", "logo_url", val)} placeholder="https://..." maxWidth={400} maxHeight={400} quality={0.85} />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Favicon</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Favicon</label>
             <FileUpload label="" value={content.seo?.favicon_url || ""} onChange={(val) => updateField("seo", "favicon_url", val)} placeholder="https://..." accept=".ico,.png,.jpg,.jpeg" maxWidth={128} maxHeight={128} quality={0.9} />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Nama Ikon</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Nama Ikon</label>
             <input id="field-header.icon" type="text" value={content.header?.icon || ""} onChange={(e) => updateField("header", "icon", e.target.value)} className={SIDEBAR_FIELD_CLASS} placeholder="cth. Utensils" />
           </div>
 
           {/* Nav Menu Items */}
           <div className="pt-2 space-y-2">
             <div>
-              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Menu Navigasi</label>
-              <p className="text-[10px] text-slate-500 mt-0.5">Atur item yang tampil di navbar</p>
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Menu Navigasi</label>
+              <p className="text-[10px] text-sidebar-subtle-foreground mt-0.5">Atur item yang tampil di navbar</p>
             </div>
             <div className="flex flex-wrap gap-1.5">
               {([
@@ -827,7 +827,7 @@ export default function SectionForms({
                     }}
                     className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium border transition-all ${
                       hidden
-                        ? "border-border/50 bg-muted/40 text-slate-600 line-through"
+                        ? "border-border/50 bg-muted/40 text-sidebar-subtle-foreground line-through"
                         : "border-primary/20 bg-primary/10 text-primary"
                     }`}
                   >
@@ -845,7 +845,7 @@ export default function SectionForms({
       {activeTab === "hero" && (
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span className="flex items-center gap-1">
                 Gambar Hero {needsAttention("hero.image_url") && <span className="text-amber-300">⚠️</span>}
               </span>
@@ -856,8 +856,8 @@ export default function SectionForms({
           </div>
           {/* Eyebrow label (semua template, opsional) */}
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              <span>Eyebrow / Label Badge <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
+              <span>Eyebrow / Label Badge <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
               {renderFieldActions("hero", "eyebrow")}
             </label>
             <input
@@ -866,12 +866,12 @@ export default function SectionForms({
               value={content.hero?.eyebrow || ""}
               onChange={(e) => updateField("hero", "eyebrow", e.target.value)}
               placeholder="cth. Tersedia Sekarang"
-              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
-            <p className="text-[10px] text-slate-600 leading-relaxed">Label kecil di atas headline (dipakai oleh beberapa template).</p>
+            <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Label kecil di atas headline (dipakai oleh beberapa template).</p>
           </div>
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span className="flex items-center gap-1">
                 Headline {needsAttention("hero.headline") && <span className="text-amber-300">⚠️</span>}
               </span>
@@ -894,7 +894,7 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>Matra / Tagline</span>
               {renderFieldActions("hero", "matra")}
             </label>
@@ -904,12 +904,12 @@ export default function SectionForms({
               value={content.hero?.matra || ""}
               onChange={(e) => updateField("hero", "matra", e.target.value)}
               placeholder="cth. Cita Rasa Jogja · Sejak 2010"
-              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
-            <p className="text-[10px] text-slate-600 leading-relaxed">Slogan singkat yang muncul di antara headline and subheadline dengan garis dekoratif.</p>
+            <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Slogan singkat yang muncul di antara headline and subheadline dengan garis dekoratif.</p>
           </div>
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span className="flex items-center gap-1">
                 Subheadline {needsAttention("hero.subheadline") && <span className="text-amber-300">⚠️</span>}
               </span>
@@ -932,7 +932,7 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>Teks Tombol CTA {needsAttention("hero.cta_text") && <span className="text-amber-300">⚠️</span>}</span>
               {renderFieldActions("hero", "cta_text")}
             </label>
@@ -962,8 +962,8 @@ export default function SectionForms({
           />
           {/* Secondary CTA (optional, used by Futuristic and some templates) */}
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              <span>Teks Tombol CTA Kedua <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
+              <span>Teks Tombol CTA Kedua <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
               {renderFieldActions("hero", "cta_secondary_text")}
             </label>
             <input
@@ -972,14 +972,14 @@ export default function SectionForms({
               value={content.hero?.cta_secondary_text || ""}
               onChange={(e) => updateField("hero", "cta_secondary_text", e.target.value)}
               placeholder="cth. Pelajari Lebih Lanjut"
-              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
-            <p className="text-[10px] text-slate-600 leading-relaxed">Tombol kedua di samping tombol utama (dipakai oleh beberapa template).</p>
+            <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Tombol kedua di samping tombol utama (dipakai oleh beberapa template).</p>
           </div>
           {/* Secondary CTA URL */}
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              <span>URL Tombol CTA Kedua <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
+              <span>URL Tombol CTA Kedua <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
               {renderFieldActions("hero", "cta_secondary_url")}
             </label>
             <input
@@ -988,14 +988,14 @@ export default function SectionForms({
               value={content.hero?.cta_secondary_url || ""}
               onChange={(e) => updateField("hero", "cta_secondary_url", e.target.value)}
               placeholder="cth. #about atau https://..."
-              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
-            <p className="text-[10px] text-slate-600 leading-relaxed">Link tujuan tombol CTA kedua (section anchor, URL, atau WhatsApp).</p>
+            <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Link tujuan tombol CTA kedua (section anchor, URL, atau WhatsApp).</p>
           </div>
           {/* Badge text (small text below CTA, used by Futuristic template) */}
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              <span>Teks Badge Bawah CTA <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
+              <span>Teks Badge Bawah CTA <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
               {renderFieldActions("hero", "badge_text")}
             </label>
             <input
@@ -1004,14 +1004,14 @@ export default function SectionForms({
               value={content.hero?.badge_text || ""}
               onChange={(e) => updateField("hero", "badge_text", e.target.value)}
               placeholder="cth. Buka 7 Hari · Jam 07.00–22.00"
-              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
-            <p className="text-[10px] text-slate-600 leading-relaxed">Teks kecil yang muncul di bawah tombol CTA (jam buka, info singkat, dll).</p>
+            <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Teks kecil yang muncul di bawah tombol CTA (jam buka, info singkat, dll).</p>
           </div>
           {/* Opening hours (used by Bold template) */}
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              <span>Jam Buka <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
+              <span>Jam Buka <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
               {renderFieldActions("hero", "opening_hours")}
             </label>
             <input
@@ -1020,7 +1020,7 @@ export default function SectionForms({
               value={content.hero?.opening_hours || ""}
               onChange={(e) => updateField("hero", "opening_hours", e.target.value)}
               placeholder="cth. Buka Setiap Hari 07.00 – 22.00"
-              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
           </div>
           {/* Accessory — info bisnis di hero (see HERO_ACCESSORY_PLAN.md) */}
@@ -1049,7 +1049,7 @@ export default function SectionForms({
       {/* HERO BACKGROUND COLOR */}
       {activeTab === "hero" && (
         <div className="space-y-1 mt-2">
-          <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+          <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
             Warna Latar Hero
           </label>
           <div className="flex items-center gap-2">
@@ -1066,11 +1066,11 @@ export default function SectionForms({
               type="text"
               value={content.hero.background_color || ""}
               onChange={(e) => updateField("hero", "background_color", e.target.value)}
-              className="flex-1 px-2.5 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
+              className="flex-1 px-2.5 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[13px] outline-none focus:border-primary/60"
               placeholder="Kosongkan untuk pakai warna global"
             />
           </div>
-          <p className="text-[10px] text-slate-600 leading-relaxed">Biarkan kosong untuk menggunakan warna latar global.</p>
+          <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Biarkan kosong untuk menggunakan warna latar global.</p>
         </div>
       )}
 
@@ -1078,7 +1078,7 @@ export default function SectionForms({
       {activeTab === "about" && (
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>Gambar Tentang</span>
               <AiImageButton businessType={bType} onSelect={(url) => handleAiImage("about", "image_url", url)}
  />
@@ -1086,7 +1086,7 @@ export default function SectionForms({
             <FileUpload label="" value={content.about.image_url || ""} onChange={(val) => updateField("about", "image_url", val)} placeholder="https://..." maxWidth={1000} maxHeight={1000} quality={0.8} />
           </div>
           <div className="space-y-1">
-            <label className="text-[10px] text-slate-500 uppercase">Perataan Teks</label>
+            <label className="text-[10px] text-sidebar-subtle-foreground uppercase">Perataan Teks</label>
             <div className="flex gap-1">
               {(["left", "center", "right"] as const).map((align) => (
                 <button
@@ -1096,7 +1096,7 @@ export default function SectionForms({
                   className={`flex-1 px-2 py-1 rounded text-[11px] font-semibold border transition-all ${
                     (content.about.textAlign || "left") === align
                       ? "bg-primary/20 border-primary/60 text-primary"
-                      : "border-border text-slate-400 hover:border-border"
+                      : "border-border text-sidebar-muted-foreground hover:border-border"
                   }`}
                 >
                   {align === "left" ? "Kiri" : align === "center" ? "Tengah" : "Kanan"}
@@ -1105,8 +1105,8 @@ export default function SectionForms({
             </div>
           </div>
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              <span>Eyebrow <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
+              <span>Eyebrow <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
               {renderFieldActions("about", "eyebrow")}
             </label>
             <input
@@ -1114,11 +1114,11 @@ export default function SectionForms({
               value={content.about?.eyebrow || ""}
               onChange={(e) => updateField("about", "eyebrow", e.target.value)}
               placeholder="cth. Tentang Kami"
-              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
           </div>
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span className="flex items-center gap-1">
                 Judul {needsAttention("about.title") && <span className="text-amber-300">⚠️</span>}
               </span>
@@ -1141,7 +1141,7 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span className="flex items-center gap-1">
                 Deskripsi {needsAttention("about.body") && <span className="text-amber-300">⚠️</span>}
               </span>
@@ -1165,32 +1165,32 @@ export default function SectionForms({
           </div>
           {/* Highlight Stats */}
           <div className="space-y-2">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400 block">Statistik Highlight</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground block">Statistik Highlight</label>
             {[1, 2, 3].map((n) => {
               const statKey = `highlight_stat_${n}` as "highlight_stat_1" | "highlight_stat_2" | "highlight_stat_3";
               const stat = (content.about as any)[statKey] as { value?: string; label?: string } | undefined;
               return (
                 <div key={n} className="border border-border rounded-md p-2 space-y-1.5 bg-muted/30">
-                  <span className="text-[10px] text-slate-500 uppercase font-bold">Stat {n}</span>
+                  <span className="text-[10px] text-sidebar-subtle-foreground uppercase font-bold">Stat {n}</span>
                   <div className="flex gap-2">
                     <div className="flex-1 space-y-0.5">
-                      <label className="text-[10px] text-slate-500">Nilai</label>
+                      <label className="text-[10px] text-sidebar-subtle-foreground">Nilai</label>
                       <input
                         type="text"
                         value={stat?.value || ""}
                         onChange={(e) => updateField("about", statKey, { ...(stat || {}), value: e.target.value })}
                         placeholder="cth. 500+"
-                        className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                        className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                       />
                     </div>
                     <div className="flex-1 space-y-0.5">
-                      <label className="text-[10px] text-slate-500">Label</label>
+                      <label className="text-[10px] text-sidebar-subtle-foreground">Label</label>
                       <input
                         type="text"
                         value={stat?.label || ""}
                         onChange={(e) => updateField("about", statKey, { ...(stat || {}), label: e.target.value })}
                         placeholder="cth. Pelanggan Puas"
-                        className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                        className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                       />
                     </div>
                   </div>
@@ -1203,16 +1203,16 @@ export default function SectionForms({
             {((content.about?.milestones as any[]) || []).map((m: any, idx: number) => (
               <div key={idx} className="border border-border rounded-md p-2 space-y-1.5 bg-muted/30">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-slate-500 uppercase font-bold">Milestone {idx + 1}</span>
+                  <span className="text-[10px] text-sidebar-subtle-foreground uppercase font-bold">Milestone {idx + 1}</span>
                   <button type="button" onClick={() => {
                     const arr = [...(content.about?.milestones || [])];
                     arr.splice(idx, 1);
                     updateField("about", "milestones", arr);
                   }} className="text-red-400 hover:text-red-300 text-[11px] cursor-pointer">Hapus</button>
                 </div>
-                <input type="text" value={m.year || ""} onChange={(e) => { const arr = [...(content.about?.milestones || [])]; arr[idx] = { ...arr[idx], year: e.target.value }; updateField("about", "milestones", arr); }} placeholder="Tahun (cth. 2020)" className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
-                <input type="text" value={m.title || ""} onChange={(e) => { const arr = [...(content.about?.milestones || [])]; arr[idx] = { ...arr[idx], title: e.target.value }; updateField("about", "milestones", arr); }} placeholder="Judul milestone" className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
-                <textarea rows={1} value={m.description || ""} onChange={(e) => { const arr = [...(content.about?.milestones || [])]; arr[idx] = { ...arr[idx], description: e.target.value }; updateField("about", "milestones", arr); }} placeholder="Deskripsi (opsional)" className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200 resize-none" />
+                <input type="text" value={m.year || ""} onChange={(e) => { const arr = [...(content.about?.milestones || [])]; arr[idx] = { ...arr[idx], year: e.target.value }; updateField("about", "milestones", arr); }} placeholder="Tahun (cth. 2020)" className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
+                <input type="text" value={m.title || ""} onChange={(e) => { const arr = [...(content.about?.milestones || [])]; arr[idx] = { ...arr[idx], title: e.target.value }; updateField("about", "milestones", arr); }} placeholder="Judul milestone" className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
+                <textarea rows={1} value={m.description || ""} onChange={(e) => { const arr = [...(content.about?.milestones || [])]; arr[idx] = { ...arr[idx], description: e.target.value }; updateField("about", "milestones", arr); }} placeholder="Deskripsi (opsional)" className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground resize-none" />
               </div>
             ))}
             <button type="button" onClick={() => updateField("about", "milestones", [...(content.about?.milestones || []), { year: new Date().getFullYear().toString(), title: "Milestone Baru", description: "" }])} className="flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-primary/80 hover:text-primary cursor-pointer"><Plus className="w-3 h-3" /> Tambah Milestone</button>
@@ -1222,15 +1222,15 @@ export default function SectionForms({
             {((content.about?.team_members as any[]) || []).map((m: any, idx: number) => (
               <div key={idx} className="border border-border rounded-md p-2 space-y-1.5 bg-muted/30">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-slate-500 uppercase font-bold">Anggota {idx + 1}</span>
+                  <span className="text-[10px] text-sidebar-subtle-foreground uppercase font-bold">Anggota {idx + 1}</span>
                   <button type="button" onClick={() => {
                     const arr = [...(content.about?.team_members || [])];
                     arr.splice(idx, 1);
                     updateField("about", "team_members", arr);
                   }} className="text-red-400 hover:text-red-300 text-[11px] cursor-pointer">Hapus</button>
                 </div>
-                <input type="text" value={m.name || ""} onChange={(e) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], name: e.target.value }; updateField("about", "team_members", arr); }} placeholder="Nama" className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
-                <input type="text" value={m.role || ""} onChange={(e) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], role: e.target.value }; updateField("about", "team_members", arr); }} placeholder="Jabatan" className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
+                <input type="text" value={m.name || ""} onChange={(e) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], name: e.target.value }; updateField("about", "team_members", arr); }} placeholder="Nama" className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
+                <input type="text" value={m.role || ""} onChange={(e) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], role: e.target.value }; updateField("about", "team_members", arr); }} placeholder="Jabatan" className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
                 <FileUpload label="Foto" value={m.photo_url || ""} onChange={(val) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], photo_url: val }; updateField("about", "team_members", arr); }} placeholder="https://..." maxWidth={400} maxHeight={400} quality={0.85} />
               </div>
             ))}
@@ -1243,17 +1243,17 @@ export default function SectionForms({
       {activeTab === "benefits" && (
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Eyebrow <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Eyebrow <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></label>
             <input
               type="text"
               value={content.benefits?.eyebrow || ""}
               onChange={(e) => updateField("benefits", "eyebrow", e.target.value)}
               placeholder="cth. Kenapa Pilih Kami"
-              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
           </div>
           <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               Judul Section {needsAttention("benefits.title") && <span className="text-amber-300">⚠️</span>}
             </label>
             <input
@@ -1266,17 +1266,17 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Subtitle <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Subtitle <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></label>
             <input
               type="text"
               value={content.benefits?.subtitle || ""}
               onChange={(e) => updateField("benefits", "subtitle", e.target.value)}
               placeholder="cth. Berbagai alasan mengapa pelanggan mempercayai kami"
-              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[10px] text-slate-500 uppercase">Perataan Teks</label>
+            <label className="text-[10px] text-sidebar-subtle-foreground uppercase">Perataan Teks</label>
             <div className="flex gap-1">
               {(["left", "center", "right"] as const).map((align) => (
                 <button
@@ -1286,7 +1286,7 @@ export default function SectionForms({
                   className={`flex-1 px-2 py-1 rounded text-[11px] font-semibold border transition-all ${
                     (content.benefits.textAlign || "center") === align
                       ? "bg-primary/20 border-primary/60 text-primary"
-                      : "border-border text-slate-400 hover:border-border"
+                      : "border-border text-sidebar-muted-foreground hover:border-border"
                   }`}
                 >
                   {align === "left" ? "Kiri" : align === "center" ? "Tengah" : "Kanan"}
@@ -1297,7 +1297,7 @@ export default function SectionForms({
           {content.benefits.items?.map((item: any, idx: number) => (
             <div key={idx} className="border border-border p-2.5 rounded-lg space-y-2 bg-muted/40">
               <div className="flex justify-between items-center">
-                <span className="text-[10px] uppercase font-bold text-slate-400">#{idx + 1}</span>
+                <span className="text-[10px] uppercase font-bold text-sidebar-muted-foreground">#{idx + 1}</span>
                 <button
                   type="button"
                   onClick={() => {
@@ -1333,7 +1333,7 @@ export default function SectionForms({
               />
               {/* Icon + Stat row */}
               <div className="space-y-1.5">
-                <label className="text-[10px] text-slate-500 uppercase">Icon</label>
+                <label className="text-[10px] text-sidebar-subtle-foreground uppercase">Icon</label>
                 <IconPicker
                   value={item.icon || ""}
                   onChange={(name) => { const n = [...content.benefits.items]; n[idx].icon = name; updateField("benefits", "items", n); }}
@@ -1341,23 +1341,23 @@ export default function SectionForms({
               </div>
               <div className="flex gap-2">
                 <div className="flex-1 space-y-0.5">
-                  <label className="text-[10px] text-slate-500 uppercase">Stat</label>
+                  <label className="text-[10px] text-sidebar-subtle-foreground uppercase">Stat</label>
                   <input
                     type="text"
                     value={item.stat || ""}
                     onChange={(e) => { const n = [...content.benefits.items]; n[idx].stat = e.target.value; updateField("benefits", "items", n); }}
                     placeholder="50+"
-                    className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                    className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                   />
                 </div>
                 <div className="flex-1 space-y-0.5">
-                  <label className="text-[10px] text-slate-500 uppercase">Keterangan Stat</label>
+                  <label className="text-[10px] text-sidebar-subtle-foreground uppercase">Keterangan Stat</label>
                   <input
                     type="text"
                     value={item.stat_label || ""}
                     onChange={(e) => { const n = [...content.benefits.items]; n[idx].stat_label = e.target.value; updateField("benefits", "items", n); }}
                     placeholder="Proyek Selesai"
-                    className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                    className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                   />
                 </div>
               </div>
@@ -1369,7 +1369,7 @@ export default function SectionForms({
               const n = [...(content.benefits.items || []), { title: "Manfaat Baru", description: "Deskripsi manfaat ini" }];
               updateField("benefits", "items", n);
             }}
-            className="w-full text-[12px] py-1.5 border border-border rounded-lg text-slate-400 hover:bg-white/5 flex items-center justify-center gap-1"
+            className="w-full text-[12px] py-1.5 border border-border rounded-lg text-sidebar-muted-foreground hover:bg-sidebar-muted flex items-center justify-center gap-1"
           >
             <Plus className="w-3.5 h-3.5" /> Tambah
           </button>
@@ -1378,24 +1378,24 @@ export default function SectionForms({
             {(content.benefits?.comparison?.column_a_label !== undefined) || false ? null : null}
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-0.5">
-                <label className="text-[10px] text-slate-500 uppercase">Label Kolom A (Kami)</label>
-                <input type="text" value={content.benefits?.comparison?.column_a_label || ""} onChange={(e) => updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), column_a_label: e.target.value })} placeholder="cth. Bersama Kami" className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
+                <label className="text-[10px] text-sidebar-subtle-foreground uppercase">Label Kolom A (Kami)</label>
+                <input type="text" value={content.benefits?.comparison?.column_a_label || ""} onChange={(e) => updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), column_a_label: e.target.value })} placeholder="cth. Bersama Kami" className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
               </div>
               <div className="space-y-0.5">
-                <label className="text-[10px] text-slate-500 uppercase">Label Kolom B (Lainnya)</label>
-                <input type="text" value={content.benefits?.comparison?.column_b_label || ""} onChange={(e) => updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), column_b_label: e.target.value })} placeholder="cth. Kompetitor" className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
+                <label className="text-[10px] text-sidebar-subtle-foreground uppercase">Label Kolom B (Lainnya)</label>
+                <input type="text" value={content.benefits?.comparison?.column_b_label || ""} onChange={(e) => updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), column_b_label: e.target.value })} placeholder="cth. Kompetitor" className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
               </div>
             </div>
             {((content.benefits?.comparison?.rows as any[]) || []).map((row: any, idx: number) => (
               <div key={idx} className="border border-border rounded-md p-2 space-y-1.5 bg-muted/30">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-slate-500 uppercase font-bold">Baris {idx + 1}</span>
+                  <span className="text-[10px] text-sidebar-subtle-foreground uppercase font-bold">Baris {idx + 1}</span>
                   <button type="button" onClick={() => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr.splice(idx, 1); updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} className="text-red-400 hover:text-red-300 text-[11px] cursor-pointer">Hapus</button>
                 </div>
-                <input type="text" value={row.label || ""} onChange={(e) => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr[idx] = { ...arr[idx], label: e.target.value }; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} placeholder="Label (cth. Harga)" className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
+                <input type="text" value={row.label || ""} onChange={(e) => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr[idx] = { ...arr[idx], label: e.target.value }; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} placeholder="Label (cth. Harga)" className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
                 <div className="grid grid-cols-2 gap-2">
-                  <input type="text" value={row.value_a || ""} onChange={(e) => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr[idx] = { ...arr[idx], value_a: e.target.value }; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} placeholder="Nilai A" className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
-                  <input type="text" value={row.value_b || ""} onChange={(e) => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr[idx] = { ...arr[idx], value_b: e.target.value }; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} placeholder="Nilai B" className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-slate-200" />
+                  <input type="text" value={row.value_a || ""} onChange={(e) => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr[idx] = { ...arr[idx], value_a: e.target.value }; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} placeholder="Nilai A" className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
+                  <input type="text" value={row.value_b || ""} onChange={(e) => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr[idx] = { ...arr[idx], value_b: e.target.value }; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} placeholder="Nilai B" className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
                 </div>
               </div>
             ))}
@@ -1408,7 +1408,7 @@ export default function SectionForms({
       {activeTab === "faq" && content?.faq && (
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>Judul Section {needsAttention("faq.title") && <span className="text-amber-300">⚠️</span>}</span>
               {renderFieldActions("faq", "title")}
             </label>
@@ -1423,7 +1423,7 @@ export default function SectionForms({
           {content.faq.items?.map((item: any, idx: number) => (
             <div key={idx} className="border border-border p-2.5 rounded-lg space-y-2 bg-muted/40">
               <div className="flex justify-between items-center">
-                <span className="text-[10px] uppercase font-bold text-slate-400">FAQ #{idx + 1}</span>
+                <span className="text-[10px] uppercase font-bold text-sidebar-muted-foreground">FAQ #{idx + 1}</span>
                 <button
                   type="button"
                   onClick={() => {
@@ -1466,7 +1466,7 @@ export default function SectionForms({
                   updateField("faq", "items", n);
                 }}
                 placeholder="Kategori (opsional, untuk variant sidebar-category)"
-                className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
               />
             </div>
           ))}
@@ -1476,7 +1476,7 @@ export default function SectionForms({
               const n = [...(content.faq.items || []), { question: "Pertanyaan yang sering ditanya?", answer: "Jawaban pertanyaan di sini" }];
               updateField("faq", "items", n);
             }}
-            className="w-full text-[12px] py-1.5 border border-border rounded-lg text-slate-400 hover:bg-white/5 flex items-center justify-center gap-1"
+            className="w-full text-[12px] py-1.5 border border-border rounded-lg text-sidebar-muted-foreground hover:bg-sidebar-muted flex items-center justify-center gap-1"
           >
             <Plus className="w-3.5 h-3.5" /> Tambah FAQ
           </button>
@@ -1487,7 +1487,7 @@ export default function SectionForms({
       {activeTab === "cta" && (
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span className="flex items-center gap-1">
                 Headline CTA {needsAttention("cta.headline") && <span className="text-amber-300">⚠️</span>}
               </span>
@@ -1508,41 +1508,41 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Eyebrow <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Eyebrow <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></label>
             <input
               type="text"
               value={content.cta?.eyebrow || ""}
               onChange={(e) => updateField("cta", "eyebrow", e.target.value)}
               placeholder="cth. Mulai Sekarang"
-              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Subheadline <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Subheadline <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></label>
             <input
               type="text"
               value={content.cta?.subheadline || ""}
               onChange={(e) => updateField("cta", "subheadline", e.target.value)}
               placeholder="cth. Dapatkan penawaran spesial sebelum kehabisan!"
-              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Trust Signal <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Trust Signal <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></label>
             <input
               type="text"
               value={content.cta?.trust_signal || ""}
               onChange={(e) => updateField("cta", "trust_signal", e.target.value)}
               placeholder="cth. ✅ Lebih dari 500 pelanggan puas"
-              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Gambar CTA <span className="text-slate-600 font-normal normal-case">(opsional, untuk variant split-image)</span></label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Gambar CTA <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional, untuk variant split-image)</span></label>
             <FileUpload label="" value={content.cta?.image_url || ""} onChange={(val) => updateField("cta", "image_url", val)} placeholder="https://..." maxWidth={800} maxHeight={800} quality={0.85} />
           </div>
           <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               Teks Tombol {needsAttention("cta.button_text") && <span className="text-amber-300">⚠️</span>}
             </label>
             <input
@@ -1576,7 +1576,7 @@ export default function SectionForms({
       {activeTab === "contact" && (
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Rata Konten</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Rata Konten</label>
             <div className="grid grid-cols-3 gap-1 rounded-lg border border-border bg-muted/40 p-1">
               {[
                 { value: "left", label: "Kiri" },
@@ -1592,7 +1592,7 @@ export default function SectionForms({
                     className={`rounded-md px-2 py-1.5 text-[11px] font-semibold transition ${
                       active
                         ? "bg-primary text-primary-foreground"
-                        : "text-slate-400 hover:bg-white/5 hover:text-slate-100"
+                        : "text-sidebar-muted-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground"
                     }`}
                   >
                     {option.label}
@@ -1602,7 +1602,7 @@ export default function SectionForms({
             </div>
           </div>
           <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               Judul {needsAttention("contact.title") && <span className="text-amber-300">⚠️</span>}
             </label>
             <input
@@ -1615,8 +1615,8 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Alamat <span className="text-slate-600 normal-case font-normal">(opsional)</span>
+            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
+              Alamat <span className="text-sidebar-subtle-foreground normal-case font-normal">(opsional)</span>
             </label>
             <input
               id="field-contact.address"
@@ -1628,8 +1628,8 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Nomor WhatsApp <span className="text-slate-600 normal-case font-normal">(opsional)</span> {needsAttention("contact.phone") && <span className="text-amber-300">⚠️</span>}
+            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
+              Nomor WhatsApp <span className="text-sidebar-subtle-foreground normal-case font-normal">(opsional)</span> {needsAttention("contact.phone") && <span className="text-amber-300">⚠️</span>}
             </label>
             <input
               id="field-contact.phone"
@@ -1658,13 +1658,13 @@ export default function SectionForms({
               className={fieldClass("contact.phone", SIDEBAR_FIELD_CLASS)}
 
             />
-            <p className="text-[10px] text-slate-500 leading-relaxed">
-              Jika kosong, pesanan dari keranjang masuk ke <strong className="text-slate-400">Kotak Masuk Pesan</strong> di dashboard.
+            <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">
+              Jika kosong, pesanan dari keranjang masuk ke <strong className="text-sidebar-muted-foreground">Kotak Masuk Pesan</strong> di dashboard.
             </p>
           </div>
           <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Email <span className="text-slate-600 normal-case font-normal">(opsional)</span>
+            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
+              Email <span className="text-sidebar-subtle-foreground normal-case font-normal">(opsional)</span>
             </label>
             <input
               id="field-contact.email"
@@ -1676,7 +1676,7 @@ export default function SectionForms({
             />
           </div>
           <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-2.5">
-            <span className="text-[12px] font-medium text-slate-200">Formulir Kontak</span>
+            <span className="text-[12px] font-medium text-sidebar-foreground">Formulir Kontak</span>
             <input
               type="checkbox"
               checked={content.contact.show_lead_form !== false}
@@ -1685,7 +1685,7 @@ export default function SectionForms({
             />
           </div>
           <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-2.5">
-            <span className="text-[12px] font-medium text-slate-200">Peta Lokasi</span>
+            <span className="text-[12px] font-medium text-sidebar-foreground">Peta Lokasi</span>
             <input
               type="checkbox"
               checked={content.contact.show_map !== false}
@@ -1694,7 +1694,7 @@ export default function SectionForms({
             />
           </div>
           <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-2.5">
-            <span className="text-[12px] font-medium text-slate-200">Kartu WhatsApp</span>
+            <span className="text-[12px] font-medium text-sidebar-foreground">Kartu WhatsApp</span>
             <input
               type="checkbox"
               checked={content.contact.show_whatsapp_card !== false}
@@ -1703,7 +1703,7 @@ export default function SectionForms({
             />
           </div>
           <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-2.5">
-            <span className="text-[12px] font-medium text-slate-200">Gaya Peta</span>
+            <span className="text-[12px] font-medium text-sidebar-foreground">Gaya Peta</span>
             <div className="flex gap-1">
               {getEnabledMapTiles(ALL_MAP_TILES.map(o => o.key)).map((key) => {
                 const opt = ALL_MAP_TILES.find(o => o.key === key)!;
@@ -1714,7 +1714,7 @@ export default function SectionForms({
                   className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
                     (content.contact.map_tile_style || "default") === opt.key
                       ? "bg-primary/20 text-primary"
-                      : "text-slate-400 hover:text-slate-200"
+                      : "text-sidebar-muted-foreground hover:text-sidebar-foreground"
                   }`}
                 >
                   {opt.label}
@@ -1724,8 +1724,8 @@ export default function SectionForms({
             </div>
           </div>
           <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              Link Google Maps <span className="text-slate-600 normal-case font-normal">(opsional)</span>
+            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
+              Link Google Maps <span className="text-sidebar-subtle-foreground normal-case font-normal">(opsional)</span>
             </label>
             <div className="flex gap-2">
               <input
@@ -1748,7 +1748,7 @@ export default function SectionForms({
 
             {/* Form position layout selector */}
             <div className="space-y-1 pt-2">
-              <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500">
+              <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground">
                 Tata Letak Form Kontak
               </label>
               <div className="flex flex-wrap gap-1">
@@ -1766,7 +1766,7 @@ export default function SectionForms({
                       className={`px-2 py-1 rounded text-[10px] font-medium transition ${
                         active
                           ? "bg-primary text-primary-foreground"
-                          : "border border-border text-slate-400 hover:bg-white/5 hover:text-slate-100"
+                          : "border border-border text-sidebar-muted-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground"
                       }`}
                     >
                       {opt.label}
@@ -1774,13 +1774,13 @@ export default function SectionForms({
                   );
                 })}
               </div>
-              <p className="text-[10px] text-slate-600 leading-relaxed">
+              <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">
                 "Info kiri, form kanan" cocok untuk hero dengan ruang luas.                 "Vertikal" cocok untuk mobile. Khusus template Natural biasanya default vertikal.
               </p>
             </div>
             {/* Map layout selector */}
             <div className="space-y-1 pt-2">
-              <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500">
+              <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground">
                 Gaya Tata Letak Peta
               </label>
               <div className="flex flex-wrap gap-1">
@@ -1797,7 +1797,7 @@ export default function SectionForms({
                       className={`px-2 py-1 rounded text-[10px] font-medium transition ${
                         active
                           ? "bg-primary text-primary-foreground"
-                          : "border border-border text-slate-400 hover:bg-white/5 hover:text-slate-100"
+                          : "border border-border text-sidebar-muted-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground"
                       }`}
                     >
                       {opt.label}
@@ -1805,7 +1805,7 @@ export default function SectionForms({
                   );
                 })}
               </div>
-              <p className="text-[10px] text-slate-600 leading-relaxed">
+              <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">
                 "Full-width di bawah" meletakkan peta penuh lebar di bawah kolom info/form.
               </p>
             </div>
@@ -1845,7 +1845,7 @@ export default function SectionForms({
             {resolveError && (
               <p className="text-[10px] text-red-400 leading-relaxed">{resolveError}</p>
             )}
-            <p className="text-[10px] text-slate-500 leading-relaxed">
+            <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">
               Klik "Pilih Lokasi" untuk menandai lokasi di peta, atau tempel link embed / share Google Maps.
             </p>
 
@@ -1864,7 +1864,7 @@ export default function SectionForms({
       {activeTab === "footer" && (
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Tagline</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Tagline</label>
             <input
               id="field-footer.tagline"
               type="text"
@@ -1874,7 +1874,7 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Copyright</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Copyright</label>
             <input
               id="field-footer.copyright_text"
               type="text"
@@ -1884,7 +1884,7 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-2">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Media Sosial</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Media Sosial</label>
             {(content.footer?.social_links || []).map((link: any, idx: number) => {
               const isCustom = link.platform && !SOCIAL_PLATFORMS[link.platform];
               return (
@@ -1893,7 +1893,7 @@ export default function SectionForms({
                     {link.platform && SOCIAL_PLATFORMS[link.platform] ? (
                       <SocialIcon platform={link.platform} className="shrink-0" size={18} />
                     ) : (
-                      <Globe className="w-4 h-4 text-slate-500 shrink-0" />
+                      <Globe className="w-4 h-4 text-sidebar-subtle-foreground shrink-0" />
                     )}
                   </div>
                   <div className="flex-1 flex items-center gap-1.5">
@@ -1971,7 +1971,7 @@ export default function SectionForms({
 
           {/* Meta Title + Char Count */}
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span className="flex items-center gap-1">
                 Meta Title {needsAttention("seo.title") && <span className="text-amber-300">⚠️</span>}
               </span>
@@ -1993,7 +1993,7 @@ export default function SectionForms({
 
             />
             <div className="flex justify-end">
-              <span className={`text-[10px] font-mono ${(content.seo?.title?.length || 0) > 60 ? "text-red-500" : "text-slate-500"}`}>
+              <span className={`text-[10px] font-mono ${(content.seo?.title?.length || 0) > 60 ? "text-red-500" : "text-sidebar-subtle-foreground"}`}>
                 {(content.seo?.title?.length || 0)}/60
               </span>
             </div>
@@ -2001,7 +2001,7 @@ export default function SectionForms({
 
           {/* Meta Description + Char Count */}
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span className="flex items-center gap-1">
                 Meta Description {needsAttention("seo.description") && <span className="text-amber-300">⚠️</span>}
               </span>
@@ -2023,7 +2023,7 @@ export default function SectionForms({
 
             />
             <div className="flex justify-end">
-              <span className={`text-[10px] font-mono ${(content.seo?.description?.length || 0) > 155 ? "text-red-500" : "text-slate-500"}`}>
+              <span className={`text-[10px] font-mono ${(content.seo?.description?.length || 0) > 155 ? "text-red-500" : "text-sidebar-subtle-foreground"}`}>
                 {(content.seo?.description?.length || 0)}/155
               </span>
             </div>
@@ -2050,11 +2050,11 @@ export default function SectionForms({
             const ogDomain = subdomain ? tenantHost(subdomain) : "namabisnis.webjoz.com";
             return (
               <div className="space-y-2">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{t("sitesEditor.seoSharePreviewTitle")}</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-sidebar-subtle-foreground">{t("sitesEditor.seoSharePreviewTitle")}</p>
 
                 {/* WhatsApp / iMessage style */}
                 <div className="rounded-xl overflow-hidden border border-border bg-[#1a1d26]">
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border-b border-border/50">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-sidebar-muted border-b border-border/50">
                     <span className="text-[10px] font-bold text-emerald-400">💬 WhatsApp / iMessage</span>
                   </div>
                   <div className="flex gap-0 overflow-hidden">
@@ -2069,11 +2069,11 @@ export default function SectionForms({
                       )}
                     </div>
                     <div className="flex-1 px-3 py-2 space-y-0.5 min-w-0">
-                      <p className="text-[10px] text-slate-500 truncate">{ogDomain}</p>
-                      <p className={`text-[12px] font-semibold leading-tight line-clamp-2 ${ogTitle ? "text-slate-100" : "text-slate-600 italic"}`}>
+                      <p className="text-[10px] text-sidebar-subtle-foreground truncate">{ogDomain}</p>
+                      <p className={`text-[12px] font-semibold leading-tight line-clamp-2 ${ogTitle ? "text-sidebar-foreground" : "text-sidebar-subtle-foreground italic"}`}>
                         {ogTitle || t("sitesEditor.seoSharePlaceholderTitle")}
                       </p>
-                      <p className={`text-[10px] leading-tight line-clamp-2 ${ogDesc ? "text-slate-400" : "text-slate-600 italic"}`}>
+                      <p className={`text-[10px] leading-tight line-clamp-2 ${ogDesc ? "text-sidebar-muted-foreground" : "text-sidebar-subtle-foreground italic"}`}>
                         {ogDesc || t("sitesEditor.seoSharePlaceholderDesc")}
                       </p>
                     </div>
@@ -2082,7 +2082,7 @@ export default function SectionForms({
 
                 {/* Facebook style */}
                 <div className="rounded-xl overflow-hidden border border-border bg-[#1a1d26]">
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border-b border-border/50">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-sidebar-muted border-b border-border/50">
                     <span className="text-[10px] font-bold text-blue-400">👍 Facebook / LinkedIn</span>
                   </div>
                   <div className="w-full aspect-[1.91/1] bg-[#111318] relative overflow-hidden">
@@ -2091,16 +2091,16 @@ export default function SectionForms({
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center gap-1">
                         <span className="text-[28px] opacity-20">🖼️</span>
-                        <p className="text-[10px] text-slate-600 italic">{t("sitesEditor.seoShareOgNotSet")}</p>
+                        <p className="text-[10px] text-sidebar-subtle-foreground italic">{t("sitesEditor.seoShareOgNotSet")}</p>
                       </div>
                     )}
                   </div>
                   <div className="px-3 py-2 space-y-0.5 bg-[#232630]">
-                    <p className="text-[9px] uppercase tracking-widest text-slate-500 truncate">{ogDomain}</p>
-                    <p className={`text-[12px] font-bold leading-snug line-clamp-2 ${ogTitle ? "text-slate-100" : "text-slate-600 italic"}`}>
+                    <p className="text-[9px] uppercase tracking-widest text-sidebar-subtle-foreground truncate">{ogDomain}</p>
+                    <p className={`text-[12px] font-bold leading-snug line-clamp-2 ${ogTitle ? "text-sidebar-foreground" : "text-sidebar-subtle-foreground italic"}`}>
                       {ogTitle || t("sitesEditor.seoSharePlaceholderTitle")}
                     </p>
-                    <p className={`text-[10px] leading-snug line-clamp-2 ${ogDesc ? "text-slate-400" : "text-slate-600 italic"}`}>
+                    <p className={`text-[10px] leading-snug line-clamp-2 ${ogDesc ? "text-sidebar-muted-foreground" : "text-sidebar-subtle-foreground italic"}`}>
                       {ogDesc || t("sitesEditor.seoSharePlaceholderDesc")}
                     </p>
                   </div>
@@ -2108,8 +2108,8 @@ export default function SectionForms({
 
                 {/* Twitter/X style */}
                 <div className="rounded-xl overflow-hidden border border-border bg-[#1a1d26]">
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border-b border-border/50">
-                    <span className="text-[10px] font-bold text-slate-300">𝕏 Twitter / X</span>
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-sidebar-muted border-b border-border/50">
+                    <span className="text-[10px] font-bold text-sidebar-foreground">𝕏 Twitter / X</span>
                   </div>
                   <div className="relative">
                     <div className="w-full aspect-[2/1] bg-[#111318] relative overflow-hidden">
@@ -2122,22 +2122,22 @@ export default function SectionForms({
                       )}
                     </div>
                     <div className="absolute bottom-0 left-0 right-0 px-3 py-1.5 bg-black/60 backdrop-blur-sm">
-                      <p className={`text-[11px] font-semibold leading-tight truncate ${ogTitle ? "text-white" : "text-slate-500 italic"}`}>
+                      <p className={`text-[11px] font-semibold leading-tight truncate ${ogTitle ? "text-white" : "text-sidebar-subtle-foreground italic"}`}>
                         {ogTitle || t("sitesEditor.seoSharePlaceholderTitle")}
                       </p>
-                      <p className="text-[9px] text-slate-400 truncate">{ogDomain}</p>
+                      <p className="text-[9px] text-sidebar-muted-foreground truncate">{ogDomain}</p>
                     </div>
                   </div>
                 </div>
 
-                <p className="text-[10px] text-slate-600 text-center">{t("sitesEditor.seoShareAutoUpdate")}</p>
+                <p className="text-[10px] text-sidebar-subtle-foreground text-center">{t("sitesEditor.seoShareAutoUpdate")}</p>
               </div>
             );
           })()}
 
           {/* OG Type Dropdown */}
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>OG Type</span>
               <AiFieldButton
                 loading={aiLoadingField === "seo.og_type"}
@@ -2149,7 +2149,7 @@ export default function SectionForms({
             <select
               value={content.seo?.og_type || "website"}
               onChange={(e) => updateField("seo", "og_type", e.target.value)}
-              className={`${SIDEBAR_FIELD_CLASS} text-slate-200`}
+              className={`${SIDEBAR_FIELD_CLASS} text-sidebar-foreground`}
             >
               <option value="website">Website</option>
               <option value="article">Article</option>
@@ -2161,7 +2161,7 @@ export default function SectionForms({
 
           {/* Twitter Card Dropdown */}
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>Twitter Card</span>
               <AiFieldButton
                 loading={aiLoadingField === "seo.twitter_card"}
@@ -2173,7 +2173,7 @@ export default function SectionForms({
             <select
               value={content.seo?.twitter_card || "summary_large_image"}
               onChange={(e) => updateField("seo", "twitter_card", e.target.value)}
-              className={`${SIDEBAR_FIELD_CLASS} text-slate-200`}
+              className={`${SIDEBAR_FIELD_CLASS} text-sidebar-foreground`}
             >
               <option value="summary_large_image">summary_large_image</option>
               <option value="summary">summary</option>
@@ -2184,11 +2184,11 @@ export default function SectionForms({
 
           {/* Robots Dropdown */}
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Robots</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Robots</label>
             <select
               value={content.seo?.robots || "index, follow"}
               onChange={(e) => updateField("seo", "robots", e.target.value)}
-              className={`${SIDEBAR_FIELD_CLASS} text-slate-200`}
+              className={`${SIDEBAR_FIELD_CLASS} text-sidebar-foreground`}
             >
               <option value="index, follow">index, follow</option>
               <option value="noindex, follow">noindex, follow</option>
@@ -2199,7 +2199,7 @@ export default function SectionForms({
 
           {/* OG Locale */}
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">OG Locale</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">OG Locale</label>
             <input
               type="text"
               value={content.seo?.og_locale || "id_ID"}
@@ -2211,7 +2211,7 @@ export default function SectionForms({
 
           {/* OG Site Name */}
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">OG Site Name</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">OG Site Name</label>
             <input
               type="text"
               value={content.seo?.og_site_name || ""}
@@ -2223,19 +2223,19 @@ export default function SectionForms({
 
           {/* Canonical Path */}
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Canonical Path</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Canonical Path</label>
             <input
               type="text"
               value={content.seo?.canonical_path || "/"}
               onChange={(e) => updateField("seo", "canonical_path", e.target.value)}
-              className={`${SIDEBAR_FIELD_CLASS} text-slate-200`}
+              className={`${SIDEBAR_FIELD_CLASS} text-sidebar-foreground`}
               placeholder="/"
             />
           </div>
 
           {/* Custom Robots.txt (Pro) */}
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span className="flex items-center gap-1.5">
                 {t("sitesEditor.seoRobotsTxtTitle")}
                 {!isPremium && <span className="text-[9px] font-bold uppercase bg-amber-500/10 text-amber-400 px-1.5 py-0.5 rounded-full border border-amber-500/30">Pro</span>}
@@ -2246,12 +2246,12 @@ export default function SectionForms({
                 rows={5}
                 value={content.seo?.custom_robots_txt || ""}
                 onChange={(e) => updateField("seo", "custom_robots_txt", e.target.value)}
-                className="w-full px-2.5 py-1.5 border rounded-md text-[11px] font-mono outline-none focus:border-primary/60 bg-transparent text-slate-200 resize-none"
+                className="w-full px-2.5 py-1.5 border rounded-md text-[11px] font-mono outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground resize-none"
                 placeholder={`User-agent: *\nAllow: /\n\nSitemap: https://${subdomain ? tenantHost(subdomain) : "namabisnis.webjoz.com"}/sitemap.xml`}
               />
             ) : (
               <div
-                className="rounded-lg border border-border bg-muted/30 px-3 py-3 text-[11px] text-slate-500 cursor-pointer hover:border-amber-500/30 transition-colors"
+                className="rounded-lg border border-border bg-muted/30 px-3 py-3 text-[11px] text-sidebar-subtle-foreground cursor-pointer hover:border-amber-500/30 transition-colors"
                 onClick={() => onUpgradeRequired?.()}
               >
                 <div className="flex items-center gap-2 text-amber-400 font-semibold mb-1">
@@ -2305,7 +2305,7 @@ export default function SectionForms({
 
                 <div className="grid grid-cols-2 gap-4 p-5">
                   <div>
-                    <p className="text-xs font-bold text-slate-500 mb-2">{t("sitesEditor.seoBoosterWithout")}</p>
+                    <p className="text-xs font-bold text-sidebar-subtle-foreground mb-2">{t("sitesEditor.seoBoosterWithout")}</p>
                     <div className="opacity-60 grayscale-[30%]">
                       <GoogleSnippetPreview variant="plain" business={demoBusiness} />
                     </div>
@@ -2351,8 +2351,8 @@ export default function SectionForms({
                     </svg>
                   </div>
                   <div>
-                    <p className="text-[13px] font-bold text-slate-100">{t("sitesEditor.seoGscTitle")}</p>
-                    <p className="text-[11px] text-slate-500">{t("sitesEditor.seoGscSubtitle")}</p>
+                    <p className="text-[13px] font-bold text-sidebar-foreground">{t("sitesEditor.seoGscTitle")}</p>
+                    <p className="text-[11px] text-sidebar-subtle-foreground">{t("sitesEditor.seoGscSubtitle")}</p>
                   </div>
                 </div>
                 {!isPremium && (
@@ -2361,8 +2361,8 @@ export default function SectionForms({
               </div>
 
               {/* How-to steps */}
-              <div className="rounded-lg bg-muted/40 border border-border/50 px-3 py-2.5 space-y-1.5 text-[11px] text-slate-400">
-                <p className="font-semibold text-slate-300">{t("sitesEditor.seoGscHowToTitle")}</p>
+              <div className="rounded-lg bg-muted/40 border border-border/50 px-3 py-2.5 space-y-1.5 text-[11px] text-sidebar-muted-foreground">
+                <p className="font-semibold text-sidebar-foreground">{t("sitesEditor.seoGscHowToTitle")}</p>
                 <ol className="space-y-1 list-decimal list-inside">
                   <li>{t("sitesEditor.seoGscStep1")} (<a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Google Search Console</a>)</li>
                   <li>{t("sitesEditor.seoGscStep2")}</li>
@@ -2374,7 +2374,7 @@ export default function SectionForms({
 
               {/* Meta tag preview */}
               {gscInput.trim() && (
-                <div className="rounded-md bg-background border border-border/50 px-3 py-2 font-mono text-[10px] text-slate-400 break-all">
+                <div className="rounded-md bg-background border border-border/50 px-3 py-2 font-mono text-[10px] text-sidebar-muted-foreground break-all">
                   {'<meta name="google-site-verification" content="'}<span className="text-emerald-400">{gscInput.trim()}</span>{'" />'}
                 </div>
               )}
@@ -2386,7 +2386,7 @@ export default function SectionForms({
                   value={gscInput}
                   onChange={(e) => setGscInput(e.target.value)}
                   placeholder={t("sitesEditor.seoGscPlaceholder")}
-                  className="flex-1 px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
+                  className="flex-1 px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground placeholder-sidebar-subtle-foreground"
                 />
                 <button
                   type="button"
@@ -2415,8 +2415,8 @@ export default function SectionForms({
       {activeTab === "testimonials" && (
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              <span>Eyebrow <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
+              <span>Eyebrow <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
               {renderFieldActions("testimonials", "eyebrow")}
             </label>
             <input
@@ -2424,11 +2424,11 @@ export default function SectionForms({
               value={content.testimonials?.eyebrow || ""}
               onChange={(e) => updateField("testimonials", "eyebrow", e.target.value)}
               placeholder="cth. Testimoni"
-              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
           </div>
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>Judul Section</span>
               {renderFieldActions("testimonials", "title")}
             </label>
@@ -2437,12 +2437,12 @@ export default function SectionForms({
               value={content.testimonials?.title || ""}
               onChange={(e) => updateField("testimonials", "title", e.target.value)}
               placeholder="cth. Cerita dari Pelanggan Kami"
-              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200 placeholder-slate-600`}
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
           </div>
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-              <span>Subtitle <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
+              <span>Subtitle <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
               {renderFieldActions("testimonials", "subtitle")}
             </label>
             <input
@@ -2450,13 +2450,13 @@ export default function SectionForms({
               value={content.testimonials?.subtitle || ""}
               onChange={(e) => updateField("testimonials", "subtitle", e.target.value)}
               placeholder="cth. Ulasan dari pelanggan setia kami"
-              className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`}
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
           </div>
           {(content.testimonials?.items || []).map((item: any, idx: number) => (
             <div key={idx} className="border border-border p-3 rounded-xl space-y-2.5 bg-muted/30">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] uppercase font-bold text-slate-500">Testimoni #{idx + 1}</span>
+                <span className="text-[10px] uppercase font-bold text-sidebar-subtle-foreground">Testimoni #{idx + 1}</span>
                 <button
                   type="button"
                   onClick={() => {
@@ -2470,7 +2470,7 @@ export default function SectionForms({
               </div>
               {/* Quote */}
               <div>
-                <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Kutipan</label>
+                <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground block mb-1">Kutipan</label>
                 <textarea
                   rows={2}
                   value={item.quote || ""}
@@ -2480,13 +2480,13 @@ export default function SectionForms({
                     updateField("testimonials", "items", n);
                   }}
                   placeholder="Tulis kutipan spesifik dan believable..."
-                  className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200 placeholder-slate-600 resize-none`}
+                  className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground resize-none`}
                 />
               </div>
               {/* Name + Role row */}
               <div className="space-y-2">
                 <div>
-                  <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Nama</label>
+                  <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground block mb-1">Nama</label>
                   <input
                     type="text"
                     value={item.name || ""}
@@ -2496,11 +2496,11 @@ export default function SectionForms({
                       updateField("testimonials", "items", n);
                     }}
                     placeholder="cth. Budi Santoso"
-                    className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200 placeholder-slate-600`}
+                    className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Profesi / Konteks</label>
+                  <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground block mb-1">Profesi / Konteks</label>
                   <input
                     type="text"
                     value={item.role || ""}
@@ -2510,14 +2510,14 @@ export default function SectionForms({
                       updateField("testimonials", "items", n);
                     }}
                     placeholder="cth. Pelanggan tetap"
-                    className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200 placeholder-slate-600`}
+                    className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
                   />
                 </div>
               </div>
               {/* Avatar initials + color row */}
               <div className="grid grid-cols-2 gap-2 items-end">
                 <div>
-                  <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Inisial Avatar</label>
+                  <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground block mb-1">Inisial Avatar</label>
                   <input
                     type="text"
                     maxLength={2}
@@ -2528,11 +2528,11 @@ export default function SectionForms({
                       updateField("testimonials", "items", n);
                     }}
                     placeholder="BS"
-                    className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200 placeholder-slate-600 uppercase`}
+                    className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground uppercase`}
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Warna Avatar</label>
+                  <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground block mb-1">Warna Avatar</label>
                   <div className="flex items-center gap-2">
                     <div className="relative w-8 h-8 rounded-md border border-border overflow-hidden flex-shrink-0">
                       <input
@@ -2556,7 +2556,7 @@ export default function SectionForms({
                         updateField("testimonials", "items", n);
                       }}
                       placeholder="var(--primary)"
-                      className="flex-1 px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
+                      className="flex-1 px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground placeholder-sidebar-subtle-foreground"
                     />
                   </div>
                 </div>
@@ -2564,7 +2564,7 @@ export default function SectionForms({
               {/* Company + Logo URL */}
               <div className="space-y-2">
                 <div>
-                  <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Perusahaan <span className="text-slate-600 font-normal normal-case">(opsional)</span></label>
+                  <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground block mb-1">Perusahaan <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></label>
                   <input
                     type="text"
                     value={item.company || ""}
@@ -2574,11 +2574,11 @@ export default function SectionForms({
                       updateField("testimonials", "items", n);
                     }}
                     placeholder="cth. PT Maju Jaya"
-                    className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200 placeholder-slate-600`}
+                    className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500 block mb-1">Logo URL <span className="text-slate-600 font-normal normal-case">(opsional, untuk variant logo-wall)</span></label>
+                  <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground block mb-1">Logo URL <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional, untuk variant logo-wall)</span></label>
                   <input
                     type="text"
                     value={item.logo_url || ""}
@@ -2588,7 +2588,7 @@ export default function SectionForms({
                       updateField("testimonials", "items", n);
                     }}
                     placeholder="https://..."
-                    className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200 placeholder-slate-600`}
+                    className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
                   />
                 </div>
               </div>
@@ -2603,7 +2603,7 @@ export default function SectionForms({
                 { quote: "Pelayanan sangat memuaskan, ramah, dan hasilnya melebihi ekspektasi!", name: "Nama Pelanggan", role: "Pelanggan", avatar_initials: "NP", avatar_color: "var(--primary)", company: "", logo_url: "" }
               ]);
             }}
-            className="w-full text-[12px] py-2 border border-dashed border-border rounded-xl text-slate-500 hover:bg-white/5 hover:text-slate-300 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+            className="w-full text-[12px] py-2 border border-dashed border-border rounded-xl text-sidebar-subtle-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
           >
             <Plus className="w-3.5 h-3.5" /> Tambah Testimoni
           </button>
@@ -2647,7 +2647,7 @@ export default function SectionForms({
             </p>
           </div>
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>Judul Galeri {needsAttention("gallery.title") && <span className="text-amber-300">⚠️</span>}</span>
               {renderFieldActions("gallery", "title")}
             </label>
@@ -2660,7 +2660,7 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>Eyebrow</span>
               {renderFieldActions("gallery", "eyebrow")}
             </label>
@@ -2675,7 +2675,7 @@ export default function SectionForms({
 
           {/* Layout Picker */}
           <div className="space-y-1.5">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Tata Letak</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Tata Letak</label>
             <div className="grid grid-cols-3 gap-2">
               {([
                 { value: "grid", label: "Grid", desc: "Kotak seragam" },
@@ -2689,7 +2689,7 @@ export default function SectionForms({
                   className={`p-2 rounded-lg border text-center transition-all cursor-pointer ${
                     (content.gallery?.layout || "grid") === opt.value
                       ? "border-primary bg-primary/10 text-primary"
-                      : "border-border text-slate-400 hover:border-border"
+                      : "border-border text-sidebar-muted-foreground hover:border-border"
                   }`}
                 >
                   <div className="text-[11px] font-semibold">{opt.label}</div>
@@ -2702,9 +2702,9 @@ export default function SectionForms({
           {/* Carousel config (only when carousel selected) */}
           {(content.gallery?.layout || "grid") === "carousel" && (
             <div className="space-y-3 p-3 rounded-xl border border-border/50 bg-muted/30">
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Pengaturan Carousel</span>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-sidebar-subtle-foreground">Pengaturan Carousel</span>
               <div className="space-y-1">
-                <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Kecepatan Putar (ms)</label>
+                <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Kecepatan Putar (ms)</label>
                 <input
                   type="number" min={1000} max={15000} step={500}
                   value={content.gallery?.autoplay_speed ?? 4000}
@@ -2719,7 +2719,7 @@ export default function SectionForms({
                   onChange={(e) => updateField("gallery", "show_dots", e.target.checked)}
                   className="rounded border-border"
                 />
-                <span className="text-[11px] font-medium text-slate-400">Tampilkan indikator titik</span>
+                <span className="text-[11px] font-medium text-sidebar-muted-foreground">Tampilkan indikator titik</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
@@ -2728,7 +2728,7 @@ export default function SectionForms({
                   onChange={(e) => updateField("gallery", "show_arrows", e.target.checked)}
                   className="rounded border-border"
                 />
-                <span className="text-[11px] font-medium text-slate-400">Tampilkan tombol navigasi</span>
+                <span className="text-[11px] font-medium text-sidebar-muted-foreground">Tampilkan tombol navigasi</span>
               </label>
             </div>
           )}
@@ -2736,14 +2736,14 @@ export default function SectionForms({
           {/* Gallery Items */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Foto ({content.gallery?.items?.length || 0})</span>
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-sidebar-subtle-foreground">Foto ({content.gallery?.items?.length || 0})</span>
               <button
                 type="button"
                 onClick={() => {
                   const next = [...(content.gallery?.items || []), { image_url: "", caption: "", alt_text: "" }];
                   updateField("gallery", "items", next);
                 }}
-                className="text-[12px] py-1.5 px-3 border border-dashed border-border rounded-xl text-slate-500 hover:bg-white/5 hover:text-slate-300 flex items-center gap-1.5 cursor-pointer transition-colors"
+                className="text-[12px] py-1.5 px-3 border border-dashed border-border rounded-xl text-sidebar-subtle-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground flex items-center gap-1.5 cursor-pointer transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" /> Tambah Foto
               </button>
@@ -2751,7 +2751,7 @@ export default function SectionForms({
             {(content.gallery?.items || []).map((item: any, idx: number) => (
               <div key={idx} className="mb-3 p-4 rounded-xl border border-border/50 bg-muted/30 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] text-slate-500 font-medium">Foto #{idx + 1}</span>
+                  <span className="text-[11px] text-sidebar-subtle-foreground font-medium">Foto #{idx + 1}</span>
                   <button
                     type="button"
                     onClick={() => {
@@ -2764,7 +2764,7 @@ export default function SectionForms({
                   </button>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">URL Gambar</label>
+                  <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">URL Gambar</label>
                   <div className="flex gap-2">
                     <input
                       id={`field-gallery.items.${idx}.image_url`}
@@ -2785,7 +2785,7 @@ export default function SectionForms({
                   )}
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Caption</label>
+                  <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Caption</label>
                   <input
                     type="text" value={item.caption || ""}
                     onChange={(e) => {
@@ -2798,7 +2798,7 @@ export default function SectionForms({
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Teks Alt</label>
+                  <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Teks Alt</label>
                   <input
                     type="text" value={item.alt_text || ""}
                     onChange={(e) => {
@@ -2816,7 +2816,7 @@ export default function SectionForms({
               <button
                 type="button"
                 onClick={() => updateField("gallery", "items", [{ image_url: "", caption: "", alt_text: "" }])}
-                className="w-full text-[12px] py-2 border border-dashed border-border rounded-xl text-slate-500 hover:bg-white/5 hover:text-slate-300 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+                className="w-full text-[12px] py-2 border border-dashed border-border rounded-xl text-sidebar-subtle-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" /> Tambah Foto Pertama
               </button>
@@ -2835,7 +2835,7 @@ export default function SectionForms({
             </p>
           </div>
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>Judul Portofolio {needsAttention("works.title") && <span className="text-amber-300">⚠️</span>}</span>
               {renderFieldActions("works", "title")}
             </label>
@@ -2848,7 +2848,7 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>Eyebrow</span>
               {renderFieldActions("works", "eyebrow")}
             </label>
@@ -2861,7 +2861,7 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Deskripsi Ringkas</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Deskripsi Ringkas</label>
             <textarea
               rows={2}
               value={content.works?.subtitle || ""}
@@ -2873,7 +2873,7 @@ export default function SectionForms({
 
           {/* Layout Picker */}
           <div className="space-y-1.5">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Tata Letak</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Tata Letak</label>
             <div className="grid grid-cols-2 gap-2">
               {([
                 { value: "grid", label: "Grid", desc: "Kotak seragam" },
@@ -2888,7 +2888,7 @@ export default function SectionForms({
                   className={`p-2 rounded-lg border text-center transition-all cursor-pointer ${
                     (content.works?.layout || "grid") === opt.value
                       ? "border-primary bg-primary/10 text-primary"
-                      : "border-border text-slate-400 hover:border-border"
+                      : "border-border text-sidebar-muted-foreground hover:border-border"
                   }`}
                 >
                   <div className="text-[11px] font-semibold">{opt.label}</div>
@@ -2901,7 +2901,7 @@ export default function SectionForms({
           {/* Works Items */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Proyek ({content.works?.items?.length || 0})</span>
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-sidebar-subtle-foreground">Proyek ({content.works?.items?.length || 0})</span>
               <button
                 type="button"
                 onClick={() => {
@@ -2909,7 +2909,7 @@ export default function SectionForms({
                   const next = [...existingWorks, { title: `Proyek ${existingWorks.length + 1}`, category: "", year: new Date().getFullYear().toString(), client: "", description: "Deskripsi proyek ini", image_url: "", project_url: "", alt_text: "" }];
                   updateField("works", "items", next);
                 }}
-                className="text-[12px] py-1.5 px-3 border border-dashed border-border rounded-xl text-slate-500 hover:bg-white/5 hover:text-slate-300 flex items-center gap-1.5 cursor-pointer transition-colors"
+                className="text-[12px] py-1.5 px-3 border border-dashed border-border rounded-xl text-sidebar-subtle-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground flex items-center gap-1.5 cursor-pointer transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" /> Tambah Proyek
               </button>
@@ -2917,7 +2917,7 @@ export default function SectionForms({
             {(content.works?.items || []).map((item: any, idx: number) => (
               <div key={idx} className="mb-3 p-4 rounded-xl border border-border/50 bg-muted/30 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] text-slate-500 font-medium">Proyek #{idx + 1}</span>
+                  <span className="text-[11px] text-sidebar-subtle-foreground font-medium">Proyek #{idx + 1}</span>
                   <button
                     type="button"
                     onClick={() => {
@@ -2930,7 +2930,7 @@ export default function SectionForms({
                   </button>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Judul Proyek</label>
+                  <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Judul Proyek</label>
                   <input
                     type="text" value={item.title || ""}
                     onChange={(e) => {
@@ -2944,7 +2944,7 @@ export default function SectionForms({
                 </div>
                 <div className="space-y-2">
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Kategori</label>
+                    <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Kategori</label>
                     <input
                       list="works-category-suggestions"
                       value={item.category || ""}
@@ -2969,7 +2969,7 @@ export default function SectionForms({
                     </datalist>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Tahun</label>
+                    <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Tahun</label>
                     <input
                       type="text" value={item.year || ""}
                       onChange={(e) => {
@@ -2984,7 +2984,7 @@ export default function SectionForms({
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Klien</label>
+                    <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Klien</label>
                     <input
                       type="text" value={item.client || ""}
                       onChange={(e) => {
@@ -2997,7 +2997,7 @@ export default function SectionForms({
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Link Proyek</label>
+                    <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Link Proyek</label>
                     <input
                       type="text" value={item.project_url || ""}
                       onChange={(e) => {
@@ -3011,7 +3011,7 @@ export default function SectionForms({
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Deskripsi</label>
+                  <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Deskripsi</label>
                   <textarea
                     rows={2}
                     value={item.description || ""}
@@ -3025,7 +3025,7 @@ export default function SectionForms({
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">URL Gambar</label>
+                  <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">URL Gambar</label>
                   <div className="flex gap-2">
                     <input
                       type="text" value={item.image_url || ""}
@@ -3045,7 +3045,7 @@ export default function SectionForms({
                   )}
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Teks Alt</label>
+                  <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Teks Alt</label>
                   <input
                     type="text" value={item.alt_text || ""}
                     onChange={(e) => {
@@ -3063,7 +3063,7 @@ export default function SectionForms({
               <button
                 type="button"
                 onClick={() => updateField("works", "items", [{ title: "", category: "", year: "", client: "", description: "", image_url: "", project_url: "", alt_text: "" }])}
-                className="w-full text-[12px] py-2 border border-dashed border-border rounded-xl text-slate-500 hover:bg-white/5 hover:text-slate-300 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+                className="w-full text-[12px] py-2 border border-dashed border-border rounded-xl text-sidebar-subtle-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" /> Tambah Proyek Pertama
               </button>
@@ -3111,40 +3111,40 @@ export default function SectionForms({
 
           <div className="space-y-3">
             <div className="space-y-1">
-              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Eyebrow (Label Atas)</label>
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Eyebrow (Label Atas)</label>
               <input
                 type="text"
                 value={content.stats?.eyebrow || ""}
                 onChange={(e) => updateField("stats", "eyebrow", e.target.value)}
                 placeholder="cth. DALAM ANGKA"
-                className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200`}
+                className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
               />
             </div>
             <div className="space-y-1">
-              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Judul Section</label>
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Judul Section</label>
               <input
                 type="text"
                 value={content.stats?.title || ""}
                 onChange={(e) => updateField("stats", "title", e.target.value)}
                 placeholder="cth. Pencapaian yang Berbicara"
-                className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200`}
+                className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
               />
             </div>
             <div className="space-y-1">
-              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Subjudul (Opsional)</label>
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Subjudul (Opsional)</label>
               <input
                 type="text"
                 value={content.stats?.subtitle || ""}
                 onChange={(e) => updateField("stats", "subtitle", e.target.value)}
                 placeholder="cth. Hasil nyata dari dedikasi dan kerja keras kami"
-                className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200`}
+                className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
               />
             </div>
           </div>
 
           <div className="space-y-3 pt-2">
             <div className="flex items-center justify-between">
-              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Daftar Angka / Metrik</label>
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Daftar Angka / Metrik</label>
               <button
                 type="button"
                 onClick={() => {
@@ -3160,7 +3160,7 @@ export default function SectionForms({
             {(content.stats?.items || []).map((item: any, idx: number) => (
               <div key={idx} className="p-3 border border-border rounded-xl space-y-2.5 bg-muted/40">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase text-slate-500">Metrik #{idx + 1}</span>
+                  <span className="text-[10px] font-bold uppercase text-sidebar-subtle-foreground">Metrik #{idx + 1}</span>
                   <button
                     type="button"
                     onClick={() => {
@@ -3174,7 +3174,7 @@ export default function SectionForms({
                 </div>
                 <div className="space-y-2">
                   <div>
-                    <label className="text-[10px] text-slate-400 mb-0.5 block">Angka / Value</label>
+                    <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">Angka / Value</label>
                     <input
                       type="text"
                       value={item.value || ""}
@@ -3184,11 +3184,11 @@ export default function SectionForms({
                         updateField("stats", "items", items);
                       }}
                       placeholder="cth. 1.2M atau 98%"
-                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] text-slate-400 mb-0.5 block">Label</label>
+                    <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">Label</label>
                     <input
                       type="text"
                       value={item.label || ""}
@@ -3198,13 +3198,13 @@ export default function SectionForms({
                         updateField("stats", "items", items);
                       }}
                       placeholder="cth. Subscribers"
-                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2 items-center">
                   <div>
-                    <label className="text-[10px] text-slate-400 mb-0.5 block">Ikon</label>
+                    <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">Ikon</label>
                     <IconPicker
                       value={item.icon || "TrendingUp"}
                       onChange={(iconName) => {
@@ -3215,7 +3215,7 @@ export default function SectionForms({
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] text-slate-400 mb-0.5 block">Keterangan (Opsional)</label>
+                    <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">Keterangan (Opsional)</label>
                     <input
                       type="text"
                       value={item.description || ""}
@@ -3225,7 +3225,7 @@ export default function SectionForms({
                         updateField("stats", "items", items);
                       }}
                       placeholder="cth. Aktif di 3 platform"
-                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                     />
                   </div>
                 </div>
@@ -3247,40 +3247,40 @@ export default function SectionForms({
 
           <div className="space-y-3">
             <div className="space-y-1">
-              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Eyebrow</label>
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Eyebrow</label>
               <input
                 type="text"
                 value={content.partners?.eyebrow || ""}
                 onChange={(e) => updateField("partners", "eyebrow", e.target.value)}
                 placeholder="cth. DIPERCAYA OLEH"
-                className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200`}
+                className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
               />
             </div>
             <div className="space-y-1">
-              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Judul Section</label>
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Judul Section</label>
               <input
                 type="text"
                 value={content.partners?.title || ""}
                 onChange={(e) => updateField("partners", "title", e.target.value)}
                 placeholder="cth. Brand yang Telah Berkolaborasi"
-                className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200`}
+                className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
               />
             </div>
             <div className="space-y-1">
-              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Subjudul (Opsional)</label>
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Subjudul (Opsional)</label>
               <input
                 type="text"
                 value={content.partners?.subtitle || ""}
                 onChange={(e) => updateField("partners", "subtitle", e.target.value)}
                 placeholder="cth. Lebih dari 50+ brand telah mempercayai karya kami"
-                className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200`}
+                className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
               />
             </div>
           </div>
 
           <div className="space-y-3 pt-2">
             <div className="flex items-center justify-between">
-              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Daftar Mitra / Brand</label>
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Daftar Mitra / Brand</label>
               <button
                 type="button"
                 onClick={() => {
@@ -3296,7 +3296,7 @@ export default function SectionForms({
             {(content.partners?.items || []).map((partner: any, idx: number) => (
               <div key={idx} className="p-3 border border-border rounded-xl space-y-2 bg-muted/40">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase text-slate-500">Mitra #{idx + 1}</span>
+                  <span className="text-[10px] font-bold uppercase text-sidebar-subtle-foreground">Mitra #{idx + 1}</span>
                   <button
                     type="button"
                     onClick={() => {
@@ -3310,7 +3310,7 @@ export default function SectionForms({
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="text-[10px] text-slate-400 mb-0.5 block">Nama Brand / Mitra</label>
+                    <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">Nama Brand / Mitra</label>
                     <input
                       type="text"
                       value={partner.name || ""}
@@ -3320,11 +3320,11 @@ export default function SectionForms({
                         updateField("partners", "items", items);
                       }}
                       placeholder="cth. Tokopedia"
-                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] text-slate-400 mb-0.5 block">Kategori / Industri</label>
+                    <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">Kategori / Industri</label>
                     <input
                       type="text"
                       value={partner.category || ""}
@@ -3334,12 +3334,12 @@ export default function SectionForms({
                         updateField("partners", "items", items);
                       }}
                       placeholder="cth. E-Commerce"
-                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="text-[10px] text-slate-400 mb-0.5 block">Tautan Website (Opsional)</label>
+                  <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">Tautan Website (Opsional)</label>
                   <input
                     type="text"
                     value={partner.url || ""}
@@ -3349,7 +3349,7 @@ export default function SectionForms({
                       updateField("partners", "items", items);
                     }}
                     placeholder="https://example.com"
-                    className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                    className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                   />
                 </div>
               </div>
@@ -3370,40 +3370,40 @@ export default function SectionForms({
 
           <div className="space-y-3">
             <div className="space-y-1">
-              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Eyebrow</label>
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Eyebrow</label>
               <input
                 type="text"
                 value={content.pricing?.eyebrow || ""}
                 onChange={(e) => updateField("pricing", "eyebrow", e.target.value)}
                 placeholder="cth. RATE CARD / PILIHAN PAKET"
-                className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200`}
+                className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
               />
             </div>
             <div className="space-y-1">
-              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Judul Section</label>
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Judul Section</label>
               <input
                 type="text"
                 value={content.pricing?.title || ""}
                 onChange={(e) => updateField("pricing", "title", e.target.value)}
                 placeholder="cth. Paket Kolaborasi & Jasa"
-                className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200`}
+                className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
               />
             </div>
             <div className="space-y-1">
-              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Subjudul (Opsional)</label>
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Subjudul (Opsional)</label>
               <input
                 type="text"
                 value={content.pricing?.subtitle || ""}
                 onChange={(e) => updateField("pricing", "subtitle", e.target.value)}
                 placeholder="cth. Pilih paket yang paling sesuai dengan kebutuhan kampanye Anda"
-                className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200`}
+                className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
               />
             </div>
           </div>
 
           <div className="space-y-4 pt-2">
             <div className="flex items-center justify-between">
-              <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Daftar Paket</label>
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Daftar Paket</label>
               <button
                 type="button"
                 onClick={() => {
@@ -3430,7 +3430,7 @@ export default function SectionForms({
               <div key={idx} className="p-3.5 border border-border rounded-xl space-y-3 bg-muted/40">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-bold text-slate-300">Paket #{idx + 1}: {plan.name || "Tanpa Nama"}</span>
+                    <span className="text-[11px] font-bold text-sidebar-foreground">Paket #{idx + 1}: {plan.name || "Tanpa Nama"}</span>
                     {plan.is_featured && <span className="text-[9px] px-1.5 py-0.5 rounded bg-primary/20 text-primary font-extrabold">FEATURED</span>}
                   </div>
                   <button
@@ -3447,7 +3447,7 @@ export default function SectionForms({
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="text-[10px] text-slate-400 mb-0.5 block">Nama Paket</label>
+                    <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">Nama Paket</label>
                     <input
                       type="text"
                       value={plan.name || ""}
@@ -3457,11 +3457,11 @@ export default function SectionForms({
                         updateField("pricing", "plans", plans);
                       }}
                       placeholder="cth. Basic / Pro"
-                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] text-slate-400 mb-0.5 block">Badge (cth. Terpopuler)</label>
+                    <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">Badge (cth. Terpopuler)</label>
                     <input
                       type="text"
                       value={plan.badge || ""}
@@ -3471,14 +3471,14 @@ export default function SectionForms({
                         updateField("pricing", "plans", plans);
                       }}
                       placeholder="cth. Paling Populer"
-                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="text-[10px] text-slate-400 mb-0.5 block">Harga</label>
+                    <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">Harga</label>
                     <input
                       type="text"
                       value={plan.price || ""}
@@ -3488,11 +3488,11 @@ export default function SectionForms({
                         updateField("pricing", "plans", plans);
                       }}
                       placeholder="cth. Rp 2.500.000"
-                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200 font-semibold text-primary"
+                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground font-semibold text-primary"
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] text-slate-400 mb-0.5 block">Periode / Satuan</label>
+                    <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">Periode / Satuan</label>
                     <input
                       type="text"
                       value={plan.period || ""}
@@ -3502,13 +3502,13 @@ export default function SectionForms({
                         updateField("pricing", "plans", plans);
                       }}
                       placeholder="cth. /bulan atau /video"
-                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-[10px] text-slate-400 mb-0.5 block">Deskripsi Singkat</label>
+                  <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">Deskripsi Singkat</label>
                   <input
                     type="text"
                     value={plan.description || ""}
@@ -3518,13 +3518,13 @@ export default function SectionForms({
                       updateField("pricing", "plans", plans);
                     }}
                     placeholder="cth. Cocok untuk kampanye brand skala menengah"
-                    className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                    className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                   />
                 </div>
 
                 {/* Features list */}
                 <div className="space-y-1.5">
-                  <label className="text-[10px] text-slate-400 block">Daftar Fitur / Fasilitas (1 baris per fitur)</label>
+                  <label className="text-[10px] text-sidebar-muted-foreground block">Daftar Fitur / Fasilitas (1 baris per fitur)</label>
                   <textarea
                     rows={3}
                     value={(plan.features || []).join("\n")}
@@ -3535,13 +3535,13 @@ export default function SectionForms({
                       updateField("pricing", "plans", plans);
                     }}
                     placeholder="1 Video TikTok/Reels&#10;Termasuk Hak Cipta 3 Bulan&#10;2x Revisi Video"
-                    className="w-full px-2.5 py-1.5 border border-border rounded-md text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200 resize-none font-mono"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-md text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground resize-none font-mono"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="text-[10px] text-slate-400 mb-0.5 block">Teks Tombol CTA</label>
+                    <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">Teks Tombol CTA</label>
                     <input
                       type="text"
                       value={plan.cta_text || ""}
@@ -3551,11 +3551,11 @@ export default function SectionForms({
                         updateField("pricing", "plans", plans);
                       }}
                       placeholder="cth. Pilih Paket"
-                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] text-slate-400 mb-0.5 block">URL Tombol CTA</label>
+                    <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">URL Tombol CTA</label>
                     <input
                       type="text"
                       value={plan.cta_url || ""}
@@ -3565,7 +3565,7 @@ export default function SectionForms({
                         updateField("pricing", "plans", plans);
                       }}
                       placeholder="#contact"
-                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-slate-200"
+                      className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                     />
                   </div>
                 </div>
@@ -3581,7 +3581,7 @@ export default function SectionForms({
                     }}
                     className="rounded text-primary focus:ring-0"
                   />
-                  <span className="text-[11px] text-slate-300">Tandai sebagai paket unggulan (Highlight / Featured)</span>
+                  <span className="text-[11px] text-sidebar-foreground">Tandai sebagai paket unggulan (Highlight / Featured)</span>
                 </label>
               </div>
             ))}
@@ -3597,7 +3597,7 @@ export default function SectionForms({
             <p className="mt-1 text-primary/80">Tombol yang selalu terlihat di pojok kanan bawah halaman website.</p>
           </div>
           <div className="space-y-2">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Tipe Tombol</label>
+            <label className="text-[10px] font-bold uppercase tracking-wider text-sidebar-subtle-foreground">Tipe Tombol</label>
             <div className="grid grid-cols-2 gap-2">
               {([
                 { value: "none",         label: "Tidak Ada",   icon: "🚫", desc: "Tidak tampil tombol" },
@@ -3617,8 +3617,8 @@ export default function SectionForms({
                     className={`relative p-3 rounded-xl border text-left transition-all cursor-pointer ${isActive ? "border-primary bg-primary/15 ring-1 ring-primary" : "border-border bg-muted/40 hover:border-border hover:bg-muted/70"} ${isProGated ? "opacity-60" : ""}`}
                   >
                     <span className="text-lg block mb-1">{opt.icon}</span>
-                    <p className="text-[11px] font-bold text-slate-200 leading-tight">{opt.label}</p>
-                    <p className="text-[10px] text-slate-500 mt-0.5 leading-tight">{opt.desc}</p>
+                    <p className="text-[11px] font-bold text-sidebar-foreground leading-tight">{opt.label}</p>
+                    <p className="text-[10px] text-sidebar-subtle-foreground mt-0.5 leading-tight">{opt.desc}</p>
                     {opt.value === "chat_bubble" && <span className="absolute top-1.5 right-1.5 text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">PRO</span>}
                     {isActive && <span className="absolute bottom-1.5 right-1.5 w-2 h-2 rounded-full bg-primary" />}
                   </button>
@@ -3631,7 +3631,7 @@ export default function SectionForms({
           </div>
           {(designToken?.layout?.floating_button === "whatsapp" || designToken?.layout?.floating_button === "chat_bubble" || !designToken?.layout?.floating_button) && (
             <div className="space-y-2 pt-2 border-t border-border">
-              <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-slate-400">
+              <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
                 Nomor WhatsApp <span className="text-red-400">*</span>
               </label>
               <input type="text" inputMode="tel" value={content?.contact?.phone || ""}
@@ -3646,14 +3646,14 @@ export default function SectionForms({
                   }
                 }}
                 placeholder="cth. 628123456789 atau 08123456789"
-                className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-200 placeholder-slate-600`}
+                className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
               />
               {!content?.contact?.phone && <p className="text-[10px] text-red-400/80 mt-1">Nomor WA wajib diisi agar tombol berfungsi.</p>}
-              <p className="text-[10px] text-slate-600">Nomor ini juga dipakai di tombol WA lain di seluruh halaman.</p>
+              <p className="text-[10px] text-sidebar-subtle-foreground">Nomor ini juga dipakai di tombol WA lain di seluruh halaman.</p>
             </div>
           )}
           {designToken?.layout?.floating_button !== "none" && (
-            <div className="rounded-lg border border-border bg-muted/40 p-3 text-[11px] text-slate-400 leading-relaxed">
+            <div className="rounded-lg border border-border bg-muted/40 p-3 text-[11px] text-sidebar-muted-foreground leading-relaxed">
               {(designToken?.layout?.floating_button === "whatsapp" || !designToken?.layout?.floating_button) && "Tombol hijau WhatsApp tampil di pojok kanan bawah. Klik langsung membuka WA."}
               {designToken?.layout?.floating_button === "chat_bubble" && (isPremium ? "Widget chat WA interaktif. Pengunjung bisa ketik pesan sebelum diarahkan ke WA." : "Aktifkan plan Pro untuk Chat Bubble.")}
               {designToken?.layout?.floating_button === "contact_link" && "Tombol scroll ke section Kontak. Tidak membutuhkan nomor WA."}
@@ -3669,7 +3669,7 @@ export default function SectionForms({
           onClick={() => { fieldPromptModal.resolve(null); setFieldPromptModal(null); }}
         >
           <div
-            className="w-full max-w-md rounded-2xl border border-border bg-[#111318] shadow-2xl p-6 space-y-5"
+            className="w-full max-w-md rounded-2xl border border-border bg-sidebar text-sidebar-foreground shadow-2xl p-6 space-y-5"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -3678,10 +3678,10 @@ export default function SectionForms({
                 <SparkleGenAI className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <h3 className="text-[14px] font-bold text-slate-100 leading-tight">
+                <h3 className="text-[14px] font-bold text-sidebar-foreground leading-tight">
                   {language === "en" ? `AI Instructions — ${fieldPromptModal.label}` : `Instruksi AI — ${fieldPromptModal.label}`}
                 </h3>
-                <p className="text-[11px] text-slate-400 mt-0.5">
+                <p className="text-[11px] text-sidebar-muted-foreground mt-0.5">
                   {language === "en" ? "Add a custom instruction or just click Generate." : "Tambahkan instruksi khusus atau langsung klik Generate."}
                 </p>
               </div>
@@ -3698,7 +3698,7 @@ export default function SectionForms({
                 if (e.key === "Escape") { fieldPromptModal.resolve(null); setFieldPromptModal(null); }
               }}
               placeholder={language === "en" ? 'e.g. "make it more casual and friendly"' : 'cth. "buat lebih kasual dan ramah"'}
-              className="w-full px-4 py-3 border border-border bg-[#05070b] text-slate-100 rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 placeholder:text-slate-600 transition-all"
+              className="w-full px-4 py-3 border border-border bg-sidebar-input text-sidebar-foreground rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 placeholder:text-sidebar-subtle-foreground transition-all"
             />
 
             {/* Image chip — shown only when item has a photo */}
@@ -3739,7 +3739,7 @@ export default function SectionForms({
               <button
                 type="button"
                 onClick={() => { fieldPromptModal.resolve(null); setFieldPromptModal(null); }}
-                className="flex-1 h-10 rounded-xl border border-border text-[13px] font-semibold text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-all cursor-pointer"
+                className="flex-1 h-10 rounded-xl border border-border text-[13px] font-semibold text-sidebar-muted-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground transition-all cursor-pointer"
               >
                 Batal
               </button>
@@ -3775,19 +3775,19 @@ function HeroStatsEditor({
   onChange: (stats: Array<{ value: string; label: string }>) => void;
 }) {
   const items = Array.isArray(stats) ? stats : [];
-  const inputClass = `${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`;
+  const inputClass = `${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`;
   const setItem = (i: number, patch: { value?: string; label?: string }) =>
     onChange(items.map((s, idx) => (idx === i ? { ...s, ...patch } : s)));
   const removeItem = (i: number) => onChange(items.filter((_, idx) => idx !== i));
   const addItem = () => onChange([...items, { value: "100+", label: "Klien" }]);
   return (
-    <div className="space-y-2 rounded-lg border border-border/60 p-2.5 bg-white/[0.02]">
-      <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-        <span>Statistik Hero <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+    <div className="space-y-2 rounded-lg border border-border/60 p-2.5 bg-sidebar-muted/50">
+      <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
+        <span>Statistik Hero <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
       </label>
-      <p className="text-[10px] text-slate-600 leading-relaxed">Baris angka (mis. 12 / Projects) di varian Editorial Split, Personal Billboard, Portrait Showcase, dan Chronology Badge. Kosong = baris disembunyikan.</p>
+      <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Baris angka (mis. 12 / Projects) di varian Editorial Split, Personal Billboard, Portrait Showcase, dan Chronology Badge. Kosong = baris disembunyikan.</p>
       {items.length === 0 && (
-        <p className="text-[10px] text-slate-500 italic">Belum ada statistik. Tambahkan nilai dan label, lalu row akan tampil di hero.</p>
+        <p className="text-[10px] text-sidebar-subtle-foreground italic">Belum ada statistik. Tambahkan nilai dan label, lalu row akan tampil di hero.</p>
       )}
       {items.map((s, i) => (
         <div key={i} className="flex gap-1.5 items-center">
@@ -3810,7 +3810,7 @@ function HeroStatsEditor({
           <button
             type="button"
             onClick={() => removeItem(i)}
-            className="px-2 py-1.5 rounded-md text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
+            className="px-2 py-1.5 rounded-md text-sidebar-subtle-foreground hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
             title="Hapus statistik"
             aria-label={`Hapus statistik ${i + 1}`}
           >
@@ -3822,7 +3822,7 @@ function HeroStatsEditor({
         type="button"
         onClick={addItem}
         disabled={items.length >= 4}
-        className="w-full px-2 py-1.5 rounded-md text-xs font-semibold border border-dashed border-border text-slate-400 hover:text-slate-200 hover:border-primary/50 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+        className="w-full px-2 py-1.5 rounded-md text-xs font-semibold border border-dashed border-border text-sidebar-muted-foreground hover:text-sidebar-foreground hover:border-primary/50 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
       >
         + Tambah Statistik
       </button>
@@ -3842,40 +3842,40 @@ function HeroAccessoryEditor({
   const set = (patch: Record<string, unknown>) => onChange({ type: acc?.type ?? "", ...acc, ...patch });
   const hasText = acc?.type === "price" || acc?.type === "availability" || acc?.type === "rating";
   const hasTags = acc?.type === "skill_tags" || acc?.type === "menu_highlight";
-  const inputClass = `${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`;
+  const inputClass = `${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`;
   return (
-    <div className="space-y-2 rounded-lg border border-border/60 p-2.5 bg-white/[0.02]">
+    <div className="space-y-2 rounded-lg border border-border/60 p-2.5 bg-sidebar-muted/50">
       <div className="space-y-1">
-        <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-          <span>Info Bisnis di Hero <span className="text-slate-600 font-normal normal-case">(opsional)</span></span>
+        <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
+          <span>Info Bisnis di Hero <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
         </label>
         <select
           value={acc?.type || ""}
           onChange={(e) => onChange(e.target.value ? { type: e.target.value } : null)}
-          className={`${SIDEBAR_FIELD_CLASS} border-border text-slate-300`}
+          className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
         >
           <option value="">— Tidak Ada —</option>
           {HERO_ACCESSORY_TYPES.map((o) => (
-            <option key={o.value} value={o.value} className="bg-slate-900">{o.label}</option>
+            <option key={o.value} value={o.value} className="bg-sidebar-input text-sidebar-foreground">{o.label}</option>
           ))}
         </select>
-        <p className="text-[10px] text-slate-600 leading-relaxed">Blok kecil di hero sesuai jenis usaha (harga, ketersediaan, atau keahlian).</p>
+        <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Blok kecil di hero sesuai jenis usaha (harga, ketersediaan, atau keahlian).</p>
       </div>
       {hasText && (
         <>
           <div className="space-y-1">
-            <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500">Label</label>
+            <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground">Label</label>
             <input type="text" value={acc?.label || ""} onChange={(e) => set({ label: e.target.value })} placeholder={acc?.type === "price" ? "cth. Mulai dari" : "cth. Tersedia untuk"} className={inputClass} />
           </div>
           <div className="space-y-1">
-            <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500">Nilai</label>
+            <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground">Nilai</label>
             <input type="text" value={acc?.value || ""} onChange={(e) => set({ value: e.target.value })} placeholder={acc?.type === "price" ? "cth. Rp 99.000" : "cth. Pemesanan & konsultasi"} className={inputClass} />
           </div>
         </>
       )}
       {hasTags && (
         <div className="space-y-1">
-          <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500">Daftar (dipisah koma)</label>
+          <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground">Daftar (dipisah koma)</label>
           <input
             type="text"
             value={tagsString}
@@ -3904,15 +3904,15 @@ function HeroDashboardWidgetEditor({
     });
   };
 
-  const inputClass = `${SIDEBAR_FIELD_CLASS} border-border text-slate-300 placeholder-slate-600`;
+  const inputClass = `${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`;
 
   return (
-    <div className="space-y-3 rounded-xl border border-border/70 p-3 bg-white/[0.02]">
+    <div className="space-y-3 rounded-xl border border-border/70 p-3 bg-sidebar-muted/50">
       {/* Header with Hide/Show switch */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <BarChart2 className="w-4 h-4 text-primary shrink-0" />
-          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-300">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-sidebar-foreground">
             Widget Dashboard Hero
           </span>
         </div>
@@ -3921,7 +3921,7 @@ function HeroDashboardWidgetEditor({
           onClick={() => setField("hidden", !isHidden)}
           className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
             isHidden
-              ? "border-white/10 bg-white/5 text-slate-400 hover:text-white"
+              ? "border-sidebar-border bg-sidebar-muted text-sidebar-muted-foreground hover:text-sidebar-foreground"
               : "border-primary/30 bg-primary/10 text-primary hover:bg-primary/20"
           }`}
           title={isHidden ? "Tampilkan widget" : "Sembunyikan widget"}
@@ -3942,18 +3942,18 @@ function HeroDashboardWidgetEditor({
 
       {!isHidden && (
         <div className="space-y-3 pt-2 border-t border-border/40">
-          <p className="text-[11px] text-slate-400 leading-relaxed">
+          <p className="text-[11px] text-sidebar-muted-foreground leading-relaxed">
             Sesuaikan nama tab dan metrik dashboard ilustrasi hero. Teks juga bisa diklik dan diedit langsung di kanvas.
           </p>
 
           {/* Tab labels */}
           <div className="space-y-1.5">
-            <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500">
+            <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground">
               Nama Tab (Analytics, Deploy, Monitor)
             </label>
             <div className="grid grid-cols-3 gap-2">
               <div>
-                <span className="text-[10px] text-slate-500 mb-1 block">Tab 1</span>
+                <span className="text-[10px] text-sidebar-subtle-foreground mb-1 block">Tab 1</span>
                 <input
                   type="text"
                   value={widget?.tab_analytics_label ?? "Analytics"}
@@ -3963,7 +3963,7 @@ function HeroDashboardWidgetEditor({
                 />
               </div>
               <div>
-                <span className="text-[10px] text-slate-500 mb-1 block">Tab 2</span>
+                <span className="text-[10px] text-sidebar-subtle-foreground mb-1 block">Tab 2</span>
                 <input
                   type="text"
                   value={widget?.tab_deploy_label ?? "Deploy"}
@@ -3973,7 +3973,7 @@ function HeroDashboardWidgetEditor({
                 />
               </div>
               <div>
-                <span className="text-[10px] text-slate-500 mb-1 block">Tab 3</span>
+                <span className="text-[10px] text-sidebar-subtle-foreground mb-1 block">Tab 3</span>
                 <input
                   type="text"
                   value={widget?.tab_monitor_label ?? "Monitor"}
@@ -3987,7 +3987,7 @@ function HeroDashboardWidgetEditor({
 
           {/* Metrik Monitor */}
           <div className="space-y-1.5">
-            <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500">
+            <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground">
               Metrik Tab Monitor (Nilai & Label)
             </label>
             <div className="grid grid-cols-3 gap-2">
@@ -4044,7 +4044,7 @@ function HeroDashboardWidgetEditor({
 
           {/* Langkah Deploy */}
           <div className="space-y-1.5">
-            <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-500">
+            <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground">
               Langkah Tab Deploy
             </label>
             <div className="grid grid-cols-3 gap-2">
