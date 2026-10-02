@@ -6,7 +6,7 @@ import FileUpload from "@/components/file-upload";
 import { SIDEBAR_FIELD_CLASS, SIDEBAR_FIELD_CLASS_ICON } from "@/lib/editor-field-class";
 import LocationPicker from "@/components/location-picker";
 import { GoogleSnippetPreview } from "@/components/google-snippet-preview";
-import { isPlaceholderValue, AI_SUGGESTIONS, getAiSuggestions } from "./editor-utils";
+import { isPlaceholderValue, getAiSuggestions } from "./editor-utils";
 import { request } from "@/lib/api/client";
 import { tenantHost } from "@/lib/site-config";
 import { getEnabledMapTiles } from "@/lib/design-assets-config";
@@ -506,7 +506,7 @@ export default function SectionForms({
   undoField,
 }: SectionFormsProps) {
   const { pushToast } = useToast();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const renderFieldActions = (section: string, key: string, aiButton?: React.ReactNode) => {
     const fieldPath = `${section}.${key}`;
     const stack = fieldUndoStacks?.[fieldPath] || [];
@@ -3679,10 +3679,10 @@ export default function SectionForms({
               </div>
               <div>
                 <h3 className="text-[14px] font-bold text-sidebar-foreground leading-tight">
-                  {language === "en" ? `AI Instructions — ${fieldPromptModal.label}` : `Instruksi AI — ${fieldPromptModal.label}`}
+                  {t("dashboard.sitesEditor.fieldAiTitle", undefined, { label: fieldPromptModal.label })}
                 </h3>
                 <p className="text-[11px] text-sidebar-muted-foreground mt-0.5">
-                  {language === "en" ? "Add a custom instruction or just click Generate." : "Tambahkan instruksi khusus atau langsung klik Generate."}
+                  {t("dashboard.sitesEditor.fieldAiDesc")}
                 </p>
               </div>
             </div>
@@ -3697,7 +3697,7 @@ export default function SectionForms({
                 if (e.key === "Enter") { fieldPromptModal.resolve(fieldPromptInput.trim()); setFieldPromptModal(null); }
                 if (e.key === "Escape") { fieldPromptModal.resolve(null); setFieldPromptModal(null); }
               }}
-              placeholder={language === "en" ? 'e.g. "make it more casual and friendly"' : 'cth. "buat lebih kasual dan ramah"'}
+              placeholder={t("dashboard.sitesEditor.fieldAiPlaceholder")}
               className="w-full px-4 py-3 border border-border bg-sidebar-input text-sidebar-foreground rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 placeholder:text-sidebar-subtle-foreground transition-all"
             />
 
@@ -3705,13 +3705,11 @@ export default function SectionForms({
             {fieldPromptModal.imageUrl && (
               <button
                 type="button"
-                onClick={() => setFieldPromptInput(language === "en"
-                  ? "Write a description based on this product photo"
-                  : "Tulis deskripsi berdasarkan foto produk ini")}
+                onClick={() => setFieldPromptInput(t("dashboard.sitesEditor.fieldAiImagePrompt"))}
                 className="w-full flex items-center gap-2 px-3 py-2 rounded-xl border border-primary/30 bg-primary/10 text-[11px] font-semibold text-primary hover:bg-primary/20 transition-colors cursor-pointer text-left"
               >
                 <span className="text-base leading-none">📸</span>
-                <span>{language === "en" ? "Write a description from the product photo" : "Tulis deskripsi dari foto produk"}</span>
+                <span>{t("dashboard.sitesEditor.fieldAiImageChip")}</span>
                 <span className="ml-auto shrink-0 w-10 h-6 rounded overflow-hidden border border-border">
                   <img src={fieldPromptModal.imageUrl} alt="" className="w-full h-full object-cover" />
                 </span>
@@ -3719,9 +3717,9 @@ export default function SectionForms({
             )}
 
             {/* Quick suggestions */}
-            {(AI_SUGGESTIONS[fieldPromptModal.section as keyof typeof AI_SUGGESTIONS] ?? []).length > 0 && (
+            {getAiSuggestions(locale, fieldPromptModal.section).length > 0 && (
               <div className="flex flex-wrap gap-1.5">
-                {getAiSuggestions(language, fieldPromptModal.section).slice(0, 3).map((chip) => (
+                {getAiSuggestions(locale, fieldPromptModal.section).slice(0, 3).map((chip) => (
                   <button
                     key={chip}
                     type="button"

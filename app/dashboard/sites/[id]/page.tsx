@@ -24,6 +24,7 @@ import {
   BODY_SECTION_KEYS,
   EDITOR_SECTION_KEYS,
   SECTION_META,
+  getSectionLabel,
   getAiSuggestions,
   getOrderedSections,
   cloneData,
@@ -1369,7 +1370,7 @@ export default function SiteEditorPage() {
     })
     .map((key, idx) => ({
       key,
-      label: SECTION_META[key]?.label ?? key,
+      label: getSectionLabel(key, locale),
       icon: SECTION_META[key]?.icon ?? Layout,
       num: idx + 1,
     }));
@@ -1377,12 +1378,10 @@ export default function SiteEditorPage() {
   const pageOrderSections = SECTIONS;
   const quality = collectQualityIssues(content);
   const issuePaths = new Set(quality.issues.map((issue) => issue.path));
-  const activeSuggestions = getAiSuggestions(siteDetails?.language, activeTab);
-  const aiPlaceholder = activeSuggestions[0] || (siteDetails?.language === "en"
-    ? "Make the copy clearer and more compelling..."
-    : "Buat copy lebih jelas dan meyakinkan...");
+  const activeSuggestions = getAiSuggestions(locale, activeTab);
+  const aiPlaceholder = activeSuggestions[0] || t("dashboard.sitesEditor.aiPlaceholder");
   const fieldClass = (path: string, base: string) => `${base} ${issuePaths.has(path)
-    ? "!border-amber-400/80 !bg-amber-400/10 focus:!border-amber-300"
+    ? "!border-amber-500 !bg-amber-500/10 focus:!border-amber-600 dark:!border-amber-400 dark:!bg-amber-400/10 dark:focus:!border-amber-300"
     : ""
     }`;
   const needsAttention = (path: string) => issuePaths.has(path);
@@ -1859,7 +1858,11 @@ export default function SiteEditorPage() {
                       {["header", "footer", "seo"].includes(key) ? null : (() => {
                         const score = getSectionScore(content, key);
                         if (score >= 100) return null;
-                        const color = score >= 85 ? "bg-emerald-500" : score >= 65 ? "bg-amber-500" : "bg-red-500";
+                        const color = score >= 85
+                          ? "bg-emerald-600 dark:bg-emerald-500"
+                          : score >= 65
+                            ? "bg-amber-700 dark:bg-amber-500"
+                            : "bg-red-600 dark:bg-red-500";
                         return <div className={`w-1.5 h-1.5 rounded-full ${color}`} title={t("dashboard.sitesEditor.qualityScore", undefined, { score: String(score) })} />;
                       })()}
                       <span className={`text-[8px] px-1 py-0.2 rounded-full font-medium ${activeTab === key ? "bg-primary/30 text-primary" : "bg-sidebar-muted text-sidebar-muted-foreground group-hover:text-sidebar-foreground"
@@ -2196,7 +2199,7 @@ export default function SiteEditorPage() {
                       <p className="mt-1 text-[11px] leading-relaxed text-sidebar-muted-foreground max-w-[200px]">
                         {t("dashboard.sitesEditor.aiReviewDesc1")}{" "}
                         <span className="font-bold text-primary">
-                          {SECTION_META[pendingDiff.section]?.label || pendingDiff.section}
+                          {getSectionLabel(pendingDiff.section, locale)}
                         </span>{" "}
                         {t("dashboard.sitesEditor.aiReviewDesc2")}
                       </p>
@@ -2219,10 +2222,10 @@ export default function SiteEditorPage() {
                     </div>
                   ) : null}
                   {quality.issues.length > 0 && (
-                    <div className="rounded-lg border border-amber-400/20 bg-amber-400/10 px-3 py-2.5 text-[11px] leading-relaxed text-amber-100 space-y-2">
-                      <div className="flex items-center justify-between gap-2 border-b border-amber-400/10 pb-1.5">
+                    <div className="rounded-lg border-amber-500/30 bg-amber-500/10 dark:border-amber-400/25 dark:bg-amber-400/10 px-3 py-2.5 text-[11px] leading-relaxed text-amber-100 space-y-2">
+                      <div className="flex items-center justify-between gap-2 border-b border-amber-500/20 dark:border-amber-400/15 pb-1.5">
                         <span className="font-bold">⚠️ {t("dashboard.sitesEditor.qualityWarning", undefined, { count: String(quality.issues.length) })}</span>
-                        <span className="rounded-full bg-amber-400/15 px-2 py-0.5 font-semibold">{quality.score}%</span>
+                        <span className="rounded-full bg-amber-500/15 text-amber-800 dark:bg-amber-400/15 dark:text-amber-200 px-2 py-0.5 font-semibold">{quality.score}%</span>
                       </div>
                       <div className="flex flex-wrap gap-1.5 pt-1">
                         {quality.issues.map((issue) => (
@@ -2240,7 +2243,7 @@ export default function SiteEditorPage() {
                                 }
                               }, 100);
                             }}
-                            className="inline-flex items-center gap-1 rounded bg-amber-400/20 px-2 py-0.5 text-[10px] font-medium text-amber-200 hover:bg-amber-400/30 active:scale-95 transition cursor-pointer"
+                            className="inline-flex items-center gap-1 rounded bg-amber-500/15 text-amber-800 hover:bg-amber-500/25 dark:bg-amber-400/15 dark:text-amber-200 dark:hover:bg-amber-400/25 px-2 py-0.5 text-[10px] font-medium active:scale-95 transition cursor-pointer"
                           >
                             <span>{issue.label}</span>
                             <span className="text-[9px] opacity-60">→</span>
@@ -2391,7 +2394,7 @@ export default function SiteEditorPage() {
                 e.stopPropagation();
                 setQualityModalOpen(true);
               }}
-              className="flex flex-col items-center justify-center p-1 rounded-xl text-[10px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 transition-all hover:bg-amber-500/20 active:scale-95 cursor-pointer"
+              className="flex flex-col items-center justify-center p-1 rounded-xl text-[10px] font-bold text-amber-800 dark:text-amber-300 bg-amber-500/10 border border-amber-500/20 dark:border-amber-400/25 transition-all hover:bg-amber-500/20 active:scale-95 cursor-pointer"
               title={t("dashboard.sitesEditor.viewCompleteness")}
             >
               <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
@@ -2471,10 +2474,10 @@ export default function SiteEditorPage() {
                   title={autosaveStatus === "saving" ? t("dashboard.sitesEditor.saving") : autosaveStatus === "saved" ? t("dashboard.sitesEditor.saved") : t("dashboard.sitesEditor.autosaveFailed")}
                   aria-label={autosaveStatus === "saving" ? t("dashboard.sitesEditor.saving") : autosaveStatus === "saved" ? t("dashboard.sitesEditor.saved") : t("dashboard.sitesEditor.autosaveFailed")}
                   className={`flex h-6 w-6 items-center justify-center rounded-full border ${autosaveStatus === "saving"
-                      ? "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-300"
+                      ? "border-amber-500/30 bg-amber-500/10 text-amber-800 dark:border-amber-400/25 dark:text-amber-300"
                       : autosaveStatus === "saved"
                         ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                        : "border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-300"
+                        : "border-red-500/30 bg-red-500/10 text-red-800 dark:border-red-400/25 dark:text-red-300"
                     }`}
                   data-edu="autosave"
                 >
@@ -2647,8 +2650,8 @@ export default function SiteEditorPage() {
                 className={`flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold ${quality.score >= 85
                   ? "border-border/60 bg-muted/40 text-muted-foreground"
                   : quality.score >= 65
-                    ? "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400"
-                    : "border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400"
+                    ? "border-amber-500/30 bg-amber-500/10 text-amber-800 dark:border-amber-400/25 dark:text-amber-300"
+                    : "border-red-500/30 bg-red-500/10 text-red-800 dark:border-red-400/25 dark:text-red-300"
                   }`}
                 title={quality.issues.slice(0, 5).map((issue) => issue.label).join(", ")}
               >
@@ -2680,7 +2683,7 @@ export default function SiteEditorPage() {
               {autosaveStatus !== "idle" && (
                 <span className={`text-[10px] font-medium flex items-center gap-1 transition-all ${autosaveStatus === "saving" ? "text-muted-foreground" :
                   autosaveStatus === "saved" ? "text-muted-foreground" :
-                    "text-red-500"
+                    "text-red-700 dark:text-red-400"
                   }`}>
                   {autosaveStatus === "saving" && <Loader2 className="w-2.5 h-2.5 animate-spin" />}
                   {autosaveStatus === "saved" && <Check className="w-2.5 h-2.5" />}
@@ -2755,7 +2758,7 @@ export default function SiteEditorPage() {
                   <div className="flex items-center gap-2">
                     <SparkleGenAI className="h-5 w-5 text-primary" />
                     <p className="text-[12px] font-bold text-slate-100">
-                      {t("dashboard.sitesEditor.diffAi", undefined, { label: SECTION_META[pendingDiff.section]?.label ?? pendingDiff.section })}
+                      {t("dashboard.sitesEditor.diffAi", undefined, { label: getSectionLabel(pendingDiff.section, locale) })}
                     </p>
                     <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
                       {t("dashboard.sitesEditor.diffChanges", undefined, { count: String(pendingDiff.rows.length || 0) })}
@@ -2988,7 +2991,7 @@ export default function SiteEditorPage() {
                     e.stopPropagation();
                     setQualityModalOpen(true);
                   }}
-                  className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 transition-all hover:bg-amber-500/20 active:scale-95"
+                  className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold text-amber-800 dark:text-amber-300 bg-amber-500/10 border border-amber-500/20 dark:border-amber-400/25 transition-all hover:bg-amber-500/20 active:scale-95"
                   title={t("dashboard.sitesEditor.viewCompleteness")}
                 >
                   <AlertCircle className="w-3 h-3 flex-shrink-0" />
@@ -3053,7 +3056,7 @@ export default function SiteEditorPage() {
                     {pageOrderSections.findIndex(s => s.key === activeTab) + 1 || 1}
                   </span>
                   <span className="max-w-[110px] truncate text-[11px] font-semibold text-sidebar-foreground">
-                    {SECTION_META[activeTab]?.label ?? activeTab}
+                    {getSectionLabel(activeTab, locale)}
                   </span>
                   <ChevronDown className="w-3.5 h-3.5 text-sidebar-muted-foreground flex-shrink-0" />
                 </div>
@@ -3129,10 +3132,10 @@ export default function SiteEditorPage() {
 
                   {/* Quality issues detail */}
                   {quality.issues.length > 0 && (
-                    <div className="rounded-lg border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-[11px] space-y-1.5">
+                    <div className="rounded-lg border-amber-500/30 bg-amber-500/10 dark:border-amber-400/25 dark:bg-amber-400/10 px-3 py-2 text-[11px] space-y-1.5">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="font-bold text-amber-300">⚠️ {t("dashboard.sitesEditor.qualityWarning", undefined, { count: String(quality.issues.length) })}</span>
-                        <span className="rounded-full bg-amber-400/15 px-2 py-0.5 font-semibold text-amber-200">{quality.score}%</span>
+                        <span className="font-bold text-amber-800 dark:text-amber-300">⚠️ {t("dashboard.sitesEditor.qualityWarning", undefined, { count: String(quality.issues.length) })}</span>
+                        <span className="rounded-full bg-amber-500/15 text-amber-800 dark:bg-amber-400/15 dark:text-amber-200 px-2 py-0.5 font-semibold">{quality.score}%</span>
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {quality.issues.map((issue) => (
@@ -3147,7 +3150,7 @@ export default function SiteEditorPage() {
                                 if (el) { el.focus(); el.scrollIntoView({ behavior: "smooth", block: "center" }); }
                               }, 100);
                             }}
-                            className="inline-flex items-center gap-1 rounded bg-amber-400/20 px-2 py-0.5 text-[10px] font-medium text-amber-200 hover:bg-amber-400/30 active:scale-95 transition"
+                            className="inline-flex items-center gap-1 rounded bg-amber-500/15 text-amber-800 hover:bg-amber-500/25 dark:bg-amber-400/15 dark:text-amber-200 dark:hover:bg-amber-400/25 px-2 py-0.5 text-[10px] font-medium active:scale-95 transition"
                           >
                             {issue.label} <span className="text-[9px] opacity-60">→</span>
                           </button>
@@ -3229,7 +3232,7 @@ export default function SiteEditorPage() {
                       }));
                     }}
                     className={`w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg border text-[11px] font-medium transition-colors ${effectiveThemeIsDark
-                      ? 'border-amber-500/30 bg-amber-500/10 text-amber-300'
+                      ? 'border-amber-500/30 bg-amber-500/10 text-amber-800 dark:border-amber-400/25 dark:bg-amber-400/10 dark:text-amber-300'
                       : 'border-border bg-sidebar-muted text-sidebar-muted-foreground hover:bg-sidebar-muted'}`}
                   >
                     {effectiveThemeIsDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
@@ -3660,7 +3663,7 @@ export default function SiteEditorPage() {
                     {t("dashboard.sitesEditor.aiInstructionsTitle")}
                   </h3>
                   <p className="text-[11px] text-sidebar-muted-foreground mt-0.5">
-                    {t("dashboard.sitesEditor.aiPromptDesc", undefined, { label: SECTION_META[aiPromptModal.section]?.label ?? aiPromptModal.section })}
+                    {t("dashboard.sitesEditor.aiPromptDesc", undefined, { label: getSectionLabel(aiPromptModal.section, locale) })}
                   </p>
                 </div>
               </div>
@@ -3682,14 +3685,12 @@ export default function SiteEditorPage() {
                       setAiPromptModal(null);
                     }
                   }}
-                  placeholder={siteDetails?.language === "en"
-                    ? `e.g. "make it more persuasive and emotional"`
-                    : `cth. "buat lebih persuasif dan emosional"`}
+                  placeholder={t("dashboard.sitesEditor.aiPromptPlaceholder")}
                   className="w-full px-4 py-3 border border-border bg-sidebar-input text-sidebar-foreground rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 placeholder:text-sidebar-subtle-foreground transition-all"
                 />
                 {/* Quick suggestion chips */}
                 <div className="flex flex-wrap gap-1.5">
-                  {getAiSuggestions(siteDetails?.language, aiPromptModal.section).slice(0, 3).map((chip) => (
+                  {getAiSuggestions(locale, aiPromptModal.section).slice(0, 3).map((chip) => (
                     <button
                       key={chip}
                       type="button"
@@ -3745,11 +3746,11 @@ export default function SiteEditorPage() {
                 return (
                   <div
                     key={idx}
-                    className="flex items-center justify-between gap-2 p-2.5 rounded-xl border border-amber-500/20 bg-amber-500/10 text-amber-200"
+                    className="flex items-center justify-between gap-2 p-2.5 rounded-xl border border-amber-500/30 bg-amber-500/10 dark:border-amber-400/25 dark:bg-amber-400/10 text-amber-800 dark:text-amber-300"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs font-semibold text-amber-300">{issue.label}</p>
-                      <p className="text-[10px] text-amber-200/70 truncate">{t("dashboard.sitesEditor.qualityFieldHint")}</p>
+                      <p className="text-xs font-semibold text-amber-800 dark:text-amber-300">{issue.label}</p>
+                      <p className="text-[10px] text-amber-800/90 dark:text-amber-200/90 truncate">{t("dashboard.sitesEditor.qualityFieldHint")}</p>
                     </div>
                     <button
                       type="button"

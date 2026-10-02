@@ -2042,6 +2042,13 @@ export interface Translations {
       aiDesignPrompt: string;
       aiInstructionsTitle: string;
       aiPromptDesc: string;
+      aiPromptPlaceholder: string;
+      aiPlaceholder: string;
+      fieldAiTitle: string;
+      fieldAiDesc: string;
+      fieldAiPlaceholder: string;
+      fieldAiImagePrompt: string;
+      fieldAiImageChip: string;
       generateAi: string;
       regenerateWithAi: string;
       processing: string;
@@ -4604,6 +4611,13 @@ export const translations: Record<Locale, Translations> = {
         aiDesignPrompt: "AI Design Prompt",
         aiInstructionsTitle: "Instruksi AI",
         aiPromptDesc: "Apa yang ingin kamu ubah di bagian {label}?",
+        aiPromptPlaceholder: "cth. \"buat lebih persuasif dan emosional\"",
+        aiPlaceholder: "Buat copy lebih jelas dan meyakinkan...",
+        fieldAiTitle: "Instruksi AI — {label}",
+        fieldAiDesc: "Tambahkan instruksi khusus atau langsung klik Generate.",
+        fieldAiPlaceholder: "cth. \"buat lebih kasual dan ramah\"",
+        fieldAiImagePrompt: "Tulis deskripsi berdasarkan foto produk ini",
+        fieldAiImageChip: "Tulis deskripsi dari foto produk",
         generateAi: "Generate AI",
         regenerateWithAi: "Regenerate dengan AI",
         processing: "Memproses...",
@@ -7236,6 +7250,13 @@ export const translations: Record<Locale, Translations> = {
         aiDesignPrompt: "AI Design Prompt",
         aiInstructionsTitle: "AI Instructions",
         aiPromptDesc: "What would you like to change in the {label} section?",
+        aiPromptPlaceholder: "e.g. \"make it more persuasive and emotional\"",
+        aiPlaceholder: "Make the copy clearer and more compelling...",
+        fieldAiTitle: "AI Instructions — {label}",
+        fieldAiDesc: "Add a custom instruction or just click Generate.",
+        fieldAiPlaceholder: "e.g. \"make it more casual and friendly\"",
+        fieldAiImagePrompt: "Write a description based on this product photo",
+        fieldAiImageChip: "Write a description from the product photo",
         generateAi: "Generate AI",
         regenerateWithAi: "Regenerate with AI",
         processing: "Processing...",
