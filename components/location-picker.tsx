@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { MapPin, Crosshair, Loader2, X, Check } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 
@@ -174,8 +175,12 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
 
   if (!open) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
+  // Render the overlay via a portal on document.body so it is not clipped
+  // by the sidebar's overflow-y-auto or CSS transform stacking context.
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl flex flex-col overflow-hidden max-h-[90vh] md:max-h-[85vh] my-auto">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 shrink-0">
@@ -315,6 +320,7 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
