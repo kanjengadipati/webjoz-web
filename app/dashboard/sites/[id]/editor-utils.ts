@@ -26,27 +26,27 @@ export const EDITOR_SECTION_KEYS = ["header", ...BODY_SECTION_KEYS, "footer", "s
 // (e.g. coffee shops, restaurants). If the backend didn't generate faq, we don't show the tab.
 export const OPTIONAL_SECTION_KEYS = ["menu", "catalog", "stats", "partners", "pricing", "testimonials", "gallery", "works", "blog", "faq"];
 
-export const SECTION_META: Record<string, { label: string; icon: any }> = {
-  header:       { label: "Header",          icon: Layout },
-  hero:         { label: "Hero",            icon: Layout },
-  "hero-effect":{ label: "Efek Visual",     icon: Sparkles },
-  about:        { label: "Tentang",         icon: User },
-  benefits:     { label: "Keunggulan",      icon: Award },
-  stats:        { label: "Statistik",       icon: TrendingUp },
-  testimonials: { label: "Testimoni",       icon: Star },
-  menu:         { label: "Menu",            icon: UtensilsCrossed },
-  catalog:      { label: "Katalog",         icon: ShoppingBag },
-  gallery:      { label: "Galeri",          icon: Camera },
-  works:        { label: "Portofolio",      icon: Briefcase },
-  partners:     { label: "Mitra / Klien",   icon: Handshake },
-  pricing:      { label: "Paket & Harga",   icon: CreditCard },
-  blog:         { label: "Blog",            icon: BookOpen },
-  faq:          { label: "FAQ",             icon: HelpCircle },
-  cta:          { label: "CTA",             icon: SparkleIcon },
-  contact:      { label: "Kontak",          icon: Mail },
-  footer:       { label: "Footer",          icon: BookOpen },
-  seo:          { label: "SEO",             icon: Globe },
-  floating:     { label: "Tombol Aksi",     icon: MessageCircle },
+export const SECTION_META: Record<string, { label: string; labelEn: string; icon: any }> = {
+  header:       { label: "Header", labelEn: "Header", icon: Layout },
+  hero:         { label: "Hero", labelEn: "Hero", icon: Layout },
+  "hero-effect":{ label: "Efek Visual", labelEn: "Visual Effect", icon: Sparkles },
+  about:        { label: "Tentang", labelEn: "About", icon: User },
+  benefits:     { label: "Keunggulan", labelEn: "Benefits", icon: Award },
+  stats:        { label: "Statistik", labelEn: "Stats", icon: TrendingUp },
+  testimonials: { label: "Testimoni", labelEn: "Testimonials", icon: Star },
+  menu:         { label: "Menu", labelEn: "Menu", icon: UtensilsCrossed },
+  catalog:      { label: "Katalog", labelEn: "Catalog", icon: ShoppingBag },
+  gallery:      { label: "Galeri", labelEn: "Gallery", icon: Camera },
+  works:        { label: "Portofolio", labelEn: "Portfolio", icon: Briefcase },
+  partners:     { label: "Mitra / Klien", labelEn: "Partners / Clients", icon: Handshake },
+  pricing:      { label: "Paket & Harga", labelEn: "Plans & Pricing", icon: CreditCard },
+  blog:         { label: "Blog", labelEn: "Blog", icon: BookOpen },
+  faq:          { label: "FAQ", labelEn: "FAQ", icon: HelpCircle },
+  cta:          { label: "CTA", labelEn: "CTA", icon: SparkleIcon },
+  contact:      { label: "Kontak", labelEn: "Contact", icon: Mail },
+  footer:       { label: "Footer", labelEn: "Footer", icon: BookOpen },
+  seo:          { label: "SEO", labelEn: "SEO", icon: Globe },
+  floating:     { label: "Tombol Aksi", labelEn: "Action Button", icon: MessageCircle },
 };
 
 export const AI_SUGGESTIONS: Record<string, string[]> = {
@@ -67,6 +67,9 @@ export const AI_SUGGESTIONS: Record<string, string[]> = {
   contact:      ["Lengkapi kontak agar lebih terpercaya", "Buat instruksi kunjungan lebih jelas", "Tulis kontak dengan nada ramah"],
   footer:       ["Buat tagline footer lebih memorable", "Ringkas copyright dan tagline", "Samakan tone footer dengan brand"],
   seo:          ["Buat title SEO lebih menjual", "Masukkan kota dan layanan utama", "Buat meta description lebih klik-worthy", "Generate keywords SEO", "Saran OG type dan Twitter card"],
+  "hero-effect":["Buat efek visual lebih dramatis", "Tambahkan parallax halus pada latar", "Percepat transisi antar elemen visual"],
+  blog:         ["Buat judul artikel lebih irresistible", "Tulis opening yang langsung menahan perhatian", "Ringkas isi agar mudah dipindai"],
+  floating:     ["Buat label tombol aksi lebih jelas", "Tambahkan kata urgency agar lebih sering diklik", "Sesuaikan warna tombol dengan brand"],
 };
 
 export const AI_SUGGESTIONS_EN: Record<string, string[]> = {
@@ -87,10 +90,19 @@ export const AI_SUGGESTIONS_EN: Record<string, string[]> = {
   contact:      ["Complete contact info to look more trustworthy", "Make visiting instructions clearer", "Write contact copy in a friendly tone"],
   footer:       ["Make the footer tagline more memorable", "Tighten the copyright and tagline", "Match the footer tone with the brand"],
   seo:          ["Make the SEO title more selling", "Include city and main service", "Make the meta description more click-worthy", "Generate SEO keywords", "Suggest OG type and Twitter card"],
+  "hero-effect":["Make the visual effect more dramatic", "Add a subtle parallax to the background", "Speed up the transition between visual elements"],
+  blog:         ["Make the article title more irresistible", "Write an opening that holds attention right away", "Tighten the body so it is easy to skim"],
+  floating:     ["Make the action button label clearer", "Add urgency so it gets more clicks", "Match the button colour to the brand"],
 };
 
-export const getAiSuggestions = (language: string | undefined, section: string): string[] => {
-  const isEn = language?.toLowerCase() === "en";
+export const getSectionLabel = (section: string, locale?: string): string => {
+  const meta = SECTION_META[section];
+  if (!meta) return section;
+  return locale?.toLowerCase() === "en" ? meta.labelEn : meta.label;
+};
+
+export const getAiSuggestions = (locale: string | undefined, section: string): string[] => {
+  const isEn = locale?.toLowerCase() === "en";
   const map = isEn ? AI_SUGGESTIONS_EN : AI_SUGGESTIONS;
   return map[section] ?? map.hero;
 };
