@@ -941,7 +941,7 @@ export default function SitesPage() {
 
       {/* Grid of Site Cards */}
       {loading && sites.length === 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-5">
           {[1, 2, 3].map((i) => (
             <div key={i} className="bg-card border border-border/60 rounded-2xl p-[18px] flex flex-col gap-3.5 animate-pulse">
               {/* Browser Mockup Skeleton */}
@@ -998,7 +998,7 @@ export default function SitesPage() {
         </div>
       ) : (
         <div className="space-y-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-5">
             {displayedSites.map((site) => {
               const isLive = site.status === "published";
               const isDraftSubdomain = isTemporarySubdomain(site.subdomain);
@@ -1144,21 +1144,23 @@ export default function SitesPage() {
                   </div>
 
                   {/* Primary card actions */}
-                  <div className="flex gap-2 border-t border-border pt-3.5 mt-1">
+                  <div className="grid grid-cols-2 gap-2 border-t border-border pt-3.5 mt-1">
                     <Link
                       href={`/dashboard/sites/${encodeSiteId(site.id)}`}
                       onClick={(e) => e.stopPropagation()}
-                      className="flex-1 py-2 px-1 rounded-xl border border-border text-foreground hover:bg-muted/50 transition-all font-semibold text-[12px] flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
+                      className="min-w-0 h-9 px-2.5 rounded-xl border border-border text-foreground hover:bg-muted/50 transition-all font-semibold text-[11px] flex items-center justify-center gap-1.5 cursor-pointer"
                     >
-                      <Edit3 className="w-3.5 h-3.5" /> {t("dashboard.sites.editPreview")}
+                      <Edit3 className="w-3.5 h-3.5 shrink-0" />
+                      <span className="truncate">{t("dashboard.sites.editPreview")}</span>
                     </Link>
 
                     {isLive ? (
                       <button
                         onClick={(e) => { e.stopPropagation(); window.open(getSiteUrl(site), "_blank"); }}
-                        className="flex-1 py-2 px-1 rounded-xl border border-border bg-muted/60 text-foreground hover:bg-muted/70 transition-all font-semibold text-[12px] cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap"
+                        className="min-w-0 h-9 px-2.5 rounded-xl border border-border bg-muted/60 text-foreground hover:bg-muted/70 transition-all font-semibold text-[11px] cursor-pointer flex items-center justify-center gap-1.5"
                       >
-                        <Globe className="w-3.5 h-3.5" /> {t("dashboard.sites.viewSite")}
+                        <Globe className="w-3.5 h-3.5 shrink-0" />
+                        <span className="truncate">{t("dashboard.sites.viewSite")}</span>
                       </button>
                     ) : (
                       <button
@@ -1170,13 +1172,14 @@ export default function SitesPage() {
                           setAppealed(false);
                         }}
                         disabled={actionLoading === site.id}
-                        className="btn-primary flex-1 rounded-xl h-9 text-[12px] font-bold flex items-center justify-center gap-1.5 disabled:opacity-50 whitespace-nowrap"
+                        className="btn-primary min-w-0 rounded-xl h-9 px-2.5 text-[11px] font-semibold flex items-center justify-center gap-1.5 disabled:opacity-50 cursor-pointer"
                       >
                         {actionLoading === site.id ? (
-                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
                         ) : (
                           <>
-                            <Rocket className="w-3.5 h-3.5" /> {t("dashboard.sites.publish")}
+                            <Rocket className="w-3.5 h-3.5 shrink-0" />
+                            <span className="truncate">{t("dashboard.sites.publish")}</span>
                           </>
                         )}
                       </button>
