@@ -48,16 +48,16 @@ export default function PageLayoutHub({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
           <Layers className="w-4 h-4 text-primary" />
-          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-200">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-sidebar-foreground">
             {t("dashboard.sitesEditor.pageLayoutVariants") || "Tata Letak Bagian"}
           </p>
         </div>
-        <span className="text-[10px] font-medium text-slate-400">
+        <span className="text-[10px] font-medium text-sidebar-muted-foreground">
           {activeSections.length} {t("dashboard.sitesEditor.activeSectionsCount") || "bagian aktif"}
         </span>
       </div>
 
-      <p className="text-[11px] text-slate-400 leading-relaxed">
+      <p className="text-[11px] text-sidebar-muted-foreground leading-relaxed">
         {t("dashboard.sitesEditor.pageLayoutVariantsDesc") || "Sesuaikan gaya dan tata letak setiap bagian halaman situs Anda secara terpusat."}
       </p>
 
@@ -87,8 +87,8 @@ export default function PageLayoutHub({
               key={secKey}
               className={`rounded-xl border transition-all duration-200 overflow-hidden ${
                 isExpanded
-                  ? "border-primary/40 bg-slate-900/90 shadow-sm"
-                  : "border-white/5 bg-[#0b0f19]/70 hover:border-white/15 hover:bg-[#111728]/60"
+                  ? "border-primary/40 bg-sidebar-muted shadow-sm"
+                  : "border-sidebar-border bg-sidebar-muted/70 hover:border-sidebar-border hover:bg-sidebar-muted"
               }`}
             >
               {/* Row Header */}
@@ -98,7 +98,7 @@ export default function PageLayoutHub({
               >
                 <div className="flex items-center gap-2 min-w-0">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                  <span className="text-[12px] font-bold text-slate-200 truncate">
+                  <span className="text-[12px] font-bold text-sidebar-foreground truncate">
                     {SECTION_META[secKey]?.label || secKey}
                   </span>
                 </div>
@@ -108,7 +108,7 @@ export default function PageLayoutHub({
                     {currentLabel}
                   </span>
                   <ChevronDown
-                    className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${
+                    className={`w-3.5 h-3.5 text-sidebar-muted-foreground transition-transform duration-200 ${
                       isExpanded ? "rotate-180 text-primary" : ""
                     }`}
                   />
@@ -117,7 +117,7 @@ export default function PageLayoutHub({
 
               {/* Accordion Content */}
               {isExpanded && (
-                <div className="p-2.5 pt-0 border-t border-white/5">
+                <div className="p-2.5 pt-0 border-t border-sidebar-border">
                   <div className="pt-2">
                     <SectionVariantVisualPicker
                       sectionKey={secKey}
@@ -134,7 +134,7 @@ export default function PageLayoutHub({
                           e.stopPropagation();
                           onSelectSection(secKey);
                         }}
-                        className="mt-1 inline-flex items-center gap-1 text-[10px] text-slate-400 hover:text-primary transition font-medium cursor-pointer"
+                        className="mt-1 inline-flex items-center gap-1 text-[10px] text-sidebar-muted-foreground hover:text-primary transition font-medium cursor-pointer"
                       >
                         <ArrowUpRight className="w-3 h-3" />
                         <span>{t("dashboard.sitesEditor.editSectionContent") || "Edit konten bagian ini"}</span>

@@ -1431,30 +1431,30 @@ export default function SiteEditorPage() {
         >
           {/* Main 380px Collapsible Drawer Body */}
           <div
-            className={`dark h-full flex-shrink-0 flex flex-col overflow-hidden bg-[#111318] border-r border-border/70 transition-[width] duration-300 ease-in-out ${
+            className={`h-full flex-shrink-0 flex flex-col overflow-hidden bg-sidebar text-sidebar-foreground border-r border-sidebar-border transition-[width] duration-300 ease-in-out ${
               desktopSidebarOpen ? "w-[380px]" : "w-0 border-r-0"
             }`}
-            style={{ borderColor: "rgba(255,255,255,0.07)" }}
+            style={{ borderColor: "var(--sidebar-border)" }}
           >
             <div className="w-[380px] h-full flex-shrink-0 flex flex-col overflow-hidden">
               {/* Site identity */}
               <div className="flex h-14 flex-shrink-0 items-center gap-2.5 border-b border-border px-3">
               <button
                 onClick={() => router.push("/dashboard/sites")}
-                className="flex items-center justify-center rounded-lg p-2 text-slate-400 transition-colors hover:bg-white/8 hover:text-slate-100 active:scale-95"
+                className="flex items-center justify-center rounded-lg p-2 text-sidebar-muted-foreground transition-colors hover:bg-sidebar-muted hover:text-sidebar-foreground active:scale-95"
                 aria-label={t("dashboard.sitesEditor.backToSites")}
               >
                 <ChevronLeft className="h-5 w-5 flex-shrink-0" />
               </button>
-              <div className="h-5 w-px bg-white/10 flex-shrink-0" />
+              <div className="h-5 w-px bg-sidebar-muted flex-shrink-0" />
               <div className="min-w-0 flex-1">
-                <h1 className="truncate text-[13px] font-bold tracking-tight text-slate-100">{siteDetails.name}</h1>
+                <h1 className="truncate text-[13px] font-bold tracking-tight text-sidebar-foreground">{siteDetails.name}</h1>
               </div>
               {/* Close Drawer Button inside header */}
               <button
                 type="button"
                 onClick={() => setDesktopSidebarOpen(false)}
-                className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 hover:bg-white/10 hover:text-white transition-colors cursor-pointer"
+                className="flex h-7 w-7 items-center justify-center rounded-lg text-sidebar-muted-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground transition-colors cursor-pointer"
                 title="Tutup Panel Editor"
               >
                 <ChevronLeft className="h-4 w-4" />
@@ -1467,7 +1467,7 @@ export default function SiteEditorPage() {
               onClick={() => setEditorTab("content")}
               className={`flex-1 py-1.5 text-center text-xs font-semibold rounded-md transition-all ${editorTab === "content"
                 ? "bg-primary text-primary-foreground shadow-sm font-bold"
-                : "text-slate-400 hover:text-slate-200"
+                : "text-sidebar-muted-foreground hover:text-sidebar-foreground"
                 }`}
             >
               {t("dashboard.sitesEditor.contentTab")}
@@ -1476,7 +1476,7 @@ export default function SiteEditorPage() {
               onClick={() => setEditorTab("design")}
               className={`flex-1 py-1.5 text-center text-xs font-semibold rounded-md transition-all ${editorTab === "design"
                 ? "bg-primary text-primary-foreground shadow-sm font-bold"
-                : "text-slate-400 hover:text-slate-200"
+                : "text-sidebar-muted-foreground hover:text-sidebar-foreground"
                 }`}
             >
               {t("dashboard.sitesEditor.designTab")}
@@ -1487,7 +1487,7 @@ export default function SiteEditorPage() {
           {editorTab === "design" && (
             <div ref={templatePickerRef} className="flex-shrink-0 border-b border-border p-2.5">
               <div className="mb-1.5 flex items-center justify-between">
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">{t("dashboard.sitesEditor.styleLabel")}</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.styleLabel")}</p>
                 <div className="flex items-center gap-1.5">
                   <button
                     type="button"
@@ -1495,7 +1495,7 @@ export default function SiteEditorPage() {
                     disabled={designOnlyUndo.length === 0}
                     aria-label={t("dashboard.sitesEditor.undoDesign")}
                     title={designOnlyUndo.length > 0 ? t("dashboard.sitesEditor.undoDesignTitle") : t("dashboard.sitesEditor.noDesignChanges")}
-                    className="flex h-5 w-5 items-center justify-center rounded border border-border bg-muted/50 text-slate-400 transition-colors hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-muted/50 disabled:hover:text-slate-400"
+                    className="flex h-5 w-5 items-center justify-center rounded border border-border bg-muted/50 text-sidebar-muted-foreground transition-colors hover:bg-sidebar-muted hover:text-sidebar-foreground disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-muted/50 disabled:hover:text-sidebar-muted-foreground"
                   >
                     <RotateCcw className="h-2.5 w-2.5" />
                   </button>
@@ -1506,7 +1506,7 @@ export default function SiteEditorPage() {
                 type="button"
                 onClick={() => !pendingDiff && setTemplatePickerOpen((open) => !open)}
                 disabled={templateSaving || !!pendingDiff}
-                className="flex w-full items-center gap-2 rounded-lg border border-border bg-muted/50 p-1.5 text-left transition hover:border-border hover:bg-white/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex w-full items-center gap-2 rounded-lg border border-border bg-muted/50 p-1.5 text-left transition hover:border-border hover:bg-sidebar-muted/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-haspopup="listbox"
                 aria-expanded={templatePickerOpen}
               >
@@ -1514,10 +1514,10 @@ export default function SiteEditorPage() {
                   <TemplateThumbnail previewType={activeTemplatePreviewType} accent={activeTemplateAccent} active compact palette={activeDesignToken?.palette} />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-[12px] font-bold text-slate-100">{activeTemplateName}</p>
-                  <p className="truncate text-[10px] text-slate-500">{activeTemplateCategory}</p>
+                  <p className="truncate text-[12px] font-bold text-sidebar-foreground">{activeTemplateName}</p>
+                  <p className="truncate text-[10px] text-sidebar-subtle-foreground">{activeTemplateCategory}</p>
                 </div>
-                <ChevronDown className={`h-4 w-4 flex-shrink-0 text-slate-500 transition-transform ${templatePickerOpen ? "rotate-180" : ""}`} />
+                <ChevronDown className={`h-4 w-4 flex-shrink-0 text-sidebar-subtle-foreground transition-transform ${templatePickerOpen ? "rotate-180" : ""}`} />
               </button>
 
               {templatePickerOpen && (
@@ -1533,7 +1533,7 @@ export default function SiteEditorPage() {
                         disabled={templateSaving}
                         className={`group w-full rounded-xl border p-2 text-left transition ${isTopActive
                           ? "border-primary bg-primary/15"
-                          : "border-border bg-muted/40 hover:border-border hover:bg-white/[0.07]"
+                          : "border-border bg-muted/40 hover:border-border hover:bg-sidebar-muted/[0.07]"
                           }`}
                         role="option"
                         aria-selected={isTopActive}
@@ -1547,10 +1547,10 @@ export default function SiteEditorPage() {
                         <div className="mt-2 flex items-start gap-2">
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-1.5">
-                              <p className="truncate text-[12px] font-bold text-slate-100">{dynamicTemplate.name}</p>
+                              <p className="truncate text-[12px] font-bold text-sidebar-foreground">{dynamicTemplate.name}</p>
                               <span className="bg-primary/25 text-primary text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase">{t("dashboard.sitesEditor.latest")}</span>
                             </div>
-                            <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-slate-500">
+                            <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-sidebar-subtle-foreground">
                               {t("dashboard.sitesEditor.latestAiDesc")}
                             </p>
                           </div>
@@ -1571,7 +1571,7 @@ export default function SiteEditorPage() {
                         disabled={templateSaving}
                         className={`group w-full rounded-xl border p-2 text-left transition ${active
                           ? "border-primary bg-primary/15"
-                          : "border-border bg-muted/40 hover:border-border hover:bg-white/[0.07]"
+                          : "border-border bg-muted/40 hover:border-border hover:bg-sidebar-muted/[0.07]"
                           }`}
                         role="option"
                         aria-selected={active}
@@ -1584,8 +1584,8 @@ export default function SiteEditorPage() {
                         />
                         <div className="mt-2 flex items-start gap-2">
                           <div className="min-w-0 flex-1">
-                            <p className="truncate text-[12px] font-bold text-slate-100">{template.name}</p>
-                            <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-slate-500">{template.description}</p>
+                            <p className="truncate text-[12px] font-bold text-sidebar-foreground">{template.name}</p>
+                            <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-sidebar-subtle-foreground">{template.description}</p>
                           </div>
                           {active && <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-primary" />}
                         </div>
@@ -1597,7 +1597,7 @@ export default function SiteEditorPage() {
                   {isSuperadmin && customTemplates.length > 0 && (
                     <>
                       <div className="border-t border-border my-2.5 pt-2" />
-                      <p className="px-2 pb-1 text-[9px] font-bold uppercase tracking-widest text-slate-500">
+                      <p className="px-2 pb-1 text-[9px] font-bold uppercase tracking-widest text-sidebar-subtle-foreground">
                         {t("dashboard.sitesEditor.templateLibraryAdmin")}
                       </p>
                       {(() => {
@@ -1619,7 +1619,7 @@ export default function SiteEditorPage() {
                               disabled={templateSaving}
                               className={`group w-full rounded-xl border p-2 text-left transition ${active
                                 ? "border-primary bg-primary/15"
-                                : "border-border bg-muted/40 hover:border-border hover:bg-white/[0.07]"
+                                : "border-border bg-muted/40 hover:border-border hover:bg-sidebar-muted/[0.07]"
                                 }`}
                               role="option"
                               aria-selected={active}
@@ -1633,12 +1633,12 @@ export default function SiteEditorPage() {
                               <div className="mt-2 flex items-start gap-2">
                                 <div className="min-w-0 flex-1">
                                   <div className="flex items-center gap-1.5">
-                                    <p className="truncate text-[12px] font-bold text-slate-100">
+                                    <p className="truncate text-[12px] font-bold text-sidebar-foreground">
                                       AI: {template.business_type}
                                     </p>
                                     <span className="bg-emerald-500/25 text-emerald-300 text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase">{t("dashboard.sitesEditor.aiResult")}</span>
                                   </div>
-                                  <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-slate-500">
+                                  <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-sidebar-subtle-foreground">
                                     {t("dashboard.sitesEditor.aiMoodCreated", undefined, { mood: template.mood || "custom", date: new Date(template.created_at).toLocaleDateString(locale === "id" ? "id-ID" : "en-US") })}
                                   </p>
                                 </div>
@@ -1699,7 +1699,7 @@ export default function SiteEditorPage() {
                         <button
                           type="button"
                           onClick={() => setAiDesignPromptOpen(false)}
-                          className="text-[9px] text-slate-400 hover:text-slate-200"
+                          className="text-[9px] text-sidebar-muted-foreground hover:text-sidebar-foreground"
                         >
                           {t("dashboard.sitesEditor.cancel")}
                         </button>
@@ -1712,7 +1712,7 @@ export default function SiteEditorPage() {
                           if (e.key === "Enter" && !pendingDiff) void handleAiRegenerateDesign();
                         }}
                         placeholder="cth: tema kopi vintage hangat..."
-                        className="w-full px-2 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60 placeholder:text-slate-700"
+                        className="w-full px-2 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[11px] outline-none focus:border-primary/60 placeholder:text-sidebar-subtle-foreground"
                         disabled={aiLoading || !!pendingDiff}
                       />
                       <button
@@ -1737,19 +1737,19 @@ export default function SiteEditorPage() {
 
           {/* Section nav — persistent compact list */}
           {editorTab === "content" && (
-            <div className="flex-shrink-0 border-b border-border hidden md:block bg-[#0c0f16]/90">
+            <div className="flex-shrink-0 border-b border-border hidden md:block bg-sidebar-muted/60">
               <div
                 onClick={() => setSectionNavCollapsed((v) => !v)}
-                className="px-2.5 py-1.5 flex items-center justify-between cursor-pointer hover:bg-white/[0.04] transition-colors select-none"
+                className="group px-2.5 py-1.5 flex items-center justify-between cursor-pointer hover:bg-sidebar-muted transition-colors select-none"
                 title={sectionNavCollapsed ? (t("dashboard.sitesEditor.showPageSections") || "Tampilkan Bagian Halaman") : (t("dashboard.sitesEditor.expandEditArea") || "Perluas Area Edit")}
               >
                 <div className="flex items-center gap-1.5">
-                  <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-500">{t("dashboard.sitesEditor.pageSections")}</p>
-                  <span className="text-[8px] font-semibold text-slate-500 px-1 py-0.2 rounded bg-white/5">
+                  <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-sidebar-muted-foreground group-hover:text-sidebar-foreground">{t("dashboard.sitesEditor.pageSections")}</p>
+                  <span className="text-[8px] font-semibold text-sidebar-muted-foreground px-1 py-0.2 rounded bg-sidebar-muted">
                     {SECTIONS.length}
                   </span>
                 </div>
-                <div className="flex items-center gap-1 text-slate-500 hover:text-slate-300">
+                <div className="flex items-center gap-1 text-sidebar-muted-foreground hover:text-sidebar-foreground">
                   <span className="text-[8px] font-medium tracking-wide">
                     {sectionNavCollapsed ? (t("dashboard.sitesEditor.show") || "Tampilkan") : (t("dashboard.sitesEditor.hide") || "Ciutkan")}
                   </span>
@@ -1759,7 +1759,7 @@ export default function SiteEditorPage() {
               <div className="relative">
                 {/* Top overflow shadow */}
                 <div
-                  className={`pointer-events-none absolute top-0 left-0 right-0 h-3 bg-gradient-to-b from-[#0c0f16] to-transparent z-10 transition-opacity duration-200 ${
+                  className={`pointer-events-none absolute top-0 left-0 right-0 h-3 bg-gradient-to-b from-sidebar to-transparent z-10 transition-opacity duration-200 ${
                     navScrollUp ? "opacity-100" : "opacity-0"
                   }`}
                 />
@@ -1772,8 +1772,8 @@ export default function SiteEditorPage() {
                       e.stopPropagation();
                       sectionNavRef.current?.scrollBy({ top: -35, behavior: "smooth" });
                     }}
-                    title="Scroll ke atas"
-                    className={`w-3.5 h-3.5 rounded-full bg-[#161b26] border border-primary/40 flex items-center justify-center text-primary shadow-xs transition-all duration-200 ${
+                    title={t("dashboard.sitesEditor.scrollUp")}
+                    className={`w-3.5 h-3.5 rounded-full bg-sidebar-muted border border-primary/40 flex items-center justify-center text-primary shadow-xs transition-all duration-200 ${
                       navScrollUp ? "opacity-100 scale-100 pointer-events-auto hover:bg-primary hover:text-primary-foreground cursor-pointer" : "opacity-0 scale-75 pointer-events-none"
                     }`}
                   >
@@ -1785,8 +1785,8 @@ export default function SiteEditorPage() {
                       e.stopPropagation();
                       sectionNavRef.current?.scrollBy({ top: 35, behavior: "smooth" });
                     }}
-                    title="Scroll ke bawah"
-                    className={`w-3.5 h-3.5 rounded-full bg-[#161b26] border border-primary/40 flex items-center justify-center text-primary shadow-xs transition-all duration-200 ${
+                    title={t("dashboard.sitesEditor.scrollDown")}
+                    className={`w-3.5 h-3.5 rounded-full bg-sidebar-muted border border-primary/40 flex items-center justify-center text-primary shadow-xs transition-all duration-200 ${
                       navScrollDown ? "opacity-100 scale-100 pointer-events-auto hover:bg-primary hover:text-primary-foreground cursor-pointer" : "opacity-0 scale-75 pointer-events-none"
                     }`}
                   >
@@ -1798,7 +1798,7 @@ export default function SiteEditorPage() {
                 <div
                   ref={sectionNavRef}
                   onScroll={checkNavScroll}
-                  className="flex flex-col overflow-y-auto transition-all duration-300 ease-in-out pr-4.5 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-white/[0.03] [&::-webkit-scrollbar-thumb]:bg-slate-500/50 hover:[&::-webkit-scrollbar-thumb]:bg-primary/80 [&::-webkit-scrollbar-thumb]:rounded-full"
+                  className="flex flex-col overflow-y-auto transition-all duration-300 ease-in-out pr-4.5 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-sidebar-foreground/[0.03] [&::-webkit-scrollbar-thumb]:bg-sidebar-foreground/40 hover:[&::-webkit-scrollbar-thumb]:bg-primary/80 [&::-webkit-scrollbar-thumb]:rounded-full"
                   style={{ maxHeight: sectionNavCollapsed ? 0 : 78, overflow: sectionNavCollapsed ? "hidden" : "auto" }}
                 >
                 {SECTIONS.map(({ key, label, icon: Icon, num }) => (
@@ -1828,12 +1828,12 @@ export default function SiteEditorPage() {
                       ? "bg-primary/15 text-primary"
                       : hiddenSections.includes(key)
                         ? "opacity-40 hover:opacity-60"
-                        : "hover:bg-muted/40"
+                        : "hover:bg-sidebar-muted"
                       }`}
                   >
-                    <GripVertical className={`h-2.5 w-2.5 shrink-0 ${BODY_SECTION_KEYS.includes(key) ? "text-slate-600" : "text-slate-800"}`} />
-                    <Icon className={`w-3 h-3 shrink-0 ${activeTab === key ? "text-primary" : "text-slate-500"}`} />
-                    <span className={`flex-1 text-[11px] truncate ${activeTab === key ? "text-slate-100 font-medium" : hiddenSections.includes(key) ? "line-through text-slate-600" : "text-slate-400"}`}>
+                    <GripVertical className={`h-2.5 w-2.5 shrink-0 ${BODY_SECTION_KEYS.includes(key) ? "text-sidebar-muted-foreground group-hover:text-sidebar-foreground" : "text-sidebar-foreground"}`} />
+                    <Icon className={`w-3 h-3 shrink-0 ${activeTab === key ? "text-primary" : "text-sidebar-muted-foreground group-hover:text-sidebar-foreground"}`} />
+                    <span className={`flex-1 text-[11px] truncate ${activeTab === key ? "text-sidebar-foreground font-medium" : hiddenSections.includes(key) ? "line-through text-sidebar-subtle-foreground" : "text-sidebar-muted-foreground group-hover:text-sidebar-foreground"}`}>
                       {label}
                     </span>
                     {key === "seo" && !(activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise") && (
@@ -1850,8 +1850,8 @@ export default function SiteEditorPage() {
                         className="p-0.5 rounded transition-colors cursor-pointer shrink-0"
                       >
                         {hiddenSections.includes(key)
-                          ? <EyeOff className="w-2.5 h-2.5 text-slate-600" />
-                          : <Eye className="w-2.5 h-2.5 text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          ? <EyeOff className="w-2.5 h-2.5 text-sidebar-muted-foreground" />
+                          : <Eye className="w-2.5 h-2.5 text-sidebar-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                         }
                       </div>
                     )}
@@ -1862,7 +1862,7 @@ export default function SiteEditorPage() {
                         const color = score >= 85 ? "bg-emerald-500" : score >= 65 ? "bg-amber-500" : "bg-red-500";
                         return <div className={`w-1.5 h-1.5 rounded-full ${color}`} title={t("dashboard.sitesEditor.qualityScore", undefined, { score: String(score) })} />;
                       })()}
-                      <span className={`text-[8px] px-1 py-0.2 rounded-full font-medium ${activeTab === key ? "bg-primary/30 text-primary" : "bg-white/5 text-slate-500"
+                      <span className={`text-[8px] px-1 py-0.2 rounded-full font-medium ${activeTab === key ? "bg-primary/30 text-primary" : "bg-sidebar-muted text-sidebar-muted-foreground group-hover:text-sidebar-foreground"
                         }`}>{num}</span>
                     </div>
                   </div>
@@ -1871,7 +1871,7 @@ export default function SiteEditorPage() {
 
                 {/* Bottom overflow shadow */}
                 <div
-                  className={`pointer-events-none absolute bottom-0 left-0 right-0 h-3 bg-gradient-to-t from-[#0c0f16] to-transparent z-10 transition-opacity duration-200 ${
+                  className={`pointer-events-none absolute bottom-0 left-0 right-0 h-3 bg-gradient-to-t from-sidebar to-transparent z-10 transition-opacity duration-200 ${
                     navScrollDown ? "opacity-100" : "opacity-0"
                   }`}
                 />
@@ -1881,20 +1881,20 @@ export default function SiteEditorPage() {
 
           {/* ── Field Panel (scrollable) ── */}
           <div
-            className="flex-1 border-t border-border flex flex-col overflow-hidden [&_input]:!border-border [&_textarea]:!border-border [&_select]:!border-border [&_input]:!bg-[#05070b] [&_textarea]:!bg-[#05070b] [&_select]:!bg-[#05070b] [&_input]:!text-slate-100 [&_textarea]:!text-slate-100 [&_select]:!text-slate-100 [&_input::placeholder]:!text-slate-700 [&_textarea::placeholder]:!text-slate-700"
+            className="flex-1 border-t border-border flex flex-col overflow-hidden [&_input]:!border-border [&_textarea]:!border-border [&_select]:!border-border [&_input]:!bg-sidebar-input [&_textarea]:!bg-sidebar-input [&_select]:!bg-sidebar-input [&_input]:!text-sidebar-foreground [&_textarea]:!text-sidebar-foreground [&_select]:!text-sidebar-foreground [&_input::placeholder]:!text-sidebar-subtle-foreground [&_textarea::placeholder]:!text-sidebar-subtle-foreground"
             style={{ minHeight: 0 }}
           >
             {editorTab === "design" ? (
               <>
                 <div className="px-3.5 py-2 border-b border-border flex-shrink-0">
-                  <p className="text-[10px] uppercase tracking-widest font-semibold text-slate-400">
+                  <p className="text-[10px] uppercase tracking-widest font-semibold text-sidebar-muted-foreground">
                     {t("dashboard.sitesEditor.visualCustomization")}
                   </p>
                 </div>
-                <div ref={designContentRef} className="flex-1 overflow-y-auto px-3.5 py-3 space-y-4 relative bg-[#111318] text-slate-100">
+                <div ref={designContentRef} className="flex-1 overflow-y-auto px-3.5 py-3 space-y-4 relative bg-sidebar text-sidebar-foreground">
                   {/* Palet Warna */}
                   <div className="space-y-3">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{t("dashboard.sitesEditor.colorPalette")}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.colorPalette")}</p>
 
                     <ColorPatternPicker
                       designToken={designToken}
@@ -1920,7 +1920,7 @@ export default function SiteEditorPage() {
 
                     {/* Primary Color */}
                     <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{t("dashboard.sitesEditor.primaryColor")}</label>
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.primaryColor")}</label>
                       <div className="flex items-center gap-2">
                         <div className="relative w-8 h-8 rounded-md border border-border overflow-hidden flex-shrink-0">
                           <input
@@ -1937,7 +1937,7 @@ export default function SiteEditorPage() {
                           value={designToken?.palette?.primary || ""}
                           onChange={(e) => handleColorChange("primary", e.target.value)}
                           onClick={() => colorRefs.current["primary"]?.click()}
-                          className="flex-1 px-2.5 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
+                          className="flex-1 px-2.5 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
                           placeholder="#4F46E5"
                         />
                       </div>
@@ -1945,7 +1945,7 @@ export default function SiteEditorPage() {
 
                     {/* Accent Color */}
                     <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{t("dashboard.sitesEditor.accentColor")}</label>
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.accentColor")}</label>
                       <div className="flex items-center gap-2">
                         <div className="relative w-8 h-8 rounded-md border border-border overflow-hidden flex-shrink-0">
                           <input
@@ -1962,7 +1962,7 @@ export default function SiteEditorPage() {
                           value={designToken?.palette?.accent || ""}
                           onChange={(e) => handleColorChange("accent", e.target.value)}
                           onClick={() => colorRefs.current["accent"]?.click()}
-                          className="flex-1 px-2.5 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
+                          className="flex-1 px-2.5 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
                           placeholder="#7C3AED"
                         />
                       </div>
@@ -1970,7 +1970,7 @@ export default function SiteEditorPage() {
 
                     {/* Background Color */}
                     <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{t("dashboard.sitesEditor.backgroundColor")}</label>
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.backgroundColor")}</label>
                       <div className="flex items-center gap-2">
                         <div className="relative w-8 h-8 rounded-md border border-border overflow-hidden flex-shrink-0">
                           <input
@@ -1987,7 +1987,7 @@ export default function SiteEditorPage() {
                           value={designToken?.palette?.background || ""}
                           onChange={(e) => handleColorChange("background", e.target.value)}
                           onClick={() => colorRefs.current["background"]?.click()}
-                          className="flex-1 px-2.5 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
+                          className="flex-1 px-2.5 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
                           placeholder="#FAF7F2"
                         />
                       </div>
@@ -1995,7 +1995,7 @@ export default function SiteEditorPage() {
 
                     {/* Surface Color */}
                     <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{t("dashboard.sitesEditor.surfaceColor")}</label>
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.surfaceColor")}</label>
                       <div className="flex items-center gap-2">
                         <div className="relative w-8 h-8 rounded-md border border-border overflow-hidden flex-shrink-0">
                           <input
@@ -2012,7 +2012,7 @@ export default function SiteEditorPage() {
                           value={designToken?.palette?.surface || ""}
                           onChange={(e) => handleColorChange("surface", e.target.value)}
                           onClick={() => colorRefs.current["surface"]?.click()}
-                          className="flex-1 px-2.5 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
+                          className="flex-1 px-2.5 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
                           placeholder="#FFFFFF"
                         />
                       </div>
@@ -2020,7 +2020,7 @@ export default function SiteEditorPage() {
 
                     {/* Text Color */}
                     <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{t("dashboard.sitesEditor.textColor")}</label>
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.textColor")}</label>
                       <div className="flex items-center gap-2">
                         <div className="relative w-8 h-8 rounded-md border border-border overflow-hidden flex-shrink-0">
                           <input
@@ -2037,7 +2037,7 @@ export default function SiteEditorPage() {
                           value={designToken?.palette?.text || ""}
                           onChange={(e) => handleColorChange("text", e.target.value)}
                           onClick={() => colorRefs.current["text"]?.click()}
-                          className="flex-1 px-2.5 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
+                          className="flex-1 px-2.5 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
                           placeholder="#2C2C2A"
                         />
                       </div>
@@ -2103,31 +2103,31 @@ export default function SiteEditorPage() {
 
                   {/* Tata Letak & Gaya */}
                   <div className="space-y-3">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{t("dashboard.sitesEditor.layoutStyle")}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.layoutStyle")}</p>
 
                     <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{t("dashboard.sitesEditor.cornerRadius")}</label>
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.cornerRadius")}</label>
                       <select
                         value={designToken?.layout?.corner_radius || "soft"}
                         onChange={(e) => updateDesignTokenField("layout", "corner_radius", e.target.value)}
-                        className="w-full px-2.5 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
+                        className="w-full px-2.5 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[13px] outline-none focus:border-primary/60"
                       >
-                        <option value="sharp" className="bg-[#111318]">{t("dashboard.sitesEditor.cornerSharp")}</option>
-                        <option value="soft" className="bg-[#111318]">{t("dashboard.sitesEditor.cornerSoft")}</option>
-                        <option value="rounded" className="bg-[#111318]">{t("dashboard.sitesEditor.cornerRounded")}</option>
+                        <option value="sharp" className="bg-sidebar">{t("dashboard.sitesEditor.cornerSharp")}</option>
+                        <option value="soft" className="bg-sidebar">{t("dashboard.sitesEditor.cornerSoft")}</option>
+                        <option value="rounded" className="bg-sidebar">{t("dashboard.sitesEditor.cornerRounded")}</option>
                       </select>
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{t("dashboard.sitesEditor.sectionSpacing")}</label>
+                      <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.sectionSpacing")}</label>
                       <select
                         value={designToken?.layout?.section_spacing || "normal"}
                         onChange={(e) => updateDesignTokenField("layout", "section_spacing", e.target.value)}
-                        className="w-full px-2.5 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
+                        className="w-full px-2.5 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[13px] outline-none focus:border-primary/60"
                       >
-                        <option value="compact" className="bg-[#111318]">{t("dashboard.sitesEditor.spacingCompact")}</option>
-                        <option value="normal" className="bg-[#111318]">{t("dashboard.sitesEditor.normal")}</option>
-                        <option value="relaxed" className="bg-[#111318]">{t("dashboard.sitesEditor.spacingRelaxed")}</option>
+                        <option value="compact" className="bg-sidebar">{t("dashboard.sitesEditor.spacingCompact")}</option>
+                        <option value="normal" className="bg-sidebar">{t("dashboard.sitesEditor.normal")}</option>
+                        <option value="relaxed" className="bg-sidebar">{t("dashboard.sitesEditor.spacingRelaxed")}</option>
                       </select>
                     </div>
 
@@ -2154,8 +2154,8 @@ export default function SiteEditorPage() {
               </>
             ) : (
               <>
-                <div className="px-3 py-1.5 border-b border-border flex-shrink-0 flex items-center justify-between gap-2 bg-[#0c0f16]/60">
-                  <p className="text-[10px] uppercase tracking-widest font-semibold text-slate-400 truncate">
+                <div className="px-3 py-1.5 border-b border-border flex-shrink-0 flex items-center justify-between gap-2 bg-sidebar-muted/60">
+                  <p className="text-[10px] uppercase tracking-widest font-semibold text-sidebar-muted-foreground truncate">
                     {t("dashboard.sitesEditor.editLabel", undefined, { label: SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab })}
                   </p>
                   <div className="flex items-center gap-1 shrink-0">
@@ -2164,7 +2164,7 @@ export default function SiteEditorPage() {
                         type="button"
                         onClick={() => toggleSectionVisibility(activeTab)}
                         title={hiddenSections.includes(activeTab) ? t("dashboard.sitesEditor.showSection") : t("dashboard.sitesEditor.hideSection")}
-                        className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold transition-all hover:bg-white/10 cursor-pointer"
+                        className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold transition-all hover:bg-sidebar-muted cursor-pointer"
                         style={{ color: hiddenSections.includes(activeTab) ? "#f87171" : "#94a3b8" }}
                       >
                         {hiddenSections.includes(activeTab)
@@ -2177,7 +2177,7 @@ export default function SiteEditorPage() {
                       type="button"
                       onClick={() => setSectionNavCollapsed(v => !v)}
                       title={sectionNavCollapsed ? t("dashboard.sitesEditor.showPageSections") : t("dashboard.sitesEditor.expandEditArea")}
-                      className="flex items-center justify-center w-5 h-5 rounded transition-all hover:bg-white/10 text-slate-500 hover:text-slate-300 cursor-pointer"
+                      className="flex items-center justify-center w-5 h-5 rounded transition-all hover:bg-sidebar-muted text-sidebar-subtle-foreground hover:text-sidebar-muted-foreground cursor-pointer"
                     >
                       {sectionNavCollapsed
                         ? <ChevronDown className="w-3 h-3" />
@@ -2188,12 +2188,12 @@ export default function SiteEditorPage() {
                 </div>
                 <div className="flex-1 overflow-y-auto px-3.5 py-3 space-y-3 relative">
                   {pendingDiff ? (
-                    <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#070b12]/95 p-6 text-center">
+                    <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-sidebar/95 p-6 text-center">
                       <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
                         <SparkleGenAI className="h-9 w-9 animate-pulse" />
                       </div>
-                      <h4 className="text-[14px] font-bold text-slate-100">{t("dashboard.sitesEditor.aiReviewActive")}</h4>
-                      <p className="mt-1 text-[11px] leading-relaxed text-slate-400 max-w-[200px]">
+                      <h4 className="text-[14px] font-bold text-sidebar-foreground">{t("dashboard.sitesEditor.aiReviewActive")}</h4>
+                      <p className="mt-1 text-[11px] leading-relaxed text-sidebar-muted-foreground max-w-[200px]">
                         {t("dashboard.sitesEditor.aiReviewDesc1")}{" "}
                         <span className="font-bold text-primary">
                           {SECTION_META[pendingDiff.section]?.label || pendingDiff.section}
@@ -2204,14 +2204,14 @@ export default function SiteEditorPage() {
                         <button
                           type="button"
                           onClick={applyRegeneratedSection}
-                          className="flex-1 rounded-md bg-emerald-600 py-1.5 text-[11px] font-bold text-white hover:bg-emerald-500 transition active:scale-95 cursor-pointer"
+                          className="flex-1 rounded-md bg-emerald-600 py-1.5 text-[11px] font-bold text-sidebar-foreground hover:bg-emerald-500 transition active:scale-95 cursor-pointer"
                         >
                           {t("dashboard.sitesEditor.use")}
                         </button>
                         <button
                           type="button"
                           onClick={restorePendingDiff}
-                          className="flex-1 rounded-md border border-border py-1.5 text-[11px] font-bold text-slate-300 hover:bg-white/5 transition active:scale-95 cursor-pointer"
+                          className="flex-1 rounded-md border border-border py-1.5 text-[11px] font-bold text-sidebar-muted-foreground hover:bg-sidebar-muted transition active:scale-95 cursor-pointer"
                         >
                           {t("dashboard.sitesEditor.revert")}
                         </button>
@@ -2283,29 +2283,29 @@ export default function SiteEditorPage() {
 
                 {/* ── Usage Meter (Default Collapsed / Strip) ── */}
                 {tenantUsage && (
-                  <div className="border-t border-border flex-shrink-0 bg-[#111318]/50">
+                  <div className="border-t border-border flex-shrink-0 bg-sidebar/50">
                     <button
                       type="button"
                       onClick={() => setUsageMeterCollapsed((prev) => !prev)}
-                      className="w-full px-3.5 py-2 flex items-center justify-between gap-2 text-left hover:bg-white/[0.04] transition-colors cursor-pointer select-none group"
+                      className="w-full px-3.5 py-2 flex items-center justify-between gap-2 text-left hover:bg-sidebar-muted transition-colors cursor-pointer select-none group"
                       title={usageMeterCollapsed ? "Buka rincian AI Usage" : "Tutup rincian AI Usage"}
                     >
                       <div className="flex items-center gap-1.5 min-w-0">
                         <SparkleGenAI className="h-3 w-3 text-primary shrink-0" />
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground group-hover:text-slate-300 transition-colors">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground group-hover:text-sidebar-muted-foreground transition-colors">
                           {t("dashboard.sitesEditor.aiUsage")}
                         </span>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
                         {usageMeterCollapsed && (
-                          <span className="text-[10px] text-slate-400 font-medium tabular-nums">
+                          <span className="text-[10px] text-sidebar-muted-foreground font-medium tabular-nums">
                             {tenantUsage.usage.generate_count ?? 0}/{tenantUsage.max_ai_generates <= 0 ? "∞" : tenantUsage.max_ai_generates}
                           </span>
                         )}
                         {usageMeterCollapsed ? (
-                          <ChevronUp className="h-3.5 w-3.5 text-muted-foreground group-hover:text-white transition-colors" />
+                          <ChevronUp className="h-3.5 w-3.5 text-muted-foreground group-hover:text-sidebar-foreground transition-colors" />
                         ) : (
-                          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground group-hover:text-white transition-colors" />
+                          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground group-hover:text-sidebar-foreground transition-colors" />
                         )}
                       </div>
                     </button>
@@ -2314,12 +2314,12 @@ export default function SiteEditorPage() {
                       <div className="px-3.5 pb-3 pt-1 space-y-2 animate-in fade-in duration-200">
                         <div>
                           <div className="flex items-center justify-between text-[11px]">
-                            <span className="text-slate-400">{t("dashboard.sitesEditor.generate")}</span>
-                            <span className="font-semibold text-slate-200">
+                            <span className="text-sidebar-muted-foreground">{t("dashboard.sitesEditor.generate")}</span>
+                            <span className="font-semibold text-sidebar-foreground">
                               {(tenantUsage.usage.generate_count ?? 0)} / {tenantUsage.max_ai_generates <= 0 ? "∞" : tenantUsage.max_ai_generates}
                             </span>
                           </div>
-                          <div className="h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
+                          <div className="h-1.5 rounded-full bg-sidebar-muted mt-1 overflow-hidden">
                             <div
                               className="h-full rounded-full bg-primary transition-all duration-500"
                               style={{
@@ -2332,12 +2332,12 @@ export default function SiteEditorPage() {
                         </div>
                         <div>
                           <div className="flex items-center justify-between text-[11px]">
-                            <span className="text-slate-400">{t("dashboard.sitesEditor.sectionRegen")}</span>
-                            <span className="font-semibold text-slate-200">
+                            <span className="text-sidebar-muted-foreground">{t("dashboard.sitesEditor.sectionRegen")}</span>
+                            <span className="font-semibold text-sidebar-foreground">
                               {(tenantUsage.usage.section_regen_count ?? 0)} / {(tenantUsage.max_section_regens ?? 0) <= 0 ? "∞" : tenantUsage.max_section_regens}
                             </span>
                           </div>
-                          <div className="h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
+                          <div className="h-1.5 rounded-full bg-sidebar-muted mt-1 overflow-hidden">
                             <div
                               className="h-full rounded-full bg-primary transition-all duration-500"
                               style={{
@@ -2350,12 +2350,12 @@ export default function SiteEditorPage() {
                         </div>
                         <div>
                           <div className="flex items-center justify-between text-[11px]">
-                            <span className="text-slate-400">{t("dashboard.sitesEditor.designRegen")}</span>
-                            <span className="font-semibold text-slate-200">
+                            <span className="text-sidebar-muted-foreground">{t("dashboard.sitesEditor.designRegen")}</span>
+                            <span className="font-semibold text-sidebar-foreground">
                               {(tenantUsage.usage.design_regen_count ?? 0)} / {(tenantUsage.max_design_regens ?? 0) <= 0 ? "∞" : tenantUsage.max_design_regens}
                             </span>
                           </div>
-                          <div className="h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
+                          <div className="h-1.5 rounded-full bg-sidebar-muted mt-1 overflow-hidden">
                             <div
                               className="h-full rounded-full bg-primary transition-all duration-500"
                               style={{
@@ -2380,7 +2380,7 @@ export default function SiteEditorPage() {
         {/* 36px Vertical Handle Strip (facing canvas) — counterpart of mobile bottom sheet header bar */}
         <div
           onClick={() => setDesktopSidebarOpen(!desktopSidebarOpen)}
-          className="w-9 h-full flex flex-col items-center justify-between py-2.5 bg-[#111318] border-r border-border/80 shadow-[4px_0_16px_rgba(0,0,0,0.3)] cursor-pointer select-none transition-colors hover:bg-[#161a22] flex-shrink-0"
+          className="w-9 h-full flex flex-col items-center justify-between py-2.5 bg-sidebar border-r border-border/80 shadow-[4px_0_16px_rgba(0,0,0,0.3)] cursor-pointer select-none transition-colors hover:bg-sidebar-muted flex-shrink-0"
           title={desktopSidebarOpen ? "Tutup Panel Editor" : "Buka Panel Editor"}
         >
           {/* Quality score badge (Top) */}
@@ -2398,7 +2398,7 @@ export default function SiteEditorPage() {
               <span className="text-[9px] font-bold mt-0.5">{quality.score}%</span>
             </button>
           ) : (
-            <div className="flex flex-col items-center justify-center p-1 text-slate-400">
+            <div className="flex flex-col items-center justify-center p-1 text-sidebar-muted-foreground">
               <SlidersHorizontal className="w-3.5 h-3.5" />
             </div>
           )}
@@ -2406,17 +2406,17 @@ export default function SiteEditorPage() {
           {/* Drag handle pill & toggle Chevron (Center) */}
           <div className="flex flex-col items-center justify-center py-2 flex-1 group w-full">
             {/* Vertical Drag handle pill bar */}
-            <div className="w-1 h-10 rounded-full bg-white/20 group-hover:bg-white/50 transition-colors my-2" />
+            <div className="w-1 h-10 rounded-full bg-sidebar-foreground/55 group-hover:bg-sidebar-foreground/85 transition-colors my-2" />
 
             {/* Expand / Collapse toggle chevron */}
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 group-hover:bg-white/10 group-hover:text-white transition-all">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg text-sidebar-muted-foreground group-hover:bg-sidebar-muted group-hover:text-sidebar-foreground transition-all">
               <ChevronRight className={`h-4 w-4 transition-transform duration-300 ${desktopSidebarOpen ? "rotate-180" : ""}`} />
             </div>
 
             {/* Vertical label when collapsed */}
             {!desktopSidebarOpen && (
               <span
-                className="text-[9px] font-extrabold uppercase tracking-widest text-slate-500 group-hover:text-slate-300 transition-colors select-none mt-4"
+                className="text-[9px] font-extrabold uppercase tracking-widest text-sidebar-subtle-foreground group-hover:text-sidebar-foreground transition-colors select-none mt-4"
                 style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
               >
                 Panel Editor
@@ -2427,7 +2427,9 @@ export default function SiteEditorPage() {
           {/* Active Section Indicator (Bottom) */}
           <div
             className="flex flex-col items-center justify-center p-1"
-            title={`Section: ${pageOrderSections.find(s => s.key === activeTab)?.label || activeTab}`}
+            title={t("dashboard.sitesEditor.activeSectionTitle", undefined, {
+                    label: pageOrderSections.find((s) => s.key === activeTab)?.label || activeTab,
+                  })}
           >
             <span
               className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 shadow-xs"
@@ -2488,7 +2490,7 @@ export default function SiteEditorPage() {
                       <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                       <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
                     </span>
-                    Live
+                    {t("dashboard.sitesEditor.live")}
                   </span>
                   <button
                     type="button"
@@ -2499,7 +2501,7 @@ export default function SiteEditorPage() {
                 }}
                     disabled={publishing}
                     className="flex h-7 items-center gap-1 rounded-lg px-2.5 text-[11px] font-semibold text-primary-foreground transition-all hover:brightness-110 disabled:opacity-60"
-                    style={{ background: "var(--primary)" }}
+                    style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
                   >
                     <Rocket className="w-3 h-3" />
                     {t("dashboard.sitesEditor.apply")}
@@ -2515,7 +2517,7 @@ export default function SiteEditorPage() {
                 }}
                   data-edu="publish-btn"
                   className="flex h-7 items-center gap-1 rounded-lg px-3 text-[11px] font-semibold text-primary-foreground"
-                  style={{ background: "var(--primary)" }}
+                  style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
                 >
                   <Rocket className="w-3 h-3" />
                   {t("dashboard.sitesEditor.publishShort")}
@@ -2723,7 +2725,7 @@ export default function SiteEditorPage() {
                     window.open(`https://${siteDetails.subdomain}.${domainPart}`, "_blank");
                   }}
                   className="flex items-center gap-1.5 rounded-md border border-border/70 bg-muted/40 px-2.5 py-1 text-[11px] font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
-                  title="Buka website live di tab baru"
+                  title={t("dashboard.sitesEditor.viewLiveSite")}
                 >
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
                   Live
@@ -2786,7 +2788,7 @@ export default function SiteEditorPage() {
                   <button
                     type="button"
                     onClick={restorePendingDiff}
-                    className="rounded-md border border-border px-3 py-1.5 text-[11px] font-bold text-slate-300 hover:bg-white/5"
+                    className="rounded-md border border-border px-3 py-1.5 text-[11px] font-bold text-slate-300 hover:bg-sidebar-muted"
                   >
                     {t("dashboard.sitesEditor.revert")}
                   </button>
@@ -2970,7 +2972,7 @@ export default function SiteEditorPage() {
           {/* Mobile bottom sheet */}
           <div
             data-mobile-sheet
-            className="dark md:hidden absolute bottom-0 left-0 right-0 z-50 flex flex-col bg-[#111318] border-t border-border rounded-t-[22px] shadow-[0_-20px_60px_rgba(0,0,0,0.5)] transition-all duration-300 ease-out overflow-hidden pb-[env(safe-area-inset-bottom)]"
+            className="md:hidden absolute bottom-0 left-0 right-0 z-50 flex flex-col bg-sidebar text-sidebar-foreground border-t border-sidebar-border rounded-t-[22px] shadow-[0_-20px_60px_rgba(0,0,0,0.5)] transition-all duration-300 ease-out overflow-hidden pb-[env(safe-area-inset-bottom)]"
             style={{
               display: device === "mobile" ? "flex" : undefined,
               maxHeight: sheetCollapsed ? "calc(36px + env(safe-area-inset-bottom))" : sheetExpanded ? "88%" : "48%",
@@ -3008,9 +3010,9 @@ export default function SiteEditorPage() {
                   }
                 }}
               >
-                <div className="w-9 h-1 rounded-full bg-white/20" />
+                <div className="w-9 h-1 rounded-full bg-sidebar-foreground/20" />
                 {sheetCollapsed && (
-                  <span className="ml-2 text-[10px] font-extrabold uppercase tracking-widest text-slate-400 select-none">
+                  <span className="ml-2 text-[10px] font-extrabold uppercase tracking-widest text-sidebar-muted-foreground select-none">
                     Panel Editor
                   </span>
                 )}
@@ -3029,7 +3031,7 @@ export default function SiteEditorPage() {
                     setSheetExpanded(false);
                   }
                 }}
-                className="flex h-6 w-6 items-center justify-center rounded-lg text-slate-400 hover:bg-white/10 hover:text-white transition-colors flex-shrink-0"
+                className="flex h-6 w-6 items-center justify-center rounded-lg text-sidebar-muted-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground transition-colors flex-shrink-0"
                 aria-label={sheetCollapsed ? t("dashboard.sitesEditor.openSheet") : t("dashboard.sitesEditor.closeSheet")}
               >
                 <ChevronUp className={`h-3.5 w-3.5 transition-transform ${sheetCollapsed ? "" : "rotate-180"}`} />
@@ -3040,20 +3042,20 @@ export default function SiteEditorPage() {
             <div className="flex items-center justify-between gap-2 px-3 py-1.5 flex-shrink-0 border-b border-border/50 bg-muted/30">
               {/* Active Section Chip / Native Dropdown */}
               <div className="relative flex items-center min-w-0">
-                <div className="flex items-center gap-1.5 h-7 px-2.5 rounded-lg border border-border bg-muted/50 text-xs font-semibold text-slate-200 min-w-0">
+                <div className="flex items-center gap-1.5 h-7 px-2.5 rounded-lg border border-border bg-muted/50 text-xs font-semibold text-sidebar-foreground min-w-0">
                   <span
                     className="w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold flex-shrink-0"
                     style={{
                       background: "var(--primary)",
-                      color: "white"
+                      color: "var(--primary-foreground)"
                     }}
                   >
-                    {pageOrderSections.findIndex(s => s.key === activeTab) + 1}
+                    {pageOrderSections.findIndex(s => s.key === activeTab) + 1 || 1}
                   </span>
-                  <span className="max-w-[110px] truncate text-[11px] font-semibold text-slate-200">
+                  <span className="max-w-[110px] truncate text-[11px] font-semibold text-sidebar-foreground">
                     {SECTION_META[activeTab]?.label ?? activeTab}
                   </span>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                  <ChevronDown className="w-3.5 h-3.5 text-sidebar-muted-foreground flex-shrink-0" />
                 </div>
                 <select
                   value={activeTab}
@@ -3062,7 +3064,7 @@ export default function SiteEditorPage() {
                   aria-label={t("dashboard.sitesEditor.selectSectionAria")}
                 >
                   {pageOrderSections.map((sec) => (
-                    <option key={sec.key} value={sec.key} className="bg-[#111318] text-slate-100">
+                    <option key={sec.key} value={sec.key} className="bg-sidebar-input text-sidebar-foreground">
                       {sec.num}. {sec.label}
                     </option>
                   ))}
@@ -3074,7 +3076,7 @@ export default function SiteEditorPage() {
                 <button
                   type="button"
                   onClick={() => setEditorTab("content")}
-                  className={`h-6 px-2.5 rounded-md text-[10px] font-bold transition-all ${editorTab === "content" ? "bg-primary text-primary-foreground shadow-sm" : "text-slate-400 hover:text-slate-200"
+                  className={`h-6 px-2.5 rounded-md text-[10px] font-bold transition-all ${editorTab === "content" ? "bg-primary text-primary-foreground shadow-sm" : "text-sidebar-muted-foreground hover:text-sidebar-foreground"
                     }`}
                 >
                   {t("dashboard.sitesEditor.contentTab")}
@@ -3082,7 +3084,7 @@ export default function SiteEditorPage() {
                 <button
                   type="button"
                   onClick={() => setEditorTab("design")}
-                  className={`h-6 px-2.5 rounded-md text-[10px] font-bold transition-all ${editorTab === "design" ? "bg-primary text-primary-foreground shadow-sm" : "text-slate-400 hover:text-slate-200"
+                  className={`h-6 px-2.5 rounded-md text-[10px] font-bold transition-all ${editorTab === "design" ? "bg-primary text-primary-foreground shadow-sm" : "text-sidebar-muted-foreground hover:text-sidebar-foreground"
                     }`}
                 >
                   {t("dashboard.sitesEditor.designTab")}
@@ -3093,7 +3095,7 @@ export default function SiteEditorPage() {
                     onClick={handleDesignUndo}
                     aria-label={t("dashboard.sitesEditor.undoDesign")}
                     title={t("dashboard.sitesEditor.undoDesignTitle")}
-                    className="flex h-6 w-6 items-center justify-center rounded-md text-slate-400 hover:text-white transition-colors"
+                    className="flex h-6 w-6 items-center justify-center rounded-md text-sidebar-muted-foreground hover:text-sidebar-foreground transition-colors"
                   >
                     <RotateCcw className="h-3 w-3" />
                   </button>
@@ -3108,13 +3110,13 @@ export default function SiteEditorPage() {
                   {/* Show/Hide section toggle */}
                   {activeTab !== "seo" && activeTab !== "header" && activeTab !== "footer" && (
                     <div className="flex items-center justify-between py-1 border-b border-border">
-                      <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                      <span className="text-[10px] font-semibold text-sidebar-muted-foreground uppercase tracking-wider">
                         {SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab}
                       </span>
                       <button
                         type="button"
                         onClick={() => toggleSectionVisibility(activeTab)}
-                        className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-semibold transition-all hover:bg-white/10"
+                        className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-semibold transition-all hover:bg-sidebar-muted"
                         style={{ color: hiddenSections.includes(activeTab) ? "#f87171" : "#94a3b8" }}
                       >
                         {hiddenSections.includes(activeTab)
@@ -3157,7 +3159,7 @@ export default function SiteEditorPage() {
                   {/* Section reorder — up/down arrows */}
                   {BODY_SECTION_KEYS.includes(activeTab) && (
                     <div className="flex items-center gap-2 py-1 border-b border-border">
-                      <span className="text-[10px] text-slate-500 flex-1">{t("dashboard.sitesEditor.sectionOrder")}</span>
+                      <span className="text-[10px] text-sidebar-subtle-foreground flex-1">{t("dashboard.sitesEditor.sectionOrder")}</span>
                       {(() => {
                         const order = getOrderedSections(designToken, content, getHiddenSections()).filter(k => BODY_SECTION_KEYS.includes(k));
                         const idx = order.indexOf(activeTab);
@@ -3167,7 +3169,7 @@ export default function SiteEditorPage() {
                               type="button"
                               disabled={idx <= 0 || !!pendingDiff}
                               onClick={() => handleReorderSection(activeTab, order[idx - 1])}
-                              className="w-6 h-6 flex items-center justify-center rounded border border-border bg-muted/50 text-slate-400 hover:bg-white/10 disabled:opacity-30"
+                              className="w-6 h-6 flex items-center justify-center rounded border border-border bg-muted/50 text-sidebar-muted-foreground hover:bg-sidebar-muted disabled:opacity-30"
                             >
                               <ChevronUp className="w-3.5 h-3.5" />
                             </button>
@@ -3175,7 +3177,7 @@ export default function SiteEditorPage() {
                               type="button"
                               disabled={idx >= order.length - 1 || !!pendingDiff}
                               onClick={() => handleReorderSection(activeTab, order[idx + 1])}
-                              className="w-6 h-6 flex items-center justify-center rounded border border-border bg-muted/50 text-slate-400 hover:bg-white/10 disabled:opacity-30"
+                              className="w-6 h-6 flex items-center justify-center rounded border border-border bg-muted/50 text-sidebar-muted-foreground hover:bg-sidebar-muted disabled:opacity-30"
                             >
                               <ChevronDown className="w-3.5 h-3.5" />
                             </button>
@@ -3228,7 +3230,7 @@ export default function SiteEditorPage() {
                     }}
                     className={`w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg border text-[11px] font-medium transition-colors ${effectiveThemeIsDark
                       ? 'border-amber-500/30 bg-amber-500/10 text-amber-300'
-                      : 'border-border bg-white/5 text-slate-300 hover:bg-white/10'}`}
+                      : 'border-border bg-sidebar-muted text-sidebar-muted-foreground hover:bg-sidebar-muted'}`}
                   >
                     {effectiveThemeIsDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
                     {effectiveThemeIsDark ? t("dashboard.sitesEditor.switchLight") : t("dashboard.sitesEditor.switchDark")}
@@ -3237,11 +3239,11 @@ export default function SiteEditorPage() {
                   {/* Gaya Situs */}
                   <div>
                     <div className="mb-1.5 flex items-center justify-between">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">{t("dashboard.sitesEditor.styleLabel")}</p>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.styleLabel")}</p>
                       <div className="flex items-center gap-1.5">
                         {designOnlyUndo.length > 0 && (
                           <button type="button" onClick={handleDesignUndo} aria-label={t("dashboard.sitesEditor.undoDesign")}
-                            className="flex h-5 w-5 items-center justify-center rounded border border-border bg-muted/50 text-slate-400 hover:bg-white/10 hover:text-white">
+                            className="flex h-5 w-5 items-center justify-center rounded border border-border bg-muted/50 text-sidebar-muted-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground">
                             <RotateCcw className="h-2.5 w-2.5" />
                           </button>
                         )}
@@ -3251,16 +3253,16 @@ export default function SiteEditorPage() {
                     <button type="button"
                       onClick={() => !pendingDiff && setTemplatePickerOpen((open) => !open)}
                       disabled={templateSaving || !!pendingDiff}
-                      className="flex w-full items-center gap-2 rounded-lg border border-border bg-muted/50 p-1.5 text-left transition hover:border-border hover:bg-white/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex w-full items-center gap-2 rounded-lg border border-border bg-muted/50 p-1.5 text-left transition hover:border-border hover:bg-sidebar-muted/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <div className="w-10 flex-shrink-0">
                         <TemplateThumbnail previewType={activeTemplatePreviewType} accent={activeTemplateAccent} active compact palette={activeDesignToken?.palette} />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-[12px] font-bold text-slate-100">{activeTemplateName}</p>
-                        <p className="truncate text-[10px] text-slate-500">{activeTemplateCategory}</p>
+                        <p className="truncate text-[12px] font-bold text-sidebar-foreground">{activeTemplateName}</p>
+                        <p className="truncate text-[10px] text-sidebar-subtle-foreground">{activeTemplateCategory}</p>
                       </div>
-                      <ChevronDown className={`h-4 w-4 flex-shrink-0 text-slate-500 transition-transform ${templatePickerOpen ? "rotate-180" : ""}`} />
+                      <ChevronDown className={`h-4 w-4 flex-shrink-0 text-sidebar-subtle-foreground transition-transform ${templatePickerOpen ? "rotate-180" : ""}`} />
                     </button>
                     {templatePickerOpen && (
                       <div className="mt-2 space-y-2 max-h-64 overflow-y-auto pr-1">
@@ -3270,12 +3272,12 @@ export default function SiteEditorPage() {
                             <button key="top-dynamic-template" type="button"
                               onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC", latestAiDesignToken)}
                               disabled={templateSaving}
-                              className={`group w-full rounded-xl border p-2 text-left transition ${isTopActive ? "border-primary bg-primary/15" : "border-border bg-muted/40 hover:border-border hover:bg-white/[0.07]"}`}>
+                              className={`group w-full rounded-xl border p-2 text-left transition ${isTopActive ? "border-primary bg-primary/15" : "border-border bg-muted/40 hover:border-border hover:bg-sidebar-muted/[0.07]"}`}>
                               <TemplateThumbnail previewType="dynamic" accent={latestAiDesignToken?.palette?.primary || dynamicTemplate.accent} active={isTopActive} palette={latestAiDesignToken?.palette} />
                               <div className="mt-1.5 flex items-start gap-2">
                                 <div className="min-w-0 flex-1">
-                                  <p className="truncate text-[11px] font-bold text-slate-100">{t("dashboard.sitesEditor.aiDesignEngine")}</p>
-                                  <p className="truncate text-[10px] text-slate-500">{t("dashboard.sitesEditor.latestAiGenerated")}</p>
+                                  <p className="truncate text-[11px] font-bold text-sidebar-foreground">{t("dashboard.sitesEditor.aiDesignEngine")}</p>
+                                  <p className="truncate text-[10px] text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.latestAiGenerated")}</p>
                                 </div>
                                 {isTopActive && <Check className="mt-0.5 h-3 w-3 flex-shrink-0 text-primary" />}
                               </div>
@@ -3288,12 +3290,12 @@ export default function SiteEditorPage() {
                             <button key={template.id} type="button"
                               onClick={() => void handleTemplateChange(template.id)}
                               disabled={templateSaving}
-                              className={`group w-full rounded-xl border p-2 text-left transition ${active ? "border-primary bg-primary/15" : "border-border bg-muted/40 hover:border-border hover:bg-white/[0.07]"}`}>
+                              className={`group w-full rounded-xl border p-2 text-left transition ${active ? "border-primary bg-primary/15" : "border-border bg-muted/40 hover:border-border hover:bg-sidebar-muted/[0.07]"}`}>
                               <TemplateThumbnail previewType={template.previewType} accent={template.accent} active={active} palette={getTemplateDefaultDesignToken(template.id).palette} />
                               <div className="mt-1.5 flex items-start gap-2">
                                 <div className="min-w-0 flex-1">
-                                  <p className="truncate text-[11px] font-bold text-slate-100">{template.name}</p>
-                                  <p className="mt-0.5 line-clamp-1 text-[10px] text-slate-500">{template.description}</p>
+                                  <p className="truncate text-[11px] font-bold text-sidebar-foreground">{template.name}</p>
+                                  <p className="mt-0.5 line-clamp-1 text-[10px] text-sidebar-subtle-foreground">{template.description}</p>
                                 </div>
                                 {active && <Check className="mt-0.5 h-3 w-3 flex-shrink-0 text-primary" />}
                               </div>
@@ -3316,13 +3318,13 @@ export default function SiteEditorPage() {
                           <div className="space-y-1.5 rounded-lg border border-primary/20 bg-primary/5 p-2">
                             <div className="flex items-center justify-between">
                               <span className="text-[9px] font-bold uppercase tracking-wider text-primary">{t("dashboard.sitesEditor.aiDesignPrompt")}</span>
-                              <button type="button" onClick={() => setAiDesignPromptOpen(false)} className="text-[9px] text-slate-400 hover:text-slate-200">{t("dashboard.sitesEditor.cancel")}</button>
+                              <button type="button" onClick={() => setAiDesignPromptOpen(false)} className="text-[9px] text-sidebar-muted-foreground hover:text-sidebar-foreground">{t("dashboard.sitesEditor.cancel")}</button>
                             </div>
                             <input type="text" value={aiDesignInstructions}
                               onChange={(e) => setAiDesignInstructions(e.target.value)}
                               onKeyDown={(e) => { if (e.key === "Enter" && !pendingDiff) void handleAiRegenerateDesign(); }}
                               placeholder="cth: tema kopi vintage hangat..."
-                              className="w-full px-2 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60 placeholder:text-slate-700"
+                              className="w-full px-2 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[11px] outline-none focus:border-primary/60 placeholder:text-sidebar-subtle-foreground"
                               disabled={aiLoading || !!pendingDiff} />
                             <button type="button" onClick={() => void handleAiRegenerateDesign()}
                               disabled={aiLoading || !aiDesignInstructions.trim() || !!pendingDiff}
@@ -3361,7 +3363,7 @@ export default function SiteEditorPage() {
                   <div className="space-y-2">
                     {["primary", "accent", "background", "surface", "text"].map((colorKey) => (
                       <div key={colorKey} className="flex items-center gap-2">
-                        <label className="text-[10px] uppercase tracking-wide font-semibold text-slate-400 w-16 shrink-0">
+                        <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground w-16 shrink-0">
                           {colorKey === "primary" ? t("dashboard.sitesEditor.primaryShort") : colorKey === "accent" ? t("dashboard.sitesEditor.accentShort") : colorKey === "background" ? t("dashboard.sitesEditor.backgroundShort") : colorKey === "surface" ? t("dashboard.sitesEditor.surfaceShort") : t("dashboard.sitesEditor.textShort")}
                         </label>
                         <div className="relative w-7 h-7 rounded-md border border-border overflow-hidden shrink-0">
@@ -3374,7 +3376,7 @@ export default function SiteEditorPage() {
                         <input type="text" value={designToken?.palette?.[colorKey] || ""}
                           onChange={(e) => handleColorChange(colorKey, e.target.value)}
                           onClick={() => colorRefs.current[`mobile-${colorKey}`]?.click()}
-                          className="flex-1 h-7 px-2 border border-border bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60 cursor-pointer" />
+                          className="flex-1 h-7 px-2 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[11px] outline-none focus:border-primary/60 cursor-pointer" />
                       </div>
                     ))}
                   </div>
@@ -3434,16 +3436,16 @@ export default function SiteEditorPage() {
 
                   {/* Tata Letak */}
                   <div className="space-y-2">
-                    <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">{t("dashboard.sitesEditor.layoutLabel")}</p>
+                    <p className="text-[9px] font-bold uppercase tracking-wider text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.layoutLabel")}</p>
                     <select value={designToken?.layout?.corner_radius || "soft"}
                       onChange={(e) => updateDesignTokenField("layout", "corner_radius", e.target.value)}
-                      className="w-full h-8 px-2 border border-border bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
-                      <option value="sharp">{t("dashboard.sitesEditor.cornerSharp")}</option><option value="soft">{t("dashboard.sitesEditor.cornerSoft")}</option><option value="rounded">{t("dashboard.sitesEditor.cornerRounded")}</option>
+                      className="w-full h-8 px-2 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[11px] outline-none focus:border-primary/60">
+                      <option className="bg-sidebar-input text-sidebar-foreground" value="sharp">{t("dashboard.sitesEditor.cornerSharp")}</option><option className="bg-sidebar-input text-sidebar-foreground" value="soft">{t("dashboard.sitesEditor.cornerSoft")}</option><option className="bg-sidebar-input text-sidebar-foreground" value="rounded">{t("dashboard.sitesEditor.cornerRounded")}</option>
                     </select>
                     <select value={designToken?.layout?.section_spacing || "normal"}
                       onChange={(e) => updateDesignTokenField("layout", "section_spacing", e.target.value)}
-                      className="w-full h-8 px-2 border border-border bg-[#05070b] text-slate-100 rounded-md text-[11px] outline-none focus:border-primary/60">
-                      <option value="compact">{t("dashboard.sitesEditor.spacingCompactShort")}</option><option value="normal">{t("dashboard.sitesEditor.normal")}</option><option value="relaxed">{t("dashboard.sitesEditor.spacingRelaxedShort")}</option>
+                      className="w-full h-8 px-2 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[11px] outline-none focus:border-primary/60">
+                      <option className="bg-sidebar-input text-sidebar-foreground" value="compact">{t("dashboard.sitesEditor.spacingCompactShort")}</option><option className="bg-sidebar-input text-sidebar-foreground" value="normal">{t("dashboard.sitesEditor.normal")}</option><option className="bg-sidebar-input text-sidebar-foreground" value="relaxed">{t("dashboard.sitesEditor.spacingRelaxedShort")}</option>
                     </select>
                     {isDynamic && (
                       <div className="pt-2 border-t border-border">
@@ -3467,7 +3469,7 @@ export default function SiteEditorPage() {
 
             {/* AI Usage meter — mobile drawer */}
             {tenantUsage && (
-              <div className="flex-shrink-0 border-t border-border px-3.5 py-2 bg-[#111318]">
+              <div className="flex-shrink-0 border-t border-border px-3.5 py-2 bg-sidebar">
                 <div className="flex items-center gap-2.5">
                   <span className="text-[9px] font-medium text-muted-foreground shrink-0">{t("dashboard.sitesEditor.aiUsage")}</span>
                   <div className="flex flex-1 items-center gap-3">
@@ -3477,12 +3479,12 @@ export default function SiteEditorPage() {
                       { label: "Design", count: tenantUsage.usage.design_regen_count ?? 0, max: tenantUsage.max_design_regens ?? 0, color: "bg-primary" },
                     ].map(({ label, count, max, color }) => (
                       <div key={label} className="flex-1 flex items-center gap-1.5 min-w-0">
-                        <span className="text-[9px] text-slate-500 shrink-0">{label}</span>
-                        <div className="flex-1 h-1 rounded-full bg-white/10 overflow-hidden">
+                        <span className="text-[9px] text-sidebar-subtle-foreground shrink-0">{label}</span>
+                        <div className="flex-1 h-1 rounded-full bg-sidebar-muted overflow-hidden">
                           <div className={`h-full rounded-full ${color} transition-all duration-500`}
                             style={{ width: `${max <= 0 ? 100 : Math.min((count / max) * 100, 100)}%` }} />
                         </div>
-                        <span className="text-[9px] font-semibold text-slate-400 shrink-0">{count}/{max <= 0 ? "∞" : max}</span>
+                        <span className="text-[9px] font-semibold text-sidebar-muted-foreground shrink-0">{count}/{max <= 0 ? "∞" : max}</span>
                       </div>
                     ))}
                   </div>
@@ -3548,24 +3550,24 @@ export default function SiteEditorPage() {
 
         {confirmPublishOpen && siteDetails && (
           <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
-            <div className="w-full max-w-sm rounded-2xl border border-border bg-[#111318] p-6 shadow-2xl space-y-4">
+            <div className="w-full max-w-sm rounded-2xl border border-border bg-sidebar p-6 shadow-2xl space-y-4">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/15">
                   <Rocket className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-[14px] font-bold text-slate-100">{t("dashboard.sitesEditor.confirmPublishTitle")}</h3>
-                  <p className="text-[11px] text-slate-400 mt-0.5">{t("dashboard.sitesEditor.confirmPublishDesc")}</p>
+                  <h3 className="text-[14px] font-bold text-sidebar-foreground">{t("dashboard.sitesEditor.confirmPublishTitle")}</h3>
+                  <p className="text-[11px] text-sidebar-muted-foreground mt-0.5">{t("dashboard.sitesEditor.confirmPublishDesc")}</p>
                 </div>
               </div>
-              <p className="text-[12px] text-slate-300 leading-relaxed">
+              <p className="text-[12px] text-sidebar-muted-foreground leading-relaxed">
                 {t("dashboard.sitesEditor.confirmPublishBody", undefined, { subdomain: siteDetails.subdomain })}.
               </p>
               <div className="flex gap-2 pt-1">
                 <button
                   type="button"
                   onClick={() => setConfirmPublishOpen(false)}
-                  className="flex-1 rounded-xl border border-border py-2 text-[12px] font-semibold text-slate-300 hover:bg-white/5 transition-colors"
+                  className="flex-1 rounded-xl border border-border py-2 text-[12px] font-semibold text-sidebar-muted-foreground hover:bg-sidebar-muted transition-colors"
                 >
                   {t("dashboard.sitesEditor.cancel")}
                 </button>
@@ -3632,8 +3634,8 @@ export default function SiteEditorPage() {
               </div>
             </div>
             <div>
-              <p className="text-[14px] font-semibold text-slate-100">{UPGRADE_COPY[upgradeContext] ? t(UPGRADE_COPY[upgradeContext].bodyKey) : t("dashboard.sitesEditor.upgradeDefaultBody")}</p>
-              <p className="text-[12px] text-slate-400 mt-1">{t("dashboard.sitesEditor.upgradeProDesc")}</p>
+              <p className="text-[14px] font-semibold text-sidebar-foreground">{UPGRADE_COPY[upgradeContext] ? t(UPGRADE_COPY[upgradeContext].bodyKey) : t("dashboard.sitesEditor.upgradeDefaultBody")}</p>
+              <p className="text-[12px] text-sidebar-muted-foreground mt-1">{t("dashboard.sitesEditor.upgradeProDesc")}</p>
             </div>
           </div>
         </Dialog>
@@ -3645,7 +3647,7 @@ export default function SiteEditorPage() {
             onClick={() => { aiPromptModal.resolve(null); setAiPromptModal(null); }}
           >
             <div
-              className="w-full max-w-md rounded-2xl border border-border bg-[#111318] shadow-2xl p-6 space-y-5 animate-in zoom-in-95 duration-150"
+              className="w-full max-w-md rounded-2xl border border-border bg-sidebar shadow-2xl p-6 space-y-5 animate-in zoom-in-95 duration-150"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
@@ -3654,10 +3656,10 @@ export default function SiteEditorPage() {
                   <SparkleGenAI className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-[14px] font-bold text-slate-100 leading-tight">
+                  <h3 className="text-[14px] font-bold text-sidebar-foreground leading-tight">
                     {t("dashboard.sitesEditor.aiInstructionsTitle")}
                   </h3>
-                  <p className="text-[11px] text-slate-400 mt-0.5">
+                  <p className="text-[11px] text-sidebar-muted-foreground mt-0.5">
                     {t("dashboard.sitesEditor.aiPromptDesc", undefined, { label: SECTION_META[aiPromptModal.section]?.label ?? aiPromptModal.section })}
                   </p>
                 </div>
@@ -3683,7 +3685,7 @@ export default function SiteEditorPage() {
                   placeholder={siteDetails?.language === "en"
                     ? `e.g. "make it more persuasive and emotional"`
                     : `cth. "buat lebih persuasif dan emosional"`}
-                  className="w-full px-4 py-3 border border-border bg-[#05070b] text-slate-100 rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 placeholder:text-slate-600 transition-all"
+                  className="w-full px-4 py-3 border border-border bg-sidebar-input text-sidebar-foreground rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20 placeholder:text-sidebar-subtle-foreground transition-all"
                 />
                 {/* Quick suggestion chips */}
                 <div className="flex flex-wrap gap-1.5">
@@ -3705,7 +3707,7 @@ export default function SiteEditorPage() {
                 <button
                   type="button"
                   onClick={() => { aiPromptModal.resolve(null); setAiPromptModal(null); }}
-                  className="flex-1 h-10 rounded-xl border border-border text-[13px] font-semibold text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-all cursor-pointer"
+                  className="flex-1 h-10 rounded-xl border border-border text-[13px] font-semibold text-sidebar-muted-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground transition-all cursor-pointer"
                 >
                   {t("dashboard.sitesEditor.cancel")}
                 </button>
@@ -3734,7 +3736,7 @@ export default function SiteEditorPage() {
           title={t("dashboard.sitesEditor.qualityTitle", undefined, { score: String(quality.score) })}
         >
           <div className="space-y-3 py-1">
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-sidebar-muted-foreground">
               {t("dashboard.sitesEditor.qualityDesc", undefined, { count: String(quality.issues.length) })}
             </p>
             <div className="max-h-60 overflow-y-auto space-y-2 pr-1">

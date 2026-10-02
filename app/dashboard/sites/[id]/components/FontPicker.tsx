@@ -35,21 +35,21 @@ export default function FontPicker({ value, onChange }: FontPickerProps) {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center gap-2 px-2.5 py-1.5 border border-border bg-[#05070b] text-slate-100 rounded-md text-[13px] outline-none focus:border-primary/60"
+        className="w-full flex items-center gap-2 px-2.5 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[13px] outline-none focus:border-primary/60"
         style={{ fontFamily: value }}
       >
         <span className="flex-1 text-left truncate">{value}</span>
-        <ChevronDown className="w-3 h-3 shrink-0 text-slate-500" />
+        <ChevronDown className="w-3 h-3 shrink-0 text-sidebar-subtle-foreground" />
       </button>
       {open && (
-        <div className="absolute z-50 top-full mt-1 left-0 right-0 bg-[#1a1d26] border border-border rounded-lg max-h-60 overflow-y-auto shadow-xl">
+        <div className="absolute z-50 top-full mt-1 left-0 right-0 bg-sidebar border border-border rounded-lg max-h-60 overflow-y-auto shadow-xl">
           {GOOGLE_FONTS_WHITELIST.map((f) => (
             <button
               key={f}
               type="button"
               onClick={() => { onChange(f); setOpen(false); }}
-              className={`w-full text-left px-3 py-2 text-[13px] transition-colors hover:bg-white/5 ${
-                f === value ? "bg-primary/20 text-primary" : "text-slate-300"
+              className={`w-full text-left px-3 py-2 text-[13px] transition-colors hover:bg-sidebar-muted ${
+                f === value ? "bg-primary/20 text-primary" : "text-sidebar-foreground"
               }`}
               style={{ fontFamily: f }}
             >
