@@ -55,6 +55,14 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
   useEffect(() => {
     dropdownOpenRef.current = searchResults.length > 0;
   }, [searchResults]);
+  // Arrow keys move aria-activedescendant without moving DOM focus, so the listbox
+  // has to be scrolled by hand or the active option ends up outside the viewport.
+  useEffect(() => {
+    if (searchResults.length === 0) return;
+    document
+      .getElementById(`map-picker-result-${activeResult}`)
+      ?.scrollIntoView({ block: "nearest" });
+  }, [activeResult, searchResults.length]);
   const [searching, setSearching] = useState(false);
   const [position, setPosition] = useState<{ lat: number; lng: number }>(() => {
     return parseUrlCoords(currentUrl) ?? { lat: DEFAULT_LAT, lng: DEFAULT_LNG };
@@ -417,6 +425,7 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
             <div
               id="map-picker-results"
               role="listbox"
+              tabIndex={-1}
               className="absolute top-[52px] left-3 right-[54px] z-[1050] bg-white dark:bg-neutral-800 border border-gray-300 dark:border-white/15 rounded-lg shadow-xl max-h-44 overflow-y-auto"
             >
               {searchResults.map((r, i) => (
@@ -426,6 +435,7 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
                   type="button"
                   role="option"
                   aria-selected={i === activeResult}
+                  tabIndex={-1}
                   onMouseEnter={() => setActiveResult(i)}
                   onClick={() => goToResult(r.lat, r.lon, r.display_name)}
                   className={`w-full text-left px-3.5 py-2.5 text-[12px] border-b border-gray-100 dark:border-white/5 last:border-0 transition-colors ${
