@@ -39,12 +39,22 @@ const TILE_STYLES: Record<string, { url: string; labelKey: string }> = {
 export default function LocationPicker({ open, onClose, currentUrl, onSave }: LocationPickerProps) {
   const { t } = useI18n();
   const mapRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const backdropDown = useRef(false);
   const initLeafletRef = useRef<(() => void) | null>(null);
   const mapInstanceRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Array<{ lat: string; lon: string; display_name: string }>>([]);
+  const [activeResult, setActiveResult] = useState(0);
+  // Mirrors dropdown visibility for the document-level Escape handler. A DOM ref
+  // is not usable here: React unmounts the dropdown before that listener runs,
+  // which would make the ref null and skip the "dropdown still open" check.
+  const dropdownOpenRef = useRef(false);
+  useEffect(() => {
+    dropdownOpenRef.current = searchResults.length > 0;
+  }, [searchResults]);
   const [searching, setSearching] = useState(false);
   const [position, setPosition] = useState<{ lat: number; lng: number }>(() => {
     return parseUrlCoords(currentUrl) ?? { lat: DEFAULT_LAT, lng: DEFAULT_LNG };
@@ -186,6 +196,7 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}&limit=5&accept-language=id`
       );
       const data = await res.json();
+      setActiveResult(0);
       setSearchResults(Array.isArray(data) ? data : []);
     } catch {
       setSearchResults([]);
@@ -231,15 +242,71 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
     onClose();
   };
 
-  if (!open) return null;
-
   // Render the overlay via a portal on document.body so it is not clipped
   // by the sidebar's overflow-y-auto or CSS transform stacking context.
-  if (typeof document === "undefined") return null;
+  // Backdrop click closes, but only when the press started on the backdrop itself
+  // so dragging a map or selecting text does not dismiss the picker.
+  const handleBackdropMouseDown = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) backdropDown.current = true;
+  };
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget && backdropDown.current) onClose();
+    backdropDown.current = false;
+  };
+
+  // Escape closes the dialog, and Tab is trapped inside it. When the results
+  // dropdown is open, Escape clears it first (handled by the input's own keydown)
+  // and focus should land on the search field so the picker is keyboard-usable.
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        if (dropdownOpenRef.current) {
+          setSearchResults([]);
+          searchRef.current?.focus();
+          return;
+        }
+        onClose();
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const focusables = dialogRef.current?.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), textarea, select, [tabindex]:not([tabindex="-1"])'
+      );
+      if (!focusables || focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const activeEl = document.activeElement as HTMLElement | null;
+      if (e.shiftKey && (activeEl === first || !dialogRef.current?.contains(activeEl))) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && activeEl === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+    if (typeof document === "undefined") return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 dark:bg-black/70 p-4 overflow-y-auto">
-      <div className="bg-white dark:bg-neutral-900 rounded-xl shadow-2xl w-full max-w-2xl flex flex-col overflow-hidden max-h-[90vh] md:max-h-[85vh] my-auto border border-gray-200 dark:border-white/10">
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 dark:bg-black/70 p-4 overflow-y-auto"
+      onMouseDown={handleBackdropMouseDown}
+      onClick={handleBackdropClick}
+    >
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t("dashboard.sitesEditor.mapPickerTitle")}
+        className="bg-white dark:bg-neutral-900 rounded-xl shadow-2xl w-full max-w-2xl flex flex-col overflow-hidden max-h-[90vh] md:max-h-[85vh] my-auto border border-gray-200 dark:border-white/10"
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 dark:border-white/10 shrink-0">
           <h2 className="text-sm font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
@@ -268,15 +335,38 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
+                  setActiveResult(0);
                   if (!e.target.value) setSearchResults([]);
                 }}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") searchLocation();
-                  if (e.key === "Escape") {
-                    setSearchResults([]);
-                    searchRef.current?.blur();
+                  const count = searchResults.length;
+                  if (count > 0) {
+                    if (e.key === "ArrowDown") {
+                      e.preventDefault();
+                      setActiveResult((i) => (i + 1) % count);
+                      return;
+                    }
+                    if (e.key === "ArrowUp") {
+                      e.preventDefault();
+                      setActiveResult((i) => (i - 1 + count) % count);
+                      return;
+                    }
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      const picked = searchResults[activeResult];
+                      if (picked) {
+                        goToResult(picked.lat, picked.lon, picked.display_name);
+                        return;
+                      }
+                    }
                   }
+                  if (e.key === "Enter") searchLocation();
                 }}
+                role="combobox"
+                aria-expanded={searchResults.length > 0}
+                aria-autocomplete="list"
+                aria-controls="map-picker-results"
+                aria-activedescendant={searchResults.length > 0 ? `map-picker-result-${activeResult}` : undefined}
                 placeholder={t("dashboard.sitesEditor.mapPickerSearchPlaceholder")}
                 className="w-full h-[38px] py-2 pl-3 pr-9 rounded-lg border border-gray-400 dark:border-white/40 text-sm text-gray-900 dark:text-gray-50 placeholder-gray-500 dark:placeholder-gray-400 bg-white dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 shadow-sm"
               />
@@ -324,12 +414,25 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
 
           {/* Search results dropdown */}
           {searchResults.length > 0 && (
-            <div className="absolute top-[52px] left-3 right-[54px] z-[1050] bg-white dark:bg-neutral-800 border border-gray-300 dark:border-white/15 rounded-lg shadow-xl max-h-44 overflow-y-auto">
+            <div
+              id="map-picker-results"
+              role="listbox"
+              className="absolute top-[52px] left-3 right-[54px] z-[1050] bg-white dark:bg-neutral-800 border border-gray-300 dark:border-white/15 rounded-lg shadow-xl max-h-44 overflow-y-auto"
+            >
               {searchResults.map((r, i) => (
                 <button
                   key={i}
+                  id={`map-picker-result-${i}`}
+                  type="button"
+                  role="option"
+                  aria-selected={i === activeResult}
+                  onMouseEnter={() => setActiveResult(i)}
                   onClick={() => goToResult(r.lat, r.lon, r.display_name)}
-                  className="w-full text-left px-3.5 py-2.5 text-[12px] text-gray-600 dark:text-gray-300 hover:bg-emerald-50 dark:hover:bg-emerald-500/15 hover:text-gray-900 dark:hover:text-gray-100 border-b border-gray-100 dark:border-white/5 last:border-0 transition-colors"
+                  className={`w-full text-left px-3.5 py-2.5 text-[12px] border-b border-gray-100 dark:border-white/5 last:border-0 transition-colors ${
+                    i === activeResult
+                      ? "bg-emerald-50 dark:bg-emerald-500/20 text-gray-900 dark:text-gray-100"
+                      : "text-gray-600 dark:text-gray-300 hover:bg-emerald-50 dark:hover:bg-emerald-500/15 hover:text-gray-900 dark:hover:text-gray-100"
+                  }`}
                 >
                   {r.display_name}
                 </button>
