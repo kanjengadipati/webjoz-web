@@ -31,6 +31,9 @@ export default function LocationMapPreview({
 }: LocationMapPreviewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<{ remove: () => void } | null>(null);
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
+  const syncFrameRef = useRef(0);
+  const settleTimerRef = useRef(0);
   const coords = useMemo(() => parseGoogleMapsCoords(url), [url]);
 
   useEffect(() => {
@@ -62,14 +65,32 @@ export default function LocationMapPreview({
       }).setView([coords.lat, coords.lng], zoom);
 
       mapRef.current = map;
-      L.tileLayer(TILE_URLS[tileStyle || "default"] || TILE_URLS.default, { attribution: "" }).addTo(map);
+      const tileLayer = L.tileLayer(TILE_URLS[tileStyle || "default"] || TILE_URLS.default, { attribution: "" }).addTo(map);
       L.marker([coords.lat, coords.lng], { interactive: false }).addTo(map);
 
-      requestAnimationFrame(() => map.invalidateSize());
+      // Leaflet measures the container once at init, but this preview mounts into
+      // a sidebar whose width is still settling, so re-sync on resize and once
+      // more after paint to make sure tile coverage matches the final size.
+      const sync = () => {
+        cancelAnimationFrame(syncFrameRef.current);
+        window.clearTimeout(settleTimerRef.current);
+        syncFrameRef.current = requestAnimationFrame(() => map.invalidateSize({ animate: false }));
+      };
+      const observer = new ResizeObserver(sync);
+      observer.observe(containerRef.current);
+      resizeObserverRef.current = observer;
+
+      sync();
+      map.whenReady(sync);
+      tileLayer.once("load", sync);
+      settleTimerRef.current = window.setTimeout(sync, 150);
     });
 
     return () => {
       cancelled = true;
+      cancelAnimationFrame(syncFrameRef.current);
+      resizeObserverRef.current?.disconnect();
+      resizeObserverRef.current = null;
       mapRef.current?.remove();
       mapRef.current = null;
     };
