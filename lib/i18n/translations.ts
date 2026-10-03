@@ -2326,6 +2326,7 @@ export interface Translations {
       mapPickerLoading: string;
       mapPickerClickHint: string;
       mapPickerCancel: string;
+      mapPickerConfirm: string;
       seoRobotsTxtTitle: string;
       seoRobotsTxtLockedTitle: string;
       seoRobotsTxtLockedDesc: string;
@@ -4934,6 +4935,7 @@ export const translations: Record<Locale, Translations> = {
         mapPickerLoading: "Memuat peta...",
         mapPickerClickHint: "Klik peta untuk memilih lokasi",
         mapPickerCancel: "Batal",
+        mapPickerConfirm: "Pilih",
         seoRobotsTxtTitle: "Custom Robots.txt",
         seoRobotsTxtLockedTitle: "Kustomisasi robots.txt untuk situs Anda",
         seoRobotsTxtLockedDesc: "Kontrol halaman mana yang di-index Google, blok AI crawler, dan atur sitemap rules.",
@@ -7612,6 +7614,7 @@ export const translations: Record<Locale, Translations> = {
         mapPickerLoading: "Loading map...",
         mapPickerClickHint: "Click the map to pick a location",
         mapPickerCancel: "Cancel",
+        mapPickerConfirm: "Select",
         seoRobotsTxtTitle: "Custom Robots.txt",
         seoRobotsTxtLockedTitle: "Customize robots.txt for your site",
         seoRobotsTxtLockedDesc: "Control which pages Google indexes, block AI crawlers, and configure sitemap rules.",
