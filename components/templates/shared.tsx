@@ -3001,6 +3001,7 @@ function MapEmbed({ lat, lng, tileStyle }: { lat: number; lng: number; tileStyle
   const initRef = useRef(false);
   const mapRef = useRef<any>(null);
   const tileRef = useRef<any>(null);
+  const markerRef = useRef<any>(null);
 
   useEffect(() => {
     if (!ref.current || initRef.current) return;
@@ -3019,13 +3020,22 @@ function MapEmbed({ lat, lng, tileStyle }: { lat: number; lng: number; tileStyle
       mapRef.current = map;
       const info = TILE_STYLES[tileStyle || "default"] || TILE_STYLES.default;
       tileRef.current = L.tileLayer(info.url, { attribution: "" }).addTo(map);
-      L.marker([lat, lng]).addTo(map);
+      markerRef.current = L.marker([lat, lng]).addTo(map);
       sizeTimer = setTimeout(() => { if (mapRef.current) map.invalidateSize(); }, 200);
     });
     return () => {
       if (sizeTimer !== null) clearTimeout(sizeTimer);
-      if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; initRef.current = false; }
+      if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; markerRef.current = null; initRef.current = false; }
     };
+  }, [lat, lng]);
+
+  // The init effect above is intentionally mount-once, so a location chosen later
+  // has to be applied imperatively or the map stays on the default coords.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    map.setView([lat, lng], map.getZoom(), { animate: false });
+    markerRef.current?.setLatLng([lat, lng]);
   }, [lat, lng]);
 
   useEffect(() => {
@@ -3109,9 +3119,10 @@ const SharedContactSection: React.FC<ContactSectionProps> = ({
   const showForm = hasLeadForm;
   const formOnRight = formPosition === "right";
 
-  // Use mapsUrl coords as initial, fall back to Jakarta default (no auto-location prompt)
+  // Track mapsUrl so picking a new location in the sidebar moves the map here
+  // too; deriving it once at mount left it pinned to the default coords.
   const urlCoords = parseGoogleMapsCoords(mapsUrl);
-  const [mapCoords] = useState(urlCoords || { lat: -6.2088, lng: 106.8456 });
+  const mapCoords = urlCoords || { lat: -6.2088, lng: 106.8456 };
 
   // Dummy fallbacks — real data replaces when user fills via editor
   const displayAddress = address || "Alamat Anda";

@@ -19,7 +19,7 @@ export default function OverlayMap({ contact: c, onSubmitLead, leadSubmitting, l
     <section id="contact" className="relative w-full overflow-hidden" style={{ minHeight: "580px", background: "color-mix(in srgb, var(--dt-primary) 4%, var(--dt-bg))", borderRadius: "var(--dt-radius-lg)", borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)" }}>
       {showMap && (
         <div className="absolute inset-0 w-full h-full z-0">
-          <LeafletMap tileStyle={c.map_tile_style} filter="grayscale(1)" opacity={0.7} style={{ height: "100%" }} />
+          <LeafletMap mapsUrl={c.maps_url} tileStyle={c.map_tile_style} filter="grayscale(1)" opacity={0.7} style={{ height: "100%" }} />
         </div>
       )}
 

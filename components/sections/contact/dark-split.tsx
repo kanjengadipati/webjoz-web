@@ -25,7 +25,7 @@ export default function DarkSplit({ contact: c, onSubmitLead, leadSubmitting, le
 
           {showMap && (
             <div style={{ borderRadius: "0.75rem", overflow: "hidden", border: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)", height: "11rem", position: "relative" }}>
-              <LeafletMap tileStyle={c.map_tile_style} invertTiles opacity={0.6} style={{ height: "100%" }} />
+              <LeafletMap mapsUrl={c.maps_url} tileStyle={c.map_tile_style} invertTiles opacity={0.6} style={{ height: "100%" }} />
               {c.address && (
                 <a href={`https://maps.google.com/?q=${encodeURIComponent(c.address)}`} target="_blank" rel="noopener noreferrer"
                   style={{ position: "absolute", bottom: "0.5rem", right: "0.5rem", padding: "0.375rem 0.75rem", borderRadius: "0.5rem", background: "color-mix(in srgb, var(--dt-bg) 95%, transparent)", border: "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)", color: "var(--dt-text-muted)", textDecoration: "none", fontSize: "0.6rem", display: "flex", alignItems: "center", gap: "0.25rem" }}>
