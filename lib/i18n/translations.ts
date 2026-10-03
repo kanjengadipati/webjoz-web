@@ -2129,6 +2129,15 @@ export interface Translations {
       changeSectionVariant: string;
       optionsCount: string;
       variantLabel: string;
+      editShortcut: string;
+      mapStyleLabel: string;
+      mapTileLight: string;
+      mapTileDark: string;
+      mapTileSatellite: string;
+      mapPreviewLabel: string;
+      mapPreviewEmpty: string;
+      mapPreviewEditAria: string;
+      pickLocation: string;
       selectSectionAria: string;
       openSheet: string;
       closeSheet: string;
@@ -2287,6 +2296,36 @@ export interface Translations {
       seoAiOgTypeBtn: string;
       seoAiTwitterCardPrompt: string;
       seoAiTwitterCardBtn: string;
+      seoMetaTitleLabel: string;
+      seoMetaDescLabel: string;
+      seoOgTypeLabel: string;
+      seoOgTypeWebsite: string;
+      seoOgTypeArticle: string;
+      seoOgTypeProduct: string;
+      seoOgTypeProfile: string;
+      seoOgTypeBusiness: string;
+      seoTwitterCardLabel: string;
+      seoRobotsLabel: string;
+      seoRobotsIndexFollow: string;
+      seoRobotsNoindexFollow: string;
+      seoRobotsIndexNofollow: string;
+      seoRobotsNoindexNofollow: string;
+      seoOgLocaleLabel: string;
+      seoOgSiteNameLabel: string;
+      seoOgSiteNamePlaceholder: string;
+      seoCanonicalPathLabel: string;
+      mapTileOsm: string;
+      mapTileCyclOsm: string;
+      mapTileEsriStreet: string;
+      mapTileSatelliteLabel: string;
+      mapPickerTitle: string;
+      mapPickerSearchPlaceholder: string;
+      mapPickerSearchBtn: string;
+      mapPickerMyLocationAria: string;
+      mapPickerDetecting: string;
+      mapPickerLoading: string;
+      mapPickerClickHint: string;
+      mapPickerCancel: string;
       seoRobotsTxtTitle: string;
       seoRobotsTxtLockedTitle: string;
       seoRobotsTxtLockedDesc: string;
@@ -4698,6 +4737,15 @@ export const translations: Record<Locale, Translations> = {
         changeSectionVariant: "Ganti varian tampilan bagian ini",
         optionsCount: "opsi",
         variantLabel: "Varian",
+        editShortcut: "Edit",
+        mapStyleLabel: "Gaya Peta",
+        mapTileLight: "Terang",
+        mapTileDark: "Gelap",
+        mapTileSatellite: "Satelit",
+        mapPreviewLabel: "Pratinjau Peta",
+        mapPreviewEmpty: "Belum ada lokasi. Klik \"Pilih Lokasi\" untuk menandai lokasi di peta.",
+        mapPreviewEditAria: "Ubah lokasi peta",
+        pickLocation: "Pilih Lokasi",
         selectSectionAria: "Pilih Bagian",
         openSheet: "Buka sheet",
         closeSheet: "Tutup sheet",
@@ -4856,6 +4904,36 @@ export const translations: Record<Locale, Translations> = {
         seoAiOgTypeBtn: "AI: suggest OG type",
         seoAiTwitterCardPrompt: "Pilih Twitter card: summary_large_image untuk kebanyakan bisnis.",
         seoAiTwitterCardBtn: "AI: suggest Twitter card",
+        seoMetaTitleLabel: "Meta Title",
+        seoMetaDescLabel: "Meta Description",
+        seoOgTypeLabel: "Tipe OG",
+        seoOgTypeWebsite: "Website",
+        seoOgTypeArticle: "Artikel",
+        seoOgTypeProduct: "Produk",
+        seoOgTypeProfile: "Profil",
+        seoOgTypeBusiness: "Bisnis",
+        seoTwitterCardLabel: "Twitter Card",
+        seoRobotsLabel: "Robots",
+        seoRobotsIndexFollow: "index, follow",
+        seoRobotsNoindexFollow: "noindex, follow",
+        seoRobotsIndexNofollow: "index, nofollow",
+        seoRobotsNoindexNofollow: "noindex, nofollow",
+        seoOgLocaleLabel: "OG Locale",
+        seoOgSiteNameLabel: "Nama Situs OG",
+        seoOgSiteNamePlaceholder: "Nama bisnis",
+        seoCanonicalPathLabel: "Canonical Path",
+        mapTileOsm: "OSM",
+        mapTileCyclOsm: "CyclOSM",
+        mapTileEsriStreet: "Esri Street",
+        mapTileSatelliteLabel: "Satelit",
+        mapPickerTitle: "Pilih Lokasi",
+        mapPickerSearchPlaceholder: "Cari tempat...",
+        mapPickerSearchBtn: "Cari",
+        mapPickerMyLocationAria: "Lokasi saya saat ini",
+        mapPickerDetecting: "Mendeteksi lokasi...",
+        mapPickerLoading: "Memuat peta...",
+        mapPickerClickHint: "Klik peta untuk memilih lokasi",
+        mapPickerCancel: "Batal",
         seoRobotsTxtTitle: "Custom Robots.txt",
         seoRobotsTxtLockedTitle: "Kustomisasi robots.txt untuk situs Anda",
         seoRobotsTxtLockedDesc: "Kontrol halaman mana yang di-index Google, blok AI crawler, dan atur sitemap rules.",
@@ -7337,6 +7415,15 @@ export const translations: Record<Locale, Translations> = {
         changeSectionVariant: "Change this section's layout variant",
         optionsCount: "options",
         variantLabel: "Variant",
+        editShortcut: "Edit",
+        mapStyleLabel: "Map Style",
+        mapTileLight: "Light",
+        mapTileDark: "Dark",
+        mapTileSatellite: "Satellite",
+        mapPreviewLabel: "Map Preview",
+        mapPreviewEmpty: "No location yet. Click \"Pick Location\" to mark one on the map.",
+        mapPreviewEditAria: "Change map location",
+        pickLocation: "Pick Location",
         selectSectionAria: "Select Section",
         openSheet: "Open sheet",
         closeSheet: "Close sheet",
@@ -7495,6 +7582,36 @@ export const translations: Record<Locale, Translations> = {
         seoAiOgTypeBtn: "AI: suggest OG type",
         seoAiTwitterCardPrompt: "Select Twitter card: summary_large_image for most businesses.",
         seoAiTwitterCardBtn: "AI: suggest Twitter card",
+        seoMetaTitleLabel: "Meta Title",
+        seoMetaDescLabel: "Meta Description",
+        seoOgTypeLabel: "OG Type",
+        seoOgTypeWebsite: "Website",
+        seoOgTypeArticle: "Article",
+        seoOgTypeProduct: "Product",
+        seoOgTypeProfile: "Profile",
+        seoOgTypeBusiness: "Business",
+        seoTwitterCardLabel: "Twitter Card",
+        seoRobotsLabel: "Robots",
+        seoRobotsIndexFollow: "index, follow",
+        seoRobotsNoindexFollow: "noindex, follow",
+        seoRobotsIndexNofollow: "index, nofollow",
+        seoRobotsNoindexNofollow: "noindex, nofollow",
+        seoOgLocaleLabel: "OG Locale",
+        seoOgSiteNameLabel: "OG Site Name",
+        seoOgSiteNamePlaceholder: "Business name",
+        seoCanonicalPathLabel: "Canonical Path",
+        mapTileOsm: "OSM",
+        mapTileCyclOsm: "CyclOSM",
+        mapTileEsriStreet: "Esri Street",
+        mapTileSatelliteLabel: "Satellite",
+        mapPickerTitle: "Pick Location",
+        mapPickerSearchPlaceholder: "Search places...",
+        mapPickerSearchBtn: "Search",
+        mapPickerMyLocationAria: "My current location",
+        mapPickerDetecting: "Detecting location...",
+        mapPickerLoading: "Loading map...",
+        mapPickerClickHint: "Click the map to pick a location",
+        mapPickerCancel: "Cancel",
         seoRobotsTxtTitle: "Custom Robots.txt",
         seoRobotsTxtLockedTitle: "Customize robots.txt for your site",
         seoRobotsTxtLockedDesc: "Control which pages Google indexes, block AI crawlers, and configure sitemap rules.",

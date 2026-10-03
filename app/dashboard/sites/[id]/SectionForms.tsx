@@ -5,6 +5,7 @@ import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import FileUpload from "@/components/file-upload";
 import { SIDEBAR_FIELD_CLASS, SIDEBAR_FIELD_CLASS_ICON } from "@/lib/editor-field-class";
 import LocationPicker from "@/components/location-picker";
+import LocationMapPreview from "@/components/location-map-preview";
 import { GoogleSnippetPreview } from "@/components/google-snippet-preview";
 import { isPlaceholderValue, getAiSuggestions } from "./editor-utils";
 import { request } from "@/lib/api/client";
@@ -22,6 +23,12 @@ const ALL_MAP_TILES = [
   { key: "esri", label: "Esri" },
   { key: "satelit", label: "Satelit" },
 ];
+
+const MAP_TILE_I18N_KEYS: Record<string, string> = {
+  light: "dashboard.sitesEditor.mapTileLight",
+  dark: "dashboard.sitesEditor.mapTileDark",
+  satelit: "dashboard.sitesEditor.mapTileSatellite",
+};
 
 export interface SectionFormsProps {
   activeTab: string;
@@ -217,7 +224,7 @@ function KeywordsInput({ keywords, onChange, aiLoading, onAiGenerate, isPremium,
   return (
     <div className="space-y-1">
       <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-        <span>{t("sitesEditor.seoKeywordsLabel")}</span>
+        <span>{t("dashboard.sitesEditor.seoKeywordsLabel")}</span>
         {renderFieldActions ? (
           renderFieldActions("seo", "keywords", onAiGenerate && (
             <AiFieldButton
@@ -258,7 +265,7 @@ function KeywordsInput({ keywords, onChange, aiLoading, onAiGenerate, isPremium,
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={keywords.length === 0 ? t("sitesEditor.seoKeywordsPlaceholderEmpty") : t("sitesEditor.seoKeywordsPlaceholderMore")}
+          placeholder={keywords.length === 0 ? t("dashboard.sitesEditor.seoKeywordsPlaceholderEmpty") : t("dashboard.sitesEditor.seoKeywordsPlaceholderMore")}
           className="flex-1 min-w-[120px] bg-transparent outline-none text-[12px] text-sidebar-foreground placeholder-sidebar-subtle-foreground"
         />
       </div>
@@ -1702,22 +1709,32 @@ export default function SectionForms({
               className="w-4 h-4 accent-primary cursor-pointer"
             />
           </div>
-          <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-2.5">
-            <span className="text-[12px] font-medium text-sidebar-foreground">Gaya Peta</span>
-            <div className="flex gap-1">
+          <div className="rounded-lg border border-border bg-muted/40 p-2.5 space-y-1.5">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[12px] font-medium text-sidebar-foreground">
+                {t("dashboard.sitesEditor.mapStyleLabel")}
+              </span>
+              <span className="text-[10px] text-sidebar-subtle-foreground truncate">
+                {getEnabledMapTiles(ALL_MAP_TILES.map(o => o.key)).length} {t("dashboard.sitesEditor.optionsCount")}
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-1">
               {getEnabledMapTiles(ALL_MAP_TILES.map(o => o.key)).map((key) => {
                 const opt = ALL_MAP_TILES.find(o => o.key === key)!;
+                const active = (content.contact.map_tile_style || "default") === opt.key;
                 return (
                 <button
                   key={opt.key}
+                  type="button"
                   onClick={() => updateField("contact", "map_tile_style", opt.key)}
+                  aria-pressed={active}
                   className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
-                    (content.contact.map_tile_style || "default") === opt.key
-                      ? "bg-primary/20 text-primary"
-                      : "text-sidebar-muted-foreground hover:text-sidebar-foreground"
+                    active
+                      ? "bg-primary text-primary-foreground"
+                      : "border border-border text-sidebar-muted-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground"
                   }`}
                 >
-                  {opt.label}
+                  {MAP_TILE_I18N_KEYS[opt.key] ? t(MAP_TILE_I18N_KEYS[opt.key]) : opt.label}
                 </button>
                 );
               })}
@@ -1740,10 +1757,23 @@ export default function SectionForms({
                 type="button"
                 onClick={() => setShowLocationPicker(true)}
                 className="shrink-0 px-3 py-1.5 rounded-md text-[12px] font-medium border border-primary/30 text-primary hover:bg-primary/10 transition-colors"
-                title="Pilih lokasi di peta"
+                title={t("dashboard.sitesEditor.pickLocation")}
               >
-                Pilih Lokasi
+                {t("dashboard.sitesEditor.pickLocation")}
               </button>
+            </div>
+
+            <div className="space-y-1 pt-2">
+              <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground">
+                {t("dashboard.sitesEditor.mapPreviewLabel")}
+              </label>
+              <LocationMapPreview
+                url={content.contact.maps_url}
+                tileStyle={content.contact.map_tile_style}
+                emptyLabel={t("dashboard.sitesEditor.mapPreviewEmpty")}
+                clickLabel={t("dashboard.sitesEditor.mapPreviewEditAria")}
+                onClick={() => setShowLocationPicker(true)}
+              />
             </div>
 
             {/* Form position layout selector */}
@@ -1963,9 +1993,9 @@ export default function SectionForms({
       {activeTab === "seo" && (
         <div className="space-y-3">
           <div className="rounded-lg border border-border bg-muted/40 px-3 py-2.5 text-[12px] leading-relaxed text-muted-foreground">
-            <p className="font-semibold text-foreground">{t("sitesEditor.seoNotPublicTitle")}</p>
+            <p className="font-semibold text-foreground">{t("dashboard.sitesEditor.seoNotPublicTitle")}</p>
             <p className="mt-1 text-muted-foreground">
-              {t("sitesEditor.seoNotPublicDesc")}
+              {t("dashboard.sitesEditor.seoNotPublicDesc")}
             </p>
           </div>
 
@@ -1973,13 +2003,13 @@ export default function SectionForms({
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span className="flex items-center gap-1">
-                Meta Title {needsAttention("seo.title") && <span className="text-amber-300">⚠️</span>}
+                {t("dashboard.sitesEditor.seoMetaTitleLabel")} {needsAttention("seo.title") && <span className="text-amber-300">⚠️</span>}
               </span>
               {isPremium && (
                 <AiFieldButton
                   loading={aiLoadingField === "seo.title"}
-                  onGenerate={() => handleAiText("seo", "title", t("sitesEditor.seoAiTitlePrompt"), "Meta Title")}
-                  title={t("sitesEditor.seoAiTitleBtn")}
+                  onGenerate={() => handleAiText("seo", "title", t("dashboard.sitesEditor.seoAiTitlePrompt"), "Meta Title")}
+                  title={t("dashboard.sitesEditor.seoAiTitleBtn")}
                   onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
                 />
               )}
@@ -2003,13 +2033,13 @@ export default function SectionForms({
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span className="flex items-center gap-1">
-                Meta Description {needsAttention("seo.description") && <span className="text-amber-300">⚠️</span>}
+                {t("dashboard.sitesEditor.seoMetaDescLabel")} {needsAttention("seo.description") && <span className="text-amber-300">⚠️</span>}
               </span>
               {isPremium && (
                 <AiFieldButton
                   loading={aiLoadingField === "seo.description"}
-                  onGenerate={() => handleAiText("seo", "description", t("sitesEditor.seoAiDescPrompt"), "Meta Description")}
-                  title={t("sitesEditor.seoAiDescBtn")}
+                  onGenerate={() => handleAiText("seo", "description", t("dashboard.sitesEditor.seoAiDescPrompt"), "Meta Description")}
+                  title={t("dashboard.sitesEditor.seoAiDescBtn")}
                   onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
                 />
               )}
@@ -2034,13 +2064,13 @@ export default function SectionForms({
             keywords={content.seo?.keywords || []}
             onChange={(keywords) => updateField("seo", "keywords", keywords)}
             aiLoading={aiLoadingField === "seo.keywords"}
-            onAiGenerate={isPremium ? () => handleAiText("seo", "keywords", t("sitesEditor.seoAiKeywordsPrompt"), t("sitesEditor.seoKeywordsLabel")) : undefined}
+            onAiGenerate={isPremium ? () => handleAiText("seo", "keywords", t("dashboard.sitesEditor.seoAiKeywordsPrompt"), t("dashboard.sitesEditor.seoKeywordsLabel")) : undefined}
             onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
           />
 
           {/* Favicon + OG Image row */}
-          <FileUpload label={t("sitesEditor.seoFaviconLabel")} value={content.seo?.favicon_url || ""} onChange={(val) => updateField("seo", "favicon_url", val)} placeholder="https://..." accept=".ico,.png,.jpg,.jpeg" maxWidth={128} maxHeight={128} quality={0.9} />
-          <FileUpload label={t("sitesEditor.seoOgImageLabel")} value={content.seo?.og_image_url || ""} onChange={(val) => updateField("seo", "og_image_url", val)} placeholder="https://..." maxWidth={1200} maxHeight={630} quality={0.85} />
+          <FileUpload label={t("dashboard.sitesEditor.seoFaviconLabel")} value={content.seo?.favicon_url || ""} onChange={(val) => updateField("seo", "favicon_url", val)} placeholder="https://..." accept=".ico,.png,.jpg,.jpeg" maxWidth={128} maxHeight={128} quality={0.9} />
+          <FileUpload label={t("dashboard.sitesEditor.seoOgImageLabel")} value={content.seo?.og_image_url || ""} onChange={(val) => updateField("seo", "og_image_url", val)} placeholder="https://..." maxWidth={1200} maxHeight={630} quality={0.85} />
 
           {/* ── Social Share Preview ── */}
           {(() => {
@@ -2050,7 +2080,7 @@ export default function SectionForms({
             const ogDomain = subdomain ? tenantHost(subdomain) : "namabisnis.webjoz.com";
             return (
               <div className="space-y-2">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-sidebar-subtle-foreground">{t("sitesEditor.seoSharePreviewTitle")}</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.seoSharePreviewTitle")}</p>
 
                 {/* WhatsApp / iMessage style */}
                 <div className="rounded-xl overflow-hidden border border-border bg-[#1a1d26]">
@@ -2071,10 +2101,10 @@ export default function SectionForms({
                     <div className="flex-1 px-3 py-2 space-y-0.5 min-w-0">
                       <p className="text-[10px] text-sidebar-subtle-foreground truncate">{ogDomain}</p>
                       <p className={`text-[12px] font-semibold leading-tight line-clamp-2 ${ogTitle ? "text-sidebar-foreground" : "text-sidebar-subtle-foreground italic"}`}>
-                        {ogTitle || t("sitesEditor.seoSharePlaceholderTitle")}
+                        {ogTitle || t("dashboard.sitesEditor.seoSharePlaceholderTitle")}
                       </p>
                       <p className={`text-[10px] leading-tight line-clamp-2 ${ogDesc ? "text-sidebar-muted-foreground" : "text-sidebar-subtle-foreground italic"}`}>
-                        {ogDesc || t("sitesEditor.seoSharePlaceholderDesc")}
+                        {ogDesc || t("dashboard.sitesEditor.seoSharePlaceholderDesc")}
                       </p>
                     </div>
                   </div>
@@ -2091,17 +2121,17 @@ export default function SectionForms({
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center gap-1">
                         <span className="text-[28px] opacity-20">🖼️</span>
-                        <p className="text-[10px] text-sidebar-subtle-foreground italic">{t("sitesEditor.seoShareOgNotSet")}</p>
+                        <p className="text-[10px] text-sidebar-subtle-foreground italic">{t("dashboard.sitesEditor.seoShareOgNotSet")}</p>
                       </div>
                     )}
                   </div>
                   <div className="px-3 py-2 space-y-0.5 bg-[#232630]">
                     <p className="text-[9px] uppercase tracking-widest text-sidebar-subtle-foreground truncate">{ogDomain}</p>
                     <p className={`text-[12px] font-bold leading-snug line-clamp-2 ${ogTitle ? "text-sidebar-foreground" : "text-sidebar-subtle-foreground italic"}`}>
-                      {ogTitle || t("sitesEditor.seoSharePlaceholderTitle")}
+                      {ogTitle || t("dashboard.sitesEditor.seoSharePlaceholderTitle")}
                     </p>
                     <p className={`text-[10px] leading-snug line-clamp-2 ${ogDesc ? "text-sidebar-muted-foreground" : "text-sidebar-subtle-foreground italic"}`}>
-                      {ogDesc || t("sitesEditor.seoSharePlaceholderDesc")}
+                      {ogDesc || t("dashboard.sitesEditor.seoSharePlaceholderDesc")}
                     </p>
                   </div>
                 </div>
@@ -2123,14 +2153,14 @@ export default function SectionForms({
                     </div>
                     <div className="absolute bottom-0 left-0 right-0 px-3 py-1.5 bg-black/60 backdrop-blur-sm">
                       <p className={`text-[11px] font-semibold leading-tight truncate ${ogTitle ? "text-white" : "text-sidebar-subtle-foreground italic"}`}>
-                        {ogTitle || t("sitesEditor.seoSharePlaceholderTitle")}
+                        {ogTitle || t("dashboard.sitesEditor.seoSharePlaceholderTitle")}
                       </p>
                       <p className="text-[9px] text-sidebar-muted-foreground truncate">{ogDomain}</p>
                     </div>
                   </div>
                 </div>
 
-                <p className="text-[10px] text-sidebar-subtle-foreground text-center">{t("sitesEditor.seoShareAutoUpdate")}</p>
+                <p className="text-[10px] text-sidebar-subtle-foreground text-center">{t("dashboard.sitesEditor.seoShareAutoUpdate")}</p>
               </div>
             );
           })()}
@@ -2138,11 +2168,11 @@ export default function SectionForms({
           {/* OG Type Dropdown */}
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>OG Type</span>
+              <span>{t("dashboard.sitesEditor.seoOgTypeLabel")}</span>
               <AiFieldButton
                 loading={aiLoadingField === "seo.og_type"}
-                onGenerate={() => handleAiText("seo", "og_type", t("sitesEditor.seoAiOgTypePrompt"), "OG Type")}
-                title={t("sitesEditor.seoAiOgTypeBtn")}
+                onGenerate={() => handleAiText("seo", "og_type", t("dashboard.sitesEditor.seoAiOgTypePrompt"), "OG Type")}
+                title={t("dashboard.sitesEditor.seoAiOgTypeBtn")}
                 onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
             </label>
@@ -2151,22 +2181,22 @@ export default function SectionForms({
               onChange={(e) => updateField("seo", "og_type", e.target.value)}
               className={`${SIDEBAR_FIELD_CLASS} text-sidebar-foreground`}
             >
-              <option value="website">Website</option>
-              <option value="article">Article</option>
-              <option value="product">Product</option>
-              <option value="profile">Profile</option>
-              <option value="business.business">Business</option>
+              <option value="website">{t("dashboard.sitesEditor.seoOgTypeWebsite")}</option>
+              <option value="article">{t("dashboard.sitesEditor.seoOgTypeArticle")}</option>
+              <option value="product">{t("dashboard.sitesEditor.seoOgTypeProduct")}</option>
+              <option value="profile">{t("dashboard.sitesEditor.seoOgTypeProfile")}</option>
+              <option value="business">{t("dashboard.sitesEditor.seoOgTypeBusiness")}</option>
             </select>
           </div>
 
           {/* Twitter Card Dropdown */}
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>Twitter Card</span>
+              <span>{t("dashboard.sitesEditor.seoTwitterCardLabel")}</span>
               <AiFieldButton
                 loading={aiLoadingField === "seo.twitter_card"}
-                onGenerate={() => handleAiText("seo", "twitter_card", t("sitesEditor.seoAiTwitterCardPrompt"), "Twitter Card")}
-                title={t("sitesEditor.seoAiTwitterCardBtn")}
+                onGenerate={() => handleAiText("seo", "twitter_card", t("dashboard.sitesEditor.seoAiTwitterCardPrompt"), "Twitter Card")}
+                title={t("dashboard.sitesEditor.seoAiTwitterCardBtn")}
                 onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
             </label>
@@ -2184,22 +2214,22 @@ export default function SectionForms({
 
           {/* Robots Dropdown */}
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Robots</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.seoRobotsLabel")}</label>
             <select
               value={content.seo?.robots || "index, follow"}
               onChange={(e) => updateField("seo", "robots", e.target.value)}
               className={`${SIDEBAR_FIELD_CLASS} text-sidebar-foreground`}
             >
-              <option value="index, follow">index, follow</option>
-              <option value="noindex, follow">noindex, follow</option>
-              <option value="index, nofollow">index, nofollow</option>
-              <option value="noindex, nofollow">noindex, nofollow</option>
+              <option value="index, follow">{t("dashboard.sitesEditor.seoRobotsIndexFollow")}</option>
+              <option value="noindex, follow">{t("dashboard.sitesEditor.seoRobotsNoindexFollow")}</option>
+              <option value="index, nofollow">{t("dashboard.sitesEditor.seoRobotsIndexNofollow")}</option>
+              <option value="noindex, nofollow">{t("dashboard.sitesEditor.seoRobotsNoindexNofollow")}</option>
             </select>
           </div>
 
           {/* OG Locale */}
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">OG Locale</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.seoOgLocaleLabel")}</label>
             <input
               type="text"
               value={content.seo?.og_locale || "id_ID"}
@@ -2211,19 +2241,19 @@ export default function SectionForms({
 
           {/* OG Site Name */}
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">OG Site Name</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.seoOgSiteNameLabel")}</label>
             <input
               type="text"
               value={content.seo?.og_site_name || ""}
               onChange={(e) => updateField("seo", "og_site_name", e.target.value)}
               className={SIDEBAR_FIELD_CLASS}
-              placeholder="Nama bisnis"
+              placeholder={t("dashboard.sitesEditor.seoOgSiteNamePlaceholder")}
             />
           </div>
 
           {/* Canonical Path */}
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Canonical Path</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.seoCanonicalPathLabel")}</label>
             <input
               type="text"
               value={content.seo?.canonical_path || "/"}
@@ -2237,7 +2267,7 @@ export default function SectionForms({
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span className="flex items-center gap-1.5">
-                {t("sitesEditor.seoRobotsTxtTitle")}
+                {t("dashboard.sitesEditor.seoRobotsTxtTitle")}
                 {!isPremium && <span className="text-[9px] font-bold uppercase bg-amber-500/10 text-amber-400 px-1.5 py-0.5 rounded-full border border-amber-500/30">Pro</span>}
               </span>
             </label>
@@ -2256,9 +2286,9 @@ export default function SectionForms({
               >
                 <div className="flex items-center gap-2 text-amber-400 font-semibold mb-1">
                   <Lock className="w-3 h-3" />
-                  {t("sitesEditor.seoRobotsTxtLockedTitle")}
+                  {t("dashboard.sitesEditor.seoRobotsTxtLockedTitle")}
                 </div>
-                <p>{t("sitesEditor.seoRobotsTxtLockedDesc")}</p>
+                <p>{t("dashboard.sitesEditor.seoRobotsTxtLockedDesc")}</p>
               </div>
             )}
           </div>
@@ -2268,10 +2298,10 @@ export default function SectionForms({
             <div className="rounded-lg border border-border bg-muted/40 px-3 py-2.5 text-[12px] leading-relaxed">
               <div className="flex items-center gap-2 font-semibold text-foreground">
                 <CheckCircle className="w-4 h-4 text-primary" />
-                {t("sitesEditor.seoBoosterActiveTitle")}
+                {t("dashboard.sitesEditor.seoBoosterActiveTitle")}
               </div>
               <p className="mt-1 text-muted-foreground">
-                {t("sitesEditor.seoBoosterActiveDesc")}
+                {t("dashboard.sitesEditor.seoBoosterActiveDesc")}
               </p>
             </div>
           ) : (() => {
@@ -2296,7 +2326,7 @@ export default function SectionForms({
                 <div className="flex items-center justify-between px-5 py-4 border-b border-border/50">
                   <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
                     <Search className="w-4 h-4 text-amber-400" />
-                    <span>{t("sitesEditor.seoBoosterProTitle")}</span>
+                    <span>{t("dashboard.sitesEditor.seoBoosterProTitle")}</span>
                   </div>
                   <span className="text-[10px] font-bold uppercase bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded-full border border-amber-500/30">
                     Premium
@@ -2305,7 +2335,7 @@ export default function SectionForms({
 
                 <div className="grid grid-cols-2 gap-4 p-5">
                   <div>
-                    <p className="text-xs font-bold text-sidebar-subtle-foreground mb-2">{t("sitesEditor.seoBoosterWithout")}</p>
+                    <p className="text-xs font-bold text-sidebar-subtle-foreground mb-2">{t("dashboard.sitesEditor.seoBoosterWithout")}</p>
                     <div className="opacity-60 grayscale-[30%]">
                       <GoogleSnippetPreview variant="plain" business={demoBusiness} />
                     </div>
@@ -2314,14 +2344,14 @@ export default function SectionForms({
                     <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
                       ✨ Rich Result
                     </div>
-                    <p className="text-xs font-bold text-primary mb-2">{t("sitesEditor.seoBoosterWith")}</p>
+                    <p className="text-xs font-bold text-primary mb-2">{t("dashboard.sitesEditor.seoBoosterWith")}</p>
                     <GoogleSnippetPreview variant="rich" business={demoBusiness} />
                   </div>
                 </div>
 
                 <div className="px-5 pb-5">
                   <p className="text-xs text-amber-200/70 text-center mb-2">
-                    {t("sitesEditor.seoBoosterCompetitor")}
+                    {t("dashboard.sitesEditor.seoBoosterCompetitor")}
                   </p>
                   <button
                     type="button"
@@ -2329,7 +2359,7 @@ export default function SectionForms({
                     className="w-full bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <Lock className="w-3.5 h-3.5" />
-                    {t("sitesEditor.seoBoosterUpgradeBtn")}
+                    {t("dashboard.sitesEditor.seoBoosterUpgradeBtn")}
                   </button>
                 </div>
               </div>
@@ -2351,8 +2381,8 @@ export default function SectionForms({
                     </svg>
                   </div>
                   <div>
-                    <p className="text-[13px] font-bold text-sidebar-foreground">{t("sitesEditor.seoGscTitle")}</p>
-                    <p className="text-[11px] text-sidebar-subtle-foreground">{t("sitesEditor.seoGscSubtitle")}</p>
+                    <p className="text-[13px] font-bold text-sidebar-foreground">{t("dashboard.sitesEditor.seoGscTitle")}</p>
+                    <p className="text-[11px] text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.seoGscSubtitle")}</p>
                   </div>
                 </div>
                 {!isPremium && (
@@ -2362,13 +2392,13 @@ export default function SectionForms({
 
               {/* How-to steps */}
               <div className="rounded-lg bg-muted/40 border border-border/50 px-3 py-2.5 space-y-1.5 text-[11px] text-sidebar-muted-foreground">
-                <p className="font-semibold text-sidebar-foreground">{t("sitesEditor.seoGscHowToTitle")}</p>
+                <p className="font-semibold text-sidebar-foreground">{t("dashboard.sitesEditor.seoGscHowToTitle")}</p>
                 <ol className="space-y-1 list-decimal list-inside">
-                  <li>{t("sitesEditor.seoGscStep1")} (<a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Google Search Console</a>)</li>
-                  <li>{t("sitesEditor.seoGscStep2")}</li>
-                  <li>{t("sitesEditor.seoGscStep3")}</li>
-                  <li>{t("sitesEditor.seoGscStep4")}</li>
-                  <li>{t("sitesEditor.seoGscStep5")}</li>
+                  <li>{t("dashboard.sitesEditor.seoGscStep1")} (<a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Google Search Console</a>)</li>
+                  <li>{t("dashboard.sitesEditor.seoGscStep2")}</li>
+                  <li>{t("dashboard.sitesEditor.seoGscStep3")}</li>
+                  <li>{t("dashboard.sitesEditor.seoGscStep4")}</li>
+                  <li>{t("dashboard.sitesEditor.seoGscStep5")}</li>
                 </ol>
               </div>
 
@@ -2385,7 +2415,7 @@ export default function SectionForms({
                   type="text"
                   value={gscInput}
                   onChange={(e) => setGscInput(e.target.value)}
-                  placeholder={t("sitesEditor.seoGscPlaceholder")}
+                  placeholder={t("dashboard.sitesEditor.seoGscPlaceholder")}
                   className="flex-1 px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground placeholder-sidebar-subtle-foreground"
                 />
                 <button
@@ -2398,11 +2428,11 @@ export default function SectionForms({
                   className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-[12px] font-semibold hover:bg-primary/90 disabled:opacity-50 transition-colors"
                 >
                   {gscSaving ? (
-                    <><Loader2 className="w-3.5 h-3.5 animate-spin" /> {t("sitesEditor.seoGscSaving")}</>
+                    <><Loader2 className="w-3.5 h-3.5 animate-spin" /> {t("dashboard.sitesEditor.seoGscSaving")}</>
                   ) : gscSaved ? (
-                    <><Check className="w-3.5 h-3.5" /> {t("sitesEditor.seoGscSaved")}</>
+                    <><Check className="w-3.5 h-3.5" /> {t("dashboard.sitesEditor.seoGscSaved")}</>
                   ) : (
-                    t("sitesEditor.seoGscSaveBtn")
+                    t("dashboard.sitesEditor.seoGscSaveBtn")
                   )}
                 </button>
               </div>
