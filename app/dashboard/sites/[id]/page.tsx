@@ -2,7 +2,7 @@
 
 import { Dialog } from "@/components/ui/dialog";
 import Link from "next/link";
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
@@ -19,6 +19,7 @@ import { useToast } from "@/components/toast-provider";
 import { getTemplate, TEMPLATE_REGISTRY } from "@/lib/template-registry";
 import { getTemplateDefaultDesignToken } from "@/lib/template-defaults";
 import { setEditorSiteId } from "@/components/templates/shared";
+import { SectionShortcutContext, type SectionShortcutHandler } from "@/components/templates/editor";
 import {
   stripRegeneratedMarkers,
   BODY_SECTION_KEYS,
@@ -1159,6 +1160,21 @@ export default function SiteEditorPage() {
       }
     }));
   };
+
+  // Opens the Contact form in the sidebar and brings the maps field into view.
+  // Stable identity so the memoised preview wrappers keep their bailout.
+  const editContactShortcut = useMemo<SectionShortcutHandler>(() => () => {
+    selectSection("contact");
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      setSheetCollapsed(false);
+    } else {
+      setDesktopSidebarOpen(true);
+    }
+    setTimeout(() => {
+      const el = document.getElementById("field-contact.maps_url");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 150);
+  }, [selectSection]);
 
   const globalUndoLastPushRef = useRef<number>(0);
   const designUndoLastPushRef = useRef<number>(0);
@@ -2871,7 +2887,8 @@ export default function SiteEditorPage() {
               `}} />
             )}
 
-            {device === "mobile" ? (
+            <SectionShortcutContext.Provider value={editContactShortcut}>
+              {device === "mobile" ? (
               /* Mobile: centered with some margin */
               <div className="relative mx-auto my-6 h-[760px] w-[375px] flex-shrink-0 rounded-[40px] border-[12px] border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800 transition-all duration-300">
                 {/* Speaker/Notch */}
@@ -2970,6 +2987,7 @@ export default function SiteEditorPage() {
                 />
               </div>
             )}
+            </SectionShortcutContext.Provider>
           </div>
 
           {/* Mobile bottom sheet */}

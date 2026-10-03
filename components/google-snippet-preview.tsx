@@ -54,7 +54,7 @@ export function GoogleSnippetPreview({ variant, business }: GoogleSnippetPreview
             <span className="text-slate-300 text-xs">★</span>
           </div>
           <span className="text-[#4d5156] text-[11px]">
-            <strong>{business.rating}</strong> · ({business.reviewCount} {t("sitesEditor.seoReviewsCount")})
+            <strong>{business.rating}</strong> · ({business.reviewCount} {t("dashboard.sitesEditor.seoReviewsCount")})
           </span>
         </div>
       )}
@@ -73,7 +73,7 @@ export function GoogleSnippetPreview({ variant, business }: GoogleSnippetPreview
             <span
               className={`w-1.5 h-1.5 rounded-full inline-block ${business.isOpen ? "bg-[#188038] animate-pulse" : "bg-[#9aa0a6]"}`}
             ></span>
-            {business.isOpen ? t("sitesEditor.seoBusinessOpenStatus") : t("sitesEditor.seoBusinessClosedStatus")}
+            {business.isOpen ? t("dashboard.sitesEditor.seoBusinessOpenStatus") : t("dashboard.sitesEditor.seoBusinessClosedStatus")}
           </span>
         </div>
       )}

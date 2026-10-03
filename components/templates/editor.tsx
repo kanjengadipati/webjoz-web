@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import React, { useState, useRef, useEffect, useMemo, useContext } from "react";
 import { SparkleGenAI } from "@/components/sparkle-icon";
 import { SECTION_VARIANT_OPTIONS } from "@/components/sections/variant-registry";
-import { ChevronDown, Check, LayoutGrid } from "lucide-react";
+import { ChevronDown, Check, LayoutGrid, Pencil } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 
 // ---------------------------------------------------------------------------
@@ -490,6 +490,16 @@ function VariantWireframeSmall({ variant, section = "" }: { variant: string; sec
 }
 
 // ---------------------------------------------------------------------------
+// Section shortcut bridge — lets the Contact overlay's "edit" segment jump to
+// the matching field in the editor sidebar without threading an extra prop
+// through every template. Value is a stable callback, so the memoised wrappers
+// keep their bailout behaviour.
+// ---------------------------------------------------------------------------
+export type SectionShortcutHandler = () => void;
+
+export const SectionShortcutContext = React.createContext<SectionShortcutHandler | null>(null);
+
+// ---------------------------------------------------------------------------
 // PreviewSectionWrapper — canvas overlay with unified visual gallery trigger
 // ---------------------------------------------------------------------------
 export const PreviewSectionWrapper: React.FC<{
@@ -517,6 +527,9 @@ export const PreviewSectionWrapper: React.FC<{
     const [isGalleryOpen, setIsGalleryOpen] = useState(false);
     const [selectedGroup, setSelectedGroup] = useState<string>("Semua");
     const panelRef = useRef<HTMLDivElement>(null);
+
+    const editSectionShortcut = useContext(SectionShortcutContext);
+    const canEditSection = section === "contact" && Boolean(editSectionShortcut);
 
     useEffect(() => {
       if (!isGalleryOpen) return;
@@ -612,7 +625,7 @@ export const PreviewSectionWrapper: React.FC<{
                       setIsGalleryOpen((prev) => !prev);
                       if (!isGalleryOpen) setSelectedGroup("Semua");
                     }}
-                    className={`h-full inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:pl-2 sm:pr-2.5 rounded-full sm:rounded-none sm:rounded-r-full text-[9px] sm:text-[9.5px] font-medium cursor-pointer transition-colors outline-none focus:outline-none focus-visible:outline-none select-none ${
+                    className={`h-full inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:pl-2 sm:pr-2.5 ${canEditSection ? "rounded-full sm:rounded-none" : "rounded-full sm:rounded-none sm:rounded-r-full"} text-[9px] sm:text-[9.5px] font-medium cursor-pointer transition-colors outline-none focus:outline-none focus-visible:outline-none select-none ${
                       isGalleryOpen ? "text-sky-300 bg-sky-500/10" : "text-slate-200 hover:text-white hover:bg-white/5"
                     }`}
                   >
@@ -620,6 +633,31 @@ export const PreviewSectionWrapper: React.FC<{
                       {activeOpt?.label || t("dashboard.sitesEditor.variantLabel") || "Varian"}
                     </span>
                     <ChevronDown className={`w-2.5 h-2.5 shrink-0 transition-transform duration-200 ${isGalleryOpen ? "rotate-180 text-sky-400" : "text-slate-400"}`} />
+                  </button>
+                </>
+              )}
+
+              {canEditSection && (
+                <>
+                  {/* Divider */}
+                  <div className="hidden sm:block w-px h-3 bg-white/15 shrink-0" />
+
+                  {/* Edit segment — opens the section form in the sidebar */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsGalleryOpen(false);
+                      editSectionShortcut?.();
+                    }}
+                    title={t("dashboard.sitesEditor.editSectionContent")}
+                    aria-label={t("dashboard.sitesEditor.editSectionContent")}
+                    className="h-full inline-flex items-center gap-1 sm:gap-1.5 pl-1.5 sm:pl-2 pr-2 sm:pr-2.5 rounded-r-full text-[9px] sm:text-[9.5px] font-medium cursor-pointer text-slate-200 hover:text-white hover:bg-white/5 transition-colors outline-none focus:outline-none focus-visible:outline-none select-none"
+                  >
+                    <Pencil className="w-2.5 h-2.5 shrink-0" />
+                    <span className="hidden sm:inline leading-none">
+                      {t("dashboard.sitesEditor.editShortcut") || "Edit"}
+                    </span>
                   </button>
                 </>
               )}
