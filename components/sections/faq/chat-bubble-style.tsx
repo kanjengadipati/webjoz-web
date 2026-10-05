@@ -2,7 +2,7 @@
 import React from "react";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 import { InlineText } from "../../templates/shared";
-import { InlineAddTile } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton } from "../inline-add";
 
 interface FaqVariantProps {
   faq: TemplateProps["content"]["faq"];
@@ -14,6 +14,7 @@ interface FaqVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: () => void;
+  onDeleteItem?: (index: number) => void;
 }
 
 export default function FaqChatBubbleStyle({
@@ -25,6 +26,7 @@ export default function FaqChatBubbleStyle({
   collapseSheetForInlineEdit,
   onEditingStateChange,
   onAddItem,
+  onDeleteItem,
 }: FaqVariantProps) {
   const py = { paddingTop: "var(--dt-spacing)", paddingBottom: "var(--dt-spacing)" } as any;
   const isEN = language === "en";
@@ -61,7 +63,10 @@ export default function FaqChatBubbleStyle({
           return (
             <React.Fragment key={idx}>
               {/* Question bubble — right-aligned */}
-              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-start", gap: "0.5rem" }}>
+                {isEditorMode && onDeleteItem && (
+                  <InlineDeleteButton onDelete={() => onDeleteItem(idx)} compact className="mt-1 flex-shrink-0" />
+                )}
                 <div
                   style={{
                     maxWidth: "80%",

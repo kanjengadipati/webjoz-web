@@ -3,18 +3,19 @@ import React, { useId, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import type { FaqItem, TemplateProps, DesignToken } from "../../templates/types";
 import { InlineText } from "../../templates/shared";
-import { InlineAddTile } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton } from "../inline-add";
 
 const DynamicFaqAccordion: React.FC<{
   item: FaqItem;
   index: number;
   onUpdateItem?: (index: number, field: string, value: string) => void;
+  onDelete?: () => void;
   section?: string;
   isEditorMode?: boolean;
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
-}> = ({ item, index, onUpdateItem, section = "faq", isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }) => {
+}> = ({ item, index, onUpdateItem, onDelete, section = "faq", isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }) => {
   const [isOpen, setIsOpen] = useState(false);
   // In editor mode the panel is always expanded so both question and answer
   // are reachable for inline editing without having to toggle first.
@@ -29,6 +30,7 @@ const DynamicFaqAccordion: React.FC<{
         border: "1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)",
         borderRadius: "var(--dt-radius)",
         overflow: "hidden",
+        position: "relative",
         transition: "box-shadow 0.2s ease",
         boxShadow: effectiveOpen ? "0 2px 12px color-mix(in srgb, var(--dt-primary) 8%, transparent)" : "none",
       }}
@@ -40,7 +42,7 @@ const DynamicFaqAccordion: React.FC<{
         )}
         onClick={() => { if (!isEditorMode) setIsOpen(!isOpen); }}
         style={{
-          width: "100%", padding: "1rem 1.25rem",
+          width: "100%", padding: isEditorMode && onDelete ? "1rem 3.25rem 1rem 1.25rem" : "1rem 1.25rem",
           display: "flex", justifyContent: "space-between", alignItems: "center",
           background: effectiveOpen ? "color-mix(in srgb, var(--dt-primary) 5%, transparent)" : "transparent",
           cursor: isEditorMode ? "default" : "pointer",
@@ -76,6 +78,10 @@ const DynamicFaqAccordion: React.FC<{
           }}
         />
       </Header>
+
+      {isEditorMode && onDelete && (
+        <InlineDeleteButton onDelete={onDelete} compact className="absolute top-3 right-3" />
+      )}
 
       {/* Grid trick: smooth height animation without knowing exact height */}
       <div
@@ -126,6 +132,7 @@ interface FaqVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: () => void;
+  onDeleteItem?: (index: number) => void;
 }
 
 export default function FaqClassic({
@@ -137,6 +144,7 @@ export default function FaqClassic({
   collapseSheetForInlineEdit,
   onEditingStateChange,
   onAddItem,
+  onDeleteItem,
 }: FaqVariantProps) {
   const py = { paddingTop: "var(--dt-spacing)", paddingBottom: "var(--dt-spacing)" } as any;
   const isEN = language === "en";
@@ -174,6 +182,7 @@ export default function FaqClassic({
             item={item}
             index={idx}
             onUpdateItem={handleUpdateItem}
+            onDelete={onDeleteItem ? () => onDeleteItem(idx) : undefined}
             section="faq"
             isEditorMode={isEditorMode}
             isSelected={isSelected}

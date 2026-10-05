@@ -2,7 +2,7 @@
 import React from "react";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 import { InlineText } from "../../templates/shared";
-import { InlineAddTile } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton } from "../inline-add";
 
 interface FaqVariantProps {
   faq: TemplateProps["content"]["faq"];
@@ -14,6 +14,7 @@ interface FaqVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: () => void;
+  onDeleteItem?: (index: number) => void;
 }
 
 export default function FaqColumns({
@@ -25,6 +26,7 @@ export default function FaqColumns({
   collapseSheetForInlineEdit,
   onEditingStateChange,
   onAddItem,
+  onDeleteItem,
 }: FaqVariantProps) {
   const py = { paddingTop: "var(--dt-spacing)", paddingBottom: "var(--dt-spacing)" } as any;
   const isEN = language === "en";
@@ -57,7 +59,10 @@ export default function FaqColumns({
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {faq.items?.map((item, idx) => (
-          <div key={idx}>
+          <div key={idx} style={{ position: "relative", paddingRight: isEditorMode && onDeleteItem ? "2.25rem" : undefined }}>
+            {isEditorMode && onDeleteItem && (
+              <InlineDeleteButton onDelete={() => onDeleteItem!(idx)} compact className="absolute top-2.5 right-2.5" />
+            )}
             <h3 style={{ fontFamily: "var(--dt-body-font)", color: "var(--dt-text)", fontWeight: 600, fontSize: "0.95rem", margin: 0, marginBottom: "0.4rem" }}>
               {isEditorMode ? (
                 <InlineText
