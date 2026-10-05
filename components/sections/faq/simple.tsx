@@ -2,7 +2,7 @@
 import React from "react";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 import { InlineText } from "../../templates/shared";
-import { InlineAddTile } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton } from "../inline-add";
 
 interface FaqVariantProps {
   faq: TemplateProps["content"]["faq"];
@@ -14,6 +14,7 @@ interface FaqVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: () => void;
+  onDeleteItem?: (index: number) => void;
 }
 
 export default function FaqSimple({
@@ -25,6 +26,7 @@ export default function FaqSimple({
   collapseSheetForInlineEdit,
   onEditingStateChange,
   onAddItem,
+  onDeleteItem,
 }: FaqVariantProps) {
   const py = { paddingTop: "var(--dt-spacing)", paddingBottom: "var(--dt-spacing)" } as any;
   const isEN = language === "en";
@@ -57,7 +59,18 @@ export default function FaqSimple({
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
         {faq.items?.map((item, idx) => (
-          <div key={idx} style={{ padding: "1.25rem 0", borderBottom: idx < (faq.items?.length ?? 0) - 1 ? "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)" : "none" }}>
+          <div
+            key={idx}
+            style={{
+              padding: "1.25rem 0",
+              paddingRight: isEditorMode && onDeleteItem ? "2.25rem" : undefined,
+              borderBottom: idx < (faq.items?.length ?? 0) - 1 ? "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)" : "none",
+              position: "relative",
+            }}
+          >
+            {isEditorMode && onDeleteItem && (
+              <InlineDeleteButton onDelete={() => onDeleteItem!(idx)} compact className="absolute top-2.5 right-2.5" />
+            )}
             <h3 style={{ fontFamily: "var(--dt-body-font)", color: "var(--dt-text)", fontWeight: 600, fontSize: "0.95rem", margin: 0, marginBottom: "0.4rem" }}>
               {isEditorMode ? (
                 <InlineText

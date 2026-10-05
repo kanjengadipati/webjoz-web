@@ -2,7 +2,7 @@
 import React from "react";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 import { InlineText } from "../../templates/shared";
-import { InlineAddTile } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton } from "../inline-add";
 
 interface FaqVariantProps {
   faq: TemplateProps["content"]["faq"];
@@ -14,6 +14,7 @@ interface FaqVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: () => void;
+  onDeleteItem?: (index: number) => void;
 }
 
 export default function FaqTwoColumnGrid({
@@ -25,6 +26,7 @@ export default function FaqTwoColumnGrid({
   collapseSheetForInlineEdit,
   onEditingStateChange,
   onAddItem,
+  onDeleteItem,
 }: FaqVariantProps) {
   const py = { paddingTop: "var(--dt-spacing)", paddingBottom: "var(--dt-spacing)" } as any;
   const isEN = language === "en";
@@ -61,11 +63,16 @@ export default function FaqTwoColumnGrid({
             key={idx}
             style={{
               padding: "1.25rem 1.5rem",
+              paddingRight: isEditorMode && onDeleteItem ? "3rem" : undefined,
               borderRadius: "var(--dt-radius)",
               background: "color-mix(in srgb, var(--dt-primary) 5%, var(--dt-surface))",
               border: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)",
+              position: "relative",
             }}
           >
+            {isEditorMode && onDeleteItem && (
+              <InlineDeleteButton onDelete={() => onDeleteItem!(idx)} compact className="absolute top-2.5 right-2.5" />
+            )}
             <h3 style={{ fontFamily: "var(--dt-body-font)", color: "var(--dt-text)", fontWeight: 600, fontSize: "0.95rem", margin: 0, marginBottom: "0.5rem" }}>
               {isEditorMode ? (
                 <InlineText

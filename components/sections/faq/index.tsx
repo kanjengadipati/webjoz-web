@@ -48,6 +48,15 @@ export default function FaqSection({
     onUpdateField("faq", "items", items);
   }, [faq?.items, onUpdateField]);
 
+  const onDeleteItem = useCallback(
+    (index: number) => {
+      if (!onUpdateField) return;
+      const items = (faq?.items ?? []).filter((_, i) => i !== index);
+      onUpdateField("faq", "items", items);
+    },
+    [faq?.items, onUpdateField]
+  );
+
   return (
     <Renderer
       faq={faq}
@@ -59,6 +68,7 @@ export default function FaqSection({
       collapseSheetForInlineEdit={collapseSheetForInlineEdit}
       onEditingStateChange={onEditingStateChange}
       onAddItem={isEditor ? onAddItem : undefined}
+      onDeleteItem={isEditor ? onDeleteItem : undefined}
     />
   );
 }
