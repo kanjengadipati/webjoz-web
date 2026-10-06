@@ -394,6 +394,10 @@ export interface Translations {
     usingFreePlan: string;
     upgradeToProDesc: string;
     upgradeToPro: string;
+    planExpiringSoon: string;
+    planExpiringSoonDesc: string;
+    planExpiredBanner: string;
+    renewPlan: string;
     statWebsites: string;
     statLeads: string;
     statVisitors: string;
@@ -2998,6 +3002,10 @@ export const translations: Record<Locale, Translations> = {
       usingFreePlan: "Anda sedang menggunakan paket {plan}",
       upgradeToProDesc: "Upgrade ke Pro untuk custom domain, SEO optimasi, lebih banyak website, dan AI generates tanpa batas.",
       upgradeToPro: "Upgrade ke Pro",
+      planExpiringSoon: "Paket {plan} Anda berakhir dalam {days} hari",
+      planExpiringSoonDesc: "Perpanjang sekarang agar website dan custom domain tetap aktif. Setelah masa aktif habis, website ditampilkan dalam mode penangguhan.",
+      planExpiredBanner: "Masa aktif paket Anda telah berakhir. Website Anda sementara ditampilkan dalam mode penangguhan.",
+      renewPlan: "Perpanjang Sekarang",
       statWebsites: "Website",
       statLeads: "Leads",
       statVisitors: "Pengunjung",
@@ -5677,6 +5685,10 @@ export const translations: Record<Locale, Translations> = {
       usingFreePlan: "You are currently on the {plan} plan",
       upgradeToProDesc: "Upgrade to Pro for custom domain, SEO optimization, more websites, and unlimited AI generates.",
       upgradeToPro: "Upgrade to Pro",
+      planExpiringSoon: "Your {plan} plan expires in {days} days",
+      planExpiringSoonDesc: "Renew now to keep your websites and custom domains active. After the plan lapses, websites show a suspension page.",
+      planExpiredBanner: "Your subscription has expired. Your websites are temporarily showing a suspension page.",
+      renewPlan: "Renew Now",
       statWebsites: "Websites",
       statLeads: "Leads",
       statVisitors: "Visitors",

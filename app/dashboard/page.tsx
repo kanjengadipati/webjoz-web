@@ -280,6 +280,37 @@ export default function DashboardOverviewPage() {
     return plans.find((p) => p.slug === activeTenant.tenant.plan) || null;
   }, [plans, activeTenant]);
 
+  // Wall-clock captured after mount — reading Date.now() during render is
+  // disallowed by react-hooks/purity, and a direct setState in the effect body
+  // by react-hooks/set-state-in-effect.
+  const [nowTs, setNowTs] = useState<number | null>(null);
+  useEffect(() => {
+    const id = window.setTimeout(() => setNowTs(Date.now()), 0);
+    return () => window.clearTimeout(id);
+  }, []);
+
+  // Lapsed-subscription state derived from the tenant payload. plan_expires_at
+  // includes a 3-day grace window, so countdowns target the renewal date.
+  const planStatus = useMemo(() => {
+    const tenant = activeTenant?.tenant;
+    const plan = tenant?.plan ?? "free";
+    const planName = plan.replace(/^./, (c) => c.toUpperCase());
+    const suspended = Boolean(tenant?.plan_expired_at);
+    let daysLeft: number | null = null;
+    if (nowTs !== null && tenant?.plan_expires_at) {
+      const expiresMs = new Date(tenant.plan_expires_at).getTime();
+      if (Number.isFinite(expiresMs)) {
+        daysLeft = Math.ceil((expiresMs - 3 * 86_400_000 - nowTs) / 86_400_000);
+      }
+    }
+    return {
+      planName,
+      daysLeft,
+      suspended,
+      warn: !suspended && plan !== "free" && daysLeft !== null && daysLeft <= 7,
+    };
+  }, [activeTenant, nowTs]);
+
   const barData = useMemo(() => {
     const byDate = analytics?.pageviews_by_date || [];
     return byDate.slice(-DASHBOARD_CONFIG.TREND_WINDOW_DAYS);
@@ -690,7 +721,40 @@ export default function DashboardOverviewPage() {
         </div>
       </OverviewHero>
 
-      {activeTenant?.tenant.plan === "free" && (
+      {planStatus?.suspended && (
+        <section className="bg-amber-500/10 border border-amber-500/30 rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <p className="text-sm font-bold text-foreground">{t("dashboard.planExpiredBanner")}</p>
+            <p className="text-xs text-muted-foreground">{t("dashboard.planExpiringSoonDesc")}</p>
+          </div>
+          <Link href="/dashboard/upgrade" className="shrink-0">
+            <Button className="h-10 rounded-xl px-5 font-bold bg-amber-500 text-amber-950 hover:bg-amber-400 shadow-lg shadow-amber-500/20">
+              {t("dashboard.renewPlan")}
+            </Button>
+          </Link>
+        </section>
+      )}
+
+      {!planStatus?.suspended && planStatus?.warn && (
+        <section className="bg-primary/5 border border-primary/20 rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <p className="text-sm font-bold text-foreground">
+              {t("dashboard.planExpiringSoon", undefined, {
+                plan: planStatus.planName,
+                days: String(planStatus.daysLeft),
+              })}
+            </p>
+            <p className="text-xs text-muted-foreground">{t("dashboard.planExpiringSoonDesc")}</p>
+          </div>
+          <Link href="/dashboard/upgrade" className="shrink-0">
+            <Button className="h-10 rounded-xl px-5 font-bold shadow-lg shadow-primary/20">
+              {t("dashboard.renewPlan")}
+            </Button>
+          </Link>
+        </section>
+      )}
+
+      {!planStatus?.suspended && activeTenant?.tenant.plan === "free" && (
         <section className="bg-primary/5 border border-primary/20 rounded-3xl p-5 flex items-center justify-between gap-4">
           <div className="space-y-1">
             <p className="text-sm font-bold text-foreground">{t("dashboard.usingFreePlan", undefined, { plan: "Free" })}</p>

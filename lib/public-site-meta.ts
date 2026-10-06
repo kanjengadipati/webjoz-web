@@ -8,15 +8,15 @@ interface PublicSiteLookupData {
     subdomain: string;
     template_id: string;
     status: string;
+    language?: string;
   };
   content: {
     seo?: {
-      meta_title?: string;
       title?: string;
-      meta_description?: string;
       description?: string;
-      og_image?: string;
-      favicon?: string;
+      og_image_url?: string;
+      favicon_url?: string;
+      robots?: string;
       keywords?: string[];
       canonical_path?: string;
       gsc_verification?: string;
@@ -41,12 +41,42 @@ interface PublicSiteLookupData {
   };
 }
 
+const NOT_FOUND: Metadata = {
+  title: "Website Tidak Ditemukan | Webjoz",
+  description: "Website ini belum dipublikasikan atau sedang dalam perbaikan.",
+};
+
+const DEFAULT_META: Metadata = {
+  title: "Webjoz — AI Website Builder",
+  description: "Platform pembuat website instan untuk bisnis Anda.",
+};
+
+// Shown when the tenant's plan has lapsed: the public host serves a parking
+// page, so the real content must stay out of the index.
+function suspendedMetadata(host: string, siteName?: string, language?: string): Metadata {
+  const isEN = language === "en";
+  const name = siteName?.trim();
+  return {
+    title: name ? `${name} — ${isEN ? "Website Suspended" : "Website Dijeda"}` : "Website Dijeda",
+    description: isEN
+      ? "The subscription plan for this website has expired, so it is temporarily suspended."
+      : "Masa aktif paket langganan website ini telah berakhir sehingga situs sementara dijeda.",
+    alternates: { canonical: `https://${host}` },
+    robots: { index: false, follow: false, noarchive: true },
+    openGraph: {
+      title: name ? `${name} — ${isEN ? "Website Suspended" : "Website Dijeda"}` : "Website Dijeda",
+      type: "website",
+      url: `https://${host}`,
+    },
+  };
+}
+
 export async function fetchPublicSiteMetadata(hostOrSubdomain: string): Promise<Metadata> {
   const cleanHost = hostOrSubdomain.includes(".")
     ? hostOrSubdomain
     : `${hostOrSubdomain}.${BASE_DOMAIN}`;
 
-  const apiUrl = `${API_BASE_URL}/public/sites/lookup?host=${encodeURIComponent(cleanHost)}`;
+  const apiUrl = `${API_BASE_URL}/public/sites?host=${encodeURIComponent(cleanHost)}`;
 
   try {
     const res = await fetch(apiUrl, {
@@ -54,19 +84,25 @@ export async function fetchPublicSiteMetadata(hostOrSubdomain: string): Promise<
     });
 
     if (!res.ok) {
-      return {
-        title: "Website Tidak Ditemukan | Webjoz",
-        description: "Website ini belum dipublikasikan atau sedang dalam perbaikan.",
-      };
+      let failure: { code?: string; data?: { site_name?: string; subdomain?: string; language?: string } } | null =
+        null;
+      try {
+        failure = await res.json();
+      } catch {
+        failure = null;
+      }
+
+      if (failure?.code === "ERR_PLAN_EXPIRED") {
+        return suspendedMetadata(cleanHost, failure.data?.site_name, failure.data?.language);
+      }
+      return NOT_FOUND;
     }
 
     const json = await res.json();
     const data: PublicSiteLookupData = json.data;
 
     if (!data || !data.site) {
-      return {
-        title: "Webjoz — AI Website Builder",
-      };
+      return { title: "Webjoz — AI Website Builder" };
     }
 
     const { site, content } = data;
@@ -77,21 +113,17 @@ export async function fetchPublicSiteMetadata(hostOrSubdomain: string): Promise<
 
     // Priority 1: SEO Booster user input -> Priority 2: AI Hero content -> Fallback: Site Name
     const title =
-      seo.meta_title?.trim() ||
       seo.title?.trim() ||
-      (hero.headline?.trim()
-        ? `${hero.headline} — ${siteName}`
-        : `${siteName} — Website Resmi`);
+      (hero.headline?.trim() ? `${hero.headline} — ${siteName}` : `${siteName} — Website Resmi`);
 
     const description =
-      seo.meta_description?.trim() ||
       seo.description?.trim() ||
       hero.subheadline?.trim() ||
       content?.about?.description?.trim() ||
       `Website resmi ${siteName} dibuat menggunakan Webjoz AI.`;
 
     const ogImage =
-      seo.og_image?.trim() ||
+      seo.og_image_url?.trim() ||
       hero.image_url?.trim() ||
       "https://www.webjoz.com/opengraph-image.png";
 
@@ -108,7 +140,7 @@ export async function fetchPublicSiteMetadata(hostOrSubdomain: string): Promise<
       alternates: {
         canonical: canonicalUrl,
       },
-      icons: seo.favicon ? { icon: seo.favicon } : undefined,
+      icons: seo.favicon_url ? { icon: seo.favicon_url } : undefined,
       robots: {
         index: true,
         follow: true,
@@ -147,9 +179,6 @@ export async function fetchPublicSiteMetadata(hostOrSubdomain: string): Promise<
         : {},
     };
   } catch {
-    return {
-      title: "Webjoz — AI Website Builder",
-      description: "Platform pembuat website instan untuk bisnis Anda.",
-    };
+    return DEFAULT_META;
   }
 }

@@ -4,12 +4,20 @@ import React, { useEffect, useState } from "react";
 import { API_BASE_URL } from "@/lib/config";
 import { Loader2, AlertCircle } from "lucide-react";
 import { getTemplate } from "@/lib/template-registry";
+import SiteSuspended from "@/components/site-suspended";
 
 interface PublicSiteProps {
   subdomain?: string;
   host?: string;
   siteId?: number;
   previewToken?: string;
+}
+
+interface PlanExpiredPayload {
+  site_name?: string;
+  subdomain?: string;
+  language?: string;
+  expired_at?: string | null;
 }
 
 const stripRegeneratedMarkers = (value: any): any => {
@@ -31,6 +39,8 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [siteData, setSiteData] = useState<any>(null);
+  // Set when the API parks the site for an expired plan (410 ERR_PLAN_EXPIRED).
+  const [suspended, setSuspended] = useState<PlanExpiredPayload | null>(null);
 
   // Lead states
   const [leadSubmitting, setLeadSubmitting] = useState(false);
@@ -74,7 +84,16 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
           
         const res = await fetch(endpoint);
         if (!res.ok) {
-          throw new Error("Situs tidak ditemukan atau belum dipublikasi.");
+          let failure: { code?: string; message?: string; data?: PlanExpiredPayload } | null = null;
+          try {
+            failure = await res.json();
+          } catch {}
+          if (failure?.code === "ERR_PLAN_EXPIRED") {
+            setSuspended(failure.data || {});
+            setError(null);
+            return;
+          }
+          throw new Error(failure?.message || "Situs tidak ditemukan atau belum dipublikasi.");
         }
         const envelope = await res.json();
         if (envelope.status !== "success" || !envelope.data) {
@@ -264,6 +283,24 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
     }
   }, [siteData]);
 
+  // A parked site must stay out of the index — the server sets this too, this
+  // covers the client-rendered path.
+  useEffect(() => {
+    if (!suspended || typeof document === "undefined") return;
+    document.documentElement.lang = suspended.language === "en" ? "en" : "id";
+    const suspendedTitle = suspended.language === "en" ? "Website Suspended" : "Website Dijeda";
+    document.title = suspended.site_name
+      ? `${suspended.site_name} — ${suspendedTitle}`
+      : suspendedTitle;
+    let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement;
+    if (!robots) {
+      robots = document.createElement("meta");
+      robots.name = "robots";
+      document.head.appendChild(robots);
+    }
+    robots.content = "noindex, nofollow, noarchive";
+  }, [suspended]);
+
   const handleSubmitLead = async (data: {
     name: string;
     email: string;
@@ -314,6 +351,17 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
         <Loader2 className="w-8 h-8 text-cyan-400 animate-spin" />
         <p className="text-sm font-medium tracking-wide text-slate-400">Memuat website Anda...</p>
       </div>
+    );
+  }
+
+  if (suspended) {
+    return (
+      <SiteSuspended
+        siteName={suspended.site_name}
+        subdomain={suspended.subdomain}
+        expiredAt={suspended.expired_at ?? null}
+        language={suspended.language}
+      />
     );
   }
 
