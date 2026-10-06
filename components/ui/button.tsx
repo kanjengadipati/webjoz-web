@@ -16,7 +16,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
   default: "btn-primary",
-  secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+  secondary: "border border-border bg-secondary text-secondary-foreground hover:bg-secondary/80",
   outline: "border border-border bg-background/50 backdrop-blur-sm hover:bg-accent hover:text-accent-foreground hover:border-accent",
   ghost: "hover:bg-accent hover:text-accent-foreground",
   destructive: "bg-destructive text-white shadow-sm hover:bg-destructive/90",
