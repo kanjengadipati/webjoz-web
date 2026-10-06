@@ -216,7 +216,7 @@ export default function WhatsAppDirect({
               />
             </div>
           ) : (
-            (hasAddress || hasEmail || hasPhone) && (
+            (hasAddress || hasEmail || (hasPhone && !showWhatsappCard)) && (
               <div
                 className="w-full mt-4 p-4 rounded-xl flex flex-wrap items-center justify-center gap-6 text-xs"
                 style={{
@@ -225,7 +225,7 @@ export default function WhatsAppDirect({
                   color: "var(--dt-text-muted)",
                 }}
               >
-                {hasPhone && (
+                {hasPhone && !showWhatsappCard && (
                   <div className="flex items-center gap-2">
                     <Phone className="w-3.5 h-3.5 text-primary" />
                     <span><InlineText section="contact" fieldKey="phone" value={c.phone ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></span>
