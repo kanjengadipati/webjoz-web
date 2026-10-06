@@ -75,7 +75,7 @@ export const MOOD_OPTIONS: MoodItem[] = [
   },
 ];
 
-export const INITIAL_MESSAGE = "Halo! Saya Joz-AI, asisten pembuat website Anda 🚀 Mari kita mulai: apa nama bisnis atau brand Anda?";
+export const INITIAL_MESSAGE = "Halo! Saya Joz-AI, asisten pembuat website Anda. Mari kita mulai: apa nama bisnis atau brand Anda?";
 
 export const AI_LOADING_STEPS = [
   "Menganalisis profil bisnis Anda...",

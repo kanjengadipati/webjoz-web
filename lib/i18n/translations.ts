@@ -4963,7 +4963,7 @@ export const translations: Record<Locale, Translations> = {
         seoBusinessClosedStatus: "Tutup",
       },
       wizard: {
-        initialMessage: "Halo! Saya Joz-AI, asisten pembuat website Anda 🚀 Mari kita mulai: apa nama bisnis atau brand Anda?",
+        initialMessage: "Halo! Saya Joz-AI, asisten pembuat website Anda. Mari kita mulai: apa nama bisnis atau brand Anda?",
         nameAckVariants: [
           "Baik, nama telah dicatat.",
           "Nama berhasil disimpan.",
@@ -7642,7 +7642,7 @@ export const translations: Record<Locale, Translations> = {
         seoBusinessClosedStatus: "Closed",
       },
       wizard: {
-        initialMessage: "Hi! I'm Joz-AI, your website building assistant 🚀 Let's get started: what's the name of your business or brand?",
+        initialMessage: "Hi! I'm Joz-AI, your website building assistant. Let's get started: what's the name of your business or brand?",
         nameAckVariants: [
           "Got it, name recorded.",
           "Name saved successfully.",
