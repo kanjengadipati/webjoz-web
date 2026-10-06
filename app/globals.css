@@ -45,6 +45,20 @@
   /* Form surfaces. <option> inherits this from its <select>, so a single token
      keeps the open dropdown list from falling back to the dark browser default. */
   --sidebar-input: oklch(1 0 0);
+
+  /* Overview hero — deliberately inverted against the page surface.
+     Light theme: near-white plate, near-black silhouette and ink. The .dark
+     block below flips both, so the hero reads "black plate / white silhouette"
+     after dark and "white plate / black silhouette" after light. Kept out of
+     .theme-blue on purpose — the hero stays monochrome in both accents. */
+  --hero-surface: oklch(0.995 0.002 255);
+  --hero-surface-raised: oklch(1 0 0);
+  --hero-ink: oklch(0.16 0.02 255);
+  --hero-ink-muted: oklch(0.46 0.012 255);
+  --hero-line: oklch(0.16 0.02 255 / 0.18);
+  --hero-veil: oklch(0.16 0.02 255 / 0.06);
+  --hero-veil-strong: oklch(0.16 0.02 255 / 0.12);
+  --hero-shadow: oklch(0.16 0.02 255 / 0.22);
 }
 
 .dark {
@@ -82,6 +96,19 @@
   --sidebar-subtle-foreground: oklch(0.63 0.01 255);
   --sidebar-border: oklch(0.28 0.01 255);
   --sidebar-input: oklch(0.13 0.01 255);
+
+  /* Hero plate goes darker than --background (0.12) so the inverted hero reads
+     as a real black block instead of blending into the dashboard canvas. */
+  --hero-surface: oklch(0.075 0 0);
+  --hero-surface-raised: oklch(0.13 0 0);
+  --hero-ink: oklch(0.97 0 0);
+  --hero-ink-muted: oklch(0.74 0 0);
+  --hero-line: oklch(0.97 0 0 / 0.2);
+  --hero-veil: oklch(0.97 0 0 / 0.07);
+  --hero-veil-strong: oklch(0.97 0 0 / 0.13);
+  /* A black drop shadow is invisible against the dark canvas, so the plate
+     elevates with a soft white halo instead — inverted elevation. */
+  --hero-shadow: oklch(0.97 0 0 / 0.14);
 }
 
 /* Hide Next.js dev overlay indicator from covering mobile dashboard UI */
@@ -115,6 +142,14 @@ nextjs-portal, [data-nextjs-toast], [data-nextjs-dev-overlay], #__next-build-wat
   --color-sidebar-subtle-foreground: var(--sidebar-subtle-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-input: var(--sidebar-input);
+  /* Overview hero — inverted surface, see the token blocks above */
+  --color-hero-surface: var(--hero-surface);
+  --color-hero-ink: var(--hero-ink);
+  --color-hero-ink-muted: var(--hero-ink-muted);
+  --color-hero-line: var(--hero-line);
+  --color-hero-veil: var(--hero-veil);
+  --color-hero-veil-strong: var(--hero-veil-strong);
+  --color-hero-shadow: var(--hero-shadow);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);

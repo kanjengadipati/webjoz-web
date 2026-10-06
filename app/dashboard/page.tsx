@@ -23,6 +23,16 @@ import {
   Copy, Check, ArrowRight, Gift, Target,
 } from "lucide-react";
 import { UsageMeter } from "@/components/dashboard/usage-meter";
+import {
+  OverviewHero,
+  HeroIconBadge,
+  HeroTitle,
+  HeroDescription,
+  HeroStatusPill,
+  HeroSolidButton,
+  HeroGhostButton,
+  HeroButtonGlyph,
+} from "@/components/dashboard/overview-hero";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { EmailPromptBanner } from "@/components/dashboard/email-prompt-banner";
 import type { Profile } from "@/lib/types";
@@ -329,50 +339,44 @@ export default function DashboardOverviewPage() {
       <div className="space-y-8 animate-in fade-in duration-700 w-full min-w-0 max-w-full overflow-hidden">
         <EmailPromptBanner />
         {/* ── Hero header ─────────────────────────────────────────────── */}
-        <section className="relative overflow-hidden rounded-3xl border border-border/40 bg-card p-5 sm:p-7 shadow-sm backdrop-blur-xl group min-w-0">
-          <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5 min-w-0">
+        <OverviewHero className="p-5 sm:p-7">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5 min-w-0">
             <div className="flex items-start sm:items-center gap-4 min-w-0">
-              {/* Icon Badge */}
-              <div className="relative flex size-12 sm:size-14 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
+              <HeroIconBadge className="size-12 sm:size-14">
                 <TrendingUp className="size-6 sm:size-7 stroke-[2.5]" />
-              </div>
+              </HeroIconBadge>
               <div className="space-y-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2.5">
-                  <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground">
+                  <HeroTitle className="text-xl sm:text-2xl">
                     {t("dashboard.salesOverview.pageTitle")}
-                  </h2>
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-muted text-muted-foreground border border-border tracking-wide">
-                    <span className="size-1.5 rounded-full bg-primary" />
-                    Partner Active
-                  </span>
+                  </HeroTitle>
+                  <HeroStatusPill>Partner Active</HeroStatusPill>
                 </div>
-                <p className="text-xs sm:text-[13px] text-muted-foreground max-w-xl leading-relaxed">
+                <HeroDescription className="text-xs sm:text-[13px] max-w-xl">
                   {t("dashboard.salesOverview.pageDesc", undefined, { t1, months: String(months), t2 })}
-                </p>
+                </HeroDescription>
               </div>
             </div>
 
             {/* Action Buttons */}
             <div className="grid grid-cols-2 sm:flex sm:items-center gap-2.5 w-full sm:w-auto pt-2 sm:pt-0">
               <Link href="/dashboard/sales/commissions" className="w-full sm:w-auto">
-                <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-border/60 bg-card hover:bg-muted hover:border-border/80 px-3.5 py-2.5 text-xs font-bold text-foreground shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer">
-                  <span className="flex size-5 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary font-extrabold text-[11px]">
-                    $
-                  </span>
+                <HeroGhostButton>
+                  <HeroButtonGlyph>$</HeroButtonGlyph>
                   <span className="truncate">{t("dashboard.salesOverview.linkCommissionsTitle")}</span>
-                </button>
+                </HeroGhostButton>
               </Link>
               <Link href="/dashboard/sales" className="w-full sm:w-auto">
-                <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card hover:bg-muted hover:border-border/80 px-3.5 py-2.5 text-xs font-bold text-foreground shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer">
-                  <span className="flex size-5 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
+                <HeroGhostButton>
+                  <HeroButtonGlyph>
                     <Share2 className="size-3" />
-                  </span>
+                  </HeroButtonGlyph>
                   <span className="truncate">{t("dashboard.salesOverview.linkReferralTitle")}</span>
-                </button>
+                </HeroGhostButton>
               </Link>
             </div>
           </div>
-        </section>
+        </OverviewHero>
 
         {/* ── Summary cards ────────────────────────────────────────────── */}
         <section className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 min-w-0">
@@ -493,37 +497,39 @@ export default function DashboardOverviewPage() {
   if (isAdmin) {
     return (
       <div className="space-y-8 animate-in fade-in duration-700">
-        <section className="bg-primary/10 border border-primary/15 rounded-3xl p-4 sm:p-6 lg:p-8 shadow-sm">
+        <OverviewHero className="p-4 sm:p-6 lg:p-8">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 lg:gap-6">
             <div className="flex items-center gap-5">
-              <div className="size-16 rounded-2xl bg-primary/15 flex items-center justify-center">
-                <LayoutDashboard className="size-8 text-primary" />
-              </div>
+              <HeroIconBadge className="size-14 sm:size-16">
+                <LayoutDashboard className="size-7 sm:size-8" />
+              </HeroIconBadge>
               <div>
-                <h2 className="text-3xl font-bold tracking-tight text-foreground">
+                <HeroTitle className="text-2xl sm:text-3xl">
                   {t("dashboard.admin.platformOverview")}
-                </h2>
-                <p className="text-muted-foreground mt-1">
+                </HeroTitle>
+                <HeroDescription className="mt-1 text-sm sm:text-base">
                   {stats
                     ? t("dashboard.admin.platformStats", undefined, { tenants: String(stats.total_tenants), users: String(stats.total_users), sites: String(stats.total_sites) })
                     : t("dashboard.admin.loadingMetrics")}
-                </p>
+                </HeroDescription>
               </div>
             </div>
-            <div className="flex flex-wrap gap-3">
-              <Link href="/dashboard/tenants">
-                <Button className="h-11 rounded-xl px-5 font-bold shadow-lg shadow-primary/20">
-                  <Building2 className="size-4 mr-2" />{t("dashboard.admin.allTenants")}
-                </Button>
+            <div className="flex flex-wrap gap-3 w-full sm:w-auto">
+              <Link href="/dashboard/tenants" className="w-full sm:w-auto">
+                <HeroSolidButton className="h-11 px-5">
+                  <Building2 className="size-4" />
+                  {t("dashboard.admin.allTenants")}
+                </HeroSolidButton>
               </Link>
-              <Link href="/dashboard/admin/plans">
-                <Button variant="secondary" className="h-11 rounded-xl px-5 font-bold bg-background text-foreground hover:bg-background/80 shadow-sm border border-border/60">
-                  <CreditCard className="size-4 mr-2" />{t("dashboard.admin.plans")}
-                </Button>
+              <Link href="/dashboard/admin/plans" className="w-full sm:w-auto">
+                <HeroGhostButton className="h-11 px-5">
+                  <CreditCard className="size-4" />
+                  {t("dashboard.admin.plans")}
+                </HeroGhostButton>
               </Link>
             </div>
           </div>
-        </section>
+        </OverviewHero>
 
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <StatCard
@@ -663,23 +669,26 @@ export default function DashboardOverviewPage() {
   // Regular user view
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
-      <section className="bg-primary/10 border border-primary/20 rounded-3xl p-4 sm:p-6 lg:p-8 shadow-sm">
+      <OverviewHero className="p-4 sm:p-6 lg:p-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 lg:gap-6">
-          <div>
-            <h2 className="text-3xl font-bold leading-[1.1] tracking-tighter text-balance text-foreground sm:text-4xl md:text-6xl lg:text-7xl">
+          <div className="min-w-0">
+            <HeroTitle className="text-3xl leading-[1.1] tracking-tighter text-balance sm:text-4xl md:text-5xl lg:text-6xl">
               {t("dashboard.welcome", undefined, { name: profile?.name ? `, ${profile.name.split(" ")[0]}` : "" })}
-            </h2>
-            <p className="text-sm leading-relaxed text-muted-foreground sm:text-base md:text-lg">
+            </HeroTitle>
+            <HeroDescription className="mt-2 text-sm sm:text-base md:text-lg">
               {t("dashboard.welcomeDesc")}
-            </p>
+            </HeroDescription>
           </div>
-          <div className="flex flex-wrap gap-3">
-            <Link href="/dashboard/sites/new">
-              <Button className="h-12 rounded-xl px-6 font-bold shadow-lg shadow-primary/20">{t("dashboard.newWebsite")}</Button>
+          <div className="flex flex-wrap gap-3 w-full sm:w-auto">
+            <Link href="/dashboard/sites/new" className="w-full sm:w-auto">
+              <HeroSolidButton className="h-12 px-6 text-sm">
+                <SparkleIcon className="size-4" />
+                {t("dashboard.newWebsite")}
+              </HeroSolidButton>
             </Link>
           </div>
         </div>
-      </section>
+      </OverviewHero>
 
       {activeTenant?.tenant.plan === "free" && (
         <section className="bg-primary/5 border border-primary/20 rounded-3xl p-5 flex items-center justify-between gap-4">
