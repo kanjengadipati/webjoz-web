@@ -12,6 +12,11 @@ export interface TenantMembership {
     slug: string;
     plan: string;
     owner_id: number;
+    // Billing deadlines returned by the tenant API. plan_expires_at already
+    // includes the grace window; plan_expired_at is stamped once lapsed.
+    plan_expires_at?: string | null;
+    plan_expired_at?: string | null;
+    subscription_reminder_sent_at?: string | null;
   };
   role: string;
 }

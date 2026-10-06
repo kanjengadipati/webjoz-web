@@ -8,17 +8,30 @@ const DEFAULT_ROBOTS = `User-agent: *
 Allow: /
 `;
 
-async function fetchCustomRobots(subdomain: string): Promise<string | null> {
+// A parked site (expired plan) must not be crawled at all.
+const SUSPENDED_ROBOTS = `User-agent: *
+Disallow: /
+`;
+
+async function resolveRobots(subdomain: string): Promise<string> {
   const host = `${subdomain}.${BASE_DOMAIN}`;
-  const res = await fetch(
-    `${API_BASE_URL}/public/sites?host=${host}`,
-    { next: { revalidate: 3600 } },
-  );
-  if (!res.ok) return null;
-  const envelope = await res.json();
-  if (envelope.status !== "success") return null;
-  const custom = envelope.data?.content?.seo?.custom_robots_txt;
-  return typeof custom === "string" && custom.trim() ? custom : null;
+  try {
+    const res = await fetch(
+      `${API_BASE_URL}/public/sites?host=${host}`,
+      { next: { revalidate: 3600 } },
+    );
+    if (!res.ok) {
+      const envelope = await res.json().catch(() => null);
+      if (envelope?.code === "ERR_PLAN_EXPIRED") return SUSPENDED_ROBOTS;
+      return DEFAULT_ROBOTS;
+    }
+    const envelope = await res.json();
+    if (envelope.status !== "success") return DEFAULT_ROBOTS;
+    const custom = envelope.data?.content?.seo?.custom_robots_txt;
+    return typeof custom === "string" && custom.trim() ? custom : DEFAULT_ROBOTS;
+  } catch {
+    return DEFAULT_ROBOTS;
+  }
 }
 
 export async function GET(
@@ -26,7 +39,7 @@ export async function GET(
   { params }: { params: Promise<{ subdomain: string }> },
 ) {
   const { subdomain } = await params;
-  const body = (await fetchCustomRobots(subdomain)) ?? DEFAULT_ROBOTS;
+  const body = await resolveRobots(subdomain);
   return new NextResponse(body, {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",

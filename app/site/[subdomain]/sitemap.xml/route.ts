@@ -9,11 +9,18 @@ async function fetchSite(subdomain: string) {
   const res = await fetch(`${API_BASE_URL}/public/sites?host=${host}`, {
     next: { revalidate: 300 },
   });
-  if (!res.ok) return null;
+  if (!res.ok) {
+    const envelope = await res.json().catch(() => null);
+    return envelope?.code === "ERR_PLAN_EXPIRED" ? "suspended" : null;
+  }
   const envelope = await res.json();
   if (envelope.status !== "success" || !envelope.data) return null;
   return envelope.data;
 }
+
+const EMPTY_URLSET =
+  `<?xml version="1.0" encoding="UTF-8"?>\n` +
+  `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n</urlset>\n`;
 
 export async function GET(
   _request: Request,
@@ -22,14 +29,25 @@ export async function GET(
   const { subdomain } = await params;
   const siteUrl = tenantSiteUrl(subdomain);
 
+  const site = await fetchSite(subdomain);
+
+  // A parked site (expired plan) must not advertise any URLs.
+  if (site === "suspended") {
+    return new NextResponse(EMPTY_URLSET, {
+      headers: {
+        "Content-Type": "application/xml; charset=utf-8",
+        "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+      },
+    });
+  }
+
   const entries: Array<{ loc: string; lastmod: string; priority: string }> = [
     { loc: siteUrl, lastmod: new Date().toISOString().split("T")[0], priority: "1.0" },
     { loc: `${siteUrl}/blog`, lastmod: new Date().toISOString().split("T")[0], priority: "0.8" },
   ];
 
   try {
-    const site = await fetchSite(subdomain);
-    const siteId = site?.site?.id;
+    const siteId = site && typeof site === "object" ? site.site?.id : undefined;
     if (siteId) {
       const blogRes = await fetch(`${API_BASE_URL}/public/sites/${siteId}/blog-posts`, {
         next: { revalidate: 300 },

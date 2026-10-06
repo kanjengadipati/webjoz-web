@@ -133,6 +133,11 @@ export default function DomainsPage() {
   const { t } = useI18n();
   const { activeTenantId, activeTenant } = useActiveTenant();
   const isPremium = activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise";
+  // Set once the subscription cron downgrades a lapsed tenant: domains stay
+  // connected, but every host serves the parking page until renewal.
+  const isSuspended = Boolean(
+    (activeTenant?.tenant as { plan_expired_at?: string | null } | undefined)?.plan_expired_at
+  );
 
   const [domains, setDomains] = useState<Domain[]>([]);
   const [sites, setSites] = useState<Site[]>([]);
@@ -755,6 +760,22 @@ export default function DomainsPage() {
 
   return (
     <div className="max-w-3xl text-foreground font-sans space-y-8">
+
+      {isSuspended && (
+        <section className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <p className="text-sm font-bold text-foreground">{t("dashboard.planExpiredBanner")}</p>
+            <p className="text-xs text-muted-foreground">{t("dashboard.planExpiringSoonDesc")}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => router.push("/dashboard/upgrade")}
+            className="shrink-0 py-2.5 px-5 rounded-xl text-sm font-bold bg-amber-500 text-amber-950 hover:bg-amber-400 transition-colors cursor-pointer"
+          >
+            {t("dashboard.renewPlan")}
+          </button>
+        </section>
+      )}
 
       {/* ═══════════════════════════════════════════════
           TAB SWITCHER — Buy New Domain / Already Own
