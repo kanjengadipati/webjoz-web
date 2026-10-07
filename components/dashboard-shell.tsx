@@ -439,7 +439,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
       )}>
         {!isFullscreenWorkspace && (
           <aside className="hidden lg:block">
-            <Card className="sticky top-6 overflow-hidden border-border/40 shadow-xl shadow-primary/5 bg-card dark:bg-card/90 backdrop-blur-md">
+            <Card className="sticky top-6 max-h-[calc(100vh-3rem)] overflow-y-auto overflow-x-hidden overscroll-contain border-border/40 shadow-xl shadow-primary/5 bg-card dark:bg-card/90 backdrop-blur-md">
               <CardHeader className="space-y-4 border-b border-border/40 bg-gradient-to-br from-primary/10 via-transparent to-transparent p-6">
                 <div className="space-y-1">
                   <div className="flex items-center gap-3">
