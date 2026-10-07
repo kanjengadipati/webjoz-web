@@ -145,10 +145,12 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
   const isAdmin = userRole === "superadmin" || userRole === "admin";
   const isSuperAdmin = userRole === "superadmin";
+  const isSales = userRole === "sales";
   const isPremiumPlan = activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise";
   const filteredNavItems = DASHBOARD_NAVIGATION.filter((item) => {
     if ("superAdminOnly" in item && item.superAdminOnly && !isSuperAdmin) return false;
     if ("adminOnly" in item && item.adminOnly && !isAdmin) return false;
+    if ("salesOnly" in item && item.salesOnly && !isSales) return false;
     if (!item.permission) return true;
     if (isAdmin) return true;
     return hasPermission(item.permission);
