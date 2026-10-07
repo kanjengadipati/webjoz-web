@@ -123,7 +123,7 @@ export default function CatalogCards({ catalog, onUpdateField, isEditorMode, isS
                   />
                 )}
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: "2rem" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "1.5rem" }}>
                 {cat.filteredItems.map(({ item, originalCatIdx, originalItemIdx }) => (
                   <MenuCatalogCard
                     key={item.id || `${cat.name}__${item.name}__${originalCatIdx}_${originalItemIdx}`}
@@ -147,16 +147,17 @@ export default function CatalogCards({ catalog, onUpdateField, isEditorMode, isS
                     icon={ImageIcon}
                     className="group transition-all duration-300"
                     style={{ background: brandBg, border: `1px solid color-mix(in srgb, ${brandPrimary} 14%, transparent)`, borderRadius: "20px", overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", minWidth: 0 }}
-                    imageClassName="w-full h-60 object-cover transition-transform duration-500 group-hover:scale-105"
-                    placeholderClassName="w-full h-60 flex items-center justify-center transition-transform duration-500 group-hover:scale-105"
+                    imageClassName="w-full aspect-[4/5] object-cover transition-transform duration-500 group-hover:scale-105"
+                    placeholderClassName="w-full aspect-[4/5] flex items-center justify-center transition-transform duration-500 group-hover:scale-105"
                     placeholderStyle={{ background: `color-mix(in srgb, ${brandPrimary} 8%, transparent)` }}
                     placeholderIconClassName="w-16 h-16"
                     placeholderIconStyle={{ color: `color-mix(in srgb, ${brandPrimary} 30%, transparent)`, opacity: 0.6 }}
-                    contentClassName="p-6 flex flex-col flex-1 min-w-0"
+                    contentClassName="p-4 flex flex-col flex-1 min-w-0"
+                    maxFeatures={2}
                     headerClassName="flex flex-col gap-1.5 mb-2 min-w-0"
                     titleClassName="font-bold text-base leading-tight"
                     titleStyle={{ color: brandText, fontFamily: headingFont }}
-                    descriptionClassName="text-sm leading-relaxed"
+                    descriptionClassName="text-sm leading-relaxed line-clamp-2"
                     descriptionStyle={{ color: `color-mix(in srgb, ${brandText} 60%, transparent)` }}
                     priceClassName="self-start text-sm font-bold px-3 py-1.5 rounded-full"
                     priceStyle={{ background: `color-mix(in srgb, ${brandPrimary} 12%, transparent)`, color: brandPrimary }}

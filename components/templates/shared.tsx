@@ -1352,6 +1352,7 @@ interface MenuCatalogCardProps {
   buttonClassName?: string;
   buttonStyle?: React.CSSProperties;
   features?: string[] | null;
+  maxFeatures?: number;
   capacity?: number | null;
   tags?: string[] | null;
   delivery_platforms?: { name: string; url: string }[] | null;
@@ -1372,7 +1373,7 @@ function MenuCatalogCard({
   placeholderStyle, placeholderIconClassName, placeholderIconStyle, contentClassName,
   contentStyle, headerClassName, headerStyle, titleClassName, titleStyle,
   descriptionClassName, descriptionStyle, priceClassName, priceStyle, badgeClassName,
-  badgeStyle, buttonClassName, buttonStyle, features, capacity, tags, delivery_platforms,
+  badgeStyle, buttonClassName, buttonStyle, features, maxFeatures, capacity, tags, delivery_platforms,
   onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, editSection, pathBase, onDelete,
 }: MenuCatalogCardProps) {
   const { t } = useI18n();
@@ -1708,66 +1709,88 @@ function MenuCatalogCard({
             </span>
           </div>
         )}
-        {((features && features.length > 0) || (isEditorMode && editSection === "catalog" && onUpdateField && pathBase)) && (
-          <ul className="mt-2 flex flex-wrap gap-1.5 items-center">
-            {(features ?? []).map((f, fi) => (
-              <li
-                key={fi}
-                className="group/feat relative flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full"
-                style={{ background: "color-mix(in srgb, var(--dt-primary) 10%, transparent)", color: "var(--dt-primary)" }}
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3 h-3 flex-shrink-0 pointer-events-none"><polyline points="20 6 9 17 4 12"/></svg>
-                <InlineText
-                  section={editSection ?? ""}
-                  fieldKey={pathBase ? pathBase + ".features." + fi : ""}
-                  value={f ?? ""}
-                  onUpdateField={onUpdateField}
-                  isEditorMode={isEditorMode}
-                  isSelected={isSelected}
-                  as="span"
-                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                  onEditingStateChange={onEditingStateChange}
-                />
-                {isEditorMode && onUpdateField && editSection && pathBase && (
+        {(() => {
+          const hasMaxFeatures = typeof maxFeatures === "number";
+          const displayedFeatures = hasMaxFeatures && !isEditorMode
+            ? (features ?? []).slice(0, maxFeatures)
+            : (features ?? []);
+          const extraFeaturesCount = hasMaxFeatures && !isEditorMode && features && features.length > maxFeatures
+            ? features.length - maxFeatures
+            : 0;
+          const showFeaturesList = (displayedFeatures && displayedFeatures.length > 0) ||
+            (isEditorMode && editSection === "catalog" && onUpdateField && pathBase && (!hasMaxFeatures || maxFeatures > 0));
+
+          if (!showFeaturesList) return null;
+
+          return (
+            <ul className="mt-2 flex flex-wrap gap-1.5 items-center">
+              {displayedFeatures.map((f, fi) => (
+                <li
+                  key={fi}
+                  className="group/feat relative flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full"
+                  style={{ background: "color-mix(in srgb, var(--dt-primary) 10%, transparent)", color: "var(--dt-primary)" }}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3 h-3 flex-shrink-0 pointer-events-none"><polyline points="20 6 9 17 4 12"/></svg>
+                  <InlineText
+                    section={editSection ?? ""}
+                    fieldKey={pathBase ? pathBase + ".features." + fi : ""}
+                    value={f ?? ""}
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="span"
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={onEditingStateChange}
+                  />
+                  {isEditorMode && onUpdateField && editSection && pathBase && (
+                    <button
+                      type="button"
+                      title="Hapus fitur"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const nextFeatures = (features || []).filter((_, i) => i !== fi);
+                        onUpdateField(editSection, `${pathBase}.features`, nextFeatures);
+                      }}
+                      className="opacity-0 group-hover/feat:opacity-100 hover:text-rose-500 transition-opacity cursor-pointer p-0.5 -mr-1"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-2.5 h-2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  )}
+                </li>
+              ))}
+              {extraFeaturesCount > 0 && (
+                <li
+                  className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
+                  style={{ background: "color-mix(in srgb, var(--dt-primary) 6%, transparent)", color: "var(--dt-primary)", opacity: 0.8 }}
+                >
+                  +{extraFeaturesCount} lainnya
+                </li>
+              )}
+              {isEditorMode && onUpdateField && editSection === "catalog" && pathBase && (!hasMaxFeatures || maxFeatures > 0) && (
+                <li>
                   <button
                     type="button"
-                    title="Hapus fitur"
                     onClick={(e) => {
                       e.stopPropagation();
-                      const nextFeatures = (features || []).filter((_, i) => i !== fi);
+                      const nextFeatures = [...(features || []), `Fitur ${(features?.length ?? 0) + 1}`];
                       onUpdateField(editSection, `${pathBase}.features`, nextFeatures);
                     }}
-                    className="opacity-0 group-hover/feat:opacity-100 hover:text-rose-500 transition-opacity cursor-pointer p-0.5 -mr-1"
+                    className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border border-dashed transition-all hover:brightness-110 cursor-pointer"
+                    style={{
+                      borderColor: "color-mix(in srgb, var(--dt-primary) 35%, transparent)",
+                      color: "var(--dt-primary)",
+                      background: "color-mix(in srgb, var(--dt-primary) 5%, transparent)",
+                    }}
+                    title="Tambah fitur produk"
                   >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-2.5 h-2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-2.5 h-2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    <span>Fitur</span>
                   </button>
-                )}
-              </li>
-            ))}
-            {isEditorMode && onUpdateField && editSection === "catalog" && pathBase && (
-              <li>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const nextFeatures = [...(features || []), `Fitur ${(features?.length ?? 0) + 1}`];
-                    onUpdateField(editSection, `${pathBase}.features`, nextFeatures);
-                  }}
-                  className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border border-dashed transition-all hover:brightness-110 cursor-pointer"
-                  style={{
-                    borderColor: "color-mix(in srgb, var(--dt-primary) 35%, transparent)",
-                    color: "var(--dt-primary)",
-                    background: "color-mix(in srgb, var(--dt-primary) 5%, transparent)",
-                  }}
-                  title="Tambah fitur produk"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-2.5 h-2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                  <span>Fitur</span>
-                </button>
-              </li>
-            )}
-          </ul>
-        )}
+                </li>
+              )}
+            </ul>
+          );
+        })()}
         {tagsAndPlatforms}
         <div className="mt-auto pt-3">
           <AddToCartButton
