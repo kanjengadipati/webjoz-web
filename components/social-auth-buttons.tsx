@@ -7,6 +7,7 @@ import { useToast } from "@/components/toast-provider";
 import { socialLogin } from "@/lib/api";
 import { persistAuthSession } from "@/lib/auth-store";
 import { FACEBOOK_CLIENT_ID, GOOGLE_CLIENT_ID, SOCIAL_ACTIVE_PROVIDERS } from "@/lib/config";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Script from "next/script";
 
@@ -204,12 +205,13 @@ export function SocialAuthButtons({
       {layout === "grid" ? (
         <div className={`grid gap-3.5 my-4 ${hasGoogle && hasFacebook ? "grid-cols-2" : "grid-cols-1"}`}>
           {hasGoogle && (
-            <button
+            <Button
               type="button"
+              variant="secondary"
               disabled={loading}
               onClick={handleGoogleClick}
               aria-label="Continue with Google"
-              className="flex h-11 w-full items-center justify-center gap-2.5 rounded-lg bg-foreground/8 hover:bg-foreground/14 text-sm font-semibold text-foreground transition cursor-pointer disabled:opacity-50 shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              className="h-11 w-full gap-2.5 rounded-lg"
             >
               <svg className="size-5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>
@@ -218,7 +220,7 @@ export function SocialAuthButtons({
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
               </svg>
               Google
-            </button>
+            </Button>
           )}
           {hasFacebook && (
             <button
