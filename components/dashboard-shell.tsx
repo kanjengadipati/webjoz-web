@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -67,6 +67,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const { unreadCount } = useUnreadNotifications();
   const { activeTenant } = useActiveTenant();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const contentScrollRef = useRef<HTMLDivElement>(null);
   const isAuthenticated = Boolean(token);
 
   const userDisplayName = profile?.name 
@@ -98,6 +99,12 @@ export function DashboardShell({ children }: { children: ReactNode }) {
       router.push(`/dashboard/sites/new${prefill}`);
     }
   }, [authReady, token, router]);
+
+  // The desktop layout scrolls the content pane independently of the window;
+  // reset it on navigation so each page starts at the top.
+  useEffect(() => {
+    contentScrollRef.current?.scrollTo({ top: 0 });
+  }, [pathname]);
 
   async function handleLogout() {
     if (!token) {
@@ -181,7 +188,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={cn("min-h-screen bg-background", !isFullscreenWorkspace && "lg:h-screen lg:overflow-hidden")}>
       {/* Mobile Bottom Navigation (Full-width sticky bottom, Icon-Only) */}
       {!isFullscreenWorkspace && (
         <nav className="fixed bottom-0 inset-x-0 z-60 lg:hidden bg-card/95 dark:bg-background/90 backdrop-blur-2xl border-t border-border/60 py-2 pb-3 shadow-2xl shadow-black/20" aria-label={t("dashboard.mainNav")}>
@@ -435,11 +442,11 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         "mx-auto grid min-h-screen",
         isFullscreenWorkspace 
           ? "max-w-none w-full grid-cols-1 p-0 gap-0" 
-          : "max-w-7xl gap-6 px-4 py-6 pb-28 lg:px-8 lg:pb-6 lg:grid-cols-[290px_minmax(0,1fr)]"
+          : "max-w-7xl gap-6 px-4 py-6 pb-28 lg:h-full lg:min-h-0 lg:px-8 lg:pb-6 lg:grid-cols-[290px_minmax(0,1fr)] lg:overflow-hidden"
       )}>
         {!isFullscreenWorkspace && (
-          <aside className="hidden lg:block">
-            <Card className="sticky top-6 overflow-hidden border-border/40 shadow-xl shadow-primary/5 bg-card dark:bg-card/90 backdrop-blur-md">
+          <aside className="hidden lg:block lg:h-full lg:min-h-0 lg:overflow-y-auto">
+            <Card className="overflow-hidden border-border/40 shadow-xl shadow-primary/5 bg-card dark:bg-card/90 backdrop-blur-md">
               <CardHeader className="space-y-4 border-b border-border/40 bg-gradient-to-br from-primary/10 via-transparent to-transparent p-6">
                 <div className="space-y-1">
                   <div className="flex items-center gap-3">
@@ -609,7 +616,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           </aside>
         )}
 
-        <div className="flex min-w-0 flex-col gap-6">
+        <div ref={contentScrollRef} className={cn("flex min-w-0 flex-col gap-6", !isFullscreenWorkspace && "lg:h-full lg:min-h-0 lg:overflow-y-auto")}>
           {!isFullscreenWorkspace && (
             <header className="sticky top-0 z-20 rounded-3xl border border-border/80 bg-card/90 px-6 py-4 backdrop-blur-xl shadow-lg shadow-slate-900/10 dark:border-border/40 dark:bg-background/60 dark:shadow-black/5">
               <div className="flex flex-wrap items-center justify-between gap-4">
