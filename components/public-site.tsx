@@ -332,6 +332,17 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
       });
 
       const envelope = await res.json();
+      if (res.status === 410 || envelope?.code === "ERR_PLAN_EXPIRED") {
+        // Site was parked while the visitor had the page open: swap to the
+        // suspension view instead of showing a generic form error.
+        setSuspended({
+          site_name: siteData.site.name,
+          subdomain: siteData.site.subdomain,
+          expired_at: null,
+          language: siteData.site.language,
+        });
+        return;
+      }
       if (!res.ok || envelope.status !== "success") {
         throw new Error(envelope.message || "Gagal mengirim formulir.");
       }

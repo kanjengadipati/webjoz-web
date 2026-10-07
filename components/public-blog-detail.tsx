@@ -8,6 +8,14 @@ import { buildCssVars, loadGoogleFont } from "@/components/templates/helpers";
 import type { DesignToken } from "@/components/templates/types";
 import HeaderSection from "@/components/sections/header";
 import FooterSection from "@/components/sections/footer";
+import SiteSuspended from "@/components/site-suspended";
+
+interface SuspendedInfo {
+  siteName?: string;
+  subdomain?: string;
+  expiredAt?: string | null;
+  language?: string;
+}
 
 interface BlogPost {
   id: number;
@@ -38,6 +46,7 @@ export default function PublicBlogDetail({
   const [language, setLanguage] = useState<"id" | "en">("id");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [suspended, setSuspended] = useState<SuspendedInfo | null>(null);
 
   const homeHref = `${routePrefix}/${subdomain}`;
   const blogIndexHref = `${routePrefix}/${subdomain}/blog`;
@@ -48,6 +57,19 @@ export default function PublicBlogDetail({
       try {
         const host = `${subdomain}.${process.env.NEXT_PUBLIC_BASE_DOMAIN ?? "webjoz.com"}`;
         const siteRes = await fetch(`${API_BASE_URL}/public/sites?host=${host}`);
+        if (siteRes.status === 410) {
+          const payload = await siteRes.json().catch(() => null);
+          if (payload?.code === "ERR_PLAN_EXPIRED") {
+            const d = payload.data ?? {};
+            setSuspended({
+              siteName: d.site_name,
+              subdomain: d.subdomain,
+              expiredAt: d.plan_expired_at ?? d.expired_at,
+              language: d.language,
+            });
+            return;
+          }
+        }
         if (!siteRes.ok) throw new Error("Situs tidak ditemukan");
         const siteEnvelope = await siteRes.json();
         const siteId = siteEnvelope.data?.site?.id;
@@ -60,6 +82,14 @@ export default function PublicBlogDetail({
         loadGoogleFont(designToken?.typography?.heading_font, designToken?.typography?.body_font);
 
         const postRes = await fetch(`${API_BASE_URL}/public/sites/${siteId}/blog-posts/${slug}`);
+        if (postRes.status === 410) {
+          const payload = await postRes.json().catch(() => null);
+          if (payload?.code === "ERR_PLAN_EXPIRED") {
+            const d = payload.data ?? {};
+            setSuspended({ siteName: d.site_name, subdomain: d.subdomain, expiredAt: d.expired_at, language: d.language });
+            return;
+          }
+        }
         if (!postRes.ok) throw new Error("Postingan tidak ditemukan");
         const postEnvelope = await postRes.json();
         if (postEnvelope.status !== "success" || !postEnvelope.data) {
@@ -76,6 +106,17 @@ export default function PublicBlogDetail({
   }, [subdomain, slug]);
 
   const cssVars = buildCssVars(dt);
+
+  if (suspended) {
+    return (
+      <SiteSuspended
+        siteName={suspended.siteName}
+        subdomain={suspended.subdomain}
+        expiredAt={suspended.expiredAt}
+        language={suspended.language}
+      />
+    );
+  }
 
   if (loading) {
     return (

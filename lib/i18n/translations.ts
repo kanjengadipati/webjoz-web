@@ -397,6 +397,8 @@ export interface Translations {
     planExpiringSoon: string;
     planExpiringSoonDesc: string;
     planExpiredBanner: string;
+    planExpiredDesc: string;
+    planInGrace: string;
     renewPlan: string;
     statWebsites: string;
     statLeads: string;
@@ -3005,6 +3007,8 @@ export const translations: Record<Locale, Translations> = {
       planExpiringSoon: "Paket {plan} Anda berakhir dalam {days} hari",
       planExpiringSoonDesc: "Perpanjang sekarang agar website dan custom domain tetap aktif. Setelah masa aktif habis, website ditampilkan dalam mode penangguhan.",
       planExpiredBanner: "Masa aktif paket Anda telah berakhir. Website Anda sementara ditampilkan dalam mode penangguhan.",
+      planExpiredDesc: "Website Anda sedang ditangguhkan. Data, konten, dan domain tetap aman — perpanjang paket dan website aktif kembali secara otomatis.",
+      planInGrace: "Paket Anda sudah jatuh tempo dan sedang dalam masa tenggang. Segera perpanjang sebelum {date} agar website tidak ditangguhkan.",
       renewPlan: "Perpanjang Sekarang",
       statWebsites: "Website",
       statLeads: "Leads",
@@ -5688,6 +5692,8 @@ export const translations: Record<Locale, Translations> = {
       planExpiringSoon: "Your {plan} plan expires in {days} days",
       planExpiringSoonDesc: "Renew now to keep your websites and custom domains active. After the plan lapses, websites show a suspension page.",
       planExpiredBanner: "Your subscription has expired. Your websites are temporarily showing a suspension page.",
+      planExpiredDesc: "Your websites are suspended. Your data, content, and domains are safe — renew and they go back online automatically.",
+      planInGrace: "Your plan is past due and in its grace period. Renew before {date} to avoid suspension.",
       renewPlan: "Renew Now",
       statWebsites: "Websites",
       statLeads: "Leads",
