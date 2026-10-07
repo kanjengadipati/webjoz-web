@@ -63,7 +63,7 @@ export default function PublicBlogDetail({
             const d = payload.data ?? {};
             setSuspended({
               siteName: d.site_name,
-              subdomain: d.subdomain,
+              subdomain: d.subdomain ?? subdomain,
               expiredAt: d.plan_expired_at ?? d.expired_at,
               language: d.language,
             });
@@ -86,7 +86,14 @@ export default function PublicBlogDetail({
           const payload = await postRes.json().catch(() => null);
           if (payload?.code === "ERR_PLAN_EXPIRED") {
             const d = payload.data ?? {};
-            setSuspended({ siteName: d.site_name, subdomain: d.subdomain, expiredAt: d.expired_at, language: d.language });
+            // The post 410 carries no payload, so fall back to the site we just
+            // loaded (language) and the requested subdomain.
+            setSuspended({
+              siteName: d.site_name,
+              subdomain: d.subdomain ?? subdomain,
+              expiredAt: d.plan_expired_at ?? d.expired_at,
+              language: d.language,
+            });
             return;
           }
         }

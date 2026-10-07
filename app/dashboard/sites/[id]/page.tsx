@@ -6,6 +6,7 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import { useParams, useRouter } from "next/navigation";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
+import { isTenantSuspended } from "@/lib/plan-status";
 import { request } from "@/lib/api/client";
 import {
   Save, Loader2, Zap, Database,
@@ -100,7 +101,17 @@ export default function SiteEditorPage() {
   const { pushToast } = useToast();
   const { activeTenantId, activeTenant } = useActiveTenant();
   const isPremium = activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise";
-  const isSuspended = Boolean(activeTenant?.tenant?.plan_expired_at);
+  // Read the clock after mount so the suspension rule (which mirrors the
+  // backend's deadline fallback) matches without a hydration mismatch.
+  const [nowTs, setNowTs] = useState<number | null>(null);
+  useEffect(() => {
+    const id = window.setTimeout(() => setNowTs(Date.now()), 0);
+    return () => window.clearTimeout(id);
+  }, []);
+  const isSuspended = useMemo(
+    () => isTenantSuspended(activeTenant?.tenant, nowTs),
+    [activeTenant, nowTs]
+  );
 
   const siteId = params.id ? decodeSiteId(params.id as string) || null : null;
 

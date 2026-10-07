@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
+import { isTenantSuspended } from "@/lib/plan-status";
 import { request } from "@/lib/api/client";
 import { useRouter } from "next/navigation";
 import {
@@ -133,11 +134,15 @@ export default function DomainsPage() {
   const { t } = useI18n();
   const { activeTenantId, activeTenant } = useActiveTenant();
   const isPremium = activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise";
-  // Set once the subscription cron downgrades a lapsed tenant: domains stay
-  // connected, but every host serves the parking page until renewal.
-  const isSuspended = Boolean(
-    (activeTenant?.tenant as { plan_expired_at?: string | null } | undefined)?.plan_expired_at
-  );
+  // A lapsed tenant (cron marker OR passed deadline) parks every host. The
+  // clock is read after mount to avoid a hydration mismatch, and the shared
+  // helper mirrors the backend rule so it matches the public gate.
+  const [nowTs, setNowTs] = useState<number | null>(null);
+  useEffect(() => {
+    const id = window.setTimeout(() => setNowTs(Date.now()), 0);
+    return () => window.clearTimeout(id);
+  }, []);
+  const isSuspended = isTenantSuspended(activeTenant?.tenant, nowTs);
 
   const [domains, setDomains] = useState<Domain[]>([]);
   const [sites, setSites] = useState<Site[]>([]);

@@ -7,6 +7,7 @@ import { useToast } from "@/components/toast-provider";
 import { fetchProfile } from "@/lib/api";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
+import { isTenantSuspended } from "@/lib/plan-status";
 import { request } from "@/lib/api/client";
 import { usePermissions } from "@/hooks/use-permissions";
 import { fetchMyCommissions, CommissionSummary, getCommissionConfig, CommissionConfig } from "@/lib/api/commissions";
@@ -296,17 +297,17 @@ export default function DashboardOverviewPage() {
     const tenant = activeTenant?.tenant;
     const plan = tenant?.plan ?? "free";
     const planName = plan.replace(/^./, (c) => c.toUpperCase());
-    const suspended = Boolean(tenant?.plan_expired_at);
+    const suspended = isTenantSuspended(tenant, nowTs);
     let daysLeft: number | null = null;
     let grace = false;
     let expireDate = "";
     if (nowTs !== null && tenant?.plan_renewal_at) {
       const renewalMs = new Date(tenant.plan_renewal_at).getTime();
       if (Number.isFinite(renewalMs)) {
-        daysLeft = Math.ceil((renewalMs - nowTs) / 86_400_000);
-        if (!suspended && daysLeft < 0) {
-          grace = true;
-        }
+        // Grace starts the moment the renewal date passes, even within the
+        // first 24h: `Math.ceil(-0.5)` is `-0`, so compare timestamps instead.
+        grace = !suspended && renewalMs <= nowTs;
+        daysLeft = Math.max(0, Math.ceil((renewalMs - nowTs) / 86_400_000));
       }
     }
     if (tenant?.plan_expires_at) {
