@@ -130,7 +130,7 @@ export default function CatalogClassic({ catalog, onUpdateField, isEditorMode, i
                 <span style={{ width: 6, height: 6, borderRadius: "50%", background: brandPrimary, flexShrink: 0 }} />
                 <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, ${brandPrimary} 18%, transparent)` }} />
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "1.25rem", alignItems: "stretch" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "1.5rem", alignItems: "stretch" }}>
                 {cat.filteredItems.map(({ item, originalCatIdx, originalItemIdx }) => (
                   <MenuCatalogCard
                     key={item.id || `${cat.name}__${item.name}__${originalCatIdx}_${originalItemIdx}`}
@@ -150,26 +150,27 @@ export default function CatalogClassic({ catalog, onUpdateField, isEditorMode, i
                     is_available={item.is_available}
                     variant_groups={item.variant_groups}
                     features={item.features}
+                    maxFeatures={2}
                     capacity={item.capacity}
                     icon={ImageIcon}
                     className="group transition-all duration-300"
                     style={{ background: brandBg, border: `1px solid color-mix(in srgb, ${brandPrimary} 14%, transparent)`, borderRadius: "16px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
-                    imageClassName="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
-                    placeholderClassName="w-full h-48 flex items-center justify-center transition-transform duration-500 group-hover:scale-105"
+                    imageClassName="w-full aspect-[4/5] object-cover transition-transform duration-500 group-hover:scale-105"
+                    placeholderClassName="w-full aspect-[4/5] flex items-center justify-center transition-transform duration-500 group-hover:scale-105"
                     placeholderStyle={{ background: `color-mix(in srgb, ${brandPrimary} 8%, transparent)` }}
                     placeholderIconClassName="w-12 h-12"
                     placeholderIconStyle={{ color: `color-mix(in srgb, ${brandPrimary} 30%, transparent)`, opacity: 0.6 }}
-                    contentClassName="p-5 flex flex-col flex-1 min-w-0"
+                    contentClassName="p-4 flex flex-col flex-1 min-w-0"
                     headerClassName="flex flex-col gap-1.5 mb-2 min-w-0"
-                    titleClassName="font-bold text-sm leading-tight line-clamp-2 min-h-[2.5rem]"
+                    titleClassName="font-bold text-sm leading-tight line-clamp-2"
                     titleStyle={{ color: brandText, fontFamily: headingFont }}
-                    descriptionClassName="text-xs leading-relaxed line-clamp-3 min-h-[3.75rem]"
+                    descriptionClassName="text-xs leading-relaxed line-clamp-2"
                     descriptionStyle={{ color: `color-mix(in srgb, ${brandText} 60%, transparent)` }}
                     priceClassName="self-start text-xs font-bold px-2.5 py-1 rounded-full"
                     priceStyle={{ background: `color-mix(in srgb, ${brandPrimary} 12%, transparent)`, color: brandPrimary }}
                     badgeClassName="inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap"
                     badgeStyle={{ background: brandPrimary, color: brandBg }}
-                    buttonClassName="w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md"
+                    buttonClassName="w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md"
                     buttonStyle={{ background: brandPrimary, color: brandBg, border: "none" }}
                     editSection="catalog"
                     pathBase={"categories." + originalCatIdx + ".items." + originalItemIdx}
