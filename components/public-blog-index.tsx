@@ -251,7 +251,7 @@ export default function PublicBlogIndex({ subdomain, routePrefix = "/s" }: Publi
             const d = payload.data ?? {};
             setSuspended({
               siteName: d.site_name,
-              subdomain: d.subdomain,
+              subdomain: d.subdomain ?? subdomain,
               expiredAt: d.plan_expired_at ?? d.expired_at,
               language: d.language,
             });
@@ -275,7 +275,14 @@ export default function PublicBlogIndex({ subdomain, routePrefix = "/s" }: Publi
           const payload = await postsRes.json().catch(() => null);
           if (payload?.code === "ERR_PLAN_EXPIRED") {
             const d = payload.data ?? {};
-            setSuspended({ siteName: d.site_name, subdomain: d.subdomain, expiredAt: d.expired_at, language: d.language });
+            // The blog-posts 410 carries no payload (only the site lookup does),
+            // so fall back to what we already know from this request.
+            setSuspended({
+              siteName: d.site_name,
+              subdomain: d.subdomain ?? subdomain,
+              expiredAt: d.plan_expired_at ?? d.expired_at,
+              language: d.language,
+            });
             return;
           }
         }
