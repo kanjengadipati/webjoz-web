@@ -296,7 +296,7 @@ export default function LandingPageClient() {
       {/* ── Navbar ─────────────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="https://www.webjoz.com" className="flex items-center gap-2">
             <Image
               src="/logo2.png"
               alt="Webjoz"
