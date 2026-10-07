@@ -100,6 +100,7 @@ export default function BillingPage() {
       const res = await listMyTransactions(
         { limit: txLimit, offset: (txPage - 1) * txLimit },
         token,
+        tenantId,
       );
       setTxs(res.data ?? []);
       setTxTotal((res.meta as any)?.total ?? 0);
@@ -108,7 +109,7 @@ export default function BillingPage() {
     } finally {
       setTxLoad(false);
     }
-  }, [token, txPage]);
+  }, [token, txPage, tenantId]);
 
   const fetchInvoices = useCallback(async () => {
     if (!token) return;
@@ -117,6 +118,7 @@ export default function BillingPage() {
       const res = await listMyInvoices(
         { limit: invLimit, offset: (invPage - 1) * invLimit },
         token,
+        tenantId,
       );
       setInvoices(res.data ?? []);
       setInvTotal((res.meta as any)?.total ?? 0);
@@ -125,7 +127,7 @@ export default function BillingPage() {
     } finally {
       setInvLoad(false);
     }
-  }, [token, invPage]);
+  }, [token, invPage, tenantId]);
 
   useEffect(() => { fetchTransactions(); }, [fetchTransactions]);
   useEffect(() => { fetchInvoices(); }, [fetchInvoices]);
@@ -134,7 +136,7 @@ export default function BillingPage() {
     if (!refundId || !token || refundReason.trim().length < 5) return;
     setRefundLoading(true);
     try {
-      await requestRefund(refundId, refundReason.trim(), token);
+      await requestRefund(refundId, refundReason.trim(), token, tenantId);
       pushToast(
         lang === "id"
           ? "Permintaan refund berhasil dikirim. Tim kami akan memproses dalam 3–7 hari kerja."
@@ -155,7 +157,7 @@ export default function BillingPage() {
     if (!token) return;
     setResendId(paymentId);
     try {
-      await sendInvoiceEmail(paymentId, token);
+      await sendInvoiceEmail(paymentId, token, tenantId);
       pushToast(
         lang === "id" ? "Invoice berhasil dikirim ke email Anda." : "Invoice sent to your email.",
         "success",

@@ -105,6 +105,12 @@ export async function request<T>(
   if (authToken) {
     headers.set("Authorization", `Bearer ${authToken}`);
   }
+  if (!headers.has("X-Tenant-ID") && typeof window !== "undefined") {
+    const activeTenantId = readStorageValue("webjoz_active_tenant_id", "") || readStorageValue("giwangan_active_tenant_id", "");
+    if (activeTenantId) {
+      headers.set("X-Tenant-ID", activeTenantId);
+    }
+  }
 
   const method = init?.method || "GET";
   if (API_DEBUG) {

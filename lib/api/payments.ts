@@ -50,29 +50,38 @@ export interface ListPaymentsQuery {
   search?: string;
 }
 
-export async function listMyTransactions(query: ListPaymentsQuery = {}, token: string) {
+export async function listMyTransactions(query: ListPaymentsQuery = {}, token: string, tenantId?: number) {
   const params = new URLSearchParams();
   if (query.limit) params.append("limit", String(query.limit));
   if (query.offset) params.append("offset", String(query.offset));
-  return request<PaymentResponse[]>(`/payments?${params.toString()}`, {}, token);
+  const headers: Record<string, string> = {};
+  if (tenantId) headers["X-Tenant-ID"] = String(tenantId);
+  return request<PaymentResponse[]>(`/payments?${params.toString()}`, { headers }, token);
 }
 
-export async function listMyInvoices(query: { limit?: number; offset?: number } = {}, token: string) {
+export async function listMyInvoices(query: { limit?: number; offset?: number } = {}, token: string, tenantId?: number) {
   const params = new URLSearchParams();
   if (query.limit) params.append("limit", String(query.limit));
   if (query.offset) params.append("offset", String(query.offset));
-  return request<InvoiceResponse[]>(`/payments/invoices?${params.toString()}`, {}, token);
+  const headers: Record<string, string> = {};
+  if (tenantId) headers["X-Tenant-ID"] = String(tenantId);
+  return request<InvoiceResponse[]>(`/payments/invoices?${params.toString()}`, { headers }, token);
 }
 
-export async function requestRefund(paymentId: number, reason: string, token: string) {
+export async function requestRefund(paymentId: number, reason: string, token: string, tenantId?: number) {
+  const headers: Record<string, string> = {};
+  if (tenantId) headers["X-Tenant-ID"] = String(tenantId);
   return request(`/payments/${paymentId}/refund`, {
     method: "POST",
+    headers,
     body: JSON.stringify({ reason }),
   }, token);
 }
 
-export async function sendInvoiceEmail(paymentId: number, token: string) {
-  return request(`/payments/${paymentId}/send-invoice`, { method: "POST" }, token);
+export async function sendInvoiceEmail(paymentId: number, token: string, tenantId?: number) {
+  const headers: Record<string, string> = {};
+  if (tenantId) headers["X-Tenant-ID"] = String(tenantId);
+  return request(`/payments/${paymentId}/send-invoice`, { method: "POST", headers }, token);
 }
 
 export async function listPayments(query: ListPaymentsQuery = {}) {
