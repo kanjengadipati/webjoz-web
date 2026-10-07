@@ -28,8 +28,8 @@ export default function SalesReferralPage() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
 
-  // Available to all authenticated members (Member-Get-Member)
-  const canManage = Boolean(token);
+  // Only accessible to sales role (and admins for oversight)
+  const canManage = Boolean(token) && (role === "sales" || role === "admin" || role === "superadmin");
 
   const loadReferralCode = async () => {
     if (!token) return;
