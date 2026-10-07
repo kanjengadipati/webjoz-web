@@ -100,6 +100,7 @@ export default function SiteEditorPage() {
   const { pushToast } = useToast();
   const { activeTenantId, activeTenant } = useActiveTenant();
   const isPremium = activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise";
+  const isSuspended = Boolean(activeTenant?.tenant?.plan_expired_at);
 
   const siteId = params.id ? decodeSiteId(params.id as string) || null : null;
 
@@ -441,6 +442,10 @@ export default function SiteEditorPage() {
 
   const handlePublishWithSubdomain = async (subdomain: string) => {
     if (!siteDetails || !token || !activeTenantId) return;
+    if (isSuspended) {
+      pushToast(t("dashboard.planExpiredBanner"), "error");
+      return;
+    }
     try {
       setPublishing(true);
       // 1. Update subdomain
@@ -2518,7 +2523,7 @@ export default function SiteEditorPage() {
                   setModerationViolations(null);
                   setAppealed(false);
                 }}
-                    disabled={publishing}
+                    disabled={publishing || isSuspended}
                     className="flex h-7 items-center gap-1 rounded-lg px-2.5 text-[11px] font-semibold text-primary-foreground transition-all hover:brightness-110 disabled:opacity-60"
                     style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
                   >
@@ -2535,6 +2540,7 @@ export default function SiteEditorPage() {
                   setAppealed(false);
                 }}
                   data-edu="publish-btn"
+                  disabled={isSuspended}
                   className="flex h-7 items-center gap-1 rounded-lg px-3 text-[11px] font-semibold text-primary-foreground"
                   style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
                 >
@@ -2758,7 +2764,8 @@ export default function SiteEditorPage() {
                     setModerationViolations(null);
                     setAppealed(false);
                   }}
-                  className="flex h-7 items-center gap-1.5 rounded-md border border-border/70 bg-foreground px-3 text-[11px] font-semibold text-background transition-all hover:opacity-80"
+                  disabled={isSuspended}
+                  className="flex h-7 items-center gap-1.5 rounded-md border border-border/70 bg-foreground px-3 text-[11px] font-semibold text-background transition-all hover:opacity-80 disabled:opacity-50"
                 >
                   <Rocket className="w-3.5 h-3.5" />
                   {t("dashboard.sitesEditor.publish")}
@@ -3527,7 +3534,7 @@ export default function SiteEditorPage() {
                   setModerationViolations(null);
                   setAppealed(false);
                 }}
-                  disabled={publishing}
+                  disabled={publishing || isSuspended}
                   className="flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold bg-primary text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
                 >
                   {publishing ? <Loader2 className="w-4 h-4 animate-spin" /> : (
@@ -3543,7 +3550,8 @@ export default function SiteEditorPage() {
                   setModerationViolations(null);
                   setAppealed(false);
                 }}
-                  className="flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold bg-primary text-primary-foreground transition-colors hover:bg-primary/90"
+                  disabled={isSuspended}
+                  className="flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold bg-primary text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
                 >
                   <Rocket className="w-4 h-4" />
                   {t("dashboard.sitesEditor.publish")}

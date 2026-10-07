@@ -289,27 +289,45 @@ export default function DashboardOverviewPage() {
     return () => window.clearTimeout(id);
   }, []);
 
-  // Lapsed-subscription state derived from the tenant payload. plan_expires_at
-  // includes a 3-day grace window, so countdowns target the renewal date.
+  // Lapsed-subscription state derived from the tenant payload. The API sends
+  // plan_renewal_at (deadline without the grace window) so the countdown never
+  // goes negative; plan_expires_at remains the hard deadline shown in grace.
   const planStatus = useMemo(() => {
     const tenant = activeTenant?.tenant;
     const plan = tenant?.plan ?? "free";
     const planName = plan.replace(/^./, (c) => c.toUpperCase());
     const suspended = Boolean(tenant?.plan_expired_at);
     let daysLeft: number | null = null;
-    if (nowTs !== null && tenant?.plan_expires_at) {
+    let grace = false;
+    let expireDate = "";
+    if (nowTs !== null && tenant?.plan_renewal_at) {
+      const renewalMs = new Date(tenant.plan_renewal_at).getTime();
+      if (Number.isFinite(renewalMs)) {
+        daysLeft = Math.ceil((renewalMs - nowTs) / 86_400_000);
+        if (!suspended && daysLeft < 0) {
+          grace = true;
+        }
+      }
+    }
+    if (tenant?.plan_expires_at) {
       const expiresMs = new Date(tenant.plan_expires_at).getTime();
       if (Number.isFinite(expiresMs)) {
-        daysLeft = Math.ceil((expiresMs - 3 * 86_400_000 - nowTs) / 86_400_000);
+        expireDate = new Date(expiresMs).toLocaleDateString(locale === "id" ? "id-ID" : "en-US", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        });
       }
     }
     return {
       planName,
       daysLeft,
       suspended,
-      warn: !suspended && plan !== "free" && daysLeft !== null && daysLeft <= 7,
+      grace,
+      expireDate,
+      warn: !suspended && !grace && plan !== "free" && daysLeft !== null && daysLeft <= 7,
     };
-  }, [activeTenant, nowTs]);
+  }, [activeTenant, nowTs, locale]);
 
   const barData = useMemo(() => {
     const byDate = analytics?.pageviews_by_date || [];
@@ -725,7 +743,22 @@ export default function DashboardOverviewPage() {
         <section className="bg-amber-500/10 border border-amber-500/30 rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <p className="text-sm font-bold text-foreground">{t("dashboard.planExpiredBanner")}</p>
-            <p className="text-xs text-muted-foreground">{t("dashboard.planExpiringSoonDesc")}</p>
+            <p className="text-xs text-muted-foreground">{t("dashboard.planExpiredDesc")}</p>
+          </div>
+          <Link href="/dashboard/upgrade" className="shrink-0">
+            <Button className="h-10 rounded-xl px-5 font-bold bg-amber-500 text-amber-950 hover:bg-amber-400 shadow-lg shadow-amber-500/20">
+              {t("dashboard.renewPlan")}
+            </Button>
+          </Link>
+        </section>
+      )}
+
+      {!planStatus?.suspended && planStatus?.grace && (
+        <section className="bg-amber-500/10 border border-amber-500/30 rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <p className="text-sm font-bold text-foreground">
+              {t("dashboard.planInGrace", undefined, { date: planStatus.expireDate })}
+            </p>
           </div>
           <Link href="/dashboard/upgrade" className="shrink-0">
             <Button className="h-10 rounded-xl px-5 font-bold bg-amber-500 text-amber-950 hover:bg-amber-400 shadow-lg shadow-amber-500/20">
