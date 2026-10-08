@@ -3,9 +3,19 @@ import { request } from "./client";
 export interface NotificationItem {
   id: number;
   user_id: number;
-  type: "announcement" | "lead" | "system";
+  type:
+    | "announcement"
+    | "lead"
+    | "payment"
+    | "new_user"
+    | "plan"
+    | "site"
+    | "invitation"
+    | "system";
   title: string;
+  title_en?: string;
   message: string;
+  message_en?: string;
   reference_id?: number;
   is_read: boolean;
   created_at: string;
