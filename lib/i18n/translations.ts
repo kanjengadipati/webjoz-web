@@ -1426,6 +1426,8 @@ export interface Translations {
       typeSite: string;
       typeInvitation: string;
       typeSystem: string;
+      viewAll: string;
+      loadMore: string;
     };
     investigate: {
       loadingClustering: string;
@@ -4046,6 +4048,8 @@ export const translations: Record<Locale, Translations> = {
         typeSite: "Situs",
         typeInvitation: "Undangan",
         typeSystem: "Sistem",
+        viewAll: "Lihat semua notifikasi",
+        loadMore: "Muat Lebih Banyak",
       },
       investigate: {
         loadingClustering: "Mengelompokkan event audit yang cocok...",
@@ -6736,6 +6740,8 @@ export const translations: Record<Locale, Translations> = {
         typeSite: "Site",
         typeInvitation: "Invitation",
         typeSystem: "System",
+        viewAll: "View all notifications",
+        loadMore: "Load More",
       },
       investigate: {
         loadingClustering: "Clustering matching audit events...",

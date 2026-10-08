@@ -4,10 +4,9 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useAuthToken } from "@/lib/auth-store";
 import { useRouter } from "next/navigation";
 import {
-  Bell, Megaphone, MessageSquare, ArrowRight, CheckCheck, Loader2,
-  Info, CreditCard, UserPlus, Crown, Globe, UserCheck
+  Bell, ArrowRight, CheckCheck, Loader2,
 } from "lucide-react";
-import { Button, Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
+import { Button, Card, CardHeader, CardTitle } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
 import { usePermissions } from "@/hooks/use-permissions";
@@ -18,28 +17,15 @@ import {
   type NotificationItem
 } from "@/lib/api/notifications";
 import { useUnreadNotifications } from "@/hooks/use-unread-notifications";
+import {
+  TYPE_META,
+  TYPE_LABEL_KEYS,
+  getNotificationLink,
+  localizedNotification,
+  formatRelativeTime,
+} from "@/lib/notifications-ui";
 
-const TYPE_META: Record<string, { icon: React.ElementType; color: string }> = {
-  announcement: { icon: Megaphone, color: "text-blue-600" },
-  lead: { icon: MessageSquare, color: "text-emerald-600" },
-  payment: { icon: CreditCard, color: "text-violet-600" },
-  new_user: { icon: UserPlus, color: "text-sky-600" },
-  plan: { icon: Crown, color: "text-indigo-600" },
-  site: { icon: Globe, color: "text-teal-600" },
-  invitation: { icon: UserCheck, color: "text-pink-600" },
-  system: { icon: Info, color: "text-amber-600" },
-};
-
-const TYPE_LABEL_KEYS: Record<string, string> = {
-  announcement: "dashboard.notifications.typeAnnouncement",
-  lead: "dashboard.notifications.typeLead",
-  payment: "dashboard.notifications.typePayment",
-  new_user: "dashboard.notifications.typeNewUser",
-  plan: "dashboard.notifications.typePlan",
-  site: "dashboard.notifications.typeSite",
-  invitation: "dashboard.notifications.typeInvitation",
-  system: "dashboard.notifications.typeSystem",
-};
+const PAGE_SIZE = 50;
 
 export default function NotificationsPage() {
   const token = useAuthToken();
@@ -51,7 +37,10 @@ export default function NotificationsPage() {
 
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
   const [markingAll, setMarkingAll] = useState(false);
+  const pageRef = useRef(1);
 
   const isAdmin = role === "admin" || role === "superadmin";
 
@@ -59,14 +48,32 @@ export default function NotificationsPage() {
     if (!token) return;
     try {
       setLoading(true);
-      const items = await fetchNotifications(token);
+      const { items, meta } = await fetchNotifications(token, PAGE_SIZE, 1);
       setNotifications(items);
+      pageRef.current = 1;
+      setHasMore(Boolean(meta && meta.page < meta.total_pages));
     } catch {
       pushToast(t("dashboard.notifications.loadFailed"), "error");
     } finally {
       setLoading(false);
     }
   }, [token, pushToast, t]);
+
+  const loadMore = useCallback(async () => {
+    if (!token || loadingMore) return;
+    try {
+      setLoadingMore(true);
+      const nextPage = pageRef.current + 1;
+      const { items, meta } = await fetchNotifications(token, PAGE_SIZE, nextPage);
+      setNotifications((prev) => [...prev, ...items]);
+      pageRef.current = nextPage;
+      setHasMore(Boolean(meta && meta.page < meta.total_pages));
+    } catch {
+      pushToast(t("dashboard.notifications.loadFailed"), "error");
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [token, loadingMore, pushToast, t]);
 
   useEffect(() => {
     void load();
@@ -110,52 +117,11 @@ export default function NotificationsPage() {
     }
   };
 
-  // Role-aware deep links: a notification must never route a user to an
-  // admin-gated page they cannot open. reference_id pins the target row
-  // (site ID for "site" notifications).
-  const getNavLink = (n: NotificationItem): string | null => {
-    switch (n.type) {
-      case "lead":
-        return "/dashboard/leads";
-      case "announcement":
-        return isAdmin ? "/dashboard/admin/announcements" : null;
-      case "payment":
-        return isAdmin ? "/dashboard/admin/payments" : "/dashboard/billing";
-      case "new_user":
-        return isAdmin ? "/dashboard/users" : null;
-      case "plan":
-        return "/dashboard/upgrade";
-      case "site":
-        return n.reference_id ? `/dashboard/sites/${n.reference_id}` : "/dashboard/sites";
-      case "invitation":
-        return "/dashboard/team";
-      default:
-        return null;
-    }
-  };
+  const getNavLink = (n: NotificationItem): string | null => getNotificationLink(n, isAdmin);
 
-  const localized = (n: NotificationItem) => ({
-    title: locale === "en" && n.title_en ? n.title_en : n.title,
-    message: locale === "en" && n.message_en ? n.message_en : n.message,
-  });
+  const localized = (n: NotificationItem) => localizedNotification(n, locale);
 
-  const formatDate = (iso: string) => {
-    try {
-      const d = new Date(iso);
-      const now = new Date();
-      const diffMs = now.getTime() - d.getTime();
-      const diffMin = Math.floor(diffMs / 60000);
-      if (diffMin < 1) return t("dashboard.notifications.justNow");
-      if (diffMin < 60) return t("dashboard.notifications.minutesAgo", undefined, { n: String(diffMin) });
-      const diffHour = Math.floor(diffMin / 60);
-      if (diffHour < 24) return t("dashboard.notifications.hoursAgo", undefined, { n: String(diffHour) });
-      const diffDay = Math.floor(diffHour / 24);
-      if (diffDay < 7) return t("dashboard.notifications.daysAgo", undefined, { n: String(diffDay) });
-      return d.toLocaleDateString(locale === "id" ? "id-ID" : "en-US", { day: "numeric", month: "short" });
-    } catch {
-      return iso;
-    }
-  };
+  const formatDate = (iso: string) => formatRelativeTime(iso, locale, t);
 
   if (loading && notifications.length === 0) {
     return (
@@ -280,6 +246,20 @@ export default function NotificationsPage() {
           );
         })}
       </div>
+      {hasMore && (
+        <div className="p-4 border-t border-border/40 flex justify-center">
+          <Button
+            variant="secondary"
+            size="sm"
+            className="rounded-xl text-xs gap-2 h-9"
+            onClick={() => void loadMore()}
+            disabled={loadingMore}
+          >
+            {loadingMore && <Loader2 className="size-3.5 animate-spin" />}
+            {t("dashboard.notifications.loadMore")}
+          </Button>
+        </div>
+      )}
     </Card>
   );
 }
