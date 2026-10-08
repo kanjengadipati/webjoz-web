@@ -49,9 +49,6 @@ export function mockAllRoutes(page: Page) {
   apiRoute(page, "**/analytics/**", async (route) => {
     await route.fulfill({ status: 200, json: { status: "success", data: { total_pageviews: 0, pageviews_by_date: [] } } });
   });
-  apiRoute(page, "**/notifications/**", async (route) => {
-    await route.fulfill({ status: 200, json: { status: "success", data: { unread_count: 0, items: [] } } });
-  });
   apiRoute(page, "**/health/**", async (route) => {
     await route.fulfill({ status: 200, json: { status: "success", data: { database: "ok", cache: "ok", ai: "ok", version: "0.1.0" } } });
   });
@@ -113,5 +110,21 @@ export function mockAllRoutes(page: Page) {
   mockPaymentRoutes(page);
   mockDomainRoutes(page);
   mockTenantRoutes(page);
+  // One smart handler for every /notifications* URL. Shapes mirror the API:
+  // list -> data: NotificationItem[], unread-count -> data: {count}, PUT -> ack.
+  // Registered after the catch-alls (and last of all) so it always wins.
+  apiRoute(page, "**/notifications**", async (route) => {
+    const url = new URL(route.request().url());
+    const method = route.request().method();
+    if (url.pathname.endsWith("/notifications/unread-count")) {
+      await route.fulfill({ status: 200, json: { status: "success", data: { count: 0 } } });
+      return;
+    }
+    if (method === "PUT") {
+      await route.fulfill({ status: 200, json: { status: "success", message: "OK" } });
+      return;
+    }
+    await route.fulfill({ status: 200, json: { status: "success", data: [] } });
+  });
   mockAdminRoutes(page);
 }

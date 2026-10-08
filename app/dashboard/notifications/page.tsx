@@ -1,15 +1,16 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useAuthToken } from "@/lib/auth-store";
 import { useRouter } from "next/navigation";
 import {
   Bell, Megaphone, MessageSquare, ArrowRight, CheckCheck, Loader2,
-  Info
+  Info, CreditCard, UserPlus, Crown, Globe, UserCheck
 } from "lucide-react";
 import { Button, Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
+import { usePermissions } from "@/hooks/use-permissions";
 import {
   fetchNotifications,
   markNotificationRead,
@@ -21,7 +22,23 @@ import { useUnreadNotifications } from "@/hooks/use-unread-notifications";
 const TYPE_META: Record<string, { icon: React.ElementType; color: string }> = {
   announcement: { icon: Megaphone, color: "text-blue-600" },
   lead: { icon: MessageSquare, color: "text-emerald-600" },
+  payment: { icon: CreditCard, color: "text-violet-600" },
+  new_user: { icon: UserPlus, color: "text-sky-600" },
+  plan: { icon: Crown, color: "text-indigo-600" },
+  site: { icon: Globe, color: "text-teal-600" },
+  invitation: { icon: UserCheck, color: "text-pink-600" },
   system: { icon: Info, color: "text-amber-600" },
+};
+
+const TYPE_LABEL_KEYS: Record<string, string> = {
+  announcement: "dashboard.notifications.typeAnnouncement",
+  lead: "dashboard.notifications.typeLead",
+  payment: "dashboard.notifications.typePayment",
+  new_user: "dashboard.notifications.typeNewUser",
+  plan: "dashboard.notifications.typePlan",
+  site: "dashboard.notifications.typeSite",
+  invitation: "dashboard.notifications.typeInvitation",
+  system: "dashboard.notifications.typeSystem",
 };
 
 export default function NotificationsPage() {
@@ -29,11 +46,14 @@ export default function NotificationsPage() {
   const router = useRouter();
   const { pushToast } = useToast();
   const { t, locale } = useI18n();
+  const { role } = usePermissions();
   const { unreadCount, refresh: refreshCount } = useUnreadNotifications();
 
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [markingAll, setMarkingAll] = useState(false);
+
+  const isAdmin = role === "admin" || role === "superadmin";
 
   const load = useCallback(async () => {
     if (!token) return;
@@ -51,6 +71,16 @@ export default function NotificationsPage() {
   useEffect(() => {
     void load();
   }, [load]);
+
+  // Refetch the list when the unread count rises — a new notification
+  // arrived while this page is open.
+  const prevUnreadRef = useRef(unreadCount);
+  useEffect(() => {
+    if (unreadCount > prevUnreadRef.current) {
+      void load();
+    }
+    prevUnreadRef.current = unreadCount;
+  }, [unreadCount, load]);
 
   const handleMarkRead = async (id: number) => {
     if (!token) return;
@@ -80,11 +110,34 @@ export default function NotificationsPage() {
     }
   };
 
-  const getNavLink = (n: NotificationItem) => {
-    if (n.type === "lead") return "/dashboard/leads";
-    if (n.type === "announcement") return "/dashboard/admin/announcements";
-    return null;
+  // Role-aware deep links: a notification must never route a user to an
+  // admin-gated page they cannot open. reference_id pins the target row
+  // (site ID for "site" notifications).
+  const getNavLink = (n: NotificationItem): string | null => {
+    switch (n.type) {
+      case "lead":
+        return "/dashboard/leads";
+      case "announcement":
+        return isAdmin ? "/dashboard/admin/announcements" : null;
+      case "payment":
+        return isAdmin ? "/dashboard/admin/payments" : "/dashboard/billing";
+      case "new_user":
+        return isAdmin ? "/dashboard/users" : null;
+      case "plan":
+        return "/dashboard/upgrade";
+      case "site":
+        return n.reference_id ? `/dashboard/sites/${n.reference_id}` : "/dashboard/sites";
+      case "invitation":
+        return "/dashboard/team";
+      default:
+        return null;
+    }
   };
+
+  const localized = (n: NotificationItem) => ({
+    title: locale === "en" && n.title_en ? n.title_en : n.title,
+    message: locale === "en" && n.message_en ? n.message_en : n.message,
+  });
 
   const formatDate = (iso: string) => {
     try {
@@ -165,6 +218,7 @@ export default function NotificationsPage() {
           const meta = TYPE_META[n.type] || TYPE_META.system;
           const Icon = meta.icon;
           const link = getNavLink(n);
+          const { title, message } = localized(n);
           return (
             <div
               key={n.id}
@@ -184,10 +238,10 @@ export default function NotificationsPage() {
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
                     <p className={`text-sm leading-snug ${!n.is_read ? "font-bold text-foreground" : "font-medium text-muted-foreground"}`}>
-                      {n.title}
+                      {title}
                     </p>
                     <p className="text-xs text-muted-foreground/70 mt-1.5 line-clamp-2 leading-relaxed">
-                      {n.message}
+                      {message}
                     </p>
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
@@ -213,7 +267,7 @@ export default function NotificationsPage() {
                 </div>
                 <div className="flex items-center gap-2.5 mt-2.5">
                   <span className="text-[10px] text-muted-foreground/50 font-medium uppercase tracking-wider">
-                    {n.type === "announcement" ? t("dashboard.notifications.typeAnnouncement") : n.type === "lead" ? t("dashboard.notifications.typeLead") : t("dashboard.notifications.typeSystem")}
+                    {t(TYPE_LABEL_KEYS[n.type] ?? "dashboard.notifications.typeSystem")}
                   </span>
                   <span className="size-1 rounded-full bg-muted-foreground/20" />
                   <span className="text-[10px] text-muted-foreground/60">{formatDate(n.created_at)}</span>

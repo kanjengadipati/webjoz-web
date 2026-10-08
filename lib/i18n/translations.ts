@@ -1420,6 +1420,11 @@ export interface Translations {
       daysAgo: string;
       typeAnnouncement: string;
       typeLead: string;
+      typePayment: string;
+      typeNewUser: string;
+      typePlan: string;
+      typeSite: string;
+      typeInvitation: string;
       typeSystem: string;
     };
     investigate: {
@@ -4035,6 +4040,11 @@ export const translations: Record<Locale, Translations> = {
         daysAgo: "{n}h yang lalu",
         typeAnnouncement: "Pengumuman",
         typeLead: "Lead",
+        typePayment: "Pembayaran",
+        typeNewUser: "Pengguna Baru",
+        typePlan: "Paket",
+        typeSite: "Situs",
+        typeInvitation: "Undangan",
         typeSystem: "Sistem",
       },
       investigate: {
@@ -6720,6 +6730,11 @@ export const translations: Record<Locale, Translations> = {
         daysAgo: "{n}d ago",
         typeAnnouncement: "Announcement",
         typeLead: "Lead",
+        typePayment: "Payment",
+        typeNewUser: "New User",
+        typePlan: "Plan",
+        typeSite: "Site",
+        typeInvitation: "Invitation",
         typeSystem: "System",
       },
       investigate: {

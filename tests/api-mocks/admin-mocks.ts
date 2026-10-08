@@ -51,13 +51,6 @@ export function mockAdminRoutes(page: Page) {
     }
   });
 
-  page.route("**/notifications", async (route) => {
-    await route.fulfill({
-      status: 200,
-      json: { status: "success", data: { unread_count: 3, items: [{ id: 1, title: "Welcome!", read: false }] } },
-    });
-  });
-
   page.route("**/leads*", async (route) => {
     await route.fulfill({ status: 200, json: { status: "success", data: [] } });
   });
