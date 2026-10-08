@@ -20,6 +20,7 @@ import { logoutCurrentSession } from "@/lib/api";
 import { useActiveTenant } from "@/lib/tenant-store";
 import { useI18n } from "@/lib/i18n/context";
 import { getWhatsAppUrl } from "@/lib/site-config";
+import { NotificationsBell } from "@/components/notifications-bell";
 
 const NAV_LABEL_KEYS: Record<string, string> = {
   overview: "dashboard.nav.overview",
@@ -352,6 +353,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                         const active = pathname === item.href;
                         const Icon = NAV_ICON_MAP[item.icon] ?? LayoutDashboard;
                         const label = t(NAV_LABEL_KEYS[item.id] ?? "", item.label);
+                        const showBadge = item.id === "notifications" && unreadCount > 0;
                         return (
                           <Link
                             key={item.href}
@@ -366,6 +368,11 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                           >
                             <Icon className="size-4 shrink-0" />
                             <span className="truncate">{label}</span>
+                            {showBadge && (
+                              <span className="ml-auto flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-primary text-primary-foreground text-[9px] font-bold leading-none shadow-md shrink-0">
+                                {unreadCount > 99 ? "99+" : unreadCount}
+                              </span>
+                            )}
                           </Link>
                         );
                       })}
@@ -650,6 +657,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   )}
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
+                  <NotificationsBell />
                   {pathname === "/dashboard/sites" && (
                     <Link href="/dashboard/sites/new">
                       <button className="flex items-center gap-2 bg-primary text-primary-foreground hover:brightness-110 active:scale-98 transition-all px-4 py-2.5 rounded-full font-medium text-[13.5px] cursor-pointer shadow-lg shadow-primary/30">

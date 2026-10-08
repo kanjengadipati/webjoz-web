@@ -26,9 +26,22 @@ export interface UnreadCountResponse {
   count: number;
 }
 
-export async function fetchNotifications(token: string, limit = 50, offset = 0): Promise<NotificationItem[]> {
-  const res = await request<NotificationItem[]>(`/notifications?limit=${limit}&offset=${offset}`, {}, token);
-  return res.data || [];
+export interface NotificationListMeta {
+  total: number;
+  page: number;
+  limit: number;
+  total_pages: number;
+}
+
+export interface NotificationList {
+  items: NotificationItem[];
+  meta?: NotificationListMeta;
+}
+
+export async function fetchNotifications(token: string, limit = 50, page = 1): Promise<NotificationList> {
+  const res = await request<NotificationItem[]>(`/notifications?limit=${limit}&page=${page}`, {}, token);
+  const meta = res.meta as NotificationListMeta | undefined;
+  return { items: res.data || [], meta };
 }
 
 export async function fetchUnreadCount(token: string): Promise<number> {
