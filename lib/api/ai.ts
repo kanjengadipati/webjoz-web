@@ -11,7 +11,7 @@ export type ProcessBusinessDescriptionResult = {
   refined_text: string;
   type?: string;
   sub_type?: string;
-  confidence?: string;
+  confidence?: "high" | "low";
 };
 
 export async function processBusinessDescription(rawText: string, businessName?: string, language?: string) {
@@ -30,9 +30,3 @@ export async function processBusinessDescription(rawText: string, businessName?:
 // Backwards compatibility alias
 export const refineTranscript = (transcript: string, businessName?: string, language?: string) =>
   processBusinessDescription(transcript, businessName, language);
-
-export const classifyBusiness = (businessName: string, description: string) =>
-  processBusinessDescription(description, businessName);
-
-
-

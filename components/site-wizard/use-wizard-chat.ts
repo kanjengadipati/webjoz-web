@@ -10,12 +10,17 @@ import type { Message, ChatStage, InferenceResult } from "./types";
 import type { WizardResumeChat } from "./wizard-persistence";
 import { useI18n } from "@/lib/i18n/context";
 import { useToast } from "@/components/toast-provider";
-import { refineTranscript, classifyBusiness, processBusinessDescription } from "@/lib/api/ai";
+import { refineTranscript, processBusinessDescription } from "@/lib/api/ai";
+import { validateClassification, sanitizeClassificationPair } from "./taxonomy";
 import { markMicHintAsSeen } from "./mic-onboarding-hint";
 
-export function useWizardChat(prefill?: { businessType?: string; businessSubType?: string }) {
+export function useWizardChat(prefillInput?: { businessType?: string; businessSubType?: string }) {
   const { t, locale } = useI18n();
   const { pushToast } = useToast();
+  // Guard prefill (URL param galeri): hanya pasangan kanonis yang masuk state.
+  const prefill = prefillInput
+    ? sanitizeClassificationPair(prefillInput.businessType, prefillInput.businessSubType)
+    : prefillInput;
   const initialMessageText = t("dashboard.wizard.initialMessage", INITIAL_MESSAGE);
   const initialMessageWords = useMemo(() => initialMessageText.split(" "), [initialMessageText]);
   const nameAckVariants = (t("dashboard.wizard.nameAckVariants") as unknown as string[]) || NAME_ACK_VARIANTS;
@@ -47,7 +52,6 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   const [awaitingNameConfirm, setAwaitingNameConfirm] = useState(false);
   const [suggestedHint, setSuggestedHint] = useState<{ type?: string; subType?: string; refinedText?: string } | null>(null);
   const [inferenceResult, setInferenceResult] = useState<InferenceResult | null>(null);
-  const [awaitingInferenceConfirm, setAwaitingInferenceConfirm] = useState(false);
   const [typeWasInferred, setTypeWasInferred] = useState(false);
   // Race-condition guard: tracks ongoing background name-analysis prefetch
   const [isPreFetchingName, setIsPreFetchingName] = useState(false);
@@ -75,7 +79,6 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animFrameRef = useRef<number | null>(null);
   const recordedTranscriptRef = useRef<string>("");
-  const sttInferredResultRef = useRef<{ type?: string; subType?: string } | null>(null);
   const isManualStopRef = useRef(false);
   // Stores the background prefetch promise so skip flow can await it
   const prefetchPromiseRef = useRef<Promise<void> | null>(null);
@@ -352,10 +355,11 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
         if (res.data.refined_text) {
           refinedText = res.data.refined_text;
         }
-        if (res.data.type && res.data.sub_type) {
+        const sttValid = validateClassification(res.data.type, res.data.sub_type);
+        if (sttValid?.subType) {
           inferredResult = {
-            type: res.data.type,
-            subType: res.data.sub_type,
+            type: sttValid.type,
+            subType: sttValid.subType,
           };
         }
       }
@@ -629,11 +633,15 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     confirmed: boolean,
     onGenerate: (name: string, type: string, overrides: any) => void
   ) => {
-    setAwaitingInferenceConfirm(false);
     // Use businessType/businessSubType (already set by processDescriptionSubmission)
-    // rather than inferenceResult which may be stale due to React closure
-    const confirmedType = businessType || inferenceResult?.type || "";
-    const confirmedSubType = businessSubType || inferenceResult?.subType || "";
+    // rather than inferenceResult which may be stale due to React closure.
+    // Guard: pasangan tidak-kanonis (snapshot lama) jatuh ke chips manual.
+    const confirmPair = sanitizeClassificationPair(
+      businessType || inferenceResult?.type,
+      businessSubType || inferenceResult?.subType
+    );
+    const confirmedType = confirmPair.businessType;
+    const confirmedSubType = confirmPair.businessSubType;
 
     if (confirmed && confirmedType && confirmedSubType) {
       setBusinessType(confirmedType);
@@ -713,14 +721,17 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       prefetchPromiseRef.current = processBusinessDescription("", capitalized, locale)
         .then((aiRes) => {
           const d = aiRes?.data;
-          if (d && d.confidence === "high" && d.type && d.sub_type) {
-            const aiHint = {
-              type: d.type!.trim(),
-              subType: d.sub_type!.trim(),
-              refinedText: d.refined_text?.trim(),
-            };
-            suggestedHintRef.current = aiHint;
-            setSuggestedHint((prev) => ({ ...prev, ...aiHint }));
+          if (d && d.confidence === "high") {
+            const validHint = validateClassification(d.type, d.sub_type);
+            if (validHint?.subType) {
+              const aiHint = {
+                type: validHint.type,
+                subType: validHint.subType,
+                refinedText: d.refined_text?.trim(),
+              };
+              suggestedHintRef.current = aiHint;
+              setSuggestedHint((prev) => ({ ...prev, ...aiHint }));
+            }
           }
         })
         .catch(() => {})
@@ -789,14 +800,17 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     prefetchPromiseRef.current = processBusinessDescription("", capitalized, locale)
       .then((aiRes) => {
         const d = aiRes?.data;
-        if (d && d.confidence === "high" && d.type && d.sub_type) {
-          const aiHint = {
-            type: d.type!.trim(),
-            subType: d.sub_type!.trim(),
-            refinedText: d.refined_text?.trim(),
-          };
-          suggestedHintRef.current = aiHint;
-          setSuggestedHint((prev) => ({ ...prev, ...aiHint }));
+        if (d && d.confidence === "high") {
+          const validHint = validateClassification(d.type, d.sub_type);
+          if (validHint?.subType) {
+            const aiHint = {
+              type: validHint.type,
+              subType: validHint.subType,
+              refinedText: d.refined_text?.trim(),
+            };
+            suggestedHintRef.current = aiHint;
+            setSuggestedHint((prev) => ({ ...prev, ...aiHint }));
+          }
         }
       })
       .catch(() => {})
@@ -852,21 +866,24 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       try {
         const aiRes = await processBusinessDescription("", businessNameRef.current || businessName, locale);
         const d = aiRes?.data;
-        if (d && d.confidence === "high" && d.type && d.sub_type) {
-          const aiHint = {
-            type: d.type.trim(),
-            subType: d.sub_type.trim(),
-            refinedText: d.refined_text?.trim(),
-          };
-          setSuggestedHint(aiHint);
-          const autoDesc = aiHint.refinedText || generateDescriptionFromBusinessName(businessName, aiHint, locale);
-          const detectedLoc = extractLocationFromDescription(businessName);
-          if (detectedLoc && !serviceArea) {
-            setServiceArea(detectedLoc);
+        if (d && d.confidence === "high") {
+          const validHint = validateClassification(d.type, d.sub_type);
+          if (validHint?.subType) {
+            const aiHint = {
+              type: validHint.type,
+              subType: validHint.subType,
+              refinedText: d.refined_text?.trim(),
+            };
+            setSuggestedHint(aiHint);
+            const autoDesc = aiHint.refinedText || generateDescriptionFromBusinessName(businessName, aiHint, locale);
+            const detectedLoc = extractLocationFromDescription(businessName);
+            if (detectedLoc && !serviceArea) {
+              setServiceArea(detectedLoc);
+            }
+            setIsAnalyzingDescription(false);
+            processDescriptionSubmission(autoDesc, { type: aiHint.type, subType: aiHint.subType });
+            return;
           }
-          setIsAnalyzingDescription(false);
-          processDescriptionSubmission(autoDesc, { type: aiHint.type, subType: aiHint.subType });
-          return;
         }
       } catch (err) {
         console.warn("AI business name inference failed, falling back to manual chips", err);
@@ -912,10 +929,14 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     // Option B: Call backend AI service to refine grammar and classify category.
     // Option C: If AI fails / offline / 429, fall back to local regex & keyword dictionary.
     // =========================================================================
-    if (preInferred?.type && preInferred?.subType) {
+    const preValid =
+      preInferred?.type && preInferred?.subType
+        ? validateClassification(preInferred.type, preInferred.subType)
+        : null;
+    if (preValid?.subType) {
       result = {
-        type: preInferred.type,
-        subType: preInferred.subType,
+        type: preValid.type,
+        subType: preValid.subType,
         confidence: "high",
       };
     } else {
@@ -941,11 +962,12 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
               }
             }
           }
-          if (aiRes.data.type && aiRes.data.type.trim() && aiRes.data.sub_type && aiRes.data.sub_type.trim()) {
+          const aiValid = validateClassification(aiRes.data.type, aiRes.data.sub_type);
+          if (aiValid?.subType) {
             result = {
-              type: aiRes.data.type.trim(),
-              subType: aiRes.data.sub_type.trim(),
-              confidence: "high",
+              type: aiValid.type,
+              subType: aiValid.subType,
+              confidence: aiRes.data.confidence === "high" ? "high" : "low",
             };
           }
         }
@@ -958,8 +980,16 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       // 3B. Fallback: Local dictionary matching if AI was unavailable
       if (!result.type || !result.subType) {
         const localResult = inferTypeFromDescription(val);
-        if (localResult.type) {
-          result = localResult;
+        const localValid =
+          localResult.type && localResult.subType
+            ? validateClassification(localResult.type, localResult.subType)
+            : null;
+        if (localValid?.subType) {
+          result = {
+            type: localValid.type,
+            subType: localValid.subType,
+            confidence: localResult.confidence,
+          };
         }
       }
     }
@@ -977,7 +1007,6 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
       setBusinessType(confirmedType);
       setBusinessSubType(confirmedSubType);
       setTypeWasInferred(true);
-      setAwaitingInferenceConfirm(false);
 
       const doInjectLanguage = (subType: string) => {
         setBusinessSubType(subType);
@@ -1028,21 +1057,6 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
         ]);
       });
     }, 300);
-  };
-
-  const handleConfirmSttReview = (confirmed: boolean, transcriptText: string) => {
-    // Dismiss the stt-review-confirm widget
-    setMessages((prev) => prev.filter((m) => m.widget !== "stt-review-confirm"));
-
-    if (confirmed) {
-      processDescriptionSubmission(transcriptText, sttInferredResultRef.current);
-    } else {
-      setInputValue(transcriptText);
-      setChatStage("description");
-      setTimeout(() => {
-        inputRef.current?.focus();
-      }, 80);
-    }
   };
 
   const handleConfirmName = (confirmed: boolean) => {
@@ -1145,23 +1159,25 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     );
     setInitialWordCount(initialMessageWords.length);
     setBusinessName(snap.businessName ?? "");
-    setBusinessType(snap.businessType ?? "");
-    setBusinessSubType(snap.businessSubType ?? "");
+    // Guard resume: pasangan stale/tidak-kanonis dari localStorage lama
+    // di-drop sampai sub-nya saja (type tetap bila tipenya valid).
+    const restoredPair = sanitizeClassificationPair(snap.businessType, snap.businessSubType);
+    setBusinessType(restoredPair.businessType);
+    setBusinessSubType(restoredPair.businessSubType);
     setDescription(snap.description ?? "");
     setWhatsapp(snap.whatsapp ?? "");
     setServiceArea(snap.serviceArea ?? "");
     setMood(snap.mood ?? "");
     setSiteLanguage(snap.siteLanguage ?? null);
     setAwaitingNameConfirm(!!snap.awaitingNameConfirm);
-    setAwaitingInferenceConfirm(!!snap.awaitingInferenceConfirm);
     setInferenceResult(snap.inferenceResult ?? null);
     setSuggestedHint(snap.suggestedHint ?? null);
     setTypeWasInferred(!!snap.typeWasInferred);
 
     if (snap.chatStage !== "name") hasAskedNameConfirmRef.current = true;
     businessNameRef.current = snap.businessName ?? "";
-    businessTypeRef.current = snap.businessType ?? "";
-    businessSubTypeRef.current = snap.businessSubType ?? "";
+    businessTypeRef.current = restoredPair.businessType;
+    businessSubTypeRef.current = restoredPair.businessSubType;
     descriptionRef.current = snap.description ?? "";
     whatsappRef.current = snap.whatsapp ?? "";
     serviceAreaRef.current = snap.serviceArea ?? "";
@@ -1205,7 +1221,6 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     setAwaitingNameConfirm(false);
     setSuggestedHint(null);
     setInferenceResult(null);
-    setAwaitingInferenceConfirm(false);
     setTypeWasInferred(false);
     setNameMessageId("");
     setDescriptionMessageId("");
@@ -1260,8 +1275,6 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     awaitingNameConfirm,
     suggestedHint,
     inferenceResult,
-    awaitingInferenceConfirm,
-    setAwaitingInferenceConfirm,
     typeWasInferred,
     setTypeWasInferred,
     inferenceAutoConfirmRef,
@@ -1279,7 +1292,6 @@ export function useWizardChat(prefill?: { businessType?: string; businessSubType
     startRecording,
     stopRecording,
     cancelRecording,
-    handleConfirmSttReview,
     // Refs
     inputRef,
     chatEndRef,

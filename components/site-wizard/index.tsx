@@ -84,6 +84,7 @@ import { buildFullContent } from "@/lib/build-full-content";
 import { SiteWizardProps, PreviewData } from "./types";
 import { PENDING_KEY, BUSINESS_TYPES, SUB_TYPES, MOOD_OPTIONS, INITIAL_MESSAGE } from "./constants";
 import { selectTemplate, formatText, generateSubdomain, generateSlug, getTemplatePool, getDynamicDescriptionPlaceholder } from "./helpers";
+import { sanitizeClassificationPair } from "./taxonomy";
 import {
   loadWizardSnapshot,
   saveWizardSnapshot,
@@ -728,6 +729,11 @@ export function SiteWizard({
     overrides: { businessSubType?: string; whatsapp?: string; serviceArea?: string; description?: string; mood?: string; language?: string } = {}
   ) => {
     const nextBusinessSubType = overrides.businessSubType ?? chat.businessSubTypeRef.current;
+    // Guard taksonomi: hanya pasangan {type, subType} kanonis yang boleh
+    // mencapai payload generate — pair stale/tidak-valid jatuh ke type-only.
+    const safePair = sanitizeClassificationPair(bType, nextBusinessSubType);
+    const safeBusinessType = safePair.businessType;
+    const safeBusinessSubType = safePair.businessSubType;
     const nextWhatsapp = overrides.whatsapp ?? chat.whatsappRef.current;
     const nextServiceArea = overrides.serviceArea ?? chat.serviceAreaRef.current;
     const nextDescription = overrides.description ?? chat.descriptionRef.current;
@@ -763,8 +769,8 @@ export function SiteWizard({
 
     chat.syncChatRefs({
       businessName: bName,
-      businessType: bType,
-      businessSubType: nextBusinessSubType,
+      businessType: safeBusinessType,
+      businessSubType: safeBusinessSubType,
       whatsapp: nextWhatsapp,
       serviceArea: nextServiceArea,
       mood: nextMood,
@@ -772,14 +778,14 @@ export function SiteWizard({
     if (nextDescription) chat.descriptionRef.current = nextDescription;
 
     localStorage.setItem(PENDING_KEY, JSON.stringify({
-      businessName: bName, businessType: bType, businessSubType: nextBusinessSubType,
+      businessName: bName, businessType: safeBusinessType, businessSubType: safeBusinessSubType,
       description: nextDescription || "",
       whatsapp: nextWhatsapp || "", service_area: nextServiceArea || "", mood: nextMood || "",
       language: nextLanguage,
     }));
 
     await generate.startStream({
-      business_name: bName, business_type: bType, business_sub_type: nextBusinessSubType || undefined,
+      business_name: bName, business_type: safeBusinessType, business_sub_type: safeBusinessSubType || undefined,
       whatsapp: nextWhatsapp || "", service_area: nextServiceArea || "",
       description: nextDescription || undefined, mood: nextMood || undefined,
       language: nextLanguage,
@@ -992,7 +998,6 @@ export function SiteWizard({
           mood: chat.mood,
           siteLanguage: chat.siteLanguageRef.current ?? chat.siteLanguage ?? null,
           awaitingNameConfirm: chat.awaitingNameConfirm,
-          awaitingInferenceConfirm: chat.awaitingInferenceConfirm,
           inferenceResult: chat.inferenceResult,
           suggestedHint: chat.suggestedHint,
           typeWasInferred: chat.typeWasInferred,
@@ -1015,7 +1020,6 @@ export function SiteWizard({
     chat.mood,
     chat.siteLanguage,
     chat.awaitingNameConfirm,
-    chat.awaitingInferenceConfirm,
     chat.inferenceResult,
     chat.suggestedHint,
     chat.typeWasInferred,
@@ -1044,7 +1048,11 @@ export function SiteWizard({
       preview.streamDoneRef.current = true;
       preview.setStreamDone(true);
       const mood = resumeDraft.chat.mood;
-      const pool = getTemplatePool(resumeDraft.chat.businessType || resumeDraft.chat.businessSubType, mood);
+      const restoredPair = sanitizeClassificationPair(
+        resumeDraft.chat.businessType,
+        resumeDraft.chat.businessSubType
+      );
+      const pool = getTemplatePool(restoredPair.businessType || restoredPair.businessSubType, mood);
       preview.setTemplatePool(pool);
       preview.setTemplatePoolIndex(0);
       device.setMobilePreviewOpen(true);
@@ -1332,7 +1340,6 @@ export function SiteWizard({
                     // regardless of how many chips the user taps before confirming.
                     const doInject = chat.inferenceAutoConfirmRef.current;
                     chat.inferenceAutoConfirmRef.current = null; // cancel auto-timer
-                    chat.setAwaitingInferenceConfirm(false);
                     if (doInject) {
                       doInject(subType);
                     } else {
@@ -1613,49 +1620,6 @@ export function SiteWizard({
                       )}
                     </div>
                   )}
-                </div>
-              );
-            }
-
-            if (m.widget === "stt-review-confirm") {
-              const transcript = m.sttTranscript || "";
-              return (
-                <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-3">
-                  <div className="flex gap-2.5 justify-start">
-                    <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center shrink-0 mt-0.5 text-slate-900 shadow-xs">
-                      <SparkleGenAI className="w-[21px] h-[21px]" />
-                    </div>
-                    <div className="max-w-[90%] space-y-2.5">
-                      <div className="rounded-2xl rounded-tl-sm p-4 text-sm leading-relaxed space-y-3 bg-[#1a1d24] border border-white/10 text-slate-200 shadow-xl">
-                        <div className="flex items-center gap-2 text-slate-200 font-semibold text-xs">
-                          <Mic className="w-4 h-4" />
-                          <span>{t("dashboard.wizard.sttReviewTitle", "Berikut yang saya dengar dari Anda:")}</span>
-                        </div>
-                        <div className="rounded-xl bg-black/30 border border-white/10 p-3 text-slate-300 text-xs sm:text-sm font-medium leading-relaxed italic">
-                          &ldquo;{transcript}&rdquo;
-                        </div>
-                        <p className="text-xs text-slate-300">
-                          {t("dashboard.wizard.sttReviewPrompt", "Apakah sudah sesuai? Anda bisa edit sebelum saya lanjutkan.")}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => chat.handleConfirmSttReview(false, transcript)}
-                          className="flex-1 px-4 py-2 rounded-xl text-xs font-bold border border-white/10 bg-white/5 hover:bg-white/10 text-slate-200 transition-all active:scale-95 text-center cursor-pointer"
-                        >
-                          {t("dashboard.wizard.sttBtnEdit", "Edit")}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => chat.handleConfirmSttReview(true, transcript)}
-                          className="flex-1 px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-900 hover:bg-slate-100 shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all active:scale-95 text-center cursor-pointer"
-                        >
-                          {t("dashboard.wizard.sttBtnConfirm", "Ya, lanjutkan")}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               );
             }
