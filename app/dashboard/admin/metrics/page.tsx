@@ -28,6 +28,7 @@ interface GenerationLog {
   status: string;
   duration_ms: number;
   stage_breakdown: Record<string, number> | null;
+  section_sources: Record<string, string> | null;
   tokens_total: number;
   ai_requests_total: number;
   created_at: string;
@@ -39,6 +40,8 @@ const SOURCE_PARTIAL = 3;
 
 function sourceMeta(source: number): { labelKey: "sourceAI" | "sourcePartial" | "sourceMock"; cls: string } {
   switch (source) {
+    case SOURCE_AI:
+      return { labelKey: "sourceAI", cls: "bg-emerald-500/10 text-emerald-600" };
     case SOURCE_PARTIAL:
       return { labelKey: "sourcePartial", cls: "bg-amber-500/10 text-amber-600" };
     case SOURCE_MOCK:
@@ -46,6 +49,12 @@ function sourceMeta(source: number): { labelKey: "sourceAI" | "sourcePartial" | 
     default:
       return { labelKey: "sourceAI", cls: "bg-emerald-500/10 text-emerald-600" };
   }
+}
+
+function sourceMetaFromStr(source: string): { labelKey: "sourceAI" | "sourcePartial" | "sourceMock"; cls: string } {
+  if (source === "mock_fallback") return { labelKey: "sourceMock", cls: "bg-slate-500/10 text-slate-600" };
+  if (source === "partial_mock") return { labelKey: "sourcePartial", cls: "bg-amber-500/10 text-amber-600" };
+  return { labelKey: "sourceAI", cls: "bg-emerald-500/10 text-emerald-600" };
 }
 
 interface SummaryMetrics {
@@ -320,6 +329,21 @@ export default function AdminMetricsPage() {
                               {" · "}
                               {t("dashboard.adminMetrics.tokens", undefined, { count: String(log.tokens_total) })}
                             </p>
+                          )}
+                          {log.section_sources && Object.keys(log.section_sources).length > 0 && (
+                            <div className="flex flex-wrap gap-1">
+                              {Object.entries(log.section_sources).map(([sec, src]) => {
+                                const meta = sourceMetaFromStr(src);
+                                return (
+                                  <span key={sec} className="inline-flex items-center gap-1 rounded-md bg-muted/70 px-1.5 py-0.5 text-[9px] text-muted-foreground">
+                                    <span className="font-medium">{sec}</span>
+                                    <span className={`font-semibold px-1 rounded ${meta.cls}`}>
+                                      {t(`dashboard.adminMetrics.${meta.labelKey}`)}
+                                    </span>
+                                  </span>
+                                );
+                              })}
+                            </div>
                           )}
                           <p className="text-[10px] text-muted-foreground truncate">{new Date(log.created_at).toLocaleString()}</p>
                         </div>
