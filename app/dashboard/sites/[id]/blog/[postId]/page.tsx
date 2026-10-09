@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
-import { Button, Input } from "@/components/ui";
+import { Button, Input, Switch } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { SiteSubNav } from "@/components/site-sub-nav";
 import FileUpload from "@/components/file-upload";
@@ -433,15 +433,12 @@ export default function EditBlogPostPage() {
               <p className="text-[10px] text-muted-foreground/60">{t("dashboard.sitesBlogPost.noindexDesc")}</p>
             </div>
             {isPremium ? (
-              <button
-                type="button"
-                role="switch"
-                aria-checked={noindex}
-                onClick={() => { setNoindex(!noindex); markDirty(); }}
-                className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors ${noindex ? "bg-primary" : "bg-white/20"}`}
-              >
-                <span className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow-sm transition-transform ${noindex ? "translate-x-4" : "translate-x-1"}`} />
-              </button>
+              <Switch
+                size="sm"
+                checked={noindex}
+                aria-label={t("dashboard.sitesBlogPost.noindex")}
+                onCheckedChange={(checked) => { setNoindex(checked); markDirty(); }}
+              />
             ) : (
               <button
                 type="button"

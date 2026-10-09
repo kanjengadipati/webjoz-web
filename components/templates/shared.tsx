@@ -1384,7 +1384,7 @@ function MenuCatalogCard({
   const [activeImgIdx, setActiveImgIdx] = useState(0);
 
   const displayPrice = itemPriceDisplay || itemPrice;
-  const showPrice = displayPrice && !isPlaceholderPrice(displayPrice);
+  const showPrice = (displayPrice && !isPlaceholderPrice(displayPrice)) || Boolean(isEditorMode);
   const hasPromo = typeof itemPromoPriceAmount === "number" && itemPromoPriceAmount > 0 &&
     (typeof itemPriceAmount !== "number" || itemPriceAmount <= 0 || itemPromoPriceAmount < itemPriceAmount);
   const isOutOfStock = is_available === false;
@@ -1582,7 +1582,7 @@ function MenuCatalogCard({
               <span className="line-through opacity-45 text-xs">{displayPrice}</span>
             </div>
           ) : (
-            <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".price" : ""} value={displayPrice ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className={priceClassName} style={{ ...priceStyle, marginTop: "0.375rem", display: "inline-block" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+            <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".price" : ""} value={displayPrice ?? ""} placeholder="+ Harga" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className={priceClassName} style={{ ...priceStyle, marginTop: "0.375rem", display: "inline-block" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
           )
         )}
       </div>
@@ -1594,7 +1594,7 @@ function MenuCatalogCard({
             <span className="line-through opacity-45 text-xs">{displayPrice}</span>
           </div>
         ) : (
-          <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".price" : ""} value={displayPrice ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className={priceClassName} style={priceStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+          <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".price" : ""} value={displayPrice ?? ""} placeholder="+ Harga" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className={priceClassName} style={priceStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
         )
       )}
     </div>
@@ -1605,24 +1605,22 @@ function MenuCatalogCard({
     ? itemDescription.replace(/\n+/g, " ").substring(0, 80).trim() + "..."
     : itemDescription;
 
-  const descriptionElement = itemDescription && (
-    (editSection && pathBase && isEditorMode) ? (
-      <InlineText section={editSection} fieldKey={pathBase + ".description"} value={itemDescription ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={descriptionClassName} style={{ ...descriptionStyle, whiteSpace: "pre-wrap" }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-    ) : (
-      <p className={descriptionClassName} style={{ ...descriptionStyle, whiteSpace: "pre-wrap" }}>
-        {displayDescription}
-        {isLong && (
-          <button
-            type="button"
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="ml-1 text-[11px] font-semibold underline text-slate-500 hover:text-slate-850 dark:text-slate-400 dark:hover:text-slate-200 transition-colors inline-block focus:outline-none cursor-pointer"
-          >
-            {isExpanded ? "Sembunyikan" : "Selengkapnya"}
-          </button>
-        )}
-      </p>
-    )
-  );
+  const descriptionElement = (editSection && pathBase && isEditorMode) ? (
+    <InlineText section={editSection} fieldKey={pathBase + ".description"} value={itemDescription ?? ""} placeholder="+ Deskripsi" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={descriptionClassName} style={{ ...descriptionStyle, whiteSpace: "pre-wrap" }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+  ) : itemDescription ? (
+    <p className={descriptionClassName} style={{ ...descriptionStyle, whiteSpace: "pre-wrap" }}>
+      {displayDescription}
+      {isLong && (
+        <button
+          type="button"
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="ml-1 text-[11px] font-semibold underline text-slate-500 hover:text-slate-850 dark:text-slate-400 dark:hover:text-slate-200 transition-colors inline-block focus:outline-none cursor-pointer"
+        >
+          {isExpanded ? "Sembunyikan" : "Selengkapnya"}
+        </button>
+      )}
+    </p>
+  ) : null;
 
   const tagsAndPlatforms = (
     <>

@@ -21,3 +21,4 @@ export { StatusBadge } from "./status-badge";
 export { SubtleStat } from "./subtle-stat";
 export { DatePicker } from "./date-picker";
 export { CustomSelect, type CustomSelectOption, type CustomSelectProps } from "./custom-select";
+export { Switch, type SwitchProps } from "./switch";

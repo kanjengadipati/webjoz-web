@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { PhoneNumberInput, isValidPhoneNumber } from "@/components/phone-number-input";
 import { Can } from "@/components/can";
-import { Badge, Button, Card, CardContent, CardHeader, EmptyState, Input, Label, SectionTitle, SkeletonBlock, StatusBadge, CustomSelect } from "@/components/ui";
+import { Badge, Button, Card, CardContent, CardHeader, EmptyState, Input, Label, SectionTitle, SkeletonBlock, StatusBadge, CustomSelect, Switch } from "@/components/ui";
 import { useToast } from "@/components/toast-provider";
 import { changePassword, fetchProfile, updateProfile } from "@/lib/api";
 import { LinkAccountCard } from "@/components/dashboard/link-account-card";
@@ -350,25 +350,12 @@ function NotificationsTab() {
                       </div>
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={enabled}
+                  <Switch
+                    checked={enabled}
                     aria-label={label}
                     onClick={() => void toggle(pref.type)}
                     disabled={savingType === pref.type}
-                    className={cn(
-                      "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors disabled:opacity-60",
-                      enabled ? "bg-primary" : "bg-muted-foreground/30"
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        "inline-block size-5 rounded-full bg-white shadow-sm transition-transform",
-                        enabled ? "translate-x-[22px]" : "translate-x-0.5"
-                      )}
-                    />
-                  </button>
+                  />
                 </div>
               );
             })}
