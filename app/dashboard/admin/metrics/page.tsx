@@ -21,11 +21,31 @@ interface GenerationLog {
   request_id: string;
   tenant_id: number | null;
   business_type: string;
+  template_id: string;
+  hero_style: string;
+  generation_source: number;
   provider: string;
   status: string;
   duration_ms: number;
   stage_breakdown: Record<string, number> | null;
+  tokens_total: number;
+  ai_requests_total: number;
   created_at: string;
+}
+
+const SOURCE_AI = 1;
+const SOURCE_MOCK = 2;
+const SOURCE_PARTIAL = 3;
+
+function sourceMeta(source: number): { labelKey: "sourceAI" | "sourcePartial" | "sourceMock"; cls: string } {
+  switch (source) {
+    case SOURCE_PARTIAL:
+      return { labelKey: "sourcePartial", cls: "bg-amber-500/10 text-amber-600" };
+    case SOURCE_MOCK:
+      return { labelKey: "sourceMock", cls: "bg-slate-500/10 text-slate-600" };
+    default:
+      return { labelKey: "sourceAI", cls: "bg-emerald-500/10 text-emerald-600" };
+  }
 }
 
 interface SummaryMetrics {
@@ -271,22 +291,40 @@ export default function AdminMetricsPage() {
                   <p className="text-xs text-muted-foreground py-2">{t("dashboard.adminMetrics.noRequestsLogged")}</p>
                 ) : (
                   <div className="space-y-2 max-h-64 overflow-y-auto">
-                    {recentLogs.map((log, idx) => (
-                      <div key={log.id || `log-${idx}`} className="flex items-center justify-between gap-2 py-1">
-                        <div className="min-w-0 flex-1">
-                          <p className="text-xs font-medium truncate">{log.business_type || log.request_id}</p>
-                          <p className="text-[10px] text-muted-foreground">{new Date(log.created_at).toLocaleString()}</p>
+                    {recentLogs.map((log, idx) => {
+                      const src = sourceMeta(log.generation_source);
+                      return (
+                        <div key={log.id || `log-${idx}`} className="rounded-lg border border-border/50 px-2.5 py-2 space-y-1.5">
+                          <div className="flex items-center gap-2">
+                            <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded shrink-0 ${src.cls}`}>
+                              {t(`dashboard.adminMetrics.${src.labelKey}`)}
+                            </span>
+                            <p className="text-xs font-medium truncate">{log.business_type || log.request_id}</p>
+                            <span className={`ml-auto text-[10px] font-medium px-1.5 py-0.5 rounded shrink-0 ${
+                              log.status === "ok" ? "bg-green-500/10 text-green-600" : "bg-red-500/10 text-red-600"
+                            }`}>
+                              {log.status}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between gap-2 text-[10px] text-muted-foreground">
+                            <span className="truncate">
+                              {log.provider}
+                              {log.template_id ? ` · ${log.template_id}` : ""}
+                              {log.hero_style ? ` · ${log.hero_style}` : ""}
+                            </span>
+                            <span className="shrink-0 font-mono">{log.duration_ms}ms</span>
+                          </div>
+                          {(log.ai_requests_total > 0 || log.tokens_total > 0) && (
+                            <p className="text-[10px] text-muted-foreground">
+                              {t("dashboard.adminMetrics.aiRequests", undefined, { count: String(log.ai_requests_total) })}
+                              {" · "}
+                              {t("dashboard.adminMetrics.tokens", undefined, { count: String(log.tokens_total) })}
+                            </p>
+                          )}
+                          <p className="text-[10px] text-muted-foreground truncate">{new Date(log.created_at).toLocaleString()}</p>
                         </div>
-                        <div className="flex items-center gap-2 shrink-0">
-                          <span className="text-xs font-semibold">{log.duration_ms}ms</span>
-                          <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${
-                            log.status === "ok" ? "bg-green-500/10 text-green-600" : "bg-red-500/10 text-red-600"
-                          }`}>
-                            {log.status}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </CardContent>
