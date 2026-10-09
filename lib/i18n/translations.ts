@@ -2384,6 +2384,7 @@ export interface Translations {
       descriptionInferenceHigh: string;
       descriptionInferenceMedium: string;
       descriptionInferenceNone: string;
+      descriptionAiFailed: string;
       analyzingDescription: string;
       descriptionRefinedIntro: string;
       selectMoodPrompt: string;
@@ -5026,6 +5027,7 @@ export const translations: Record<Locale, Translations> = {
         descriptionInferenceHigh: "Sepertinya Anda cocok di kategori **{subType}**. Langsung buat website-nya?",
         descriptionInferenceMedium: "Sepertinya bidang Anda adalah {type}. Bisa pilih yang lebih spesifik?",
         descriptionInferenceNone: "Baik, silakan pilih kategori Anda:",
+        descriptionAiFailed: "Koneksi ke AI bermasalah. Silakan pilih kategori Anda:",
         analyzingDescription: "Menganalisis profil Anda...",
         descriptionRefinedIntro: "Siap! Deskripsi Anda:",
         selectMoodPrompt: "Website Anda nanti mau tampil seperti apa?",
@@ -7727,6 +7729,7 @@ export const translations: Record<Locale, Translations> = {
         descriptionInferenceHigh: "Looks like you fit into the **{subType}** category. Shall we create the website?",
         descriptionInferenceMedium: "Looks like your field is {type}. Could you pick a more specific category?",
         descriptionInferenceNone: "Alright, please select your category:",
+        descriptionAiFailed: "AI is having trouble. Please select your category manually:",
         analyzingDescription: "Analyzing your profile...",
         descriptionRefinedIntro: "Got it! Here's your summary:",
         selectMoodPrompt: "How do you want your website to look?",

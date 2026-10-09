@@ -2,10 +2,10 @@
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from "react";
-import { INITIAL_MESSAGE, NAME_ACK_VARIANTS, NAME_CONFIRM_VARIANTS, DESCRIPTION_PROMPT, DESCRIPTION_SKIP_KEYWORD, DESCRIPTION_INFERENCE_HIGH, DESCRIPTION_INFERENCE_MEDIUM, DESCRIPTION_INFERENCE_NONE, MOOD_OPTIONS } from "./constants";
+import { INITIAL_MESSAGE, NAME_ACK_VARIANTS, NAME_CONFIRM_VARIANTS, DESCRIPTION_PROMPT, DESCRIPTION_SKIP_KEYWORD, DESCRIPTION_INFERENCE_HIGH, DESCRIPTION_INFERENCE_MEDIUM, DESCRIPTION_INFERENCE_NONE, DESCRIPTION_AI_FAILED, MOOD_OPTIONS } from "./constants";
 
 const INITIAL_MESSAGE_WORDS = INITIAL_MESSAGE.split(" ");
-import { capitalizeWords, pickVariant, isLikelyGibberish, suggestTypeFromName, inferTypeFromDescription, extractLocationFromDescription, generateDescriptionFromBusinessName } from "./helpers";
+import { capitalizeWords, pickVariant, isLikelyGibberish, extractLocationFromDescription, generateDescriptionFromBusinessName } from "./helpers";
 import type { Message, ChatStage, InferenceResult } from "./types";
 import type { WizardResumeChat } from "./wizard-persistence";
 import { useI18n } from "@/lib/i18n/context";
@@ -711,9 +711,6 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
       setMessages((prev) => [...prev, { id: msgId, sender: "user", text: val }]);
 
       const flagged = isLikelyGibberish(val);
-      const hint = suggestTypeFromName(capitalized);
-      suggestedHintRef.current = hint;
-      setSuggestedHint(hint);
 
       // Pre-fetch AI analysis of business name in background so skip/inference is instant.
       // We store the promise in prefetchPromiseRef so the skip-flow can await it.
@@ -791,9 +788,6 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setNameMessageId(msgId);
     setBusinessName(capitalized);
     setMessages((prev) => [...prev, { id: msgId, sender: "user", text: sampleName }]);
-    const hint = suggestTypeFromName(capitalized);
-    suggestedHintRef.current = hint;
-    setSuggestedHint(hint);
 
     // Pre-fetch AI analysis of business name in background so skip/inference is instant.
     setIsPreFetchingName(true);
@@ -848,9 +842,9 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
       // ────────────────────────────────────────────────────────────────────────
 
       // Use suggestedHintRef (always fresh) — avoids stale closure from state capture
-      let nameHint = suggestedHintRef.current || suggestTypeFromName(businessName);
+      const nameHint = suggestedHintRef.current;
 
-      // If we already have a high-confidence category hint (from local dictionary or pre-fetched AI)
+      // If we already have a high-confidence category hint (from pre-fetched AI)
       if (nameHint?.type && nameHint?.subType) {
         const autoDesc = nameHint.refinedText || generateDescriptionFromBusinessName(businessName, nameHint, locale);
         const detectedLoc = extractLocationFromDescription(businessName);
@@ -922,12 +916,13 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     }
 
     let result: InferenceResult = { confidence: "low" };
+    let aiFailed = false;
 
     // =========================================================================
     // STEP 3: TAXONOMY CLASSIFICATION & COPYWRITING REFINEMENT
     // Option A: If pre-inferred (e.g. from descriptive name or voice STT), use it directly.
     // Option B: Call backend AI service to refine grammar and classify category.
-    // Option C: If AI fails / offline / 429, fall back to local regex & keyword dictionary.
+    // Classification is server-side only — the client never guesses categories.
     // =========================================================================
     const preValid =
       preInferred?.type && preInferred?.subType
@@ -972,25 +967,10 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
           }
         }
       } catch (err) {
-        console.warn("Primary AI classification failed, falling back to local dictionary", err);
+        console.warn("AI classification failed, showing manual category selection", err);
+        aiFailed = true;
       } finally {
         setIsAnalyzingDescription(false);
-      }
-
-      // 3B. Fallback: Local dictionary matching if AI was unavailable
-      if (!result.type || !result.subType) {
-        const localResult = inferTypeFromDescription(val);
-        const localValid =
-          localResult.type && localResult.subType
-            ? validateClassification(localResult.type, localResult.subType)
-            : null;
-        if (localValid?.subType) {
-          result = {
-            type: localValid.type,
-            subType: localValid.subType,
-            confidence: localResult.confidence,
-          };
-        }
       }
     }
 
@@ -1050,7 +1030,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setInferenceResult({ confidence: "low" } as InferenceResult);
     setChatStage("type");
     setTimeout(() => {
-      typeMessage(t("dashboard.wizard.descriptionInferenceNone", DESCRIPTION_INFERENCE_NONE), () => {
+      typeMessage(aiFailed ? t("dashboard.wizard.descriptionAiFailed", DESCRIPTION_AI_FAILED) : t("dashboard.wizard.descriptionInferenceNone", DESCRIPTION_INFERENCE_NONE), () => {
         setMessages((prev) => [
           ...prev,
           { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
