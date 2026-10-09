@@ -1123,6 +1123,11 @@ export interface Translations {
       recentRequests: string;
       recentRequestsDesc: string;
       noRequestsLogged: string;
+      sourceAI: string;
+      sourcePartial: string;
+      sourceMock: string;
+      aiRequests: string;
+      tokens: string;
     };
     adminTemplates: {
       seedLoadFailed: string;
@@ -3755,6 +3760,11 @@ export const translations: Record<Locale, Translations> = {
         recentRequests: "Request Terbaru (10 terakhir)",
         recentRequestsDesc: "Percobaan pembuatan terbaru",
         noRequestsLogged: "Belum ada request yang tercatat.",
+        sourceAI: "AI",
+        sourcePartial: "Partial",
+        sourceMock: "Mockengine",
+        aiRequests: "{count} panggilan AI",
+        tokens: "{count} token",
       },
       adminTemplates: {
         seedLoadFailed: "Gagal mengambil data design token seeds",
@@ -6457,6 +6467,11 @@ export const translations: Record<Locale, Translations> = {
         recentRequests: "Recent Requests (last 10)",
         recentRequestsDesc: "Latest generation attempts",
         noRequestsLogged: "No requests logged yet.",
+        sourceAI: "AI",
+        sourcePartial: "Partial",
+        sourceMock: "Mockengine",
+        aiRequests: "{count} AI calls",
+        tokens: "{count} tokens",
       },
       adminTemplates: {
         seedLoadFailed: "Failed to fetch design token seeds",
