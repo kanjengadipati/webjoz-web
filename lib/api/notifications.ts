@@ -56,3 +56,25 @@ export async function markNotificationRead(token: string, id: number): Promise<v
 export async function markAllNotificationsRead(token: string): Promise<void> {
   await request("/notifications/read-all", { method: "PUT" }, token);
 }
+
+export interface NotificationPreference {
+  type: string;
+  enabled: boolean;
+}
+
+export async function fetchNotificationPreferences(token: string): Promise<NotificationPreference[]> {
+  const res = await request<NotificationPreference[]>("/notifications/preferences", {}, token);
+  return res.data || [];
+}
+
+export async function updateNotificationPreferences(
+  token: string,
+  preferences: NotificationPreference[]
+): Promise<NotificationPreference[]> {
+  const res = await request<NotificationPreference[]>(
+    "/notifications/preferences",
+    { method: "PUT", body: JSON.stringify({ preferences }) },
+    token
+  );
+  return res.data || [];
+}

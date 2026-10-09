@@ -120,6 +120,19 @@ export function mockAllRoutes(page: Page) {
       await route.fulfill({ status: 200, json: { status: "success", data: { count: 0 } } });
       return;
     }
+    if (url.pathname.endsWith("/notifications/preferences")) {
+      const types = ["announcement", "lead", "payment", "new_user", "plan", "site", "invitation"];
+      let overrides = new Map<string, boolean>();
+      if (method === "PUT") {
+        const body = route.request().postDataJSON() as { preferences?: { type: string; enabled: boolean }[] } | null;
+        overrides = new Map((body?.preferences ?? []).map((p) => [p.type, p.enabled]));
+      }
+      await route.fulfill({
+        status: 200,
+        json: { status: "success", data: types.map((type) => ({ type, enabled: overrides.get(type) ?? true })) },
+      });
+      return;
+    }
     if (method === "PUT") {
       await route.fulfill({ status: 200, json: { status: "success", message: "OK" } });
       return;
