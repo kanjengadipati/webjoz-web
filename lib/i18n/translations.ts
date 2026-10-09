@@ -833,6 +833,15 @@ export interface Translations {
       tabPermissions: string;
       tabLogs: string;
       tabInvestigate: string;
+      tabNotifications: string;
+      notifTitle: string;
+      notifEyebrow: string;
+      notifDesc: string;
+      notifOn: string;
+      notifOff: string;
+      notifSaved: string;
+      notifSaveFailed: string;
+      notifFailedLoad: string;
       groupAccount: string;
       groupAdmin: string;
       profileFailedLoad: string;
@@ -3450,6 +3459,15 @@ export const translations: Record<Locale, Translations> = {
         tabPermissions: "Izin Role",
         tabLogs: "Audit Logs",
         tabInvestigate: "AI Investigator",
+        tabNotifications: "Notifikasi",
+        notifTitle: "Preferensi Notifikasi",
+        notifEyebrow: "Notifikasi",
+        notifDesc: "Pilih jenis notifikasi yang ingin Anda terima. Notifikasi yang dimatikan tidak akan dikirim ke lonceng Anda.",
+        notifOn: "Aktif",
+        notifOff: "Nonaktif",
+        notifSaved: "Preferensi notifikasi disimpan",
+        notifSaveFailed: "Gagal menyimpan preferensi notifikasi",
+        notifFailedLoad: "Gagal memuat preferensi notifikasi",
         groupAccount: "Akun",
         groupAdmin: "Admin Sistem",
         profileFailedLoad: "Gagal memuat profil",
@@ -6142,6 +6160,15 @@ export const translations: Record<Locale, Translations> = {
         tabPermissions: "Role Permissions",
         tabLogs: "Audit Logs",
         tabInvestigate: "AI Investigator",
+        tabNotifications: "Notifications",
+        notifTitle: "Notification Preferences",
+        notifEyebrow: "Notifications",
+        notifDesc: "Choose which types of notifications you want to receive. Disabled types will not be sent to your bell.",
+        notifOn: "On",
+        notifOff: "Off",
+        notifSaved: "Notification preferences saved",
+        notifSaveFailed: "Failed to save notification preferences",
+        notifFailedLoad: "Failed to load notification preferences",
         groupAccount: "Account",
         groupAdmin: "System Admin",
         profileFailedLoad: "Failed to load profile",

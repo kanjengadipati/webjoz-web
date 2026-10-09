@@ -15,6 +15,8 @@ import { deleteUser, fetchUsers, updateUser } from "@/lib/api";
 import { fetchRoles, fetchAllPermissions, fetchRolePermissions, updateRolePermissions } from "@/lib/api";
 import { clearAuthSession, useAuthToken } from "@/lib/auth-store";
 import { usePermissions } from "@/hooks/use-permissions";
+import { fetchNotificationPreferences, updateNotificationPreferences, type NotificationPreference } from "@/lib/api";
+import { TYPE_META, TYPE_LABEL_KEYS } from "@/lib/notifications-ui";
 import { SectionState } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n/context";
@@ -22,7 +24,7 @@ import type { AuditLog, InvestigationHistory, InvestigationResult, Profile, Sess
 
 // ─── Tab definitions ──────────────────────────────────────────────────────────
 
-type TabId = "profile" | "security" | "devices" | "users" | "permissions" | "logs" | "investigate";
+type TabId = "profile" | "security" | "notifications" | "devices" | "users" | "permissions" | "logs" | "investigate";
 
 interface TabDef {
   id: TabId;
@@ -34,6 +36,7 @@ interface TabDef {
 const TABS: TabDef[] = [
   { id: "profile", labelKey: "dashboard.settings.tabProfile", group: "personal" },
   { id: "security", labelKey: "dashboard.settings.tabSecurity", group: "personal" },
+  { id: "notifications", labelKey: "dashboard.settings.tabNotifications", group: "personal" },
   { id: "devices", labelKey: "dashboard.settings.tabDevices", group: "admin", permission: "dashboard.view" },
   { id: "users", labelKey: "dashboard.settings.tabUsers", group: "admin", permission: "permission.read" },
   { id: "permissions", labelKey: "dashboard.settings.tabPermissions", group: "admin", permission: "role.update_permissions" },
@@ -103,6 +106,7 @@ export default function SettingsPage() {
       <div className="min-w-0 animate-in fade-in slide-in-from-bottom-2 duration-300">
         {activeTab === "profile" && <ProfileTab />}
         {activeTab === "security" && <SecurityTab />}
+        {activeTab === "notifications" && <NotificationsTab />}
         {activeTab === "devices" && <DevicesTab />}
         {activeTab === "users" && <UsersTab />}
         {activeTab === "permissions" && <PermissionsTab />}
@@ -255,6 +259,121 @@ function SecurityTab() {
           </div>
           <Button type="submit" variant="secondary">{t("dashboard.settings.updatePassword")}</Button>
         </form>
+      </CardContent>
+    </Card>
+  );
+}
+
+// ─── Tab: Preferensi Notifikasi ──────────────────────────────────────────────
+
+function NotificationsTab() {
+  const token = useAuthToken();
+  const { pushToast } = useToast();
+  const { t } = useI18n();
+  const [prefs, setPrefs] = useState<NotificationPreference[]>([]);
+  const [state, setState] = useState<SectionState>(SectionState.IDLE);
+  const [savingType, setSavingType] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    if (!token) return;
+    setState(SectionState.LOADING);
+    try {
+      const data = await fetchNotificationPreferences(token);
+      setPrefs(data);
+      setState(SectionState.SUCCESS);
+    } catch (error) {
+      setState(SectionState.ERROR);
+      pushToast(error instanceof Error ? error.message : t("dashboard.settings.notifFailedLoad"), "error");
+    }
+  }, [pushToast, token, t]);
+
+  useEffect(() => {
+    if (!token || state !== SectionState.IDLE) return;
+    const timeout = window.setTimeout(() => { void load(); }, 0);
+    return () => window.clearTimeout(timeout);
+  }, [load, state, token]);
+
+  async function toggle(notifType: string) {
+    if (!token || savingType) return;
+    const current = prefs.find((p) => p.type === notifType);
+    const next = !(current?.enabled ?? true);
+    const prev = prefs;
+    setPrefs((c) => c.map((p) => (p.type === notifType ? { ...p, enabled: next } : p)));
+    setSavingType(notifType);
+    try {
+      await updateNotificationPreferences(token, [{ type: notifType, enabled: next }]);
+      pushToast(t("dashboard.settings.notifSaved"), "success");
+    } catch (error) {
+      setPrefs(prev);
+      pushToast(error instanceof Error ? error.message : t("dashboard.settings.notifSaveFailed"), "error");
+    } finally {
+      setSavingType(null);
+    }
+  }
+
+  return (
+    <Card>
+      <CardHeader className="border-b border-border/60">
+        <SectionTitle eyebrow={t("dashboard.settings.notifEyebrow")} title={t("dashboard.settings.notifTitle")} />
+      </CardHeader>
+      <CardContent className="space-y-5 pt-6">
+        <p className="max-w-2xl text-sm text-muted-foreground">{t("dashboard.settings.notifDesc")}</p>
+
+        {state === SectionState.LOADING ? (
+          <div className="grid gap-3">
+            <SkeletonBlock className="h-16" />
+            <SkeletonBlock className="h-16" />
+            <SkeletonBlock className="h-16" />
+          </div>
+        ) : prefs.length === 0 ? (
+          <EmptyState text={t("dashboard.settings.notifFailedLoad")} />
+        ) : (
+          <div className="grid gap-3">
+            {prefs.map((pref) => {
+              const meta = TYPE_META[pref.type] || TYPE_META.system;
+              const Icon = meta.icon;
+              const enabled = pref.enabled;
+              const label = t(TYPE_LABEL_KEYS[pref.type] ?? "dashboard.notifications.typeSystem");
+              return (
+                <div
+                  key={pref.type}
+                  className="flex items-center justify-between gap-4 rounded-2xl border border-border/70 bg-muted/30 px-5 py-4"
+                >
+                  <div className="flex min-w-0 items-center gap-3">
+                    <div className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-border/60 bg-background">
+                      <Icon className={cn("size-5", meta.color)} />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="truncate text-sm font-bold">{label}</div>
+                      <div className="text-[11px] text-muted-foreground">
+                        {enabled ? t("dashboard.settings.notifOn") : t("dashboard.settings.notifOff")}
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={enabled}
+                    aria-label={label}
+                    onClick={() => void toggle(pref.type)}
+                    disabled={savingType === pref.type}
+                    className={cn(
+                      "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors disabled:opacity-60",
+                      enabled ? "bg-primary" : "bg-muted-foreground/30"
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "inline-block size-5 rounded-full bg-white shadow-sm transition-transform",
+                        enabled ? "translate-x-[22px]" : "translate-x-0.5"
+                      )}
+                    />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </CardContent>
     </Card>
   );
