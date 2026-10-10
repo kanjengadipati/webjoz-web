@@ -17,6 +17,7 @@ import HeroPersonalBillboard from "./personal-billboard";
 import HeroPortraitShowcase from "./portrait-showcase";
 import HeroWorkPreviewStrip from "./work-preview-strip";
 import HeroChronologyBadge from "./chronology-badge";
+import HeroImageCarousel from "./image-carousel";
 
 const variants: Record<string, ComponentType<HeroVariantProps>> = {
   // Original 4
@@ -24,6 +25,8 @@ const variants: Record<string, ComponentType<HeroVariantProps>> = {
   split: HeroSplit,
   minimal: HeroMinimal,
   "full-bleed": HeroFullBleed,
+  "image-carousel": HeroImageCarousel,
+  carousel: HeroImageCarousel,
   // New 6
   "minimalist-elegant": HeroMinimalistElegant,
   "tech-saas": HeroTechSaaS,
