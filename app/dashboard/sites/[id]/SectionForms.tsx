@@ -14,6 +14,7 @@ import { getEnabledMapTiles } from "@/lib/design-assets-config";
 import { SocialPlatformSelect, SOCIAL_PLATFORMS, SocialIcon } from "@/components/sections/social-platforms";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
+import { CustomSelect } from "@/components/ui/custom-select";
 
 const ALL_MAP_TILES = [
   { key: "default", label: "OSM" },
@@ -724,16 +725,18 @@ export default function SectionForms({
           {methods.map((method, idx) => (
             <div key={idx} className="rounded-md border border-border bg-muted/20 p-2 space-y-1.5">
               <div className="flex items-center gap-1.5">
-                <select
+                <CustomSelect
                   value={method.type ?? "transfer"}
-                  onChange={(e) => updateMethod(idx, "type", e.target.value)}
-                  className="flex-1 px-2 py-1.5 border border-border rounded-md text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
-                >
-                  <option value="transfer">{t("dashboard.sitesKatalog.methodTypeTransfer", "Transfer Bank")}</option>
-                  <option value="qris">{t("dashboard.sitesKatalog.methodTypeQris", "QRIS")}</option>
-                  <option value="ewallet">{t("dashboard.sitesKatalog.methodTypeEwallet", "E-Wallet")}</option>
-                  <option value="cod">{t("dashboard.sitesKatalog.methodTypeCod", "Bayar di Tempat (COD)")}</option>
-                </select>
+                  onChange={(val) => updateMethod(idx, "type", val)}
+                  size="sm"
+                  triggerClassName="bg-sidebar-input text-sidebar-foreground border-border text-[12px] h-9"
+                  options={[
+                    { value: "transfer", label: t("dashboard.sitesKatalog.methodTypeTransfer", "Transfer Bank") },
+                    { value: "qris", label: t("dashboard.sitesKatalog.methodTypeQris", "QRIS") },
+                    { value: "ewallet", label: t("dashboard.sitesKatalog.methodTypeEwallet", "E-Wallet") },
+                    { value: "cod", label: t("dashboard.sitesKatalog.methodTypeCod", "Bayar di Tempat (COD)") },
+                  ]}
+                />
                 <button
                   type="button"
                   onClick={() => setMethods(methods.filter((_, i) => i !== idx))}
@@ -853,23 +856,26 @@ export default function SectionForms({
 
               <div className="space-y-1">
                 <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Link ke Section</label>
-                <select
+                <CustomSelect
                   value={(content.header as any)?.nav_cta_href || ""}
-                  onChange={(e) => updateField("header", "nav_cta_href", e.target.value)}
-                  className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-sidebar-input text-sidebar-foreground"
-                >
-                  <option value="">— Otomatis dari teks —</option>
-                  <option value="#hero">Hero (Atas)</option>
-                  <option value="#about">Tentang Kami</option>
-                  <option value="#benefits">Keunggulan</option>
-                  <option value="#catalog">Katalog / Produk</option>
-                  <option value="#menu">Menu</option>
-                  <option value="#works">Portofolio Proyek</option>
-                  <option value="#gallery">Galeri</option>
-                  <option value="#testimonials">Testimoni</option>
-                  <option value="#faq">FAQ</option>
-                  <option value="#contact">Kontak</option>
-                </select>
+                  onChange={(val) => updateField("header", "nav_cta_href", val)}
+                  size="sm"
+                  triggerClassName="bg-sidebar-input text-sidebar-foreground border-border text-[12px] h-9"
+                  placeholder="— Otomatis dari teks —"
+                  options={[
+                    { value: "", label: "— Otomatis dari teks —" },
+                    { value: "#hero", label: "Hero (Atas)" },
+                    { value: "#about", label: "Tentang Kami" },
+                    { value: "#benefits", label: "Keunggulan" },
+                    { value: "#catalog", label: "Katalog / Produk" },
+                    { value: "#menu", label: "Menu" },
+                    { value: "#works", label: "Portofolio Proyek" },
+                    { value: "#gallery", label: "Galeri" },
+                    { value: "#testimonials", label: "Testimoni" },
+                    { value: "#faq", label: "FAQ" },
+                    { value: "#contact", label: "Kontak" },
+                  ]}
+                />
                 <p className="text-[10px] text-sidebar-subtle-foreground mt-0.5 leading-snug">
                   Biarkan kosong untuk mendeteksi section otomatis berdasarkan teks tombol.
                 </p>
@@ -2285,17 +2291,19 @@ export default function SectionForms({
                 onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
             </label>
-            <select
+            <CustomSelect
               value={content.seo?.og_type || "website"}
-              onChange={(e) => updateField("seo", "og_type", e.target.value)}
-              className={`${SIDEBAR_FIELD_CLASS} text-sidebar-foreground`}
-            >
-              <option value="website">{t("dashboard.sitesEditor.seoOgTypeWebsite")}</option>
-              <option value="article">{t("dashboard.sitesEditor.seoOgTypeArticle")}</option>
-              <option value="product">{t("dashboard.sitesEditor.seoOgTypeProduct")}</option>
-              <option value="profile">{t("dashboard.sitesEditor.seoOgTypeProfile")}</option>
-              <option value="business">{t("dashboard.sitesEditor.seoOgTypeBusiness")}</option>
-            </select>
+              onChange={(val) => updateField("seo", "og_type", val)}
+              size="sm"
+              triggerClassName="bg-sidebar-input text-sidebar-foreground border-border text-[12px] h-9"
+              options={[
+                { value: "website", label: t("dashboard.sitesEditor.seoOgTypeWebsite") },
+                { value: "article", label: t("dashboard.sitesEditor.seoOgTypeArticle") },
+                { value: "product", label: t("dashboard.sitesEditor.seoOgTypeProduct") },
+                { value: "profile", label: t("dashboard.sitesEditor.seoOgTypeProfile") },
+                { value: "business", label: t("dashboard.sitesEditor.seoOgTypeBusiness") },
+              ]}
+            />
           </div>
 
           {/* Twitter Card Dropdown */}
@@ -2309,31 +2317,35 @@ export default function SectionForms({
                 onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
             </label>
-            <select
+            <CustomSelect
               value={content.seo?.twitter_card || "summary_large_image"}
-              onChange={(e) => updateField("seo", "twitter_card", e.target.value)}
-              className={`${SIDEBAR_FIELD_CLASS} text-sidebar-foreground`}
-            >
-              <option value="summary_large_image">summary_large_image</option>
-              <option value="summary">summary</option>
-              <option value="app">app</option>
-              <option value="player">player</option>
-            </select>
+              onChange={(val) => updateField("seo", "twitter_card", val)}
+              size="sm"
+              triggerClassName="bg-sidebar-input text-sidebar-foreground border-border text-[12px] h-9"
+              options={[
+                { value: "summary_large_image", label: "summary_large_image" },
+                { value: "summary", label: "summary" },
+                { value: "app", label: "app" },
+                { value: "player", label: "player" },
+              ]}
+            />
           </div>
 
           {/* Robots Dropdown */}
           <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.seoRobotsLabel")}</label>
-            <select
+            <CustomSelect
               value={content.seo?.robots || "index, follow"}
-              onChange={(e) => updateField("seo", "robots", e.target.value)}
-              className={`${SIDEBAR_FIELD_CLASS} text-sidebar-foreground`}
-            >
-              <option value="index, follow">{t("dashboard.sitesEditor.seoRobotsIndexFollow")}</option>
-              <option value="noindex, follow">{t("dashboard.sitesEditor.seoRobotsNoindexFollow")}</option>
-              <option value="index, nofollow">{t("dashboard.sitesEditor.seoRobotsIndexNofollow")}</option>
-              <option value="noindex, nofollow">{t("dashboard.sitesEditor.seoRobotsNoindexNofollow")}</option>
-            </select>
+              onChange={(val) => updateField("seo", "robots", val)}
+              size="sm"
+              triggerClassName="bg-sidebar-input text-sidebar-foreground border-border text-[12px] h-9"
+              options={[
+                { value: "index, follow", label: t("dashboard.sitesEditor.seoRobotsIndexFollow") },
+                { value: "noindex, follow", label: t("dashboard.sitesEditor.seoRobotsNoindexFollow") },
+                { value: "index, nofollow", label: t("dashboard.sitesEditor.seoRobotsIndexNofollow") },
+                { value: "noindex, nofollow", label: t("dashboard.sitesEditor.seoRobotsNoindexNofollow") },
+              ]}
+            />
           </div>
 
           {/* OG Locale */}
@@ -4000,16 +4012,17 @@ function HeroAccessoryEditor({
         <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
           <span>Info Bisnis di Hero <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
         </label>
-        <select
+        <CustomSelect
           value={acc?.type || ""}
-          onChange={(e) => onChange(e.target.value ? { type: e.target.value } : null)}
-          className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
-        >
-          <option value="">— Tidak Ada —</option>
-          {HERO_ACCESSORY_TYPES.map((o) => (
-            <option key={o.value} value={o.value} className="bg-sidebar-input text-sidebar-foreground">{o.label}</option>
-          ))}
-        </select>
+          onChange={(val) => onChange(val ? { type: val } : null)}
+          size="sm"
+          triggerClassName="bg-sidebar-input text-sidebar-foreground border-border text-[12px] h-9"
+          placeholder="— Tidak Ada —"
+          options={[
+            { value: "", label: "— Tidak Ada —" },
+            ...HERO_ACCESSORY_TYPES.map((o) => ({ value: o.value, label: o.label })),
+          ]}
+        />
         <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Blok kecil di hero sesuai jenis usaha (harga, ketersediaan, atau keahlian).</p>
       </div>
       {hasText && (
