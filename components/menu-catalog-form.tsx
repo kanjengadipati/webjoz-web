@@ -684,7 +684,6 @@ function SortableItemRow({
   const isPageMode = mode === "page";
   const [isOpen, setIsOpen] = useState<boolean>(isPageMode);
   const [showAdvanced, setShowAdvanced] = useState<boolean>(isPageMode);
-  const summaryPrice = normStr(item.price_display ?? item.price);
 
   return (
     <div ref={setNodeRef} style={style} className="rounded-3xl border border-border/80 bg-muted/15 shadow-2xs overflow-hidden">
@@ -710,9 +709,6 @@ function SortableItemRow({
             <span className="text-xs sm:text-sm font-bold text-foreground truncate">
               {item.name ? item.name : `${itemLabel} #${itemIdx + 1}`}
             </span>
-            {summaryPrice && (
-              <span className="text-[11px] font-semibold text-muted-foreground shrink-0">{summaryPrice}</span>
-            )}
           </button>
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
