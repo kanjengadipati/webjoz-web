@@ -309,7 +309,7 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
   const waPhone = contact?.phone ?? "";
 
   return (
-    <CartProvider waPhone={waPhone} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#0e7490"} primaryFg="#ffffff">
+    <CartProvider waPhone={waPhone} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#0e7490"} primaryFg="#ffffff" language={language} payments={content.payments}>
     <div className="bg-slate-950 text-slate-100 overflow-x-hidden min-h-screen" style={{ ...cssVars, fontFamily: "var(--dt-body-font)", containerType: "inline-size" }}>
       {(() => {
         const renderedSectionOrder = filterEmptySections(sectionOrder, content, isEditorMode)

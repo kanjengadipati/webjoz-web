@@ -26,6 +26,22 @@ export interface FaqItem {
   category?: string | null;
 }
 
+export type PaymentMethodType = "transfer" | "qris" | "ewallet" | "cod" | "other";
+
+export interface PaymentMethod {
+  type: PaymentMethodType;
+  label: string;
+  /** Bank account number / QRIS link / wallet id / COD note — filled by merchant */
+  detail?: string;
+}
+
+export interface PaymentConfig {
+  title?: string;
+  methods?: PaymentMethod[];
+  shipping_note?: string;
+  return_policy?: string;
+}
+
 export interface ImageCredit {
   name: string;
   url: string;
@@ -420,6 +436,7 @@ export interface TemplateProps {
       robots?: string;
       canonical_path?: string;
     };
+    payments?: PaymentConfig;
   };
   design_token?: DesignToken | null;
   onSubmitLead?: (data: { name: string; email: string; phone: string; message: string }) => Promise<string | void>;

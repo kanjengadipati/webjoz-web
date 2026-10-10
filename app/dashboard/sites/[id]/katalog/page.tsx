@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useParams } from "next/navigation";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
@@ -12,12 +12,13 @@ import { PageLoading, Spinner } from "@/components/ui";
 import Link from "next/link";
 import {
   ChevronLeft, Save, Check, ShoppingBag,
-  Utensils,
+  Utensils, CreditCard, Truck, RotateCcw, Plus, X,
 } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { useI18n } from "@/lib/i18n/context";
 import { decodeSiteId } from "@/lib/sqids";
 import { MenuCatalogForm } from "@/components/menu-catalog-form";
+import type { PaymentConfig, PaymentMethod } from "@/components/templates/types";
 
 export default function KatalogManagerPage() {
   const { id } = useParams();
@@ -28,7 +29,7 @@ export default function KatalogManagerPage() {
   const isPremium = activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise";
 
   const siteId = decodeSiteId(id as string);
-  const tenantHeaders = { "X-Tenant-ID": activeTenantId?.toString() ?? "" };
+  const tenantHeaders = useMemo(() => ({ "X-Tenant-ID": activeTenantId?.toString() ?? "" }), [activeTenantId]);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -38,10 +39,15 @@ export default function KatalogManagerPage() {
   const [sectionKey, setSectionKey] = useState<"catalog" | "menu">("catalog");
   const [sectionData, setSectionData] = useState<any>({});
 
+  // Payment methods & shipping config (display block in the cart drawer)
+  const [payments, setPayments] = useState<PaymentConfig>({});
+  const paymentsRef = useRef<PaymentConfig>({});
+
   // Full content ref so we can PUT the whole content object back
   const fullContentRef = useRef<any>(null);
   const sectionDataRef = useRef<any>({});
   const autosaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const paymentsAutosaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // AI description state
   const [aiLoadingDesc, setAiLoadingDesc] = useState<string | null>(null);
@@ -59,6 +65,10 @@ export default function KatalogManagerPage() {
       const res = await request<any>(`/sites/${siteId}/content`, { headers: tenantHeaders }, token);
       const content = res.data?.content ?? {};
       fullContentRef.current = content;
+
+      const paymentsData = (content.payments && typeof content.payments === "object" ? content.payments : {}) as PaymentConfig;
+      setPayments(paymentsData);
+      paymentsRef.current = paymentsData;
 
       if (content.menu && !content.catalog) {
         setSectionKey("menu");
@@ -112,6 +122,74 @@ export default function KatalogManagerPage() {
       return next;
     });
   }, [scheduleAutosave, sectionKey]);
+
+  // Save the payment & shipping config block back to site content
+  const savePayments = useCallback(async (data: PaymentConfig) => {
+    if (!token || !activeTenantId || !fullContentRef.current) return;
+    try {
+      setSaving(true);
+      const updated = { ...fullContentRef.current, payments: data };
+      await request(`/sites/${siteId}/content`, {
+        method: "PUT",
+        headers: tenantHeaders,
+        body: JSON.stringify({ content: updated }),
+      }, token);
+      fullContentRef.current = updated;
+      setSavedAt(new Date());
+    } catch (err: unknown) {
+      pushToast((err instanceof Error ? err.message : "") || t("dashboard.sitesKatalog.saveFailed", "Gagal menyimpan perubahan."), "error");
+    } finally {
+      setSaving(false);
+    }
+  }, [token, activeTenantId, siteId, tenantHeaders, t, pushToast]);
+
+  const schedulePaymentsAutosave = useCallback((data: PaymentConfig) => {
+    if (paymentsAutosaveTimer.current) clearTimeout(paymentsAutosaveTimer.current);
+    paymentsAutosaveTimer.current = setTimeout(() => { void savePayments(data); }, 2000);
+  }, [savePayments]);
+
+  const updatePayments = useCallback((patch: Partial<PaymentConfig>) => {
+    setPayments((prev) => {
+      const next: PaymentConfig = { ...prev, ...patch };
+      paymentsRef.current = next;
+      schedulePaymentsAutosave(next);
+      return next;
+    });
+  }, [schedulePaymentsAutosave]);
+
+  const updatePaymentMethod = useCallback((idx: number, key: keyof PaymentMethod, val: string) => {
+    setPayments((prev) => {
+      const methods = [...(prev.methods ?? [])];
+      const current = methods[idx];
+      if (current) {
+        methods[idx] = { ...current, [key]: val } as PaymentMethod;
+      }
+      const next: PaymentConfig = { ...prev, methods };
+      paymentsRef.current = next;
+      schedulePaymentsAutosave(next);
+      return next;
+    });
+  }, [schedulePaymentsAutosave]);
+
+  const addPaymentMethod = useCallback(() => {
+    setPayments((prev) => {
+      const next: PaymentConfig = { ...prev, methods: [...(prev.methods ?? []), { type: "transfer", label: "", detail: "" }] };
+      paymentsRef.current = next;
+      schedulePaymentsAutosave(next);
+      return next;
+    });
+  }, [schedulePaymentsAutosave]);
+
+  const removePaymentMethod = useCallback((idx: number) => {
+    setPayments((prev) => {
+      const methods = [...(prev.methods ?? [])];
+      methods.splice(idx, 1);
+      const next: PaymentConfig = { ...prev, methods };
+      paymentsRef.current = next;
+      schedulePaymentsAutosave(next);
+      return next;
+    });
+  }, [schedulePaymentsAutosave]);
 
   // AI item description handler
   const handleAiItemDescription = useCallback(async (
@@ -254,6 +332,107 @@ export default function KatalogManagerPage() {
         onUpgradeRequired={() => setUpgradePromptOpen(true)}
         mode="page"
       />
+
+      {/* Payment & Shipping config — display block in the cart drawer */}
+      <div className="p-5 rounded-3xl border border-border/80 bg-card shadow-xs space-y-4">
+        <div className="flex items-start gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0 shadow-xs">
+            <CreditCard className="w-5 h-5" />
+          </div>
+          <div className="min-w-0">
+            <h2 className="text-sm sm:text-base font-extrabold text-foreground leading-tight">
+              {t("dashboard.sitesKatalog.paymentTitle", "Metode Pembayaran & Pengiriman")}
+            </h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {t("dashboard.sitesKatalog.paymentSubtitle", "Tampilkan info pembayaran dan pengiriman di keranjang pesanan pengunjung. Belum perlu integrasi payment gateway — cukup info rekening/QRIS statis.")}
+            </p>
+          </div>
+        </div>
+
+        {/* Methods list */}
+        <div className="space-y-2">
+          <label className="block text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
+            {t("dashboard.sitesKatalog.methodsTitle", "Metode Pembayaran")}
+          </label>
+          {(payments.methods ?? []).map((method: PaymentMethod, idx: number) => (
+            <div key={idx} className="flex flex-col sm:flex-row gap-2 p-2.5 rounded-xl border border-border bg-muted/30">
+              <select
+                value={method.type ?? "transfer"}
+                onChange={(e) => updatePaymentMethod(idx, "type", e.target.value)}
+                className="w-full sm:w-40 shrink-0 px-3 py-2 border border-border bg-background text-foreground rounded-xl text-xs outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 transition-all"
+              >
+                <option value="transfer">{t("dashboard.sitesKatalog.methodTypeTransfer", "Transfer Bank")}</option>
+                <option value="qris">{t("dashboard.sitesKatalog.methodTypeQris", "QRIS")}</option>
+                <option value="ewallet">{t("dashboard.sitesKatalog.methodTypeEwallet", "E-Wallet")}</option>
+                <option value="cod">{t("dashboard.sitesKatalog.methodTypeCod", "Bayar di Tempat (COD)")}</option>
+              </select>
+              <input
+                type="text"
+                value={method.label ?? ""}
+                onChange={(e) => updatePaymentMethod(idx, "label", e.target.value)}
+                placeholder={t("dashboard.sitesKatalog.methodLabelPlaceholder", "Nama metode (cth. Transfer Bank BCA)")}
+                className="w-full sm:w-48 shrink-0 px-3 py-2 border border-border bg-background text-foreground rounded-xl text-xs outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 transition-all"
+              />
+              <input
+                type="text"
+                value={method.detail ?? ""}
+                onChange={(e) => updatePaymentMethod(idx, "detail", e.target.value)}
+                placeholder={t("dashboard.sitesKatalog.methodDetailPlaceholder", "Detail (no. rekening, tautan QRIS, nama e-wallet)")}
+                className="w-full flex-1 px-3 py-2 border border-border bg-background text-foreground rounded-xl text-xs outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 transition-all"
+              />
+              <button
+                type="button"
+                onClick={() => removePaymentMethod(idx)}
+                className="self-start sm:self-center p-1.5 rounded-lg border border-border text-muted-foreground hover:text-destructive hover:border-destructive/40 transition-colors cursor-pointer"
+                title={t("dashboard.sitesKatalog.methodRemove", "Hapus metode")}
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={addPaymentMethod}
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-dashed border-border text-xs font-semibold text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors cursor-pointer"
+          >
+            <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesKatalog.methodAdd", "Tambah Metode")}
+          </button>
+        </div>
+
+        {/* Shipping note */}
+        <div className="space-y-1.5">
+          <label className="block text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
+            <Truck className="w-3 h-3 inline mr-1 -mt-0.5" />
+            {t("dashboard.sitesKatalog.shippingTitle", "Info Pengiriman")}
+          </label>
+          <textarea
+            value={payments.shipping_note ?? ""}
+            onChange={(e) => updatePayments({ shipping_note: e.target.value })}
+            placeholder={t("dashboard.sitesKatalog.shippingNotePlaceholder", "cth. Ongkir menyesuaikan lokasi. Estimasi 1–3 hari kerja.")}
+            rows={2}
+            className="w-full px-3 py-2 border border-border bg-background text-foreground rounded-xl text-xs outline-none resize-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-muted-foreground/60"
+          />
+        </div>
+
+        {/* Return policy */}
+        <div className="space-y-1.5">
+          <label className="block text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
+            <RotateCcw className="w-3 h-3 inline mr-1 -mt-0.5" />
+            {t("dashboard.sitesKatalog.returnPolicy", "Kebijakan Retur")}
+          </label>
+          <textarea
+            value={payments.return_policy ?? ""}
+            onChange={(e) => updatePayments({ return_policy: e.target.value })}
+            placeholder={t("dashboard.sitesKatalog.returnPolicyPlaceholder", "cth. Barang dapat dikembalikan/ditukar dalam 7 hari. Hubungi kami lewat WhatsApp.")}
+            rows={2}
+            className="w-full px-3 py-2 border border-border bg-background text-foreground rounded-xl text-xs outline-none resize-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-muted-foreground/60"
+          />
+        </div>
+
+        <p className="text-[11px] text-muted-foreground leading-relaxed">
+          {t("dashboard.sitesKatalog.paymentHint", "Perubahan tersimpan otomatis. Informasi ini hanya ditampilkan sebagai catatan — pembayaran dikonfirmasi manual lewat WhatsApp.")}
+        </p>
+      </div>
 
       {/* AI prompt modal */}
       {aiPromptModal && (

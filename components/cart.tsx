@@ -10,9 +10,9 @@
  */
 
 import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from "react";
-import { ShoppingCart, X, Plus, Minus, Trash2, MessageSquare, ArrowLeft, CheckCircle } from "lucide-react";
+import { ShoppingCart, X, Plus, Minus, Trash2, MessageSquare, ArrowLeft, CheckCircle, CreditCard, Truck, RotateCcw } from "lucide-react";
 
-import type { ItemVariantGroup } from "@/components/templates/types";
+import type { ItemVariantGroup, PaymentConfig } from "@/components/templates/types";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -64,6 +64,22 @@ export function useCart(): CartContextValue {
   return ctx;
 }
 
+// ─── Site payments context ──────────────────────────────────────────────────
+// Exposes the display-only payments/shipping config to chrome rendered outside
+// the cart popover (e.g. the footer trust strip). Defaults to empty so consumers
+// outside a CartProvider (showcase, admin previews) simply render nothing.
+
+export interface SitePaymentsValue {
+  payments?: PaymentConfig | null;
+  language?: "id" | "en";
+}
+
+const SitePaymentsContext = createContext<SitePaymentsValue>({});
+
+export function useSitePayments(): SitePaymentsValue {
+  return useContext(SitePaymentsContext);
+}
+
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 interface CartProviderProps {
@@ -75,6 +91,10 @@ interface CartProviderProps {
   primaryColor?: string;
   /** Foreground color on primaryColor background (defaults to #fff) */
   primaryFg?: string;
+  /** Site language for the payment/shipping block labels */
+  language?: "id" | "en";
+  /** Display-only payment methods & shipping config from site content */
+  payments?: PaymentConfig | null;
   onSubmitLead?: (data: {
     name: string;
     email: string;
@@ -86,7 +106,7 @@ interface CartProviderProps {
   }) => Promise<string | void>;
 }
 
-export function CartProvider({ children, waPhone, brandName, previewMode, primaryColor, primaryFg, onSubmitLead }: CartProviderProps) {
+export function CartProvider({ children, waPhone, brandName, previewMode, primaryColor, primaryFg, language, payments, onSubmitLead }: CartProviderProps) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [open, setOpen] = useState(false);
 
@@ -125,8 +145,10 @@ export function CartProvider({ children, waPhone, brandName, previewMode, primar
 
   return (
     <CartContext.Provider value={{ items, totalQty, add, increment, decrement, remove, clear, open, setOpen, previewMode: !!previewMode, primaryColor: resolvedPrimary, primaryFg: resolvedPrimaryFg }}>
-      {children}
-      <CartPopover waPhone={waPhone} brandName={brandName} onSubmitLead={onSubmitLead} />
+      <SitePaymentsContext.Provider value={{ payments, language }}>
+        {children}
+      </SitePaymentsContext.Provider>
+      <CartPopover waPhone={waPhone} brandName={brandName} onSubmitLead={onSubmitLead} language={language} payments={payments} />
     </CartContext.Provider>
   );
 }
@@ -635,9 +657,11 @@ function normalizePhone(raw: string): string {
   return "62" + digits;
 }
 
-function CartPopover({ waPhone, brandName, onSubmitLead }: {
+function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
   waPhone: string;
   brandName?: string;
+  language?: "id" | "en";
+  payments?: PaymentConfig | null;
   onSubmitLead?: (data: {
     name: string;
     email: string;
@@ -681,6 +705,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead }: {
   }, [open, setOpen]);
 
   const isWaEmpty = !waPhone || waPhone.trim() === "" || waPhone.trim() === "0" || waPhone.trim() === "62";
+  const isEN = language === "en";
 
   const handleCheckout = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -1084,6 +1109,42 @@ function CartPopover({ waPhone, brandName, onSubmitLead }: {
               <p className="text-[10px] text-center leading-relaxed opacity-50">
                 {!isWaEmpty ? "Pesanan dikirim ke WhatsApp untuk konfirmasi ketersediaan." : "Pesanan akan dikirim ke pemilik bisnis."}
               </p>
+              {/* Payment & shipping info block (merchant-configured, display-only) */}
+              {(() => {
+                const methods = payments?.methods?.filter((m) => (m.label || "").trim()) ?? [];
+                const hasBlock = methods.length > 0 || !!payments?.shipping_note || !!payments?.return_policy;
+                if (!hasBlock) return null;
+                const blockTitle = payments?.title?.trim() || (isEN ? "Payment Methods & Shipping" : "Metode Pembayaran & Pengiriman");
+                return (
+                  <div className="space-y-1.5 pt-1">
+                    <p className="text-[10px] font-bold uppercase tracking-wide px-0.5"
+                      style={{ borderLeft: `3px solid color-mix(in srgb, var(--dt-primary, var(--primary)) 60%, transparent)`, paddingLeft: 6, opacity: 0.7 }}
+                    >
+                      <span className="inline-flex items-center gap-1"><CreditCard className="w-3 h-3" /> {blockTitle}</span>
+                    </p>
+                    {methods.length > 0 && (
+                      <div className="space-y-1">
+                        {methods.map((m, mi) => (
+                          <p key={`${m.label}-${mi}`} className="text-[11px] leading-snug">
+                            {m.label}
+                            {m.detail?.trim() ? <span className="opacity-60"> — {m.detail}</span> : null}
+                          </p>
+                        ))}
+                      </div>
+                    )}
+                    {payments?.shipping_note ? (
+                      <p className="text-[11px] leading-snug opacity-70 flex items-start gap-1.5">
+                        <Truck className="w-3 h-3 mt-0.5 shrink-0" /> <span>{payments.shipping_note}</span>
+                      </p>
+                    ) : null}
+                    {payments?.return_policy ? (
+                      <p className="text-[11px] leading-snug opacity-70 flex items-start gap-1.5">
+                        <RotateCcw className="w-3 h-3 mt-0.5 shrink-0" /> <span>{payments.return_policy}</span>
+                      </p>
+                    ) : null}
+                  </div>
+                );
+              })()}
               <button
                 type="button"
                 onClick={() => handleCheckout()}

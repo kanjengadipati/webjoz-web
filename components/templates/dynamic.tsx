@@ -495,7 +495,7 @@ export function TemplateDynamicWithCart(props: TemplateProps & { previewMode?: b
   const brandName = props.content?.header?.brand_name;
   const { onSubmitLead } = props;
   return (
-    <CartProvider waPhone={waPhone} brandName={brandName} previewMode={props.previewMode} onSubmitLead={onSubmitLead} primaryColor={props.design_token?.palette?.primary ?? "#4F46E5"}>
+    <CartProvider waPhone={waPhone} brandName={brandName} previewMode={props.previewMode} onSubmitLead={onSubmitLead} primaryColor={props.design_token?.palette?.primary ?? "#4F46E5"} language={props.language} payments={props.content?.payments}>
       <TemplateDynamic {...props} />
     </CartProvider>
   );

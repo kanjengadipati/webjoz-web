@@ -1942,6 +1942,22 @@ export interface Translations {
       variantsOptionDelta: string;
       variantsAddOption: string;
       allChangesSaved: string;
+      paymentTitle: string;
+      paymentSubtitle: string;
+      paymentHint: string;
+      methodsTitle: string;
+      methodTypeTransfer: string;
+      methodTypeQris: string;
+      methodTypeEwallet: string;
+      methodTypeCod: string;
+      methodLabelPlaceholder: string;
+      methodDetailPlaceholder: string;
+      methodRemove: string;
+      methodAdd: string;
+      shippingTitle: string;
+      shippingNotePlaceholder: string;
+      returnPolicy: string;
+      returnPolicyPlaceholder: string;
     };
     sitesBlog: {
       title: string;
@@ -4579,6 +4595,22 @@ export const translations: Record<Locale, Translations> = {
         variantsOptionDelta: "+Tambahan Harga",
         variantsAddOption: "Tambah Pilihan",
         allChangesSaved: "Semua perubahan otomatis tersimpan secara aman",
+        paymentTitle: "Metode Pembayaran & Pengiriman",
+        paymentSubtitle: "Tampilkan info pembayaran dan pengiriman di keranjang pesanan pengunjung. Belum perlu integrasi payment gateway — cukup info rekening/QRIS statis.",
+        paymentHint: "Perubahan tersimpan otomatis. Informasi ini hanya ditampilkan sebagai catatan — pembayaran dikonfirmasi manual lewat WhatsApp.",
+        methodsTitle: "Metode Pembayaran",
+        methodTypeTransfer: "Transfer Bank",
+        methodTypeQris: "QRIS",
+        methodTypeEwallet: "E-Wallet",
+        methodTypeCod: "Bayar di Tempat (COD)",
+        methodLabelPlaceholder: "Nama metode (cth. Transfer Bank BCA)",
+        methodDetailPlaceholder: "Detail (no. rekening, tautan QRIS, nama e-wallet)",
+        methodRemove: "Hapus metode",
+        methodAdd: "Tambah Metode",
+        shippingTitle: "Info Pengiriman",
+        shippingNotePlaceholder: "cth. Ongkir menyesuaikan lokasi. Estimasi 1–3 hari kerja.",
+        returnPolicy: "Kebijakan Retur",
+        returnPolicyPlaceholder: "cth. Barang dapat dikembalikan/ditukar dalam 7 hari. Hubungi kami lewat WhatsApp.",
       },
       sitesBlog: {
         title: "Blog Postingan",
@@ -7286,6 +7318,22 @@ export const translations: Record<Locale, Translations> = {
         variantsOptionDelta: "+Price Delta",
         variantsAddOption: "Add Option",
         allChangesSaved: "All changes are automatically and securely saved",
+        paymentTitle: "Payment Methods & Shipping",
+        paymentSubtitle: "Show payment and shipping info in your visitors' shopping cart. No payment gateway needed yet — just static account/QRIS details.",
+        paymentHint: "Changes save automatically. This info is shown as a note only — payments are confirmed manually via WhatsApp.",
+        methodsTitle: "Payment Methods",
+        methodTypeTransfer: "Bank Transfer",
+        methodTypeQris: "QRIS",
+        methodTypeEwallet: "E-Wallet",
+        methodTypeCod: "Cash on Delivery (COD)",
+        methodLabelPlaceholder: "Method name (e.g. BCA Bank Transfer)",
+        methodDetailPlaceholder: "Detail (account number, QRIS link, e-wallet name)",
+        methodRemove: "Remove method",
+        methodAdd: "Add Method",
+        shippingTitle: "Shipping Info",
+        shippingNotePlaceholder: "e.g. Shipping cost depends on your location. Estimated 1–3 business days.",
+        returnPolicy: "Return Policy",
+        returnPolicyPlaceholder: "e.g. Items can be returned or exchanged within 7 days. Contact us via WhatsApp.",
       },
       sitesBlog: {
         title: "Blog Posts",
