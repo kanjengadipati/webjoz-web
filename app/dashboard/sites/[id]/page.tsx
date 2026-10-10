@@ -62,6 +62,7 @@ import { tenantHost } from "@/lib/site-config";
 
 import TypographyPairingPicker from "./components/TypographyPairingPicker";
 import ColorPatternPicker from "./components/ColorPatternPicker";
+import CompactColorPicker from "./components/CompactColorPicker";
 import IndustryPresetPicker from "./components/IndustryPresetPicker";
 import SectionVariantVisualPicker from "./components/SectionVariantVisualPicker";
 import PageLayoutHub from "./components/PageLayoutHub";
@@ -1927,10 +1928,33 @@ export default function SiteEditorPage() {
                   </p>
                 </div>
                 <div ref={designContentRef} className="flex-1 overflow-y-auto px-3.5 py-3 space-y-4 relative bg-sidebar text-sidebar-foreground">
+                  {/* Theme Mode Toggle (Light / Dark) */}
+                  <div className="flex items-center justify-between p-2 rounded-xl border border-border bg-sidebar-muted/30">
+                    <div className="flex items-center gap-1.5">
+                      {effectiveThemeIsDark ? <Moon className="w-3.5 h-3.5 text-primary" /> : <Sun className="w-3.5 h-3.5 text-amber-500" />}
+                      <span className="text-[11px] font-semibold text-sidebar-foreground">
+                        {effectiveThemeIsDark ? t("dashboard.sitesEditor.dark") : t("dashboard.sitesEditor.light")}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        pushGlobalUndo({ force: true });
+                        pushDesignUndo();
+                        setDesignToken((prev: any) => ({
+                          ...(prev || {}),
+                          theme_mode: effectiveThemeIsDark ? "light" : "dark",
+                        }));
+                      }}
+                      className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold border border-border bg-sidebar hover:bg-sidebar-muted text-sidebar-foreground transition cursor-pointer active:scale-95 shadow-2xs"
+                    >
+                      {effectiveThemeIsDark ? <Sun className="w-3 h-3 text-amber-500" /> : <Moon className="w-3 h-3 text-primary" />}
+                      {effectiveThemeIsDark ? t("dashboard.sitesEditor.switchLight") : t("dashboard.sitesEditor.switchDark")}
+                    </button>
+                  </div>
+
                   {/* Palet Warna */}
                   <div className="space-y-3">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.colorPalette")}</p>
-
                     <ColorPatternPicker
                       designToken={designToken}
                       aiDesignToken={latestAiDesignToken}
@@ -1953,130 +1977,11 @@ export default function SiteEditorPage() {
 
                     <div className="border-t border-border my-2" />
 
-                    {/* Primary Color */}
-                    <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.primaryColor")}</label>
-                      <div className="flex items-center gap-2">
-                        <div className="relative w-8 h-8 rounded-md border border-border overflow-hidden flex-shrink-0">
-                          <input
-                            type="color"
-                            value={designToken?.palette?.primary || "#4F46E5"}
-                            onChange={(e) => handleColorChange("primary", e.target.value)}
-                            ref={(el) => { colorRefs.current["primary"] = el; }}
-                            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
-                          />
-                          <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.primary || "#4F46E5" }} />
-                        </div>
-                        <input
-                          type="text"
-                          value={designToken?.palette?.primary || ""}
-                          onChange={(e) => handleColorChange("primary", e.target.value)}
-                          onClick={() => colorRefs.current["primary"]?.click()}
-                          className="flex-1 px-2.5 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
-                          placeholder="#4F46E5"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Accent Color */}
-                    <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.accentColor")}</label>
-                      <div className="flex items-center gap-2">
-                        <div className="relative w-8 h-8 rounded-md border border-border overflow-hidden flex-shrink-0">
-                          <input
-                            type="color"
-                            value={designToken?.palette?.accent || "#7C3AED"}
-                            onChange={(e) => handleColorChange("accent", e.target.value)}
-                            ref={(el) => { colorRefs.current["accent"] = el; }}
-                            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
-                          />
-                          <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.accent || "#7C3AED" }} />
-                        </div>
-                        <input
-                          type="text"
-                          value={designToken?.palette?.accent || ""}
-                          onChange={(e) => handleColorChange("accent", e.target.value)}
-                          onClick={() => colorRefs.current["accent"]?.click()}
-                          className="flex-1 px-2.5 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
-                          placeholder="#7C3AED"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Background Color */}
-                    <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.backgroundColor")}</label>
-                      <div className="flex items-center gap-2">
-                        <div className="relative w-8 h-8 rounded-md border border-border overflow-hidden flex-shrink-0">
-                          <input
-                            type="color"
-                            value={designToken?.palette?.background || "#FAF7F2"}
-                            onChange={(e) => handleColorChange("background", e.target.value)}
-                            ref={(el) => { colorRefs.current["background"] = el; }}
-                            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
-                          />
-                          <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.background || "#FAF7F2" }} />
-                        </div>
-                        <input
-                          type="text"
-                          value={designToken?.palette?.background || ""}
-                          onChange={(e) => handleColorChange("background", e.target.value)}
-                          onClick={() => colorRefs.current["background"]?.click()}
-                          className="flex-1 px-2.5 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
-                          placeholder="#FAF7F2"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Surface Color */}
-                    <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.surfaceColor")}</label>
-                      <div className="flex items-center gap-2">
-                        <div className="relative w-8 h-8 rounded-md border border-border overflow-hidden flex-shrink-0">
-                          <input
-                            type="color"
-                            value={designToken?.palette?.surface || "#FFFFFF"}
-                            onChange={(e) => handleColorChange("surface", e.target.value)}
-                            ref={(el) => { colorRefs.current["surface"] = el; }}
-                            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
-                          />
-                          <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.surface || "#FFFFFF" }} />
-                        </div>
-                        <input
-                          type="text"
-                          value={designToken?.palette?.surface || ""}
-                          onChange={(e) => handleColorChange("surface", e.target.value)}
-                          onClick={() => colorRefs.current["surface"]?.click()}
-                          className="flex-1 px-2.5 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
-                          placeholder="#FFFFFF"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Text Color */}
-                    <div className="space-y-1">
-                      <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.textColor")}</label>
-                      <div className="flex items-center gap-2">
-                        <div className="relative w-8 h-8 rounded-md border border-border overflow-hidden flex-shrink-0">
-                          <input
-                            type="color"
-                            value={designToken?.palette?.text || "#2C2C2A"}
-                            onChange={(e) => handleColorChange("text", e.target.value)}
-                            ref={(el) => { colorRefs.current["text"] = el; }}
-                            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
-                          />
-                          <div className="w-full h-full animate-fade-in" style={{ backgroundColor: designToken?.palette?.text || "#2C2C2A" }} />
-                        </div>
-                        <input
-                          type="text"
-                          value={designToken?.palette?.text || ""}
-                          onChange={(e) => handleColorChange("text", e.target.value)}
-                          onClick={() => colorRefs.current["text"]?.click()}
-                          className="flex-1 px-2.5 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[13px] outline-none focus:border-primary/60 cursor-pointer"
-                          placeholder="#2C2C2A"
-                        />
-                      </div>
-                    </div>
+                    {/* Compact 5-Color Picker */}
+                    <CompactColorPicker
+                      palette={designToken?.palette}
+                      onChange={handleColorChange}
+                    />
                   </div>
 
                   <div className="border-t border-border my-2" />
@@ -3398,27 +3303,11 @@ export default function SiteEditorPage() {
                     }}
                   />
 
-                  {/* Manual color pickers */}
-                  <div className="space-y-2">
-                    {["primary", "accent", "background", "surface", "text"].map((colorKey) => (
-                      <div key={colorKey} className="flex items-center gap-2">
-                        <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground w-16 shrink-0">
-                          {colorKey === "primary" ? t("dashboard.sitesEditor.primaryShort") : colorKey === "accent" ? t("dashboard.sitesEditor.accentShort") : colorKey === "background" ? t("dashboard.sitesEditor.backgroundShort") : colorKey === "surface" ? t("dashboard.sitesEditor.surfaceShort") : t("dashboard.sitesEditor.textShort")}
-                        </label>
-                        <div className="relative w-7 h-7 rounded-md border border-border overflow-hidden shrink-0">
-                          <input type="color" value={designToken?.palette?.[colorKey] || "#4F46E5"}
-                            onChange={(e) => handleColorChange(colorKey, e.target.value)}
-                            ref={(el) => { colorRefs.current[`mobile-${colorKey}`] = el; }}
-                            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer" />
-                          <div className="w-full h-full" style={{ backgroundColor: designToken?.palette?.[colorKey] || "#4F46E5" }} />
-                        </div>
-                        <input type="text" value={designToken?.palette?.[colorKey] || ""}
-                          onChange={(e) => handleColorChange(colorKey, e.target.value)}
-                          onClick={() => colorRefs.current[`mobile-${colorKey}`]?.click()}
-                          className="flex-1 h-7 px-2 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[11px] outline-none focus:border-primary/60 cursor-pointer" />
-                      </div>
-                    ))}
-                  </div>
+                  {/* Compact Color Picker */}
+                  <CompactColorPicker
+                    palette={designToken?.palette}
+                    onChange={handleColorChange}
+                  />
 
                   <div className="border-t border-border" />
 
