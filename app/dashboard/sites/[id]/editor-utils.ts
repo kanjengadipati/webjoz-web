@@ -19,7 +19,7 @@ export const stripRegeneratedMarkers = (value: any): any => {
 };
 
 export const BODY_SECTION_KEYS = ["hero", "about", "benefits", "stats", "testimonials", "menu", "catalog", "gallery", "works", "partners", "pricing", "blog", "cta", "faq", "contact"];
-export const EDITOR_SECTION_KEYS = ["header", ...BODY_SECTION_KEYS, "footer", "seo", "floating"];
+export const EDITOR_SECTION_KEYS = ["header", ...BODY_SECTION_KEYS, "footer", "payments", "seo", "floating"];
 
 // Sections that are only shown in the sidebar when content actually has that key.
 // "faq" is here because the AI recommendation logic may prune it for certain business types
@@ -45,6 +45,7 @@ export const SECTION_META: Record<string, { label: string; labelEn: string; icon
   cta:          { label: "CTA", labelEn: "CTA", icon: SparkleIcon },
   contact:      { label: "Kontak", labelEn: "Contact", icon: Mail },
   footer:       { label: "Footer", labelEn: "Footer", icon: BookOpen },
+  payments:     { label: "Pembayaran", labelEn: "Payments", icon: CreditCard },
   seo:          { label: "SEO", labelEn: "SEO", icon: Globe },
   floating:     { label: "Tombol Aksi", labelEn: "Action Button", icon: MessageCircle },
 };
@@ -66,6 +67,7 @@ export const AI_SUGGESTIONS: Record<string, string[]> = {
   cta:          ["Buat CTA lebih kuat untuk konversi", "Tulis headline yang menutup keraguan", "Tambahkan trust signal yang mengurangi friction"],
   contact:      ["Lengkapi kontak agar lebih terpercaya", "Buat instruksi kunjungan lebih jelas", "Tulis kontak dengan nada ramah"],
   footer:       ["Buat tagline footer lebih memorable", "Ringkas copyright dan tagline", "Samakan tone footer dengan brand"],
+  payments:     ["Tawarkan metode pembayaran yang paling sering dipakai pelanggan", "Tulis estimasi pengiriman yang jelas dan meyakinkan", "Buat kebijakan retur ringkas dan ramah"],
   seo:          ["Buat title SEO lebih menjual", "Masukkan kota dan layanan utama", "Buat meta description lebih klik-worthy", "Generate keywords SEO", "Saran OG type dan Twitter card"],
   "hero-effect":["Buat efek visual lebih dramatis", "Tambahkan parallax halus pada latar", "Percepat transisi antar elemen visual"],
   blog:         ["Buat judul artikel lebih irresistible", "Tulis opening yang langsung menahan perhatian", "Ringkas isi agar mudah dipindai"],
@@ -89,6 +91,7 @@ export const AI_SUGGESTIONS_EN: Record<string, string[]> = {
   cta:          ["Make the CTA stronger for conversion", "Write a headline that closes doubts", "Add trust signals that reduce friction"],
   contact:      ["Complete contact info to look more trustworthy", "Make visiting instructions clearer", "Write contact copy in a friendly tone"],
   footer:       ["Make the footer tagline more memorable", "Tighten the copyright and tagline", "Match the footer tone with the brand"],
+  payments:     ["Offer the payment methods your customers use most", "Write a clear, reassuring shipping estimate", "Keep the return policy short and friendly"],
   seo:          ["Make the SEO title more selling", "Include city and main service", "Make the meta description more click-worthy", "Generate SEO keywords", "Suggest OG type and Twitter card"],
   "hero-effect":["Make the visual effect more dramatic", "Add a subtle parallax to the background", "Speed up the transition between visual elements"],
   blog:         ["Make the article title more irresistible", "Write an opening that holds attention right away", "Tighten the body so it is easy to skim"],
@@ -122,7 +125,7 @@ export const getOrderedSections = (designToken: any, content?: any, hiddenByAdmi
     return true;
   });
   const bodyOrder = [...tokenOrder, ...availableBodyKeys.filter((key) => !tokenOrder.includes(key))];
-  return ["header", ...bodyOrder, "footer", "seo", "floating"].filter((key) => !adminHidden.has(key));
+  return ["header", ...bodyOrder, "footer", "payments", "seo", "floating"].filter((key) => !adminHidden.has(key));
 };
 
 export const cloneData = <T,>(value: T): T => JSON.parse(JSON.stringify(value));
