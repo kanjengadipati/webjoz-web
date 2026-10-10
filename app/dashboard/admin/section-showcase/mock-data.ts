@@ -201,6 +201,11 @@ export const MOCK_SHOWCASE_DATA = {
     secondary_cta_url: "#about",
     image_url: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&auto=format&fit=crop&q=80",
     portrait_image_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=1600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1600&auto=format&fit=crop&q=80",
+    ],
     stats: [
       { value: "500+", label: "Klien Puas" },
       { value: "99.9%", label: "Uptime Sistem" },
