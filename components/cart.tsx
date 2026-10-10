@@ -9,7 +9,7 @@
  *   Renders a popover at the top-right corner when the cart button is clicked.
  */
 
-import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from "react";
+import React, { createContext, useContext, useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { ShoppingCart, X, Plus, Minus, Trash2, MessageSquare, ArrowLeft, CheckCircle, CreditCard, Truck, RotateCcw } from "lucide-react";
 
 import type { ItemVariantGroup, PaymentConfig } from "@/components/templates/types";
@@ -80,6 +80,38 @@ export function useSitePayments(): SitePaymentsValue {
   return useContext(SitePaymentsContext);
 }
 
+// ─── Persistence helpers ────────────────────────────────────────────────────
+
+const CART_STORAGE_PREFIX = "webjoz_cart";
+
+/**
+ * Builds a per-site localStorage key. Scopes by phone + brand when available,
+ * otherwise falls back to the current host + path so unrelated sites don't share.
+ */
+function cartStorageKey(waPhone?: string, brandName?: string): string {
+  const wa = (waPhone || "").replace(/\D/g, "");
+  const brand = (brandName || "").trim().toLowerCase().replace(/\s+/g, "-");
+  const scope = `${wa}|${brand}`.replace(/[^a-z0-9|_-]/g, "");
+  if (scope !== "|") return `${CART_STORAGE_PREFIX}:${scope}`;
+  if (typeof window !== "undefined") {
+    const loc = `${window.location.host}${window.location.pathname}`.replace(/[^a-z0-9]/gi, "-");
+    return `${CART_STORAGE_PREFIX}:loc:${loc}`;
+  }
+  return `${CART_STORAGE_PREFIX}:default`;
+}
+
+/** Drops malformed entries from persisted data so a bad payload can't break the cart. */
+function sanitizeCartItems(value: unknown): CartItem[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((it): it is CartItem =>
+    !!it && typeof it === "object" &&
+    typeof (it as CartItem).id === "string" &&
+    typeof (it as CartItem).name === "string" &&
+    typeof (it as CartItem).qty === "number" &&
+    (it as CartItem).qty > 0
+  );
+}
+
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 interface CartProviderProps {
@@ -109,6 +141,44 @@ interface CartProviderProps {
 export function CartProvider({ children, waPhone, brandName, previewMode, primaryColor, primaryFg, language, payments, onSubmitLead }: CartProviderProps) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [open, setOpen] = useState(false);
+
+  // Persist the cart to localStorage so it survives a page refresh. Scoped per
+  // site (phone/brand, falling back to the current URL) so carts from different
+  // businesses never mix. Disabled in editor/preview mode to avoid polluting a
+  // merchant's real cart and because preview content changes frequently.
+  const storageKey = useMemo(() => cartStorageKey(waPhone, brandName), [waPhone, brandName]);
+  const hydratedRef = useRef(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || previewMode) return;
+    let restored: CartItem[] | null = null;
+    try {
+      const raw = window.localStorage.getItem(storageKey);
+      if (raw) restored = sanitizeCartItems(JSON.parse(raw));
+    } catch {
+      /* ignore corrupt or unavailable storage */
+    }
+    // Deferred so we don't call setState synchronously inside the effect
+    // (react-hooks/set-state-in-effect) and so the save effect below never
+    // overwrites stored data with the initial empty state before hydration.
+    queueMicrotask(() => {
+      if (restored && restored.length > 0) setItems(restored);
+      hydratedRef.current = true;
+    });
+  }, [storageKey, previewMode]);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || previewMode || !hydratedRef.current) return;
+    try {
+      if (items.length === 0) {
+        window.localStorage.removeItem(storageKey);
+      } else {
+        window.localStorage.setItem(storageKey, JSON.stringify(items));
+      }
+    } catch {
+      /* ignore quota or unavailable storage */
+    }
+  }, [items, storageKey, previewMode]);
 
   const totalQty = items.reduce((s, i) => s + i.qty, 0);
 
