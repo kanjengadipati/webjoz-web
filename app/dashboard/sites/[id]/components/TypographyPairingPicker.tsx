@@ -10,6 +10,7 @@ import FontPicker from "./FontPicker";
 import { useI18n } from "@/lib/i18n/context";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { Check } from "lucide-react";
+import { CustomSelect } from "@/components/ui/custom-select";
 
 interface Props {
   designToken: any;
@@ -198,33 +199,37 @@ export default function TypographyPairingPicker({
             <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               {t("dashboard.sitesEditor.headingWeight")}
             </label>
-            <select
+            <CustomSelect
               value={designToken?.typography?.heading_weight || "700"}
-              onChange={(e) => onFieldChange?.("typography", "heading_weight", e.target.value)}
-              className="w-full px-2.5 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[13px] outline-none focus:border-primary/60"
-            >
-              <option value="400" className="bg-sidebar-input text-sidebar-foreground">{t("dashboard.sitesEditor.weightRegular")} (400)</option>
-              <option value="500" className="bg-sidebar-input text-sidebar-foreground">{t("dashboard.sitesEditor.weightMedium")} (500)</option>
-              <option value="600" className="bg-sidebar-input text-sidebar-foreground">{t("dashboard.sitesEditor.weightSemiBold")} (600)</option>
-              <option value="700" className="bg-sidebar-input text-sidebar-foreground">{t("dashboard.sitesEditor.weightBold")} (700)</option>
-              <option value="800" className="bg-sidebar-input text-sidebar-foreground">{t("dashboard.sitesEditor.weightExtraBold")} (800)</option>
-            </select>
+              onChange={(val) => onFieldChange?.("typography", "heading_weight", val)}
+              size="sm"
+              triggerClassName="bg-sidebar-input text-sidebar-foreground border-border text-[12px] h-9"
+              options={[
+                { value: "400", label: `${t("dashboard.sitesEditor.weightRegular")} (400)` },
+                { value: "500", label: `${t("dashboard.sitesEditor.weightMedium")} (500)` },
+                { value: "600", label: `${t("dashboard.sitesEditor.weightSemiBold")} (600)` },
+                { value: "700", label: `${t("dashboard.sitesEditor.weightBold")} (700)` },
+                { value: "800", label: `${t("dashboard.sitesEditor.weightExtraBold")} (800)` },
+              ]}
+            />
           </div>
           <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               {t("dashboard.sitesEditor.heroTitleSize")}
             </label>
-            <select
+            <CustomSelect
               value={designToken?.typography?.heading_size_hero || "3rem"}
-              onChange={(e) => onFieldChange?.("typography", "heading_size_hero", e.target.value)}
-              className="w-full px-2.5 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[13px] outline-none focus:border-primary/60"
-            >
-              <option value="2rem" className="bg-sidebar-input text-sidebar-foreground">{t("dashboard.sitesEditor.sizeSmall")} (2rem)</option>
-              <option value="2.5rem" className="bg-sidebar-input text-sidebar-foreground">{t("dashboard.sitesEditor.sizeMedium")} (2.5rem)</option>
-              <option value="3rem" className="bg-sidebar-input text-sidebar-foreground">{t("dashboard.sitesEditor.sizeLarge")} (3rem)</option>
-              <option value="3.5rem" className="bg-sidebar-input text-sidebar-foreground">{t("dashboard.sitesEditor.sizeVeryLarge")} (3.5rem)</option>
-              <option value="4rem" className="bg-sidebar-input text-sidebar-foreground">{t("dashboard.sitesEditor.sizeMax")} (4rem)</option>
-            </select>
+              onChange={(val) => onFieldChange?.("typography", "heading_size_hero", val)}
+              size="sm"
+              triggerClassName="bg-sidebar-input text-sidebar-foreground border-border text-[12px] h-9"
+              options={[
+                { value: "2rem", label: `${t("dashboard.sitesEditor.sizeSmall")} (2rem)` },
+                { value: "2.5rem", label: `${t("dashboard.sitesEditor.sizeMedium")} (2.5rem)` },
+                { value: "3rem", label: `${t("dashboard.sitesEditor.sizeLarge")} (3rem)` },
+                { value: "3.5rem", label: `${t("dashboard.sitesEditor.sizeVeryLarge")} (3.5rem)` },
+                { value: "4rem", label: `${t("dashboard.sitesEditor.sizeMax")} (4rem)` },
+              ]}
+            />
           </div>
         </div>
       )}

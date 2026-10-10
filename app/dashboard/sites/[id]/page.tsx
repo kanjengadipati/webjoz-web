@@ -67,6 +67,7 @@ import SiteStyleSelector from "./components/SiteStyleSelector";
 import IndustryPresetPicker from "./components/IndustryPresetPicker";
 import SectionVariantVisualPicker from "./components/SectionVariantVisualPicker";
 import PageLayoutHub from "./components/PageLayoutHub";
+import { CustomSelect } from "@/components/ui/custom-select";
 import EditorOnboardingModal, { useEditorOnboarding } from "@/components/editor-onboarding-modal";
 
 const SectionVariantPicker = SectionVariantVisualPicker;
@@ -1854,28 +1855,32 @@ export default function SiteEditorPage() {
 
                     <div className="space-y-1">
                       <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.cornerRadius")}</label>
-                      <select
+                      <CustomSelect
                         value={designToken?.layout?.corner_radius || "soft"}
-                        onChange={(e) => updateDesignTokenField("layout", "corner_radius", e.target.value)}
-                        className="w-full px-2.5 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[13px] outline-none focus:border-primary/60"
-                      >
-                        <option value="sharp" className="bg-sidebar">{t("dashboard.sitesEditor.cornerSharp")}</option>
-                        <option value="soft" className="bg-sidebar">{t("dashboard.sitesEditor.cornerSoft")}</option>
-                        <option value="rounded" className="bg-sidebar">{t("dashboard.sitesEditor.cornerRounded")}</option>
-                      </select>
+                        onChange={(val) => updateDesignTokenField("layout", "corner_radius", val)}
+                        size="sm"
+                        triggerClassName="bg-sidebar-input text-sidebar-foreground border-border text-[12px] h-9"
+                        options={[
+                          { value: "sharp", label: t("dashboard.sitesEditor.cornerSharp") },
+                          { value: "soft", label: t("dashboard.sitesEditor.cornerSoft") },
+                          { value: "rounded", label: t("dashboard.sitesEditor.cornerRounded") },
+                        ]}
+                      />
                     </div>
 
                     <div className="space-y-1">
                       <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.sectionSpacing")}</label>
-                      <select
+                      <CustomSelect
                         value={designToken?.layout?.section_spacing || "normal"}
-                        onChange={(e) => updateDesignTokenField("layout", "section_spacing", e.target.value)}
-                        className="w-full px-2.5 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[13px] outline-none focus:border-primary/60"
-                      >
-                        <option value="compact" className="bg-sidebar">{t("dashboard.sitesEditor.spacingCompact")}</option>
-                        <option value="normal" className="bg-sidebar">{t("dashboard.sitesEditor.normal")}</option>
-                        <option value="relaxed" className="bg-sidebar">{t("dashboard.sitesEditor.spacingRelaxed")}</option>
-                      </select>
+                        onChange={(val) => updateDesignTokenField("layout", "section_spacing", val)}
+                        size="sm"
+                        triggerClassName="bg-sidebar-input text-sidebar-foreground border-border text-[12px] h-9"
+                        options={[
+                          { value: "compact", label: t("dashboard.sitesEditor.spacingCompact") },
+                          { value: "normal", label: t("dashboard.sitesEditor.normal") },
+                          { value: "relaxed", label: t("dashboard.sitesEditor.spacingRelaxed") },
+                        ]}
+                      />
                     </div>
 
                     {/* Page Layout & Section Variants Hub */}
@@ -3098,16 +3103,28 @@ export default function SiteEditorPage() {
                   {/* Tata Letak */}
                   <div className="space-y-2">
                     <p className="text-[9px] font-bold uppercase tracking-wider text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.layoutLabel")}</p>
-                    <select value={designToken?.layout?.corner_radius || "soft"}
-                      onChange={(e) => updateDesignTokenField("layout", "corner_radius", e.target.value)}
-                      className="w-full h-8 px-2 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[11px] outline-none focus:border-primary/60">
-                      <option className="bg-sidebar-input text-sidebar-foreground" value="sharp">{t("dashboard.sitesEditor.cornerSharp")}</option><option className="bg-sidebar-input text-sidebar-foreground" value="soft">{t("dashboard.sitesEditor.cornerSoft")}</option><option className="bg-sidebar-input text-sidebar-foreground" value="rounded">{t("dashboard.sitesEditor.cornerRounded")}</option>
-                    </select>
-                    <select value={designToken?.layout?.section_spacing || "normal"}
-                      onChange={(e) => updateDesignTokenField("layout", "section_spacing", e.target.value)}
-                      className="w-full h-8 px-2 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[11px] outline-none focus:border-primary/60">
-                      <option className="bg-sidebar-input text-sidebar-foreground" value="compact">{t("dashboard.sitesEditor.spacingCompactShort")}</option><option className="bg-sidebar-input text-sidebar-foreground" value="normal">{t("dashboard.sitesEditor.normal")}</option><option className="bg-sidebar-input text-sidebar-foreground" value="relaxed">{t("dashboard.sitesEditor.spacingRelaxedShort")}</option>
-                    </select>
+                    <CustomSelect
+                      value={designToken?.layout?.corner_radius || "soft"}
+                      onChange={(val) => updateDesignTokenField("layout", "corner_radius", val)}
+                      size="sm"
+                      triggerClassName="bg-sidebar-input text-sidebar-foreground border-border text-[11px] h-8"
+                      options={[
+                        { value: "sharp", label: t("dashboard.sitesEditor.cornerSharp") },
+                        { value: "soft", label: t("dashboard.sitesEditor.cornerSoft") },
+                        { value: "rounded", label: t("dashboard.sitesEditor.cornerRounded") },
+                      ]}
+                    />
+                    <CustomSelect
+                      value={designToken?.layout?.section_spacing || "normal"}
+                      onChange={(val) => updateDesignTokenField("layout", "section_spacing", val)}
+                      size="sm"
+                      triggerClassName="bg-sidebar-input text-sidebar-foreground border-border text-[11px] h-8"
+                      options={[
+                        { value: "compact", label: t("dashboard.sitesEditor.spacingCompactShort") },
+                        { value: "normal", label: t("dashboard.sitesEditor.normal") },
+                        { value: "relaxed", label: t("dashboard.sitesEditor.spacingRelaxedShort") },
+                      ]}
+                    />
                     {isDynamic && (
                       <div className="pt-2 border-t border-border">
                         <PageLayoutHub
