@@ -129,7 +129,13 @@ export async function fetchPublicSiteMetadata(hostOrSubdomain: string): Promise<
 
     const canonicalUrl = `https://${cleanHost}${seo.canonical_path || ""}`;
 
+    // Use the tenant's own canonical URL as metadataBase so that
+    // any favicon / OG image URL is resolved relative to the correct host,
+    // not relative to webjoz.com (which is what the root layout sets).
+    const faviconUrl = seo.favicon_url?.trim();
+
     return {
+      metadataBase: new URL(canonicalUrl),
       title,
       description,
       authors: [{ name: siteName }],
@@ -140,7 +146,13 @@ export async function fetchPublicSiteMetadata(hostOrSubdomain: string): Promise<
       alternates: {
         canonical: canonicalUrl,
       },
-      icons: seo.favicon_url ? { icon: seo.favicon_url } : undefined,
+      icons: faviconUrl
+        ? {
+            icon: [{ url: faviconUrl, type: faviconUrl.endsWith(".ico") ? "image/x-icon" : "image/png" }],
+            shortcut: faviconUrl,
+            apple: faviconUrl,
+          }
+        : undefined,
       robots: {
         index: true,
         follow: true,
