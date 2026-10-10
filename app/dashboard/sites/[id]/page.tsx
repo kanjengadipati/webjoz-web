@@ -63,6 +63,7 @@ import { tenantHost } from "@/lib/site-config";
 import TypographyPairingPicker from "./components/TypographyPairingPicker";
 import ColorPatternPicker from "./components/ColorPatternPicker";
 import CompactColorPicker from "./components/CompactColorPicker";
+import SiteStyleSelector from "./components/SiteStyleSelector";
 import IndustryPresetPicker from "./components/IndustryPresetPicker";
 import SectionVariantVisualPicker from "./components/SectionVariantVisualPicker";
 import PageLayoutHub from "./components/PageLayoutHub";
@@ -1518,252 +1519,32 @@ export default function SiteEditorPage() {
           {/* Visual style selector */}
           {editorTab === "design" && (
             <div ref={templatePickerRef} className="flex-shrink-0 border-b border-border p-2.5">
-              <div className="mb-1.5 flex items-center justify-between">
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.styleLabel")}</p>
-                <div className="flex items-center gap-1.5">
-                  <button
-                    type="button"
-                    onClick={handleDesignUndo}
-                    disabled={designOnlyUndo.length === 0}
-                    aria-label={t("dashboard.sitesEditor.undoDesign")}
-                    title={designOnlyUndo.length > 0 ? t("dashboard.sitesEditor.undoDesignTitle") : t("dashboard.sitesEditor.noDesignChanges")}
-                    className="flex h-5 w-5 items-center justify-center rounded border border-border bg-muted/50 text-sidebar-muted-foreground transition-colors hover:bg-sidebar-muted hover:text-sidebar-foreground disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-muted/50 disabled:hover:text-sidebar-muted-foreground"
-                  >
-                    <RotateCcw className="h-2.5 w-2.5" />
-                  </button>
-                  {templateSaving && <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />}
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => !pendingDiff && setTemplatePickerOpen((open) => !open)}
-                disabled={templateSaving || !!pendingDiff}
-                className="flex w-full items-center gap-2 rounded-lg border border-border bg-muted/50 p-1.5 text-left transition hover:border-border hover:bg-sidebar-muted/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
-                aria-haspopup="listbox"
-                aria-expanded={templatePickerOpen}
-              >
-                <div className="w-12 flex-shrink-0">
-                  <TemplateThumbnail previewType={activeTemplatePreviewType} accent={activeTemplateAccent} active compact palette={activeDesignToken?.palette} />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-[12px] font-bold text-sidebar-foreground">{activeTemplateName}</p>
-                  <p className="truncate text-[10px] text-sidebar-subtle-foreground">{activeTemplateCategory}</p>
-                </div>
-                <ChevronDown className={`h-4 w-4 flex-shrink-0 text-sidebar-subtle-foreground transition-transform ${templatePickerOpen ? "rotate-180" : ""}`} />
-              </button>
-
-              {templatePickerOpen && (
-                <div className="mt-2 space-y-2 max-h-80 overflow-y-auto pr-1" role="listbox" aria-label={t("dashboard.sitesEditor.styleChoiceAria")}>
-                  {/* 1. LATEST AI GENERATED (TEMPLATE_DYNAMIC) AT THE VERY TOP */}
-                  {dynamicTemplate && (() => {
-                    const isTopActive = siteDetails.template_id === "TEMPLATE_DYNAMIC" && !activeCustomTemplate;
-                    return (
-                      <button
-                        key="top-dynamic-template"
-                        type="button"
-                        onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC", latestAiDesignToken)}
-                        disabled={templateSaving}
-                        className={`group w-full rounded-xl border p-2 text-left transition ${isTopActive
-                          ? "border-primary bg-primary/15"
-                          : "border-border bg-muted/40 hover:border-border hover:bg-sidebar-muted/[0.07]"
-                          }`}
-                        role="option"
-                        aria-selected={isTopActive}
-                      >
-                        <TemplateThumbnail
-                          previewType="dynamic"
-                          accent={latestAiDesignToken?.palette?.primary || dynamicTemplate.accent}
-                          active={isTopActive}
-                          palette={latestAiDesignToken?.palette}
-                        />
-                        <div className="mt-2 flex items-start gap-2">
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center gap-1.5">
-                              <p className="truncate text-[12px] font-bold text-sidebar-foreground">{dynamicTemplate.name}</p>
-                              <span className="bg-primary/25 text-primary text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase">{t("dashboard.sitesEditor.latest")}</span>
-                            </div>
-                            <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-sidebar-subtle-foreground">
-                              {t("dashboard.sitesEditor.latestAiDesc")}
-                            </p>
-                          </div>
-                          {isTopActive && <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-primary" />}
-                        </div>
-                      </button>
-                    );
-                  })()}
-
-                  {/* 2. STATIC PRESETS */}
-                  {TEMPLATE_REGISTRY.filter(t => t.id !== "TEMPLATE_DYNAMIC").map((template) => {
-                    const active = template.id === siteDetails.template_id;
-                    return (
-                      <button
-                        key={template.id}
-                        type="button"
-                        onClick={() => void handleTemplateChange(template.id)}
-                        disabled={templateSaving}
-                        className={`group w-full rounded-xl border p-2 text-left transition ${active
-                          ? "border-primary bg-primary/15"
-                          : "border-border bg-muted/40 hover:border-border hover:bg-sidebar-muted/[0.07]"
-                          }`}
-                        role="option"
-                        aria-selected={active}
-                      >
-                        <TemplateThumbnail
-                          previewType={template.previewType}
-                          accent={template.accent}
-                          active={active}
-                          palette={getTemplateDefaultDesignToken(template.id).palette}
-                        />
-                        <div className="mt-2 flex items-start gap-2">
-                          <div className="min-w-0 flex-1">
-                            <p className="truncate text-[12px] font-bold text-sidebar-foreground">{template.name}</p>
-                            <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-sidebar-subtle-foreground">{template.description}</p>
-                          </div>
-                          {active && <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-primary" />}
-                        </div>
-                      </button>
-                    );
-                  })}
-
-                  {/* 3. DIVIDER AND CUSTOM AI GENERATED TEMPLATES LIST */}
-                  {isSuperadmin && customTemplates.length > 0 && (
-                    <>
-                      <div className="border-t border-border my-2.5 pt-2" />
-                      <p className="px-2 pb-1 text-[9px] font-bold uppercase tracking-widest text-sidebar-subtle-foreground">
-                        {t("dashboard.sitesEditor.templateLibraryAdmin")}
-                      </p>
-                      {(() => {
-                        let hasMatchedActive = false;
-                        return customTemplates.map((template) => {
-                          const isMatch = siteDetails.template_id === "TEMPLATE_DYNAMIC" &&
-                            isDesignTokenEqual(designToken, template.design_token);
-
-                          const active = isMatch && !hasMatchedActive;
-                          if (active) {
-                            hasMatchedActive = true;
-                          }
-
-                          return (
-                            <button
-                              key={template.id}
-                              type="button"
-                              onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC", template.design_token)}
-                              disabled={templateSaving}
-                              className={`group w-full rounded-xl border p-2 text-left transition ${active
-                                ? "border-primary bg-primary/15"
-                                : "border-border bg-muted/40 hover:border-border hover:bg-sidebar-muted/[0.07]"
-                                }`}
-                              role="option"
-                              aria-selected={active}
-                            >
-                              <TemplateThumbnail
-                                previewType="dynamic"
-                                accent={template.design_token?.palette?.primary || "#7C3AED"}
-                                active={active}
-                                palette={template.design_token?.palette}
-                              />
-                              <div className="mt-2 flex items-start gap-2">
-                                <div className="min-w-0 flex-1">
-                                  <div className="flex items-center gap-1.5">
-                                    <p className="truncate text-[12px] font-bold text-sidebar-foreground">
-                                      AI: {template.business_type}
-                                    </p>
-                                    <span className="bg-emerald-500/25 text-emerald-300 text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase">{t("dashboard.sitesEditor.aiResult")}</span>
-                                  </div>
-                                  <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-sidebar-subtle-foreground">
-                                    {t("dashboard.sitesEditor.aiMoodCreated", undefined, { mood: template.mood || "custom", date: new Date(template.created_at).toLocaleDateString(locale === "id" ? "id-ID" : "en-US") })}
-                                  </p>
-                                </div>
-                                {active && <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-primary" />}
-                              </div>
-                            </button>
-                          );
-                        });
-                      })()}
-
-                      {customTemplates.length < customTemplatesTotal && (
-                        <div className="pt-2 px-1">
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              void fetchCustomTemplates(false);
-                            }}
-                            disabled={loadingTemplates}
-                            className="w-full py-2.5 text-center text-[11px] font-bold text-primary hover:text-primary transition-colors border border-dashed border-border hover:border-primary/30 rounded-xl hover:bg-muted/30 disabled:opacity-60 flex items-center justify-center gap-1.5"
-                          >
-                            {loadingTemplates ? (
-                              <>
-                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                                {t("dashboard.sitesEditor.loading")}
-                              </>
-                            ) : (
-                              <>
-                                {t("dashboard.sitesEditor.loadMore", undefined, { count: String(customTemplatesTotal - customTemplates.length) })}
-                              </>
-                            )}
-                          </button>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-              )}
-
-              {!templatePickerOpen && (
-                <div className="mt-2 space-y-1.5">
-                  {!aiDesignPromptOpen ? (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        requirePremium("ai_design", () => setAiDesignPromptOpen(true));
-                      }}
-                      disabled={aiLoading || !!pendingDiff}
-                      className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg border border-primary/20 bg-primary/10 text-primary text-[11px] font-semibold hover:bg-primary/20 transition disabled:opacity-50"
-                    >
-                      <SparkleGenAI className="h-[18px] w-[18px]" />
-                      {t("dashboard.sitesEditor.regenerateWithAi")}
-                    </button>
-                  ) : (
-                    <div className="space-y-1.5 rounded-lg border border-primary/20 bg-primary/5 p-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[9px] font-bold uppercase tracking-wider text-primary">{t("dashboard.sitesEditor.aiDesignPrompt")}</span>
-                        <button
-                          type="button"
-                          onClick={() => setAiDesignPromptOpen(false)}
-                          className="text-[9px] text-sidebar-muted-foreground hover:text-sidebar-foreground"
-                        >
-                          {t("dashboard.sitesEditor.cancel")}
-                        </button>
-                      </div>
-                      <input
-                        type="text"
-                        value={aiDesignInstructions}
-                        onChange={(e) => setAiDesignInstructions(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" && !pendingDiff) void handleAiRegenerateDesign();
-                        }}
-                        placeholder="cth: tema kopi vintage hangat..."
-                        className="w-full px-2 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[11px] outline-none focus:border-primary/60 placeholder:text-sidebar-subtle-foreground"
-                        disabled={aiLoading || !!pendingDiff}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => void handleAiRegenerateDesign()}
-                        disabled={aiLoading || !aiDesignInstructions.trim() || !!pendingDiff}
-                        className="w-full py-1.5 flex items-center justify-center gap-1 rounded bg-primary text-primary-foreground text-[11px] font-semibold hover:bg-primary/90 transition disabled:opacity-50"
-                      >
-                        {aiLoading ? (
-                          <Loader2 className="w-3 h-3 animate-spin" />
-                        ) : (
-                          <SparkleGenAI className="w-[18px] h-[18px]" />
-                        )}
-                        {aiLoading ? t("dashboard.sitesEditor.processing") : t("dashboard.sitesEditor.applyStyle")}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
+              <SiteStyleSelector
+                siteDetails={siteDetails}
+                designToken={designToken}
+                latestAiDesignToken={latestAiDesignToken}
+                customTemplates={customTemplates}
+                isSuperadmin={isSuperadmin}
+                customTemplatesTotal={customTemplatesTotal}
+                loadingTemplates={loadingTemplates}
+                templateSaving={templateSaving}
+                pendingDiff={pendingDiff}
+                designOnlyUndo={designOnlyUndo}
+                handleDesignUndo={handleDesignUndo}
+                handleTemplateChange={handleTemplateChange}
+                fetchCustomTemplates={fetchCustomTemplates}
+                aiLoading={aiLoading}
+                requirePremium={requirePremium}
+                aiDesignInstructions={aiDesignInstructions}
+                setAiDesignInstructions={setAiDesignInstructions}
+                handleAiRegenerateDesign={handleAiRegenerateDesign}
+                templatePickerOpen={templatePickerOpen}
+                setTemplatePickerOpen={setTemplatePickerOpen}
+                aiDesignPromptOpen={aiDesignPromptOpen}
+                setAiDesignPromptOpen={setAiDesignPromptOpen}
+                isDesignTokenEqual={isDesignTokenEqual}
+                locale={locale}
+              />
             </div>
           )}
 
@@ -3207,106 +2988,32 @@ export default function SiteEditorPage() {
                   </button>
 
                   {/* Gaya Situs */}
-                  <div>
-                    <div className="mb-1.5 flex items-center justify-between">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.styleLabel")}</p>
-                      <div className="flex items-center gap-1.5">
-                        {designOnlyUndo.length > 0 && (
-                          <button type="button" onClick={handleDesignUndo} aria-label={t("dashboard.sitesEditor.undoDesign")}
-                            className="flex h-5 w-5 items-center justify-center rounded border border-border bg-muted/50 text-sidebar-muted-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground">
-                            <RotateCcw className="h-2.5 w-2.5" />
-                          </button>
-                        )}
-                        {templateSaving && <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />}
-                      </div>
-                    </div>
-                    <button type="button"
-                      onClick={() => !pendingDiff && setTemplatePickerOpen((open) => !open)}
-                      disabled={templateSaving || !!pendingDiff}
-                      className="flex w-full items-center gap-2 rounded-lg border border-border bg-muted/50 p-1.5 text-left transition hover:border-border hover:bg-sidebar-muted/[0.07] disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <div className="w-10 flex-shrink-0">
-                        <TemplateThumbnail previewType={activeTemplatePreviewType} accent={activeTemplateAccent} active compact palette={activeDesignToken?.palette} />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-[12px] font-bold text-sidebar-foreground">{activeTemplateName}</p>
-                        <p className="truncate text-[10px] text-sidebar-subtle-foreground">{activeTemplateCategory}</p>
-                      </div>
-                      <ChevronDown className={`h-4 w-4 flex-shrink-0 text-sidebar-subtle-foreground transition-transform ${templatePickerOpen ? "rotate-180" : ""}`} />
-                    </button>
-                    {templatePickerOpen && (
-                      <div className="mt-2 space-y-2 max-h-64 overflow-y-auto pr-1">
-                        {dynamicTemplate && (() => {
-                          const isTopActive = siteDetails.template_id === "TEMPLATE_DYNAMIC" && !activeCustomTemplate;
-                          return (
-                            <button key="top-dynamic-template" type="button"
-                              onClick={() => void handleTemplateChange("TEMPLATE_DYNAMIC", latestAiDesignToken)}
-                              disabled={templateSaving}
-                              className={`group w-full rounded-xl border p-2 text-left transition ${isTopActive ? "border-primary bg-primary/15" : "border-border bg-muted/40 hover:border-border hover:bg-sidebar-muted/[0.07]"}`}>
-                              <TemplateThumbnail previewType="dynamic" accent={latestAiDesignToken?.palette?.primary || dynamicTemplate.accent} active={isTopActive} palette={latestAiDesignToken?.palette} />
-                              <div className="mt-1.5 flex items-start gap-2">
-                                <div className="min-w-0 flex-1">
-                                  <p className="truncate text-[11px] font-bold text-sidebar-foreground">{t("dashboard.sitesEditor.aiDesignEngine")}</p>
-                                  <p className="truncate text-[10px] text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.latestAiGenerated")}</p>
-                                </div>
-                                {isTopActive && <Check className="mt-0.5 h-3 w-3 flex-shrink-0 text-primary" />}
-                              </div>
-                            </button>
-                          );
-                        })()}
-                        {TEMPLATE_REGISTRY.filter(t => t.id !== "TEMPLATE_DYNAMIC").map((template) => {
-                          const active = template.id === siteDetails.template_id;
-                          return (
-                            <button key={template.id} type="button"
-                              onClick={() => void handleTemplateChange(template.id)}
-                              disabled={templateSaving}
-                              className={`group w-full rounded-xl border p-2 text-left transition ${active ? "border-primary bg-primary/15" : "border-border bg-muted/40 hover:border-border hover:bg-sidebar-muted/[0.07]"}`}>
-                              <TemplateThumbnail previewType={template.previewType} accent={template.accent} active={active} palette={getTemplateDefaultDesignToken(template.id).palette} />
-                              <div className="mt-1.5 flex items-start gap-2">
-                                <div className="min-w-0 flex-1">
-                                  <p className="truncate text-[11px] font-bold text-sidebar-foreground">{template.name}</p>
-                                  <p className="mt-0.5 line-clamp-1 text-[10px] text-sidebar-subtle-foreground">{template.description}</p>
-                                </div>
-                                {active && <Check className="mt-0.5 h-3 w-3 flex-shrink-0 text-primary" />}
-                              </div>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
-                    {!templatePickerOpen && (
-                      <div className="mt-1.5">
-                        {!aiDesignPromptOpen ? (
-                          <button type="button"
-                            onClick={() => requirePremium("ai_design", () => setAiDesignPromptOpen(true))}
-                            disabled={aiLoading || !!pendingDiff}
-                            className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg border border-primary/20 bg-primary/10 text-primary text-[11px] font-semibold hover:bg-primary/20 transition disabled:opacity-50">
-                            <SparkleGenAI className="h-[16px] w-[16px]" />
-                            {t("dashboard.sitesEditor.regenerateWithAi")}
-                          </button>
-                        ) : (
-                          <div className="space-y-1.5 rounded-lg border border-primary/20 bg-primary/5 p-2">
-                            <div className="flex items-center justify-between">
-                              <span className="text-[9px] font-bold uppercase tracking-wider text-primary">{t("dashboard.sitesEditor.aiDesignPrompt")}</span>
-                              <button type="button" onClick={() => setAiDesignPromptOpen(false)} className="text-[9px] text-sidebar-muted-foreground hover:text-sidebar-foreground">{t("dashboard.sitesEditor.cancel")}</button>
-                            </div>
-                            <input type="text" value={aiDesignInstructions}
-                              onChange={(e) => setAiDesignInstructions(e.target.value)}
-                              onKeyDown={(e) => { if (e.key === "Enter" && !pendingDiff) void handleAiRegenerateDesign(); }}
-                              placeholder="cth: tema kopi vintage hangat..."
-                              className="w-full px-2 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[11px] outline-none focus:border-primary/60 placeholder:text-sidebar-subtle-foreground"
-                              disabled={aiLoading || !!pendingDiff} />
-                            <button type="button" onClick={() => void handleAiRegenerateDesign()}
-                              disabled={aiLoading || !aiDesignInstructions.trim() || !!pendingDiff}
-                              className="w-full py-1.5 flex items-center justify-center gap-1 rounded bg-primary text-primary-foreground text-[11px] font-semibold disabled:opacity-50">
-                              {aiLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <SparkleGenAI className="w-[16px] h-[16px]" />}
-                              {aiLoading ? t("dashboard.sitesEditor.processing") : t("dashboard.sitesEditor.applyStyle")}
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                  <SiteStyleSelector
+                    siteDetails={siteDetails}
+                    designToken={designToken}
+                    latestAiDesignToken={latestAiDesignToken}
+                    customTemplates={customTemplates}
+                    isSuperadmin={isSuperadmin}
+                    customTemplatesTotal={customTemplatesTotal}
+                    loadingTemplates={loadingTemplates}
+                    templateSaving={templateSaving}
+                    pendingDiff={pendingDiff}
+                    designOnlyUndo={designOnlyUndo}
+                    handleDesignUndo={handleDesignUndo}
+                    handleTemplateChange={handleTemplateChange}
+                    fetchCustomTemplates={fetchCustomTemplates}
+                    aiLoading={aiLoading}
+                    requirePremium={requirePremium}
+                    aiDesignInstructions={aiDesignInstructions}
+                    setAiDesignInstructions={setAiDesignInstructions}
+                    handleAiRegenerateDesign={handleAiRegenerateDesign}
+                    templatePickerOpen={templatePickerOpen}
+                    setTemplatePickerOpen={setTemplatePickerOpen}
+                    aiDesignPromptOpen={aiDesignPromptOpen}
+                    setAiDesignPromptOpen={setAiDesignPromptOpen}
+                    isDesignTokenEqual={isDesignTokenEqual}
+                    locale={locale}
+                  />
 
                   <div className="border-t border-border" />
 
