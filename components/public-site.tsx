@@ -129,15 +129,26 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
         const subdomain = siteInfo?.subdomain || "";
         const templateId = envelope.data?.template_id || "";
 
-        // Favicon
+        // Favicon — update all rel variants so browser picks it up reliably
         if (seo?.favicon_url) {
-          let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
-          if (!link) {
-            link = document.createElement("link");
-            link.rel = "icon";
-            document.head.appendChild(link);
-          }
-          link.href = seo.favicon_url;
+          const faviconUrl = seo.favicon_url;
+          const relVariants = ["icon", "shortcut icon", "apple-touch-icon"];
+          relVariants.forEach((rel) => {
+            // Try to find existing link with this rel
+            let link = document.querySelector(`link[rel="${rel}"]`) as HTMLLinkElement | null;
+            if (!link && rel === "icon") {
+              // Also check rel~='icon' (e.g. "shortcut icon" contains "icon")
+              link = document.querySelector("link[rel~='icon']:not([rel='shortcut icon'])") as HTMLLinkElement | null;
+            }
+            if (!link) {
+              link = document.createElement("link");
+              link.rel = rel;
+              document.head.appendChild(link);
+            }
+            // Force cache-bust by appending a timestamp query param
+            const separator = faviconUrl.includes("?") ? "&" : "?";
+            link.href = `${faviconUrl}${separator}_t=${Date.now()}`;
+          });
         }
 
         // Title
