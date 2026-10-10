@@ -19,6 +19,7 @@ interface FileUploadProps {
 }
 
 // Client-side image compression helper using Canvas
+// Preserves original format: PNG → PNG (transparency intact), JPEG → JPEG, others → WebP
 export function compressImage(
   file: File,
   maxWidth: number,
@@ -26,11 +27,18 @@ export function compressImage(
   quality: number = 0.8
 ): Promise<File | Blob> {
   return new Promise((resolve) => {
-    // Only compress standard image files, skip icons, SVGs, etc.
+    // Skip: non-images, ICO (browser can't re-encode), SVG (vector, no resize needed)
     if (!file.type.startsWith("image/") || file.type === "image/x-icon" || file.type === "image/svg+xml") {
       resolve(file);
       return;
     }
+
+    // Determine output MIME type — preserve PNG to keep transparency
+    const isPng  = file.type === "image/png";
+    const isJpeg = file.type === "image/jpeg" || file.type === "image/jpg";
+    const outputMime = isPng ? "image/png" : isJpeg ? "image/jpeg" : "image/webp";
+    // PNG quality param is ignored by canvas (lossless), but keep for JPEG/WebP
+    const outputQuality = isPng ? undefined : quality;
 
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -41,18 +49,15 @@ export function compressImage(
         let width = img.width;
         let height = img.height;
 
-        // Apply aspect ratio scale if original size exceeds target constraints
+        // Only resize if image exceeds target constraints (preserve aspect ratio)
         if (width > maxWidth || height > maxHeight) {
-          const widthRatio = maxWidth / width;
-          const heightRatio = maxHeight / height;
-          const bestRatio = Math.min(widthRatio, heightRatio);
-
-          width = Math.round(width * bestRatio);
+          const bestRatio = Math.min(maxWidth / width, maxHeight / height);
+          width  = Math.round(width  * bestRatio);
           height = Math.round(height * bestRatio);
         }
 
         const canvas = document.createElement("canvas");
-        canvas.width = width;
+        canvas.width  = width;
         canvas.height = height;
 
         const ctx = canvas.getContext("2d");
@@ -61,18 +66,24 @@ export function compressImage(
           return;
         }
 
+        // For PNG: clear canvas first to ensure transparent pixels stay transparent
+        if (isPng) ctx.clearRect(0, 0, width, height);
+
         ctx.drawImage(img, 0, 0, width, height);
 
         canvas.toBlob(
           (blob) => {
             if (blob) {
-              resolve(new File([blob], file.name, { type: "image/jpeg", lastModified: Date.now() }));
+              // Keep original filename extension for PNG, rename for others
+              const ext = isPng ? ".png" : isJpeg ? ".jpg" : ".webp";
+              const baseName = file.name.replace(/\.[^.]+$/, "");
+              resolve(new File([blob], `${baseName}${ext}`, { type: outputMime, lastModified: Date.now() }));
             } else {
               resolve(file);
             }
           },
-          "image/jpeg",
-          quality
+          outputMime,
+          outputQuality
         );
       };
       img.onerror = () => resolve(file);
