@@ -2179,7 +2179,7 @@ export default function SectionForms({
           />
 
           {/* Favicon + OG Image row */}
-          <FileUpload label={t("dashboard.sitesEditor.seoFaviconLabel")} value={content.seo?.favicon_url || ""} onChange={(val) => updateField("seo", "favicon_url", val)} placeholder="https://..." accept=".ico,.png,.jpg,.jpeg" maxWidth={128} maxHeight={128} quality={0.9} />
+          <FileUpload label={t("dashboard.sitesEditor.seoFaviconLabel")} value={content.seo?.favicon_url || ""} onChange={(val) => updateField("seo", "favicon_url", val)} placeholder="https://..." accept=".ico,.png,.jpg,.jpeg" maxWidth={128} maxHeight={128} quality={0.9} previewSize="icon" objectFit="contain" />
           <FileUpload label={t("dashboard.sitesEditor.seoOgImageLabel")} value={content.seo?.og_image_url || ""} onChange={(val) => updateField("seo", "og_image_url", val)} placeholder="https://..." maxWidth={1200} maxHeight={630} quality={0.85} />
 
           {/* ── Social Share Preview ── */}
