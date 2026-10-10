@@ -1958,6 +1958,8 @@ export interface Translations {
       shippingNotePlaceholder: string;
       returnPolicy: string;
       returnPolicyPlaceholder: string;
+      toggleItemDetail: string;
+      advancedSettings: string;
     };
     sitesBlog: {
       title: string;
@@ -4612,6 +4614,8 @@ export const translations: Record<Locale, Translations> = {
         shippingNotePlaceholder: "cth. Ongkir menyesuaikan lokasi. Estimasi 1–3 hari kerja.",
         returnPolicy: "Kebijakan Retur",
         returnPolicyPlaceholder: "cth. Barang dapat dikembalikan/ditukar dalam 7 hari. Hubungi kami lewat WhatsApp.",
+        toggleItemDetail: "Buka/tutup detail item",
+        advancedSettings: "Pengaturan lanjutan",
       },
       sitesBlog: {
         title: "Blog Postingan",
@@ -7336,6 +7340,8 @@ export const translations: Record<Locale, Translations> = {
         shippingNotePlaceholder: "e.g. Shipping cost depends on your location. Estimated 1–3 business days.",
         returnPolicy: "Return Policy",
         returnPolicyPlaceholder: "e.g. Items can be returned or exchanged within 7 days. Contact us via WhatsApp.",
+        toggleItemDetail: "Expand/collapse item details",
+        advancedSettings: "Advanced settings",
       },
       sitesBlog: {
         title: "Blog Posts",
