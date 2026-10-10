@@ -14,7 +14,8 @@ interface FileUploadProps {
   maxWidth?: number;
   maxHeight?: number;
   quality?: number;
-  previewSize?: "sm" | "md" | "lg" | "xl";
+  previewSize?: "icon" | "sm" | "md" | "lg" | "xl";
+  objectFit?: "cover" | "contain";
 }
 
 // Client-side image compression helper using Canvas
@@ -129,6 +130,7 @@ export default function FileUpload({
   maxHeight = 1600,
   quality = 0.8,
   previewSize = "md",
+  objectFit = "cover",
 }: FileUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -166,8 +168,18 @@ export default function FileUpload({
     fileInputRef.current?.click();
   };
 
-  const previewHeightClass = previewSize === "sm" ? "h-20" : previewSize === "lg" ? "h-48" : previewSize === "xl" ? "h-60" : "h-32";
+  const previewHeightClass =
+    previewSize === "icon" ? "h-20" :
+    previewSize === "sm" ? "h-24" :
+    previewSize === "lg" ? "h-48" :
+    previewSize === "xl" ? "h-60" : "h-32";
   const hasPreview = value && value.startsWith("http") && !imgError;
+
+  const checkerboardStyle: React.CSSProperties | undefined = objectFit === "contain" ? {
+    backgroundImage: "linear-gradient(45deg, rgba(128,128,128,0.12) 25%, transparent 25%), linear-gradient(-45deg, rgba(128,128,128,0.12) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, rgba(128,128,128,0.12) 75%), linear-gradient(-45deg, transparent 75%, rgba(128,128,128,0.12) 75%)",
+    backgroundSize: "12px 12px",
+    backgroundPosition: "0 0, 0 6px, 6px -6px, -6px 0px",
+  } : undefined;
 
   return (
     <div className="space-y-1.5 w-full">
@@ -195,21 +207,35 @@ export default function FileUpload({
 
       {/* Image Preview Thumbnail */}
       {hasPreview ? (
-        <div className={`relative group w-full ${previewHeightClass} rounded-xl overflow-hidden border border-slate-200 bg-slate-50`}>
+        <div
+          style={checkerboardStyle}
+          className={`relative group w-full ${previewHeightClass} rounded-xl overflow-hidden border border-border/80 bg-muted/30 dark:bg-zinc-900/40 flex items-center justify-center`}
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={value}
-            alt="Preview"
-            onError={() => setImgError(true)}
-            className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-75"
-          />
+          {previewSize === "icon" ? (
+            <div className="w-full h-full flex items-center justify-center p-2">
+              <img
+                src={value}
+                alt="Preview"
+                onError={() => setImgError(true)}
+                className="max-h-12 max-w-12 object-contain transition-all duration-300 group-hover:brightness-75 drop-shadow-sm"
+              />
+            </div>
+          ) : (
+            <img
+              src={value}
+              alt="Preview"
+              onError={() => setImgError(true)}
+              className={`w-full h-full ${objectFit === "contain" ? "object-contain p-3" : "object-cover"} transition-all duration-300 group-hover:brightness-75`}
+            />
+          )}
           {/* Overlay buttons on hover */}
-          <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/40 backdrop-blur-[2px]">
             <button
               type="button"
               onClick={triggerSelectFile}
               disabled={uploading}
-              className="flex items-center gap-1.5 bg-white/90 hover:bg-white text-slate-700 text-[11px] font-semibold px-3 py-1.5 rounded-lg shadow-md transition-all cursor-pointer"
+              className="flex items-center gap-1.5 bg-white/95 hover:bg-white text-slate-800 text-[11px] font-semibold px-3 py-1.5 rounded-lg shadow-md transition-all cursor-pointer"
             >
               {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
               Ganti Foto
@@ -228,10 +254,12 @@ export default function FileUpload({
         /* Empty state placeholder */
         <div
           onClick={triggerSelectFile}
-          className={`relative w-full ${previewHeightClass} rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 flex flex-col items-center justify-center gap-1.5 cursor-pointer hover:border-primary/50 hover:bg-slate-100 transition-all group`}
+          className={`relative w-full ${previewHeightClass} rounded-xl border-2 border-dashed border-border/80 bg-muted/20 hover:bg-muted/40 flex ${previewSize === "icon" ? "flex-row gap-2" : "flex-col gap-1.5"} items-center justify-center cursor-pointer hover:border-primary/50 transition-all group`}
         >
-          <ImageIcon className="w-6 h-6 text-slate-300 group-hover:text-primary/50 transition-colors" />
-          <span className="text-[11px] text-slate-400 group-hover:text-slate-500 font-medium transition-colors">Klik untuk pilih foto</span>
+          <ImageIcon className={`${previewSize === "icon" ? "w-4 h-4" : "w-6 h-6"} text-muted-foreground/60 group-hover:text-primary/70 transition-colors`} />
+          <span className="text-[11px] text-muted-foreground group-hover:text-foreground font-medium transition-colors">
+            {previewSize === "icon" ? "Klik untuk pilih favicon" : "Klik untuk pilih foto"}
+          </span>
         </div>
       )}
 
