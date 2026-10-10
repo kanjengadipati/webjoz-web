@@ -183,6 +183,7 @@ export function buildFullContent(
     ...(c.stats ? { stats: c.stats } : {}),
     ...(c.pricing ? { pricing: c.pricing } : {}),
     ...(c.partners ? { partners: c.partners } : {}),
+    ...(c.payments ? { payments: c.payments } : {}),
     seo: {
       ...c.seo,
       title: c.seo?.title || businessName,
