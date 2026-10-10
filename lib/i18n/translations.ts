@@ -2133,6 +2133,7 @@ export interface Translations {
       previewTablet: string;
       previewMobile: string;
       toggleDarkAria: string;
+      themeMode: string;
       light: string;
       dark: string;
       switchLight: string;
@@ -4789,10 +4790,11 @@ export const translations: Record<Locale, Translations> = {
         previewTablet: "Preview tablet",
         previewMobile: "Preview mobile",
         toggleDarkAria: "Toggle dark mode",
-        light: "Light",
-        dark: "Dark",
-        switchLight: "Ganti ke mode terang",
-        switchDark: "Ganti ke mode gelap",
+        themeMode: "Mode Tema",
+        light: "Terang",
+        dark: "Gelap",
+        switchLight: "Mode Terang",
+        switchDark: "Mode Gelap",
         aiUsage: "AI Usage",
         generate: "Generate",
         sectionRegen: "Section Regen",
@@ -7515,10 +7517,11 @@ export const translations: Record<Locale, Translations> = {
         previewTablet: "Preview tablet",
         previewMobile: "Preview mobile",
         toggleDarkAria: "Toggle dark mode",
+        themeMode: "Theme Mode",
         light: "Light",
         dark: "Dark",
-        switchLight: "Switch to light mode",
-        switchDark: "Switch to dark mode",
+        switchLight: "Light Mode",
+        switchDark: "Dark Mode",
         aiUsage: "AI Usage",
         generate: "Generate",
         sectionRegen: "Section Regen",

@@ -1928,29 +1928,55 @@ export default function SiteEditorPage() {
                   </p>
                 </div>
                 <div ref={designContentRef} className="flex-1 overflow-y-auto px-3.5 py-3 space-y-4 relative bg-sidebar text-sidebar-foreground">
-                  {/* Theme Mode Toggle (Light / Dark) */}
+                  {/* Theme Mode Toggle (Segmented: Terang / Gelap) */}
                   <div className="flex items-center justify-between p-2 rounded-xl border border-border bg-sidebar-muted/30">
-                    <div className="flex items-center gap-1.5">
-                      {effectiveThemeIsDark ? <Moon className="w-3.5 h-3.5 text-primary" /> : <Sun className="w-3.5 h-3.5 text-amber-500" />}
-                      <span className="text-[11px] font-semibold text-sidebar-foreground">
-                        {effectiveThemeIsDark ? t("dashboard.sitesEditor.dark") : t("dashboard.sitesEditor.light")}
-                      </span>
+                    <span className="text-[11px] font-semibold text-sidebar-foreground">
+                      {t("dashboard.sitesEditor.themeMode")}
+                    </span>
+                    <div className="inline-flex p-0.5 rounded-lg border border-border bg-sidebar-muted/60">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!effectiveThemeIsDark) return;
+                          pushGlobalUndo({ force: true });
+                          pushDesignUndo();
+                          setDesignToken((prev: any) => ({
+                            ...(prev || {}),
+                            theme_mode: "light",
+                          }));
+                        }}
+                        className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-bold transition cursor-pointer ${
+                          !effectiveThemeIsDark
+                            ? "bg-sidebar text-foreground shadow-2xs border border-border/60"
+                            : "text-sidebar-muted-foreground hover:text-sidebar-foreground"
+                        }`}
+                        title={t("dashboard.sitesEditor.switchLight")}
+                      >
+                        <Sun className={`w-3 h-3 ${!effectiveThemeIsDark ? "text-amber-500" : ""}`} />
+                        <span>{t("dashboard.sitesEditor.light")}</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (effectiveThemeIsDark) return;
+                          pushGlobalUndo({ force: true });
+                          pushDesignUndo();
+                          setDesignToken((prev: any) => ({
+                            ...(prev || {}),
+                            theme_mode: "dark",
+                          }));
+                        }}
+                        className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-bold transition cursor-pointer ${
+                          effectiveThemeIsDark
+                            ? "bg-sidebar text-foreground shadow-2xs border border-border/60"
+                            : "text-sidebar-muted-foreground hover:text-sidebar-foreground"
+                        }`}
+                        title={t("dashboard.sitesEditor.switchDark")}
+                      >
+                        <Moon className={`w-3 h-3 ${effectiveThemeIsDark ? "text-primary" : ""}`} />
+                        <span>{t("dashboard.sitesEditor.dark")}</span>
+                      </button>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        pushGlobalUndo({ force: true });
-                        pushDesignUndo();
-                        setDesignToken((prev: any) => ({
-                          ...(prev || {}),
-                          theme_mode: effectiveThemeIsDark ? "light" : "dark",
-                        }));
-                      }}
-                      className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold border border-border bg-sidebar hover:bg-sidebar-muted text-sidebar-foreground transition cursor-pointer active:scale-95 shadow-2xs"
-                    >
-                      {effectiveThemeIsDark ? <Sun className="w-3 h-3 text-amber-500" /> : <Moon className="w-3 h-3 text-primary" />}
-                      {effectiveThemeIsDark ? t("dashboard.sitesEditor.switchLight") : t("dashboard.sitesEditor.switchDark")}
-                    </button>
                   </div>
 
                   {/* Palet Warna */}
