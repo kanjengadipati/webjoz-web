@@ -859,7 +859,7 @@ export default function SectionForms({
               <AiImageButton businessType={bType} onSelect={(url) => handleAiImage("hero", "image_url", url)}
  />
             </label>
-            <FileUpload label="" value={content.hero.image_url || ""} onChange={(val) => updateField("hero", "image_url", val)} placeholder="https://..." maxWidth={1600} maxHeight={1200} quality={0.8} />
+            <FileUpload label="" value={content.hero.image_url || ""} onChange={(val) => updateField("hero", "image_url", val)} placeholder="https://..." maxWidth={1600} maxHeight={1200} quality={0.8} previewSize="lg" />
           </div>
           {/* Eyebrow label (semua template, opsional) */}
           <div className="space-y-1">
@@ -1238,7 +1238,7 @@ export default function SectionForms({
                 </div>
                 <input type="text" value={m.name || ""} onChange={(e) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], name: e.target.value }; updateField("about", "team_members", arr); }} placeholder="Nama" className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
                 <input type="text" value={m.role || ""} onChange={(e) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], role: e.target.value }; updateField("about", "team_members", arr); }} placeholder="Jabatan" className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
-                <FileUpload label="Foto" value={m.photo_url || ""} onChange={(val) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], photo_url: val }; updateField("about", "team_members", arr); }} placeholder="https://..." maxWidth={400} maxHeight={400} quality={0.85} />
+                <FileUpload label="Foto" value={m.photo_url || ""} onChange={(val) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], photo_url: val }; updateField("about", "team_members", arr); }} placeholder="https://..." maxWidth={400} maxHeight={400} quality={0.85} previewSize="sm" />
               </div>
             ))}
             <button type="button" onClick={() => updateField("about", "team_members", [...(content.about?.team_members || []), { name: "Nama Anggota", role: "Jabatan", photo_url: "" }])} className="flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-primary/80 hover:text-primary cursor-pointer"><Plus className="w-3 h-3" /> Tambah Anggota</button>
@@ -2180,7 +2180,7 @@ export default function SectionForms({
 
           {/* Favicon + OG Image row */}
           <FileUpload label={t("dashboard.sitesEditor.seoFaviconLabel")} value={content.seo?.favicon_url || ""} onChange={(val) => updateField("seo", "favicon_url", val)} placeholder="https://..." accept=".ico,.png,.jpg,.jpeg" maxWidth={128} maxHeight={128} quality={0.9} previewSize="icon" objectFit="contain" />
-          <FileUpload label={t("dashboard.sitesEditor.seoOgImageLabel")} value={content.seo?.og_image_url || ""} onChange={(val) => updateField("seo", "og_image_url", val)} placeholder="https://..." maxWidth={1200} maxHeight={630} quality={0.85} />
+          <FileUpload label={t("dashboard.sitesEditor.seoOgImageLabel")} value={content.seo?.og_image_url || ""} onChange={(val) => updateField("seo", "og_image_url", val)} placeholder="https://..." maxWidth={1200} maxHeight={630} quality={0.85} previewSize="lg" />
 
           {/* ── Social Share Preview ── */}
           {(() => {
