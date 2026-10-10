@@ -216,11 +216,11 @@ export interface DesignToken {
     heading_tracking?: string;
   };
   layout?: {
-    hero_style?: "full-bleed" | "split" | "centered" | "minimal" | "minimalist-elegant" | "tech-saas" | "neo-brutalist" | "bento-grid" | "split-editorial" | "natural-organic" | "personal-billboard" | "portrait-showcase" | "work-preview-strip" | "chronology-badge";
+    hero_style?: "full-bleed" | "split" | "centered" | "minimal" | "minimalist-elegant" | "tech-saas" | "neo-brutalist" | "bento-grid" | "split-editorial" | "natural-organic" | "personal-billboard" | "portrait-showcase" | "work-preview-strip" | "chronology-badge" | "image-carousel";
     section_spacing?: "compact" | "normal" | "relaxed";
     corner_radius?: "sharp" | "soft" | "rounded";
     section_variants?: {
-      hero?: "full-bleed" | "split" | "centered" | "minimal" | "minimalist-elegant" | "tech-saas" | "neo-brutalist" | "bento-grid" | "split-editorial" | "natural-organic" | "personal-billboard" | "portrait-showcase" | "work-preview-strip" | "chronology-badge";
+      hero?: "full-bleed" | "split" | "centered" | "minimal" | "minimalist-elegant" | "tech-saas" | "neo-brutalist" | "bento-grid" | "split-editorial" | "natural-organic" | "personal-billboard" | "portrait-showcase" | "work-preview-strip" | "chronology-badge" | "image-carousel";
       about?: "classic" | "split-image" | "stat-heavy" | "timeline" | "team-grid";
       benefits?: "grid" | "stat-grid" | "checklist" | "comparison-table" | "featured-grid" | "icon-row" | "bento-grid" | "trust-bar" | "how-it-works";
       testimonials?: "carousel" | "compact" | "grid" | "logo-wall" | "featured-spotlight" | "google-reviews";
@@ -292,6 +292,7 @@ export interface TemplateProps {
       cta_text: string;
       cta_url: string;
       image_url?: string;
+      images?: string[];
       image_credit?: ImageCredit | null;
       eyebrow?: string;
       cta_secondary_text?: string;

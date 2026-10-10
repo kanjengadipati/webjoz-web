@@ -2053,6 +2053,7 @@ export interface Translations {
       heroCentered: string;
       heroSplit: string;
       heroFullBleed: string;
+      heroImageCarousel: string;
       heroMinimalist: string;
       heroMinimalistElegant: string;
       heroTechSaaS: string;
@@ -4706,6 +4707,7 @@ export const translations: Record<Locale, Translations> = {
         heroCentered: "Hero: Centered",
         heroSplit: "Hero: Split Screen",
         heroFullBleed: "Hero: Full Bleed",
+        heroImageCarousel: "Hero: Carousel Gambar",
         heroMinimalist: "Hero: Minimalist",
         heroMinimalistElegant: "Hero: Minimalis Elegan",
         heroTechSaaS: "Hero: Tech SaaS",
@@ -7429,6 +7431,7 @@ export const translations: Record<Locale, Translations> = {
         heroCentered: "Hero: Centered",
         heroSplit: "Hero: Split Screen",
         heroFullBleed: "Hero: Full Bleed",
+        heroImageCarousel: "Hero: Image Carousel",
         heroMinimalist: "Hero: Minimalist",
         heroMinimalistElegant: "Hero: Minimalist Elegant",
         heroTechSaaS: "Hero: Tech SaaS",
