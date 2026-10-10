@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { AiFieldButton, EMOJI_GROUPS, MCF_INPUT_BASE as inputBase_mcf, MCF_INPUT_LABEL as inputLabel_mcf, normStr, MenuCatalogForm } from "@/components/menu-catalog-form";
-import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, RefreshCw, Loader2, Star, Zap, Shield, Award, Heart, CheckCircle, Clock, Globe, Users, TrendingUp, Leaf, Flame, Lightbulb, Target, Truck, ThumbsUp, Lock, Phone, Mail, MapPin, Camera, Utensils, Coffee, ShoppingBag, Wrench, Stethoscope, BookOpen, Home, Building2, Briefcase, Search, Check, RotateCcw, BarChart2, Eye, EyeOff } from "lucide-react";
+import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, RefreshCw, Loader2, Star, Zap, Shield, Award, Heart, CheckCircle, Clock, Globe, Users, TrendingUp, Leaf, Flame, Lightbulb, Target, Truck, ThumbsUp, Lock, Phone, Mail, MapPin, Camera, Utensils, Coffee, ShoppingBag, Wrench, Stethoscope, BookOpen, Home, Building2, Briefcase, Search, Check, RotateCcw, BarChart2, Eye, EyeOff, X } from "lucide-react";
 import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import FileUpload from "@/components/file-upload";
 import { SIDEBAR_FIELD_CLASS, SIDEBAR_FIELD_CLASS_ICON } from "@/lib/editor-field-class";
@@ -1988,6 +1988,116 @@ export default function SectionForms({
           </div>
         </div>
       )}
+
+      {/* PAYMENTS & SHIPPING FORM */}
+      {activeTab === "payments" && (() => {
+        type PayMethod = { type?: string; label?: string; detail?: string };
+        const payments = content.payments ?? {};
+        const methods: PayMethod[] = Array.isArray(payments.methods) ? payments.methods : [];
+        const setMethods = (next: PayMethod[]) => updateField("payments", "methods", next);
+        const updateMethod = (idx: number, key: string, val: string) => {
+          const next = methods.map((m, i) => (i === idx ? { ...m, [key]: val } : m));
+          setMethods(next);
+        };
+        return (
+          <div className="space-y-3">
+            <div className="rounded-lg border border-border bg-muted/40 px-3 py-2.5 text-[11px] leading-relaxed text-muted-foreground">
+              <p className="font-semibold text-sidebar-foreground">
+                {t("dashboard.sitesKatalog.paymentTitle", "Metode Pembayaran & Pengiriman")}
+              </p>
+              <p className="mt-1">
+                {t("dashboard.sitesKatalog.paymentSubtitle", "Tampilkan info pembayaran dan pengiriman di keranjang pesanan pengunjung. Belum perlu integrasi payment gateway — cukup info rekening/QRIS statis.")}
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <div>
+                <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
+                  {t("dashboard.sitesKatalog.methodsTitle", "Metode Pembayaran")}
+                </label>
+              </div>
+              {methods.map((method, idx) => (
+                <div key={idx} className="rounded-md border border-border bg-muted/20 p-2 space-y-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <select
+                      value={method.type ?? "transfer"}
+                      onChange={(e) => updateMethod(idx, "type", e.target.value)}
+                      className="flex-1 px-2 py-1.5 border border-border rounded-md text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
+                    >
+                      <option value="transfer">{t("dashboard.sitesKatalog.methodTypeTransfer", "Transfer Bank")}</option>
+                      <option value="qris">{t("dashboard.sitesKatalog.methodTypeQris", "QRIS")}</option>
+                      <option value="ewallet">{t("dashboard.sitesKatalog.methodTypeEwallet", "E-Wallet")}</option>
+                      <option value="cod">{t("dashboard.sitesKatalog.methodTypeCod", "Bayar di Tempat (COD)")}</option>
+                    </select>
+                    <button
+                      type="button"
+                      onClick={() => setMethods(methods.filter((_, i) => i !== idx))}
+                      className="p-1.5 rounded-md border border-border text-sidebar-muted-foreground hover:text-red-400 hover:border-red-400/40 transition-colors shrink-0"
+                      title={t("dashboard.sitesKatalog.methodRemove", "Hapus metode")}
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    value={method.label ?? ""}
+                    onChange={(e) => updateMethod(idx, "label", e.target.value)}
+                    placeholder={t("dashboard.sitesKatalog.methodLabelPlaceholder", "Nama metode (cth. Transfer Bank BCA)")}
+                    className="w-full px-2 py-1.5 border border-border rounded-md text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground placeholder-sidebar-subtle-foreground"
+                  />
+                  <input
+                    type="text"
+                    value={method.detail ?? ""}
+                    onChange={(e) => updateMethod(idx, "detail", e.target.value)}
+                    placeholder={t("dashboard.sitesKatalog.methodDetailPlaceholder", "Detail (no. rekening, tautan QRIS, nama e-wallet)")}
+                    className="w-full px-2 py-1.5 border border-border rounded-md text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground placeholder-sidebar-subtle-foreground"
+                  />
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => setMethods([...methods, { type: "transfer", label: "", detail: "" }])}
+                className="w-full text-center py-1.5 text-[11px] font-semibold text-primary border border-dashed border-border rounded-md hover:border-primary/60 transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5 inline -mt-0.5 mr-1" />
+                {t("dashboard.sitesKatalog.methodAdd", "Tambah Metode")}
+              </button>
+            </div>
+
+            <div className="space-y-1">
+              <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
+                <Truck className="w-3 h-3" />
+                {t("dashboard.sitesKatalog.shippingTitle", "Info Pengiriman")}
+              </label>
+              <textarea
+                rows={2}
+                value={payments.shipping_note ?? ""}
+                onChange={(e) => updateField("payments", "shipping_note", e.target.value)}
+                placeholder={t("dashboard.sitesKatalog.shippingNotePlaceholder", "cth. Ongkir menyesuaikan lokasi. Estimasi 1–3 hari kerja.")}
+                className={`${SIDEBAR_FIELD_CLASS} resize-none placeholder-sidebar-subtle-foreground`}
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
+                <RotateCcw className="w-3 h-3" />
+                {t("dashboard.sitesKatalog.returnPolicy", "Kebijakan Retur")}
+              </label>
+              <textarea
+                rows={2}
+                value={payments.return_policy ?? ""}
+                onChange={(e) => updateField("payments", "return_policy", e.target.value)}
+                placeholder={t("dashboard.sitesKatalog.returnPolicyPlaceholder", "cth. Barang dapat dikembalikan/ditukar dalam 7 hari. Hubungi kami lewat WhatsApp.")}
+                className={`${SIDEBAR_FIELD_CLASS} resize-none placeholder-sidebar-subtle-foreground`}
+              />
+            </div>
+
+            <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">
+              {t("dashboard.sitesKatalog.paymentHint", "Perubahan tersimpan otomatis. Informasi ini hanya ditampilkan sebagai catatan — pembayaran dikonfirmasi manual lewat WhatsApp.")}
+            </p>
+          </div>
+        );
+      })()}
 
       {/* SEO FORM */}
       {activeTab === "seo" && (
