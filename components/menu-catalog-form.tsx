@@ -682,12 +682,15 @@ function SortableItemRow({
   const tags: string[] = item.tags ?? [];
   const deliveryPlatforms: { name: string; url: string }[] = item.delivery_platforms ?? [];
   const isPageMode = mode === "page";
+  const [isOpen, setIsOpen] = useState<boolean>(isPageMode);
+  const [showAdvanced, setShowAdvanced] = useState<boolean>(isPageMode);
+  const summaryPrice = normStr(item.price_display ?? item.price);
 
   return (
-    <div ref={setNodeRef} style={style} className="rounded-3xl border border-border/80 bg-muted/15 p-4 sm:p-5 space-y-4 shadow-2xs">
+    <div ref={setNodeRef} style={style} className="rounded-3xl border border-border/80 bg-muted/15 shadow-2xs overflow-hidden">
       {/* Item header */}
-      <div className="flex items-center justify-between pb-3 border-b border-border/50">
-        <div className="flex items-center gap-2 min-w-0">
+      <div className={`flex items-center justify-between gap-2 px-4 sm:px-5 py-3 ${isOpen ? "border-b border-border/50" : ""}`}>
+        <div className="flex items-center gap-2 min-w-0 flex-1">
           <button
             type="button"
             className="cursor-grab active:cursor-grabbing touch-none text-muted-foreground hover:text-foreground transition-colors p-1 rounded-lg hover:bg-muted shrink-0"
@@ -697,11 +700,22 @@ function SortableItemRow({
           >
             <GripVertical className="w-4 h-4" />
           </button>
-          <span className="text-xs sm:text-sm font-bold text-foreground truncate">
-            {item.name ? item.name : `${itemLabel} #${itemIdx + 1}`}
-          </span>
+          <button
+            type="button"
+            onClick={() => setIsOpen((v) => !v)}
+            className="flex items-center gap-2 min-w-0 flex-1 text-left cursor-pointer"
+            aria-expanded={isOpen}
+            title={t("dashboard.sitesKatalog.toggleItemDetail", "Buka/tutup detail item")}
+          >
+            <span className="text-xs sm:text-sm font-bold text-foreground truncate">
+              {item.name ? item.name : `${itemLabel} #${itemIdx + 1}`}
+            </span>
+            {summaryPrice && (
+              <span className="text-[11px] font-semibold text-muted-foreground shrink-0">{summaryPrice}</span>
+            )}
+          </button>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-1.5 shrink-0">
           {/* is_available toggle */}
           <button
             type="button"
@@ -727,6 +741,14 @@ function SortableItemRow({
           </button>
           <button
             type="button"
+            onClick={() => setIsOpen((v) => !v)}
+            className="text-muted-foreground hover:text-foreground p-1.5 rounded-lg hover:bg-muted cursor-pointer transition-colors"
+            aria-label={isOpen ? "Tutup item" : "Buka item"}
+          >
+            {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </button>
+          <button
+            type="button"
             onClick={() => removeItem(catIdx, itemIdx)}
             className="text-red-500/60 hover:text-red-500 hover:bg-red-500/10 p-1.5 rounded-lg transition-colors cursor-pointer"
             aria-label={`Hapus ${itemLabel}`}
@@ -738,7 +760,8 @@ function SortableItemRow({
       </div>
 
       {/* Item Body: In Page Mode we use Side-by-Side (Photo on Left, Details on Right), in Sidebar Mode we use vertical stack */}
-      <div className={isPageMode ? "grid gap-5 lg:grid-cols-[220px_1fr]" : "space-y-4"}>
+      {isOpen && (
+      <div className={`${isPageMode ? "grid gap-5 lg:grid-cols-[220px_1fr]" : "space-y-4"} p-4 sm:p-5`}>
         <ItemPhotoGalleryEditor
           imageUrl={item.image_url ?? ""}
           imageUrls={item.image_urls ?? []}
@@ -804,7 +827,7 @@ function SortableItemRow({
               </div>
             )}
 
-            {hasPrice && (
+            {showAdvanced && hasPrice && (
               <div className="space-y-1 rounded-xl border border-dashed p-3">
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-semibold flex items-center gap-1.5">
@@ -864,8 +887,21 @@ function SortableItemRow({
             )}
           </div>
 
+          <button
+            type="button"
+            onClick={() => setShowAdvanced((v) => !v)}
+            className="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-xl border border-dashed border-border/80 text-[11px] font-bold text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-muted/40 transition-colors cursor-pointer"
+            aria-expanded={showAdvanced}
+          >
+            <span className="flex items-center gap-1.5">
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              {t("dashboard.sitesKatalog.advancedSettings", "Pengaturan lanjutan")}
+            </span>
+            {showAdvanced ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+          </button>
+
           {/* Badge & Capacity Row */}
-          {(hasBadge || (sectionKey === "catalog")) && (
+          {showAdvanced && (hasBadge || (sectionKey === "catalog")) && (
             <div className="space-y-3">
               {hasBadge && (
                 <div className="space-y-1">
@@ -900,7 +936,7 @@ function SortableItemRow({
           )}
 
           {/* Features (catalog only) */}
-          {sectionKey === "catalog" && (
+          {showAdvanced && sectionKey === "catalog" && (
             <div className="space-y-1.5">
               <label className={MCF_INPUT_LABEL}>
                 {t("dashboard.sitesKatalog.labelFeatures", "Fasilitas & Keunggulan")}
@@ -942,7 +978,7 @@ function SortableItemRow({
           )}
 
           {/* Tags (menu only) */}
-          {sectionKey === "menu" && (
+          {showAdvanced && sectionKey === "menu" && (
             <div className="space-y-1.5">
               <label className={MCF_INPUT_LABEL}>
                 Tags Menu <span className="font-normal normal-case text-muted-foreground/60">(misal: Pedas, Vegetarian, Signature)</span>
@@ -983,7 +1019,7 @@ function SortableItemRow({
           )}
 
           {/* Delivery Platforms (menu only) */}
-          {sectionKey === "menu" && (
+          {showAdvanced && sectionKey === "menu" && (
             <div className="space-y-1.5">
               <label className={MCF_INPUT_LABEL}>
                 {t("dashboard.sitesKatalog.deliveryPlatforms", "Platform Delivery")} <span className="font-normal normal-case text-muted-foreground/60">(GrabFood, GoFood, dll.)</span>
@@ -1129,13 +1165,16 @@ function SortableItemRow({
           </div>
 
           {/* Variant Groups */}
+          {showAdvanced && (
           <VariantGroupEditor
             groups={item.variant_groups ?? []}
             onChange={(groups) => updateItem(catIdx, itemIdx, "variant_groups", groups.length ? groups : null)}
             mode={mode}
           />
+          )}
         </div>
       </div>
+      )}
     </div>
   );
 }
