@@ -19,7 +19,7 @@ export const stripRegeneratedMarkers = (value: any): any => {
 };
 
 export const BODY_SECTION_KEYS = ["hero", "about", "benefits", "stats", "testimonials", "menu", "catalog", "gallery", "works", "partners", "pricing", "blog", "cta", "faq", "contact"];
-export const EDITOR_SECTION_KEYS = ["header", ...BODY_SECTION_KEYS, "footer", "payments", "seo", "floating"];
+export const EDITOR_SECTION_KEYS = ["header", ...BODY_SECTION_KEYS, "footer", "seo", "floating"];
 
 // Sections that are only shown in the sidebar when content actually has that key.
 // "faq" is here because the AI recommendation logic may prune it for certain business types
@@ -125,7 +125,7 @@ export const getOrderedSections = (designToken: any, content?: any, hiddenByAdmi
     return true;
   });
   const bodyOrder = [...tokenOrder, ...availableBodyKeys.filter((key) => !tokenOrder.includes(key))];
-  return ["header", ...bodyOrder, "footer", "payments", "seo", "floating"].filter((key) => !adminHidden.has(key));
+  return ["header", ...bodyOrder, "footer", "seo", "floating"].filter((key) => !adminHidden.has(key));
 };
 
 export const cloneData = <T,>(value: T): T => JSON.parse(JSON.stringify(value));
