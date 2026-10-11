@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Utensils } from "lucide-react";
-import { InlineText, InlineImage } from "../../templates/shared";
+import { InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
@@ -22,8 +22,11 @@ interface MenuVariantProps {
 
 export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id" }: MenuVariantProps) {
   const isEN = language === "en";
+  const [quickView, setQuickView] = useState<{ catIdx: number; itemIdx: number } | null>(null);
   if (!menu) return null;
   const { eyebrow, title, subtitle, categories } = menu;
+  const qvCategory = quickView ? categories[quickView.catIdx] : undefined;
+  const qvItem = qvCategory?.items?.[quickView?.itemIdx ?? -1];
 
   return (
     <section
@@ -117,7 +120,8 @@ export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, 
                   <div
                     key={item.id || item.name}
                     id={`hero-item-${catIndex}-${itemIndex}`}
-                    className="group flex flex-col bg-dt-surface rounded-dt overflow-hidden border border-dt-border/50 hover:shadow-xl hover:border-dt-border transition-all duration-300 h-[560px]"
+                    className="group flex flex-col bg-dt-surface rounded-dt overflow-hidden border border-dt-border/50 hover:shadow-xl hover:border-dt-border transition-all duration-300 h-[560px] cursor-pointer"
+                    onClick={() => setQuickView({ catIdx: catIndex, itemIdx: itemIndex })}
                   >
                     <div className="relative h-[390px] w-full overflow-hidden bg-dt-accent/5">
                       <InlineImage
@@ -161,6 +165,16 @@ export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, 
                           className="absolute top-4 right-4 z-20"
                         />
                       )}
+
+                      {/* View detail trigger */}
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); setQuickView({ catIdx: catIndex, itemIdx: itemIndex }); }}
+                        onPointerDown={(e) => e.stopPropagation()}
+                        className={`absolute bottom-4 ${isEditorMode && onDeleteItem ? "right-14" : "right-4"} z-10 bg-white/90 dark:bg-black/80 backdrop-blur-xs text-dt-text text-[10px] font-semibold tracking-widest uppercase px-3 py-1.5 border border-dt-border rounded-none shadow-xs font-dt-heading opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity cursor-pointer`}
+                      >
+                        {isEN ? "View detail" : "Lihat Detail"}
+                      </button>
                     </div>
 
                     <div className="flex-1 p-6 flex flex-col justify-between bg-dt-surface">
@@ -193,6 +207,20 @@ export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, 
         ))}
       {isEditorMode && onAddCategory && (
         <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+      )}
+      {quickView && qvItem && (
+        <ProductQuickView
+          open
+          onClose={() => setQuickView(null)}
+          item={toQuickViewItem(qvItem, qvCategory?.name)}
+          editSection="menu"
+          pathBase={`categories.${quickView.catIdx}.items.${quickView.itemIdx}`}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
       )}
       </div>
     </section>

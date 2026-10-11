@@ -1,6 +1,6 @@
 "use client";
-import React from "react";
-import { InlineText } from "../../templates/shared";
+import React, { useState } from "react";
+import { InlineText, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
@@ -21,11 +21,14 @@ interface CatalogVariantProps {
 
 export default function CatalogCompact({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: CatalogVariantProps) {
   const isEN = language === "en";
+  const [quickView, setQuickView] = useState<{ catIdx: number; itemIdx: number } | null>(null);
   if (!catalog) return null;
   const brandPrimary = "var(--dt-primary)";
   const brandText = "var(--dt-text)";
   const headingFont = "var(--dt-heading-font)";
   const headingWeight = "var(--dt-heading-weight)";
+  const qvCategory = quickView ? catalog.categories?.[quickView.catIdx] : undefined;
+  const qvItem = qvCategory?.items?.[quickView?.itemIdx ?? -1];
   return (
     <section id="catalog" style={{ padding: "var(--dt-spacing) 1.5rem", background: `color-mix(in srgb, ${brandPrimary} 4%, var(--dt-bg))`, borderTop: `1px solid color-mix(in srgb, ${brandPrimary} 12%, transparent)` }}>
       <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
@@ -70,7 +73,7 @@ export default function CatalogCompact({ catalog, onUpdateField, isEditorMode, i
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "0.5rem" }}>
               {cat.items?.map((item, itemIdx) => (
-                <div key={item.id || itemIdx} style={{ position: "relative", display: "flex", flexDirection: "column", gap: "0.125rem", padding: "0.5rem 0.75rem", borderRadius: "var(--dt-radius)", opacity: item.is_available === false ? 0.6 : 1 }}>
+                <div key={item.id || itemIdx} className="group cursor-pointer transition-colors hover:bg-[color-mix(in_srgb,var(--dt-primary)_6%,transparent)]" onClick={() => setQuickView({ catIdx, itemIdx })} style={{ position: "relative", display: "flex", flexDirection: "column", gap: "0.125rem", padding: "0.5rem 0.75rem", borderRadius: "var(--dt-radius)", opacity: item.is_available === false ? 0.6 : 1 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "1rem", paddingRight: isEditorMode && onDeleteItem ? "2rem" : 0 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                       <InlineText section="catalog" fieldKey={"categories." + catIdx + ".items." + itemIdx + ".name"} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontWeight: 600, fontSize: "0.9rem", color: brandText, fontFamily: headingFont }} />
@@ -97,6 +100,15 @@ export default function CatalogCompact({ catalog, onUpdateField, isEditorMode, i
                       ))}
                     </div>
                   )}
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); setQuickView({ catIdx, itemIdx }); }}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    className="self-start mt-1 text-[0.68rem] font-bold uppercase tracking-wider underline underline-offset-2 transition-opacity opacity-100 md:opacity-0 md:group-hover:opacity-100 cursor-pointer"
+                    style={{ color: brandPrimary, background: "none", border: "none", padding: 0 }}
+                  >
+                    {isEN ? "View detail" : "Lihat Detail"}
+                  </button>
                   {isEditorMode && onDeleteItem && (
                     <InlineDeleteButton onDelete={() => onDeleteItem(catIdx, itemIdx)} className="absolute top-2 right-1 z-30" />
                   )}
@@ -115,6 +127,20 @@ export default function CatalogCompact({ catalog, onUpdateField, isEditorMode, i
         ))}
       {isEditorMode && onAddCategory && (
         <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+      )}
+      {quickView && qvItem && (
+        <ProductQuickView
+          open
+          onClose={() => setQuickView(null)}
+          item={toQuickViewItem(qvItem, qvCategory?.name)}
+          editSection="catalog"
+          pathBase={`categories.${quickView.catIdx}.items.${quickView.itemIdx}`}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
       )}
       </div>
     </section>

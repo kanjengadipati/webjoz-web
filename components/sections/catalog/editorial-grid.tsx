@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Image as ImageIcon } from "lucide-react";
-import { InlineText, InlineImage } from "../../templates/shared";
+import { InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import { AddToCartButton } from "@/components/cart";
 import type { TemplateProps, DesignToken } from "../../templates/types";
@@ -23,8 +23,11 @@ interface CatalogVariantProps {
 
 export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: CatalogVariantProps) {
   const isEN = language === "en";
+  const [quickView, setQuickView] = useState<{ catIdx: number; itemIdx: number } | null>(null);
   if (!catalog) return null;
   const { eyebrow, title, subtitle, categories } = catalog;
+  const qvCategory = quickView ? categories[quickView.catIdx] : undefined;
+  const qvItem = qvCategory?.items?.[quickView?.itemIdx ?? -1];
 
   const getAddTileClass = (count: number) => {
     const rem = count % 6;
@@ -177,7 +180,8 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
                 return (
                   <div
                     key={index}
-                    className={`${colSpanClass} flex flex-col group relative`}
+                    className={`${colSpanClass} flex flex-col group relative cursor-pointer`}
+                    onClick={() => setQuickView({ catIdx, itemIdx: index })}
                   >
                     {/* Image Area with Hover Pill */}
                     <div
@@ -212,7 +216,7 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
 
                       {/* Floating Hover Add to Cart (only on live website) */}
                       {!isEditorMode && (
-                        <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none md:pointer-events-auto">
+                        <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none md:pointer-events-auto" onClick={(e) => e.stopPropagation()}>
                           <AddToCartButton
                             itemId={item.id || `cat-ed-${catIdx}-${index}`}
                             itemName={item.name}
@@ -285,6 +289,17 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
                         />
                       )}
 
+                      {/* View detail trigger — editorial text link */}
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); setQuickView({ catIdx, itemIdx: index }); }}
+                        onPointerDown={(e) => e.stopPropagation()}
+                        className="mt-3 self-start text-xs font-medium tracking-wide underline underline-offset-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity cursor-pointer"
+                        style={{ color: "var(--dt-text)" }}
+                      >
+                        {isEN ? "View detail" : "Lihat Detail"}
+                      </button>
+
                       {item.capacity != null && item.capacity > 0 && (
                         <div className="mt-2">
                           <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 10%, transparent)", color: "var(--dt-primary)" }}>
@@ -314,7 +329,7 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
                       )}
 
                       {/* Add to Cart button — always visible (mobile & desktop) */}
-                      <div className="mt-4">
+                      <div className="mt-4" onClick={(e) => e.stopPropagation()}>
                         <AddToCartButton
                           itemId={item.id || `cat-ed-m-${catIdx}-${index}`}
                           itemName={item.name}
@@ -355,6 +370,20 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
         ))}
       {isEditorMode && onAddCategory && (
         <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+      )}
+      {quickView && qvItem && (
+        <ProductQuickView
+          open
+          onClose={() => setQuickView(null)}
+          item={toQuickViewItem(qvItem, qvCategory?.name)}
+          editSection="catalog"
+          pathBase={`categories.${quickView.catIdx}.items.${quickView.itemIdx}`}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
       )}
       </div>
     </section>

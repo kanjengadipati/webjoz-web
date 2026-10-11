@@ -12,7 +12,7 @@ import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/co
 import { uploadImageFile } from "@/components/file-upload";
 import { SparkleIcon } from "@/components/sparkle-icon";
 
-import type { TestimonialItem, FaqItem, ImageCredit, BenefitItem } from "./types";
+import type { TestimonialItem, FaqItem, ImageCredit, BenefitItem, CatalogItem, MenuItem } from "./types";
 import PhotoCredit from "../sections/PhotoCredit";
 import { InlineAddTile, InlineDeleteButton } from "../sections/inline-add";
 import { useI18n } from "@/lib/i18n/context";
@@ -1931,6 +1931,35 @@ export interface ProductQuickViewItem {
   capacity?: number | null;
   tags?: string[] | null;
   delivery_platforms?: { name: string; url: string }[] | null;
+}
+
+export function toQuickViewItem(
+  item: (Partial<CatalogItem> & Partial<MenuItem>) | null | undefined,
+  category?: string | null,
+): ProductQuickViewItem {
+  const it = (item ?? {}) as Partial<CatalogItem> & Partial<MenuItem>;
+  return {
+    id: it.id || `${category ?? ""}-${it.name ?? ""}`.trim() || "item",
+    name: it.name ?? "",
+    price: it.price ?? null,
+    price_amount: it.price_amount ?? null,
+    price_display: it.price_display ?? null,
+    promo_price_amount: it.promo_price_amount ?? null,
+    promo_price_display: it.promo_price_display ?? null,
+    discount_label: it.discount_label ?? null,
+    description: it.description ?? null,
+    category: category ?? null,
+    image_url: it.image_url ?? null,
+    image_urls: it.image_urls ?? null,
+    image_credit: it.image_credit ?? null,
+    badge: it.badge ?? null,
+    is_available: it.is_available,
+    variant_groups: it.variant_groups ?? null,
+    features: it.features ?? null,
+    capacity: it.capacity ?? null,
+    tags: it.tags ?? null,
+    delivery_platforms: it.delivery_platforms ?? null,
+  };
 }
 
 export interface ProductQuickViewProps {

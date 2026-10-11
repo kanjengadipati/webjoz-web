@@ -1,6 +1,6 @@
 "use client";
-import React from "react";
-import { InlineText } from "../../templates/shared";
+import React, { useState } from "react";
+import { InlineText, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
@@ -21,11 +21,14 @@ interface MenuVariantProps {
 
 export default function MenuCompact({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: MenuVariantProps) {
   const isEN = language === "en";
+  const [quickView, setQuickView] = useState<{ catIdx: number; itemIdx: number } | null>(null);
   if (!menu) return null;
   const brandPrimary = "var(--dt-primary)";
   const brandText = "var(--dt-text)";
   const headingFont = "var(--dt-heading-font)";
   const headingWeight = "var(--dt-heading-weight)";
+  const qvCategory = quickView ? menu.categories?.[quickView.catIdx] : undefined;
+  const qvItem = qvCategory?.items?.[quickView?.itemIdx ?? -1];
   return (
     <section id="menu" style={{ padding: "var(--dt-spacing) 1.5rem", background: `color-mix(in srgb, ${brandPrimary} 4%, var(--dt-bg))`, borderTop: `1px solid color-mix(in srgb, ${brandPrimary} 12%, transparent)` }}>
       <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
@@ -59,7 +62,7 @@ export default function MenuCompact({ menu, onUpdateField, isEditorMode, isSelec
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "0.5rem" }}>
               {cat.items?.map((item, itemIdx) => (
-                <div key={item.id || itemIdx} className="relative group" style={{ display: "flex", flexDirection: "column", gap: "0.125rem", padding: "0.5rem 0.75rem", borderRadius: "var(--dt-radius)", opacity: item.is_available === false ? 0.6 : 1 }}>
+                <div key={item.id || itemIdx} className="relative group cursor-pointer transition-colors hover:bg-[color-mix(in_srgb,var(--dt-primary)_6%,transparent)]" onClick={() => setQuickView({ catIdx, itemIdx })} style={{ display: "flex", flexDirection: "column", gap: "0.125rem", padding: "0.5rem 0.75rem", borderRadius: "var(--dt-radius)", opacity: item.is_available === false ? 0.6 : 1 }}>
                   {isEditorMode && onDeleteItem && (
                     <InlineDeleteButton
                       compact
@@ -77,6 +80,15 @@ export default function MenuCompact({ menu, onUpdateField, isEditorMode, isSelec
                     {(item.price_display || item.price) && <InlineText section="menu" fieldKey={"categories." + catIdx + ".items." + itemIdx + ".price"} value={item.price_display || item.price || ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontWeight: 700, fontSize: "0.8rem", color: brandPrimary, whiteSpace: "nowrap" }} />}
                   </div>
                   {item.description && <InlineText section="menu" fieldKey={"categories." + catIdx + ".items." + itemIdx + ".description"} value={item.description ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" multiline style={{ fontSize: "0.8rem", color: "var(--dt-text-muted)", lineHeight: 1.4 }} />}
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); setQuickView({ catIdx, itemIdx }); }}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    className="self-start mt-1 text-[0.68rem] font-bold uppercase tracking-wider underline underline-offset-2 transition-opacity opacity-100 md:opacity-0 md:group-hover:opacity-100 cursor-pointer"
+                    style={{ color: brandPrimary, background: "none", border: "none", padding: 0 }}
+                  >
+                    {isEN ? "View detail" : "Lihat Detail"}
+                  </button>
                 </div>
               ))}
               {isEditorMode && onAddItem && (
@@ -92,6 +104,20 @@ export default function MenuCompact({ menu, onUpdateField, isEditorMode, isSelec
         ))}
       {isEditorMode && onAddCategory && (
         <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+      )}
+      {quickView && qvItem && (
+        <ProductQuickView
+          open
+          onClose={() => setQuickView(null)}
+          item={toQuickViewItem(qvItem, qvCategory?.name)}
+          editSection="menu"
+          pathBase={`categories.${quickView.catIdx}.items.${quickView.itemIdx}`}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
       )}
       </div>
     </section>

@@ -1,6 +1,6 @@
 "use client";
-import React from "react";
-import { InlineText, InlineImage } from "../../templates/shared";
+import React, { useState } from "react";
+import { InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import { AddToCartButton } from "@/components/cart";
 import type { TemplateProps, DesignToken } from "../../templates/types";
@@ -22,8 +22,11 @@ interface CatalogVariantProps {
 
 export default function CatalogMasonryFlow({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: CatalogVariantProps) {
   const isEN = language === "en";
+  const [quickView, setQuickView] = useState<{ catIdx: number; itemIdx: number } | null>(null);
   if (!catalog) return null;
   const { eyebrow, title, subtitle, categories } = catalog;
+  const qvCategory = quickView ? categories[quickView.catIdx] : undefined;
+  const qvItem = qvCategory?.items?.[quickView?.itemIdx ?? -1];
 
   return (
     <section
@@ -119,7 +122,8 @@ export default function CatalogMasonryFlow({ catalog, onUpdateField, isEditorMod
               {category.items?.map((item, index) => (
                 <div
                   key={index}
-                  className="break-inside-avoid mb-6 flex flex-col group relative border overflow-hidden transition-all duration-300"
+                  className="break-inside-avoid mb-6 flex flex-col group relative border overflow-hidden transition-all duration-300 cursor-pointer"
+                  onClick={() => setQuickView({ catIdx, itemIdx: index })}
                   style={{
                     borderColor: "var(--dt-border)",
                     backgroundColor: "var(--dt-surface)",
@@ -154,9 +158,20 @@ export default function CatalogMasonryFlow({ catalog, onUpdateField, isEditorMod
                       </div>
                     )}
 
+                    {/* View detail trigger */}
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); setQuickView({ catIdx, itemIdx: index }); }}
+                      onPointerDown={(e) => e.stopPropagation()}
+                      className="absolute top-3 right-3 z-20 text-[10px] uppercase tracking-widest font-bold px-2 py-0.5 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity cursor-pointer"
+                      style={{ backgroundColor: "var(--dt-surface)", color: "var(--dt-text)", border: "1px solid var(--dt-border)", borderRadius: "var(--dt-radius)" }}
+                    >
+                      {isEN ? "Detail" : "Lihat"}
+                    </button>
+
                     {/* Hover Overlay Button (only on live website) */}
                     {!isEditorMode && (
-                      <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-4">
+                      <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-4" onClick={(e) => e.stopPropagation()}>
                         <AddToCartButton
                           itemId={item.id || `cat-mf-${catIdx}-${index}`}
                           itemName={item.name}
@@ -248,7 +263,7 @@ export default function CatalogMasonryFlow({ catalog, onUpdateField, isEditorMod
                     )}
 
                     {/* Mobile Add to Cart */}
-                    <div className="mt-4 md:hidden">
+                    <div className="mt-4 md:hidden" onClick={(e) => e.stopPropagation()}>
                       <AddToCartButton
                         itemId={item.id || `cat-mf-m-${catIdx}-${index}`}
                         itemName={item.name}
@@ -288,6 +303,20 @@ export default function CatalogMasonryFlow({ catalog, onUpdateField, isEditorMod
         ))}
       {isEditorMode && onAddCategory && (
         <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+      )}
+      {quickView && qvItem && (
+        <ProductQuickView
+          open
+          onClose={() => setQuickView(null)}
+          item={toQuickViewItem(qvItem, qvCategory?.name)}
+          editSection="catalog"
+          pathBase={`categories.${quickView.catIdx}.items.${quickView.itemIdx}`}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
       )}
       </div>
     </section>
