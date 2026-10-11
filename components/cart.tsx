@@ -379,11 +379,11 @@ export function AddToCartButton({
   }
 
   return (
-    <div className="w-full flex items-center justify-between rounded-xl overflow-hidden" role="group" aria-label={`Jumlah ${itemName}`} style={style}>
+    <div className={`${className ?? "w-full flex items-center rounded-xl"} !justify-between !gap-0 !px-0`} role="group" aria-label={`Jumlah ${itemName}`} style={style}>
       <button
         type="button"
         onClick={() => decrement(itemId)}
-        className="flex-shrink-0 w-10 h-full flex items-center justify-center cursor-pointer transition-all hover:opacity-80 active:scale-90 focus:outline-none font-bold text-lg"
+        className="flex-shrink-0 w-10 h-full flex items-center justify-center cursor-pointer transition-all hover:opacity-80 active:scale-90 focus:outline-none"
         style={{ color: style?.color ?? "inherit" }}
         aria-label="Kurangi"
       >
@@ -396,7 +396,7 @@ export function AddToCartButton({
       <button
         type="button"
         onClick={() => increment(itemId)}
-        className="flex-shrink-0 w-10 h-full flex items-center justify-center cursor-pointer transition-all hover:opacity-80 active:scale-90 focus:outline-none font-bold text-lg"
+        className="flex-shrink-0 w-10 h-full flex items-center justify-center cursor-pointer transition-all hover:opacity-80 active:scale-90 focus:outline-none"
         style={{ color: style?.color ?? "inherit" }}
         aria-label="Tambah"
       >
