@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import type { FooterVariantProps } from "./types";
-import { SocialIcon, SOCIAL_PLATFORMS } from "../social-platforms";
+import InlineSocialEditor from "./inline-social-editor";
 import { InlineText } from "../../templates/shared";
 
 const FOOTER_BG = "var(--dt-surface)";
@@ -58,33 +58,21 @@ export default function ColumnsWithSocial({
           )}
         </div>
 
-        {links.length > 0 && (
+        {(links.length > 0 || isEditorMode) && (
           <div className="space-y-2">
             <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: TXT_LOW }}>
               Media Sosial
             </p>
-            <div className="flex flex-wrap gap-3">
-              {links.map((link, i) => {
-                const def = SOCIAL_PLATFORMS[link.platform];
-                const label = def?.label || link.platform;
-                return (
-                  <a
-                    key={i}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 transition-colors"
-                    style={{ color: TXT_SOCIAL }}
-                    onMouseEnter={(e) => e.currentTarget.style.color = TXT_SOCIAL_HOVER}
-                    onMouseLeave={(e) => e.currentTarget.style.color = TXT_SOCIAL}
-                    title={label}
-                  >
-                    <SocialIcon platform={link.platform} size={14} />
-                    <span>{label}</span>
-                  </a>
-                );
-              })}
-            </div>
+            <InlineSocialEditor
+              links={links}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              defaultColor={TXT_SOCIAL}
+              hoverColor={TXT_SOCIAL_HOVER}
+              iconSize={14}
+            />
           </div>
         )}
       </div>

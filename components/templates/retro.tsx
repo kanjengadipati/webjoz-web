@@ -7,7 +7,7 @@ import {
   CartProvider, CartFab, WAFloatingButton, BackToTop,
   SeoEditorPreview, ctaHref, InlineText,
 } from "./shared";
-import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections, getSectionVariant } from "./helpers";
+import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections, getSectionVariant, computePrimaryFg } from "./helpers";
 import GallerySection from "../sections/gallery";
 import WorksSection from "../sections/works";
 import HeaderSection from "../sections/header";
@@ -215,7 +215,7 @@ export const TemplateRetro: React.FC<TemplateProps> = ({
   };
 
   return (
-    <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={dt?.palette?.primary ? undefined : "#ffffff"} language={language} payments={content.payments}>
+    <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={computePrimaryFg(dt?.palette?.primary ?? "#4F46E5")} language={language} payments={content.payments}>
     <div style={{ ...cssVars, background: bg, color: "#e0d6ff", fontFamily: "var(--dt-body-font)", minHeight: "100vh", overflowX: "hidden", containerType: "inline-size" }}>
       {(() => {
         const renderedSectionOrder = filterEmptySections(sectionOrder, content, isEditorMode)

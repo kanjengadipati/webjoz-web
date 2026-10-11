@@ -112,17 +112,27 @@ export const SOCIAL_PLATFORMS: Record<string, PlatformDef> = {
 
 export const POPULAR_PLATFORMS = Object.keys(SOCIAL_PLATFORMS);
 
+export function getSocialPlatformDef(platform?: string): PlatformDef | undefined {
+  if (!platform) return undefined;
+  const p = platform.trim();
+  return SOCIAL_PLATFORMS[p.toLowerCase()] || SOCIAL_PLATFORMS[p];
+}
+
 export function SocialIcon({ platform, className, size = 16 }: { platform: string; className?: string; size?: number }) {
-  const def = SOCIAL_PLATFORMS[platform];
+  const def = getSocialPlatformDef(platform);
   if (!def) return null;
   const Icon = def.icon;
   return <Icon className={className} size={size} />;
 }
 
 export function SocialPlatformSelect({ value, onChange, className }: { value: string; onChange: (v: string) => void; className?: string }) {
+  const normalizedValue = value ? value.trim().toLowerCase() : "";
+  const isPredefined = POPULAR_PLATFORMS.includes(normalizedValue);
+  const selectValue = isPredefined ? normalizedValue : (value ? "__custom__" : "");
+
   return (
     <select
-      value={value}
+      value={selectValue}
       onChange={(e) => onChange(e.target.value)}
       className={className || "w-full px-2 py-1.5 border rounded-md text-[12px] outline-none focus:border-primary/60 bg-transparent"}
     >
@@ -134,3 +144,4 @@ export function SocialPlatformSelect({ value, onChange, className }: { value: st
     </select>
   );
 }
+

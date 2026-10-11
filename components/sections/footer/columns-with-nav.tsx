@@ -2,7 +2,7 @@
 import React from "react";
 import { ArrowUp } from "lucide-react";
 import type { FooterVariantProps } from "./types";
-import { SocialIcon, SOCIAL_PLATFORMS } from "../social-platforms";
+import InlineSocialEditor from "./inline-social-editor";
 import { InlineText } from "../../templates/shared";
 
 const FOOTER_BG = "var(--dt-surface)";
@@ -109,31 +109,21 @@ export default function ColumnsWithNav({
 
           {/* Kolom 3: Media Sosial & Back to Top */}
           <div className="space-y-4">
-            {links.length > 0 && (
+            {(links.length > 0 || isEditorMode) && (
               <div className="space-y-2">
                 <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "var(--dt-primary)" }}>
                   Media Sosial
                 </p>
-                <div className="flex flex-wrap gap-2.5">
-                  {links.map((link, i) => {
-                    const def = SOCIAL_PLATFORMS[link.platform];
-                    const label = def?.label || link.platform;
-                    return (
-                      <a
-                        key={i}
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[var(--dt-radius)] border border-white/10 bg-muted/40 transition-all hover:bg-white/[0.08] hover:border-border"
-                        style={{ color: TXT_HIGH }}
-                        title={label}
-                      >
-                        <SocialIcon platform={link.platform} size={13} />
-                        <span className="text-[11px]">{label}</span>
-                      </a>
-                    );
-                  })}
-                </div>
+                <InlineSocialEditor
+                  links={links}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                  pill
+                  iconSize={13}
+                  labelClass="text-[11px]"
+                />
               </div>
             )}
 
