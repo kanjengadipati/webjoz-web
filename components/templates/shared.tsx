@@ -1546,7 +1546,7 @@ function MenuCatalogCard({
             accept="image/*"
             className="hidden"
           />
-          <div className={`absolute inset-0 z-30 flex items-center justify-center bg-black/40 backdrop-blur-[1.5px] opacity-0 group-hover/img:opacity-100 transition-all duration-200 pointer-events-none group-hover/img:pointer-events-auto ${isSelected ? "opacity-100 pointer-events-auto" : ""} pointer-coarse:opacity-100 pointer-coarse:pointer-events-auto`}>
+          <div onClick={(e) => e.stopPropagation()} className={`absolute inset-0 z-30 flex items-center justify-center bg-black/40 backdrop-blur-[1.5px] opacity-0 group-hover/img:opacity-100 transition-all duration-200 pointer-events-none group-hover/img:pointer-events-auto ${isSelected ? "opacity-100 pointer-events-auto" : ""} pointer-coarse:opacity-100 pointer-coarse:pointer-events-auto`}>
             <button
               type="button"
               onClick={handleTriggerUpload}
@@ -1671,7 +1671,7 @@ function MenuCatalogCard({
       {isLong && (
         <button
           type="button"
-          onClick={() => setIsExpanded(!isExpanded)}
+          onClick={(e) => { e.stopPropagation(); setIsExpanded(!isExpanded); }}
           className="ml-1 text-[11px] font-semibold underline text-slate-500 hover:text-slate-850 dark:text-slate-400 dark:hover:text-slate-200 transition-colors inline-block focus:outline-none cursor-pointer"
         >
           {isExpanded ? "Sembunyikan" : "Selengkapnya"}
@@ -1697,6 +1697,7 @@ function MenuCatalogCard({
               href={dp.url}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
               className="inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-lg border transition-all hover:brightness-110"
               style={{
                 borderColor: "color-mix(in srgb, var(--dt-primary) 25%, transparent)",
@@ -1751,7 +1752,7 @@ function MenuCatalogCard({
 
   if (layout === "compact") {
     return (
-      <div className={`relative group ${className || ""}`} style={style}>
+      <div className={`relative group cursor-pointer ${className || ""}`} style={style} onClick={() => setQuickViewOpen(true)}>
         {isEditorMode && onDelete && (
           <InlineDeleteButton onDelete={onDelete} className="absolute top-2.5 right-2.5 z-40" />
         )}
@@ -1762,7 +1763,7 @@ function MenuCatalogCard({
             {header}
             {descriptionElement}
             {tagsAndPlatforms}
-            <div className="mt-auto pt-2">
+            <div className="mt-auto pt-2" onClick={(e) => e.stopPropagation()}>
               <AddToCartButton
                 itemId={itemId}
                 itemName={itemName}
@@ -1787,7 +1788,7 @@ function MenuCatalogCard({
   }
 
   return (
-    <div className={`relative group ${className || ""} flex flex-col h-full`} style={style}>
+    <div className={`relative group cursor-pointer ${className || ""} flex flex-col h-full`} style={style} onClick={() => setQuickViewOpen(true)}>
       {isEditorMode && onDelete && (
         <InlineDeleteButton onDelete={onDelete} className="absolute top-2.5 right-2.5 z-40" />
       )}
@@ -1887,7 +1888,7 @@ function MenuCatalogCard({
           );
         })()}
         {tagsAndPlatforms}
-        <div className="mt-auto pt-3">
+        <div className="mt-auto pt-3" onClick={(e) => e.stopPropagation()}>
           <AddToCartButton
             itemId={itemId}
             itemName={itemName}
@@ -2048,7 +2049,7 @@ function ProductQuickViewInner({
   return (
     <div
       className="fixed inset-0 z-[500] flex items-center justify-center p-3 sm:p-6 bg-slate-950/70 backdrop-blur-sm animate-[fadeIn_0.15s_ease]"
-      onClick={onClose}
+      onClick={(e) => { e.stopPropagation(); onClose(); }}
       role="dialog"
       aria-modal="true"
       aria-label={itemName}
