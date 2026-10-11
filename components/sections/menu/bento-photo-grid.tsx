@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Utensils } from "lucide-react";
-import { InlineText, InlineImage } from "../../templates/shared";
+import { InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
@@ -22,8 +22,11 @@ interface MenuVariantProps {
 
 export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id" }: MenuVariantProps) {
   const isEN = language === "en";
+  const [quickView, setQuickView] = useState<{ catIdx: number; itemIdx: number } | null>(null);
   if (!menu) return null;
   const { eyebrow, title, subtitle, categories } = menu;
+  const qvCategory = quickView ? categories[quickView.catIdx] : undefined;
+  const qvItem = qvCategory?.items?.[quickView?.itemIdx ?? -1];
 
   const getBentoClasses = (index: number) => {
     const itemIndex = index % 6;
@@ -131,7 +134,8 @@ export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSe
                   <div
                     key={item.id || item.name}
                     id={`bento-item-${catIndex}-${itemIndex}`}
-                    className={`relative group overflow-hidden rounded-dt border border-dt-border bg-dt-surface flex flex-col justify-end transition-all duration-300 hover:shadow-lg hover:border-dt-primary ${bentoSizeClass}`}
+                    className={`relative group overflow-hidden rounded-dt border border-dt-border bg-dt-surface flex flex-col justify-end transition-all duration-300 hover:shadow-lg hover:border-dt-primary cursor-pointer ${bentoSizeClass}`}
+                    onClick={() => setQuickView({ catIdx: catIndex, itemIdx: itemIndex })}
                   >
                     <InlineImage
                       section="menu"
@@ -204,6 +208,15 @@ export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSe
                           isLarge ? "line-clamp-none opacity-100" : "line-clamp-2 md:line-clamp-1 group-hover:line-clamp-none"
                         }`} />
                       )}
+
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); setQuickView({ catIdx: catIndex, itemIdx: itemIndex }); }}
+                        onPointerDown={(e) => e.stopPropagation()}
+                        className="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-white/90 underline underline-offset-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity cursor-pointer"
+                      >
+                        {isEN ? "View detail" : "Lihat Detail"}
+                      </button>
                     </div>
                   </div>
                 );
@@ -221,6 +234,20 @@ export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSe
         ))}
       {isEditorMode && onAddCategory && (
         <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+      )}
+      {quickView && qvItem && (
+        <ProductQuickView
+          open
+          onClose={() => setQuickView(null)}
+          item={toQuickViewItem(qvItem, qvCategory?.name)}
+          editSection="menu"
+          pathBase={`categories.${quickView.catIdx}.items.${quickView.itemIdx}`}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
       )}
       </div>
     </section>

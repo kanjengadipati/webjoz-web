@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { Utensils, ChevronRight } from "lucide-react";
-import { InlineText, InlineImage } from "../../templates/shared";
+import { InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
@@ -22,8 +22,11 @@ interface MenuVariantProps {
 
 export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id" }: MenuVariantProps) {
   const isEN = language === "en";
+  const [quickView, setQuickView] = useState<{ catIdx: number; itemIdx: number } | null>(null);
   if (!menu) return null;
   const { eyebrow, title, subtitle, categories } = menu;
+  const qvCategory = quickView ? categories[quickView.catIdx] : undefined;
+  const qvItem = qvCategory?.items?.[quickView?.itemIdx ?? -1];
 
   const [activeCategory, setActiveCategory] = useState<string>("");
   const isScrollingRef = useRef(false);
@@ -249,7 +252,8 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
                       <div
                         key={item.id || item.name}
                         id={`scrollspy-item-${index}-${itemIndex}`}
-                        className="group flex flex-col md:flex-row bg-dt-surface rounded-dt overflow-hidden border border-dt-border hover:shadow-md hover:border-dt-primary/30 transition-all duration-300 min-h-[160px]"
+                        className="group flex flex-col md:flex-row bg-dt-surface rounded-dt overflow-hidden border border-dt-border hover:shadow-md hover:border-dt-primary/30 transition-all duration-300 min-h-[160px] cursor-pointer"
+                        onClick={() => setQuickView({ catIdx: index, itemIdx: itemIndex })}
                       >
                         <div className="relative w-full md:w-[260px] h-[200px] md:h-auto overflow-hidden bg-dt-accent/5 shrink-0">
                           <InlineImage
@@ -282,6 +286,15 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
                               />
                             </div>
                           )}
+
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); setQuickView({ catIdx: index, itemIdx: itemIndex }); }}
+                            onPointerDown={(e) => e.stopPropagation()}
+                            className="absolute bottom-3 right-3 z-10 bg-white/90 dark:bg-black/80 backdrop-blur-xs text-dt-text text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs font-dt-heading opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity cursor-pointer"
+                          >
+                            {isEN ? "Detail" : "Lihat"}
+                          </button>
                         </div>
 
                         <div className="flex-1 p-6 flex flex-col justify-between">
@@ -315,6 +328,20 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
 
         </div>
       </div>
+      {quickView && qvItem && (
+        <ProductQuickView
+          open
+          onClose={() => setQuickView(null)}
+          item={toQuickViewItem(qvItem, qvCategory?.name)}
+          editSection="menu"
+          pathBase={`categories.${quickView.catIdx}.items.${quickView.itemIdx}`}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
+      )}
     </section>
   );
 }

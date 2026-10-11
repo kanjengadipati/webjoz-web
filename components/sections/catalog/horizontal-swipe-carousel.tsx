@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { InlineText, InlineImage } from "../../templates/shared";
+import { InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import { AddToCartButton } from "@/components/cart";
 import type { TemplateProps, DesignToken } from "../../templates/types";
@@ -23,8 +23,11 @@ interface CatalogVariantProps {
 
 export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: CatalogVariantProps) {
   const isEN = language === "en";
+  const [quickView, setQuickView] = useState<{ catIdx: number; itemIdx: number } | null>(null);
   if (!catalog) return null;
   const { eyebrow, title, subtitle, categories } = catalog;
+  const qvCategory = quickView ? categories[quickView.catIdx] : undefined;
+  const qvItem = qvCategory?.items?.[quickView?.itemIdx ?? -1];
 
   const [activeCategoryIdx, setActiveCategoryIdx] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -188,7 +191,8 @@ export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField,
             {activeCategory.items?.map((item, index) => (
               <div
                 key={index}
-                className="min-w-[280px] sm:min-w-[320px] md:min-w-[360px] snap-start flex-shrink-0 flex flex-col border group relative bg-surface"
+                className="min-w-[280px] sm:min-w-[320px] md:min-w-[360px] snap-start flex-shrink-0 flex flex-col border group relative bg-surface cursor-pointer"
+                onClick={() => setQuickView({ catIdx: activeCategoryIdx, itemIdx: index })}
                 style={{
                   borderColor: "var(--dt-border)",
                   backgroundColor: "var(--dt-surface)",
@@ -228,6 +232,17 @@ export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField,
                       <InlineText section="catalog" fieldKey={"categories." + activeCategoryIdx + ".items." + index + ".badge"} value={item.badge ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
                     </div>
                   )}
+
+                  {/* View detail trigger — matches carousel control style */}
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); setQuickView({ catIdx: activeCategoryIdx, itemIdx: index }); }}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    className="absolute top-3 right-3 z-20 text-[10px] uppercase tracking-widest font-semibold px-2.5 py-1 border opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity cursor-pointer"
+                    style={{ borderColor: "var(--dt-border)", backgroundColor: "var(--dt-surface)", color: "var(--dt-text)", borderRadius: "var(--dt-radius)" }}
+                  >
+                    {isEN ? "Detail" : "Lihat"}
+                  </button>
                 </div>
 
                 {/* Metadata & Description Area */}
@@ -301,7 +316,7 @@ export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField,
                   </div>
 
                   {/* Pinned Add to Cart button */}
-                  <div className="mt-6 pt-4 border-t" style={{ borderColor: "var(--dt-border)" }}>
+                  <div className="mt-6 pt-4 border-t" onClick={(e) => e.stopPropagation()} style={{ borderColor: "var(--dt-border)" }}>
                     <AddToCartButton
                       itemId={item.id || `cat-hsc-${activeCategoryIdx}-${index}`}
                       itemName={item.name}
@@ -355,6 +370,20 @@ export default function CatalogHorizontalSwipeCarousel({ catalog, onUpdateField,
             ))}
           </div>
         </div>
+      )}
+      {quickView && qvItem && (
+        <ProductQuickView
+          open
+          onClose={() => setQuickView(null)}
+          item={toQuickViewItem(qvItem, qvCategory?.name)}
+          editSection="catalog"
+          pathBase={`categories.${quickView.catIdx}.items.${quickView.itemIdx}`}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
       )}
     </section>
   );

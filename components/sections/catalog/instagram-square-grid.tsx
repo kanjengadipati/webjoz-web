@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Plus, Image as ImageIcon } from "lucide-react";
-import { InlineText, InlineImage } from "../../templates/shared";
+import { InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
@@ -22,8 +22,11 @@ interface CatalogVariantProps {
 
 export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: CatalogVariantProps) {
   const isEN = language === "en";
+  const [quickView, setQuickView] = useState<{ catIdx: number; itemIdx: number } | null>(null);
   if (!catalog) return null;
   const { eyebrow, title, subtitle, categories } = catalog;
+  const qvCategory = quickView ? categories[quickView.catIdx] : undefined;
+  const qvItem = qvCategory?.items?.[quickView?.itemIdx ?? -1];
 
   return (
     <section
@@ -126,7 +129,8 @@ export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isE
                 return (
                   <div
                     key={index}
-                    className="flex flex-col border-2 md:border-3 overflow-hidden group bg-surface h-full relative"
+                    className="flex flex-col border-2 md:border-3 overflow-hidden group bg-surface h-full relative cursor-pointer"
+                    onClick={() => setQuickView({ catIdx, itemIdx: index })}
                     style={{
                       borderColor: "var(--dt-border)",
                       backgroundColor: "var(--dt-surface)",
@@ -170,6 +174,17 @@ export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isE
                           <InlineText section="catalog" fieldKey={"categories." + catIdx + ".items." + index + ".badge"} value={item.badge ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
                         </div>
                       )}
+
+                      {/* View detail trigger — bold chip */}
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); setQuickView({ catIdx, itemIdx: index }); }}
+                        onPointerDown={(e) => e.stopPropagation()}
+                        className="absolute top-3 right-3 z-20 text-[10px] uppercase tracking-wider font-extrabold px-2 py-1 border-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity cursor-pointer"
+                        style={{ borderColor: "var(--dt-border)", backgroundColor: "var(--dt-surface)", color: "var(--dt-text)" }}
+                      >
+                        {isEN ? "Detail" : "Lihat"}
+                      </button>
                     </div>
 
                     {/* Description & Price Info Area */}
@@ -243,7 +258,8 @@ export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isE
 
                     {/* High-contrast Pinned Button */}
                     <button
-                      className="w-full py-3.5 border-t-2 text-xs font-extrabold uppercase tracking-widest flex items-center justify-center gap-2 transition-colors duration-200"
+                      type="button"
+                      className="w-full py-3.5 border-t-2 text-xs font-extrabold uppercase tracking-widest flex items-center justify-center gap-2 transition-colors duration-200 cursor-pointer hover:brightness-110"
                       style={{
                         borderColor: "var(--dt-border)",
                         backgroundColor: "var(--dt-primary)",
@@ -273,6 +289,20 @@ export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isE
         ))}
       {isEditorMode && onAddCategory && (
         <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+      )}
+      {quickView && qvItem && (
+        <ProductQuickView
+          open
+          onClose={() => setQuickView(null)}
+          item={toQuickViewItem(qvItem, qvCategory?.name)}
+          editSection="catalog"
+          pathBase={`categories.${quickView.catIdx}.items.${quickView.itemIdx}`}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
       )}
       </div>
     </section>

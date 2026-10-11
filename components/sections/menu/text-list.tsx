@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { InlineText, isPlaceholderPrice, AddToCartButton, CatalogMenuFilterBar } from "../../templates/shared";
+import { InlineText, isPlaceholderPrice, AddToCartButton, CatalogMenuFilterBar, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
@@ -13,6 +13,7 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
   const isEN = language === "en";
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [quickView, setQuickView] = useState<{ catIdx: number; itemIdx: number } | null>(null);
 
   if (!menu) return null;
   const p = "var(--dt-primary)";
@@ -23,6 +24,8 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
   const muted = `color-mix(in srgb, ${text} 65%, transparent)`;
 
   const categories = menu.categories || [];
+  const qvCategory = quickView && categories[quickView.catIdx] ? categories[quickView.catIdx] : undefined;
+  const qvItem = qvCategory?.items?.[quickView?.itemIdx ?? -1];
   const query = searchQuery.trim().toLowerCase();
 
   const filteredCategories = categories
@@ -123,7 +126,7 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
                 {cat.filteredItems.map(({ item, originalCatIdx, originalItemIdx }) => {
                   const showPrice = item.price && !isPlaceholderPrice(item.price);
                   return (
-                    <div key={item.id || `menu-tl-${originalCatIdx}-${originalItemIdx}`} className="relative group" style={{
+                    <div key={item.id || `menu-tl-${originalCatIdx}-${originalItemIdx}`} className="relative group cursor-pointer" onClick={() => setQuickView({ catIdx: originalCatIdx, itemIdx: originalItemIdx })} style={{
                       padding: "0.875rem 0",
                       paddingRight: isEditorMode && onDeleteItem ? "2rem" : 0,
                       borderBottom: `1px solid color-mix(in srgb, ${p} 8%, transparent)`,
@@ -187,6 +190,7 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
                               href={dp.url}
                               target="_blank"
                               rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
                               className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md border transition-all hover:brightness-110"
                               style={{ borderColor: `color-mix(in srgb, ${p} 25%, transparent)`, background: `color-mix(in srgb, ${p} 8%, transparent)`, color: p }}
                             >
@@ -208,7 +212,7 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
                         </div>
                       )}
                       {/* Add to cart */}
-                      <div style={{ marginTop: "0.4rem" }}>
+                      <div style={{ marginTop: "0.4rem", display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }} onClick={(e) => e.stopPropagation()}>
                         <AddToCartButton
                           itemId={item.id || `menu-tl-${originalCatIdx}-${originalItemIdx}`}
                           itemName={item.name}
@@ -224,6 +228,15 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
                           className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full transition-colors"
                           style={{ background: `color-mix(in srgb, ${p} 10%, transparent)`, color: p, border: `1px solid color-mix(in srgb, ${p} 25%, transparent)` }}
                         />
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); setQuickView({ catIdx: originalCatIdx, itemIdx: originalItemIdx }); }}
+                          onPointerDown={(e) => e.stopPropagation()}
+                          className="text-[11px] font-semibold underline underline-offset-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity cursor-pointer"
+                          style={{ color: p, background: "none", border: "none", padding: 0 }}
+                        >
+                          {isEN ? "View detail" : "Lihat Detail"}
+                        </button>
                       </div>
                     </div>
                   );
@@ -239,6 +252,20 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
         )}
       {isEditorMode && onAddCategory && (
         <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+      )}
+      {quickView && qvItem && (
+        <ProductQuickView
+          open
+          onClose={() => setQuickView(null)}
+          item={toQuickViewItem(qvItem, qvCategory?.name)}
+          editSection="menu"
+          pathBase={`categories.${quickView.catIdx}.items.${quickView.itemIdx}`}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
       )}
       </div>
     </section>

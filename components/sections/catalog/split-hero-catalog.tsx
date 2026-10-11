@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { ArrowRight, Image as ImageIcon } from "lucide-react";
-import { InlineText, InlineImage } from "../../templates/shared";
+import { InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import { AddToCartButton } from "@/components/cart";
 import type { TemplateProps, DesignToken } from "../../templates/types";
@@ -23,8 +23,11 @@ interface CatalogVariantProps {
 
 export default function CatalogSplitHeroCatalog({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: CatalogVariantProps) {
   const isEN = language === "en";
+  const [quickView, setQuickView] = useState<{ catIdx: number; itemIdx: number } | null>(null);
   if (!catalog) return null;
   const { eyebrow, title, subtitle, categories } = catalog;
+  const qvCategory = quickView ? categories[quickView.catIdx] : undefined;
+  const qvItem = qvCategory?.items?.[quickView?.itemIdx ?? -1];
 
   // Extract first image for sticky brand panel
   const brandImage = categories?.[0]?.items?.[0]?.image_url || null;
@@ -174,7 +177,8 @@ export default function CatalogSplitHeroCatalog({ catalog, onUpdateField, isEdit
                 {category.items?.map((item, index) => (
                   <div
                     key={index}
-                    className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start pb-12 border-b last:border-b-0 last:pb-0 group"
+                    className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start pb-12 border-b last:border-b-0 last:pb-0 group cursor-pointer"
+                    onClick={() => setQuickView({ catIdx, itemIdx: index })}
                     style={{ borderColor: "var(--dt-border)" }}
                   >
                     {/* Image Column */}
@@ -280,10 +284,21 @@ export default function CatalogSplitHeroCatalog({ catalog, onUpdateField, isEdit
                             ))}
                           </div>
                         )}
+
+                        {/* View detail trigger */}
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); setQuickView({ catIdx, itemIdx: index }); }}
+                          onPointerDown={(e) => e.stopPropagation()}
+                          className="self-start text-xs font-medium tracking-wide uppercase underline underline-offset-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity cursor-pointer"
+                          style={{ color: "var(--dt-text)" }}
+                        >
+                          {isEN ? "View detail" : "Lihat Detail"}
+                        </button>
                       </div>
 
                       {/* Pinned Add to Cart */}
-                      <div>
+                      <div onClick={(e) => e.stopPropagation()}>
                         <AddToCartButton
                           itemId={item.id || `cat-sh-${catIdx}-${index}`}
                           itemName={item.name}
@@ -325,6 +340,20 @@ export default function CatalogSplitHeroCatalog({ catalog, onUpdateField, isEdit
           )}
         </div>
       </div>
+      {quickView && qvItem && (
+        <ProductQuickView
+          open
+          onClose={() => setQuickView(null)}
+          item={toQuickViewItem(qvItem, qvCategory?.name)}
+          editSection="catalog"
+          pathBase={`categories.${quickView.catIdx}.items.${quickView.itemIdx}`}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
+      )}
     </section>
   );
 }
