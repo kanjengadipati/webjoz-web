@@ -123,9 +123,9 @@ export default function MenuCards({ menu, onUpdateField, isEditorMode, isSelecte
                   )}
                 </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))", gap: "2rem" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "1.5rem", alignItems: "stretch" }}>
                 {cat.filteredItems.map(({ item, originalCatIdx, originalItemIdx }) => (
-                  <div key={item.id || `${cat.name}__${item.name}__${originalCatIdx}_${originalItemIdx}`} className="flex flex-col">
+                  <div key={item.id || `${cat.name}__${item.name}__${originalCatIdx}_${originalItemIdx}`} className="flex flex-col h-full">
                     <MenuCatalogCard
                       itemId={item.id || `${cat.name}__${item.name}__${originalCatIdx}_${originalItemIdx}`}
                       itemName={item.name}

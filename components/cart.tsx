@@ -379,28 +379,28 @@ export function AddToCartButton({
   }
 
   return (
-    <div className="flex items-center gap-1" role="group" aria-label={`Jumlah ${itemName}`}>
+    <div className="w-full flex items-center justify-between rounded-xl overflow-hidden" role="group" aria-label={`Jumlah ${itemName}`} style={style}>
       <button
         type="button"
         onClick={() => decrement(itemId)}
-        className="w-7 h-7 rounded-full flex items-center justify-center cursor-pointer transition-all hover:opacity-80 active:scale-90 focus:outline-none"
-        style={style}
+        className="flex-shrink-0 w-10 h-full flex items-center justify-center cursor-pointer transition-all hover:opacity-80 active:scale-90 focus:outline-none font-bold text-lg"
+        style={{ color: style?.color ?? "inherit" }}
         aria-label="Kurangi"
       >
-        <Minus className="w-3.5 h-3.5" />
+        <Minus className="w-4 h-4" />
       </button>
-      <span className="min-w-[1.5rem] text-center text-sm font-bold tabular-nums"
+      <span className="flex-1 text-center text-sm font-black tabular-nums select-none"
         style={{ color: style?.color ?? "inherit" }}>
         {qty}
       </span>
       <button
         type="button"
         onClick={() => increment(itemId)}
-        className="w-7 h-7 rounded-full flex items-center justify-center cursor-pointer transition-all hover:opacity-80 active:scale-90 focus:outline-none"
-        style={style}
+        className="flex-shrink-0 w-10 h-full flex items-center justify-center cursor-pointer transition-all hover:opacity-80 active:scale-90 focus:outline-none font-bold text-lg"
+        style={{ color: style?.color ?? "inherit" }}
         aria-label="Tambah"
       >
-        <Plus className="w-3.5 h-3.5" />
+        <Plus className="w-4 h-4" />
       </button>
     </div>
   );
