@@ -8,7 +8,7 @@ import {
   Search, Lock, RotateCw, Copy, ExternalLink, Sparkles, MessageCircle, MoreVertical, ShieldCheck, Share2, Code2, Eye, Image,
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
-import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice, useCart } from "@/components/cart";
+import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/components/cart";
 import { uploadImageFile } from "@/components/file-upload";
 import { SparkleIcon } from "@/components/sparkle-icon";
 
@@ -1979,7 +1979,6 @@ function ProductQuickViewInner({
   isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
 }: ProductQuickViewProps) {
   const { t } = useI18n();
-  const { primaryColor, primaryFg } = useCart();
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIdx, setLightboxIdx] = useState(0);
   const [galleryUploading, setGalleryUploading] = useState(false);
@@ -2038,7 +2037,7 @@ function ProductQuickViewInner({
   const badgeNode = item.badge ? (
     <span
       className="self-start inline-block text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full"
-      style={{ background: primaryColor, color: primaryFg }}
+      style={{ background: "var(--dt-primary, #4F46E5)", color: "var(--dt-cta-text, #ffffff)" }}
     >
       {canInline ? (
         <InlineText section={editSection!} fieldKey={`${pathBase}.badge`} value={item.badge} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
@@ -2056,7 +2055,8 @@ function ProductQuickViewInner({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-4xl max-h-[92vh] overflow-y-auto rounded-3xl bg-white text-slate-900 shadow-2xl border border-black/5"
+        className="relative w-full max-w-4xl max-h-[92vh] overflow-y-auto rounded-3xl shadow-2xl border"
+        style={{ background: "var(--dt-surface, #ffffff)", color: "var(--dt-text, #0f172a)", borderColor: "var(--dt-border, rgba(0,0,0,0.08))" }}
       >
         {/* Close */}
         <button
@@ -2070,7 +2070,7 @@ function ProductQuickViewInner({
 
         <div className="grid gap-0 md:grid-cols-2">
           {/* Gallery */}
-          <div className="relative bg-slate-100">
+          <div className="relative" style={{ background: "color-mix(in srgb, var(--dt-text, #0f172a) 6%, var(--dt-surface, #ffffff))" }}>
             <div className="relative w-full aspect-square overflow-hidden">
               {canInline ? (
                 <InlineImage
@@ -2094,8 +2094,8 @@ function ProductQuickViewInner({
                   onClick={() => { setLightboxIdx(0); setLightboxOpen(true); }}
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center" style={{ background: `color-mix(in srgb, ${primaryColor} 10%, white)` }}>
-                  <CategoryIcon className="w-16 h-16" style={{ color: primaryColor, opacity: 0.4 }} />
+                <div className="w-full h-full flex items-center justify-center" style={{ background: `color-mix(in srgb, var(--dt-primary, #4F46E5) 10%, var(--dt-surface, #ffffff))` }}>
+                  <CategoryIcon className="w-16 h-16" style={{ color: "var(--dt-primary, #4F46E5)", opacity: 0.4 }} />
                 </div>
               )}
               {isOutOfStock && (
@@ -2111,7 +2111,8 @@ function ProductQuickViewInner({
                     key={i}
                     type="button"
                     onClick={() => { setLightboxIdx(i); setLightboxOpen(true); }}
-                    className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 border border-black/10 cursor-pointer hover:ring-2 hover:ring-black/20 transition-all"
+                    className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 border cursor-pointer hover:ring-2 hover:ring-black/20 transition-all"
+                    style={{ borderColor: "var(--dt-border, rgba(0,0,0,0.1))" }}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={img} alt="" className="w-full h-full object-cover" />
@@ -2121,33 +2122,33 @@ function ProductQuickViewInner({
             )}
 
             {canInline && (
-              <div className="p-3 border-t border-black/5">
+              <div className="p-3 border-t" style={{ borderColor: "var(--dt-border, rgba(0,0,0,0.08))" }}>
                 <div className="flex items-center gap-2 mb-2">
-                  <Camera className="w-4 h-4" style={{ color: primaryColor }} />
-                  <span className="text-[11px] font-bold text-slate-600">
+                  <Camera className="w-4 h-4" style={{ color: "var(--dt-primary, #4F46E5)" }} />
+                  <span className="text-[11px] font-bold" style={{ color: "var(--dt-text-muted, #475569)" }}>
                     {t("dashboard.sitesKatalog.photoGalleryCount", `Galeri Foto (${1 + extraImages.length})`, { count: String(1 + extraImages.length) })}
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-2.5">
                   {imageUrl && (
-                    <div className="relative w-16 h-16 rounded-xl overflow-hidden border-2" style={{ borderColor: primaryColor }}>
+                    <div className="relative w-16 h-16 rounded-xl overflow-hidden border-2" style={{ borderColor: "var(--dt-primary, #4F46E5)" }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={imageUrl} alt="" className="w-full h-full object-cover" />
-                      <span className="absolute bottom-0 inset-x-0 text-[9px] font-black text-center py-0.5 uppercase text-white" style={{ background: primaryColor }}>
+                      <span className="absolute bottom-0 inset-x-0 text-[9px] font-black text-center py-0.5 uppercase" style={{ background: "var(--dt-primary, #4F46E5)", color: "var(--dt-cta-text, #ffffff)" }}>
                         {t("dashboard.sitesKatalog.photoSetPrimary", "Utama")}
                       </span>
                     </div>
                   )}
                   {extraImages.map((url, idx) => (
-                    <div key={idx} className="relative w-16 h-16 rounded-xl overflow-hidden border border-black/10 group">
+                    <div key={idx} className="relative w-16 h-16 rounded-xl overflow-hidden border group" style={{ borderColor: "var(--dt-border, rgba(0,0,0,0.1))" }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={url} alt="" className="w-full h-full object-cover" />
                       <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-1 transition-opacity p-1">
                         <button
                           type="button"
                           onClick={() => handleSetPrimaryImage(url)}
-                          className="text-[9px] font-bold text-white px-1.5 py-0.5 rounded cursor-pointer"
-                          style={{ background: primaryColor }}
+                          className="text-[9px] font-bold px-1.5 py-0.5 rounded cursor-pointer"
+                          style={{ background: "var(--dt-primary, #4F46E5)", color: "var(--dt-cta-text, #ffffff)" }}
                         >
                           {t("dashboard.sitesKatalog.photoSetPrimary", "Utama")}
                         </button>
@@ -2172,7 +2173,8 @@ function ProductQuickViewInner({
                     type="button"
                     disabled={galleryUploading}
                     onClick={() => galleryInputRef.current?.click()}
-                    className="w-16 h-16 rounded-xl border-2 border-dashed border-black/20 hover:border-black/40 flex items-center justify-center text-slate-400 transition-all cursor-pointer disabled:opacity-50"
+                    className="w-16 h-16 rounded-xl border-2 border-dashed flex items-center justify-center transition-all cursor-pointer disabled:opacity-50"
+                    style={{ borderColor: "var(--dt-border, rgba(0,0,0,0.2))", color: "var(--dt-text-muted, #94a3b8)" }}
                   >
                     {galleryUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImagePlus className="w-4 h-4" />}
                   </button>
@@ -2203,10 +2205,10 @@ function ProductQuickViewInner({
             {(displayPrice || isEditorMode) && (
               hasPromo ? (
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-xl font-bold" style={{ color: primaryColor }}>{item.promo_price_display || displayPrice}</span>
+                  <span className="text-xl font-bold" style={{ color: "var(--dt-primary, #4F46E5)" }}>{item.promo_price_display || displayPrice}</span>
                   <span className="text-sm line-through opacity-50">{displayPrice}</span>
                   {item.discount_label && (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: `color-mix(in srgb, ${primaryColor} 15%, transparent)`, color: primaryColor }}>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: `color-mix(in srgb, var(--dt-primary, #4F46E5) 15%, transparent)`, color: "var(--dt-primary, #4F46E5)" }}>
                       {item.discount_label}
                     </span>
                   )}
@@ -2222,7 +2224,7 @@ function ProductQuickViewInner({
                   isSelected={isSelected}
                   as="span"
                   className="text-xl font-bold"
-                  style={{ color: primaryColor }}
+                  style={{ color: "var(--dt-primary, #4F46E5)" }}
                   collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                   onEditingStateChange={onEditingStateChange}
                 />
@@ -2231,7 +2233,7 @@ function ProductQuickViewInner({
 
             {/* Capacity */}
             {item.capacity != null && item.capacity > 0 && (
-              <span className="self-start inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: `color-mix(in srgb, ${primaryColor} 12%, transparent)`, color: primaryColor }}>
+              <span className="self-start inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: `color-mix(in srgb, var(--dt-primary, #4F46E5) 12%, transparent)`, color: "var(--dt-primary, #4F46E5)" }}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="w-3 h-3"><circle cx="9" cy="7" r="2" /><path d="M3 21v-1a6 6 0 0 1 12 0v1" /><circle cx="17" cy="7" r="2" /><path d="M21 21v-1a5 5 0 0 0-3-4.6" /></svg>
                 s/d <InlineText section={editSection ?? ""} fieldKey={pathBase ? `${pathBase}.capacity` : ""} value={String(item.capacity)} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /> tamu
               </span>
@@ -2239,16 +2241,16 @@ function ProductQuickViewInner({
 
             {/* Description */}
             {canInline ? (
-              <InlineText section={editSection!} fieldKey={`${pathBase}.description`} value={item.description ?? ""} placeholder="+ Deskripsi" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className="text-sm leading-relaxed text-slate-600" multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+              <InlineText section={editSection!} fieldKey={`${pathBase}.description`} value={item.description ?? ""} placeholder="+ Deskripsi" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className="text-sm leading-relaxed" style={{ color: "var(--dt-text-muted, #475569)" }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             ) : item.description ? (
-              <p className="text-sm leading-relaxed text-slate-600 whitespace-pre-wrap">{item.description}</p>
+              <p className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: "var(--dt-text-muted, #475569)" }}>{item.description}</p>
             ) : null}
 
             {/* Features */}
             {item.features && item.features.length > 0 && (
               <ul className="flex flex-wrap gap-1.5 mt-1">
                 {item.features.map((f, fi) => (
-                  <li key={fi} className="flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full" style={{ background: `color-mix(in srgb, ${primaryColor} 10%, transparent)`, color: primaryColor }}>
+                  <li key={fi} className="flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full" style={{ background: `color-mix(in srgb, var(--dt-primary, #4F46E5) 10%, transparent)`, color: "var(--dt-primary, #4F46E5)" }}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3 h-3 flex-shrink-0"><polyline points="20 6 9 17 4 12" /></svg>
                     <InlineText section={editSection ?? ""} fieldKey={pathBase ? `${pathBase}.features.${fi}` : ""} value={f} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                   </li>
@@ -2260,7 +2262,7 @@ function ProductQuickViewInner({
             {item.tags && item.tags.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {item.tags.map((tag, ti) => (
-                  <span key={ti} className="inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md" style={{ background: `color-mix(in srgb, ${primaryColor} 12%, transparent)`, color: primaryColor }}>
+                  <span key={ti} className="inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md" style={{ background: `color-mix(in srgb, var(--dt-primary, #4F46E5) 12%, transparent)`, color: "var(--dt-primary, #4F46E5)" }}>
                     <InlineText section={editSection ?? ""} fieldKey={pathBase ? `${pathBase}.tags.${ti}` : ""} value={tag} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                   </span>
                 ))}
@@ -2271,7 +2273,7 @@ function ProductQuickViewInner({
             {item.delivery_platforms && item.delivery_platforms.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {item.delivery_platforms.map((dp, di) => (
-                  <a key={di} href={dp.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-lg border transition-all hover:brightness-110" style={{ borderColor: `color-mix(in srgb, ${primaryColor} 25%, transparent)`, background: `color-mix(in srgb, ${primaryColor} 8%, transparent)`, color: primaryColor }}>
+                  <a key={di} href={dp.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-lg border transition-all hover:brightness-110" style={{ borderColor: `color-mix(in srgb, var(--dt-primary, #4F46E5) 25%, transparent)`, background: `color-mix(in srgb, var(--dt-primary, #4F46E5) 8%, transparent)`, color: "var(--dt-primary, #4F46E5)" }}>
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
                     {dp.name || "Order Online"}
                   </a>
@@ -2295,7 +2297,7 @@ function ProductQuickViewInner({
                 variant_groups={item.variant_groups}
                 disabled={isOutOfStock}
                 className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl text-sm font-bold cursor-pointer transition-all hover:brightness-110"
-                style={{ background: primaryColor, color: primaryFg, border: "none" }}
+                style={{ background: "var(--dt-primary, #4F46E5)", color: "var(--dt-cta-text, #ffffff)", border: "none" }}
               />
             </div>
           </div>
