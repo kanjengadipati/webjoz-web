@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Mail, Phone } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
 import type { ContactVariantProps } from "./types";
 import DynamicLeadForm from "./lead-form";
 import { InlineText } from "../../templates/shared";
@@ -18,6 +18,7 @@ export default function MinimalCentered({
   onEditingStateChange,
   language = "id",
 }: ContactVariantProps) {
+  const isEN = language === "en";
   const hasLeadForm = Boolean(c.show_lead_form && onSubmitLead);
 
   return (
@@ -67,9 +68,16 @@ export default function MinimalCentered({
           </div>
         )}
 
-        <div style={{ marginTop: "1.5rem", paddingTop: "1rem", borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)", display: "flex", justifyContent: "center", gap: "1.5rem", fontSize: "0.75rem", color: "var(--dt-text-muted)" }}>
-          <span><Mail style={{ width: 12, height: 12, display: "inline", marginRight: "0.25rem", verticalAlign: "middle" }} /> <InlineText section="contact" fieldKey="email" value={c.email ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></span>
-          <span><Phone style={{ width: 12, height: 12, display: "inline", marginRight: "0.25rem", verticalAlign: "middle" }} /> <InlineText section="contact" fieldKey="phone" value={c.phone ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></span>
+        <div style={{ marginTop: "1.5rem", paddingTop: "1rem", borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)", display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "1.5rem", fontSize: "0.75rem", color: "var(--dt-text-muted)" }}>
+          {(c.email || isEditorMode) && (
+            <span><Mail style={{ width: 12, height: 12, display: "inline", marginRight: "0.25rem", verticalAlign: "middle" }} /> <InlineText section="contact" fieldKey="email" value={c.email ?? ""} placeholder={isEN ? "Add email address..." : "Tambah alamat email..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></span>
+          )}
+          {(c.phone || isEditorMode) && (
+            <span><Phone style={{ width: 12, height: 12, display: "inline", marginRight: "0.25rem", verticalAlign: "middle" }} /> <InlineText section="contact" fieldKey="phone" value={c.phone ?? ""} placeholder={isEN ? "Add phone or WhatsApp..." : "Tambah nomor telepon / WA..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></span>
+          )}
+          {(c.address || isEditorMode) && (
+            <span><MapPin style={{ width: 12, height: 12, display: "inline", marginRight: "0.25rem", verticalAlign: "middle" }} /> <InlineText section="contact" fieldKey="address" value={c.address ?? ""} placeholder={isEN ? "Add address / location..." : "Tambah alamat bisnis..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></span>
+          )}
         </div>
       </div>
     </section>

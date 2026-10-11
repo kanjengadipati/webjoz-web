@@ -78,6 +78,7 @@ export default function LocationAndHours({
                     section="contact"
                     fieldKey="address"
                     value={contactAddress ?? ""}
+                    placeholder={isEN ? "Add address / location..." : "Tambah alamat bisnis..."}
                     onUpdateField={onUpdateField}
                     isEditorMode={isEditorMode}
                     isSelected={isSelected}
@@ -113,6 +114,7 @@ export default function LocationAndHours({
                     section="contact"
                     fieldKey="opening_hours"
                     value={contactOpeningHours ?? ""}
+                    placeholder={isEN ? "Add opening hours..." : "Tambah jam operasional..."}
                     onUpdateField={onUpdateField}
                     isEditorMode={isEditorMode}
                     isSelected={isSelected}

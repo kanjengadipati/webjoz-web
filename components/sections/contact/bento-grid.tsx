@@ -46,20 +46,24 @@ export default function BentoGrid({ contact: c, footer, onSubmitLead, leadSubmit
             </p>
           </div>
           <div style={{ marginTop: "1.5rem", paddingTop: "1rem", borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)", display: "flex", flexDirection: "column", gap: "0.75rem", fontSize: "0.8rem" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-              <div style={iconBox}><Mail style={{ width: 14, height: 14 }} /></div>
-              <div>
-                <p style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: 0 }}>{isEN ? "Primary Email" : "Email Utama"}</p>
-                <p style={{ fontWeight: 500, color: "var(--dt-text)", margin: 0 }}><InlineText section="contact" fieldKey="email" value={c.email ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></p>
+            {(c.email || isEditorMode) && (
+              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                <div style={iconBox}><Mail style={{ width: 14, height: 14 }} /></div>
+                <div>
+                  <p style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: 0 }}>{isEN ? "Primary Email" : "Email Utama"}</p>
+                  <p style={{ fontWeight: 500, color: "var(--dt-text)", margin: 0 }}><InlineText section="contact" fieldKey="email" value={c.email ?? ""} placeholder={isEN ? "Add email address..." : "Tambah alamat email..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></p>
+                </div>
               </div>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-              <div style={iconBox}><Phone style={{ width: 14, height: 14 }} /></div>
-              <div>
-                <p style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: 0 }}>{isEN ? "Phone" : "Telepon"}</p>
-                <p style={{ fontWeight: 500, color: "var(--dt-text)", margin: 0 }}><InlineText section="contact" fieldKey="phone" value={c.phone ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></p>
+            )}
+            {(c.phone || isEditorMode) && (
+              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                <div style={iconBox}><Phone style={{ width: 14, height: 14 }} /></div>
+                <div>
+                  <p style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: 0 }}>{isEN ? "Phone" : "Telepon"}</p>
+                  <p style={{ fontWeight: 500, color: "var(--dt-text)", margin: 0 }}><InlineText section="contact" fieldKey="phone" value={c.phone ?? ""} placeholder={isEN ? "Add phone or WhatsApp..." : "Tambah nomor telepon / WA..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></p>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 
@@ -73,7 +77,7 @@ export default function BentoGrid({ contact: c, footer, onSubmitLead, leadSubmit
                 <div style={{ minWidth: 0 }}>
                   <p style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: 0 }}>{isEN ? "Address" : "Alamat"}</p>
                   <p style={{ fontSize: "0.75rem", color: "var(--dt-text)", fontWeight: 500, margin: "0.125rem 0 0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    <InlineText section="contact" fieldKey="address" value={c.address ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                    <InlineText section="contact" fieldKey="address" value={c.address ?? ""} placeholder={isEN ? "Add address..." : "Tambah alamat..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                   </p>
                 </div>
               </div>
