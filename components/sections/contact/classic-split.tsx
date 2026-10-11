@@ -83,7 +83,7 @@ export default function ClassicSplit({
                   <div style={iconBox}><Phone style={{ width: 18, height: 18 }} /></div>
                   <div>
                     <h4 style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: 0 }}>{isEN ? "Phone" : "Telepon / WhatsApp"}</h4>
-                    <InlineText section="contact" fieldKey="phone" value={c.phone ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} style={{ fontSize: "0.875rem", color: "var(--dt-text)", margin: "0.125rem 0 0" }} />
+                    <InlineText section="contact" fieldKey="phone" value={c.phone ?? ""} placeholder={isEN ? "Add phone or WhatsApp..." : "Tambah nomor telepon / WA..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} style={{ fontSize: "0.875rem", color: "var(--dt-text)", margin: "0.125rem 0 0" }} />
                   </div>
                 </div>
               ) : null}
@@ -92,7 +92,7 @@ export default function ClassicSplit({
                   <div style={iconBox}><Mail style={{ width: 18, height: 18 }} /></div>
                   <div>
                     <h4 style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: 0 }}>Email</h4>
-                    <InlineText section="contact" fieldKey="email" value={c.email ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} style={{ fontSize: "0.875rem", color: "var(--dt-text)", margin: "0.125rem 0 0" }} />
+                    <InlineText section="contact" fieldKey="email" value={c.email ?? ""} placeholder={isEN ? "Add email address..." : "Tambah alamat email..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} style={{ fontSize: "0.875rem", color: "var(--dt-text)", margin: "0.125rem 0 0" }} />
                   </div>
                 </div>
               ) : null}
@@ -101,7 +101,7 @@ export default function ClassicSplit({
                   <div style={iconBox}><MapPin style={{ width: 18, height: 18 }} /></div>
                   <div style={{ flexGrow: 1 }}>
                     <h4 style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: 0 }}>{isEN ? "Address" : "Alamat / Lokasi"}</h4>
-                    <InlineText section="contact" fieldKey="address" value={c.address ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} style={{ fontSize: "0.875rem", color: "var(--dt-text-muted)", margin: "0.125rem 0 0", lineHeight: 1.5 }} />
+                    <InlineText section="contact" fieldKey="address" value={c.address ?? ""} placeholder={isEN ? "Add address / location..." : "Tambah alamat bisnis..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} style={{ fontSize: "0.875rem", color: "var(--dt-text-muted)", margin: "0.125rem 0 0", lineHeight: 1.5 }} />
                   </div>
                 </div>
               ) : null}

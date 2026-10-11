@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { MapPin, Mail, Navigation } from "lucide-react";
+import { MapPin, Mail, Navigation, Phone } from "lucide-react";
 import type { ContactVariantProps } from "./types";
 import DynamicLeadForm from "./lead-form";
 import LeafletMap from "./leaflet-map";
@@ -36,28 +36,45 @@ export default function DarkSplit({ contact: c, onSubmitLead, leadSubmitting, le
           )}
 
           <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
-            <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
-              <div style={{ padding: "0.5rem", borderRadius: "0.5rem", background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <MapPin style={{ width: 16, height: 16 }} />
+            {(c.phone || isEditorMode) && (
+              <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
+                <div style={{ padding: "0.5rem", borderRadius: "0.5rem", background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Phone style={{ width: 16, height: 16 }} />
+                </div>
+                <div>
+                  <p style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-text-muted)", margin: 0 }}>{isEN ? "Phone / WhatsApp" : "Telepon / WhatsApp"}</p>
+                  <p style={{ fontSize: "0.8rem", color: "var(--dt-text)", margin: "0.125rem 0 0" }}>
+                    <InlineText section="contact" fieldKey="phone" value={c.phone ?? ""} placeholder={isEN ? "Add phone or WhatsApp..." : "Tambah nomor telepon / WA..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                  </p>
+                </div>
               </div>
-              <div>
-                <p style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-text-muted)", margin: 0 }}>{isEN ? "Physical HQ" : "Markas Fisik"}</p>
-                <p style={{ fontSize: "0.8rem", color: "var(--dt-text)", margin: "0.125rem 0 0" }}>
-                  <InlineText section="contact" fieldKey="address" value={c.address ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-                </p>
+            )}
+            {(c.email || isEditorMode) && (
+              <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
+                <div style={{ padding: "0.5rem", borderRadius: "0.5rem", background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Mail style={{ width: 16, height: 16 }} />
+                </div>
+                <div>
+                  <p style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-text-muted)", margin: 0 }}>Email</p>
+                  <p style={{ fontSize: "0.8rem", color: "var(--dt-text)", margin: "0.125rem 0 0" }}>
+                    <InlineText section="contact" fieldKey="email" value={c.email ?? ""} placeholder={isEN ? "Add email address..." : "Tambah alamat email..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                  </p>
+                </div>
               </div>
-            </div>
-            <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
-              <div style={{ padding: "0.5rem", borderRadius: "0.5rem", background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <Mail style={{ width: 16, height: 16 }} />
+            )}
+            {(c.address || isEditorMode) && (
+              <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
+                <div style={{ padding: "0.5rem", borderRadius: "0.5rem", background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <MapPin style={{ width: 16, height: 16 }} />
+                </div>
+                <div>
+                  <p style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-text-muted)", margin: 0 }}>{isEN ? "Physical HQ" : "Markas Fisik"}</p>
+                  <p style={{ fontSize: "0.8rem", color: "var(--dt-text)", margin: "0.125rem 0 0" }}>
+                    <InlineText section="contact" fieldKey="address" value={c.address ?? ""} placeholder={isEN ? "Add address / location..." : "Tambah alamat bisnis..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                  </p>
+                </div>
               </div>
-              <div>
-                <p style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-text-muted)", margin: 0 }}>Email</p>
-                <p style={{ fontSize: "0.8rem", color: "var(--dt-text)", margin: "0.125rem 0 0" }}>
-                  <InlineText section="contact" fieldKey="email" value={c.email ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-                </p>
-              </div>
-            </div>
+            )}
           </div>
         </div>
 

@@ -30,7 +30,7 @@ export default function OverlayMap({ contact: c, onSubmitLead, leadSubmitting, l
           <div>
             <p style={{ fontSize: "0.65rem", fontWeight: 700, color: "var(--dt-text)", margin: 0 }}>{isEN ? "Location" : "Lokasi"}</p>
             <p style={{ fontSize: "0.7rem", color: "var(--dt-text-muted)", margin: 0 }}>
-              <InlineText section="contact" fieldKey="address" value={c.address ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+              <InlineText section="contact" fieldKey="address" value={c.address ?? ""} placeholder={isEN ? "Add address..." : "Tambah alamat..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             </p>
           </div>
         </div>
@@ -63,14 +63,18 @@ export default function OverlayMap({ contact: c, onSubmitLead, leadSubmitting, l
               language={language}
             />
             <div style={{ marginTop: "1rem", paddingTop: "0.75rem", borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", fontSize: "0.7rem", color: "var(--dt-text-muted)" }}>
-              <div>
-                <p style={{ fontWeight: 700, textTransform: "uppercase", fontSize: "0.6rem", letterSpacing: "0.1em", margin: "0 0 0.125rem", color: "var(--dt-text-muted)" }}>{isEN ? "Phone" : "Telepon"}</p>
-                <p style={{ margin: 0 }}><InlineText section="contact" fieldKey="phone" value={c.phone ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></p>
-              </div>
-              <div>
-                <p style={{ fontWeight: 700, textTransform: "uppercase", fontSize: "0.6rem", letterSpacing: "0.1em", margin: "0 0 0.125rem", color: "var(--dt-text-muted)" }}>Email</p>
-                <p style={{ margin: 0 }}><InlineText section="contact" fieldKey="email" value={c.email ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></p>
-              </div>
+              {(c.phone || isEditorMode) && (
+                <div>
+                  <p style={{ fontWeight: 700, textTransform: "uppercase", fontSize: "0.6rem", letterSpacing: "0.1em", margin: "0 0 0.125rem", color: "var(--dt-text-muted)" }}>{isEN ? "Phone" : "Telepon"}</p>
+                  <p style={{ margin: 0 }}><InlineText section="contact" fieldKey="phone" value={c.phone ?? ""} placeholder={isEN ? "Add phone or WhatsApp..." : "Tambah telepon / WA..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></p>
+                </div>
+              )}
+              {(c.email || isEditorMode) && (
+                <div>
+                  <p style={{ fontWeight: 700, textTransform: "uppercase", fontSize: "0.6rem", letterSpacing: "0.1em", margin: "0 0 0.125rem", color: "var(--dt-text-muted)" }}>Email</p>
+                  <p style={{ margin: 0 }}><InlineText section="contact" fieldKey="email" value={c.email ?? ""} placeholder={isEN ? "Add email address..." : "Tambah alamat email..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></p>
+                </div>
+              )}
             </div>
             <a href={mapsDirUrl(c)} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem", color: "var(--dt-primary)", textDecoration: "none", fontSize: "0.7rem", fontWeight: 600, marginTop: "0.75rem" }}>
               <Navigation style={{ width: 12, height: 12 }} /> {isEN ? "Open Navigation" : "Buka Navigasi"} <ExternalLink style={{ width: 10, height: 10 }} />
