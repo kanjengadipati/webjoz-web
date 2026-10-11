@@ -336,6 +336,8 @@ interface LinkTypeInputProps {
   path: string;
   label: string;
   defaultWaNumber?: string;
+  suggestedHash?: string;
+  isEN?: boolean;
 }
 
 function LinkTypeInput({
@@ -346,6 +348,8 @@ function LinkTypeInput({
   path,
   label,
   defaultWaNumber,
+  suggestedHash,
+  isEN = false,
 }: LinkTypeInputProps) {
   const isWa = /wa\.me|whatsapp\.com|whatsapp:\/\//i.test(urlValue);
   const [linkType, setLinkType] = React.useState<"whatsapp" | "custom">(isWa ? "whatsapp" : "custom");
@@ -417,15 +421,23 @@ function LinkTypeInput({
       }
       updateUrl(formattedDigits ? `https://wa.me/${formattedDigits}` : "https://wa.me/");
     } else {
-      updateUrl("#contact");
+      updateUrl(suggestedHash || "#contact");
     }
   };
+
+  const anchorPresets = [
+    { label: isEN ? "Catalog" : "Katalog", hash: "#catalog" },
+    { label: "Menu", hash: "#menu" },
+    { label: isEN ? "Contact" : "Kontak", hash: "#contact" },
+    { label: isEN ? "About" : "Tentang", hash: "#about" },
+    { label: isEN ? "Services" : "Layanan", hash: "#services" },
+  ];
 
   return (
     <div className="space-y-2 pt-2 border-t border-border/50 mt-2">
       <div className="flex items-center justify-between">
         <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-          Tipe Aksi Tombol
+          {isEN ? "Button Action Type" : "Tipe Aksi Tombol"}
         </label>
         <div className="flex p-0.5 rounded bg-muted/50 border border-border/50">
           <button
@@ -448,7 +460,7 @@ function LinkTypeInput({
                 : "text-sidebar-muted-foreground hover:text-sidebar-foreground"
             }`}
           >
-            Link Kustom
+            {isEN ? "Custom Link" : "Link Kustom"}
           </button>
         </div>
       </div>
@@ -456,7 +468,7 @@ function LinkTypeInput({
       {linkType === "whatsapp" ? (
         <div className="space-y-1">
           <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-            Nomor WhatsApp {needsAttention && <span className="text-amber-300">⚠️</span>}
+            {isEN ? "WhatsApp Number" : "Nomor WhatsApp"} {needsAttention && <span className="text-amber-300">⚠️</span>}
           </label>
           <div className="relative flex items-center">
             <span className="absolute left-2.5 text-xs text-sidebar-subtle-foreground font-semibold select-none">+</span>
@@ -472,11 +484,13 @@ function LinkTypeInput({
             />
           </div>
           <p className="text-[10px] text-sidebar-subtle-foreground leading-normal">
-            Masukkan nomor dengan kode negara (cth. 628123456789 atau 08123456789).
+            {isEN
+              ? "Enter phone number with country code (e.g. 628123456789 or +1...)."
+              : "Masukkan nomor dengan kode negara (cth. 628123456789 atau 08123456789)."}
           </p>
         </div>
       ) : (
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
             {label} {needsAttention && <span className="text-amber-300">⚠️</span>}
           </label>
@@ -486,8 +500,27 @@ function LinkTypeInput({
             value={urlValue}
             onChange={(e) => updateUrl(e.target.value)}
             className={fieldClass(path, SIDEBAR_FIELD_CLASS)}
-            placeholder="#contact atau https://..."
+            placeholder={isEN ? "#catalog, #contact, or https://..." : "#catalog, #contact, atau https://..."}
           />
+          <div className="flex flex-wrap items-center gap-1 pt-0.5">
+            <span className="text-[10px] text-sidebar-subtle-foreground mr-0.5">
+              {isEN ? "Quick anchors:" : "Pintasan section:"}
+            </span>
+            {anchorPresets.map((preset) => (
+              <button
+                key={preset.hash}
+                type="button"
+                onClick={() => updateUrl(preset.hash)}
+                className={`px-1.5 py-0.5 text-[10px] rounded transition cursor-pointer ${
+                  urlValue === preset.hash
+                    ? "bg-primary/20 text-primary font-bold border border-primary/40 shadow-xs"
+                    : "bg-muted/40 hover:bg-muted text-sidebar-muted-foreground hover:text-sidebar-foreground border border-border/40"
+                }`}
+              >
+                {preset.label}
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </div>
@@ -1079,8 +1112,10 @@ export default function SectionForms({
             needsAttention={needsAttention("hero.cta_url")}
             fieldClass={fieldClass}
             path="hero.cta_url"
-            label="Link Tombol CTA"
+            label={locale === "en" ? "CTA Button Link" : "Link Tombol CTA"}
             defaultWaNumber={content.contact?.phone}
+            suggestedHash={content.catalog ? "#catalog" : content.menu ? "#menu" : "#contact"}
+            isEN={locale === "en"}
           />
           {/* Secondary CTA (optional, used by Futuristic and some templates) */}
           <div className="space-y-1">
@@ -1688,8 +1723,10 @@ export default function SectionForms({
             needsAttention={needsAttention("cta.button_url")}
             fieldClass={fieldClass}
             path="cta.button_url"
-            label="Link Tombol"
+            label={locale === "en" ? "Button Link" : "Link Tombol"}
             defaultWaNumber={content.contact?.phone}
+            suggestedHash={content.catalog ? "#catalog" : content.menu ? "#menu" : "#contact"}
+            isEN={locale === "en"}
           />
         </div>
       )}

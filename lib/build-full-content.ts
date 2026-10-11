@@ -112,9 +112,40 @@ export function buildFullContent(
       // contact-style destination. Section-scroll hashes (#catalog, #menu, etc.)
       // must be preserved so "Lihat Katalog" / "Lihat Menu" buttons work correctly.
       cta_url: (() => {
-        const orig = c.hero?.cta_url || "#contact";
+        let orig = (c.hero?.cta_url || "").trim();
+        const text = (c.hero?.cta_text || c.hero?.cta_label || "").toLowerCase();
+        const isShopping =
+          text.includes("belanja") ||
+          text.includes("katalog") ||
+          text.includes("catalog") ||
+          text.includes("catalogue") ||
+          text.includes("shop") ||
+          text.includes("store") ||
+          text.includes("produk") ||
+          text.includes("product") ||
+          text.includes("koleksi") ||
+          text.includes("collection") ||
+          text.includes("buy") ||
+          text.includes("order");
+        const isMenu =
+          text.includes("menu") ||
+          text.includes("hidangan") ||
+          text.includes("dish") ||
+          text.includes("dining") ||
+          text.includes("food");
+
+        if (!orig || orig === "#contact" || orig === "#" || orig === "/") {
+          if (isShopping && (c.catalog || !c.menu)) {
+            orig = "#catalog";
+          } else if (isMenu && (c.menu || !c.catalog)) {
+            orig = "#menu";
+          } else if (!orig) {
+            orig = "#contact";
+          }
+        }
+
         const isSectionHash = orig.startsWith("#") && orig !== "#contact";
-        return (waUrl && !isSectionHash) ? waUrl : orig;
+        return waUrl && !isSectionHash ? waUrl : orig;
       })(),
       image_url: c.hero?.image_url || "",
       badge_text: c.hero?.badge_text || "",

@@ -832,13 +832,40 @@ function navCtaHref(navCtaText?: string, customHref?: string): string {
     // Infer section from button text
     const lower = (navCtaText || "").toLowerCase();
     hash = "#contact";
-    if (lower.includes("katalog") || lower.includes("produk") || lower.includes("catalog")) hash = "#catalog";
-    else if (lower.includes("menu") || lower.includes("meja") || lower.includes("pesan")) hash = "#menu";
-    else if (lower.includes("tentang") || lower.includes("about")) hash = "#about";
-    else if (lower.includes("keunggulan") || lower.includes("benefit")) hash = "#benefits";
-    else if (lower.includes("galeri") || lower.includes("gallery")) hash = "#gallery";
-    else if (lower.includes("testimoni") || lower.includes("review")) hash = "#testimonials";
-    else if (lower.includes("faq")) hash = "#faq";
+    if (
+      lower.includes("katalog") ||
+      lower.includes("produk") ||
+      lower.includes("catalog") ||
+      lower.includes("catalogue") ||
+      lower.includes("belanja") ||
+      lower.includes("shop") ||
+      lower.includes("store") ||
+      lower.includes("product") ||
+      lower.includes("koleksi") ||
+      lower.includes("collection") ||
+      lower.includes("buy")
+    ) {
+      hash = "#catalog";
+    } else if (
+      lower.includes("menu") ||
+      lower.includes("meja") ||
+      lower.includes("pesan") ||
+      lower.includes("dish") ||
+      lower.includes("dining") ||
+      lower.includes("food")
+    ) {
+      hash = "#menu";
+    } else if (lower.includes("tentang") || lower.includes("about")) {
+      hash = "#about";
+    } else if (lower.includes("keunggulan") || lower.includes("benefit") || lower.includes("features")) {
+      hash = "#benefits";
+    } else if (lower.includes("galeri") || lower.includes("gallery")) {
+      hash = "#gallery";
+    } else if (lower.includes("testimoni") || lower.includes("review") || lower.includes("reviews")) {
+      hash = "#testimonials";
+    } else if (lower.includes("faq")) {
+      hash = "#faq";
+    }
   }
 
   // If already a full URL, return as-is (no blog-page rebase needed)
@@ -865,8 +892,37 @@ function navCtaHref(navCtaText?: string, customHref?: string): string {
 // a phone number is present — the WhatsApp override only applies when the
 // original target is #contact or an explicit contact-style destination.
 
-function ctaHref(phone?: string | null, fallbackUrl?: string): string {
-  const url = fallbackUrl || "#contact";
+function ctaHref(phone?: string | null, fallbackUrl?: string, ctaText?: string): string {
+  let url = (fallbackUrl || "").trim();
+  if (ctaText && (!url || url === "#contact" || url === "#" || url === "/")) {
+    const lower = ctaText.toLowerCase();
+    if (
+      lower.includes("belanja") ||
+      lower.includes("katalog") ||
+      lower.includes("catalog") ||
+      lower.includes("catalogue") ||
+      lower.includes("shop") ||
+      lower.includes("store") ||
+      lower.includes("produk") ||
+      lower.includes("product") ||
+      lower.includes("koleksi") ||
+      lower.includes("collection") ||
+      lower.includes("buy") ||
+      lower.includes("order")
+    ) {
+      url = "#catalog";
+    } else if (
+      lower.includes("menu") ||
+      lower.includes("hidangan") ||
+      lower.includes("dish") ||
+      lower.includes("dining") ||
+      lower.includes("food")
+    ) {
+      url = "#menu";
+    }
+  }
+  if (!url) url = "#contact";
+
   // If the URL is a section-scroll anchor (not #contact), preserve it as-is
   const isSectionHash = url.startsWith("#") && url !== "#contact";
   if (phone && !isSectionHash) {
