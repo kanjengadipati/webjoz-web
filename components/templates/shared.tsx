@@ -5,10 +5,10 @@ import { headingVars, avatarTextColor } from "./helpers";
 import {
   Check, ArrowRight, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Star, Menu, X, Send,
   MapPin, Phone, Mail, Globe, Pencil, Upload, Loader2, Camera, Link2, ImagePlus, Trash2,
-  Search, Lock, RotateCw, Copy, ExternalLink, Sparkles, MessageCircle, MoreVertical, ShieldCheck, Share2, Code2,
+  Search, Lock, RotateCw, Copy, ExternalLink, Sparkles, MessageCircle, MoreVertical, ShieldCheck, Share2, Code2, Eye, Image,
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
-import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/components/cart";
+import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice, useCart } from "@/components/cart";
 import { uploadImageFile } from "@/components/file-upload";
 import { SparkleIcon } from "@/components/sparkle-icon";
 
@@ -1438,6 +1438,7 @@ function MenuCatalogCard({
   const [isExpanded, setIsExpanded] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [activeImgIdx, setActiveImgIdx] = useState(0);
+  const [quickViewOpen, setQuickViewOpen] = useState(false);
 
   const displayPrice = itemPriceDisplay || itemPrice;
   const showPrice = (displayPrice && !isPlaceholderPrice(displayPrice)) || Boolean(isEditorMode);
@@ -1485,6 +1486,16 @@ function MenuCatalogCard({
         onClick={() => { if (!isOutOfStock) setLightboxOpen(true); }}
         onError={(e) => { e.currentTarget.style.display = 'none'; }}
       />
+      {/* Floating badge overlay — top-left */}
+      {isOutOfStock ? (
+        <span className="absolute top-2.5 left-2.5 z-20 inline-flex items-center text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full shadow-lg select-none" style={{ background: "rgba(220,38,38,0.92)", color: "#fff", backdropFilter: "blur(4px)" }}>
+          Habis
+        </span>
+      ) : badge ? (
+        <span className={`absolute top-2.5 left-2.5 z-20 inline-flex items-center select-none ${badgeClassName ?? "text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full shadow-lg"}`} style={badgeStyle ?? { background: "var(--dt-primary)", color: "var(--dt-cta-text, #fff)", backdropFilter: "blur(4px)" }}>
+          {badge}
+        </span>
+      ) : null}
       {/* Multi-image indicators/bullets */}
       {allImages.length > 1 && (
         <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between pointer-events-none z-10">
@@ -1573,6 +1584,16 @@ function MenuCatalogCard({
         ...placeholderStyle,
       }}
     >
+      {/* Floating badge overlay on placeholder too */}
+      {isOutOfStock ? (
+        <span className="absolute top-2.5 left-2.5 z-20 inline-flex items-center text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full shadow-lg select-none" style={{ background: "rgba(220,38,38,0.92)", color: "#fff", backdropFilter: "blur(4px)" }}>
+          Habis
+        </span>
+      ) : badge ? (
+        <span className={`absolute top-2.5 left-2.5 z-20 inline-flex items-center select-none ${badgeClassName ?? "text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full shadow-lg"}`} style={badgeStyle ?? { background: "var(--dt-primary)", color: "var(--dt-cta-text, #fff)", backdropFilter: "blur(4px)" }}>
+          {badge}
+        </span>
+      ) : null}
       <div className="w-12 h-12 rounded-2xl flex items-center justify-center border border-white/10 bg-muted/50 shadow-sm">
         {React.createElement(icon, {
           className: placeholderIconClassName || "w-6 h-6",
@@ -1619,16 +1640,7 @@ function MenuCatalogCard({
   const header = (
     <div className={headerClassName} style={headerStyle}>
       <div className="min-w-0 flex-1">
-        {/* Fixed-height badge zone */}
-        <div className="min-h-[1.375rem] mb-1 flex items-center gap-1.5 flex-wrap">
-          {isOutOfStock ? (
-            <span className="inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap bg-rose-500 text-white shadow-sm">
-              Habis
-            </span>
-          ) : badge ? (
-            <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".badge" : ""} value={badge ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className={badgeClassName} style={badgeStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-          ) : null}
-        </div>
+        {/* Badge zone removed — badge is now a floating overlay on the image */}
         <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".name" : ""} value={itemName ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="h4" className={titleClassName} style={titleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
         {showPrice && headerClassName?.includes("flex-col") && (
           hasPromo ? (
@@ -1711,12 +1723,49 @@ function MenuCatalogCard({
     </>
   );
 
+  const quickViewTrigger = (
+    <button
+      type="button"
+      onClick={(e) => { e.stopPropagation(); e.preventDefault(); setQuickViewOpen(true); }}
+      onPointerDown={(e) => e.stopPropagation()}
+      className={`absolute top-2.5 left-2.5 z-40 w-8 h-8 rounded-full flex items-center justify-center bg-slate-900/70 text-white backdrop-blur-sm shadow-md border border-white/20 hover:bg-slate-900 transition-all cursor-pointer ${isEditorMode ? "opacity-100" : "opacity-0 group-hover:opacity-100"} pointer-coarse:opacity-100`}
+      aria-label={t("dashboard.sitesKatalog.quickView", "Lihat Detail")}
+      title={t("dashboard.sitesKatalog.quickView", "Lihat Detail")}
+    >
+      <Eye className="w-4 h-4" />
+    </button>
+  );
+
+  const quickViewModal = (
+    <ProductQuickView
+      open={quickViewOpen}
+      onClose={() => setQuickViewOpen(false)}
+      icon={icon}
+      item={{
+        id: itemId, name: itemName,
+        price: itemPrice, price_amount: itemPriceAmount, price_display: itemPriceDisplay,
+        promo_price_amount: itemPromoPriceAmount, promo_price_display: itemPromoPriceDisplay,
+        discount_label: discountLabel, description: itemDescription, category,
+        image_url, image_urls, image_credit, badge, is_available, variant_groups,
+        features, capacity, tags, delivery_platforms,
+      }}
+      editSection={editSection}
+      pathBase={pathBase}
+      onUpdateField={onUpdateField}
+      isEditorMode={isEditorMode}
+      isSelected={isSelected}
+      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+      onEditingStateChange={onEditingStateChange}
+    />
+  );
+
   if (layout === "compact") {
     return (
       <div className={`relative group ${className || ""}`} style={style}>
         {isEditorMode && onDelete && (
           <InlineDeleteButton onDelete={onDelete} className="absolute top-2.5 right-2.5 z-40" />
         )}
+        {quickViewTrigger}
         <div className="flex items-start gap-4 h-full">
           <div className="flex-shrink-0">{imageNode}</div>
           <div className="min-w-0 flex-1 flex flex-col h-full" style={contentStyle}>
@@ -1742,6 +1791,7 @@ function MenuCatalogCard({
             </div>
           </div>
         </div>
+        {quickViewModal}
       </div>
     );
   }
@@ -1751,6 +1801,7 @@ function MenuCatalogCard({
       {isEditorMode && onDelete && (
         <InlineDeleteButton onDelete={onDelete} className="absolute top-2.5 right-2.5 z-40" />
       )}
+      {quickViewTrigger}
       {imageNode}
       <div className={`${contentClassName || ""} flex-grow flex flex-col`} style={contentStyle}>
         {header}
@@ -1861,6 +1912,410 @@ function MenuCatalogCard({
           />
         </div>
       </div>
+      {quickViewModal}
+    </div>
+  );
+}
+
+// ─── Product Quick View (detail modal, reusable) ──────────────────────────────
+
+export interface ProductQuickViewItem {
+  id: string;
+  name: string;
+  price?: string | null;
+  price_amount?: number | null;
+  price_display?: string | null;
+  promo_price_amount?: number | null;
+  promo_price_display?: string | null;
+  discount_label?: string | null;
+  description?: string | null;
+  category?: string | null;
+  image_url?: string | null;
+  image_urls?: string[] | null;
+  image_credit?: ImageCredit | null;
+  badge?: string | null;
+  is_available?: boolean;
+  variant_groups?: import("./types").ItemVariantGroup[] | null;
+  features?: string[] | null;
+  capacity?: number | null;
+  tags?: string[] | null;
+  delivery_platforms?: { name: string; url: string }[] | null;
+}
+
+export interface ProductQuickViewProps {
+  open: boolean;
+  onClose: () => void;
+  item: ProductQuickViewItem;
+  icon?: React.ElementType;
+  /** Editor wiring — when present, modal content is inline-editable */
+  editSection?: string;
+  pathBase?: string;
+  onUpdateField?: (section: string, key: string, value: unknown) => void;
+  isEditorMode?: boolean;
+  isSelected?: boolean;
+  collapseSheetForInlineEdit?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
+  /** When true, wraps the modal in its own preview CartProvider (used inside the editor sidebar) */
+  standaloneCart?: boolean;
+  cartWaPhone?: string;
+  cartBrandName?: string;
+  cartPrimaryColor?: string;
+  cartPrimaryFg?: string;
+  language?: "id" | "en";
+}
+
+export function ProductQuickView(props: ProductQuickViewProps) {
+  if (!props.open) return null;
+  if (props.standaloneCart) {
+    return (
+      <CartProvider
+        previewMode
+        waPhone={props.cartWaPhone ?? ""}
+        brandName={props.cartBrandName}
+        primaryColor={props.cartPrimaryColor ?? "#4F46E5"}
+        primaryFg={props.cartPrimaryFg ?? "#ffffff"}
+        language={props.language}
+      >
+        <ProductQuickViewInner {...props} />
+      </CartProvider>
+    );
+  }
+  return <ProductQuickViewInner {...props} />;
+}
+
+function ProductQuickViewInner({
+  onClose, item, icon, editSection, pathBase, onUpdateField,
+  isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
+}: ProductQuickViewProps) {
+  const { t } = useI18n();
+  const { primaryColor, primaryFg } = useCart();
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIdx, setLightboxIdx] = useState(0);
+  const [galleryUploading, setGalleryUploading] = useState(false);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
+
+  const itemId = item.id ?? item.name ?? "";
+  const itemName = item.name ?? "";
+  const displayPrice = item.price_display || item.price;
+  const hasPromo = typeof item.promo_price_amount === "number" && item.promo_price_amount > 0 &&
+    (typeof item.price_amount !== "number" || item.price_amount <= 0 || item.promo_price_amount < item.price_amount);
+  const isOutOfStock = item.is_available === false;
+  const canInline = !!(isEditorMode && onUpdateField && editSection && pathBase);
+  const CategoryIcon = icon ?? (Image as React.ElementType);
+  const allImages = Array.from(
+    new Set([item.image_url, ...(item.image_urls ?? [])].filter((x): x is string => Boolean(x && typeof x === "string" && x.trim() !== "")))
+  );
+  const imageUrl = item.image_url ?? "";
+  const extraImages = (item.image_urls ?? []).filter((u) => u && u !== imageUrl);
+
+  const handleAddExtraImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !canInline) return;
+    try {
+      setGalleryUploading(true);
+      const url = await uploadImageFile(file, { maxWidth: 1000, maxHeight: 1000, quality: 0.8 });
+      if (url) {
+        if (!imageUrl) onUpdateField!(editSection!, `${pathBase}.image_url`, url);
+        else onUpdateField!(editSection!, `${pathBase}.image_urls`, [...extraImages, url]);
+      }
+    } catch (err) {
+      console.error("Upload quick view gallery image error:", err);
+    } finally {
+      setGalleryUploading(false);
+      if (galleryInputRef.current) galleryInputRef.current.value = "";
+    }
+  };
+
+  const handleSetPrimaryImage = (target: string) => {
+    if (!canInline) return;
+    const nextExtra = [imageUrl, ...extraImages].filter((u) => u && u !== target);
+    onUpdateField!(editSection!, `${pathBase}.image_url`, target);
+    onUpdateField!(editSection!, `${pathBase}.image_urls`, nextExtra);
+  };
+
+  const handleRemoveExtraImage = (target: string) => {
+    if (!canInline) return;
+    onUpdateField!(editSection!, `${pathBase}.image_urls`, extraImages.filter((u) => u !== target));
+  };
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [onClose]);
+
+  const badgeNode = item.badge ? (
+    <span
+      className="self-start inline-block text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full"
+      style={{ background: primaryColor, color: primaryFg }}
+    >
+      {canInline ? (
+        <InlineText section={editSection!} fieldKey={`${pathBase}.badge`} value={item.badge} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+      ) : item.badge}
+    </span>
+  ) : null;
+
+  return (
+    <div
+      className="fixed inset-0 z-[500] flex items-center justify-center p-3 sm:p-6 bg-slate-950/70 backdrop-blur-sm animate-[fadeIn_0.15s_ease]"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={itemName}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-4xl max-h-[92vh] overflow-y-auto rounded-3xl bg-white text-slate-900 shadow-2xl border border-black/5"
+      >
+        {/* Close */}
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute top-3 right-3 z-20 w-9 h-9 rounded-full flex items-center justify-center bg-slate-900/70 text-white backdrop-blur-sm hover:bg-slate-900 transition-colors cursor-pointer"
+          aria-label={t("dashboard.sitesKatalog.close", "Tutup")}
+        >
+          <X className="w-5 h-5" />
+        </button>
+
+        <div className="grid gap-0 md:grid-cols-2">
+          {/* Gallery */}
+          <div className="relative bg-slate-100">
+            <div className="relative w-full aspect-square overflow-hidden">
+              {canInline ? (
+                <InlineImage
+                  section={editSection!}
+                  fieldKey={`${pathBase}.image_url`}
+                  src={item.image_url}
+                  alt={itemName}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  className="w-full h-full"
+                  fallbackIcon={<CategoryIcon className="w-16 h-16" />}
+                />
+              ) : item.image_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={item.image_url}
+                  alt={itemName}
+                  className="w-full h-full object-cover cursor-zoom-in"
+                  onClick={() => { setLightboxIdx(0); setLightboxOpen(true); }}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center" style={{ background: `color-mix(in srgb, ${primaryColor} 10%, white)` }}>
+                  <CategoryIcon className="w-16 h-16" style={{ color: primaryColor, opacity: 0.4 }} />
+                </div>
+              )}
+              {isOutOfStock && (
+                <span className="absolute top-3 left-3 z-10 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-rose-500 text-white shadow-sm">
+                  {t("dashboard.sitesKatalog.outOfStock", "Habis")}
+                </span>
+              )}
+            </div>
+            {!canInline && allImages.length > 1 && (
+              <div className="flex gap-2 p-3 overflow-x-auto scrollbar-none">
+                {allImages.map((img, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => { setLightboxIdx(i); setLightboxOpen(true); }}
+                    className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 border border-black/10 cursor-pointer hover:ring-2 hover:ring-black/20 transition-all"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={img} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {canInline && (
+              <div className="p-3 border-t border-black/5">
+                <div className="flex items-center gap-2 mb-2">
+                  <Camera className="w-4 h-4" style={{ color: primaryColor }} />
+                  <span className="text-[11px] font-bold text-slate-600">
+                    {t("dashboard.sitesKatalog.photoGalleryCount", `Galeri Foto (${1 + extraImages.length})`, { count: String(1 + extraImages.length) })}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-2.5">
+                  {imageUrl && (
+                    <div className="relative w-16 h-16 rounded-xl overflow-hidden border-2" style={{ borderColor: primaryColor }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={imageUrl} alt="" className="w-full h-full object-cover" />
+                      <span className="absolute bottom-0 inset-x-0 text-[9px] font-black text-center py-0.5 uppercase text-white" style={{ background: primaryColor }}>
+                        {t("dashboard.sitesKatalog.photoSetPrimary", "Utama")}
+                      </span>
+                    </div>
+                  )}
+                  {extraImages.map((url, idx) => (
+                    <div key={idx} className="relative w-16 h-16 rounded-xl overflow-hidden border border-black/10 group">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={url} alt="" className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-1 transition-opacity p-1">
+                        <button
+                          type="button"
+                          onClick={() => handleSetPrimaryImage(url)}
+                          className="text-[9px] font-bold text-white px-1.5 py-0.5 rounded cursor-pointer"
+                          style={{ background: primaryColor }}
+                        >
+                          {t("dashboard.sitesKatalog.photoSetPrimary", "Utama")}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveExtraImage(url)}
+                          className="text-red-400 hover:text-red-300 p-0.5 cursor-pointer"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  <input
+                    type="file"
+                    ref={galleryInputRef}
+                    onChange={handleAddExtraImage}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    disabled={galleryUploading}
+                    onClick={() => galleryInputRef.current?.click()}
+                    className="w-16 h-16 rounded-xl border-2 border-dashed border-black/20 hover:border-black/40 flex items-center justify-center text-slate-400 transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    {galleryUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImagePlus className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Info */}
+          <div className="p-5 sm:p-7 flex flex-col gap-3">
+            {badgeNode}
+
+            <InlineText
+              section={editSection ?? ""}
+              fieldKey={pathBase ? `${pathBase}.name` : ""}
+              value={itemName}
+              placeholder={t("dashboard.sitesKatalog.labelName", "Nama")}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="h2"
+              className="text-2xl font-bold leading-tight"
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
+
+            {/* Price */}
+            {(displayPrice || isEditorMode) && (
+              hasPromo ? (
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xl font-bold" style={{ color: primaryColor }}>{item.promo_price_display || displayPrice}</span>
+                  <span className="text-sm line-through opacity-50">{displayPrice}</span>
+                  {item.discount_label && (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: `color-mix(in srgb, ${primaryColor} 15%, transparent)`, color: primaryColor }}>
+                      {item.discount_label}
+                    </span>
+                  )}
+                </div>
+              ) : (
+                <InlineText
+                  section={editSection ?? ""}
+                  fieldKey={pathBase ? `${pathBase}.price` : ""}
+                  value={displayPrice ?? ""}
+                  placeholder="+ Harga"
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="span"
+                  className="text-xl font-bold"
+                  style={{ color: primaryColor }}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
+              )
+            )}
+
+            {/* Capacity */}
+            {item.capacity != null && item.capacity > 0 && (
+              <span className="self-start inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: `color-mix(in srgb, ${primaryColor} 12%, transparent)`, color: primaryColor }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="w-3 h-3"><circle cx="9" cy="7" r="2" /><path d="M3 21v-1a6 6 0 0 1 12 0v1" /><circle cx="17" cy="7" r="2" /><path d="M21 21v-1a5 5 0 0 0-3-4.6" /></svg>
+                s/d <InlineText section={editSection ?? ""} fieldKey={pathBase ? `${pathBase}.capacity` : ""} value={String(item.capacity)} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /> tamu
+              </span>
+            )}
+
+            {/* Description */}
+            {canInline ? (
+              <InlineText section={editSection!} fieldKey={`${pathBase}.description`} value={item.description ?? ""} placeholder="+ Deskripsi" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className="text-sm leading-relaxed text-slate-600" multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+            ) : item.description ? (
+              <p className="text-sm leading-relaxed text-slate-600 whitespace-pre-wrap">{item.description}</p>
+            ) : null}
+
+            {/* Features */}
+            {item.features && item.features.length > 0 && (
+              <ul className="flex flex-wrap gap-1.5 mt-1">
+                {item.features.map((f, fi) => (
+                  <li key={fi} className="flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full" style={{ background: `color-mix(in srgb, ${primaryColor} 10%, transparent)`, color: primaryColor }}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3 h-3 flex-shrink-0"><polyline points="20 6 9 17 4 12" /></svg>
+                    <InlineText section={editSection ?? ""} fieldKey={pathBase ? `${pathBase}.features.${fi}` : ""} value={f} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {/* Tags */}
+            {item.tags && item.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {item.tags.map((tag, ti) => (
+                  <span key={ti} className="inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md" style={{ background: `color-mix(in srgb, ${primaryColor} 12%, transparent)`, color: primaryColor }}>
+                    <InlineText section={editSection ?? ""} fieldKey={pathBase ? `${pathBase}.tags.${ti}` : ""} value={tag} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Delivery platforms */}
+            {item.delivery_platforms && item.delivery_platforms.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {item.delivery_platforms.map((dp, di) => (
+                  <a key={di} href={dp.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-lg border transition-all hover:brightness-110" style={{ borderColor: `color-mix(in srgb, ${primaryColor} 25%, transparent)`, background: `color-mix(in srgb, ${primaryColor} 8%, transparent)`, color: primaryColor }}>
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                    {dp.name || "Order Online"}
+                  </a>
+                ))}
+              </div>
+            )}
+
+            {/* Add to cart */}
+            <div className="mt-auto pt-3">
+              <AddToCartButton
+                itemId={itemId}
+                itemName={itemName}
+                itemPrice={displayPrice ?? null}
+                itemPriceAmount={item.price_amount}
+                itemPriceDisplay={displayPrice}
+                itemPromoPriceAmount={item.promo_price_amount}
+                itemPromoPriceDisplay={item.promo_price_display}
+                discountLabel={item.discount_label}
+                itemDescription={item.description}
+                category={item.category ?? ""}
+                variant_groups={item.variant_groups}
+                disabled={isOutOfStock}
+                className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl text-sm font-bold cursor-pointer transition-all hover:brightness-110"
+                style={{ background: primaryColor, color: primaryFg, border: "none" }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {lightboxOpen && allImages.length > 0 && (
+        <div onClick={(e) => e.stopPropagation()}>
+          <ImageLightbox images={allImages} initialIndex={lightboxIdx} alt={itemName} onClose={() => setLightboxOpen(false)} />
+        </div>
+      )}
     </div>
   );
 }
