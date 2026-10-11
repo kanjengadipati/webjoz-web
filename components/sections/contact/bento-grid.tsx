@@ -3,7 +3,7 @@ import React from "react";
 import { MapPin, Phone, Mail, Clock, ExternalLink, Globe } from "lucide-react";
 import type { ContactVariantProps } from "./types";
 import DynamicLeadForm from "./lead-form";
-import LeafletMap from "./leaflet-map";
+import InlineMapPicker from "./inline-map-picker";
 import { InlineText } from "../../templates/shared";
 
 function mapsDirUrl(c: ContactVariantProps["contact"]): string {
@@ -16,6 +16,9 @@ export default function BentoGrid({ contact: c, footer, onSubmitLead, leadSubmit
   const hasLeadForm = Boolean(c.show_lead_form && onSubmitLead);
   const showMap = c.show_map !== false;
   const socialLinks = footer?.social_links ?? [];
+  const handlePickLocation = onUpdateField
+    ? (url: string) => onUpdateField("contact", "maps_url", url)
+    : undefined;
 
   const iconBox: React.CSSProperties = {
     padding: "0.5rem",
@@ -70,7 +73,7 @@ export default function BentoGrid({ contact: c, footer, onSubmitLead, leadSubmit
         {/* Block 2: Map */}
         {showMap && (
           <div className="lg:col-span-7" style={{ borderRadius: "var(--dt-radius-lg)", overflow: "hidden", border: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)", minHeight: "220px", position: "relative" }}>
-            <LeafletMap mapsUrl={c.maps_url} tileStyle={c.map_tile_style} filter="grayscale(1)" opacity={0.8} style={{ minHeight: "220px" }} />
+            <InlineMapPicker mapsUrl={c.maps_url} tileStyle={c.map_tile_style} filter="grayscale(1)" opacity={0.8} style={{ minHeight: "220px" }} isEditorMode={isEditorMode} onPickLocation={handlePickLocation} language={language} />
             <div style={{ position: "absolute", bottom: "0.75rem", left: "0.75rem", right: "0.75rem", background: "color-mix(in srgb, var(--dt-surface) 95%, transparent)", backdropFilter: "blur(8px)", padding: "0.75rem 1rem", borderRadius: "0.75rem", border: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.75rem" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", minWidth: 0 }}>
                 <MapPin style={{ width: 16, height: 16, color: "var(--dt-primary)", flexShrink: 0 }} />

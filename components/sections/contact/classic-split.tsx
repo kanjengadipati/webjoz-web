@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Mail, Phone, MapPin, Globe } from "lucide-react";
 import type { ContactVariantProps } from "./types";
 import DynamicLeadForm from "./lead-form";
-import LeafletMap from "./leaflet-map";
+import InlineMapPicker from "./inline-map-picker";
 import { InlineText } from "../../templates/shared";
 
 export default function ClassicSplit({
@@ -23,6 +23,9 @@ export default function ClassicSplit({
   const hasLeadForm = Boolean(c.show_lead_form && onSubmitLead);
   const showMap = c.show_map !== false;
   const [mapCoords] = useState({ lat: -6.2088, lng: 106.8456 });
+  const handlePickLocation = onUpdateField
+    ? (url: string) => onUpdateField("contact", "maps_url", url)
+    : undefined;
 
   const iconBox: React.CSSProperties = {
     padding: "0.75rem",
@@ -107,8 +110,8 @@ export default function ClassicSplit({
               ) : null}
               {showMap && (
                 <div>
-                  <div style={{ borderRadius: "0.75rem", overflow: "hidden", border: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)", height: "8rem" }}>
-                    <LeafletMap mapsUrl={c.maps_url} tileStyle={c.map_tile_style} filter="grayscale(1)" />
+                  <div style={{ borderRadius: "0.75rem", overflow: "hidden", border: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)", height: "8rem", position: "relative" }}>
+                    <InlineMapPicker mapsUrl={c.maps_url} tileStyle={c.map_tile_style} filter="grayscale(1)" isEditorMode={isEditorMode} onPickLocation={handlePickLocation} language={language} />
                   </div>
                   <a href={`https://www.google.com/maps/place/@${mapCoords.lat},${mapCoords.lng}`} target="_blank" rel="noopener noreferrer"
                     style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem", fontSize: "0.6875rem", fontWeight: 500, color: "var(--dt-primary)", textDecoration: "none", marginTop: "0.375rem" }}>

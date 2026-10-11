@@ -3,7 +3,7 @@ import React from "react";
 import { MapPin, Navigation, ExternalLink } from "lucide-react";
 import type { ContactVariantProps } from "./types";
 import DynamicLeadForm from "./lead-form";
-import LeafletMap from "./leaflet-map";
+import InlineMapPicker from "./inline-map-picker";
 import { InlineText } from "../../templates/shared";
 
 function mapsDirUrl(c: ContactVariantProps["contact"]): string {
@@ -15,11 +15,14 @@ export default function OverlayMap({ contact: c, onSubmitLead, leadSubmitting, l
   const isEN = language === "en";
   const hasLeadForm = Boolean(c.show_lead_form && onSubmitLead);
   const showMap = c.show_map !== false;
+  const handlePickLocation = onUpdateField
+    ? (url: string) => onUpdateField("contact", "maps_url", url)
+    : undefined;
   return (
     <section id="contact" className="relative w-full overflow-hidden" style={{ minHeight: "580px", background: "color-mix(in srgb, var(--dt-primary) 4%, var(--dt-bg))", borderRadius: "var(--dt-radius-lg)", borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)" }}>
       {showMap && (
         <div className="absolute inset-0 w-full h-full z-0">
-          <LeafletMap mapsUrl={c.maps_url} tileStyle={c.map_tile_style} filter="grayscale(1)" opacity={0.7} style={{ height: "100%" }} />
+          <InlineMapPicker mapsUrl={c.maps_url} tileStyle={c.map_tile_style} filter="grayscale(1)" opacity={0.7} style={{ height: "100%" }} isEditorMode={isEditorMode} onPickLocation={handlePickLocation} language={language} />
         </div>
       )}
 
