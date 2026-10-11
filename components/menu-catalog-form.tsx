@@ -4,10 +4,11 @@ import React, { useState, useRef, useCallback } from "react";
 import {
   Plus, Trash2, ChevronDown, ChevronUp, GripVertical, Loader2,
   RotateCcw, X, Link as LinkIcon, Image as ImageIcon, Layers,
-  SlidersHorizontal, FolderOpen, CheckCircle2
+  SlidersHorizontal, FolderOpen, CheckCircle2, Eye
 } from "lucide-react";
 import { SparkleGenAI } from "@/components/sparkle-icon";
 import FileUpload, { uploadImageFile } from "@/components/file-upload";
+import { ProductQuickView } from "@/components/templates/shared";
 import { useI18n } from "@/lib/i18n/context";
 import {
   DndContext,
@@ -517,6 +518,7 @@ export function MenuCatalogForm({
                   updateItemMulti={updateItemMulti}
                   removeItem={removeItem}
                   addItem={addItem}
+                  updateField={updateField}
                   onAiDescription={onAiDescription}
                   aiLoadingDesc={aiLoadingDesc}
                   isPremium={isPremium}
@@ -554,7 +556,7 @@ function SortableCategoryRow({
   catId, cat, catIdx, itemCount, expandedCat, setExpandedCat,
   removeCategory, updateCategoryName,
   items, itemLabel, sectionKey, hasPrice, hasBadge,
-  updateItem, updateItemMulti, removeItem, addItem,
+  updateItem, updateItemMulti, removeItem, addItem, updateField,
   onAiDescription, aiLoadingDesc, isPremium, onUpgradeRequired,
   activeEmojiPicker, setActiveEmojiPicker,
   sensors, handleItemDragEnd, mode,
@@ -635,6 +637,7 @@ function SortableCategoryRow({
                     updateItem={updateItem}
                     updateItemMulti={updateItemMulti}
                     removeItem={removeItem}
+                    updateField={updateField}
                     onAiDescription={onAiDescription}
                     aiLoadingDesc={aiLoadingDesc}
                     isPremium={isPremium}
@@ -667,7 +670,7 @@ function SortableCategoryRow({
 function SortableItemRow({
   item, itemIdx, catIdx, itemLabel, sectionKey, hasPrice, hasBadge,
   updateItem, updateItemMulti, removeItem, onAiDescription, aiLoadingDesc, isPremium,
-  onUpgradeRequired, catName, activeEmojiPicker, setActiveEmojiPicker, mode,
+  onUpgradeRequired, catName, activeEmojiPicker, setActiveEmojiPicker, mode, updateField,
 }: any) {
   const { t } = useI18n();
   const itemSortId = item.id ?? item.name ?? String(itemIdx);
@@ -684,6 +687,7 @@ function SortableItemRow({
   const isPageMode = mode === "page";
   const [isOpen, setIsOpen] = useState<boolean>(isPageMode);
   const [showAdvanced, setShowAdvanced] = useState<boolean>(isPageMode);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   return (
     <div ref={setNodeRef} style={style} className="rounded-3xl border border-border/80 bg-muted/15 shadow-2xs overflow-hidden">
@@ -734,6 +738,15 @@ function SortableItemRow({
                 <span>{t("dashboard.sitesKatalog.outOfStock", "Habis")}</span>
               </>
             )}
+          </button>
+          <button
+            type="button"
+            onClick={() => setPreviewOpen(true)}
+            className="text-muted-foreground hover:text-primary p-1.5 rounded-lg hover:bg-primary/10 cursor-pointer transition-colors"
+            aria-label={t("dashboard.sitesKatalog.previewItem", "Pratinjau")}
+            title={t("dashboard.sitesKatalog.previewItem", "Pratinjau")}
+          >
+            <Eye className="w-4 h-4" />
           </button>
           <button
             type="button"
@@ -1171,6 +1184,39 @@ function SortableItemRow({
         </div>
       </div>
       )}
+      <ProductQuickView
+        open={previewOpen}
+        onClose={() => setPreviewOpen(false)}
+        item={{
+          id: item.id ?? `item-${itemIdx}`,
+          name: item.name ?? "",
+          price: item.price,
+          price_amount: item.price_amount,
+          price_display: item.price_display,
+          promo_price_amount: item.promo_price_amount,
+          promo_price_display: item.promo_price_display,
+          discount_label: item.discount_label,
+          description: item.description,
+          category: catName,
+          image_url: item.image_url,
+          image_urls: item.image_urls,
+          image_credit: item.image_credit,
+          badge: item.badge,
+          is_available: item.is_available,
+          variant_groups: item.variant_groups,
+          features: item.features,
+          capacity: item.capacity,
+          tags: item.tags,
+          delivery_platforms: item.delivery_platforms,
+        }}
+        editSection={sectionKey}
+        pathBase={`categories.${catIdx}.items.${itemIdx}`}
+        onUpdateField={updateField}
+        isEditorMode
+        standaloneCart
+        cartWaPhone=""
+        cartBrandName={catName}
+      />
     </div>
   );
 }

@@ -1960,6 +1960,8 @@ export interface Translations {
       returnPolicyPlaceholder: string;
       toggleItemDetail: string;
       advancedSettings: string;
+      quickView: string;
+      previewItem: string;
     };
     sitesBlog: {
       title: string;
@@ -4617,6 +4619,8 @@ export const translations: Record<Locale, Translations> = {
         returnPolicyPlaceholder: "cth. Barang dapat dikembalikan/ditukar dalam 7 hari. Hubungi kami lewat WhatsApp.",
         toggleItemDetail: "Buka/tutup detail item",
         advancedSettings: "Pengaturan lanjutan",
+        quickView: "Lihat Detail",
+        previewItem: "Pratinjau",
       },
       sitesBlog: {
         title: "Blog Postingan",
@@ -7344,6 +7348,8 @@ export const translations: Record<Locale, Translations> = {
         returnPolicyPlaceholder: "e.g. Items can be returned or exchanged within 7 days. Contact us via WhatsApp.",
         toggleItemDetail: "Expand/collapse item details",
         advancedSettings: "Advanced settings",
+        quickView: "Quick View",
+        previewItem: "Preview",
       },
       sitesBlog: {
         title: "Blog Posts",
