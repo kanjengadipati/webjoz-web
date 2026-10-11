@@ -127,6 +127,12 @@ export function avatarTextColor(background: string): string {
   return isColorDark(background) ? "#ffffff" : "#111827";
 }
 
+/** Compute readable foreground text color for primary background (handles bright/dark contrast). */
+export function computePrimaryFg(primaryColor?: string): string {
+  if (!primaryColor) return "#ffffff";
+  return isColorDark(primaryColor) ? "#ffffff" : "#1e293b";
+}
+
 const heroSizeMap: Record<string, string> = {
   "sm": "2.25rem",
   "md": "2.5rem",

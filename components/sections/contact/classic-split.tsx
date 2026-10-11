@@ -101,21 +101,21 @@ export default function ClassicSplit({
                   <div style={iconBox}><MapPin style={{ width: 18, height: 18 }} /></div>
                   <div style={{ flexGrow: 1 }}>
                     <h4 style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", margin: 0 }}>{isEN ? "Address" : "Alamat / Lokasi"}</h4>
-                    <InlineText section="contact" fieldKey="address" value={c.address ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} style={{ fontSize: "0.875rem", color: "var(--dt-text-muted)", margin: "0.125rem 0 0.75rem", lineHeight: 1.5 }} />
-                    {showMap && (
-                      <>
-                        <div style={{ borderRadius: "0.75rem", overflow: "hidden", border: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)", height: "8rem" }}>
-                          <LeafletMap mapsUrl={c.maps_url} tileStyle={c.map_tile_style} filter="grayscale(1)" />
-                        </div>
-                        <a href={`https://www.google.com/maps/place/@${mapCoords.lat},${mapCoords.lng}`} target="_blank" rel="noopener noreferrer"
-                          style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem", fontSize: "0.6875rem", fontWeight: 500, color: "var(--dt-primary)", textDecoration: "none", marginTop: "0.375rem" }}>
-                          <Globe style={{ width: 13, height: 13 }} /> {isEN ? "Open in Google Maps" : "Buka di Google Maps"}
-                        </a>
-                      </>
-                    )}
+                    <InlineText section="contact" fieldKey="address" value={c.address ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} style={{ fontSize: "0.875rem", color: "var(--dt-text-muted)", margin: "0.125rem 0 0", lineHeight: 1.5 }} />
                   </div>
                 </div>
               ) : null}
+              {showMap && (
+                <div>
+                  <div style={{ borderRadius: "0.75rem", overflow: "hidden", border: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)", height: "8rem" }}>
+                    <LeafletMap mapsUrl={c.maps_url} tileStyle={c.map_tile_style} filter="grayscale(1)" />
+                  </div>
+                  <a href={`https://www.google.com/maps/place/@${mapCoords.lat},${mapCoords.lng}`} target="_blank" rel="noopener noreferrer"
+                    style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem", fontSize: "0.6875rem", fontWeight: 500, color: "var(--dt-primary)", textDecoration: "none", marginTop: "0.375rem" }}>
+                    <Globe style={{ width: 13, height: 13 }} /> {isEN ? "Open in Google Maps" : "Buka di Google Maps"}
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </div>

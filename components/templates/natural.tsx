@@ -18,7 +18,7 @@ import FaqSectionInner from "../sections/faq";
 import ContactSectionInner from "../sections/contact";
 import MenuSectionInner from "../sections/menu";
 import CatalogSectionInner from "../sections/catalog";
-import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections, getSectionVariant } from "./helpers";
+import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections, getSectionVariant, computePrimaryFg } from "./helpers";
 import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
 
@@ -207,7 +207,7 @@ export const TemplateNatural: React.FC<TemplateProps> = ({
   };
 
   return (
-    <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={dt?.palette?.primary ? undefined : "#ffffff"} language={language} payments={content.payments}>
+    <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={computePrimaryFg(dt?.palette?.primary ?? "#4F46E5")} language={language} payments={content.payments}>
     <div style={{ ...cssVars, background: cream, color: brown, fontFamily: "var(--dt-body-font)", minHeight: "100vh", overflowX: "hidden", containerType: "inline-size" }}>
       {(() => {
         const renderedSectionOrder = filterEmptySections(sectionOrder, content, isEditorMode)
