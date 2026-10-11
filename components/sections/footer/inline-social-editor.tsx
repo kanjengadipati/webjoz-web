@@ -72,6 +72,20 @@ export default function InlineSocialEditor({
     };
   }, [activeIndex, isAddingNew]);
 
+  const showPopover = activeIndex !== null || isAddingNew;
+
+  // Ensure popover stays within horizontal viewport and scrolls into view if near screen bottom
+  useEffect(() => {
+    if (showPopover && popoverRef.current) {
+      const rect = popoverRef.current.getBoundingClientRect();
+      if (rect.right > window.innerWidth - 16) {
+        popoverRef.current.style.left = "auto";
+        popoverRef.current.style.right = "0px";
+      }
+      popoverRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  }, [showPopover]);
+
   const openEdit = (index: number, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -194,8 +208,6 @@ export default function InlineSocialEditor({
   }
 
   // In Editor Mode: Interactive items with popover
-  const showPopover = activeIndex !== null || isAddingNew;
-
   return (
     <div className="relative">
       <div className={containerClassName}>
@@ -260,7 +272,7 @@ export default function InlineSocialEditor({
         <div
           ref={popoverRef}
           onClick={(e) => e.stopPropagation()}
-          className="absolute left-0 bottom-full mb-2 z-50 w-72 max-w-[90vw] rounded-xl border border-border/80 bg-popover text-popover-foreground p-3.5 shadow-2xl backdrop-blur-xl animate-in fade-in-0 zoom-in-95 duration-150"
+          className="absolute left-0 top-full mt-2 z-50 w-72 max-w-[calc(100vw-2rem)] rounded-xl border border-border/80 bg-popover text-popover-foreground p-3.5 shadow-2xl backdrop-blur-xl animate-in fade-in-0 zoom-in-95 duration-150"
           style={{
             boxShadow: "0 16px 40px -8px rgba(0,0,0,0.4), 0 0 0 1px var(--border)",
           }}
