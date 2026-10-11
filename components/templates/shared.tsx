@@ -1436,7 +1436,6 @@ function MenuCatalogCard({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [lightboxOpen, setLightboxOpen] = useState(false);
   const [activeImgIdx, setActiveImgIdx] = useState(0);
   const [quickViewOpen, setQuickViewOpen] = useState(false);
 
@@ -1482,8 +1481,8 @@ function MenuCatalogCard({
         src={currentImg}
         alt={itemName}
         className={`${imageClassName || ""} ${isOutOfStock ? "opacity-60 grayscale-[30%]" : ""}`}
-        style={{ ...imageStyle, cursor: isOutOfStock ? "default" : "zoom-in" }}
-        onClick={() => { if (!isOutOfStock) setLightboxOpen(true); }}
+        style={{ ...imageStyle, cursor: isOutOfStock ? "default" : "pointer" }}
+        onClick={() => { if (!isOutOfStock) setQuickViewOpen(true); }}
         onError={(e) => { e.currentTarget.style.display = 'none'; }}
       />
       {/* Floating badge overlay — top-left */}
@@ -1565,15 +1564,6 @@ function MenuCatalogCard({
             </button>
           </div>
         </>
-      )}
-
-      {lightboxOpen && !isOutOfStock && (
-        <ImageLightbox
-          images={allImages}
-          initialIndex={activeImgIdx}
-          alt={itemName}
-          onClose={() => setLightboxOpen(false)}
-        />
       )}
     </div>
   ) : (
