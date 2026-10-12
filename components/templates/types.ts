@@ -39,6 +39,8 @@ export interface PaymentMethod {
 
 export interface PaymentConfig {
   title?: string;
+  /** Set false to hide the whole payment & shipping block (cart + footer). Default: true. */
+  show?: boolean;
   methods?: PaymentMethod[];
   shipping_note?: string;
   return_policy?: string;

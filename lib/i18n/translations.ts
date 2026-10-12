@@ -1945,6 +1945,8 @@ export interface Translations {
       paymentTitle: string;
       paymentSubtitle: string;
       paymentHint: string;
+      paymentsVisibleLabel: string;
+      paymentsVisibleHint: string;
       methodsTitle: string;
       methodTypeTransfer: string;
       methodTypeQris: string;
@@ -4613,6 +4615,8 @@ export const translations: Record<Locale, Translations> = {
         paymentTitle: "Metode Pembayaran & Pengiriman",
         paymentSubtitle: "Tampilkan info pembayaran dan pengiriman di keranjang pesanan pengunjung. Belum perlu integrasi payment gateway — cukup info rekening/QRIS statis.",
         paymentHint: "Perubahan tersimpan otomatis. Informasi ini hanya ditampilkan sebagai catatan — pembayaran dikonfirmasi manual lewat WhatsApp.",
+        paymentsVisibleLabel: "Tampilkan blok pembayaran & pengiriman",
+        paymentsVisibleHint: "Matikan untuk menyembunyikan info ini dari keranjang dan footer",
         methodsTitle: "Metode Pembayaran",
         methodTypeTransfer: "Transfer Bank",
         methodTypeQris: "QRIS",
@@ -7351,6 +7355,8 @@ export const translations: Record<Locale, Translations> = {
         paymentTitle: "Payment Methods & Shipping",
         paymentSubtitle: "Show payment and shipping info in your visitors' shopping cart. No payment gateway needed yet — just static account/QRIS details.",
         paymentHint: "Changes save automatically. This info is shown as a note only — payments are confirmed manually via WhatsApp.",
+        paymentsVisibleLabel: "Show payment & shipping block",
+        paymentsVisibleHint: "Turn off to hide this info from the cart and footer",
         methodsTitle: "Payment Methods",
         methodTypeTransfer: "Bank Transfer",
         methodTypeQris: "QRIS",

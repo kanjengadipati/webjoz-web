@@ -29,7 +29,7 @@ function PaymentStrip(props: FooterVariantProps) {
   const isEN = language === "en";
   const methods = payments?.methods?.filter((m) => (m.label || "").trim()) ?? [];
   const hasBlock = methods.length > 0 || !!payments?.shipping_note || !!payments?.return_policy;
-  if (!hasBlock) return null;
+  if (!hasBlock || payments?.show === false) return null;
   const title = payments?.title?.trim() || (isEN ? "Payment Methods & Shipping" : "Metode Pembayaran & Pengiriman");
 
   const renderQrImage = (m: NonNullable<NonNullable<typeof payments>["methods"]>[number], mi: number) => {
