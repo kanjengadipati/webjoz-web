@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { useI18n } from "@/lib/i18n/context";
-import { paymentMethodDetailPlaceholder } from "@/lib/payment-methods";
+import { paymentMethodDetailPlaceholder, paymentBlockTitle } from "@/lib/payment-methods";
 import { decodeSiteId } from "@/lib/sqids";
 import { MenuCatalogForm } from "@/components/menu-catalog-form";
 import FileUpload from "@/components/file-upload";
@@ -361,9 +361,8 @@ export default function KatalogManagerPage() {
           </label>
           <input
             type="text"
-            value={payments.title ?? ""}
+            value={payments.title ?? paymentBlockTitle(t)}
             onChange={(e) => updatePayments({ title: e.target.value })}
-            placeholder={t("dashboard.sitesKatalog.paymentTitlePlaceholder", "cth. Metode Pembayaran & Pengiriman")}
             className="w-full px-3 py-2 border border-border bg-background text-foreground rounded-xl text-xs outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 transition-all"
           />
         </div>
