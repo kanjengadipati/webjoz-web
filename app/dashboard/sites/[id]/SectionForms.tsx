@@ -2048,8 +2048,11 @@ export default function SectionForms({
               open={showLocationPicker}
               onClose={() => setShowLocationPicker(false)}
               currentUrl={content.contact.maps_url}
-              onSave={(url) => updateField("contact", "maps_url", url)}
-
+              tileStyle={content.contact.map_tile_style}
+              onSave={(url, tileStyle) => {
+                updateField("contact", "maps_url", url);
+                updateField("contact", "map_tile_style", tileStyle);
+              }}
             />
           </div>
         </div>

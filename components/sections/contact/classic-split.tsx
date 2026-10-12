@@ -24,7 +24,10 @@ export default function ClassicSplit({
   const showMap = c.show_map !== false;
   const [mapCoords] = useState({ lat: -6.2088, lng: 106.8456 });
   const handlePickLocation = onUpdateField
-    ? (url: string) => onUpdateField("contact", "maps_url", url)
+    ? (url: string, tileStyle: string) => {
+        onUpdateField("contact", "maps_url", url);
+        onUpdateField("contact", "map_tile_style", tileStyle);
+      }
     : undefined;
 
   const iconBox: React.CSSProperties = {

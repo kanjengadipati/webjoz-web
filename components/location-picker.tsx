@@ -10,7 +10,9 @@ interface LocationPickerProps {
   open: boolean;
   onClose: () => void;
   currentUrl?: string | null;
-  onSave: (url: string) => void;
+  /** Current tile style from content — the picker starts/selects from it */
+  tileStyle?: string;
+  onSave: (url: string, tileStyle: string) => void;
 }
 
 const DEFAULT_LAT = -6.2088;
@@ -36,7 +38,7 @@ const TILE_STYLES: Record<string, { url: string; labelKey: string }> = {
   satelit: { url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", labelKey: "dashboard.sitesEditor.mapTileSatelliteLabel" },
 };
 
-export default function LocationPicker({ open, onClose, currentUrl, onSave }: LocationPickerProps) {
+export default function LocationPicker({ open, onClose, currentUrl, tileStyle: initialTileStyle, onSave }: LocationPickerProps) {
   const { t } = useI18n();
   const mapRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -70,7 +72,7 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
   const detectedCoordsRef = useRef<{ lat: number; lng: number } | null>(null);
   const [detectingGeo, setDetectingGeo] = useState(false);
   const [tilesLoading, setTilesLoading] = useState(true);
-  const [tileStyle, setTileStyle] = useState("default");
+  const [tileStyle, setTileStyle] = useState(initialTileStyle ?? "default");
   const tileStyleRef = useRef(tileStyle);
   useEffect(() => {
     tileStyleRef.current = tileStyle;
@@ -245,7 +247,7 @@ export default function LocationPicker({ open, onClose, currentUrl, onSave }: Lo
   const handleSave = () => {
     if (!position) return;
     const url = `https://www.google.com/maps/place/@${position.lat},${position.lng},15z`;
-    onSave(url);
+    onSave(url, tileStyle);
     onClose();
   };
 

@@ -20,8 +20,8 @@ interface InlineMapPickerProps {
   className?: string;
   /** Shown in editor mode to let user change the pin */
   isEditorMode?: boolean;
-  /** Called with the newly chosen Google Maps URL */
-  onPickLocation?: (url: string) => void;
+  /** Called with the newly chosen Google Maps URL + tile style */
+  onPickLocation?: (url: string, tileStyle: string) => void;
   language?: "id" | "en";
 }
 
@@ -130,8 +130,9 @@ export default function InlineMapPicker({
           open={open}
           onClose={() => setOpen(false)}
           currentUrl={mapsUrl}
-          onSave={(url) => {
-            onPickLocation?.(url);
+          tileStyle={tileStyle ?? undefined}
+          onSave={(url, ts) => {
+            onPickLocation?.(url, ts);
             setOpen(false);
           }}
         />
