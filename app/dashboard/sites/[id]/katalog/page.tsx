@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { useI18n } from "@/lib/i18n/context";
+import { paymentMethodDetailPlaceholder } from "@/lib/payment-methods";
 import { decodeSiteId } from "@/lib/sqids";
 import { MenuCatalogForm } from "@/components/menu-catalog-form";
 import FileUpload from "@/components/file-upload";
@@ -391,13 +392,15 @@ export default function KatalogManagerPage() {
                 placeholder={t("dashboard.sitesKatalog.methodLabelPlaceholder", "Nama metode (cth. Transfer Bank BCA)")}
                 className="w-full sm:w-48 shrink-0 px-3 py-2 border border-border bg-background text-foreground rounded-xl text-xs outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 transition-all"
               />
-              <input
-                type="text"
-                value={method.detail ?? ""}
-                onChange={(e) => updatePaymentMethod(idx, "detail", e.target.value)}
-                placeholder={t("dashboard.sitesKatalog.methodDetailPlaceholder", "Detail (no. rekening, tautan QRIS, nama e-wallet)")}
-                className="w-full flex-1 px-3 py-2 border border-border bg-background text-foreground rounded-xl text-xs outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 transition-all"
-              />
+              {method.type !== "qris" && (
+                <input
+                  type="text"
+                  value={method.detail ?? ""}
+                  onChange={(e) => updatePaymentMethod(idx, "detail", e.target.value)}
+                  placeholder={paymentMethodDetailPlaceholder(t, method.type)}
+                  className="w-full flex-1 px-3 py-2 border border-border bg-background text-foreground rounded-xl text-xs outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 transition-all"
+                />
+              )}
               {method.type === "qris" && (
                 <FileUpload
                   label={t("dashboard.sitesKatalog.methodQrisImageLabel", "Gambar QR")}

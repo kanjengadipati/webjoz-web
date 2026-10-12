@@ -14,6 +14,7 @@ import { getEnabledMapTiles } from "@/lib/design-assets-config";
 import { SocialPlatformSelect, SOCIAL_PLATFORMS, SocialIcon } from "@/components/sections/social-platforms";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
+import { paymentMethodDetailPlaceholder } from "@/lib/payment-methods";
 import { CustomSelect } from "@/components/ui/custom-select";
 
 const ALL_MAP_TILES = [
@@ -805,13 +806,15 @@ export default function SectionForms({
                 placeholder={t("dashboard.sitesKatalog.methodLabelPlaceholder", "Nama metode (cth. Transfer Bank BCA)")}
                 className="w-full px-2 py-1.5 border border-border rounded-md text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground placeholder-sidebar-subtle-foreground"
               />
-              <input
-                type="text"
-                value={method.detail ?? ""}
-                onChange={(e) => updateMethod(idx, "detail", e.target.value)}
-                placeholder={t("dashboard.sitesKatalog.methodDetailPlaceholder", "Detail (no. rekening, tautan QRIS, nama e-wallet)")}
-                className="w-full px-2 py-1.5 border border-border rounded-md text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground placeholder-sidebar-subtle-foreground"
-              />
+              {method.type !== "qris" && (
+                <input
+                  type="text"
+                  value={method.detail ?? ""}
+                  onChange={(e) => updateMethod(idx, "detail", e.target.value)}
+                  placeholder={paymentMethodDetailPlaceholder(t, method.type)}
+                  className="w-full px-2 py-1.5 border border-border rounded-md text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground placeholder-sidebar-subtle-foreground"
+                />
+              )}
               {method.type === "qris" && (
                 <FileUpload
                   label={t("dashboard.sitesKatalog.methodQrisImageLabel", "Gambar QR")}
