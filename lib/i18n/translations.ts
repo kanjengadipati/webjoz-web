@@ -1952,6 +1952,8 @@ export interface Translations {
       methodTypeCod: string;
       methodLabelPlaceholder: string;
       methodDetailPlaceholder: string;
+      methodQrisImageLabel: string;
+      methodQrisImagePlaceholder: string;
       methodRemove: string;
       methodAdd: string;
       shippingTitle: string;
@@ -4611,6 +4613,8 @@ export const translations: Record<Locale, Translations> = {
         methodTypeCod: "Bayar di Tempat (COD)",
         methodLabelPlaceholder: "Nama metode (cth. Transfer Bank BCA)",
         methodDetailPlaceholder: "Detail (no. rekening, tautan QRIS, nama e-wallet)",
+        methodQrisImageLabel: "Gambar QR",
+        methodQrisImagePlaceholder: "https://... atau unggah gambar QRIS",
         methodRemove: "Hapus metode",
         methodAdd: "Tambah Metode",
         shippingTitle: "Info Pengiriman",
@@ -7340,6 +7344,8 @@ export const translations: Record<Locale, Translations> = {
         methodTypeCod: "Cash on Delivery (COD)",
         methodLabelPlaceholder: "Method name (e.g. BCA Bank Transfer)",
         methodDetailPlaceholder: "Detail (account number, QRIS link, e-wallet name)",
+        methodQrisImageLabel: "QR image",
+        methodQrisImagePlaceholder: "https://... or upload QRIS image",
         methodRemove: "Remove method",
         methodAdd: "Add Method",
         shippingTitle: "Shipping Info",

@@ -1195,10 +1195,19 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
                     {methods.length > 0 && (
                       <div className="space-y-1">
                         {methods.map((m, mi) => (
-                          <p key={`${m.label}-${mi}`} className="text-[11px] leading-snug">
-                            {m.label}
-                            {m.detail?.trim() ? <span className="opacity-60"> — {m.detail}</span> : null}
-                          </p>
+                          <div key={`${m.label}-${mi}`} className="space-y-1">
+                            <p className="text-[11px] leading-snug">
+                              {m.label}
+                              {m.detail?.trim() ? <span className="opacity-60"> — {m.detail}</span> : null}
+                            </p>
+                            {m.type === "qris" && m.image?.trim() ? (
+                              <img
+                                src={m.image}
+                                alt={m.label}
+                                className="w-24 h-24 object-contain bg-white rounded-md border border-black/10"
+                              />
+                            ) : null}
+                          </div>
                         ))}
                       </div>
                     )}
