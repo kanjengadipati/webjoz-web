@@ -36,3 +36,20 @@ export function paymentBlockTitle(
     "Metode Pembayaran & Pengiriman"
   );
 }
+
+/** Localized default display name for a payment method type (editable by merchant). */
+export function paymentMethodDefaultLabel(
+  t: (key: string, fallback?: string) => string,
+  type?: string | null
+): string {
+  switch (type) {
+    case "qris":
+      return t("dashboard.sitesKatalog.methodTypeQris", "QRIS");
+    case "ewallet":
+      return t("dashboard.sitesKatalog.methodTypeEwallet", "E-Wallet");
+    case "cod":
+      return t("dashboard.sitesKatalog.methodTypeCod", "Bayar di Tempat (COD)");
+    default:
+      return t("dashboard.sitesKatalog.methodTypeTransfer", "Transfer Bank");
+  }
+}

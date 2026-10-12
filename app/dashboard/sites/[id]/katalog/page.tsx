@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { useI18n } from "@/lib/i18n/context";
-import { paymentMethodDetailPlaceholder, paymentBlockTitle } from "@/lib/payment-methods";
+import { paymentMethodDetailPlaceholder, paymentBlockTitle, paymentMethodDefaultLabel } from "@/lib/payment-methods";
 import { decodeSiteId } from "@/lib/sqids";
 import { MenuCatalogForm } from "@/components/menu-catalog-form";
 import FileUpload from "@/components/file-upload";
@@ -164,8 +164,8 @@ export default function KatalogManagerPage() {
       const methods = [...(prev.methods ?? [])];
       const current = methods[idx];
       if (current) {
-        if (key === "type" && val === "qris" && !(current.label || "").trim()) {
-          methods[idx] = { ...current, type: val, label: "QRIS" } as PaymentMethod;
+        if (key === "type" && !(current.label || "").trim()) {
+          methods[idx] = { ...current, type: val, label: paymentMethodDefaultLabel(t, val) } as PaymentMethod;
         } else {
           methods[idx] = { ...current, [key]: val } as PaymentMethod;
         }
@@ -175,7 +175,7 @@ export default function KatalogManagerPage() {
       schedulePaymentsAutosave(next);
       return next;
     });
-  }, [schedulePaymentsAutosave]);
+  }, [schedulePaymentsAutosave, t]);
 
   const addPaymentMethod = useCallback(() => {
     setPayments((prev) => {
