@@ -730,7 +730,7 @@ export default function SectionForms({
   };
 
   const renderPaymentShippingForm = () => {
-    type PayMethod = { type?: string; label?: string; detail?: string };
+    type PayMethod = { type?: string; label?: string; detail?: string; image?: string };
     const payments = content.payments ?? {};
     const methods: PayMethod[] = Array.isArray(payments.methods) ? payments.methods : [];
     const setMethods = (next: PayMethod[]) => updateField("payments", "methods", next);
@@ -793,6 +793,19 @@ export default function SectionForms({
                 placeholder={t("dashboard.sitesKatalog.methodDetailPlaceholder", "Detail (no. rekening, tautan QRIS, nama e-wallet)")}
                 className="w-full px-2 py-1.5 border border-border rounded-md text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground placeholder-sidebar-subtle-foreground"
               />
+              {method.type === "qris" && (
+                <FileUpload
+                  label={t("dashboard.sitesKatalog.methodQrisImageLabel", "Gambar QR")}
+                  value={method.image ?? ""}
+                  onChange={(val) => updateMethod(idx, "image", val)}
+                  placeholder={t("dashboard.sitesKatalog.methodQrisImagePlaceholder", "https://... atau unggah gambar QRIS")}
+                  maxWidth={800}
+                  maxHeight={800}
+                  quality={0.85}
+                  previewSize="sm"
+                  objectFit="contain"
+                />
+              )}
             </div>
           ))}
           <button

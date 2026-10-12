@@ -33,6 +33,8 @@ export interface PaymentMethod {
   label: string;
   /** Bank account number / QRIS link / wallet id / COD note — filled by merchant */
   detail?: string;
+  /** QRIS image (uploaded/base64) — shown when type === "qris" */
+  image?: string;
 }
 
 export interface PaymentConfig {

@@ -18,6 +18,7 @@ import { SparkleIcon } from "@/components/sparkle-icon";
 import { useI18n } from "@/lib/i18n/context";
 import { decodeSiteId } from "@/lib/sqids";
 import { MenuCatalogForm } from "@/components/menu-catalog-form";
+import FileUpload from "@/components/file-upload";
 import type { PaymentConfig, PaymentMethod } from "@/components/templates/types";
 
 export default function KatalogManagerPage() {
@@ -380,6 +381,19 @@ export default function KatalogManagerPage() {
                 placeholder={t("dashboard.sitesKatalog.methodDetailPlaceholder", "Detail (no. rekening, tautan QRIS, nama e-wallet)")}
                 className="w-full flex-1 px-3 py-2 border border-border bg-background text-foreground rounded-xl text-xs outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 transition-all"
               />
+              {method.type === "qris" && (
+                <FileUpload
+                  label={t("dashboard.sitesKatalog.methodQrisImageLabel", "Gambar QR")}
+                  value={method.image ?? ""}
+                  onChange={(val) => updatePaymentMethod(idx, "image", val)}
+                  placeholder={t("dashboard.sitesKatalog.methodQrisImagePlaceholder", "https://... atau unggah gambar QRIS")}
+                  maxWidth={800}
+                  maxHeight={800}
+                  quality={0.85}
+                  previewSize="sm"
+                  objectFit="contain"
+                />
+              )}
               <button
                 type="button"
                 onClick={() => removePaymentMethod(idx)}
