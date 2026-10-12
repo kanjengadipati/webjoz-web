@@ -10,9 +10,24 @@
  */
 
 import React, { createContext, useContext, useState, useCallback, useRef, useEffect, useMemo } from "react";
-import { ShoppingCart, X, Plus, Minus, Trash2, MessageSquare, ArrowLeft, CheckCircle, CreditCard, Truck, RotateCcw } from "lucide-react";
+import { ShoppingCart, X, Plus, Minus, Trash2, MessageSquare, ArrowLeft, CheckCircle, CreditCard, Truck, RotateCcw, Building2, QrCode, Wallet, Banknote } from "lucide-react";
 
 import type { ItemVariantGroup, PaymentConfig } from "@/components/templates/types";
+
+export function PaymentMethodIcon({ type, className = "w-3.5 h-3.5 shrink-0" }: { type?: string; className?: string }) {
+  switch (type) {
+    case "transfer":
+      return <Building2 className={className} />;
+    case "qris":
+      return <QrCode className={className} />;
+    case "ewallet":
+      return <Wallet className={className} />;
+    case "cod":
+      return <Banknote className={className} />;
+    default:
+      return <CreditCard className={className} />;
+  }
+}
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -871,7 +886,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
   return (
     <div
       ref={panelRef}
-      className="fixed top-20 right-4 z-[400] w-80 max-h-[70vh] flex flex-col shadow-2xl transition-all duration-300"
+      className="fixed top-20 right-4 z-[400] w-80 max-h-[85vh] flex flex-col shadow-2xl transition-all duration-300"
       role="dialog"
       aria-modal
       aria-label="Keranjang Pesanan"
@@ -1186,41 +1201,96 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
                 if (!hasBlock) return null;
                 const blockTitle = payments?.title?.trim() || (isEN ? "Payment Methods & Shipping" : "Metode Pembayaran & Pengiriman");
                 return (
-                  <div className="space-y-1.5 pt-1">
-                    <p className="text-[10px] font-bold uppercase tracking-wide px-0.5"
-                      style={{ borderLeft: `3px solid color-mix(in srgb, var(--dt-primary, var(--primary)) 60%, transparent)`, paddingLeft: 6, opacity: 0.7 }}
-                    >
-                      <span className="inline-flex items-center gap-1"><CreditCard className="w-3 h-3" /> {blockTitle}</span>
-                    </p>
+                  <div
+                    className="rounded-2xl p-3 space-y-2.5 text-xs transition-colors"
+                    style={{
+                      background: "color-mix(in srgb, var(--dt-text, #0f172a) 3%, transparent)",
+                      border: "1px solid color-mix(in srgb, var(--dt-text, #0f172a) 8%, transparent)",
+                    }}
+                  >
+                    <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider opacity-70">
+                      <CreditCard className="w-3.5 h-3.5 shrink-0" />
+                      <span>{blockTitle}</span>
+                    </div>
+
                     {methods.length > 0 && (
-                      <div className="space-y-1">
-                        {methods.map((m, mi) => (
-                          <div key={`${m.label}-${mi}`} className="space-y-1">
-                            <p className="text-[11px] leading-snug">
-                              {m.label}
-                              {m.detail?.trim() ? <span className="opacity-60"> — {m.detail}</span> : null}
-                            </p>
-                            {m.type === "qris" && m.image?.trim() ? (
-                              <img
-                                src={m.image}
-                                alt={m.label}
-                                className="w-24 h-24 object-contain bg-white rounded-md border border-black/10"
-                              />
-                            ) : null}
-                          </div>
-                        ))}
+                      <div className="space-y-1.5">
+                        {methods.map((m, mi) => {
+                          const isQrWithImage = m.type === "qris" && !!m.image?.trim();
+                          if (isQrWithImage) {
+                            return (
+                              <div
+                                key={`${m.label}-${mi}`}
+                                className="p-2.5 rounded-xl border flex flex-col items-center gap-1.5 text-center"
+                                style={{
+                                  background: "color-mix(in srgb, var(--dt-surface, #ffffff) 80%, transparent)",
+                                  borderColor: "color-mix(in srgb, var(--dt-text, #0f172a) 8%, transparent)",
+                                }}
+                              >
+                                <div className="flex items-center justify-between w-full text-[11px]">
+                                  <span className="font-semibold inline-flex items-center gap-1.5">
+                                    <PaymentMethodIcon type={m.type} className="w-3.5 h-3.5 opacity-60 shrink-0" />
+                                    {m.label}
+                                  </span>
+                                  {m.detail?.trim() ? (
+                                    <span className="font-mono text-[10px] opacity-70 select-all">{m.detail}</span>
+                                  ) : null}
+                                </div>
+                                <div className="p-1.5 bg-white rounded-lg border border-black/10 shadow-2xs">
+                                  <img
+                                    src={m.image}
+                                    alt={m.label}
+                                    className="w-20 h-20 object-contain rounded"
+                                  />
+                                </div>
+                                <span className="text-[9.5px] opacity-50 tracking-tight">Scan QR untuk menyelesaikan pembayaran</span>
+                              </div>
+                            );
+                          }
+
+                          return (
+                            <div
+                              key={`${m.label}-${mi}`}
+                              className="flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-xl border text-[11px]"
+                              style={{
+                                background: "color-mix(in srgb, var(--dt-surface, #ffffff) 80%, transparent)",
+                                borderColor: "color-mix(in srgb, var(--dt-text, #0f172a) 8%, transparent)",
+                              }}
+                            >
+                              <div className="inline-flex items-center gap-1.5 min-w-0">
+                                <PaymentMethodIcon type={m.type} className="w-3.5 h-3.5 opacity-60 shrink-0" />
+                                <span className="font-semibold truncate">{m.label}</span>
+                              </div>
+                              {m.detail?.trim() ? (
+                                <span className="font-mono text-[11px] font-medium opacity-80 shrink-0 select-all tracking-tight">
+                                  {m.detail}
+                                </span>
+                              ) : null}
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
-                    {payments?.shipping_note ? (
-                      <p className="text-[11px] leading-snug opacity-70 flex items-start gap-1.5">
-                        <Truck className="w-3 h-3 mt-0.5 shrink-0" /> <span>{payments.shipping_note}</span>
-                      </p>
-                    ) : null}
-                    {payments?.return_policy ? (
-                      <p className="text-[11px] leading-snug opacity-70 flex items-start gap-1.5">
-                        <RotateCcw className="w-3 h-3 mt-0.5 shrink-0" /> <span>{payments.return_policy}</span>
-                      </p>
-                    ) : null}
+
+                    {(payments?.shipping_note || payments?.return_policy) && (
+                      <div
+                        className="pt-2 border-t space-y-1 text-[10.5px]"
+                        style={{ borderColor: "color-mix(in srgb, var(--dt-text, #0f172a) 8%, transparent)" }}
+                      >
+                        {payments?.shipping_note ? (
+                          <div className="flex items-start gap-1.5 opacity-75 leading-snug">
+                            <Truck className="w-3.5 h-3.5 mt-0.5 shrink-0 opacity-70" />
+                            <span>{payments.shipping_note}</span>
+                          </div>
+                        ) : null}
+                        {payments?.return_policy ? (
+                          <div className="flex items-start gap-1.5 opacity-75 leading-snug">
+                            <RotateCcw className="w-3.5 h-3.5 mt-0.5 shrink-0 opacity-70" />
+                            <span>{payments.return_policy}</span>
+                          </div>
+                        ) : null}
+                      </div>
+                    )}
                   </div>
                 );
               })()}
