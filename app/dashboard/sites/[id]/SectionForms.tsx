@@ -14,7 +14,7 @@ import { getEnabledMapTiles } from "@/lib/design-assets-config";
 import { SocialPlatformSelect, SOCIAL_PLATFORMS, SocialIcon } from "@/components/sections/social-platforms";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
-import { paymentMethodDetailPlaceholder, paymentBlockTitle } from "@/lib/payment-methods";
+import { paymentMethodDetailPlaceholder, paymentBlockTitle, paymentMethodDefaultLabel } from "@/lib/payment-methods";
 import { CustomSelect } from "@/components/ui/custom-select";
 
 const ALL_MAP_TILES = [
@@ -739,7 +739,7 @@ export default function SectionForms({
       const next = methods.map((m, i) => {
         if (i !== idx) return m;
         const updated = { ...m, [key]: val };
-        if (key === "type" && val === "qris" && !updated.label?.trim()) updated.label = "QRIS";
+        if (key === "type" && !updated.label?.trim()) updated.label = paymentMethodDefaultLabel(t, val);
         return updated;
       });
       setMethods(next);
