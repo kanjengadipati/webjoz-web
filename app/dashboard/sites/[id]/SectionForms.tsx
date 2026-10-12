@@ -14,7 +14,7 @@ import { getEnabledMapTiles } from "@/lib/design-assets-config";
 import { SocialPlatformSelect, SOCIAL_PLATFORMS, SocialIcon } from "@/components/sections/social-platforms";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
-import { paymentMethodDetailPlaceholder } from "@/lib/payment-methods";
+import { paymentMethodDetailPlaceholder, paymentBlockTitle } from "@/lib/payment-methods";
 import { CustomSelect } from "@/components/ui/custom-select";
 
 const ALL_MAP_TILES = [
@@ -762,9 +762,8 @@ export default function SectionForms({
           </label>
           <input
             type="text"
-            value={payments.title ?? ""}
+            value={payments.title ?? paymentBlockTitle(t)}
             onChange={(e) => updateField("payments", "title", e.target.value)}
-            placeholder={t("dashboard.sitesKatalog.paymentTitlePlaceholder", "cth. Metode Pembayaran & Pengiriman")}
             className={SIDEBAR_FIELD_CLASS}
           />
         </div>

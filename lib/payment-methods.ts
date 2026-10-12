@@ -26,3 +26,13 @@ export function paymentMethodDetailPlaceholder(
       );
   }
 }
+
+/** Localized default/fallback title of the payment & shipping block. */
+export function paymentBlockTitle(
+  t: (key: string, fallback?: string) => string
+): string {
+  return t(
+    "dashboard.sitesKatalog.paymentTitle",
+    "Metode Pembayaran & Pengiriman"
+  );
+}
