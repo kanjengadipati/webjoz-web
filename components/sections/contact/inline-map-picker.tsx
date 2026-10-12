@@ -60,16 +60,22 @@ export default function InlineMapPicker({
 
       {isEditorMode && onPickLocation && (
         <>
-          {/* Translucent overlay — intercepts map interactions so user must
-              click the button rather than dragging the live preview map */}
+          {/* Translucent overlay — whole map is clickable to open the picker
+              and also intercepts map drag/zoom so users don't fight the live map */}
           <div
+            role="button"
+            aria-label={isEN ? "Edit location" : "Edit lokasi"}
+            title={isEN ? "Edit location" : "Edit lokasi"}
             style={{
               position: "absolute",
               inset: 0,
               zIndex: 10,
-              cursor: "default",
+              cursor: "pointer",
             }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpen(true);
+            }}
           />
 
           {/* Pill button centred on the map */}
