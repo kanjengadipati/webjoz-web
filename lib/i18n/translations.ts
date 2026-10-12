@@ -1952,6 +1952,8 @@ export interface Translations {
       methodTypeCod: string;
       methodLabelPlaceholder: string;
       methodDetailPlaceholder: string;
+      methodDetailPlaceholderEwallet: string;
+      methodDetailPlaceholderCod: string;
       methodQrisImageLabel: string;
       methodQrisImagePlaceholder: string;
       paymentTitleLabel: string;
@@ -4614,7 +4616,9 @@ export const translations: Record<Locale, Translations> = {
         methodTypeEwallet: "E-Wallet",
         methodTypeCod: "Bayar di Tempat (COD)",
         methodLabelPlaceholder: "Nama metode (cth. Transfer Bank BCA)",
-        methodDetailPlaceholder: "Detail (no. rekening, tautan QRIS, nama e-wallet)",
+        methodDetailPlaceholder: "No. rekening (cth. 1234567890 a.n. Nama)",
+        methodDetailPlaceholderEwallet: "Nomor HP / ID e-wallet (cth. 081234567890)",
+        methodDetailPlaceholderCod: "Catatan (cth. Bayar tunai saat pesanan tiba)",
         methodQrisImageLabel: "Gambar QR",
         methodQrisImagePlaceholder: "https://... atau unggah gambar QRIS",
         paymentTitleLabel: "Judul Header",
@@ -7347,7 +7351,9 @@ export const translations: Record<Locale, Translations> = {
         methodTypeEwallet: "E-Wallet",
         methodTypeCod: "Cash on Delivery (COD)",
         methodLabelPlaceholder: "Method name (e.g. BCA Bank Transfer)",
-        methodDetailPlaceholder: "Detail (account number, QRIS link, e-wallet name)",
+        methodDetailPlaceholder: "Account number (e.g. 1234567890 a.n. Name)",
+        methodDetailPlaceholderEwallet: "Phone number / e-wallet ID (e.g. 081234567890)",
+        methodDetailPlaceholderCod: "Note (e.g. Pay in cash when the order arrives)",
         methodQrisImageLabel: "QR image",
         methodQrisImagePlaceholder: "https://... or upload QRIS image",
         paymentTitleLabel: "Block title",
