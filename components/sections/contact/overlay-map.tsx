@@ -16,7 +16,10 @@ export default function OverlayMap({ contact: c, onSubmitLead, leadSubmitting, l
   const hasLeadForm = Boolean(c.show_lead_form && onSubmitLead);
   const showMap = c.show_map !== false;
   const handlePickLocation = onUpdateField
-    ? (url: string) => onUpdateField("contact", "maps_url", url)
+    ? (url: string, tileStyle: string) => {
+        onUpdateField("contact", "maps_url", url);
+        onUpdateField("contact", "map_tile_style", tileStyle);
+      }
     : undefined;
   return (
     <section id="contact" className="relative w-full overflow-hidden" style={{ minHeight: "580px", background: "color-mix(in srgb, var(--dt-primary) 4%, var(--dt-bg))", borderRadius: "var(--dt-radius-lg)", borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)" }}>

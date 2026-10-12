@@ -11,7 +11,10 @@ export default function DarkSplit({ contact: c, onSubmitLead, leadSubmitting, le
   const hasLeadForm = Boolean(c.show_lead_form && onSubmitLead);
   const showMap = c.show_map !== false;
   const handlePickLocation = onUpdateField
-    ? (url: string) => onUpdateField("contact", "maps_url", url)
+    ? (url: string, tileStyle: string) => {
+        onUpdateField("contact", "maps_url", url);
+        onUpdateField("contact", "map_tile_style", tileStyle);
+      }
     : undefined;
 
   return (
