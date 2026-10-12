@@ -419,7 +419,9 @@ const NavMenu: React.FC<NavMenuProps> = ({
 
   if (navItems.length === 0) return null;
 
-  const handleToggle = () => {
+  const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (!open && btnRef.current) {
       const header = btnRef.current.closest("header") ?? btnRef.current.closest("nav") ?? btnRef.current;
       const rect = header.getBoundingClientRect();
@@ -429,6 +431,8 @@ const NavMenu: React.FC<NavMenuProps> = ({
   };
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>, item: { key: string; label: string; href: string }) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (item.href === "__blog__") {
       // Editor mode: siteId is set via setEditorSiteId() → use /preview/[id]/blog
       if (EDITOR_SITE_ID) {
@@ -486,7 +490,7 @@ const NavMenu: React.FC<NavMenuProps> = ({
 
   return (
     <>
-      <nav className="hidden md:flex items-center gap-1" aria-label="Navigasi utama">
+      <nav data-nav-menu="true" className="hidden md:flex items-center gap-1" aria-label="Navigasi utama">
         {navItems.map((item) => {
           const isExtraLink = extraLinks.some(l => l.href === item.key);
           return (
@@ -532,12 +536,17 @@ const NavMenu: React.FC<NavMenuProps> = ({
           {/* Backdrop — tap outside to close */}
           <div
             className="md:hidden fixed inset-0 z-[59]"
-            onClick={() => setOpen(false)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpen(false);
+            }}
             aria-hidden="true"
           />
           {/* Drawer — fixed so iOS sticky/backdrop-filter clipping is avoided */}
           <div
+            data-nav-menu="true"
             className="md:hidden fixed left-0 right-0 z-[60] shadow-lg py-2"
+            onClick={(e) => e.stopPropagation()}
             style={{ top: drawerTop, ...(drawerStyle ?? { background: "rgba(255,255,255,0.97)", borderTop: "1px solid rgba(0,0,0,0.08)" }) }}
           >
             {navItems.map((item) => {
@@ -4091,6 +4100,10 @@ export function InlineText({
     if (parentInteractive && !(e.metaKey || e.ctrlKey)) {
       e.preventDefault();
       elementRef.current?.focus();
+      if (fieldKey && fieldKey.startsWith("nav_labels.")) {
+        const sectionKey = fieldKey.replace("nav_labels.", "");
+        smoothScrollToSection(sectionKey, e.currentTarget.ownerDocument || document);
+      }
     }
   };
 
