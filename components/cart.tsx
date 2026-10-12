@@ -1198,7 +1198,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
               {(() => {
                 const methods = payments?.methods?.filter((m) => (m.label || "").trim()) ?? [];
                 const hasBlock = methods.length > 0 || !!payments?.shipping_note || !!payments?.return_policy;
-                if (!hasBlock) return null;
+                if (!hasBlock || payments?.show === false) return null;
                 const blockTitle = payments?.title?.trim() || (isEN ? "Payment Methods & Shipping" : "Metode Pembayaran & Pengiriman");
                 return (
                   <div

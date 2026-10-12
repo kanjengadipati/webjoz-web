@@ -16,6 +16,7 @@ import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
 import { PAYMENT_METHOD_ORDER, paymentBlockTitle, paymentMethodDefaultLabel, paymentMethodDetailPlaceholder, paymentMethodImageField, paymentMethodTypeLabel } from "@/lib/payment-methods";
 import { CustomSelect } from "@/components/ui/custom-select";
+import { Switch } from "@/components/ui";
 
 const ALL_MAP_TILES = [
   { key: "default", label: "OSM" },
@@ -780,6 +781,23 @@ export default function SectionForms({
           <p className="mt-1">
             {t("dashboard.sitesKatalog.paymentSubtitle", "Tampilkan info pembayaran dan pengiriman di keranjang pesanan pengunjung. Belum perlu integrasi payment gateway — cukup info rekening/QRIS statis.")}
           </p>
+        </div>
+
+        <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/40 px-3 py-2.5">
+          <div className="min-w-0 space-y-0.5">
+            <p className="text-[11px] font-semibold text-sidebar-foreground">
+              {t("dashboard.sitesKatalog.paymentsVisibleLabel", "Tampilkan blok pembayaran & pengiriman")}
+            </p>
+            <p className="text-[10.5px] leading-relaxed text-muted-foreground">
+              {t("dashboard.sitesKatalog.paymentsVisibleHint", "Matikan untuk menyembunyikan info ini dari keranjang dan footer")}
+            </p>
+          </div>
+          <Switch
+            size="sm"
+            checked={payments.show !== false}
+            onCheckedChange={(checked) => updateField("payments", "show", checked)}
+            className="shrink-0"
+          />
         </div>
 
         <div className="space-y-1">

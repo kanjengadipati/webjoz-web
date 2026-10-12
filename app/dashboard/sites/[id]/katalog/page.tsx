@@ -8,7 +8,7 @@ import { request } from "@/lib/api/client";
 import { useToast } from "@/components/toast-provider";
 import { SiteSubNav } from "@/components/site-sub-nav";
 import { SparkleGenAI } from "@/components/sparkle-icon";
-import { PageLoading, Spinner } from "@/components/ui";
+import { PageLoading, Spinner, Switch } from "@/components/ui";
 import Link from "next/link";
 import {
   ChevronLeft, Save, Check, ShoppingBag,
@@ -381,6 +381,23 @@ export default function KatalogManagerPage() {
               {t("dashboard.sitesKatalog.paymentSubtitle", "Tampilkan info pembayaran dan pengiriman di keranjang pesanan pengunjung. Belum perlu integrasi payment gateway — cukup info rekening/QRIS statis.")}
             </p>
           </div>
+        </div>
+
+        <div className="flex items-center justify-between gap-3 rounded-2xl border border-border/80 bg-muted/30 px-4 py-3">
+          <div className="min-w-0 space-y-0.5">
+            <p className="text-xs font-bold text-foreground">
+              {t("dashboard.sitesKatalog.paymentsVisibleLabel", "Tampilkan blok pembayaran & pengiriman")}
+            </p>
+            <p className="text-[11px] text-muted-foreground">
+              {t("dashboard.sitesKatalog.paymentsVisibleHint", "Matikan untuk menyembunyikan info ini dari keranjang dan footer")}
+            </p>
+          </div>
+          <Switch
+            size="sm"
+            checked={payments.show !== false}
+            onCheckedChange={(checked) => updatePayments({ show: checked })}
+            className="shrink-0"
+          />
         </div>
 
         <div className="space-y-1">
