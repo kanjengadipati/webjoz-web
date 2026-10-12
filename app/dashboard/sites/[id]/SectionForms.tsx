@@ -14,7 +14,7 @@ import { getEnabledMapTiles } from "@/lib/design-assets-config";
 import { SocialPlatformSelect, SOCIAL_PLATFORMS, SocialIcon } from "@/components/sections/social-platforms";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
-import { paymentMethodDetailPlaceholder, paymentBlockTitle, paymentMethodDefaultLabel } from "@/lib/payment-methods";
+import { PAYMENT_METHOD_ORDER, paymentBlockTitle, paymentMethodDefaultLabel, paymentMethodDetailPlaceholder, paymentMethodImageField, paymentMethodTypeLabel } from "@/lib/payment-methods";
 import { CustomSelect } from "@/components/ui/custom-select";
 
 const ALL_MAP_TILES = [
@@ -744,6 +744,33 @@ export default function SectionForms({
       });
       setMethods(next);
     };
+    const renderMethodField = (method: PayMethod, idx: number) => {
+      const img = paymentMethodImageField(t, method.type);
+      if (img) {
+        return (
+          <FileUpload
+            label={img.label}
+            value={method.image ?? ""}
+            onChange={(val) => updateMethod(idx, "image", val)}
+            placeholder={img.placeholder}
+            maxWidth={800}
+            maxHeight={800}
+            quality={0.85}
+            previewSize="sm"
+            objectFit="contain"
+          />
+        );
+      }
+      return (
+        <input
+          type="text"
+          value={method.detail ?? ""}
+          onChange={(e) => updateMethod(idx, "detail", e.target.value)}
+          placeholder={paymentMethodDetailPlaceholder(t, method.type)}
+          className="w-full px-2 py-1.5 border border-border rounded-md text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground placeholder-sidebar-subtle-foreground"
+        />
+      );
+    };
     return (
       <div className="space-y-3">
         <div className="rounded-lg border border-border bg-muted/40 px-3 py-2.5 text-[11px] leading-relaxed text-muted-foreground">
@@ -782,12 +809,10 @@ export default function SectionForms({
                   onChange={(val) => updateMethod(idx, "type", val)}
                   size="sm"
                   triggerClassName="bg-sidebar-input text-sidebar-foreground border-border text-[12px] h-9"
-                  options={[
-                    { value: "transfer", label: t("dashboard.sitesKatalog.methodTypeTransfer", "Transfer Bank") },
-                    { value: "qris", label: t("dashboard.sitesKatalog.methodTypeQris", "QRIS") },
-                    { value: "ewallet", label: t("dashboard.sitesKatalog.methodTypeEwallet", "E-Wallet") },
-                    { value: "cod", label: t("dashboard.sitesKatalog.methodTypeCod", "Bayar di Tempat (COD)") },
-                  ]}
+                  options={PAYMENT_METHOD_ORDER.map((type) => ({
+                    value: type,
+                    label: paymentMethodTypeLabel(t, type),
+                  }))}
                 />
                 <button
                   type="button"
@@ -805,28 +830,7 @@ export default function SectionForms({
                 placeholder={t("dashboard.sitesKatalog.methodLabelPlaceholder", "Nama metode (cth. Transfer Bank BCA)")}
                 className="w-full px-2 py-1.5 border border-border rounded-md text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground placeholder-sidebar-subtle-foreground"
               />
-              {method.type !== "qris" && (
-                <input
-                  type="text"
-                  value={method.detail ?? ""}
-                  onChange={(e) => updateMethod(idx, "detail", e.target.value)}
-                  placeholder={paymentMethodDetailPlaceholder(t, method.type)}
-                  className="w-full px-2 py-1.5 border border-border rounded-md text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground placeholder-sidebar-subtle-foreground"
-                />
-              )}
-              {method.type === "qris" && (
-                <FileUpload
-                  label={t("dashboard.sitesKatalog.methodQrisImageLabel", "Gambar QR")}
-                  value={method.image ?? ""}
-                  onChange={(val) => updateMethod(idx, "image", val)}
-                  placeholder={t("dashboard.sitesKatalog.methodQrisImagePlaceholder", "https://... atau unggah gambar QRIS")}
-                  maxWidth={800}
-                  maxHeight={800}
-                  quality={0.85}
-                  previewSize="sm"
-                  objectFit="contain"
-                />
-              )}
+              {renderMethodField(method, idx)}
             </div>
           ))}
           <button

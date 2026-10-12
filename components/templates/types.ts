@@ -26,7 +26,7 @@ export interface FaqItem {
   category?: string | null;
 }
 
-export type PaymentMethodType = "transfer" | "qris" | "ewallet" | "cod" | "other";
+export type PaymentMethodType = "transfer" | "qris" | "ewallet" | "cod" | "card" | "other";
 
 export interface PaymentMethod {
   type: PaymentMethodType;
