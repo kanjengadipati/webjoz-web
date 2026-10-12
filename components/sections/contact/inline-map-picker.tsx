@@ -96,24 +96,26 @@ export default function InlineMapPicker({
               gap: "0.375rem",
               padding: "0.5rem 1rem",
               borderRadius: "9999px",
-              border: "none",
-              background: "rgba(16,185,129,0.92)",
-              color: "#fff",
+              border: "1px solid rgba(255,255,255,0.25)",
+              background: "#09090b",
+              color: "#ffffff",
               fontSize: "0.75rem",
-              fontWeight: 700,
-              letterSpacing: "0.04em",
+              fontWeight: 600,
+              letterSpacing: "0.02em",
               cursor: "pointer",
-              boxShadow: "0 4px 16px rgba(0,0,0,0.25)",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
               backdropFilter: "blur(6px)",
               whiteSpace: "nowrap",
-              transition: "background 0.15s, transform 0.15s",
+              transition: "background 0.15s, border-color 0.15s, transform 0.15s",
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background = "rgba(5,150,105,0.97)";
+              (e.currentTarget as HTMLButtonElement).style.background = "#18181b";
+              (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.45)";
               (e.currentTarget as HTMLButtonElement).style.transform = "translate(-50%, -50%) scale(1.05)";
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background = "rgba(16,185,129,0.92)";
+              (e.currentTarget as HTMLButtonElement).style.background = "#09090b";
+              (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.25)";
               (e.currentTarget as HTMLButtonElement).style.transform = "translate(-50%, -50%) scale(1)";
             }}
           >
