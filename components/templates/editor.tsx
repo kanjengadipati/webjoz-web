@@ -581,6 +581,7 @@ export const PreviewSectionWrapper: React.FC<{
           // bottom drawer and overlap the editing surface.
           const target = e.target as HTMLElement;
           if (target.closest('[contenteditable="true"]')) return;
+          if (target.closest('nav, [data-nav-menu="true"]')) return;
           onSelectSection?.(section);
         }}
         className={`group relative transition-all duration-150 scroll-mt-20 ${
