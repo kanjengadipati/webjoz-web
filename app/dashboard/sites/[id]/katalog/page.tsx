@@ -163,7 +163,11 @@ export default function KatalogManagerPage() {
       const methods = [...(prev.methods ?? [])];
       const current = methods[idx];
       if (current) {
-        methods[idx] = { ...current, [key]: val } as PaymentMethod;
+        if (key === "type" && val === "qris" && !(current.label || "").trim()) {
+          methods[idx] = { ...current, type: val, label: "QRIS" } as PaymentMethod;
+        } else {
+          methods[idx] = { ...current, [key]: val } as PaymentMethod;
+        }
       }
       const next: PaymentConfig = { ...prev, methods };
       paymentsRef.current = next;
@@ -348,6 +352,19 @@ export default function KatalogManagerPage() {
               {t("dashboard.sitesKatalog.paymentSubtitle", "Tampilkan info pembayaran dan pengiriman di keranjang pesanan pengunjung. Belum perlu integrasi payment gateway — cukup info rekening/QRIS statis.")}
             </p>
           </div>
+        </div>
+
+        <div className="space-y-1">
+          <label className="block text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
+            {t("dashboard.sitesKatalog.paymentTitleLabel", "Judul Header")}
+          </label>
+          <input
+            type="text"
+            value={payments.title ?? ""}
+            onChange={(e) => updatePayments({ title: e.target.value })}
+            placeholder={t("dashboard.sitesKatalog.paymentTitlePlaceholder", "cth. Metode Pembayaran & Pengiriman")}
+            className="w-full px-3 py-2 border border-border bg-background text-foreground rounded-xl text-xs outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 transition-all"
+          />
         </div>
 
         {/* Methods list */}

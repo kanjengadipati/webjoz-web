@@ -1954,6 +1954,8 @@ export interface Translations {
       methodDetailPlaceholder: string;
       methodQrisImageLabel: string;
       methodQrisImagePlaceholder: string;
+      paymentTitleLabel: string;
+      paymentTitlePlaceholder: string;
       methodRemove: string;
       methodAdd: string;
       shippingTitle: string;
@@ -4615,6 +4617,8 @@ export const translations: Record<Locale, Translations> = {
         methodDetailPlaceholder: "Detail (no. rekening, tautan QRIS, nama e-wallet)",
         methodQrisImageLabel: "Gambar QR",
         methodQrisImagePlaceholder: "https://... atau unggah gambar QRIS",
+        paymentTitleLabel: "Judul Header",
+        paymentTitlePlaceholder: "cth. Metode Pembayaran & Pengiriman",
         methodRemove: "Hapus metode",
         methodAdd: "Tambah Metode",
         shippingTitle: "Info Pengiriman",
@@ -7346,6 +7350,8 @@ export const translations: Record<Locale, Translations> = {
         methodDetailPlaceholder: "Detail (account number, QRIS link, e-wallet name)",
         methodQrisImageLabel: "QR image",
         methodQrisImagePlaceholder: "https://... or upload QRIS image",
+        paymentTitleLabel: "Block title",
+        paymentTitlePlaceholder: "e.g. Payment Methods & Shipping",
         methodRemove: "Remove method",
         methodAdd: "Add Method",
         shippingTitle: "Shipping Info",
