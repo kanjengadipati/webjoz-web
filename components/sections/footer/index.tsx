@@ -4,7 +4,7 @@ import type { ComponentType } from "react";
 import { CreditCard, Truck, RotateCcw } from "lucide-react";
 import type { FooterVariantProps } from "./types";
 import { useSitePayments } from "../../cart";
-import { InlineImage } from "../../templates/shared";
+import { InlineText, InlineImage } from "../../templates/shared";
 import MinimalBand from "./minimal-band";
 import ColumnsWithSocial from "./columns-with-social";
 import ColumnsWithNav from "./columns-with-nav";
@@ -63,7 +63,21 @@ function PaymentStrip(props: FooterVariantProps) {
     <div className="px-6 py-5 text-xs" style={{ background: STRIP_BG, color: STRIP_TXT, borderTop: `1px solid ${STRIP_BORDER}` }}>
       <div className="max-w-5xl mx-auto flex flex-col gap-2">
         <p className="text-[10px] font-semibold uppercase tracking-widest inline-flex items-center gap-1.5" style={{ color: STRIP_LABEL }}>
-          <CreditCard className="w-3 h-3" /> {title}
+          <CreditCard className="w-3 h-3" />{" "}
+          {props.isEditorMode && props.onUpdateField ? (
+            <InlineText
+              section="payments"
+              fieldKey="title"
+              value={title}
+              onUpdateField={props.onUpdateField}
+              isEditorMode={props.isEditorMode}
+              isSelected={props.isSelected}
+              collapseSheetForInlineEdit={props.collapseSheetForInlineEdit}
+              as="span"
+            />
+          ) : (
+            title
+          )}
         </p>
         {methods.length > 0 && (
           <div className="flex flex-wrap gap-x-4 gap-y-1 items-center">

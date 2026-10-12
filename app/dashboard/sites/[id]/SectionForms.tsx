@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { AiFieldButton, EMOJI_GROUPS, MCF_INPUT_BASE as inputBase_mcf, MCF_INPUT_LABEL as inputLabel_mcf, normStr, MenuCatalogForm } from "@/components/menu-catalog-form";
-import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, RefreshCw, Loader2, Star, Zap, Shield, Award, Heart, CheckCircle, Clock, Globe, Users, TrendingUp, Leaf, Flame, Lightbulb, Target, Truck, ThumbsUp, Lock, Phone, Mail, MapPin, Camera, Utensils, Coffee, ShoppingBag, Wrench, Stethoscope, BookOpen, Home, Building2, Briefcase, Search, Check, RotateCcw, BarChart2, Eye, EyeOff, X } from "lucide-react";
+import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, RefreshCw, Loader2, Star, Zap, Shield, Award, Heart, CheckCircle, Clock, Globe, Users, TrendingUp, Leaf, Flame, Lightbulb, Target, Truck, ThumbsUp, Lock, Phone, Mail, MapPin, Camera, Utensils, Coffee, ShoppingBag, Wrench, Stethoscope, BookOpen, Home, Building2, Briefcase, Search, Check, RotateCcw, BarChart2, Eye, EyeOff, X, CreditCard } from "lucide-react";
 import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import FileUpload from "@/components/file-upload";
 import { SIDEBAR_FIELD_CLASS, SIDEBAR_FIELD_CLASS_ICON } from "@/lib/editor-field-class";
@@ -735,7 +735,12 @@ export default function SectionForms({
     const methods: PayMethod[] = Array.isArray(payments.methods) ? payments.methods : [];
     const setMethods = (next: PayMethod[]) => updateField("payments", "methods", next);
     const updateMethod = (idx: number, key: string, val: string) => {
-      const next = methods.map((m, i) => (i === idx ? { ...m, [key]: val } : m));
+      const next = methods.map((m, i) => {
+        if (i !== idx) return m;
+        const updated = { ...m, [key]: val };
+        if (key === "type" && val === "qris" && !updated.label?.trim()) updated.label = "QRIS";
+        return updated;
+      });
       setMethods(next);
     };
     return (
@@ -747,6 +752,20 @@ export default function SectionForms({
           <p className="mt-1">
             {t("dashboard.sitesKatalog.paymentSubtitle", "Tampilkan info pembayaran dan pengiriman di keranjang pesanan pengunjung. Belum perlu integrasi payment gateway — cukup info rekening/QRIS statis.")}
           </p>
+        </div>
+
+        <div className="space-y-1">
+          <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
+            <CreditCard className="w-3 h-3" />
+            {t("dashboard.sitesKatalog.paymentTitleLabel", "Judul Header")}
+          </label>
+          <input
+            type="text"
+            value={payments.title ?? ""}
+            onChange={(e) => updateField("payments", "title", e.target.value)}
+            placeholder={t("dashboard.sitesKatalog.paymentTitlePlaceholder", "cth. Metode Pembayaran & Pengiriman")}
+            className={SIDEBAR_FIELD_CLASS}
+          />
         </div>
 
         <div className="space-y-2">
