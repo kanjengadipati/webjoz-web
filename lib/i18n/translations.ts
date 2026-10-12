@@ -1950,10 +1950,14 @@ export interface Translations {
       methodTypeQris: string;
       methodTypeEwallet: string;
       methodTypeCod: string;
+      methodTypeCard: string;
+      methodTypeOther: string;
       methodLabelPlaceholder: string;
       methodDetailPlaceholder: string;
       methodDetailPlaceholderEwallet: string;
       methodDetailPlaceholderCod: string;
+      methodDetailPlaceholderCard: string;
+      methodDetailPlaceholderOther: string;
       methodQrisImageLabel: string;
       methodQrisImagePlaceholder: string;
       paymentTitleLabel: string;
@@ -4614,10 +4618,14 @@ export const translations: Record<Locale, Translations> = {
         methodTypeQris: "QRIS",
         methodTypeEwallet: "E-Wallet",
         methodTypeCod: "Bayar di Tempat (COD)",
+        methodTypeCard: "Kartu Kredit/Debit",
+        methodTypeOther: "Lainnya",
         methodLabelPlaceholder: "Nama metode (cth. Transfer Bank BCA)",
         methodDetailPlaceholder: "No. rekening (cth. 1234567890 a.n. Nama)",
         methodDetailPlaceholderEwallet: "Nomor HP / ID e-wallet (cth. 081234567890)",
         methodDetailPlaceholderCod: "Catatan (cth. Bayar tunai saat pesanan tiba)",
+        methodDetailPlaceholderCard: "cth. Visa / Mastercard (bayar langsung ke toko)",
+        methodDetailPlaceholderOther: "Catatan metode (cth. transfer via platform lain)",
         methodQrisImageLabel: "Gambar QR",
         methodQrisImagePlaceholder: "https://... atau unggah gambar QRIS",
         paymentTitleLabel: "Judul Header",
@@ -7348,10 +7356,14 @@ export const translations: Record<Locale, Translations> = {
         methodTypeQris: "QRIS",
         methodTypeEwallet: "E-Wallet",
         methodTypeCod: "Cash on Delivery (COD)",
+        methodTypeCard: "Credit/Debit Card",
+        methodTypeOther: "Other",
         methodLabelPlaceholder: "Method name (e.g. BCA Bank Transfer)",
         methodDetailPlaceholder: "Account number (e.g. 1234567890 a.n. Name)",
         methodDetailPlaceholderEwallet: "Phone number / e-wallet ID (e.g. 081234567890)",
         methodDetailPlaceholderCod: "Note (e.g. Pay in cash when the order arrives)",
+        methodDetailPlaceholderCard: "e.g. Visa / Mastercard (pay directly to the store)",
+        methodDetailPlaceholderOther: "Method note (e.g. transfer via another platform)",
         methodQrisImageLabel: "QR image",
         methodQrisImagePlaceholder: "https://... or upload QRIS image",
         paymentTitleLabel: "Block title",

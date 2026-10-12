@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { useI18n } from "@/lib/i18n/context";
-import { paymentMethodDetailPlaceholder, paymentBlockTitle, paymentMethodDefaultLabel } from "@/lib/payment-methods";
+import { PAYMENT_METHOD_ORDER, paymentBlockTitle, paymentMethodDefaultLabel, paymentMethodDetailPlaceholder, paymentMethodImageField, paymentMethodTypeLabel } from "@/lib/payment-methods";
 import { decodeSiteId } from "@/lib/sqids";
 import { MenuCatalogForm } from "@/components/menu-catalog-form";
 import FileUpload from "@/components/file-upload";
@@ -196,6 +196,34 @@ export default function KatalogManagerPage() {
       return next;
     });
   }, [schedulePaymentsAutosave]);
+
+  const renderMethodField = (method: PaymentMethod, idx: number) => {
+    const img = paymentMethodImageField(t, method.type);
+    if (img) {
+      return (
+        <FileUpload
+          label={img.label}
+          value={method.image ?? ""}
+          onChange={(val) => updatePaymentMethod(idx, "image", val)}
+          placeholder={img.placeholder}
+          maxWidth={800}
+          maxHeight={800}
+          quality={0.85}
+          previewSize="sm"
+          objectFit="contain"
+        />
+      );
+    }
+    return (
+      <input
+        type="text"
+        value={method.detail ?? ""}
+        onChange={(e) => updatePaymentMethod(idx, "detail", e.target.value)}
+        placeholder={paymentMethodDetailPlaceholder(t, method.type)}
+        className="w-full flex-1 px-3 py-2 border border-border bg-background text-foreground rounded-xl text-xs outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 transition-all"
+      />
+    );
+  };
 
   // AI item description handler
   const handleAiItemDescription = useCallback(async (
@@ -379,10 +407,9 @@ export default function KatalogManagerPage() {
                 onChange={(e) => updatePaymentMethod(idx, "type", e.target.value)}
                 className="w-full sm:w-40 shrink-0 px-3 py-2 border border-border bg-background text-foreground rounded-xl text-xs outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 transition-all"
               >
-                <option value="transfer">{t("dashboard.sitesKatalog.methodTypeTransfer", "Transfer Bank")}</option>
-                <option value="qris">{t("dashboard.sitesKatalog.methodTypeQris", "QRIS")}</option>
-                <option value="ewallet">{t("dashboard.sitesKatalog.methodTypeEwallet", "E-Wallet")}</option>
-                <option value="cod">{t("dashboard.sitesKatalog.methodTypeCod", "Bayar di Tempat (COD)")}</option>
+                {PAYMENT_METHOD_ORDER.map((type) => (
+                  <option key={type} value={type}>{paymentMethodTypeLabel(t, type)}</option>
+                ))}
               </select>
               <input
                 type="text"
@@ -391,28 +418,7 @@ export default function KatalogManagerPage() {
                 placeholder={t("dashboard.sitesKatalog.methodLabelPlaceholder", "Nama metode (cth. Transfer Bank BCA)")}
                 className="w-full sm:w-48 shrink-0 px-3 py-2 border border-border bg-background text-foreground rounded-xl text-xs outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 transition-all"
               />
-              {method.type !== "qris" && (
-                <input
-                  type="text"
-                  value={method.detail ?? ""}
-                  onChange={(e) => updatePaymentMethod(idx, "detail", e.target.value)}
-                  placeholder={paymentMethodDetailPlaceholder(t, method.type)}
-                  className="w-full flex-1 px-3 py-2 border border-border bg-background text-foreground rounded-xl text-xs outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 transition-all"
-                />
-              )}
-              {method.type === "qris" && (
-                <FileUpload
-                  label={t("dashboard.sitesKatalog.methodQrisImageLabel", "Gambar QR")}
-                  value={method.image ?? ""}
-                  onChange={(val) => updatePaymentMethod(idx, "image", val)}
-                  placeholder={t("dashboard.sitesKatalog.methodQrisImagePlaceholder", "https://... atau unggah gambar QRIS")}
-                  maxWidth={800}
-                  maxHeight={800}
-                  quality={0.85}
-                  previewSize="sm"
-                  objectFit="contain"
-                />
-              )}
+              {renderMethodField(method, idx)}
               <button
                 type="button"
                 onClick={() => removePaymentMethod(idx)}
