@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useAuthToken } from "@/lib/auth-store";
 import { request } from "@/lib/api/client";
 import { usePermissions } from "@/hooks/use-permissions";
-import { Cpu, Loader2, CheckCircle2, XCircle, Clock, RefreshCw, KeyRound, Server, Zap } from "lucide-react";
+import { Cpu, Loader2, CheckCircle2, XCircle, Clock, RefreshCw, KeyRound, Server, Zap, BarChart3 } from "lucide-react";
 import { Card, CardContent, Button } from "@/components/ui";
 import { useI18n } from "@/lib/i18n/context";
 
@@ -33,6 +33,47 @@ interface AiStatusReport {
   generated_at: string;
 }
 
+interface TokenModelSum {
+  model: string;
+  prompt_tokens: number;
+  completion_tokens: number;
+  total_tokens: number;
+  requests: number;
+  generate_count: number;
+}
+
+interface TokenTotals {
+  tokens_total: number;
+  ai_requests_total: number;
+  generate_count: number;
+}
+
+interface TokenCapacity {
+  tpm_quota: number;
+  avg_tokens_per_web: number;
+  webs_per_minute: number;
+  webs_per_hour: number;
+  webs_per_day_approx: number;
+  note: string;
+}
+
+interface TokenUsageResponse {
+  totals: TokenTotals;
+  by_model: TokenModelSum[] | null;
+  capacity?: TokenCapacity;
+}
+
+function formatNumber(value?: number) {
+  return (value ?? 0).toLocaleString("id-ID");
+}
+
+function todayUsagePath() {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  const end = new Date();
+  return `/ai/admin/metrics/ai-generation/token-usage?date_from=${encodeURIComponent(start.toISOString())}&date_to=${encodeURIComponent(end.toISOString())}`;
+}
+
 function formatTime(date: Date) {
   return date.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
 }
@@ -56,6 +97,7 @@ export default function AdminAiStatusPage() {
   const { role } = usePermissions();
   const { t } = useI18n();
   const [report, setReport] = useState<AiStatusReport | null>(null);
+  const [usage, setUsage] = useState<TokenUsageResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
@@ -69,8 +111,12 @@ export default function AdminAiStatusPage() {
       if (!silent) setLoading(true);
       else setRefreshing(true);
       setError("");
-      const res = await request<AiStatusReport>("/admin/ai/status", {}, token);
-      setReport(res.data);
+      const [statusRes, usageRes] = await Promise.all([
+        request<AiStatusReport>("/admin/ai/status", {}, token),
+        request<TokenUsageResponse>(todayUsagePath(), {}, token).catch(() => null),
+      ]);
+      setReport(statusRes.data);
+      setUsage(usageRes?.data ?? null);
       setLastChecked(new Date());
     } catch (err: unknown) {
       setError((err as { message?: string })?.message || t("dashboard.adminAiStatus.loadFailed"));
@@ -85,6 +131,26 @@ export default function AdminAiStatusPage() {
     const interval = setInterval(() => fetchStatus(true), 15000);
     return () => clearInterval(interval);
   }, [fetchStatus]);
+
+  const usageRows = useMemo(() => {
+    type UsageRow = { model: string; provider: string; kind: string; used?: TokenModelSum };
+    const byModel = new Map<string, UsageRow>();
+    for (const p of report?.providers ?? []) {
+      if (!p.model) continue;
+      if (!byModel.has(p.model)) byModel.set(p.model, { model: p.model, provider: p.provider, kind: p.kind });
+    }
+    for (const u of usage?.by_model ?? []) {
+      const existing = byModel.get(u.model);
+      if (existing) existing.used = u;
+      else byModel.set(u.model, { model: u.model, provider: "", kind: "", used: u });
+    }
+    return [...byModel.values()].sort((a, b) => (b.used?.total_tokens ?? 0) - (a.used?.total_tokens ?? 0));
+  }, [report, usage]);
+
+  const maxModelTokens = useMemo(
+    () => Math.max(1, ...usageRows.map((r) => r.used?.total_tokens ?? 0)),
+    [usageRows]
+  );
 
   if (!isSuperAdmin) {
     return (
@@ -212,6 +278,9 @@ export default function AdminAiStatusPage() {
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className={`relative flex h-2 w-2 ${tone.dot}`} />
                               <p className="text-sm font-bold text-foreground truncate">{p.provider || "—"}</p>
+                              <span className="px-1.5 py-0.5 rounded-md bg-background border border-border/50 text-[9.5px] font-semibold tracking-wider text-foreground/70">
+                                {p.tier}
+                              </span>
                               <span className="px-1.5 py-0.5 rounded-md bg-muted/60 border border-border/40 text-[9.5px] font-semibold uppercase tracking-wider text-muted-foreground">
                                 {p.kind}
                               </span>
@@ -258,6 +327,127 @@ export default function AdminAiStatusPage() {
                   );
                 })}
               </div>
+            )}
+          </div>
+
+          {/* Today's token usage per model */}
+          <div>
+            <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+              <BarChart3 className="size-4 text-muted-foreground" />
+              {t("dashboard.adminAiStatus.usageTodayTitle")}
+            </h2>
+            <p className="text-xs text-muted-foreground mt-1 mb-3">{t("dashboard.adminAiStatus.usageTodaySubtitle")}</p>
+
+            {usage ? (
+              <>
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-3">
+                  <Card className="border-border/40 shadow-sm">
+                    <CardContent className="p-4 pt-4 space-y-0.5">
+                      <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.usageTotalTokens")}</p>
+                      <p className="text-base font-bold tabular-nums">{formatNumber(usage.totals.tokens_total)}</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="border-border/40 shadow-sm">
+                    <CardContent className="p-4 pt-4 space-y-0.5">
+                      <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.usageTotalRequests")}</p>
+                      <p className="text-base font-bold tabular-nums">{formatNumber(usage.totals.ai_requests_total)}</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="border-border/40 shadow-sm">
+                    <CardContent className="p-4 pt-4 space-y-0.5">
+                      <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.usageTotalGenerates")}</p>
+                      <p className="text-base font-bold tabular-nums">{formatNumber(usage.totals.generate_count)}</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="border-border/40 shadow-sm">
+                    <CardContent className="p-4 pt-4 space-y-0.5">
+                      <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.usageAvgPerGenerate")}</p>
+                      <p className="text-base font-bold tabular-nums">
+                        {usage.totals.generate_count > 0 ? formatNumber(Math.round(usage.totals.tokens_total / usage.totals.generate_count)) : "—"}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <Card className="border-border/40 shadow-sm overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-border/40 text-left text-[11px] uppercase tracking-wider text-muted-foreground">
+                          <th className="px-4 py-2.5 font-medium">{t("dashboard.adminAiStatus.colModel")}</th>
+                          <th className="px-4 py-2.5 font-medium">{t("dashboard.adminAiStatus.colProvider")}</th>
+                          <th className="px-4 py-2.5 font-medium text-right">{t("dashboard.adminAiStatus.colRequests")}</th>
+                          <th className="px-4 py-2.5 font-medium text-right">{t("dashboard.adminAiStatus.colTokens")}</th>
+                          <th className="px-4 py-2.5 font-medium w-[26%]">{t("dashboard.adminAiStatus.colShare")}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {usageRows.map((row) => {
+                          const used = row.used;
+                          const pct = Math.round(((used?.total_tokens ?? 0) / maxModelTokens) * 100);
+                          return (
+                            <tr key={row.model} className="border-b border-border/20 last:border-0">
+                              <td className="px-4 py-2.5">
+                                <span className="font-mono text-xs text-foreground">{row.model}</span>
+                              </td>
+                              <td className="px-4 py-2.5">
+                                {row.provider ? (
+                                  <span className="inline-flex items-center gap-1.5">
+                                    <span className="text-xs text-muted-foreground">{row.provider}</span>
+                                    {row.kind && (
+                                      <span className="px-1.5 py-0.5 rounded bg-muted/60 border border-border/40 text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">
+                                        {row.kind}
+                                      </span>
+                                    )}
+                                  </span>
+                                ) : (
+                                  <span className="text-xs text-muted-foreground">—</span>
+                                )}
+                              </td>
+                              <td className="px-4 py-2.5 text-right text-xs tabular-nums">{used ? formatNumber(used.requests) : "—"}</td>
+                              <td className="px-4 py-2.5 text-right text-xs tabular-nums font-medium">
+                                {used ? formatNumber(used.total_tokens) : <span className="font-normal text-muted-foreground">{t("dashboard.adminAiStatus.notUsedToday")}</span>}
+                              </td>
+                              <td className="px-4 py-2.5">
+                                <div className="h-1.5 w-full rounded-full bg-muted/50 overflow-hidden">
+                                  <div className="h-full rounded-full bg-primary/70" style={{ width: `${pct}%` }} />
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                        {usageRows.length === 0 && (
+                          <tr>
+                            <td colSpan={5} className="px-4 py-6 text-center text-xs text-muted-foreground">
+                              {t("dashboard.adminAiStatus.noUsageToday")}
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </Card>
+
+                {usage.capacity && (
+                  <Card className="border-border/40 shadow-sm mt-3">
+                    <CardContent className="p-5 pt-5">
+                      <p className="text-xs font-semibold text-foreground mb-2">{t("dashboard.adminAiStatus.capacityTitle")}</p>
+                      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
+                        <span>{t("dashboard.adminAiStatus.capacityTpm")}: <b className="text-foreground">{formatNumber(usage.capacity.tpm_quota)}</b></span>
+                        <span>{t("dashboard.adminAiStatus.capacityAvgTokens")}: <b className="text-foreground">{formatNumber(Math.round(usage.capacity.avg_tokens_per_web))}</b></span>
+                        <span>{t("dashboard.adminAiStatus.capacityWebsMin")}: <b className="text-foreground">{usage.capacity.webs_per_minute.toFixed(2)}</b></span>
+                        <span>{t("dashboard.adminAiStatus.capacityWebsHour")}: <b className="text-foreground">{usage.capacity.webs_per_hour.toFixed(1)}</b></span>
+                        <span>{t("dashboard.adminAiStatus.capacityWebsDay")}: <b className="text-foreground">{usage.capacity.webs_per_day_approx.toFixed(0)}</b></span>
+                      </div>
+                      {usage.capacity.note && <p className="text-[11px] text-muted-foreground/80 mt-2">{usage.capacity.note}</p>}
+                    </CardContent>
+                  </Card>
+                )}
+              </>
+            ) : (
+              <Card className="border-border/40 shadow-sm">
+                <CardContent className="p-6 pt-6 text-sm text-muted-foreground">{t("dashboard.adminAiStatus.noUsageToday")}</CardContent>
+              </Card>
             )}
           </div>
 

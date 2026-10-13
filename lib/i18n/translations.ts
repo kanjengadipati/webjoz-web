@@ -1131,6 +1131,25 @@ export interface Translations {
       neverChecked: string;
       allProvidersOk: string;
       someIssues: string;
+      usageTodayTitle: string;
+      usageTodaySubtitle: string;
+      usageTotalTokens: string;
+      usageTotalRequests: string;
+      usageTotalGenerates: string;
+      usageAvgPerGenerate: string;
+      colModel: string;
+      colProvider: string;
+      colRequests: string;
+      colTokens: string;
+      colShare: string;
+      notUsedToday: string;
+      noUsageToday: string;
+      capacityTitle: string;
+      capacityTpm: string;
+      capacityAvgTokens: string;
+      capacityWebsMin: string;
+      capacityWebsHour: string;
+      capacityWebsDay: string;
     };
     adminMetrics: {
       noAccess: string;
@@ -3832,6 +3851,25 @@ export const translations: Record<Locale, Translations> = {
         neverChecked: "Belum pernah diperiksa",
         allProvidersOk: "Semua provider valid",
         someIssues: "Ada provider bermasalah",
+        usageTodayTitle: "Kuota Hari Ini per Model",
+        usageTodaySubtitle: "Total token & request AI yang tercatat sejak tengah malam (waktu lokal), per model yang terkonfigurasi.",
+        usageTotalTokens: "Total Token Hari Ini",
+        usageTotalRequests: "Request AI",
+        usageTotalGenerates: "Generate Web",
+        usageAvgPerGenerate: "Rata-rata Token/Web",
+        colModel: "Model",
+        colProvider: "Provider",
+        colRequests: "Request",
+        colTokens: "Total Token",
+        colShare: "Proporsi",
+        notUsedToday: "Belum terpakai",
+        noUsageToday: "Belum ada pemakaian token yang tercatat hari ini.",
+        capacityTitle: "Estimasi Kapasitas",
+        capacityTpm: "Kuota TPM",
+        capacityAvgTokens: "Rata-rata token/web",
+        capacityWebsMin: "web/menit",
+        capacityWebsHour: "web/jam",
+        capacityWebsDay: "web/hari (approx)",
       },
       adminMetrics: {
         noAccess: "Anda tidak memiliki akses ke halaman ini.",
@@ -6603,6 +6641,25 @@ export const translations: Record<Locale, Translations> = {
         neverChecked: "Never checked",
         allProvidersOk: "All providers valid",
         someIssues: "Some providers have issues",
+        usageTodayTitle: "Today's Quota per Model",
+        usageTodaySubtitle: "Total AI tokens & requests recorded since local midnight, per configured model.",
+        usageTotalTokens: "Total Tokens Today",
+        usageTotalRequests: "AI Requests",
+        usageTotalGenerates: "Web Generates",
+        usageAvgPerGenerate: "Avg Tokens/Web",
+        colModel: "Model",
+        colProvider: "Provider",
+        colRequests: "Requests",
+        colTokens: "Total Tokens",
+        colShare: "Share",
+        notUsedToday: "Unused",
+        noUsageToday: "No token usage recorded today yet.",
+        capacityTitle: "Capacity Estimate",
+        capacityTpm: "TPM Quota",
+        capacityAvgTokens: "Avg tokens/web",
+        capacityWebsMin: "web/min",
+        capacityWebsHour: "web/hour",
+        capacityWebsDay: "web/day (approx)",
       },
       adminMetrics: {
         noAccess: "You do not have access to this page.",
