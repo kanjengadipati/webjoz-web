@@ -105,6 +105,31 @@ function slotKeyOf(provider: string, baseUrl: string, model: string) {
   return `${(provider || "").toLowerCase()}|${(baseUrl || "").replace(/\/+$/, "")}|${model || ""}`;
 }
 
+type RateTone = "green" | "yellow" | "red" | "default";
+
+// rateLimitTone menentukan warna dari seberapa penuh kuota: hijau bila sisa
+// masih >50%, kuning bila tinggal 0–50% (mau habis), merah bila habis (sisa 0).
+// default (netral) bila provider tidak melaporkan limit+sisa sekaligus.
+function rateLimitTone(rl: RateLimitInfo | null): RateTone {
+  if (!rl) return "default";
+  let limit = rl.limit_tokens;
+  let remaining = rl.remaining_tokens;
+  if (limit == null || remaining == null) {
+    limit = rl.limit_requests;
+    remaining = rl.remaining_requests;
+  }
+  if (limit == null || remaining == null || limit <= 0) return "default";
+  if (remaining <= 0) return "red";
+  return remaining / limit > 0.5 ? "green" : "yellow";
+}
+
+const rateToneClass: Record<RateTone, string> = {
+  green: "text-green-500",
+  yellow: "text-amber-500",
+  red: "text-red-500",
+  default: "text-muted-foreground",
+};
+
 function todayUsagePath() {
   const start = new Date();
   start.setHours(0, 0, 0, 0);
@@ -314,6 +339,8 @@ export default function AdminAiStatusPage() {
                   const used = slot ?? (p.model ? usageByModel.get(p.model) : undefined);
                   const pct = used ? Math.round((used.total_tokens / maxModelTokens) * 100) : 0;
                   const rl = slot?.rate_limit ?? null;
+                  const rlTone = rateLimitTone(rl);
+                  const rlColor = rateToneClass[rlTone];
                   const rlLimit = rl
                     ? rl.limit_tokens != null
                       ? `${formatNumber(rl.limit_tokens)} ${t("dashboard.adminAiStatus.colTokens")}`
@@ -409,7 +436,7 @@ export default function AdminAiStatusPage() {
                             </div>
                             {rl && (
                               <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-muted-foreground">
-                                <Gauge className="size-3 shrink-0" />
+                                <Gauge className={`size-3 shrink-0 ${rlColor}`} />
                                 {rlLimit ? (
                                   <span>
                                     {t("dashboard.adminAiStatus.rateLimitLabel")}:{" "}
@@ -422,7 +449,7 @@ export default function AdminAiStatusPage() {
                                 {rlRemaining && (
                                   <span>
                                     · {t("dashboard.adminAiStatus.rateLimitRemaining")}:{" "}
-                                    <b className="text-foreground/80">{rlRemaining}</b>
+                                    <b className={rlTone === "default" ? "text-foreground/80" : rlColor}>{rlRemaining}</b>
                                   </span>
                                 )}
                                 {rl.source === "error_429" && (
