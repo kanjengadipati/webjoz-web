@@ -476,6 +476,75 @@ function VariantWireframeSmall({ variant, section = "" }: { variant: string; sec
     }
   }
 
+  // Video wall / video grid — poster tiles with play badges
+  if (variant === "video-wall" || variant === "video-grid") {
+    return (
+      <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-0.5 grid grid-cols-3 gap-0.5 overflow-hidden">
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <div key={i} className="rounded bg-slate-800/70 border border-white/5 flex items-center justify-center">
+            <div className="w-2 h-2 rounded-full bg-primary/25 flex items-center justify-center">
+              <div className="w-0 h-0 border-y-[2px] border-y-transparent border-l-[3px] border-l-primary/70 ml-px" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (variant === "masonry-flow") {
+    return (
+      <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-1 flex gap-0.5 items-start overflow-hidden">
+        <div className="flex flex-col gap-0.5 flex-1">
+          <div className="h-4 rounded bg-slate-800 border border-white/10" />
+          <div className="h-2.5 rounded bg-primary/20 border border-primary/30" />
+        </div>
+        <div className="flex flex-col gap-0.5 flex-1">
+          <div className="h-2.5 rounded bg-slate-700/60 border border-white/10" />
+          <div className="h-3.5 rounded bg-slate-800 border border-white/10" />
+        </div>
+        <div className="flex flex-col gap-0.5 flex-1">
+          <div className="h-3.5 rounded bg-primary/15 border border-primary/30" />
+          <div className="h-2.5 rounded bg-slate-800 border border-white/10" />
+        </div>
+      </div>
+    );
+  }
+
+  if (variant === "product-table") {
+    return (
+      <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-0.5 flex flex-col gap-0.5 justify-center overflow-hidden">
+        <div className="grid grid-cols-3 gap-0.5 pb-0.5 border-b border-white/10">
+          <div className="h-0.5 bg-primary/70 rounded-full" />
+          <div className="h-0.5 bg-slate-600 rounded-full" />
+          <div className="h-0.5 bg-slate-600 rounded-full" />
+        </div>
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="grid grid-cols-3 gap-0.5 py-0.5 border-b border-white/5 last:border-0">
+            <div className="h-0.5 bg-slate-300/80 rounded-full" />
+            <div className="h-0.5 bg-slate-600/70 rounded-full" />
+            <div className="h-0.5 bg-slate-600/70 rounded-full" />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (variant === "spotlight") {
+    return (
+      <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-1 flex flex-col gap-0.5 overflow-hidden">
+        <div className="h-5 rounded bg-primary/20 border border-primary/30 p-0.5 flex flex-col justify-center gap-0.5">
+          <div className="w-2/5 h-0.5 rounded-full bg-primary/80" />
+          <div className="w-3/5 h-0.5 rounded-full bg-slate-400/60" />
+        </div>
+        <div className="grid grid-cols-3 gap-0.5">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-2.5 rounded bg-slate-800/70 border border-white/10" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   // Default: generic grid
   return (
     <div className="w-full h-10 rounded bg-[#090d16] border border-white/5 p-1 grid grid-cols-3 gap-0.5 overflow-hidden">
