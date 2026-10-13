@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { Card, CardContent, CardHeader, SectionTitle } from "@/components/ui";
-import { buttonClassName } from "@/components/ui";
+import { Card, CardContent, CardHeader, SectionTitle, buttonClassName } from "webjoz-ui";
 import { cn } from "@/lib/utils";
 
 export default function NotFound() {

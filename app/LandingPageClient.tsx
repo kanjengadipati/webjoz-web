@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { Badge, Button, Card } from "@/components/ui";
+import { Badge, Button, Card } from "webjoz-ui";
 import { Check, Loader2, Zap, ArrowRight, Home, LayoutGrid, Tag, UserCircle, ShieldCheck, MessageCircle, Plus, Globe, BarChart3, Pencil, Layers, Search, Rocket, ShoppingBag, UtensilsCrossed, MessageSquare } from "lucide-react";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";

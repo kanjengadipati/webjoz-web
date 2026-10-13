@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { AuthShell } from "@/components/auth-shell";
-import { buttonClassName } from "@/components/ui";
+import { buttonClassName } from "webjoz-ui";
 import { verifyEmail } from "@/lib/api";
 import { useI18n } from "@/lib/i18n/context";
 
