@@ -4,6 +4,20 @@
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
 
+# Mandatory Frontend & Next.js Directives
+
+> [!IMPORTANT]
+> **ATURAN WAJIB "use client"**:
+> - Direktif `"use client";` **WAJIB selalu berada di baris pertama (Line 1)** sebelum statement `import` apa pun.
+> - Menaruh `import` di atas `"use client";` akan membuat Next.js/Turbopack menganggap file sebagai Server Component dan menggagalkan production build (`npm run build`).
+
+> [!IMPORTANT]
+> **STANDAR UI LIB (`webjoz-ui`)**:
+> - Seluruh komponen UI antarmuka dashboard/console (seperti `Button`, `Dialog`, `Badge`, `StatusBadge`, `Input`, `Textarea`, `CustomSelect`, `Select`, `DatePicker`, `Spinner`, `PageLoading`, `Skeleton`, `Card`, `Switch`, `Separator`, `EmptyState`, serta token `UI_TONES` dan `MOTION`) **WAJIB diimpor langsung dari package `"webjoz-ui"`**.
+> - Jangan pernah membuat komponen UI duplikat di `web/components/ui/` atau `web/components/icons/`.
+> - Selalu jalankan `npx tsc --noEmit` dan `npm run build` sebelum push.
+
+
 # Feature Work Checklist (WAJIB dicek di SETIAP fitur section/komponen baru)
 
 > [!IMPORTANT]
