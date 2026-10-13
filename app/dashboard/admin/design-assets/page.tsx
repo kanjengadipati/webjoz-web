@@ -137,6 +137,12 @@ function VariantPreview({ id }: { id: string }) {
     "menu-sidebar-scrollspy-photo": (
       <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="2" y="4" width="16" height="40" rx="2" fill="currentColor" opacity=".1"/>{[6,12,18,24,30,36].map(y=><rect key={y} x="4" y={y} width="12" height="3" rx="1" fill="currentColor" opacity=".2"/>)}<rect x="22" y="4" width="26" height="18" rx="2" fill="currentColor" opacity=".18"/><rect x="52" y="4" width="26" height="18" rx="2" fill="currentColor" opacity=".12"/><rect x="22" y="26" width="26" height="18" rx="2" fill="currentColor" opacity=".12"/><rect x="52" y="26" width="26" height="18" rx="2" fill="currentColor" opacity=".18"/></svg>
     ),
+    "menu-horizontal-swipe-carousel": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="4" width="72" height="34" rx="3" fill="currentColor" opacity=".18"/><rect x="4" y="4" width="72" height="12" rx="3" fill="currentColor" opacity=".1"/><text x="8" y="14" fontSize="8" fill="currentColor" opacity=".5">‹</text><text x="68" y="14" fontSize="8" fill="currentColor" opacity=".5">›</text><rect x="8" y="20" width="18" height="14" rx="2" fill="currentColor" opacity=".15"/><rect x="30" y="20" width="18" height="14" rx="2" fill="currentColor" opacity=".12"/><rect x="52" y="20" width="18" height="14" rx="2" fill="currentColor" opacity=".15"/><circle cx="30" cy="42" r="2" fill="currentColor" opacity=".4"/><circle cx="40" cy="42" r="2" fill="currentColor" opacity=".2"/><circle cx="50" cy="42" r="2" fill="currentColor" opacity=".2"/></svg>
+    ),
+    "menu-masonry-flow": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="2" y="4" width="24" height="18" rx="2" fill="currentColor" opacity=".18"/><rect x="28" y="4" width="24" height="14" rx="2" fill="currentColor" opacity=".15"/><rect x="54" y="4" width="24" height="26" rx="2" fill="currentColor" opacity=".2"/><rect x="2" y="24" width="24" height="20" rx="2" fill="currentColor" opacity=".15"/><rect x="28" y="20" width="24" height="24" rx="2" fill="currentColor" opacity=".18"/></svg>
+    ),
     // Catalog
     "catalog-grid": (
       <svg viewBox="0 0 80 48" className="w-full h-full">{[4,26].map(y=>[4,28,52].map(x=><g key={`${x}${y}`}><rect x={x} y={y} width="22" height="18" rx="2" fill="currentColor" opacity=".15"/><rect x={x+2} y={y+11} width="18" height="3" rx="1" fill="currentColor" opacity=".2"/></g>))}</svg>
@@ -173,6 +179,12 @@ function VariantPreview({ id }: { id: string }) {
     ),
     "catalog-horizontal-swipe-carousel": (
       <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="4" width="72" height="34" rx="3" fill="currentColor" opacity=".18"/><rect x="4" y="4" width="72" height="12" rx="3" fill="currentColor" opacity=".1"/><text x="8" y="14" fontSize="8" fill="currentColor" opacity=".5">‹</text><text x="68" y="14" fontSize="8" fill="currentColor" opacity=".5">›</text><rect x="8" y="20" width="18" height="14" rx="2" fill="currentColor" opacity=".15"/><rect x="30" y="20" width="18" height="14" rx="2" fill="currentColor" opacity=".12"/><rect x="52" y="20" width="18" height="14" rx="2" fill="currentColor" opacity=".15"/><circle cx="30" cy="42" r="2" fill="currentColor" opacity=".4"/><circle cx="40" cy="42" r="2" fill="currentColor" opacity=".2"/><circle cx="50" cy="42" r="2" fill="currentColor" opacity=".2"/></svg>
+    ),
+    "catalog-product-table": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="6" width="72" height="36" rx="2" fill="currentColor" opacity=".08"/><rect x="4" y="6" width="72" height="8" rx="2" fill="currentColor" opacity=".2"/><line x1="4" y1="14" x2="76" y2="14" stroke="currentColor" strokeWidth="0.5" opacity=".25"/><line x1="34" y1="6" x2="34" y2="42" stroke="currentColor" strokeWidth="0.5" opacity=".2"/><line x1="55" y1="6" x2="55" y2="42" stroke="currentColor" strokeWidth="0.5" opacity=".2"/>{[20,28,36].map(y=><g key={y}><rect x="8" y={y-2} width="20" height="3" rx="1" fill="currentColor" opacity=".22"/><rect x="38" y={y-2} width="12" height="3" rx="1" fill="currentColor" opacity=".15"/><rect x="59" y={y-2} width="10" height="3" rx="1" fill="currentColor" opacity=".15"/></g>)}</svg>
+    ),
+    "catalog-spotlight": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="2" y="2" width="76" height="24" rx="3" fill="currentColor" opacity=".22"/><rect x="2" y="2" width="76" height="8" rx="3" fill="currentColor" opacity=".1"/><rect x="6" y="16" width="26" height="4" rx="1" fill="currentColor" opacity=".3"/><rect x="6" y="22" width="18" height="2.5" rx="1" fill="currentColor" opacity=".18"/><rect x="2" y="30" width="24" height="16" rx="2" fill="currentColor" opacity=".14"/><rect x="28" y="30" width="24" height="16" rx="2" fill="currentColor" opacity=".14"/><rect x="54" y="30" width="24" height="16" rx="2" fill="currentColor" opacity=".12"/></svg>
     ),
     // Contact
     "contact-classic-split": (
@@ -229,6 +241,9 @@ function VariantPreview({ id }: { id: string }) {
     "testimonials-google-reviews": (
       <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="6" y="8" width="68" height="32" rx="3" fill="currentColor" opacity=".12"/><circle cx="16" cy="18" r="5" fill="currentColor" opacity=".2"/><rect x="25" y="14" width="24" height="3" rx="1" fill="currentColor" opacity=".25"/><text x="25" y="24" fontSize="6" fill="currentColor" opacity=".5">★★★★★</text><circle cx="64" cy="18" r="4" fill="currentColor" opacity=".2"/><text x="64" y="21" fontSize="7" textAnchor="middle" fill="currentColor" opacity=".6">G</text></svg>
     ),
+    "testimonials-video-wall": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[4,28].map(y=>[4,28,52].map(x=><g key={`${x}${y}`}><rect x={x} y={y} width="22" height="18" rx="2" fill="currentColor" opacity=".16"/><circle cx={x+11} cy={y+9} r="4.5" fill="currentColor" opacity=".3"/><path d={`M${x+9.5} ${y+7} l4 ${2} l-4 ${2} z`} fill="currentColor" opacity=".5"/><rect x={x+2} y={y+14} width="12" height="2" rx="1" fill="currentColor" opacity=".2"/></g>))}</svg>
+    ),
 
     // CTA (extended)
     "cta-split-image": (
@@ -252,6 +267,9 @@ function VariantPreview({ id }: { id: string }) {
     // Gallery (extended)
     "gallery-lightbox-story": (
       <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="6" y="4" width="68" height="34" rx="3" fill="currentColor" opacity=".2"/><circle cx="40" cy="18" r="6" fill="currentColor" opacity=".3"/><text x="40" y="21" fontSize="8" textAnchor="middle" fill="currentColor" opacity=".6">▶</text><rect x="12" y="32" width="30" height="3" rx="1" fill="currentColor" opacity=".25"/><rect x="12" y="42" width="56" height="2" rx="1" fill="currentColor" opacity=".15"/></svg>
+    ),
+    "gallery-video-grid": (
+      <svg viewBox="0 0 80 48" className="w-full h-full">{[2,25].map(y=>[2,27,52].map(x=><g key={`${x}${y}`}><rect x={x} y={y} width="24" height="20" rx="2" fill="currentColor" opacity=".18"/><circle cx={x+12} cy={y+10} r="5" fill="currentColor" opacity=".3"/><path d={`M${x+10} ${y+7.5} l5 ${2.5} l-5 ${2.5} z`} fill="currentColor" opacity=".55"/></g>))}</svg>
     ),
 
     // Works
