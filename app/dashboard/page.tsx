@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Button, Card, CardContent, CardHeader, CardTitle, EmptyState, SectionTitle, SkeletonBlock } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, CardTitle, EmptyState, SectionTitle, SkeletonBlock } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { fetchProfile } from "@/lib/api";
 import { useAuthToken } from "@/lib/auth-store";

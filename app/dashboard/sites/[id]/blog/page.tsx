@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
-import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "webjoz-ui";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/toast-provider";
 import { LayoutGrid, List, Star, AlignLeft, Loader2, FileText, Plus, ChevronLeft, Check } from "lucide-react";

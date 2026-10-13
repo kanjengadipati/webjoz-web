@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { Button, Card, CardContent, CardHeader, EmptyState, Input, Label, SectionTitle, StatusBadge } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, EmptyState, Input, Label, SectionTitle, StatusBadge } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
 import { fetchInvestigationDetail, fetchInvestigationHistory, investigateLogs } from "@/lib/api";

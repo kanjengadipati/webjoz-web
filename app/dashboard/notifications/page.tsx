@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import {
   Bell, ArrowRight, CheckCheck, Loader2,
 } from "lucide-react";
-import { Button, Card, CardHeader, CardTitle } from "@/components/ui";
+import { Button, Card, CardHeader, CardTitle } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
 import { usePermissions } from "@/hooks/use-permissions";

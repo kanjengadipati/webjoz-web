@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Button, Card, CardContent, CardHeader, SectionTitle } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, SectionTitle } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
 
 export default function InvestigateError({

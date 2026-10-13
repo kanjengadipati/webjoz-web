@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
-import { Button, Card, CardContent, CardHeader, CardTitle, Input, CustomSelect } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, CardTitle, Input, CustomSelect } from "webjoz-ui";
 import { Dialog } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/toast-provider";

@@ -36,7 +36,7 @@ import {
   Input,
   Separator,
   CustomSelect
-} from "@/components/ui";
+} from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
 
 interface AestheticCritique {

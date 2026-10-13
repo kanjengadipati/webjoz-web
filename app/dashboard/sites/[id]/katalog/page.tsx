@@ -8,7 +8,7 @@ import { request } from "@/lib/api/client";
 import { useToast } from "@/components/toast-provider";
 import { SiteSubNav } from "@/components/site-sub-nav";
 import { SparkleGenAI } from "@/components/sparkle-icon";
-import { PageLoading, Spinner, Switch } from "@/components/ui";
+import { PageLoading, Spinner, Switch } from "webjoz-ui";
 import Link from "next/link";
 import {
   ChevronLeft, Save, Check, ShoppingBag,

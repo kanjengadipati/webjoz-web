@@ -18,7 +18,7 @@ import {
   SalesBonus,
   BonusRule,
 } from "@/lib/api/bonuses";
-import { Button, Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, CardTitle } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
 import {

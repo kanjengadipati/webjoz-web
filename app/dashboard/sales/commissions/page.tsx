@@ -5,7 +5,7 @@ import { useAuthToken } from "@/lib/auth-store";
 import { usePermissions } from "@/hooks/use-permissions";
 import { fetchMyCommissions, Commission, CommissionSummary, getCommissionConfig, CommissionConfig } from "@/lib/api/commissions";
 import { fetchMyBonuses, SalesBonus, BonusSummary } from "@/lib/api/bonuses";
-import { Button, Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, CardTitle } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import {
   DollarSign,

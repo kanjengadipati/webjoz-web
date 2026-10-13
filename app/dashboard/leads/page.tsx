@@ -11,7 +11,7 @@ import {
   ShoppingBag, Search, ExternalLink, MessageCircle,
   Copy, Check, X, DollarSign, Clock, Layers, RefreshCw
 } from "lucide-react";
-import { Button, Card, CardContent, CardHeader, CardTitle, Dialog, CustomSelect } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, CardTitle, Dialog, CustomSelect } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
 

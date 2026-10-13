@@ -8,7 +8,7 @@ import {
   Loader2, Search, RefreshCw, Copy, Check, ShoppingBag,
   Phone, Mail, MessageSquare, User, Clock, ArrowRight,
 } from "lucide-react";
-import { Badge, CustomSelect } from "@/components/ui";
+import { Badge, CustomSelect } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
 

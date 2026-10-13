@@ -8,7 +8,7 @@ import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
 import { Loader2, Check, X, ArrowLeft, Zap } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
-import { Button } from "@/components/ui";
+import { Button } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
 import { useToast } from "@/components/toast-provider";
 import { loadPendingUpgradeDraft, clearPendingUpgradeDraft, PendingUpgradeSiteDraft } from "@/components/site-wizard/wizard-persistence";

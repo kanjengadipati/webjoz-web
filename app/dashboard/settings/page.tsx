@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { PhoneNumberInput, isValidPhoneNumber } from "@/components/phone-number-input";
 import { Can } from "@/components/can";
-import { Badge, Button, Card, CardContent, CardHeader, EmptyState, Input, Label, SectionTitle, SkeletonBlock, StatusBadge, CustomSelect, Switch } from "@/components/ui";
+import { Badge, Button, Card, CardContent, CardHeader, EmptyState, Input, Label, SectionTitle, SkeletonBlock, StatusBadge, CustomSelect, Switch } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { changePassword, fetchProfile, updateProfile } from "@/lib/api";
 import { LinkAccountCard } from "@/components/dashboard/link-account-card";

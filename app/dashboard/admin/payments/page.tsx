@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Loader2, Search, ChevronLeft, ChevronRight, RotateCcw, AlertCircle, FileText, ExternalLink } from "lucide-react";
-import { Card, CustomSelect } from "@/components/ui";
+import { Card, CustomSelect } from "webjoz-ui";
 import { cn } from "@/lib/utils";
 import { useAuthToken } from "@/lib/auth-store";
 import { listPayments, forceUpdateStatus, processRefund, type PaymentResponse } from "@/lib/api/payments";

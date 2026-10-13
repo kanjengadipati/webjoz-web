@@ -5,7 +5,7 @@ import { useAuthToken } from "@/lib/auth-store";
 import { request } from "@/lib/api/client";
 import { usePermissions } from "@/hooks/use-permissions";
 import { Cpu, Loader2, CheckCircle2, XCircle, Clock, RefreshCw, KeyRound, Server, Zap, BarChart3 } from "lucide-react";
-import { Card, CardContent, Button } from "@/components/ui";
+import { Card, CardContent, Button } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
 
 interface AiProviderStatus {

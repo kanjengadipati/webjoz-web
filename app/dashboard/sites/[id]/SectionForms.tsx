@@ -16,7 +16,7 @@ import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
 import { PAYMENT_METHOD_ORDER, paymentBlockTitle, paymentMethodDefaultLabel, paymentMethodDetailPlaceholder, paymentMethodImageField, paymentMethodTypeLabel } from "@/lib/payment-methods";
 import { CustomSelect } from "@/components/ui/custom-select";
-import { Switch } from "@/components/ui";
+import { Switch } from "webjoz-ui";
 
 const ALL_MAP_TILES = [
   { key: "default", label: "OSM" },

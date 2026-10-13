@@ -5,7 +5,7 @@ import { useAuthToken } from "@/lib/auth-store";
 import { request } from "@/lib/api/client";
 import { usePermissions } from "@/hooks/use-permissions";
 import { Loader2, Plus, Pencil, Trash2, CreditCard, Zap, Users, Globe, HardDrive, DollarSign } from "lucide-react";
-import { Button, Card, CardContent, CardHeader, CardTitle, Dialog, FormField, Input, Textarea, Label } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, CardTitle, Dialog, FormField, Input, Textarea, Label } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
 
