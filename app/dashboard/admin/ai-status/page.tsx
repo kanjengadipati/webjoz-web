@@ -152,6 +152,40 @@ function rateLimitUsedPct(rl: RateLimitInfo | null): number | null {
   return Math.min(100, Math.max(0, Math.round(((limit - remaining) / limit) * 100)));
 }
 
+interface FreeTierPolicy {
+  dailyRequests: number;
+}
+
+// Preset riset kuota Free Tier resmi per provider/model
+function getFreeTierPolicy(provider?: string, model?: string): FreeTierPolicy | null {
+  const p = (provider || "").toLowerCase();
+  const m = (model || "").toLowerCase();
+
+  // Google Gemini (Free tier)
+  if (p.includes("gemini") || p.includes("google") || p.includes("generativelanguage")) {
+    if (m.includes("pro")) {
+      return { dailyRequests: 50 }; // Gemini Pro free tier: 50 RPD
+    }
+    // Gemini Flash (1.5, 2.0, 2.5, 3.5 Flash / Flash Lite): 1.500 RPD
+    return { dailyRequests: 1500 };
+  }
+
+  // Groq (Free tier)
+  if (p.includes("groq")) {
+    if (m.includes("70b") || m.includes("deepseek")) {
+      return { dailyRequests: 1000 };
+    }
+    return { dailyRequests: 14400 };
+  }
+
+  // OpenRouter Free (:free models)
+  if (p.includes("openrouter") && m.includes(":free")) {
+    return { dailyRequests: 200 };
+  }
+
+  return null;
+}
+
 function todayUsagePath() {
   const start = new Date();
   start.setHours(0, 0, 0, 0);
@@ -359,35 +393,61 @@ export default function AdminAiStatusPage() {
                   const tone = statusTone[p.status] ?? statusTone.skipped;
                   const slot = usageBySlot.get(slotKeyOf(p.provider, p.base_url, p.model));
                   const used = slot ?? (p.model ? usageByModel.get(p.model) : undefined);
-                  const pct = used ? Math.round((used.total_tokens / maxModelTokens) * 100) : 0;
                   const rl = slot?.rate_limit ?? null;
-                  const rlTone = rateLimitTone(rl);
+
+                  // 1. Cek apakah ada data rate-limit resmi dari response header provider (mis. Groq/OpenRouter)
+                  const hasDirectRateLimit = rl != null && (rl.limit_requests != null || rl.limit_tokens != null);
+
+                  // 2. Jika tidak ada header resmi, gunakan riset estimasi batas Free Tier
+                  const freeTier = !hasDirectRateLimit ? getFreeTierPolicy(p.provider, p.model) : null;
+
+                  let effectiveLimit: string | null = null;
+                  let effectiveRemaining: string | null = null;
+                  let effectiveWindow = "";
+                  let quotaPct: number | null = null;
+                  let rlTone: RateTone = "default";
+                  let isFreeTier = false;
+
+                  if (hasDirectRateLimit) {
+                    rlTone = rateLimitTone(rl);
+                    quotaPct = rateLimitUsedPct(rl);
+                    effectiveWindow =
+                      rl.window === "day"
+                        ? t("dashboard.adminAiStatus.ratePerDay")
+                        : rl.window === "minute"
+                          ? t("dashboard.adminAiStatus.ratePerMinute")
+                          : "";
+                    effectiveLimit =
+                      rl.limit_tokens != null
+                        ? `${formatNumber(rl.limit_tokens)} ${t("dashboard.adminAiStatus.colTokens")}`
+                        : rl.limit_requests != null
+                          ? `${formatNumber(rl.limit_requests)} ${t("dashboard.adminAiStatus.colRequests")}`
+                          : rl.quota_value || null;
+                    effectiveRemaining =
+                      rl.remaining_tokens != null
+                        ? `${formatNumber(rl.remaining_tokens)} ${t("dashboard.adminAiStatus.colTokens")}`
+                        : rl.remaining_requests != null
+                          ? `${formatNumber(rl.remaining_requests)} ${t("dashboard.adminAiStatus.colRequests")}`
+                          : null;
+                  } else if (freeTier) {
+                    isFreeTier = true;
+                    const requestsUsed = used?.requests ?? 0;
+                    const limitReq = freeTier.dailyRequests;
+                    const remReq = Math.max(0, limitReq - requestsUsed);
+                    quotaPct = Math.min(100, Math.max(0, Math.round((requestsUsed / limitReq) * 100)));
+                    rlTone = remReq <= 0 ? "red" : remReq / limitReq > 0.5 ? "green" : "yellow";
+                    effectiveWindow = t("dashboard.adminAiStatus.ratePerDay");
+                    effectiveLimit = `${formatNumber(limitReq)} ${t("dashboard.adminAiStatus.colRequests")}`;
+                    effectiveRemaining = `${formatNumber(remReq)} ${t("dashboard.adminAiStatus.colRequests")}`;
+                  }
+
                   const rlColor = rateToneClass[rlTone];
-                  const quotaPct = rateLimitUsedPct(rl);
-                  const barPct = quotaPct ?? pct;
-                  const barColor = quotaPct != null ? rateBarClass[rlTone] : "bg-primary/70";
-                  const rlLimit = rl
-                    ? rl.limit_tokens != null
-                      ? `${formatNumber(rl.limit_tokens)} ${t("dashboard.adminAiStatus.colTokens")}`
-                      : rl.limit_requests != null
-                        ? `${formatNumber(rl.limit_requests)} ${t("dashboard.adminAiStatus.colRequests")}`
-                        : rl.quota_value
-                          ? rl.quota_value
-                          : null
-                    : null;
-                  const rlRemaining = rl
-                    ? rl.remaining_tokens != null
-                      ? `${formatNumber(rl.remaining_tokens)} ${t("dashboard.adminAiStatus.colTokens")}`
-                      : rl.remaining_requests != null
-                        ? `${formatNumber(rl.remaining_requests)} ${t("dashboard.adminAiStatus.colRequests")}`
-                        : null
-                    : null;
-                  const rlWindow =
-                    rl?.window === "day"
-                      ? t("dashboard.adminAiStatus.ratePerDay")
-                      : rl?.window === "minute"
-                        ? t("dashboard.adminAiStatus.ratePerMinute")
-                        : "";
+                  const hasQuotaBar = quotaPct != null;
+                  // Bila ada request tapi persen pembulatan 0 (mis. 2 dari 1500 = 0.13%), tampilkan visual bar tipis 1.5%
+                  const barPct = hasQuotaBar
+                    ? ((used?.requests ?? 0) > 0 && quotaPct === 0 ? 1.5 : quotaPct)
+                    : 0;
+                  const barColor = rateBarClass[rlTone];
                   return (
                     <Card key={`${p.tier}-${i}`} className={`border shadow-sm ${tone.border}`}>
                       <CardContent className="p-5 pt-5">
@@ -456,35 +516,40 @@ export default function AdminAiStatusPage() {
                                 <span className="text-[11px] text-muted-foreground">{t("dashboard.adminAiStatus.notUsedToday")}</span>
                               )}
                             </div>
-                            <div className="mt-1.5 flex items-center gap-2">
-                              <div className="flex-1 h-1.5 rounded-full bg-muted/50 overflow-hidden">
-                                <div className={`h-full rounded-full ${barColor}`} style={{ width: `${barPct}%` }} />
-                              </div>
-                              {quotaPct != null && (
+                            {hasQuotaBar && (
+                              <div className="mt-1.5 flex items-center gap-2">
+                                <div className="flex-1 h-1.5 rounded-full bg-muted/50 overflow-hidden">
+                                  <div className={`h-full rounded-full ${barColor}`} style={{ width: `${barPct}%` }} />
+                                </div>
                                 <span className={`shrink-0 text-[10px] font-semibold tabular-nums ${rlColor}`}>
-                                  {quotaPct}%
+                                  {quotaPct != null && quotaPct > 0 ? `${quotaPct}%` : (used?.requests ?? 0) > 0 ? "<1%" : "0%"}
                                 </span>
-                              )}
-                            </div>
-                            {rl && (
+                              </div>
+                            )}
+                            {(hasDirectRateLimit || isFreeTier) && (
                               <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-muted-foreground">
                                 <Gauge className={`size-3 shrink-0 ${rlColor}`} />
-                                {rlLimit ? (
+                                {effectiveLimit ? (
                                   <span>
                                     {t("dashboard.adminAiStatus.rateLimitLabel")}:{" "}
-                                    <b className="text-foreground/80">{rlLimit}</b>
-                                    {rlWindow ? <span className="text-muted-foreground/70"> {rlWindow}</span> : null}
+                                    <b className="text-foreground/80">{effectiveLimit}</b>
+                                    {effectiveWindow ? <span className="text-muted-foreground/70"> {effectiveWindow}</span> : null}
+                                    {isFreeTier && (
+                                      <span className="ml-1 px-1.5 py-0.5 rounded bg-muted/70 text-[9px] font-semibold text-muted-foreground">
+                                        {t("dashboard.adminAiStatus.freeTierLabel")}
+                                      </span>
+                                    )}
                                   </span>
                                 ) : (
                                   <span>{t("dashboard.adminAiStatus.rateLimitLabel")}: {t("dashboard.adminAiStatus.rateLimitUnknown")}</span>
                                 )}
-                                {rlRemaining && (
+                                {effectiveRemaining && (
                                   <span>
                                     · {t("dashboard.adminAiStatus.rateLimitRemaining")}:{" "}
-                                    <b className={rlTone === "default" ? "text-foreground/80" : rlColor}>{rlRemaining}</b>
+                                    <b className={rlTone === "default" ? "text-foreground/80" : rlColor}>{effectiveRemaining}</b>
                                   </span>
                                 )}
-                                {rl.source === "error_429" && (
+                                {rl?.source === "error_429" && (
                                   <span className="rounded bg-amber-500/15 px-1 py-0.5 font-semibold text-amber-600 dark:text-amber-400">
                                     429
                                   </span>

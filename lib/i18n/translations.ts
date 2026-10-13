@@ -1134,6 +1134,7 @@ export interface Translations {
       usageTodayTitle: string;
       usageTodaySubtitle: string;
       usageProviderLabel: string;
+      freeTierLabel: string;
       rateLimitLabel: string;
       rateLimitRemaining: string;
       rateLimitUnknown: string;
@@ -3866,7 +3867,8 @@ export const translations: Record<Locale, Translations> = {
         someIssues: "Ada provider bermasalah",
         usageTodayTitle: "Kuota Hari Ini per Model",
         usageTodaySubtitle: "Total token & request AI yang tercatat sejak tengah malam (waktu lokal), per model yang terkonfigurasi.",
-        usageProviderLabel: "Kuota hari ini",
+        usageProviderLabel: "Penggunaan hari ini",
+        freeTierLabel: "Free Tier",
         rateLimitLabel: "Limit",
         rateLimitRemaining: "sisa",
         rateLimitUnknown: "tak dilaporkan",
@@ -6669,7 +6671,8 @@ export const translations: Record<Locale, Translations> = {
         someIssues: "Some providers have issues",
         usageTodayTitle: "Today's Quota per Model",
         usageTodaySubtitle: "Total AI tokens & requests recorded since local midnight, per configured model.",
-        usageProviderLabel: "Today's quota",
+        usageProviderLabel: "Today's usage",
+        freeTierLabel: "Free Tier",
         rateLimitLabel: "Limit",
         rateLimitRemaining: "left",
         rateLimitUnknown: "not reported",
