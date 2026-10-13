@@ -1,6 +1,6 @@
 "use client";
 
-import { Input, Label, Select } from "@/components/ui";
+import { Input, Label, Select } from "webjoz-ui";
 
 const COUNTRY_CODES = [
   { code: "ID", flag: "🇮🇩", name: "Indonesia", dialCode: "+62" },

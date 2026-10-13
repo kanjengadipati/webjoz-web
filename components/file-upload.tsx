@@ -1,8 +1,10 @@
 "use client";
 
+import { Button } from "webjoz-ui";
+
 import React, { useRef, useState } from "react";
 import { Upload, Loader2, Link2, Check, AlertCircle, X, ImageIcon } from "lucide-react";
-import { Button } from "@/components/ui";
+
 import { SIDEBAR_FIELD_CLASS_ICON } from "@/lib/editor-field-class";
 
 interface FileUploadProps {

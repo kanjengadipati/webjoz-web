@@ -1,7 +1,9 @@
 "use client";
 
+import { Button, Card } from "webjoz-ui";
+
 import React from "react";
-import { Button, Card } from "@/components/ui";
+
 import { Check, Loader2, X } from "lucide-react";
 import { BillingCycleSwitcher, BillingCycle } from "@/components/billing-cycle-switcher";
 

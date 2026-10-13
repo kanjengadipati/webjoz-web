@@ -1,12 +1,13 @@
 "use client";
 
+import { CustomSelect } from "webjoz-ui";
+
 import React, { useState } from "react";
 import { CheckCircle, Lock, Search, Star, Loader2, Check, RotateCcw } from "lucide-react";
 import { AiFieldButton } from "@/components/menu-catalog-form";
 import FileUpload from "@/components/file-upload";
 import { GoogleSnippetPreview } from "@/components/google-snippet-preview";
 import { request } from "@/lib/api/client";
-import { CustomSelect } from "@/components/ui";
 
 // ─── generateFieldText ────────────────────────────────────────────────────────
 // Calls AI regenerate-section and plucks back the specific field value.
@@ -360,7 +361,6 @@ export function SeoForm({
       <div className="rounded-lg border border-cyan-400/20 bg-cyan-400/10 px-3 py-2.5 text-[12px] leading-relaxed text-cyan-100">
         <p className="font-semibold text-cyan-50">SEO tidak tampil di halaman publik — hanya dibaca mesin pencari &amp; saat link dibagikan.</p>
       </div>
-
 
       {/* Meta Title */}
       <div className="space-y-1">

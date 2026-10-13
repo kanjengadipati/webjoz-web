@@ -1,7 +1,9 @@
 "use client";
 
+import { Button } from "webjoz-ui";
+
 import { useCallback, useEffect, useState } from "react";
-import { Button } from "@/components/ui";
+
 import { useToast } from "@/components/toast-provider";
 import { useAuthToken } from "@/lib/auth-store";
 import { getLinkedMethods, updateEmail } from "@/lib/api/auth";
