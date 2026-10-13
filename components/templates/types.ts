@@ -10,6 +10,8 @@ export interface TestimonialItem {
   avatar_url?: string | null;
   rating?: number | null;
   source?: "google" | "manual" | null;
+  /** YouTube/Vimeo URL for video/UGC testimonials (video-wall variant) */
+  video_url?: string | null;
 }
 
 export interface BenefitItem {
