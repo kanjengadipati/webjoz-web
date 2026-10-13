@@ -1134,6 +1134,11 @@ export interface Translations {
       usageTodayTitle: string;
       usageTodaySubtitle: string;
       usageProviderLabel: string;
+      rateLimitLabel: string;
+      rateLimitRemaining: string;
+      rateLimitUnknown: string;
+      ratePerMinute: string;
+      ratePerDay: string;
       usageTotalTokens: string;
       usageTotalRequests: string;
       usageTotalGenerates: string;
@@ -3862,6 +3867,11 @@ export const translations: Record<Locale, Translations> = {
         usageTodayTitle: "Kuota Hari Ini per Model",
         usageTodaySubtitle: "Total token & request AI yang tercatat sejak tengah malam (waktu lokal), per model yang terkonfigurasi.",
         usageProviderLabel: "Kuota hari ini",
+        rateLimitLabel: "Limit",
+        rateLimitRemaining: "sisa",
+        rateLimitUnknown: "tak dilaporkan",
+        ratePerMinute: "/menit",
+        ratePerDay: "/hari",
         usageTotalTokens: "Total Token Hari Ini",
         usageTotalRequests: "Request AI",
         usageTotalGenerates: "Generate Web",
@@ -6660,6 +6670,11 @@ export const translations: Record<Locale, Translations> = {
         usageTodayTitle: "Today's Quota per Model",
         usageTodaySubtitle: "Total AI tokens & requests recorded since local midnight, per configured model.",
         usageProviderLabel: "Today's quota",
+        rateLimitLabel: "Limit",
+        rateLimitRemaining: "left",
+        rateLimitUnknown: "not reported",
+        ratePerMinute: "/min",
+        ratePerDay: "/day",
         usageTotalTokens: "Total Tokens Today",
         usageTotalRequests: "AI Requests",
         usageTotalGenerates: "Web Generates",
