@@ -2,9 +2,9 @@ import type { HTMLAttributes, ReactNode } from "react";
 import { MOTION } from "@/lib/ui-tokens";
 import { cn } from "@/lib/utils";
 
-type BadgeVariant = "default" | "secondary" | "outline" | "destructive";
+export type BadgeVariant = "default" | "secondary" | "outline" | "destructive" | "unstyled";
 
-interface BadgeProps extends HTMLAttributes<HTMLDivElement> {
+export interface BadgeProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
   variant?: BadgeVariant;
 }
@@ -14,6 +14,7 @@ const BADGE_VARIANTS: Record<BadgeVariant, string> = {
   secondary: "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
   outline: "border-border/80 bg-background/50 backdrop-blur-sm text-foreground",
   destructive: "border-transparent bg-destructive text-white hover:bg-destructive/80",
+  unstyled: "",
 };
 
 export function Badge({ children, className, variant = "default", ...props }: BadgeProps) {

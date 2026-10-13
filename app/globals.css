@@ -401,11 +401,11 @@ body.webjoz-wizard-active {
 }
 
 .text-primary-foreground {
-  color: var(--primary-foreground) !important;
+  color: var(--primary-foreground);
 }
 
 .bg-primary-foreground {
-  background-color: var(--primary-foreground) !important;
+  background-color: var(--primary-foreground);
 }
 
 
