@@ -130,6 +130,28 @@ const rateToneClass: Record<RateTone, string> = {
   default: "text-muted-foreground",
 };
 
+const rateBarClass: Record<RateTone, string> = {
+  green: "bg-green-500",
+  yellow: "bg-amber-500",
+  red: "bg-red-500",
+  default: "bg-primary/70",
+};
+
+// rateLimitUsedPct menghitung persentase kuota yang SUDAH terpakai dari
+// (limit - sisa) / limit. Mengembalikan null bila provider tidak melaporkan
+// limit+sisa sekaligus.
+function rateLimitUsedPct(rl: RateLimitInfo | null): number | null {
+  if (!rl) return null;
+  let limit = rl.limit_tokens;
+  let remaining = rl.remaining_tokens;
+  if (limit == null || remaining == null) {
+    limit = rl.limit_requests;
+    remaining = rl.remaining_requests;
+  }
+  if (limit == null || remaining == null || limit <= 0) return null;
+  return Math.min(100, Math.max(0, Math.round(((limit - remaining) / limit) * 100)));
+}
+
 function todayUsagePath() {
   const start = new Date();
   start.setHours(0, 0, 0, 0);
@@ -341,6 +363,9 @@ export default function AdminAiStatusPage() {
                   const rl = slot?.rate_limit ?? null;
                   const rlTone = rateLimitTone(rl);
                   const rlColor = rateToneClass[rlTone];
+                  const quotaPct = rateLimitUsedPct(rl);
+                  const barPct = quotaPct ?? pct;
+                  const barColor = quotaPct != null ? rateBarClass[rlTone] : "bg-primary/70";
                   const rlLimit = rl
                     ? rl.limit_tokens != null
                       ? `${formatNumber(rl.limit_tokens)} ${t("dashboard.adminAiStatus.colTokens")}`
@@ -431,8 +456,15 @@ export default function AdminAiStatusPage() {
                                 <span className="text-[11px] text-muted-foreground">{t("dashboard.adminAiStatus.notUsedToday")}</span>
                               )}
                             </div>
-                            <div className="mt-1.5 h-1.5 w-full rounded-full bg-muted/50 overflow-hidden">
-                              <div className="h-full rounded-full bg-primary/70" style={{ width: `${pct}%` }} />
+                            <div className="mt-1.5 flex items-center gap-2">
+                              <div className="flex-1 h-1.5 rounded-full bg-muted/50 overflow-hidden">
+                                <div className={`h-full rounded-full ${barColor}`} style={{ width: `${barPct}%` }} />
+                              </div>
+                              {quotaPct != null && (
+                                <span className={`shrink-0 text-[10px] font-semibold tabular-nums ${rlColor}`}>
+                                  {quotaPct}%
+                                </span>
+                              )}
                             </div>
                             {rl && (
                               <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-muted-foreground">
