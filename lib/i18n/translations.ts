@@ -1173,6 +1173,7 @@ export interface Translations {
       noTrendData: string;
       recentRequests: string;
       recentRequestsDesc: string;
+      failureReason: string;
       noRequestsLogged: string;
       sourceAI: string;
       sourcePartial: string;
@@ -3900,6 +3901,7 @@ export const translations: Record<Locale, Translations> = {
         noTrendData: "Belum ada data tren.",
         recentRequests: "Request Terbaru (10 terakhir)",
         recentRequestsDesc: "Percobaan pembuatan terbaru",
+        failureReason: "Alasan gagal (mock)",
         noRequestsLogged: "Belum ada request yang tercatat.",
         sourceAI: "AI",
         sourcePartial: "Partial",
@@ -6697,6 +6699,7 @@ export const translations: Record<Locale, Translations> = {
         noTrendData: "No trend data available yet.",
         recentRequests: "Recent Requests (last 10)",
         recentRequestsDesc: "Latest generation attempts",
+        failureReason: "Failure reason (mock)",
         noRequestsLogged: "No requests logged yet.",
         sourceAI: "AI",
         sourcePartial: "Partial",
