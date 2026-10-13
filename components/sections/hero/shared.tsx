@@ -3,6 +3,7 @@ import React from "react";
 import { ArrowRight, Clock, Star } from "lucide-react";
 import PhotoCredit from "../PhotoCredit";
 import type { TemplateProps } from "../../templates/types";
+import type { HeroVariantProps } from "./types";
 
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
 
@@ -129,5 +130,25 @@ export function HeroDecorations({
         </div>
       )}
     </>
+  );
+}
+
+export function HeroCenteredLayout({
+  hero,
+  language,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+  minHeight = "85vh",
+}: HeroVariantProps & { minHeight?: string }) {
+  return (
+    <section style={{ position: "relative", minHeight, display: "flex", alignItems: "center", justifyContent: "center", padding: "5rem 1.5rem", background: hero.background_color || "var(--dt-bg)", overflow: "hidden" }}>
+      <HeroDecorations hero={hero} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+      <div style={{ maxWidth: "800px", textAlign: "center", position: "relative", zIndex: 1, display: "flex", flexDirection: "column", gap: "1.25rem", alignItems: "center" }}>
+        <HeroContent hero={hero} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+      </div>
+    </section>
   );
 }

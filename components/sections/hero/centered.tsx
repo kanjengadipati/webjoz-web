@@ -1,15 +1,8 @@
 "use client";
 import React from "react";
 import type { HeroVariantProps } from "./types";
-import { HeroContent, HeroDecorations } from "./shared";
+import { HeroCenteredLayout } from "./shared";
 
-export default function HeroCentered({ hero, language, design_token, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: HeroVariantProps) {
-  return (
-    <section style={{ position: "relative", minHeight: "85vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "5rem 1.5rem", background: hero.background_color || "var(--dt-bg)", overflow: "hidden" }}>
-      <HeroDecorations hero={hero} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
-      <div style={{ maxWidth: "800px", textAlign: "center", position: "relative", zIndex: 1, display: "flex", flexDirection: "column", gap: "1.25rem", alignItems: "center" }}>
-        <HeroContent hero={hero} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-      </div>
-    </section>
-  );
+export default function HeroCentered(props: HeroVariantProps) {
+  return <HeroCenteredLayout {...props} minHeight="85vh" />;
 }
