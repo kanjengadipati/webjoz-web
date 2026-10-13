@@ -8,6 +8,7 @@ import TestimonialsGrid from "./grid";
 import TestimonialsLogoWall from "./logo-wall";
 import TestimonialsFeaturedSpotlight from "./featured-spotlight";
 import TestimonialsGoogleReviews from "./google-reviews";
+import TestimonialsVideoWall from "./video-wall";
 
 type TestimonialVariantProps = {
   testimonials: TemplateProps["content"]["testimonials"];
@@ -27,6 +28,7 @@ const variants: Record<string, ComponentType<TestimonialVariantProps>> = {
   "logo-wall": TestimonialsLogoWall,
   "featured-spotlight": TestimonialsFeaturedSpotlight,
   "google-reviews": TestimonialsGoogleReviews,
+  "video-wall": TestimonialsVideoWall,
 };
 
 export default function TestimonialsSection({

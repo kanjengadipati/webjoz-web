@@ -2130,6 +2130,12 @@ export interface Translations {
       heroPortraitShowcase: string;
       heroWorkPreviewStrip: string;
       heroChronologyBadge: string;
+      variantProductTable: string;
+      variantSpotlight: string;
+      variantMenuCarousel: string;
+      variantMenuMasonry: string;
+      variantVideoWall: string;
+      variantVideoGrid: string;
       spacingCompact: string;
       spacingRelaxed: string;
       spacingCompactShort: string;
@@ -4850,6 +4856,12 @@ export const translations: Record<Locale, Translations> = {
         heroPortraitShowcase: "Hero: Showcase Potret",
         heroWorkPreviewStrip: "Hero: Strip Karya Unggulan",
         heroChronologyBadge: "Hero: Badge Kronologi",
+        variantProductTable: "Tabel Spesifikasi",
+        variantSpotlight: "Sorotan Produk",
+        variantMenuCarousel: "Carousel Horizontal",
+        variantMenuMasonry: "Aliran Masonry",
+        variantVideoWall: "Dinding Video / UGC",
+        variantVideoGrid: "Grid Video",
         spacingCompact: "Rapat (Compact)",
         spacingRelaxed: "Longgar (Relaxed)",
         spacingCompactShort: "Rapat",
@@ -7640,6 +7652,12 @@ export const translations: Record<Locale, Translations> = {
         heroPortraitShowcase: "Hero: Portrait Showcase",
         heroWorkPreviewStrip: "Hero: Featured Work Strip",
         heroChronologyBadge: "Hero: Chronology Badge",
+        variantProductTable: "Spec Table",
+        variantSpotlight: "Product Spotlight",
+        variantMenuCarousel: "Horizontal Carousel",
+        variantMenuMasonry: "Masonry Flow",
+        variantVideoWall: "Video / UGC Wall",
+        variantVideoGrid: "Video Grid",
         spacingCompact: "Compact",
         spacingRelaxed: "Relaxed",
         spacingCompactShort: "Compact",

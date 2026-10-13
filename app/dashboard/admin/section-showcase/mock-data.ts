@@ -514,6 +514,7 @@ export const MOCK_SHOWCASE_DATA = {
       {
         image_url: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&auto=format&fit=crop&q=80",
         caption: "Ruang Kolaborasi Kreatif",
+        video_url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
       },
       {
         image_url: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=800&auto=format&fit=crop&q=80",
@@ -522,6 +523,7 @@ export const MOCK_SHOWCASE_DATA = {
       {
         image_url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop&q=80",
         caption: "Sesi Diskusi Strategi Produk",
+        video_url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
       },
       {
         image_url: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&auto=format&fit=crop&q=80",
@@ -568,6 +570,7 @@ export const MOCK_SHOWCASE_DATA = {
         avatar_color: "#4F46E5",
         rating: 5,
         source: "google",
+        video_url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
       },
       {
         quote: "Tampilan responsif dan cepat banget! Pelanggan kafe kami sering memuji kemudahan melihat menu dan pesan online lewat website.",

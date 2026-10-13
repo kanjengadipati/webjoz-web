@@ -227,13 +227,13 @@ export interface DesignToken {
       hero?: "full-bleed" | "split" | "centered" | "minimal" | "minimalist-elegant" | "tech-saas" | "neo-brutalist" | "bento-grid" | "split-editorial" | "natural-organic" | "personal-billboard" | "portrait-showcase" | "work-preview-strip" | "chronology-badge" | "image-carousel";
       about?: "classic" | "split-image" | "stat-heavy" | "timeline" | "team-grid";
       benefits?: "grid" | "stat-grid" | "checklist" | "comparison-table" | "featured-grid" | "icon-row" | "bento-grid" | "trust-bar" | "how-it-works";
-      testimonials?: "carousel" | "compact" | "grid" | "logo-wall" | "featured-spotlight" | "google-reviews";
+      testimonials?: "carousel" | "compact" | "grid" | "logo-wall" | "featured-spotlight" | "google-reviews" | "video-wall";
       cta?: "banner" | "card" | "centered" | "split-image" | "inline-lead-form";
       faq?: "accordion" | "simple" | "columns" | "sidebar-category" | "two-column-grid" | "chat-bubble-style";
-      gallery?: "grid" | "masonry" | "carousel" | "lightbox-story" | "before-after-slider";
+      gallery?: "grid" | "masonry" | "carousel" | "lightbox-story" | "before-after-slider" | "video-grid";
       works?: "grid" | "masonry" | "featured-grid" | "showcase-featured";
-      menu?: "grid" | "compact" | "cards" | "text-list" | "compact-list" | "tabs-by-category" | "accordion-by-category" | "bento-photo-grid" | "visual-showcase-hero" | "sidebar-scrollspy-photo";
-      catalog?: "grid" | "compact" | "cards" | "grid-dense" | "showcase-featured" | "tabs-by-category" | "editorial-grid" | "masonry-flow" | "instagram-square-grid" | "split-hero-catalog" | "neo-brutalist-matrix" | "horizontal-swipe-carousel";
+      menu?: "grid" | "compact" | "cards" | "text-list" | "compact-list" | "tabs-by-category" | "accordion-by-category" | "bento-photo-grid" | "visual-showcase-hero" | "sidebar-scrollspy-photo" | "horizontal-swipe-carousel" | "masonry-flow";
+      catalog?: "grid" | "compact" | "cards" | "grid-dense" | "showcase-featured" | "tabs-by-category" | "editorial-grid" | "masonry-flow" | "instagram-square-grid" | "split-hero-catalog" | "neo-brutalist-matrix" | "horizontal-swipe-carousel" | "product-table" | "spotlight";
       stats?: "counter-row" | "card-grid" | "minimal-split" | "big-number-spotlight";
       partners?: "logo-wall" | "marquee" | "pill-grid" | "featured-collab-grid";
       pricing?: "cards" | "horizontal-rows" | "comparison-table" | "single-tier-highlight";

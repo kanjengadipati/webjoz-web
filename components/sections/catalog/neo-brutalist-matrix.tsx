@@ -1,14 +1,15 @@
 "use client";
 import React, { useState } from "react";
-import { Plus, Image as ImageIcon } from "lucide-react";
+import { Image as _ImageIcon } from "lucide-react";
 import { InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
+import { AddToCartButton } from "@/components/cart";
 
 interface CatalogVariantProps {
   catalog: TemplateProps["content"]["catalog"];
   design_token?: DesignToken | null;
-  onUpdateField?: (section: string, key: string, value: any) => void;
+  onUpdateField?: (section: string, key: string, value: unknown) => void;
   isEditorMode?: boolean;
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
@@ -269,19 +270,26 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
                       </span>
 
                       {/* Circular "Add" button */}
-                      <button
-                        type="button"
-                        className="w-12 h-12 rounded-full border-[3px] border-solid flex items-center justify-center transition-all duration-200 hover:scale-110 active:translate-x-0.5 active:translate-y-0.5 cursor-pointer"
-                        style={{
-                          borderColor: "var(--dt-border)",
-                          backgroundColor: "var(--dt-primary)",
-                          color: "var(--dt-primary-foreground)",
-                          boxShadow: "2px 2px 0px 0px var(--dt-text)",
-                        }}
-                        aria-label={`Add ${item.name} to cart`}
-                      >
-                        <Plus size={20} strokeWidth={3} />
-                      </button>
+                    <AddToCartButton
+                      itemId={item.id || `cat-nbm-${catIdx}-${index}`}
+                      itemName={item.name}
+                      itemPrice={item.price_display || item.price || null}
+                      itemPriceAmount={item.price_amount}
+                      itemPriceDisplay={item.price_display || item.price}
+                      itemPromoPriceAmount={item.promo_price_amount}
+                      itemPromoPriceDisplay={item.promo_price_display}
+                      discountLabel={item.discount_label}
+                      category={category.name}
+                      variant_groups={item.variant_groups}
+                      disabled={item.is_available === false}
+                      className="w-12 h-12 rounded-full border-[3px] border-solid flex items-center justify-center transition-all duration-200 hover:scale-110 active:translate-x-0.5 active:translate-y-0.5 cursor-pointer p-0"
+                      style={{
+                        borderColor: "var(--dt-border)",
+                        backgroundColor: "var(--dt-primary)",
+                        color: "var(--dt-primary-foreground)",
+                        boxShadow: "2px 2px 0px 0px var(--dt-text)",
+                      }}
+                    />
                     </div>
                   </div>
                   {isEditorMode && onDeleteItem && (
