@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import {
   Card, CardContent, Button, Badge, Input, Separator,
-} from "@/components/ui";
+} from "webjoz-ui";
 import {
   getBuiltinTypographyPairings, getBuiltinColorPatterns, INDUSTRY_PRESETS,
   type TypographyPairing, type ColorPattern, type IndustryPreset,

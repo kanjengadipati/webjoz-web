@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Button, Card, CardContent, CardHeader, SectionTitle, SkeletonBlock, Badge } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, SectionTitle, SkeletonBlock, Badge } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { fetchRoles, fetchAllPermissions, fetchRolePermissions, updateRolePermissions } from "@/lib/api";
 import { useAuthToken } from "@/lib/auth-store";

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Button, Card, CardContent, SkeletonBlock } from "@/components/ui";
+import { Button, Card, CardContent, SkeletonBlock } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";

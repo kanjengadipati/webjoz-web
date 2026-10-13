@@ -15,7 +15,7 @@ import {
   Eye, EyeOff, Pencil, Send, Rocket, Copy, Sun, Moon, SlidersHorizontal, ExternalLink
 } from "lucide-react";
 import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
-import { Button, Card } from "@/components/ui";
+import { Button, Card } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { getTemplate, TEMPLATE_REGISTRY } from "@/lib/template-registry";
 import { getTemplateDefaultDesignToken } from "@/lib/template-defaults";

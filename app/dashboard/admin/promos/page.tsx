@@ -5,7 +5,7 @@ import { useAuthToken } from "@/lib/auth-store";
 import { request } from "@/lib/api/client";
 import { usePermissions } from "@/hooks/use-permissions";
 import { Loader2, Plus, Pencil, Trash2, Percent, Tag, Calendar, Hash, Shield, Ban, CheckCircle, XCircle } from "lucide-react";
-import { Button, Card, CardContent, CardHeader, CardTitle, Dialog, FormField, Input, Textarea, Label, CustomSelect } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, CardTitle, Dialog, FormField, Input, Textarea, Label, CustomSelect } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 
 interface PromoCode {

@@ -5,7 +5,7 @@ import { useAuthToken } from "@/lib/auth-store";
 import { request } from "@/lib/api/client";
 import { usePermissions } from "@/hooks/use-permissions";
 import { Building2, Loader2, Users, Globe, ArrowLeft, Mail, Calendar, Zap, CreditCard } from "lucide-react";
-import { Button, Card, CardContent, CardHeader, CardTitle, CustomSelect } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, CardTitle, CustomSelect } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
 import Link from "next/link";

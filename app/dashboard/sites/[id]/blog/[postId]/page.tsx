@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
 import { request } from "@/lib/api/client";
-import { Button, Input, Switch } from "@/components/ui";
+import { Button, Input, Switch } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { SiteSubNav } from "@/components/site-sub-nav";
 import FileUpload from "@/components/file-upload";

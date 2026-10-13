@@ -14,7 +14,7 @@ import {
   Search, TriangleAlert, X, MoreVertical, EyeOff, Rocket,
   FileText, ShoppingBag, Utensils, Star, Code, Link2
 } from "lucide-react";
-import { Button } from "@/components/ui";
+import { Button } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
 import { encodeSiteId } from "@/lib/sqids";

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Rocket, Globe, Loader2 } from "lucide-react";
 import { Dialog } from "@/components/ui/dialog";
-import { Button } from "@/components/ui";
+import { Button } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
 import TermsAcceptance from "@/components/terms-acceptance";
 import ModerationBlock, { type ModerationViolation } from "@/components/moderation-block";

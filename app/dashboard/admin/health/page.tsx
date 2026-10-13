@@ -5,7 +5,7 @@ import { useAuthToken } from "@/lib/auth-store";
 import { request } from "@/lib/api/client";
 import { usePermissions } from "@/hooks/use-permissions";
 import { Activity, Loader2, Database, Server, Cpu, Wifi, RefreshCw, Clock } from "lucide-react";
-import { Card, CardContent, Button } from "@/components/ui";
+import { Card, CardContent, Button } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
 
 interface SystemHealth {

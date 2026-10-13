@@ -5,7 +5,7 @@ import { useAuthToken } from "@/lib/auth-store";
 import { usePermissions } from "@/hooks/use-permissions";
 import { fetchMyReferralCode, regenerateMyReferralCode, sendReferralEmail } from "@/lib/api/referral";
 import { getCommissionConfig, CommissionConfig } from "@/lib/api/commissions";
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Dialog } from "@/components/ui";
+import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Dialog } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { Share2, Copy, RefreshCw, Loader2, Check, ShieldAlert, Award, DollarSign, Zap, Gift, Target, MessageCircle, Mail, Send } from "lucide-react";
 import Link from "next/link";

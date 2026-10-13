@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Can } from "@/components/can";
-import { Button, Card, CardContent, CardHeader, EmptyState, SectionTitle, SkeletonBlock, StatusBadge } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, EmptyState, SectionTitle, SkeletonBlock, StatusBadge } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
 import { clearAuthSession, useAuthToken } from "@/lib/auth-store";

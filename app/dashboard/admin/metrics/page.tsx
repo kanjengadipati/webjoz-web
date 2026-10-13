@@ -5,7 +5,7 @@ import { useAuthToken } from "@/lib/auth-store";
 import { request } from "@/lib/api/client";
 import { usePermissions } from "@/hooks/use-permissions";
 import { Activity, Loader2, Clock, RefreshCw, BarChart3, TrendingUp, AlertCircle } from "lucide-react";
-import { Card, CardContent, CardHeader, Button } from "@/components/ui";
+import { Card, CardContent, CardHeader, Button } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
 
 interface TrendBucket {
