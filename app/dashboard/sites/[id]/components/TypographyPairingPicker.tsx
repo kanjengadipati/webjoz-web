@@ -1,3 +1,4 @@
+import { CustomSelect } from "webjoz-ui";
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -10,7 +11,6 @@ import FontPicker from "./FontPicker";
 import { useI18n } from "@/lib/i18n/context";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { Check } from "lucide-react";
-import { CustomSelect } from "@/components/ui/custom-select";
 
 interface Props {
   designToken: any;

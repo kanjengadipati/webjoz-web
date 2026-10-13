@@ -15,8 +15,7 @@ import { SocialPlatformSelect, SOCIAL_PLATFORMS, SocialIcon } from "@/components
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
 import { PAYMENT_METHOD_ORDER, paymentBlockTitle, paymentMethodDefaultLabel, paymentMethodDetailPlaceholder, paymentMethodImageField, paymentMethodTypeLabel } from "@/lib/payment-methods";
-import { CustomSelect } from "@/components/ui/custom-select";
-import { Switch } from "webjoz-ui";
+import { Switch, CustomSelect } from "webjoz-ui";
 
 const ALL_MAP_TILES = [
   { key: "default", label: "OSM" },
