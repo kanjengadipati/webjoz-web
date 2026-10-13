@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle, SubtleStat, buttonClassName } from "@/components/ui";
+import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle, SubtleStat, buttonClassName } from "webjoz-ui";
 
 export const metadata: Metadata = {
   title: "Heriyadi - Senior Frontend Engineer",

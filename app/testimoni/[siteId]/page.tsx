@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { request } from "@/lib/api/client";
-import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { Star, Loader2 } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";

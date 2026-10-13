@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Button, Card, CardContent, CardHeader, SectionTitle } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, SectionTitle } from "webjoz-ui";
 
 export default function AppError({
   error,

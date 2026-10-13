@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useAuthToken, useAuthReady, persistAuthSession } from "@/lib/auth-store";
 import { request } from "@/lib/api/client";
 import { acceptInvitationRegister, fetchInvitation } from "@/lib/api";
-import { Button, Input, Label } from "@/components/ui";
+import { Button, Input, Label } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
 import { CheckCircle, XCircle, Loader2, Mail } from "lucide-react";
 
