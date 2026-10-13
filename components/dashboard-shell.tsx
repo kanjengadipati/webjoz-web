@@ -4,7 +4,7 @@ import React, { ReactNode, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, LayoutGrid, Home, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, ChevronDown, Plus, Palette, Users, DollarSign, Share2, Percent, Menu, X, Receipt } from "lucide-react";
+import { LayoutDashboard, LayoutGrid, Home, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, ChevronDown, Plus, Palette, Users, DollarSign, Share2, Percent, Menu, X, Receipt, Cpu } from "lucide-react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator } from "@/components/ui";
 import { MoonIcon, SunIcon } from "@/components/icons";
 import { clearAuthSession, useAuthReady, useAuthToken, useStoredEmail } from "@/lib/auth-store";
@@ -36,6 +36,7 @@ const NAV_LABEL_KEYS: Record<string, string> = {
   templates: "dashboard.nav.templates",
   "design-assets": "dashboard.nav.designAssets",
   metrics: "dashboard.nav.metrics",
+  "ai-status": "dashboard.nav.aiStatus",
   sites: "dashboard.nav.sites",
   domains: "dashboard.nav.domains",
   leads: "dashboard.nav.leads",
@@ -188,6 +189,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     gauge: BarChart2,
     "bar-chart": BarChart2,
     receipt: Receipt,
+    cpu: Cpu,
   };
 
   return (

@@ -497,6 +497,7 @@ export interface Translations {
       templates: string;
       designAssets: string;
       metrics: string;
+      aiStatus: string;
       sites: string;
       domains: string;
       leads: string;
@@ -1099,6 +1100,36 @@ export interface Translations {
       lastCheckedAt: string;
       neverChecked: string;
       allSystemsUp: string;
+      someIssues: string;
+    };
+    adminAiStatus: {
+      noAccess: string;
+      title: string;
+      subtitle: string;
+      refresh: string;
+      loadFailed: string;
+      loadFailedTitle: string;
+      retry: string;
+      aiDisabled: string;
+      labelEnabled: string;
+      valueYes: string;
+      valueNo: string;
+      labelProvider: string;
+      labelModel: string;
+      labelTpmQuota: string;
+      tpmPerMinute: string;
+      labelProviders: string;
+      noProviders: string;
+      statusOk: string;
+      statusError: string;
+      statusNotConfigured: string;
+      statusSkipped: string;
+      keyConfigured: string;
+      keyMissing: string;
+      noKeyRequired: string;
+      lastCheckedAt: string;
+      neverChecked: string;
+      allProvidersOk: string;
       someIssues: string;
     };
     adminMetrics: {
@@ -3162,6 +3193,7 @@ export const translations: Record<Locale, Translations> = {
         templates: "Galeri Template",
         designAssets: "Aset Desain",
         metrics: "Metrik",
+        aiStatus: "Status AI",
         sites: "Website Saya",
         domains: "Custom Domain",
         leads: "Customer Leads",
@@ -3770,6 +3802,36 @@ export const translations: Record<Locale, Translations> = {
         neverChecked: "Belum pernah diperiksa",
         allSystemsUp: "Semua sistem aktif",
         someIssues: "Beberapa sistem bermasalah",
+      },
+      adminAiStatus: {
+        noAccess: "Anda tidak memiliki akses ke halaman ini.",
+        title: "Status AI Modul",
+        subtitle: "Periksa validitas konfigurasi AI: provider, API key, model, dan konektivitas tiap tier.",
+        refresh: "Periksa Ulang",
+        loadFailed: "Gagal mengambil status AI",
+        loadFailedTitle: "Gagal memuat data",
+        retry: "Coba Lagi",
+        aiDisabled: "Modul AI sedang dinonaktifkan di server.",
+        labelEnabled: "Status Modul",
+        valueYes: "Aktif",
+        valueNo: "Nonaktif",
+        labelProvider: "Provider Utama",
+        labelModel: "Model Utama",
+        labelTpmQuota: "Kuota TPM",
+        tpmPerMinute: "token per menit (estimasi)",
+        labelProviders: "Provider yang Dikonfigurasi",
+        noProviders: "Tidak ada provider yang dikonfigurasi.",
+        statusOk: "Valid",
+        statusError: "Gagal",
+        statusNotConfigured: "Belum Dikonfigurasi",
+        statusSkipped: "Diabaikan",
+        keyConfigured: "Key terpasang",
+        keyMissing: "Key belum ada",
+        noKeyRequired: "Tanpa API key",
+        lastCheckedAt: "Terakhir diperiksa pukul",
+        neverChecked: "Belum pernah diperiksa",
+        allProvidersOk: "Semua provider valid",
+        someIssues: "Ada provider bermasalah",
       },
       adminMetrics: {
         noAccess: "Anda tidak memiliki akses ke halaman ini.",
@@ -5902,6 +5964,7 @@ export const translations: Record<Locale, Translations> = {
         templates: "Template Gallery",
         designAssets: "Design Assets",
         metrics: "Metrics",
+        aiStatus: "AI Status",
         sites: "My Websites",
         domains: "Custom Domain",
         leads: "Customer Leads",
@@ -6510,6 +6573,36 @@ export const translations: Record<Locale, Translations> = {
         neverChecked: "Never checked",
         allSystemsUp: "All systems operational",
         someIssues: "Some systems have issues",
+      },
+      adminAiStatus: {
+        noAccess: "You do not have access to this page.",
+        title: "AI Module Status",
+        subtitle: "Check the validity of your AI configuration: providers, API keys, models, and per-tier connectivity.",
+        refresh: "Re-check",
+        loadFailed: "Failed to load AI status",
+        loadFailedTitle: "Failed to load data",
+        retry: "Retry",
+        aiDisabled: "The AI module is disabled on the server.",
+        labelEnabled: "Module Status",
+        valueYes: "Enabled",
+        valueNo: "Disabled",
+        labelProvider: "Primary Provider",
+        labelModel: "Primary Model",
+        labelTpmQuota: "TPM Quota",
+        tpmPerMinute: "token per minute (estimate)",
+        labelProviders: "Configured Providers",
+        noProviders: "No providers are configured.",
+        statusOk: "Valid",
+        statusError: "Failed",
+        statusNotConfigured: "Not Configured",
+        statusSkipped: "Skipped",
+        keyConfigured: "Key set",
+        keyMissing: "Key missing",
+        noKeyRequired: "No API key",
+        lastCheckedAt: "Last checked at",
+        neverChecked: "Never checked",
+        allProvidersOk: "All providers valid",
+        someIssues: "Some providers have issues",
       },
       adminMetrics: {
         noAccess: "You do not have access to this page.",
