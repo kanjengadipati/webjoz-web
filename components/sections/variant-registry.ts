@@ -60,6 +60,7 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "logo-wall", label: "Logo Klien", description: "Logo perusahaan klien (membutuhkan logo_url)." },
     { value: "featured-spotlight", label: "Sorotan", description: "Satu testimoni utama ditonjolkan." },
     { value: "google-reviews", label: "Google Reviews", description: "Kartu gaya Google: foto profil, bintang, badge Google." },
+    { value: "video-wall", label: "Dinding Video / UGC", labelKey: "variantVideoWall", description: "Grid testimoni bergaya UGC dengan thumbnail video dan pemutar ringan." },
   ],
   cta: [
     { value: "banner", label: "Banner", description: "Strip warna penuh lebar, teks + tombol." },
@@ -82,6 +83,7 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "carousel", label: "Carousel", description: "Foto slide bergilir otomatis." },
     { value: "lightbox-story", label: "Story Lightbox", description: "Grid foto yang membuka fullscreen dengan narasi besar dan navigasi cerita." },
     { value: "before-after-slider", label: "Before & After Slider", description: "Komparasi gambar sebelum/sesudah dengan slider drag." },
+    { value: "video-grid", label: "Grid Video", labelKey: "variantVideoGrid", description: "Grid seragam dengan poster dan tombol putar untuk item video." },
   ],
   works: [
     { value: "grid", label: "Grid", description: "Kartu proyek seragam dalam grid rapi." },
@@ -118,6 +120,8 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "bento-photo-grid", label: "Bento Foto Grid", group: "Visual Foto", description: "Grid bento gaya foto besar, kaya visual." },
     { value: "visual-showcase-hero", label: "Hero Visual", group: "Visual Foto", description: "Hero besar dengan katalog visual di bawahnya." },
     { value: "sidebar-scrollspy-photo", label: "Sidebar Scrollspy", group: "Visual Foto", description: "Navigasi kategori sticky + konten foto di sisi kanan." },
+    { value: "horizontal-swipe-carousel", label: "Carousel Horizontal", labelKey: "variantMenuCarousel", group: "Visual Foto", description: "Kartu menu besar yang bisa di-swipe horizontal per kategori." },
+    { value: "masonry-flow", label: "Aliran Masonry", labelKey: "variantMenuMasonry", group: "Visual Foto", description: "Layout Pinterest dengan tinggi kartu menu bervariasi." },
   ],
   catalog: [
     { value: "grid", label: "Grid", group: "Dasar", description: "Kartu produk standar dalam grid." },
@@ -132,6 +136,8 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "split-hero-catalog", label: "Split Hero", group: "Visual Foto", description: "Split screen: hero besar kiri, list scroll kanan." },
     { value: "neo-brutalist-matrix", label: "Matrix Brutalis", group: "Visual Foto", description: "Grid brutal dengan border tebal dan posisi miring." },
     { value: "horizontal-swipe-carousel", label: "Carousel Horizontal", group: "Visual Foto", description: "Card besar yang bisa di-swipe horizontal." },
+    { value: "product-table", label: "Tabel Spesifikasi", labelKey: "variantProductTable", group: "Tabel", description: "Tabel produk/spec-sheet dengan kolom harga, stok, dan aksi." },
+    { value: "spotlight", label: "Sorotan Produk", labelKey: "variantSpotlight", group: "Visual Foto", description: "Satu produk utama full-bleed dengan produk lain dalam grid." },
   ],
   contact: [
     { value: "classic-split", label: "Klasik Split", description: "Form pesan di kiri, info kontak & peta di kanan." },

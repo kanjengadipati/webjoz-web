@@ -15,6 +15,8 @@ import CatalogInstagramSquareGrid from "./instagram-square-grid";
 import CatalogSplitHeroCatalog from "./split-hero-catalog";
 import CatalogNeoBrutalistMatrix from "./neo-brutalist-matrix";
 import CatalogHorizontalSwipeCarousel from "./horizontal-swipe-carousel";
+import CatalogProductTable from "./product-table";
+import CatalogSpotlight from "./spotlight";
 
 type CatalogVariantProps = {
   catalog: TemplateProps["content"]["catalog"];
@@ -46,6 +48,8 @@ const variants: Record<string, ComponentType<CatalogVariantProps>> = {
   "split-hero-catalog": CatalogSplitHeroCatalog,
   "neo-brutalist-matrix": CatalogNeoBrutalistMatrix,
   "horizontal-swipe-carousel": CatalogHorizontalSwipeCarousel,
+  "product-table": CatalogProductTable,
+  spotlight: CatalogSpotlight,
 };
 
 export default function CatalogSection({

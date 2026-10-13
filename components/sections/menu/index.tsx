@@ -13,6 +13,8 @@ import MenuAccordionByCategory from "./accordion-by-category";
 import MenuBentoPhotoGrid from "./bento-photo-grid";
 import MenuVisualShowcaseHero from "./visual-showcase-hero";
 import MenuSidebarScrollspyPhoto from "./sidebar-scrollspy-photo";
+import MenuHorizontalSwipeCarousel from "./horizontal-swipe-carousel";
+import MenuMasonryFlow from "./masonry-flow";
 
 type MenuVariantProps = {
   menu: TemplateProps["content"]["menu"];
@@ -42,6 +44,8 @@ const variants: Record<string, ComponentType<MenuVariantProps>> = {
   "bento-photo-grid": MenuBentoPhotoGrid,
   "visual-showcase-hero": MenuVisualShowcaseHero,
   "sidebar-scrollspy-photo": MenuSidebarScrollspyPhoto,
+  "horizontal-swipe-carousel": MenuHorizontalSwipeCarousel,
+  "masonry-flow": MenuMasonryFlow,
 };
 
 export default function MenuSection({

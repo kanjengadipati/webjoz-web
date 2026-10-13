@@ -1,14 +1,15 @@
 "use client";
 import React, { useState } from "react";
-import { Plus, Image as ImageIcon } from "lucide-react";
+import { Image as _ImageIcon } from "lucide-react";
 import { InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
+import { AddToCartButton } from "@/components/cart";
 
 interface CatalogVariantProps {
   catalog: TemplateProps["content"]["catalog"];
   design_token?: DesignToken | null;
-  onUpdateField?: (section: string, key: string, value: any) => void;
+  onUpdateField?: (section: string, key: string, value: unknown) => void;
   isEditorMode?: boolean;
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
@@ -257,19 +258,25 @@ export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isE
                     </div>
 
                     {/* High-contrast Pinned Button */}
-                    <button
-                      type="button"
+                    <AddToCartButton
+                      itemId={item.id || `cat-ig-${catIdx}-${index}`}
+                      itemName={item.name}
+                      itemPrice={item.price_display || item.price || null}
+                      itemPriceAmount={item.price_amount}
+                      itemPriceDisplay={item.price_display || item.price}
+                      itemPromoPriceAmount={item.promo_price_amount}
+                      itemPromoPriceDisplay={item.promo_price_display}
+                      discountLabel={item.discount_label}
+                      category={category.name}
+                      variant_groups={item.variant_groups}
+                      disabled={item.is_available === false}
                       className="w-full py-3.5 border-t-2 text-xs font-extrabold uppercase tracking-widest flex items-center justify-center gap-2 transition-colors duration-200 cursor-pointer hover:brightness-110"
                       style={{
                         borderColor: "var(--dt-border)",
                         backgroundColor: "var(--dt-primary)",
                         color: "var(--dt-primary-foreground)",
                       }}
-                      aria-label={`Add ${item.name} to cart`}
-                    >
-                      <Plus size={14} strokeWidth={3} />
-                      Tambah
-                    </button>
+                    />
                     {isEditorMode && onDeleteItem && (
                       <InlineDeleteButton onDelete={() => onDeleteItem(catIdx, index)} className="absolute top-2.5 right-2.5 z-40" />
                     )}

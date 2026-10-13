@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import type { DesignToken, GalleryItem } from "@/components/templates/types";
+import type { GalleryItem } from "@/components/templates/types";
 import { GallerySectionHeader, Lightbox, getRadius, GalleryAddTile } from "./shared";
 import type { GalleryVariantProps } from "./shared";
 import GalleryGrid from "./grid";
@@ -7,6 +7,7 @@ import GalleryMasonry from "./masonry";
 import GalleryCarousel from "./carousel";
 import GalleryLightboxStory from "./lightbox-story";
 import GalleryBeforeAfterSlider from "./before-after-slider";
+import GalleryVideoGrid from "./video-grid";
 
 export default function GallerySection({
   gallery,
@@ -23,21 +24,6 @@ export default function GallerySection({
 
   const variant =
     dt?.layout?.section_variants?.gallery || gallery.layout || "grid";
-
-  if (variant === "before-after-slider") {
-    return (
-      <GalleryBeforeAfterSlider
-        gallery={gallery}
-        design_token={design_token}
-        sectionStyle={sectionStyle}
-        onUpdateField={onUpdateField}
-        isEditorMode={isEditorMode}
-        isSelected={isSelected}
-        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-        onEditingStateChange={onEditingStateChange}
-      />
-    );
-  }
 
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
@@ -113,6 +99,21 @@ const onUpdateCredit = useCallback(
     [gallery.items, onUpdateItems]
   );
 
+  if (variant === "before-after-slider") {
+    return (
+      <GalleryBeforeAfterSlider
+        gallery={gallery}
+        design_token={design_token}
+        sectionStyle={sectionStyle}
+        onUpdateField={onUpdateField}
+        isEditorMode={isEditorMode}
+        isSelected={isSelected}
+        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+        onEditingStateChange={onEditingStateChange}
+      />
+    );
+  }
+
   if ((!gallery.items || gallery.items.length === 0) && !isEditorMode) {
     return null;
   }
@@ -179,6 +180,8 @@ const onUpdateCredit = useCallback(
           />
         ) : variant === "masonry" ? (
           <GalleryMasonry {...variantProps} />
+        ) : variant === "video-grid" ? (
+          <GalleryVideoGrid {...variantProps} />
         ) : variant === "lightbox-story" ? (
           <GalleryLightboxStory
             items={gallery.items}
