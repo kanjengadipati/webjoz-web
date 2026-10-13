@@ -1,6 +1,5 @@
 "use client";
 
-import { Dialog } from "@/components/ui/dialog";
 import Link from "next/link";
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -15,7 +14,7 @@ import {
   Eye, EyeOff, Pencil, Send, Rocket, Copy, Sun, Moon, SlidersHorizontal, ExternalLink
 } from "lucide-react";
 import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
-import { Button, Card } from "webjoz-ui";
+import { Button, Card, Dialog, CustomSelect } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { getTemplate, TEMPLATE_REGISTRY } from "@/lib/template-registry";
 import { getTemplateDefaultDesignToken } from "@/lib/template-defaults";
@@ -67,7 +66,6 @@ import SiteStyleSelector from "./components/SiteStyleSelector";
 import IndustryPresetPicker from "./components/IndustryPresetPicker";
 import SectionVariantVisualPicker from "./components/SectionVariantVisualPicker";
 import PageLayoutHub from "./components/PageLayoutHub";
-import { CustomSelect } from "@/components/ui/custom-select";
 import EditorOnboardingModal, { useEditorOnboarding } from "@/components/editor-onboarding-modal";
 
 const SectionVariantPicker = SectionVariantVisualPicker;

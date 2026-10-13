@@ -10,8 +10,7 @@ import {
   MousePointerClick, TrendingUp, X
 } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, DatePicker, CustomSelect } from "webjoz-ui";
-import { Dialog } from "@/components/ui/dialog";
+import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, DatePicker, CustomSelect, Dialog } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
 

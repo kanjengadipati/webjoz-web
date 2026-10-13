@@ -1,3 +1,4 @@
+import { Dialog, CustomSelect } from "webjoz-ui";
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
@@ -14,8 +15,6 @@ import {
 } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { useToast } from "@/components/toast-provider";
-import { Dialog } from "@/components/ui/dialog";
-import { CustomSelect } from "@/components/ui/custom-select";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
 import { lookupIndonesianPostalCode } from "@/lib/indonesia-regions";
