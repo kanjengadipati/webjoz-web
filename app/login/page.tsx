@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { MailIcon, WhatsAppIcon, InfoIcon, LockIcon } from "@/components/icons";
+import { MailIcon, WhatsAppIcon, InfoIcon, LockIcon } from "webjoz-ui/icons";
 import { PhoneNumberInput, isValidPhoneNumber } from "@/components/phone-number-input";
-import { Button, Checkbox, Input, Label } from "@/components/ui";
+import { Button, Checkbox, Input, Label } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { SocialAuthButtons } from "@/components/social-auth-buttons";
 import { login, startPasswordless, verifyMagicLink, verifyOtp } from "@/lib/api";

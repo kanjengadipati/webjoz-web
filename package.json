@@ -26,7 +26,8 @@
     "next": "16.2.4",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "sqids": "^0.3.0"
+    "sqids": "^0.3.0",
+    "webjoz-ui": "git+ssh://git@github.com/kanjengadipati/webjoz-ui.git"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",

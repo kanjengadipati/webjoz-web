@@ -4,6 +4,7 @@ import path from "path";
 const nextConfig: NextConfig = {
   output: "standalone",
   devIndicators: false,
+  transpilePackages: ["webjoz-ui"],
   turbopack: {
     root: path.resolve(__dirname, ".."),
   },

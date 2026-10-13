@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import { Button, Input, Label } from "@/components/ui";
+import { Button, Input, Label } from "webjoz-ui";
 import { PhoneNumberInput } from "@/components/phone-number-input";
 import { useToast } from "@/components/toast-provider";
 import { register } from "@/lib/api";

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { AuthShell } from "@/components/auth-shell";
-import { Button, Input, Label } from "@/components/ui";
+import { Button, Input, Label } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { resetPassword } from "@/lib/api";
 import { useI18n } from "@/lib/i18n/context";

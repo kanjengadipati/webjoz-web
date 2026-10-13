@@ -7,7 +7,7 @@ import { useToast } from "@/components/toast-provider";
 import { socialLogin } from "@/lib/api";
 import { persistAuthSession } from "@/lib/auth-store";
 import { FACEBOOK_CLIENT_ID, GOOGLE_CLIENT_ID, SOCIAL_ACTIVE_PROVIDERS } from "@/lib/config";
-import { Button } from "@/components/ui/button";
+import { Button } from "webjoz-ui";
 import { cn } from "@/lib/utils";
 import Script from "next/script";
 
