@@ -1,5 +1,5 @@
-/* eslint-disable react-hooks/refs */
 "use client";
+/* eslint-disable react-hooks/refs */
 
 import React, { useState, useRef, useMemo, useEffect } from "react";
 import Link from "next/link";

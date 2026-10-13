@@ -1,5 +1,6 @@
-import { Dialog, CustomSelect } from "webjoz-ui";
 "use client";
+
+import { Dialog, CustomSelect } from "webjoz-ui";
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useAuthToken } from "@/lib/auth-store";
