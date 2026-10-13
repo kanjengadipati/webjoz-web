@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useAuthToken } from "@/lib/auth-store";
 import { request } from "@/lib/api/client";
 import { usePermissions } from "@/hooks/use-permissions";
-import { Cpu, Loader2, CheckCircle2, XCircle, Clock, RefreshCw, KeyRound, Server, Zap, BarChart3 } from "lucide-react";
+import { Cpu, Loader2, CheckCircle2, XCircle, Clock, RefreshCw, KeyRound, Server, Zap } from "lucide-react";
 import { Card, CardContent, Button } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
 
@@ -132,24 +132,15 @@ export default function AdminAiStatusPage() {
     return () => clearInterval(interval);
   }, [fetchStatus]);
 
-  const usageRows = useMemo(() => {
-    type UsageRow = { model: string; provider: string; kind: string; used?: TokenModelSum };
-    const byModel = new Map<string, UsageRow>();
-    for (const p of report?.providers ?? []) {
-      if (!p.model) continue;
-      if (!byModel.has(p.model)) byModel.set(p.model, { model: p.model, provider: p.provider, kind: p.kind });
-    }
-    for (const u of usage?.by_model ?? []) {
-      const existing = byModel.get(u.model);
-      if (existing) existing.used = u;
-      else byModel.set(u.model, { model: u.model, provider: "", kind: "", used: u });
-    }
-    return [...byModel.values()].sort((a, b) => (b.used?.total_tokens ?? 0) - (a.used?.total_tokens ?? 0));
-  }, [report, usage]);
+  const usageByModel = useMemo(() => {
+    const map = new Map<string, TokenModelSum>();
+    for (const u of usage?.by_model ?? []) map.set(u.model, u);
+    return map;
+  }, [usage]);
 
   const maxModelTokens = useMemo(
-    () => Math.max(1, ...usageRows.map((r) => r.used?.total_tokens ?? 0)),
-    [usageRows]
+    () => Math.max(1, ...(usage?.by_model ?? []).map((u) => u.total_tokens)),
+    [usage]
   );
 
   if (!isSuperAdmin) {
@@ -270,6 +261,8 @@ export default function AdminAiStatusPage() {
               <div className="grid gap-3 lg:grid-cols-2">
                 {report.providers.map((p, i) => {
                   const tone = statusTone[p.status] ?? statusTone.skipped;
+                  const used = p.model ? usageByModel.get(p.model) : undefined;
+                  const pct = used ? Math.round((used.total_tokens / maxModelTokens) * 100) : 0;
                   return (
                     <Card key={`${p.tier}-${i}`} className={`border shadow-sm ${tone.border}`}>
                       <CardContent className="p-5 pt-5">
@@ -322,6 +315,27 @@ export default function AdminAiStatusPage() {
                           </div>
                           {p.http_status ? <span className="font-mono text-muted-foreground/70">HTTP {p.http_status}</span> : null}
                         </div>
+
+                        {usage && (
+                          <div className="mt-2.5 pt-2.5 border-t border-border/40">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                                {t("dashboard.adminAiStatus.usageProviderLabel")}
+                              </span>
+                              {used ? (
+                                <span className="text-[11px] text-muted-foreground tabular-nums">
+                                  <b className="text-foreground">{formatNumber(used.total_tokens)}</b> {t("dashboard.adminAiStatus.colTokens")} ·{" "}
+                                  <b className="text-foreground">{formatNumber(used.requests)}</b> {t("dashboard.adminAiStatus.colRequests")}
+                                </span>
+                              ) : (
+                                <span className="text-[11px] text-muted-foreground">{t("dashboard.adminAiStatus.notUsedToday")}</span>
+                              )}
+                            </div>
+                            <div className="mt-1.5 h-1.5 w-full rounded-full bg-muted/50 overflow-hidden">
+                              <div className="h-full rounded-full bg-primary/70" style={{ width: `${pct}%` }} />
+                            </div>
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
                   );
@@ -330,17 +344,9 @@ export default function AdminAiStatusPage() {
             )}
           </div>
 
-          {/* Today's token usage per model */}
-          <div>
-            <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
-              <BarChart3 className="size-4 text-muted-foreground" />
-              {t("dashboard.adminAiStatus.usageTodayTitle")}
-            </h2>
-            <p className="text-xs text-muted-foreground mt-1 mb-3">{t("dashboard.adminAiStatus.usageTodaySubtitle")}</p>
-
-            {usage ? (
+            {usage && (
               <>
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-3">
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mt-4">
                   <Card className="border-border/40 shadow-sm">
                     <CardContent className="p-4 pt-4 space-y-0.5">
                       <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.usageTotalTokens")}</p>
@@ -369,65 +375,6 @@ export default function AdminAiStatusPage() {
                   </Card>
                 </div>
 
-                <Card className="border-border/40 shadow-sm overflow-hidden">
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="border-b border-border/40 text-left text-[11px] uppercase tracking-wider text-muted-foreground">
-                          <th className="px-4 py-2.5 font-medium">{t("dashboard.adminAiStatus.colModel")}</th>
-                          <th className="px-4 py-2.5 font-medium">{t("dashboard.adminAiStatus.colProvider")}</th>
-                          <th className="px-4 py-2.5 font-medium text-right">{t("dashboard.adminAiStatus.colRequests")}</th>
-                          <th className="px-4 py-2.5 font-medium text-right">{t("dashboard.adminAiStatus.colTokens")}</th>
-                          <th className="px-4 py-2.5 font-medium w-[26%]">{t("dashboard.adminAiStatus.colShare")}</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {usageRows.map((row) => {
-                          const used = row.used;
-                          const pct = Math.round(((used?.total_tokens ?? 0) / maxModelTokens) * 100);
-                          return (
-                            <tr key={row.model} className="border-b border-border/20 last:border-0">
-                              <td className="px-4 py-2.5">
-                                <span className="font-mono text-xs text-foreground">{row.model}</span>
-                              </td>
-                              <td className="px-4 py-2.5">
-                                {row.provider ? (
-                                  <span className="inline-flex items-center gap-1.5">
-                                    <span className="text-xs text-muted-foreground">{row.provider}</span>
-                                    {row.kind && (
-                                      <span className="px-1.5 py-0.5 rounded bg-muted/60 border border-border/40 text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">
-                                        {row.kind}
-                                      </span>
-                                    )}
-                                  </span>
-                                ) : (
-                                  <span className="text-xs text-muted-foreground">—</span>
-                                )}
-                              </td>
-                              <td className="px-4 py-2.5 text-right text-xs tabular-nums">{used ? formatNumber(used.requests) : "—"}</td>
-                              <td className="px-4 py-2.5 text-right text-xs tabular-nums font-medium">
-                                {used ? formatNumber(used.total_tokens) : <span className="font-normal text-muted-foreground">{t("dashboard.adminAiStatus.notUsedToday")}</span>}
-                              </td>
-                              <td className="px-4 py-2.5">
-                                <div className="h-1.5 w-full rounded-full bg-muted/50 overflow-hidden">
-                                  <div className="h-full rounded-full bg-primary/70" style={{ width: `${pct}%` }} />
-                                </div>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                        {usageRows.length === 0 && (
-                          <tr>
-                            <td colSpan={5} className="px-4 py-6 text-center text-xs text-muted-foreground">
-                              {t("dashboard.adminAiStatus.noUsageToday")}
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </Card>
-
                 {usage.capacity && (
                   <Card className="border-border/40 shadow-sm mt-3">
                     <CardContent className="p-5 pt-5">
@@ -444,12 +391,7 @@ export default function AdminAiStatusPage() {
                   </Card>
                 )}
               </>
-            ) : (
-              <Card className="border-border/40 shadow-sm">
-                <CardContent className="p-6 pt-6 text-sm text-muted-foreground">{t("dashboard.adminAiStatus.noUsageToday")}</CardContent>
-              </Card>
             )}
-          </div>
 
           {/* Footer: last checked + summary */}
           <div className="flex items-center justify-between border-t border-border/30 pt-4">

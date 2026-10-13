@@ -1133,6 +1133,7 @@ export interface Translations {
       someIssues: string;
       usageTodayTitle: string;
       usageTodaySubtitle: string;
+      usageProviderLabel: string;
       usageTotalTokens: string;
       usageTotalRequests: string;
       usageTotalGenerates: string;
@@ -3859,6 +3860,7 @@ export const translations: Record<Locale, Translations> = {
         someIssues: "Ada provider bermasalah",
         usageTodayTitle: "Kuota Hari Ini per Model",
         usageTodaySubtitle: "Total token & request AI yang tercatat sejak tengah malam (waktu lokal), per model yang terkonfigurasi.",
+        usageProviderLabel: "Kuota hari ini",
         usageTotalTokens: "Total Token Hari Ini",
         usageTotalRequests: "Request AI",
         usageTotalGenerates: "Generate Web",
@@ -6655,6 +6657,7 @@ export const translations: Record<Locale, Translations> = {
         someIssues: "Some providers have issues",
         usageTodayTitle: "Today's Quota per Model",
         usageTodaySubtitle: "Total AI tokens & requests recorded since local midnight, per configured model.",
+        usageProviderLabel: "Today's quota",
         usageTotalTokens: "Total Tokens Today",
         usageTotalRequests: "AI Requests",
         usageTotalGenerates: "Web Generates",
