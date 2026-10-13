@@ -1,8 +1,10 @@
 "use client";
 
+import { Button, Card, CardContent, CardHeader, Input, Label } from "webjoz-ui";
+
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Button, Card, CardContent, CardHeader, Input, Label } from "@/components/ui";
+
 import { useToast } from "@/components/toast-provider";
 import { useAuthToken } from "@/lib/auth-store";
 import { getLinkedMethods, setPassword, unlinkGoogle, updateEmail } from "@/lib/api/auth";

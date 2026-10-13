@@ -1,5 +1,7 @@
 "use client";
 
+import { AlertIcon, CheckIcon, CloseIcon, InfoIcon, Button } from "webjoz-ui";
+
 import {
   createContext,
   ReactNode,
@@ -10,8 +12,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { AlertIcon, CheckIcon, CloseIcon, InfoIcon } from "@/components/icons";
-import { Button } from "@/components/ui";
+
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
