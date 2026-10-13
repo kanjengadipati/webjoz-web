@@ -29,6 +29,7 @@ interface GenerationLog {
   duration_ms: number;
   stage_breakdown: Record<string, number> | null;
   section_sources: Record<string, string> | null;
+  failure_reason: string | null;
   tokens_total: number;
   ai_requests_total: number;
   created_at: string;
@@ -344,6 +345,12 @@ export default function AdminMetricsPage() {
                                 );
                               })}
                             </div>
+                          )}
+                          {log.failure_reason && (
+                            <p className="text-[10px] leading-snug text-red-500 dark:text-red-400">
+                              <span className="font-semibold">{t("dashboard.adminMetrics.failureReason")}: </span>
+                              {log.failure_reason}
+                            </p>
                           )}
                           <p className="text-[10px] text-muted-foreground truncate">{new Date(log.created_at).toLocaleString()}</p>
                         </div>
