@@ -75,15 +75,18 @@ export interface CartItem {
   category: string;
   qty: number;
   selected_variants?: SelectedVariant[];
+  /** Optional per-line note from the customer (e.g. "tanpa bawang"). */
+  note?: string;
 }
 
 interface CartContextValue {
   items: CartItem[];
   totalQty: number;
-  add: (item: Omit<CartItem, "qty">) => void;
+  add: (item: Omit<CartItem, "qty">, qty?: number) => void;
   increment: (id: string) => void;
   decrement: (id: string) => void;
   remove: (id: string) => void;
+  setItemNote: (id: string, note: string) => void;
   clear: () => void;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -220,13 +223,14 @@ export function CartProvider({ children, waPhone, brandName, previewMode, primar
 
   const totalQty = items.reduce((s, i) => s + i.qty, 0);
 
-  const add = useCallback((item: Omit<CartItem, "qty">) => {
+  const add = useCallback((item: Omit<CartItem, "qty">, qty: number = 1) => {
+    const amount = Math.max(1, Math.floor(qty) || 1);
     setItems((prev) => {
       const existing = prev.find((i) => i.id === item.id);
       if (existing) {
-        return prev.map((i) => i.id === item.id ? { ...i, qty: i.qty + 1 } : i);
+        return prev.map((i) => i.id === item.id ? { ...i, qty: i.qty + amount } : i);
       }
-      return [...prev, { ...item, qty: 1 }];
+      return [...prev, { ...item, qty: amount }];
     });
   }, []);
 
@@ -246,13 +250,17 @@ export function CartProvider({ children, waPhone, brandName, previewMode, primar
     setItems((prev) => prev.filter((i) => i.id !== id));
   }, []);
 
+  const setItemNote = useCallback((id: string, note: string) => {
+    setItems((prev) => prev.map((i) => i.id === id ? { ...i, note } : i));
+  }, []);
+
   const clear = useCallback(() => setItems([]), []);
 
   const resolvedPrimary = primaryColor ?? "#4F46E5";
   const resolvedPrimaryFg = primaryFg ?? "#ffffff";
 
   return (
-    <CartContext.Provider value={{ items, totalQty, add, increment, decrement, remove, clear, open, setOpen, previewMode: !!previewMode, primaryColor: resolvedPrimary, primaryFg: resolvedPrimaryFg }}>
+    <CartContext.Provider value={{ items, totalQty, add, increment, decrement, remove, setItemNote, clear, open, setOpen, previewMode: !!previewMode, primaryColor: resolvedPrimary, primaryFg: resolvedPrimaryFg }}>
       <SitePaymentsContext.Provider value={{ payments, language }}>
         {children}
       </SitePaymentsContext.Provider>
@@ -467,6 +475,7 @@ export function VariantSelectorModal({
   variant_groups, onClose,
 }: VariantSelectorModalProps) {
   const { add, primaryColor, primaryFg } = useCart();
+  const [qty, setQty] = useState(1);
 
   // Initialize selected options map: groupId -> optionId[]
   const [selectedMap, setSelectedMap] = useState<Record<string, string[]>>(() => {
@@ -558,7 +567,7 @@ export function VariantSelectorModal({
       price_display: formattedPriceDisplay,
       category,
       selected_variants: selectedVariants,
-    });
+    }, qty);
     onClose();
   };
 
@@ -672,28 +681,54 @@ export function VariantSelectorModal({
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t flex items-center justify-between gap-3 shrink-0" style={{ borderColor: "color-mix(in srgb, var(--dt-text, #1e293b) 10%, transparent)" }}>
-          <div>
-            <span className="text-[10px] opacity-60 block">Total Item</span>
-            <span className="text-sm font-bold" style={{ color: "var(--dt-primary, #4F46E5)" }}>
-              {computedTotalAmount !== null
-                ? formatPriceWithAmount(computedTotalAmount, itemPriceDisplay || itemPrice)
-                : (itemPriceDisplay || itemPrice || "-")}
-            </span>
+        <div className="p-4 border-t shrink-0 space-y-3" style={{ borderColor: "color-mix(in srgb, var(--dt-text, #1e293b) 10%, transparent)" }}>
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold">Jumlah</span>
+              <div className="flex items-center rounded-xl border overflow-hidden" style={{ borderColor: "color-mix(in srgb, var(--dt-text, #1e293b) 15%, transparent)" }}>
+                <button
+                  type="button"
+                  onClick={() => setQty((q) => Math.max(1, q - 1))}
+                  disabled={qty <= 1}
+                  className="w-8 h-8 flex items-center justify-center cursor-pointer transition-colors hover:bg-black/5 disabled:opacity-40 disabled:cursor-not-allowed"
+                  aria-label="Kurangi jumlah"
+                >
+                  <Minus className="w-3.5 h-3.5" />
+                </button>
+                <span className="w-9 text-center text-sm font-bold tabular-nums">{qty}</span>
+                <button
+                  type="button"
+                  onClick={() => setQty((q) => q + 1)}
+                  className="w-8 h-8 flex items-center justify-center cursor-pointer transition-colors hover:bg-black/5"
+                  aria-label="Tambah jumlah"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            <div className="text-right">
+              <span className="text-[10px] opacity-60 block">Total</span>
+              <span className="text-sm font-bold" style={{ color: "var(--dt-primary, #4F46E5)" }}>
+                {computedTotalAmount !== null
+                  ? formatPriceWithAmount(computedTotalAmount * qty, itemPriceDisplay || itemPrice)
+                  : (itemPriceDisplay || itemPrice || "-")}
+              </span>
+            </div>
           </div>
 
           <button
             type="button"
             onClick={handleAddToCart}
             disabled={!isValid}
-            className="flex-1 max-w-[200px] py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all hover:brightness-110 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all hover:brightness-110 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
               background: primaryColor,
               color: primaryFg,
             }}
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>Tambah</span>
+            <span>{qty > 1 ? `Tambah ${qty}` : "Tambah"}</span>
           </button>
         </div>
       </div>
@@ -762,6 +797,9 @@ function buildWAMessage(items: CartItem[], brandName?: string): string {
 
       const priceStr = isReal ? ` [${displayLabel}${lineTotal}]` : "";
       lines.push(`• ${item.qty}x ${item.name}${variantStr}${priceStr}`);
+      if (item.note && item.note.trim()) {
+        lines.push(`   ↳ Catatan: ${item.note.trim()}`);
+      }
     });
   });
 
@@ -804,7 +842,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
     payload?: string;
   }) => Promise<string | void>;
 }) {
-  const { items, open, setOpen, increment, decrement, remove, clear, totalQty, primaryColor, primaryFg } = useCart();
+  const { items, open, setOpen, increment, decrement, remove, setItemNote, clear, totalQty, primaryColor, primaryFg } = useCart();
   const panelRef = useRef<HTMLDivElement>(null);
   const [leadLoading, setLeadLoading] = useState(false);
 
@@ -815,6 +853,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
   const [customerNotes, setCustomerNotes] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const [orderNo, setOrderNo] = useState<string>("");
+  const [noteOpen, setNoteOpen] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (!open) {
@@ -1174,6 +1213,37 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
                           {displayLabel}
                         </p>
                       ) : null;
+                    })()}
+                    {(() => {
+                      const hasNote = Boolean(item.note && item.note.trim());
+                      const isOpen = noteOpen[item.id] || hasNote;
+                      if (!isOpen) {
+                        return (
+                          <button
+                            type="button"
+                            onClick={() => setNoteOpen((p) => ({ ...p, [item.id]: true }))}
+                            className="mt-1 inline-flex items-center gap-0.5 text-[9px] font-semibold cursor-pointer opacity-60 hover:opacity-100 transition-opacity"
+                            style={{ color: "var(--dt-primary, var(--primary))" }}
+                          >
+                            <Plus className="w-2.5 h-2.5" />
+                            Catatan
+                          </button>
+                        );
+                      }
+                      return (
+                        <input
+                          type="text"
+                          value={item.note ?? ""}
+                          onChange={(e) => setItemNote(item.id, e.target.value)}
+                          placeholder="Catatan (opsional)"
+                          className="mt-1 w-full px-1.5 py-1 text-[10px] rounded border outline-none"
+                          style={{
+                            background: "color-mix(in srgb, var(--dt-bg, #fff) 97%, var(--dt-text, #1e293b) 3%)",
+                            borderColor: "color-mix(in srgb, var(--dt-text, #1e293b) 15%, transparent)",
+                            color: "var(--dt-text, #1e293b)",
+                          }}
+                        />
+                      );
                     })()}
                   </div>
 
