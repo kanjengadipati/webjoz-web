@@ -183,43 +183,39 @@ export default function CatalogTabsByCategory({ catalog, onUpdateField, isEditor
               {activeItems.map(({ item, originalItemIdx }) => (
                 <MenuCatalogCard
                   key={item.id || `cat-tab-${activeIdx}-${originalItemIdx}`}
-                  itemId={item.id || `cat-tab-${activeIdx}-${originalItemIdx}`}
-                  itemName={item.name}
-                  itemPrice={item.price}
-                  itemPriceAmount={item.price_amount}
-                  itemPriceDisplay={item.price_display}
-                  itemPromoPriceAmount={item.promo_price_amount}
-                  itemPromoPriceDisplay={item.promo_price_display}
-                  discountLabel={item.discount_label}
-                  itemDescription={item.description}
-                  category={active.name}
-                  image_url={item.image_url}
-                  image_urls={item.image_urls}
-                  badge={item.badge}
-                  is_available={item.is_available}
-                  variant_groups={item.variant_groups}
-                  features={item.features}
-                  capacity={item.capacity}
+                  item={{
+                    id: item.id || `cat-tab-${activeIdx}-${originalItemIdx}`,
+                    name: item.name,
+                    price: item.price,
+                    priceAmount: item.price_amount,
+                    priceDisplay: item.price_display,
+                    promoPriceAmount: item.promo_price_amount,
+                    promoPriceDisplay: item.promo_price_display,
+                    discountLabel: item.discount_label,
+                    description: item.description,
+                    category: active.name,
+                    image_url: item.image_url,
+                    image_urls: item.image_urls,
+                    badge: item.badge,
+                    is_available: item.is_available,
+                    variant_groups: item.variant_groups,
+                    features: item.features,
+                    capacity: item.capacity,
+                  }}
                   icon={ImageIcon}
-                  className="group transition-all duration-300"
-                  style={{ background: bg, border: `1px solid color-mix(in srgb, ${p} 14%, transparent)`, borderRadius: "16px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
-                  imageClassName="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
-                  placeholderClassName="w-full h-48 flex items-center justify-center transition-transform duration-500 group-hover:scale-105"
-                  placeholderStyle={{ background: `color-mix(in srgb, ${p} 8%, transparent)` }}
-                  placeholderIconClassName="w-12 h-12"
-                  placeholderIconStyle={{ color: `color-mix(in srgb, ${p} 30%, transparent)`, opacity: 0.6 }}
-                  contentClassName="p-5 flex flex-col flex-1"
-                  headerClassName="flex flex-col gap-1.5 mb-2 min-w-0"
-                  titleClassName="font-bold text-sm leading-tight line-clamp-2 min-h-[2.5rem]"
-                  titleStyle={{ color: text, fontFamily: hFont }}
-                  descriptionClassName="text-xs leading-relaxed line-clamp-3 min-h-[3.75rem]"
-                  descriptionStyle={{ color: `color-mix(in srgb, ${text} 60%, transparent)` }}
-                  priceClassName="self-start text-xs font-bold px-2.5 py-1 rounded-full"
-                  priceStyle={{ background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p }}
-                  badgeClassName="inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap"
-                  badgeStyle={{ background: p, color: bg }}
-                  buttonClassName="w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md"
-                  buttonStyle={{ background: p, color: bg, border: "none" }}
+                  styles={{
+                    className: "group transition-all duration-300",
+                    style: { background: bg, border: `1px solid color-mix(in srgb, ${p} 14%, transparent)`, borderRadius: "16px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" },
+                    image: { className: "w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105" },
+                    placeholder: { className: "w-full h-48 flex items-center justify-center transition-transform duration-500 group-hover:scale-105", style: { background: `color-mix(in srgb, ${p} 8%, transparent)` }, iconClassName: "w-12 h-12", iconStyle: { color: `color-mix(in srgb, ${p} 30%, transparent)`, opacity: 0.6 } },
+                    content: { className: "p-5 flex flex-col flex-1" },
+                    header: { className: "flex flex-col gap-1.5 mb-2 min-w-0" },
+                    title: { className: "font-bold text-sm leading-tight line-clamp-2 min-h-[2.5rem]", style: { color: text, fontFamily: hFont } },
+                    description: { className: "text-xs leading-relaxed line-clamp-3 min-h-[3.75rem]", style: { color: `color-mix(in srgb, ${text} 60%, transparent)` } },
+                    price: { className: "self-start text-xs font-bold px-2.5 py-1 rounded-full", style: { background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p } },
+                    badge: { className: "inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap", style: { background: p, color: bg } },
+                    button: { className: "w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md", style: { background: p, color: bg, border: "none" } },
+                  }}
                   editSection="catalog"
                   pathBase={"categories." + activeIdx + ".items." + originalItemIdx}
                   onUpdateField={onUpdateField}

@@ -311,43 +311,40 @@ export default function CatalogSpotlight({ catalog, onUpdateField, isEditorMode,
                 {items.map(({ item, itemIdx }) => (
                   <MenuCatalogCard
                     key={item.id || `${catIdx}_${itemIdx}`}
-                    itemId={item.id || `cat-sp-${catIdx}-${itemIdx}`}
-                    itemName={item.name}
-                    itemPrice={item.price}
-                    itemPriceAmount={item.price_amount}
-                    itemPriceDisplay={item.price_display}
-                    itemPromoPriceAmount={item.promo_price_amount}
-                    itemPromoPriceDisplay={item.promo_price_display}
-                    discountLabel={item.discount_label}
-                    itemDescription={item.description}
-                    category={category.name}
-                    image_url={item.image_url}
-                    image_urls={item.image_urls}
-                    image_credit={item.image_credit}
-                    badge={item.badge}
-                    is_available={item.is_available}
-                    variant_groups={item.variant_groups}
-                    features={item.features}
-                    maxFeatures={2}
-                    capacity={item.capacity}
+                    item={{
+                      id: item.id || `cat-sp-${catIdx}-${itemIdx}`,
+                      name: item.name,
+                      price: item.price,
+                      priceAmount: item.price_amount,
+                      priceDisplay: item.price_display,
+                      promoPriceAmount: item.promo_price_amount,
+                      promoPriceDisplay: item.promo_price_display,
+                      discountLabel: item.discount_label,
+                      description: item.description,
+                      category: category.name,
+                      image_url: item.image_url,
+                      image_urls: item.image_urls,
+                      image_credit: item.image_credit,
+                      badge: item.badge,
+                      is_available: item.is_available,
+                      variant_groups: item.variant_groups,
+                      features: item.features,
+                      maxFeatures: 2,
+                      capacity: item.capacity,
+                    }}
                     icon={ImageIcon}
-                    className="group transition-all duration-300"
-                    style={{ background: "var(--dt-surface)", border: "1px solid var(--dt-border)", borderRadius: "var(--dt-radius)", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
-                    imageClassName="w-full aspect-[4/5] object-cover transition-transform duration-500 group-hover:scale-105"
-                    placeholderClassName="w-full aspect-[4/5] flex items-center justify-center"
-                    placeholderStyle={{ background: "color-mix(in srgb, var(--dt-primary) 8%, transparent)" }}
-                    placeholderIconClassName="w-12 h-12"
-                    placeholderIconStyle={{ color: "color-mix(in srgb, var(--dt-primary) 30%, transparent)", opacity: 0.6 }}
-                    contentClassName="p-4 flex flex-col flex-1 min-w-0"
-                    headerClassName="flex flex-col gap-1.5 mb-2 min-w-0"
-                    titleClassName="font-bold text-sm leading-tight line-clamp-2"
-                    titleStyle={{ color: "var(--dt-text)", fontFamily: "var(--dt-heading-font)" }}
-                    descriptionClassName="text-xs leading-relaxed line-clamp-2"
-                    descriptionStyle={{ color: "var(--dt-text-muted)" }}
-                    priceClassName="self-start text-xs font-bold px-2.5 py-1 rounded-full"
-                    priceStyle={{ background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)" }}
-                    buttonClassName="w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md"
-                    buttonStyle={{ background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", border: "none" }}
+                    styles={{
+                      className: "group transition-all duration-300",
+                      style: { background: "var(--dt-surface)", border: "1px solid var(--dt-border)", borderRadius: "var(--dt-radius)", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" },
+                      image: { className: "w-full aspect-[4/5] object-cover transition-transform duration-500 group-hover:scale-105" },
+                      placeholder: { className: "w-full aspect-[4/5] flex items-center justify-center", style: { background: "color-mix(in srgb, var(--dt-primary) 8%, transparent)" }, iconClassName: "w-12 h-12", iconStyle: { color: "color-mix(in srgb, var(--dt-primary) 30%, transparent)", opacity: 0.6 } },
+                      content: { className: "p-4 flex flex-col flex-1 min-w-0" },
+                      header: { className: "flex flex-col gap-1.5 mb-2 min-w-0" },
+                      title: { className: "font-bold text-sm leading-tight line-clamp-2", style: { color: "var(--dt-text)", fontFamily: "var(--dt-heading-font)" } },
+                      description: { className: "text-xs leading-relaxed line-clamp-2", style: { color: "var(--dt-text-muted)" } },
+                      price: { className: "self-start text-xs font-bold px-2.5 py-1 rounded-full", style: { background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)" } },
+                      button: { className: "w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md", style: { background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", border: "none" } },
+                    }}
                     editSection="catalog"
                     pathBase={`categories.${catIdx}.items.${itemIdx}`}
                     onUpdateField={onUpdateField}

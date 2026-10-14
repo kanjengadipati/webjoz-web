@@ -1376,16 +1376,16 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
 
 // ─── Menu Catalog Card ────────────────────────────────────────────────────────
 
-interface MenuCatalogCardProps {
-  itemId: string;
-  itemName: string;
-  itemPrice?: string | null;
-  itemPriceAmount?: number | null;
-  itemPriceDisplay?: string | null;
-  itemPromoPriceAmount?: number | null;
-  itemPromoPriceDisplay?: string | null;
+export interface MenuCatalogCardItem {
+  id: string;
+  name: string;
+  price?: string | null;
+  priceAmount?: number | null;
+  priceDisplay?: string | null;
+  promoPriceAmount?: number | null;
+  promoPriceDisplay?: string | null;
   discountLabel?: string | null;
-  itemDescription?: string | null;
+  description?: string | null;
   category: string;
   image_url?: string | null;
   image_urls?: string[] | null;
@@ -1393,35 +1393,32 @@ interface MenuCatalogCardProps {
   badge?: string | null;
   is_available?: boolean;
   variant_groups?: import("./types").ItemVariantGroup[] | null;
-  icon: React.ElementType;
-  layout?: "grid" | "compact";
-  className?: string;
-  style?: React.CSSProperties;
-  imageClassName?: string;
-  imageStyle?: React.CSSProperties;
-  placeholderClassName?: string;
-  placeholderStyle?: React.CSSProperties;
-  placeholderIconClassName?: string;
-  placeholderIconStyle?: React.CSSProperties;
-  contentClassName?: string;
-  contentStyle?: React.CSSProperties;
-  headerClassName?: string;
-  headerStyle?: React.CSSProperties;
-  titleClassName?: string;
-  titleStyle?: React.CSSProperties;
-  descriptionClassName?: string;
-  descriptionStyle?: React.CSSProperties;
-  priceClassName?: string;
-  priceStyle?: React.CSSProperties;
-  badgeClassName?: string;
-  badgeStyle?: React.CSSProperties;
-  buttonClassName?: string;
-  buttonStyle?: React.CSSProperties;
   features?: string[] | null;
   maxFeatures?: number;
   capacity?: number | null;
   tags?: string[] | null;
   delivery_platforms?: { name: string; url: string }[] | null;
+}
+
+export interface MenuCatalogCardStyles {
+  className?: string;
+  style?: React.CSSProperties;
+  image?: { className?: string; style?: React.CSSProperties };
+  placeholder?: { className?: string; style?: React.CSSProperties; iconClassName?: string; iconStyle?: React.CSSProperties };
+  content?: { className?: string; style?: React.CSSProperties };
+  header?: { className?: string; style?: React.CSSProperties };
+  title?: { className?: string; style?: React.CSSProperties };
+  description?: { className?: string; style?: React.CSSProperties };
+  price?: { className?: string; style?: React.CSSProperties };
+  badge?: { className?: string; style?: React.CSSProperties };
+  button?: { className?: string; style?: React.CSSProperties };
+}
+
+interface MenuCatalogCardProps {
+  item: MenuCatalogCardItem;
+  styles?: MenuCatalogCardStyles;
+  icon: React.ElementType;
+  layout?: "grid" | "compact";
   onUpdateField?: (section: string, key: string, value: any) => void;
   isEditorMode?: boolean;
   isSelected?: boolean;
@@ -1433,15 +1430,38 @@ interface MenuCatalogCardProps {
 }
 
 function MenuCatalogCard({
-  itemId, itemName, itemPrice, itemPriceAmount, itemPriceDisplay, itemPromoPriceAmount, itemPromoPriceDisplay, discountLabel,
-  itemDescription, category, image_url, image_urls, image_credit, badge, is_available = true, variant_groups, icon,
-  layout = "grid", className, style, imageClassName, imageStyle, placeholderClassName,
-  placeholderStyle, placeholderIconClassName, placeholderIconStyle, contentClassName,
-  contentStyle, headerClassName, headerStyle, titleClassName, titleStyle,
-  descriptionClassName, descriptionStyle, priceClassName, priceStyle, badgeClassName,
-  badgeStyle, buttonClassName, buttonStyle, features, maxFeatures, capacity, tags, delivery_platforms,
+  item, styles: stylesProp, icon, layout = "grid",
   onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, editSection, pathBase, onDelete,
 }: MenuCatalogCardProps) {
+  const styles = stylesProp ?? {};
+  const {
+    id: itemId, name: itemName, price: itemPrice, priceAmount: itemPriceAmount, priceDisplay: itemPriceDisplay,
+    promoPriceAmount: itemPromoPriceAmount, promoPriceDisplay: itemPromoPriceDisplay, discountLabel,
+    description: itemDescription, category, image_url, image_urls, image_credit, badge,
+    is_available = true, variant_groups, features, maxFeatures, capacity, tags, delivery_platforms,
+  } = item;
+  const className = styles.className;
+  const style = styles.style;
+  const imageClassName = styles.image?.className;
+  const imageStyle = styles.image?.style;
+  const placeholderClassName = styles.placeholder?.className;
+  const placeholderStyle = styles.placeholder?.style;
+  const placeholderIconClassName = styles.placeholder?.iconClassName;
+  const placeholderIconStyle = styles.placeholder?.iconStyle;
+  const contentClassName = styles.content?.className;
+  const contentStyle = styles.content?.style;
+  const headerClassName = styles.header?.className;
+  const headerStyle = styles.header?.style;
+  const titleClassName = styles.title?.className;
+  const titleStyle = styles.title?.style;
+  const descriptionClassName = styles.description?.className;
+  const descriptionStyle = styles.description?.style;
+  const priceClassName = styles.price?.className;
+  const priceStyle = styles.price?.style;
+  const badgeClassName = styles.badge?.className;
+  const badgeStyle = styles.badge?.style;
+  const buttonClassName = styles.button?.className;
+  const buttonStyle = styles.button?.style;
   const { t } = useI18n();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadingImage, setUploadingImage] = useState(false);

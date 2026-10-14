@@ -106,42 +106,37 @@ export default function MenuCompactList({ menu, onUpdateField, isEditorMode, isS
                   <MenuCatalogCard
                     key={item.id || `menu-cl-${originalCatIdx}-${originalItemIdx}`}
                     layout="compact"
-                    itemId={item.id || `menu-cl-${originalCatIdx}-${originalItemIdx}`}
-                    itemName={item.name}
-                    itemPrice={item.price}
-                    itemPriceAmount={item.price_amount}
-                    itemPriceDisplay={item.price_display}
-                    itemPromoPriceAmount={item.promo_price_amount}
-                    itemPromoPriceDisplay={item.promo_price_display}
-                    discountLabel={item.discount_label}
-                    itemDescription={item.description}
-                    category={cat.name}
-                    image_url={item.image_url}
-                    image_urls={item.image_urls}
-                    is_available={item.is_available}
-                    variant_groups={item.variant_groups}
-                    tags={item.tags}
-                    delivery_platforms={item.delivery_platforms}
+                    item={{
+                      id: item.id || `menu-cl-${originalCatIdx}-${originalItemIdx}`,
+                      name: item.name,
+                      price: item.price,
+                      priceAmount: item.price_amount,
+                      priceDisplay: item.price_display,
+                      promoPriceAmount: item.promo_price_amount,
+                      promoPriceDisplay: item.promo_price_display,
+                      discountLabel: item.discount_label,
+                      description: item.description,
+                      category: cat.name,
+                      image_url: item.image_url,
+                      image_urls: item.image_urls,
+                      is_available: item.is_available,
+                      variant_groups: item.variant_groups,
+                      tags: item.tags,
+                      delivery_platforms: item.delivery_platforms,
+                    }}
                     icon={Utensils}
-                    className="transition-all duration-200 hover:shadow-md"
-                    style={{ background: bg, border: `1px solid color-mix(in srgb, ${p} 12%, transparent)`, borderRadius: "12px", padding: "0.875rem", overflow: "hidden" }}
-                    imageClassName="w-20 h-20 object-cover rounded-lg flex-shrink-0"
-                    imageStyle={{ minWidth: "5rem" }}
-                    placeholderClassName="w-20 h-20 rounded-lg flex items-center justify-center flex-shrink-0"
-                    placeholderStyle={{ background: `color-mix(in srgb, ${p} 8%, transparent)`, minWidth: "5rem" }}
-                    placeholderIconClassName="w-7 h-7"
-                    placeholderIconStyle={{ color: `color-mix(in srgb, ${p} 35%, transparent)` }}
-                    contentClassName="flex flex-col flex-1 min-w-0"
-                    contentStyle={{ gap: "0.25rem" }}
-                    headerClassName="flex items-start justify-between gap-2"
-                    titleClassName="font-semibold text-sm leading-tight"
-                    titleStyle={{ color: text, fontFamily: hFont }}
-                    descriptionClassName="text-xs leading-relaxed"
-                    descriptionStyle={{ color: `color-mix(in srgb, ${text} 60%, transparent)` }}
-                    priceClassName="text-xs font-bold px-2 py-0.5 rounded-full whitespace-nowrap shrink-0"
-                    priceStyle={{ background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p }}
-                    buttonClassName="mt-auto self-start flex items-center gap-1 text-[11px] font-bold px-3 py-1.5 rounded-lg transition-all hover:brightness-110"
-                    buttonStyle={{ background: p, color: bg, border: "none" }}
+                    styles={{
+                      className: "transition-all duration-200 hover:shadow-md",
+                      style: { background: bg, border: `1px solid color-mix(in srgb, ${p} 12%, transparent)`, borderRadius: "12px", padding: "0.875rem", overflow: "hidden" },
+                      image: { className: "w-20 h-20 object-cover rounded-lg flex-shrink-0", style: { minWidth: "5rem" } },
+                      placeholder: { className: "w-20 h-20 rounded-lg flex items-center justify-center flex-shrink-0", style: { background: `color-mix(in srgb, ${p} 8%, transparent)`, minWidth: "5rem" }, iconClassName: "w-7 h-7", iconStyle: { color: `color-mix(in srgb, ${p} 35%, transparent)` } },
+                      content: { className: "flex flex-col flex-1 min-w-0", style: { gap: "0.25rem" } },
+                      header: { className: "flex items-start justify-between gap-2" },
+                      title: { className: "font-semibold text-sm leading-tight", style: { color: text, fontFamily: hFont } },
+                      description: { className: "text-xs leading-relaxed", style: { color: `color-mix(in srgb, ${text} 60%, transparent)` } },
+                      price: { className: "text-xs font-bold px-2 py-0.5 rounded-full whitespace-nowrap shrink-0", style: { background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p } },
+                      button: { className: "mt-auto self-start flex items-center gap-1 text-[11px] font-bold px-3 py-1.5 rounded-lg transition-all hover:brightness-110", style: { background: p, color: bg, border: "none" } },
+                    }}
                     editSection="menu"
                     pathBase={"categories." + originalCatIdx + ".items." + originalItemIdx}
                     onUpdateField={onUpdateField}

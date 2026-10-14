@@ -169,40 +169,37 @@ export default function MenuTabsByCategory({ menu, onUpdateField, isEditorMode, 
               {activeItems.map(({ item, originalItemIdx }) => (
                 <MenuCatalogCard
                   key={item.id || `menu-tab-${activeIdx}-${originalItemIdx}`}
-                  itemId={item.id || `menu-tab-${activeIdx}-${originalItemIdx}`}
-                  itemName={item.name}
-                  itemPrice={item.price}
-                  itemPriceAmount={item.price_amount}
-                  itemPriceDisplay={item.price_display}
-                  itemPromoPriceAmount={item.promo_price_amount}
-                  itemPromoPriceDisplay={item.promo_price_display}
-                  discountLabel={item.discount_label}
-                  itemDescription={item.description}
-                  category={active.name}
-                  image_url={item.image_url}
-                  image_urls={item.image_urls}
-                  is_available={item.is_available}
-                  variant_groups={item.variant_groups}
-                  tags={item.tags}
-                  delivery_platforms={item.delivery_platforms}
+                  item={{
+                    id: item.id || `menu-tab-${activeIdx}-${originalItemIdx}`,
+                    name: item.name,
+                    price: item.price,
+                    priceAmount: item.price_amount,
+                    priceDisplay: item.price_display,
+                    promoPriceAmount: item.promo_price_amount,
+                    promoPriceDisplay: item.promo_price_display,
+                    discountLabel: item.discount_label,
+                    description: item.description,
+                    category: active.name,
+                    image_url: item.image_url,
+                    image_urls: item.image_urls,
+                    is_available: item.is_available,
+                    variant_groups: item.variant_groups,
+                    tags: item.tags,
+                    delivery_platforms: item.delivery_platforms,
+                  }}
                   icon={Utensils}
-                  className="group transition-all duration-300"
-                  style={{ background: bg, border: `1px solid color-mix(in srgb, ${p} 14%, transparent)`, borderRadius: "16px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
-                  imageClassName="w-full h-52 object-cover transition-transform duration-500 group-hover:scale-105"
-                  placeholderClassName="w-full h-52 flex items-center justify-center transition-transform duration-500 group-hover:scale-105"
-                  placeholderStyle={{ background: `color-mix(in srgb, ${p} 8%, transparent)` }}
-                  placeholderIconClassName="w-12 h-12"
-                  placeholderIconStyle={{ color: `color-mix(in srgb, ${p} 30%, transparent)`, opacity: 0.6 }}
-                  contentClassName="p-5 space-y-3 flex flex-col flex-1"
-                  headerClassName="flex items-start justify-between gap-3"
-                  titleClassName="font-bold text-sm leading-tight"
-                  titleStyle={{ color: text, fontFamily: hFont }}
-                  descriptionClassName="text-xs leading-relaxed flex-1"
-                  descriptionStyle={{ color: `color-mix(in srgb, ${text} 60%, transparent)` }}
-                  priceClassName="text-xs font-bold px-2.5 py-1 rounded-full whitespace-nowrap shrink-0"
-                  priceStyle={{ background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p }}
-                  buttonClassName="mt-auto w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md"
-                  buttonStyle={{ background: p, color: "var(--dt-cta-text, #fff)", border: "none" }}
+                  styles={{
+                    className: "group transition-all duration-300",
+                    style: { background: bg, border: `1px solid color-mix(in srgb, ${p} 14%, transparent)`, borderRadius: "16px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" },
+                    image: { className: "w-full h-52 object-cover transition-transform duration-500 group-hover:scale-105" },
+                    placeholder: { className: "w-full h-52 flex items-center justify-center transition-transform duration-500 group-hover:scale-105", style: { background: `color-mix(in srgb, ${p} 8%, transparent)` }, iconClassName: "w-12 h-12", iconStyle: { color: `color-mix(in srgb, ${p} 30%, transparent)`, opacity: 0.6 } },
+                    content: { className: "p-5 space-y-3 flex flex-col flex-1" },
+                    header: { className: "flex items-start justify-between gap-3" },
+                    title: { className: "font-bold text-sm leading-tight", style: { color: text, fontFamily: hFont } },
+                    description: { className: "text-xs leading-relaxed flex-1", style: { color: `color-mix(in srgb, ${text} 60%, transparent)` } },
+                    price: { className: "text-xs font-bold px-2.5 py-1 rounded-full whitespace-nowrap shrink-0", style: { background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p } },
+                    button: { className: "mt-auto w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md", style: { background: p, color: "var(--dt-cta-text, #fff)", border: "none" } },
+                  }}
                   editSection="menu"
                   pathBase={"categories." + activeIdx + ".items." + originalItemIdx}
                   onUpdateField={onUpdateField}
