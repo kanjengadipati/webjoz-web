@@ -285,8 +285,8 @@ export default function AdminAiSettingsPage() {
   }, [token, isSuperAdmin]);
 
   useEffect(() => {
-    if (activeTab === "config") fetchConfigs();
-  }, [fetchConfigs, activeTab]);
+    fetchConfigs();
+  }, [fetchConfigs]);
 
   // ── Memoized usage maps ───────────────────────────────────────────────────────
 
@@ -324,6 +324,27 @@ export default function AdminAiSettingsPage() {
     }
     setShowKey(false);
     setSaveError("");
+  }
+
+  function editProviderFromStatus(p: AiProviderStatus) {
+    const existing = configs.find((c) => c.tier === p.tier);
+    if (existing) {
+      startEdit(existing);
+    } else {
+      setFormData({
+        tier: p.tier,
+        provider: p.provider,
+        model: p.model,
+        base_url: p.base_url || "",
+        api_key: "",
+        is_enabled: true,
+        daily_requests_limit: p.daily_requests_limit || 0,
+      });
+      setEditingTier(p.tier);
+      setShowKey(false);
+      setSaveError("");
+    }
+    setActiveTab("config");
   }
 
   function cancelEdit() {
@@ -557,6 +578,8 @@ export default function AdminAiSettingsPage() {
                       const barPct = hasQuotaBar ? ((used?.requests ?? 0) > 0 && quotaPct === 0 ? 1.5 : quotaPct) : 0;
                       const barColor = rateBarClass[rlTone];
 
+                      const hasDbOverride = configs.some((c) => c.tier === p.tier);
+
                       return (
                         <Card key={`${p.tier}-${i}`} className={`border shadow-sm ${tone.border}`}>
                           <CardContent className="p-5 pt-5">
@@ -570,22 +593,43 @@ export default function AdminAiSettingsPage() {
                                   <span className={`px-1.5 py-0.5 rounded-md text-[9.5px] font-semibold uppercase tracking-wider ${tone.text} ${tone.bg}`}>
                                     {t(statusLabelKey[p.status] ?? "dashboard.adminAiStatus.statusSkipped")}
                                   </span>
+                                  {hasDbOverride ? (
+                                    <span className="px-1.5 py-0.5 rounded-md bg-primary/10 border border-primary/20 text-[9.5px] font-semibold text-primary">
+                                      DB Override
+                                    </span>
+                                  ) : (
+                                    <span className="px-1.5 py-0.5 rounded-md bg-muted/60 border border-border/40 text-[9.5px] font-semibold text-muted-foreground">
+                                      .env
+                                    </span>
+                                  )}
                                 </div>
                                 {p.model && <p className="text-[11px] font-mono text-muted-foreground truncate">{p.model}</p>}
                                 {p.base_url && <p className="text-[10.5px] text-muted-foreground/70 font-mono truncate">{p.base_url}</p>}
                               </div>
-                              <div className="shrink-0 flex items-center gap-1 text-[11px] font-medium">
-                                {p.requires_key ? (
-                                  <span className={`inline-flex items-center gap-1 ${p.api_key_configured ? "text-green-500" : "text-amber-500"}`}>
-                                    <KeyRound className="size-3.5" />
-                                    {p.api_key_configured ? t("dashboard.adminAiStatus.keyConfigured") : t("dashboard.adminAiStatus.keyMissing")}
-                                  </span>
-                                ) : (
-                                  <span className="inline-flex items-center gap-1 text-muted-foreground">
-                                    <Zap className="size-3.5" />
-                                    {t("dashboard.adminAiStatus.noKeyRequired")}
-                                  </span>
-                                )}
+                              <div className="shrink-0 flex items-center gap-2.5">
+                                <div className="text-[11px] font-medium">
+                                  {p.requires_key ? (
+                                    <span className={`inline-flex items-center gap-1 ${p.api_key_configured ? "text-green-500" : "text-amber-500"}`}>
+                                      <KeyRound className="size-3.5" />
+                                      {p.api_key_configured ? t("dashboard.adminAiStatus.keyConfigured") : t("dashboard.adminAiStatus.keyMissing")}
+                                    </span>
+                                  ) : (
+                                    <span className="inline-flex items-center gap-1 text-muted-foreground">
+                                      <Zap className="size-3.5" />
+                                      {t("dashboard.adminAiStatus.noKeyRequired")}
+                                    </span>
+                                  )}
+                                </div>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => editProviderFromStatus(p)}
+                                  className="h-7 px-2.5 text-xs gap-1.5"
+                                  title={`Edit / override konfigurasi ${p.tier}`}
+                                >
+                                  <Settings2 className="size-3" />
+                                  <span>Edit</span>
+                                </Button>
                               </div>
                             </div>
 
