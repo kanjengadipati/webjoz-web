@@ -1,4 +1,4 @@
-import type { DesignToken } from "./types";
+import type { DesignToken, ItemVariantGroup } from "./types";
 
 function resolveCssColor(color: string): string {
   const c = (color || "").trim();
@@ -289,6 +289,42 @@ export function buildCssVars(dt: DesignToken | null | undefined): Record<string,
       : "color-mix(in srgb, var(--dt-primary) 85%, black)",
     "--dt-accent-soft": "color-mix(in srgb, var(--dt-accent) 10%, var(--dt-bg))",
   };
+}
+
+/**
+ * Computes the cheapest possible total price for an item that has variant
+ * groups, given its base price amount. Returns null when the item has no
+ * priced variants (so callers can keep showing the plain base price).
+ *
+ * "Cheapest" = base + the smallest price_delta in each group, respecting the
+ * group's minimum selection count (single groups force one option; multiple
+ * groups only add a delta when they are required/min > 0).
+ */
+export function minVariantPriceAmount(
+  baseAmount: number | null | undefined,
+  groups?: ItemVariantGroup[] | null,
+): number | null {
+  const relevant = (groups || []).filter((g) => g && Array.isArray(g.options) && g.options.length > 0);
+  if (relevant.length === 0) return null;
+
+  const base = typeof baseAmount === "number" && baseAmount > 0 ? baseAmount : 0;
+  let total = base;
+  let hasPricedDelta = false;
+
+  for (const g of relevant) {
+    const minSelect =
+      g.type === "single"
+        ? 1
+        : Math.max(0, Math.min(g.min ?? (g.required ? 1 : 0), g.max ?? g.options.length, g.options.length));
+    const deltas = g.options.map((o) => o.price_delta ?? 0).sort((a, b) => a - b);
+    let delta = 0;
+    for (let i = 0; i < minSelect && i < deltas.length; i++) delta += deltas[i];
+    if (delta !== 0) hasPricedDelta = true;
+    total += delta;
+  }
+
+  if (!hasPricedDelta && total <= base) return null;
+  return total;
 }
 
 export const headingVars: Record<string, string> = {

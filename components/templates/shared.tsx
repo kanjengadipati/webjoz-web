@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useId, useState, useEffect, useRef } from "react";
-import { headingVars, avatarTextColor } from "./helpers";
+import { headingVars, avatarTextColor, minVariantPriceAmount } from "./helpers";
+import { formatPriceWithAmount } from "@/lib/utils";
 import {
   Check, ArrowRight, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Star, Menu, X, Send,
   MapPin, Phone, Mail, Globe, Pencil, Upload, Loader2, Camera, Link2, ImagePlus, Trash2,
@@ -1447,9 +1448,22 @@ function MenuCatalogCard({
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeImgIdx, setActiveImgIdx] = useState(0);
   const [quickViewOpen, setQuickViewOpen] = useState(false);
+  const [failedImgs, setFailedImgs] = useState<Record<string, boolean>>({});
 
   const displayPrice = itemPriceDisplay || itemPrice;
   const showPrice = (displayPrice && !isPlaceholderPrice(displayPrice)) || Boolean(isEditorMode);
+  // When an item has priced variant options, surface the cheapest possible
+  // total as "From …" on the card (view mode only — the editor still edits the
+  // raw base price string).
+  const minVariantAmount = minVariantPriceAmount(itemPriceAmount, variant_groups);
+  let fromPriceDisplay: string | null = null;
+  if (minVariantAmount != null) {
+    const fromLabel = t("dashboard.sitesKatalog.priceFrom", "Mulai dari");
+    const alreadyHasFrom = (displayPrice || "").toLowerCase().includes(fromLabel.toLowerCase());
+    const template = alreadyHasFrom ? displayPrice : `${fromLabel} ${displayPrice ?? ""}`;
+    fromPriceDisplay = formatPriceWithAmount(minVariantAmount, template);
+  }
+  const priceValue = isEditorMode ? (displayPrice ?? "") : (fromPriceDisplay ?? displayPrice ?? "");
   const hasPromo = typeof itemPromoPriceAmount === "number" && itemPromoPriceAmount > 0 &&
     (typeof itemPriceAmount !== "number" || itemPriceAmount <= 0 || itemPromoPriceAmount < itemPriceAmount);
   const isOutOfStock = is_available === false;
@@ -1484,15 +1498,18 @@ function MenuCatalogCard({
   );
   const currentImg = allImages[activeImgIdx] || allImages[0] || image_url;
 
-  const imageNode = currentImg ? (
+  const currentImgFailed = Boolean(currentImg) && failedImgs[currentImg as string] === true;
+  const imageNode = currentImg && !currentImgFailed ? (
     <div className="relative overflow-hidden group/img">
       <img
         src={currentImg}
         alt={itemName}
+        loading="lazy"
+        decoding="async"
         className={`${imageClassName || ""} ${isOutOfStock ? "opacity-60 grayscale-[30%]" : ""}`}
         style={{ ...imageStyle, cursor: isOutOfStock ? "default" : "pointer" }}
         onClick={() => { if (!isOutOfStock) setQuickViewOpen(true); }}
-        onError={(e) => { e.currentTarget.style.display = 'none'; }}
+        onError={() => setFailedImgs((prev) => ({ ...prev, [currentImg as string]: true }))}
       />
       {/* Floating badge overlay — top-left */}
       {isOutOfStock ? (
@@ -1649,7 +1666,7 @@ function MenuCatalogCard({
               <span className="line-through opacity-45 text-xs">{displayPrice}</span>
             </div>
           ) : (
-            <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".price" : ""} value={displayPrice ?? ""} placeholder="+ Harga" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className={priceClassName} style={{ ...priceStyle, marginTop: "0.375rem", display: "inline-block" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+            <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".price" : ""} value={priceValue} placeholder="+ Harga" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className={priceClassName} style={{ ...priceStyle, marginTop: "0.375rem", display: "inline-block" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
           )
         )}
       </div>
@@ -1661,7 +1678,7 @@ function MenuCatalogCard({
             <span className="line-through opacity-45 text-xs">{displayPrice}</span>
           </div>
         ) : (
-          <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".price" : ""} value={displayPrice ?? ""} placeholder="+ Harga" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className={priceClassName} style={priceStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+          <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".price" : ""} value={priceValue} placeholder="+ Harga" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className={priceClassName} style={priceStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
         )
       )}
     </div>
@@ -2020,6 +2037,7 @@ function ProductQuickViewInner({
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIdx, setLightboxIdx] = useState(0);
   const [galleryUploading, setGalleryUploading] = useState(false);
+  const [quickViewImgFailed, setQuickViewImgFailed] = useState(false);
   const galleryInputRef = useRef<HTMLInputElement>(null);
 
   const itemId = item.id ?? item.name ?? "";
@@ -2123,13 +2141,16 @@ function ProductQuickViewInner({
                   className="w-full h-full"
                   fallbackIcon={<CategoryIcon className="w-16 h-16" />}
                 />
-              ) : item.image_url ? (
+              ) : item.image_url && !quickViewImgFailed ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={item.image_url}
                   alt={itemName}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover cursor-zoom-in"
                   onClick={() => { setLightboxIdx(0); setLightboxOpen(true); }}
+                  onError={() => setQuickViewImgFailed(true)}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center" style={{ background: `color-mix(in srgb, var(--dt-primary, #4F46E5) 10%, var(--dt-surface, #ffffff))` }}>

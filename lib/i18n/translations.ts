@@ -2027,6 +2027,7 @@ export interface Translations {
       statVariants: string;
       available: string;
       outOfStock: string;
+      priceFrom: string;
       markAvailable: string;
       markOutOfStock: string;
       categoryPlaceholder: string;
@@ -4835,6 +4836,7 @@ export const translations: Record<Locale, Translations> = {
         statVariants: "Varian / Opsi",
         available: "Tersedia",
         outOfStock: "Habis",
+        priceFrom: "Mulai dari",
         markAvailable: "Tandai Tersedia",
         markOutOfStock: "Tandai Habis",
         categoryPlaceholder: "Nama Kategori (cth: Makanan Utama, Paket Hemat)",
@@ -7713,6 +7715,7 @@ export const translations: Record<Locale, Translations> = {
         statVariants: "Variants / Options",
         available: "Available",
         outOfStock: "Out of Stock",
+        priceFrom: "From",
         markAvailable: "Mark Available",
         markOutOfStock: "Mark Out of Stock",
         categoryPlaceholder: "Category Name (e.g. Main Course, Value Pack)",
