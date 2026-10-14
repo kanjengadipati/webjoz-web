@@ -507,18 +507,16 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                           </span>
                         </div>
 
-                        {/* Plan & Upgrade Link */}
-                        <div className="mt-1 flex items-center justify-between text-[11px]">
+                        {/* Plan & Upgrade */}
+                        <div className="mt-1.5 flex items-center justify-between text-[11px]">
                           <span className="text-[10.5px] font-medium text-muted-foreground capitalize">
                             {(activeTenant?.tenant?.plan || "free")} Plan
                           </span>
                           {activeTenant?.tenant?.plan === "free" && (
-                            <Link
-                              href="/dashboard/upgrade"
-                              className="inline-flex items-center gap-1 text-[10px] font-bold text-primary hover:text-primary/80 transition-colors"
-                            >
-                              <span>{t("dashboard.upgradeLabel")}</span>
-                              <Sparkles className="size-2.5" />
+                            <Link href="/dashboard/upgrade">
+                              <Badge className="px-2 py-0.5 text-[9.5px] font-bold tracking-wide uppercase hover:brightness-110 active:scale-95 transition-all cursor-pointer shadow-xs leading-none">
+                                {t("dashboard.upgradeLabel")}
+                              </Badge>
                             </Link>
                           )}
                         </div>
