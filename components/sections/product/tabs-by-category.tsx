@@ -198,9 +198,9 @@ export default function ProductTabsByCategory({
             <div style={{ display: "grid", gridTemplateColumns: `repeat(auto-fill, minmax(${isMenu ? 260 : 220}px, 1fr))`, gap: "1.25rem", ...(isMenu ? {} : { alignItems: "stretch" }) }}>
               {activeItems.map(({ item, originalItemIdx }) => (
                 <MenuCatalogCard
-                  key={item.id || `${itemKeyPrefix}-${activeIdx}-${originalItemIdx}`}
+                  key={item.id || `${itemKeyPrefix}-${safeActiveIdx}-${originalItemIdx}`}
                   item={{
-                    id: item.id || `${itemKeyPrefix}-${activeIdx}-${originalItemIdx}`,
+                    id: item.id || `${itemKeyPrefix}-${safeActiveIdx}-${originalItemIdx}`,
                     name: item.name,
                     price: item.price,
                     priceAmount: item.price_amount,
@@ -221,13 +221,13 @@ export default function ProductTabsByCategory({
                   icon={Icon}
                   styles={cardStyles}
                   editSection={kind}
-                  pathBase={"categories." + activeIdx + ".items." + originalItemIdx}
+                  pathBase={"categories." + safeActiveIdx + ".items." + originalItemIdx}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
                   collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                   onEditingStateChange={onEditingStateChange}
-                  onDelete={isEditorMode && onDeleteItem ? () => onDeleteItem(activeIdx, originalItemIdx) : undefined}
+                  onDelete={isEditorMode && onDeleteItem ? () => onDeleteItem(safeActiveIdx, originalItemIdx) : undefined}
                 />
               ))}
               {isEditorMode && onAddItem && (
@@ -235,7 +235,7 @@ export default function ProductTabsByCategory({
                   label="Tambah Item"
                   variant="card"
                   className="rounded-2xl"
-                  onClick={() => onAddItem(activeIdx)}
+                  onClick={() => onAddItem(safeActiveIdx)}
                 />
               )}
             </div>

@@ -312,11 +312,14 @@ export function minVariantPriceAmount(
   let hasPricedDelta = false;
 
   for (const g of relevant) {
+    const availableOptions = g.options.filter((o) => o.is_available !== false);
+    if (availableOptions.length === 0) continue;
+
     const minSelect =
       g.type === "single"
-        ? 1
-        : Math.max(0, Math.min(g.min ?? (g.required ? 1 : 0), g.max ?? g.options.length, g.options.length));
-    const deltas = g.options.map((o) => o.price_delta ?? 0).sort((a, b) => a - b);
+        ? (g.required === true ? 1 : 0)
+        : Math.max(0, Math.min(g.min ?? (g.required ? 1 : 0), g.max ?? availableOptions.length, availableOptions.length));
+    const deltas = availableOptions.map((o) => o.price_delta ?? 0).sort((a, b) => a - b);
     let delta = 0;
     for (let i = 0; i < minSelect && i < deltas.length; i++) delta += deltas[i];
     if (delta !== 0) hasPricedDelta = true;
