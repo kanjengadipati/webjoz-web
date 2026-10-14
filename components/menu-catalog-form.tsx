@@ -10,6 +10,7 @@ import { SparkleGenAI } from "@/components/sparkle-icon";
 import FileUpload, { uploadImageFile } from "@/components/file-upload";
 import { ProductQuickView } from "@/components/templates/shared";
 import { useI18n } from "@/lib/i18n/context";
+import { formatIdNumber } from "@/lib/utils";
 import {
   DndContext,
   closestCenter,
@@ -1392,7 +1393,7 @@ export function VariantGroupEditor({
                             value={opt.price_delta ?? ""}
                             onChange={(e) => {
                               const delta = e.target.value === "" ? null : Number(e.target.value);
-                              const display = delta != null && delta !== 0 ? (delta > 0 ? `+${delta.toLocaleString()}` : `${delta.toLocaleString()}`) : null;
+                              const display = delta != null && delta !== 0 ? (delta > 0 ? `+${formatIdNumber(delta)}` : `${formatIdNumber(delta)}`) : null;
                               updateOption(group.id, opt.id, { price_delta: delta, price_display: display });
                             }}
                             placeholder="+Rp"
