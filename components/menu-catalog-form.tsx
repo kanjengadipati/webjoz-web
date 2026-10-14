@@ -1238,6 +1238,8 @@ export interface VGOption {
   name: string;
   price_delta?: number | null;
   price_display?: string | null;
+  /** When false, the option is sold out and cannot be selected by customers. */
+  is_available?: boolean | null;
 }
 
 export function makeGroup(): VGGroup {
@@ -1248,7 +1250,7 @@ export function makeGroup(): VGGroup {
     required: false,
     min: null,
     max: null,
-    options: [{ id: nanoid(), name: "", price_delta: null, price_display: null }],
+    options: [{ id: nanoid(), name: "", price_delta: null, price_display: null, is_available: true }],
   };
 }
 
@@ -1271,7 +1273,7 @@ export function VariantGroupEditor({
   function addOption(gid: string) {
     const g = groups.find((g) => g.id === gid);
     if (!g) return;
-    updateGroup(gid, { options: [...g.options, { id: nanoid(), name: "", price_delta: null, price_display: null }] });
+    updateGroup(gid, { options: [...g.options, { id: nanoid(), name: "", price_delta: null, price_display: null, is_available: true }] });
   }
   function updateOption(gid: string, oid: string, patch: Partial<VGOption>) {
     const g = groups.find((g) => g.id === gid);
@@ -1431,6 +1433,23 @@ export function VariantGroupEditor({
                             title={t("dashboard.sitesKatalog.variantsOptionDelta", "Tambahan Harga")}
                             className={`${MCF_INPUT_BASE} py-2 w-28 shrink-0 text-xs`}
                           />
+                          <button
+                            type="button"
+                            onClick={() => updateOption(group.id, opt.id, { is_available: opt.is_available === false })}
+                            title={opt.is_available === false
+                              ? t("dashboard.sitesKatalog.variantsOptionMarkAvailable", "Tandai tersedia")
+                              : t("dashboard.sitesKatalog.variantsOptionMarkSoldOut", "Tandai habis")}
+                            aria-label={opt.is_available === false
+                              ? t("dashboard.sitesKatalog.variantsOptionMarkAvailable", "Tandai tersedia")
+                              : t("dashboard.sitesKatalog.variantsOptionMarkSoldOut", "Tandai habis")}
+                            className={`cursor-pointer p-1.5 rounded-lg transition-colors shrink-0 ${
+                              opt.is_available === false
+                                ? "text-red-500 hover:bg-red-500/10"
+                                : "text-emerald-500/70 hover:text-emerald-500 hover:bg-emerald-500/10"
+                            }`}
+                          >
+                            {opt.is_available === false ? <X className="w-4 h-4" /> : <CheckCircle2 className="w-4 h-4" />}
+                          </button>
                           <button
                             type="button"
                             onClick={() => removeOption(group.id, opt.id)}

@@ -2074,6 +2074,8 @@ export interface Translations {
       variantsOptionNamePlaceholder: string;
       variantsOptionDelta: string;
       variantsAddOption: string;
+      variantsOptionMarkAvailable: string;
+      variantsOptionMarkSoldOut: string;
       allChangesSaved: string;
       paymentTitle: string;
       paymentSubtitle: string;
@@ -4883,6 +4885,8 @@ export const translations: Record<Locale, Translations> = {
         variantsOptionNamePlaceholder: "cth. Regular, Large, Ekstra Keju",
         variantsOptionDelta: "+Tambahan Harga",
         variantsAddOption: "Tambah Pilihan",
+        variantsOptionMarkAvailable: "Tandai tersedia",
+        variantsOptionMarkSoldOut: "Tandai habis",
         allChangesSaved: "Semua perubahan otomatis tersimpan secara aman",
         paymentTitle: "Metode Pembayaran & Pengiriman",
         paymentSubtitle: "Tampilkan info pembayaran dan pengiriman di keranjang pesanan pengunjung. Belum perlu integrasi payment gateway — cukup info rekening/QRIS statis.",
@@ -7762,6 +7766,8 @@ export const translations: Record<Locale, Translations> = {
         variantsOptionNamePlaceholder: "e.g. Regular, Large, Extra Cheese",
         variantsOptionDelta: "+Price Delta",
         variantsAddOption: "Add Option",
+        variantsOptionMarkAvailable: "Mark as available",
+        variantsOptionMarkSoldOut: "Mark as sold out",
         allChangesSaved: "All changes are automatically and securely saved",
         paymentTitle: "Payment Methods & Shipping",
         paymentSubtitle: "Show payment and shipping info in your visitors' shopping cart. No payment gateway needed yet — just static account/QRIS details.",
