@@ -1736,6 +1736,7 @@ export interface Translations {
       searchPlaceholder: string;
       emptyTitle: string;
       loadFailed: string;
+      viewSite: string;
       thSite: string;
       thTenant: string;
       thStatus: string;
@@ -4540,6 +4541,7 @@ export const translations: Record<Locale, Translations> = {
         searchPlaceholder: "Cari nama situs, subdomain, atau tenant...",
         emptyTitle: "Tidak ada situs",
         loadFailed: "Gagal memuat data situs",
+        viewSite: "Buka website",
         thSite: "Situs",
         thTenant: "Tenant",
         thStatus: "Status",
@@ -7414,6 +7416,7 @@ export const translations: Record<Locale, Translations> = {
         searchPlaceholder: "Search site name, subdomain, or tenant...",
         emptyTitle: "No sites found",
         loadFailed: "Failed to load sites",
+        viewSite: "Open website",
         thSite: "Site",
         thTenant: "Tenant",
         thStatus: "Status",

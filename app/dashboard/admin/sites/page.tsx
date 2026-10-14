@@ -6,6 +6,7 @@ import { request } from "@/lib/api/client";
 import { usePermissions } from "@/hooks/use-permissions";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
+import { tenantHost, tenantSiteUrl } from "@/lib/site-config";
 import {
   Globe,
   Loader2,
@@ -13,6 +14,7 @@ import {
   ShieldOff,
   Lock,
   Unlock,
+  ExternalLink,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -39,6 +41,10 @@ const PAGE_SIZE = 20;
 function errorMessage(err: unknown, fallback: string): string {
   if (err instanceof Error && err.message) return err.message;
   return fallback;
+}
+
+function isDraftSubdomain(subdomain: string): boolean {
+  return subdomain.startsWith("draft-");
 }
 
 export default function AdminSitesPage() {
@@ -222,7 +228,20 @@ export default function AdminSitesPage() {
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <div className="font-semibold text-sm truncate">{site.name}</div>
-                        <div className="text-xs text-muted-foreground truncate">{site.subdomain}</div>
+                        {isDraftSubdomain(site.subdomain) ? (
+                          <div className="text-xs text-muted-foreground truncate">{site.subdomain}</div>
+                        ) : (
+                          <a
+                            href={tenantSiteUrl(site.subdomain)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={t("dashboard.adminSites.viewSite")}
+                            className="text-xs text-primary hover:underline inline-flex items-center gap-1 max-w-full"
+                          >
+                            <span className="truncate">{tenantHost(site.subdomain)}</span>
+                            <ExternalLink className="size-3 shrink-0" />
+                          </a>
+                        )}
                       </div>
                       <StatusBadge status={site.status} />
                     </div>
@@ -275,7 +294,20 @@ export default function AdminSitesPage() {
                               <Badge variant="destructive">{t("dashboard.adminSites.lockedBadge")}</Badge>
                             )}
                           </div>
-                          <div className="text-xs text-muted-foreground">{site.subdomain}</div>
+                          {isDraftSubdomain(site.subdomain) ? (
+                            <div className="text-xs text-muted-foreground">{site.subdomain}</div>
+                          ) : (
+                            <a
+                              href={tenantSiteUrl(site.subdomain)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              title={t("dashboard.adminSites.viewSite")}
+                              className="text-xs text-primary hover:underline inline-flex items-center gap-1"
+                            >
+                              {tenantHost(site.subdomain)}
+                              <ExternalLink className="size-3" />
+                            </a>
+                          )}
                           {site.admin_locked && site.admin_lock_reason && (
                             <div className="text-xs text-rose-500/90 mt-1 max-w-md truncate" title={site.admin_lock_reason}>
                               {t("dashboard.adminSites.lockedReason")}: {site.admin_lock_reason}
