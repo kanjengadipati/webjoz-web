@@ -13,6 +13,7 @@ import React, { createContext, useContext, useState, useCallback, useRef, useEff
 import { ShoppingCart, X, Plus, Minus, Trash2, MessageSquare, ArrowLeft, CheckCircle, CreditCard, Truck, RotateCcw, Building2, QrCode, Wallet, Banknote } from "lucide-react";
 
 import type { ItemVariantGroup, PaymentConfig } from "@/components/templates/types";
+import { formatIdNumber } from "@/lib/utils";
 
 export function PaymentMethodIcon({ type, className = "w-3.5 h-3.5 shrink-0" }: { type?: string; className?: string }) {
   switch (type) {
@@ -513,7 +514,7 @@ export function VariantSelectorModal({
     // Format display label
     let formattedPriceDisplay = itemPriceDisplay || itemPrice || null;
     if (computedTotalAmount !== null && itemPriceDisplay) {
-      formattedPriceDisplay = itemPriceDisplay.replace(/[\d.,]+/, () => computedTotalAmount.toLocaleString());
+      formattedPriceDisplay = itemPriceDisplay.replace(/[\d.,]+/, () => formatIdNumber(computedTotalAmount));
     }
 
     add({
@@ -612,7 +613,7 @@ export function VariantSelectorModal({
                         <span className="truncate mr-1">{opt.name}</span>
                         {opt.price_display || (typeof opt.price_delta === "number" && opt.price_delta > 0) ? (
                           <span className="text-[10px] font-bold opacity-80 shrink-0">
-                            {opt.price_display || `+${opt.price_delta!.toLocaleString()}`}
+                            {opt.price_display || `+${formatIdNumber(opt.price_delta!)}`}
                           </span>
                         ) : null}
                       </button>
@@ -630,7 +631,7 @@ export function VariantSelectorModal({
             <span className="text-[10px] opacity-60 block">Total Item</span>
             <span className="text-sm font-bold" style={{ color: "var(--dt-primary, #4F46E5)" }}>
               {computedTotalAmount !== null
-                ? (itemPriceDisplay ? itemPriceDisplay.replace(/[\d.,]+/, () => computedTotalAmount.toLocaleString()) : computedTotalAmount.toLocaleString())
+                ? (itemPriceDisplay ? itemPriceDisplay.replace(/[\d.,]+/, () => formatIdNumber(computedTotalAmount)) : formatIdNumber(computedTotalAmount))
                 : (itemPriceDisplay || itemPrice || "-")}
             </span>
           </div>
@@ -706,7 +707,7 @@ function buildWAMessage(items: CartItem[], brandName?: string): string {
       if (typeof item.price_amount === "number" && item.price_amount > 0 && item.qty > 1) {
         // Show per-item line total when qty > 1
         const itemTotal = item.price_amount * item.qty;
-        lineTotal = ` = ${isReal ? displayLabel!.replace(/[\d.,]+/, (n) => itemTotal.toLocaleString()) : itemTotal.toLocaleString()}`;
+        lineTotal = ` = ${isReal ? displayLabel!.replace(/[\d.,]+/, () => formatIdNumber(itemTotal)) : formatIdNumber(itemTotal)}`;
       }
 
       const variantStr = item.selected_variants && item.selected_variants.length > 0
@@ -721,7 +722,7 @@ function buildWAMessage(items: CartItem[], brandName?: string): string {
   lines.push("");
 
   if (total > 0) {
-    lines.push(`*Subtotal: ${total.toLocaleString()}*${hasCustomPricing ? " + harga item lainnya" : ""}`);
+    lines.push(`*Subtotal: ${formatIdNumber(total)}*${hasCustomPricing ? " + harga item lainnya" : ""}`);
   }
 
   if (hasCustomPricing && total === 0) {
@@ -1184,7 +1185,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
                   <div className="flex items-baseline justify-between text-xs font-bold">
                     <span className="opacity-70">Subtotal</span>
                     <span style={{ color: "var(--dt-primary, var(--primary))" }}>
-                      {total.toLocaleString()}
+                      {formatIdNumber(total)}
                       {hasCustomPricing && <span className="font-normal opacity-60 ml-1 text-[10px]">+item lainnya</span>}
                     </span>
                   </div>
