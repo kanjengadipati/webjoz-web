@@ -1229,6 +1229,8 @@ export interface VGGroup {
   name: string;
   type: "single" | "multiple";
   required: boolean;
+  min?: number | null;
+  max?: number | null;
   options: VGOption[];
 }
 export interface VGOption {
@@ -1244,6 +1246,8 @@ export function makeGroup(): VGGroup {
     name: "",
     type: "single",
     required: false,
+    min: null,
+    max: null,
     options: [{ id: nanoid(), name: "", price_delta: null, price_display: null }],
   };
 }
@@ -1370,6 +1374,33 @@ export function VariantGroupEditor({
                         {t("dashboard.sitesKatalog.variantsRequired", "Wajib Dipilih")}
                       </label>
                     </div>
+
+                    {group.type === "multiple" && (
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <label className="flex items-center gap-2 text-xs font-semibold text-foreground">
+                          {t("dashboard.sitesKatalog.variantsMin", "Min")}
+                          <input
+                            type="number"
+                            min={0}
+                            value={group.min ?? ""}
+                            onChange={(e) => updateGroup(group.id, { min: e.target.value === "" ? null : Math.max(0, Number(e.target.value)) })}
+                            placeholder="0"
+                            className={`${MCF_INPUT_BASE} py-1.5 w-20 text-xs`}
+                          />
+                        </label>
+                        <label className="flex items-center gap-2 text-xs font-semibold text-foreground">
+                          {t("dashboard.sitesKatalog.variantsMax", "Maks")}
+                          <input
+                            type="number"
+                            min={0}
+                            value={group.max ?? ""}
+                            onChange={(e) => updateGroup(group.id, { max: e.target.value === "" ? null : Math.max(0, Number(e.target.value)) })}
+                            placeholder={t("dashboard.sitesKatalog.variantsMaxPlaceholder", "semua")}
+                            className={`${MCF_INPUT_BASE} py-1.5 w-20 text-xs`}
+                          />
+                        </label>
+                      </div>
+                    )}
                   </div>
 
                   {/* Options */}

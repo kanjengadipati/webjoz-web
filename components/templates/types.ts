@@ -64,7 +64,12 @@ export interface ItemVariantGroup {
   id: string;
   name: string;
   type: "single" | "multiple";
+  /** When true, at least one option must be selected. Honored only if explicitly true. */
   required?: boolean;
+  /** Minimum options to select. Defaults to 1 when `required`, else 0. */
+  min?: number;
+  /** Maximum options to select. Defaults to 1 for `single`, else option count. */
+  max?: number;
   options: ItemVariantOption[];
 }
 
