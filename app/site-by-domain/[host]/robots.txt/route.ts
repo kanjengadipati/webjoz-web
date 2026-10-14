@@ -19,6 +19,7 @@ async function resolveRobots(host: string): Promise<string> {
     if (!res.ok) {
       const envelope = await res.json().catch(() => null);
       if (envelope?.code === "ERR_PLAN_EXPIRED") return SUSPENDED_ROBOTS;
+      if (envelope?.code === "ERR_SITE_LOCKED") return SUSPENDED_ROBOTS;
       return DEFAULT_ROBOTS;
     }
     const envelope = await res.json();

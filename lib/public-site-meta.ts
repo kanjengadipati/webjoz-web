@@ -71,6 +71,27 @@ function suspendedMetadata(host: string, siteName?: string, language?: string): 
   };
 }
 
+// Shown when an admin has locked the site for a policy violation: the public
+// host serves a disabled page, so the real content must stay out of the index.
+function lockedMetadata(host: string, siteName?: string, language?: string): Metadata {
+  const isEN = language === "en";
+  const name = siteName?.trim();
+  const title = name
+    ? `${name} — ${isEN ? "Website Disabled" : "Website Dinonaktifkan"}`
+    : isEN
+      ? "Website Disabled"
+      : "Website Dinonaktifkan";
+  return {
+    title,
+    description: isEN
+      ? "This website has been disabled for violating the terms of service."
+      : "Website ini dinonaktifkan karena melanggar kebijakan layanan.",
+    alternates: { canonical: `https://${host}` },
+    robots: { index: false, follow: false, noarchive: true },
+    openGraph: { title, type: "website", url: `https://${host}` },
+  };
+}
+
 export async function fetchPublicSiteMetadata(hostOrSubdomain: string): Promise<Metadata> {
   const cleanHost = hostOrSubdomain.includes(".")
     ? hostOrSubdomain
@@ -94,6 +115,9 @@ export async function fetchPublicSiteMetadata(hostOrSubdomain: string): Promise<
 
       if (failure?.code === "ERR_PLAN_EXPIRED") {
         return suspendedMetadata(cleanHost, failure.data?.site_name, failure.data?.language);
+      }
+      if (failure?.code === "ERR_SITE_LOCKED") {
+        return lockedMetadata(cleanHost, failure.data?.site_name, failure.data?.language);
       }
       return NOT_FOUND;
     }
