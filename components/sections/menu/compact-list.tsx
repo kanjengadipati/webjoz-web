@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Utensils } from "lucide-react";
 import { MenuCatalogCard, InlineText, CatalogMenuFilterBar } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
+import { useCatalogFilter } from "../use-catalog-filter";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 /**
@@ -15,30 +16,15 @@ export default function MenuCompactList({ menu, onUpdateField, isEditorMode, isS
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
+  const categories = menu?.categories || [];
+  const filteredCategories = useCatalogFilter(categories, activeCategory, searchQuery, isEditorMode);
+
   if (!menu) return null;
   const p = "var(--dt-primary)";
   const bg = "var(--dt-bg)";
   const text = "var(--dt-text)";
   const hFont = "var(--dt-heading-font)";
   const hWeight = "var(--dt-heading-weight)";
-
-  const categories = menu.categories || [];
-  const query = searchQuery.trim().toLowerCase();
-
-  const filteredCategories = categories
-    .map((cat, originalCatIdx) => {
-      const items = (cat.items || [])
-        .map((item, originalItemIdx) => ({ item, originalCatIdx, originalItemIdx }))
-        .filter(({ item }) => {
-          if (!query) return true;
-          const nameMatch = (item.name || "").toLowerCase().includes(query);
-          const descMatch = (item.description || "").toLowerCase().includes(query);
-          const tagMatch = (item.tags || []).some((t: string) => t.toLowerCase().includes(query));
-          return nameMatch || descMatch || tagMatch;
-        });
-      return { ...cat, originalCatIdx, filteredItems: items };
-    })
-    .filter((cat) => (activeCategory === "all" || cat.name === activeCategory) && (isEditorMode || cat.filteredItems.length > 0));
 
   return (
     <section id="menu" style={{ padding: "var(--dt-spacing) 1.5rem", background: `color-mix(in srgb, ${p} 4%, ${bg})`, borderTop: `1px solid color-mix(in srgb, ${p} 12%, transparent)` }}>

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Image as ImageIcon } from "lucide-react";
 import { MenuCatalogCard, InlineText, CatalogMenuFilterBar } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
+import { useCatalogFilter } from "../use-catalog-filter";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface CatalogVariantProps {
@@ -25,6 +26,9 @@ export default function CatalogClassic({ catalog, onUpdateField, isEditorMode, i
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
+  const categories = catalog?.categories || [];
+  const filteredCategories = useCatalogFilter(categories, activeCategory, searchQuery, isEditorMode);
+
   if (!catalog) return null;
   const brandBg = "var(--dt-bg)";
   const brandPrimary = "var(--dt-primary)";
@@ -32,25 +36,6 @@ export default function CatalogClassic({ catalog, onUpdateField, isEditorMode, i
   const headingFont = "var(--dt-heading-font)";
   const headingWeight = "var(--dt-heading-weight)";
   const py = { paddingTop: "var(--dt-spacing)", paddingBottom: "var(--dt-spacing)" } as any;
-
-  const categories = catalog.categories || [];
-  const query = searchQuery.trim().toLowerCase();
-
-  const filteredCategories = categories
-    .map((cat, originalCatIdx) => {
-      const items = (cat.items || [])
-        .map((item, originalItemIdx) => ({ item, originalCatIdx, originalItemIdx }))
-        .filter(({ item }) => {
-          if (!query) return true;
-          const nameMatch = (item.name || "").toLowerCase().includes(query);
-          const descMatch = (item.description || "").toLowerCase().includes(query);
-          const featureMatch = (item.features || []).some((f: string) => f.toLowerCase().includes(query));
-          const badgeMatch = (item.badge || "").toLowerCase().includes(query);
-          return nameMatch || descMatch || featureMatch || badgeMatch;
-        });
-      return { ...cat, originalCatIdx, filteredItems: items };
-    })
-    .filter((cat) => (activeCategory === "all" || cat.name === activeCategory) && (isEditorMode || cat.filteredItems.length > 0));
 
   return (
     <section id="catalog" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, background: `color-mix(in srgb, ${brandPrimary} 4%, ${brandBg})`, borderTop: `1px solid color-mix(in srgb, ${brandPrimary} 12%, transparent)` }}>

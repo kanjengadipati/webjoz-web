@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { InlineText, isPlaceholderPrice, AddToCartButton, CatalogMenuFilterBar, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
+import { useCatalogFilter } from "../use-catalog-filter";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 /**
@@ -15,6 +16,9 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
   const [searchQuery, setSearchQuery] = useState("");
   const [quickView, setQuickView] = useState<{ catIdx: number; itemIdx: number } | null>(null);
 
+  const categories = menu?.categories || [];
+  const filteredCategories = useCatalogFilter(categories, activeCategory, searchQuery, isEditorMode);
+
   if (!menu) return null;
   const p = "var(--dt-primary)";
   const bg = "var(--dt-bg)";
@@ -23,25 +27,8 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
   const hWeight = "var(--dt-heading-weight)";
   const muted = `color-mix(in srgb, ${text} 65%, transparent)`;
 
-  const categories = menu.categories || [];
   const qvCategory = quickView && categories[quickView.catIdx] ? categories[quickView.catIdx] : undefined;
   const qvItem = qvCategory?.items?.[quickView?.itemIdx ?? -1];
-  const query = searchQuery.trim().toLowerCase();
-
-  const filteredCategories = categories
-    .map((cat, originalCatIdx) => {
-      const items = (cat.items || [])
-        .map((item, originalItemIdx) => ({ item, originalCatIdx, originalItemIdx }))
-        .filter(({ item }) => {
-          if (!query) return true;
-          const nameMatch = (item.name || "").toLowerCase().includes(query);
-          const descMatch = (item.description || "").toLowerCase().includes(query);
-          const tagMatch = (item.tags || []).some((t: string) => t.toLowerCase().includes(query));
-          return nameMatch || descMatch || tagMatch;
-        });
-      return { ...cat, originalCatIdx, filteredItems: items };
-    })
-    .filter((cat) => (activeCategory === "all" || cat.name === activeCategory) && (isEditorMode || cat.filteredItems.length > 0));
 
   return (
     <section id="menu" style={{ padding: "var(--dt-spacing) 1.5rem", background: `color-mix(in srgb, ${p} 4%, ${bg})`, borderTop: `1px solid color-mix(in srgb, ${p} 12%, transparent)` }}>
