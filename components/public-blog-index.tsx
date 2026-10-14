@@ -9,11 +9,18 @@ import type { DesignToken } from "@/components/templates/types";
 import HeaderSection from "@/components/sections/header";
 import FooterSection from "@/components/sections/footer";
 import SiteSuspended from "@/components/site-suspended";
+import SiteLocked from "@/components/site-locked";
 
 interface SuspendedInfo {
   siteName?: string;
   subdomain?: string;
   expiredAt?: string | null;
+  language?: string;
+}
+
+interface LockedInfo {
+  siteName?: string;
+  subdomain?: string;
   language?: string;
 }
 
@@ -235,6 +242,7 @@ export default function PublicBlogIndex({ subdomain, routePrefix = "/s" }: Publi
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [suspended, setSuspended] = useState<SuspendedInfo | null>(null);
+  const [locked, setLocked] = useState<LockedInfo | null>(null);
 
   const buildDetailHref = (slug: string) => `${routePrefix}/${subdomain}/blog/${slug}`;
   const homeHref = `${routePrefix}/${subdomain}`;
@@ -253,6 +261,18 @@ export default function PublicBlogIndex({ subdomain, routePrefix = "/s" }: Publi
               siteName: d.site_name,
               subdomain: d.subdomain ?? subdomain,
               expiredAt: d.plan_expired_at ?? d.expired_at,
+              language: d.language,
+            });
+            return;
+          }
+        }
+        if (siteRes.status === 403) {
+          const payload = await siteRes.json().catch(() => null);
+          if (payload?.code === "ERR_SITE_LOCKED") {
+            const d = payload.data ?? {};
+            setLocked({
+              siteName: d.site_name,
+              subdomain: d.subdomain ?? subdomain,
               language: d.language,
             });
             return;
@@ -306,6 +326,16 @@ export default function PublicBlogIndex({ subdomain, routePrefix = "/s" }: Publi
         subdomain={suspended.subdomain}
         expiredAt={suspended.expiredAt}
         language={suspended.language}
+      />
+    );
+  }
+
+  if (locked) {
+    return (
+      <SiteLocked
+        siteName={locked.siteName}
+        subdomain={locked.subdomain}
+        language={locked.language}
       />
     );
   }

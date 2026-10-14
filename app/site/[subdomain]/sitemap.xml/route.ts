@@ -11,7 +11,10 @@ async function fetchSite(subdomain: string) {
   });
   if (!res.ok) {
     const envelope = await res.json().catch(() => null);
-    return envelope?.code === "ERR_PLAN_EXPIRED" ? "suspended" : null;
+    if (envelope?.code === "ERR_PLAN_EXPIRED" || envelope?.code === "ERR_SITE_LOCKED") {
+      return "suspended";
+    }
+    return null;
   }
   const envelope = await res.json();
   if (envelope.status !== "success" || !envelope.data) return null;

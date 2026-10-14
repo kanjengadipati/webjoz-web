@@ -4,7 +4,7 @@ import React, { ReactNode, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, LayoutGrid, Home, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, ChevronDown, Plus, Palette, Users, DollarSign, Share2, Percent, Menu, X, Receipt, Cpu, Shield } from "lucide-react";
+import { LayoutDashboard, LayoutGrid, Home, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, ChevronDown, Plus, Palette, Users, DollarSign, Share2, Percent, Menu, X, Receipt, Cpu, Shield, Sparkles } from "lucide-react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator, MoonIcon, SunIcon, MOTION } from "webjoz-ui";
 import { clearAuthSession, useAuthReady, useAuthToken, useStoredEmail } from "@/lib/auth-store";
 import { ENV_NAME } from "@/lib/config";
@@ -480,31 +480,49 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 </CardHeader>
 
                 <div className="px-4 pb-3">
-                  <div className="rounded-2xl border border-border/30 bg-muted/40 dark:bg-white/[0.03] p-3.5 shadow-inner">
-                    <div className="flex items-center justify-between gap-3 mb-1.5">
-                      <div className="text-xs font-medium text-muted-foreground/70">{t("dashboard.mode")}</div>
-                      <div className="flex items-center gap-2">
-                        <span className="inline-flex items-center rounded-full border border-border/40 bg-muted/60 dark:bg-white/10 px-2.5 py-0.5 text-[11px] font-bold text-foreground capitalize">{activeTenant?.tenant.plan || "free"}</span>
-                        {activeTenant?.tenant.plan === "free" && (
-                          <Link href="/dashboard/upgrade" className="text-[9px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase tracking-wider leading-none hover:opacity-80 transition-opacity">
-                            {t("dashboard.upgradeLabel")}
-                          </Link>
-                        )}
-                        <div className={cn(
-                          "size-2 rounded-full",
-                          isAuthenticated ? "bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.8)]" : "bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.6)]",
-                        )} aria-hidden="true" />
-                      </div>
-                    </div>
-                    <div className="text-sm font-bold tracking-tight">
-                      {isAuthenticated ? (
-                        <div className="flex items-center justify-between gap-2">
-                          <span>{t("dashboard.authenticated")}</span>
-                          <Badge variant="secondary" className="capitalize text-[9px] px-2 py-0 h-4 bg-primary/10 text-primary border-none font-bold">
-                            {userRole}
-                          </Badge>
+                  <div className="relative overflow-hidden rounded-2xl border border-border/50 bg-gradient-to-br from-card/90 via-card/50 to-muted/20 dark:from-white/[0.04] dark:to-white/[0.01] p-3 shadow-sm hover:border-border/80 transition-all">
+                    <div className="flex items-center gap-3">
+                      {/* Avatar with status indicator */}
+                      <div className="relative shrink-0">
+                        <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/25 text-xs font-bold text-primary shadow-inner">
+                          {userInitial}
                         </div>
-                      ) : t("dashboard.locked")}
+                        <span
+                          className={cn(
+                            "absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full ring-2 ring-card",
+                            isAuthenticated ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" : "bg-amber-500"
+                          )}
+                          aria-hidden="true"
+                        />
+                      </div>
+
+                      {/* User identity & Role */}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-1.5">
+                          <p className="text-xs font-bold text-foreground truncate leading-tight">
+                            {userDisplayName}
+                          </p>
+                          <span className="shrink-0 px-1.5 py-0.5 rounded-md text-[9px] font-bold tracking-wider uppercase bg-primary/10 text-primary border border-primary/20 leading-none">
+                            {userRole}
+                          </span>
+                        </div>
+
+                        {/* Plan & Upgrade Link */}
+                        <div className="mt-1 flex items-center justify-between text-[11px]">
+                          <span className="text-[10.5px] font-medium text-muted-foreground capitalize">
+                            {(activeTenant?.tenant?.plan || "free")} Plan
+                          </span>
+                          {activeTenant?.tenant?.plan === "free" && (
+                            <Link
+                              href="/dashboard/upgrade"
+                              className="inline-flex items-center gap-1 text-[10px] font-bold text-primary hover:text-primary/80 transition-colors"
+                            >
+                              <span>{t("dashboard.upgradeLabel")}</span>
+                              <Sparkles className="size-2.5" />
+                            </Link>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

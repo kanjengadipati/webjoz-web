@@ -5,6 +5,7 @@ import { API_BASE_URL } from "@/lib/config";
 import { Loader2, AlertCircle } from "lucide-react";
 import { getTemplate } from "@/lib/template-registry";
 import SiteSuspended from "@/components/site-suspended";
+import SiteLocked from "@/components/site-locked";
 
 interface PublicSiteProps {
   subdomain?: string;
@@ -18,6 +19,12 @@ interface PlanExpiredPayload {
   subdomain?: string;
   language?: string;
   expired_at?: string | null;
+}
+
+interface SiteLockedPayload {
+  site_name?: string;
+  subdomain?: string;
+  language?: string;
 }
 
 const stripRegeneratedMarkers = (value: any): any => {
@@ -41,6 +48,8 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
   const [siteData, setSiteData] = useState<any>(null);
   // Set when the API parks the site for an expired plan (410 ERR_PLAN_EXPIRED).
   const [suspended, setSuspended] = useState<PlanExpiredPayload | null>(null);
+  // Set when the API parks the site for an admin policy lock (403 ERR_SITE_LOCKED).
+  const [locked, setLocked] = useState<SiteLockedPayload | null>(null);
 
   // Lead states
   const [leadSubmitting, setLeadSubmitting] = useState(false);
@@ -90,6 +99,11 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
           } catch {}
           if (failure?.code === "ERR_PLAN_EXPIRED") {
             setSuspended(failure.data || {});
+            setError(null);
+            return;
+          }
+          if (failure?.code === "ERR_SITE_LOCKED") {
+            setLocked(failure.data || {});
             setError(null);
             return;
           }
@@ -312,6 +326,23 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
     robots.content = "noindex, nofollow, noarchive";
   }, [suspended]);
 
+  // A locked site must also stay out of the index.
+  useEffect(() => {
+    if (!locked || typeof document === "undefined") return;
+    document.documentElement.lang = locked.language === "en" ? "en" : "id";
+    const lockedTitle = locked.language === "en" ? "Website Disabled" : "Website Dinonaktifkan";
+    document.title = locked.site_name
+      ? `${locked.site_name} — ${lockedTitle}`
+      : lockedTitle;
+    let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement;
+    if (!robots) {
+      robots = document.createElement("meta");
+      robots.name = "robots";
+      document.head.appendChild(robots);
+    }
+    robots.content = "noindex, nofollow, noarchive";
+  }, [locked]);
+
   const handleSubmitLead = async (data: {
     name: string;
     email: string;
@@ -354,6 +385,15 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
         });
         return;
       }
+      if (res.status === 403 || envelope?.code === "ERR_SITE_LOCKED") {
+        // Site was locked while the visitor had the page open.
+        setLocked({
+          site_name: siteData.site.name,
+          subdomain: siteData.site.subdomain,
+          language: siteData.site.language,
+        });
+        return;
+      }
       if (!res.ok || envelope.status !== "success") {
         throw new Error(envelope.message || "Gagal mengirim formulir.");
       }
@@ -383,6 +423,16 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
         subdomain={suspended.subdomain}
         expiredAt={suspended.expired_at ?? null}
         language={suspended.language}
+      />
+    );
+  }
+
+  if (locked) {
+    return (
+      <SiteLocked
+        siteName={locked.site_name}
+        subdomain={locked.subdomain}
+        language={locked.language}
       />
     );
   }

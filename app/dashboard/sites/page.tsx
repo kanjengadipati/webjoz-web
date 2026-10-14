@@ -11,7 +11,7 @@ import {
   Globe, Loader2, RefreshCw, Edit3, Trash2,
   Check, Copy, Info, CheckCircle2, AlertCircle,
   Search, TriangleAlert, X, MoreVertical, EyeOff, Rocket,
-  FileText, ShoppingBag, Utensils, Star, Code, Link2
+  FileText, ShoppingBag, Utensils, Star, Code, Link2, ShieldOff
 } from "lucide-react";
 import { Button, Dialog } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
@@ -505,6 +505,8 @@ interface Site {
   subdomain: string;
   has_catalog: boolean;
   has_menu: boolean;
+  admin_locked?: boolean;
+  admin_lock_reason?: string;
 }
 
 interface Domain {
@@ -1037,6 +1039,13 @@ export default function SitesPage() {
                     </div>
 
                     <div className="flex items-center gap-1 shrink-0 relative">
+                      {/* Locked badge */}
+                      {site.admin_locked && (
+                        <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-rose-500/15 dark:bg-rose-500/12 text-rose-500 border border-rose-500/35 flex items-center gap-1">
+                          <ShieldOff className="w-3 h-3" />
+                          {t("dashboard.sites.statusLocked")}
+                        </span>
+                      )}
                       {/* Status badge */}
                       <span className={`text-[11px] font-medium px-2.5 py-0.5 rounded-full ${isLive
                           ? "bg-emerald-500/15 dark:bg-[#34c77b]/12 text-[#34c77b] border border-[#34c77b]/35 flex items-center gap-1"
@@ -1110,6 +1119,21 @@ export default function SitesPage() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Admin lock notice */}
+                  {site.admin_locked && (
+                    <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 flex items-start gap-2">
+                      <ShieldOff className="w-3.5 h-3.5 text-rose-500 shrink-0 mt-0.5" />
+                      <div className="min-w-0 text-[11.5px] leading-relaxed">
+                        <span className="font-semibold text-rose-500">
+                          {t("dashboard.sites.lockedNotice")}
+                        </span>
+                        {site.admin_lock_reason && (
+                          <span className="text-rose-500/90"> — {site.admin_lock_reason}</span>
+                        )}
+                      </div>
+                    </div>
+                  )}
 
                   {/* URL / Subdomain Row */}
                   <div className="bg-muted/60 rounded-lg px-3 py-2 flex items-center justify-between gap-2 border border-border/20">

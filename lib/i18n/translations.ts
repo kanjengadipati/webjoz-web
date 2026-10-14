@@ -498,6 +498,7 @@ export interface Translations {
       designAssets: string;
       metrics: string;
       aiSettings: string;
+      adminSites: string;
       sites: string;
       domains: string;
       leads: string;
@@ -589,6 +590,8 @@ export interface Translations {
       clearSearch: string;
       statusLive: string;
       statusDraft: string;
+      statusLocked: string;
+      lockedNotice: string;
       moreOptions: string;
       actionDuplicate: string;
       actionRename: string;
@@ -1726,6 +1729,35 @@ export interface Translations {
       thSites: string;
       thCreated: string;
       manage: string;
+    };
+    adminSites: {
+      title: string;
+      accessDenied: string;
+      searchPlaceholder: string;
+      emptyTitle: string;
+      loadFailed: string;
+      thSite: string;
+      thTenant: string;
+      thStatus: string;
+      thActions: string;
+      statusPublished: string;
+      statusDraft: string;
+      lockedBadge: string;
+      lockedReason: string;
+      lock: string;
+      unlock: string;
+      lockTitle: string;
+      lockDesc: string;
+      reasonLabel: string;
+      reasonPlaceholder: string;
+      reasonRequired: string;
+      confirmLock: string;
+      cancel: string;
+      lockSuccess: string;
+      unlockTitle: string;
+      unlockDesc: string;
+      confirmUnlock: string;
+      unlockSuccess: string;
     };
     tenantDetail: {
       loadFailed: string;
@@ -3265,6 +3297,7 @@ export const translations: Record<Locale, Translations> = {
         designAssets: "Aset Desain",
         metrics: "Metrik",
         aiSettings: "Pengaturan AI",
+        adminSites: "Moderasi Situs",
         sites: "Website Saya",
         domains: "Custom Domain",
         leads: "Customer Leads",
@@ -3356,6 +3389,8 @@ export const translations: Record<Locale, Translations> = {
         clearSearch: "Bersihkan Pencarian",
         statusLive: "Live",
         statusDraft: "Draft",
+        statusLocked: "Dikunci",
+        lockedNotice: "Website ini dinonaktifkan karena melanggar kebijakan",
         moreOptions: "Opsi lainnya",
         actionDuplicate: "Duplikat",
         actionRename: "Ganti nama",
@@ -4498,6 +4533,35 @@ export const translations: Record<Locale, Translations> = {
         thSites: "Situs",
         thCreated: "Dibuat",
         manage: "Kelola",
+      },
+      adminSites: {
+        title: "Moderasi Situs",
+        accessDenied: "Anda tidak memiliki akses ke halaman ini.",
+        searchPlaceholder: "Cari nama situs, subdomain, atau tenant...",
+        emptyTitle: "Tidak ada situs",
+        loadFailed: "Gagal memuat data situs",
+        thSite: "Situs",
+        thTenant: "Tenant",
+        thStatus: "Status",
+        thActions: "Aksi",
+        statusPublished: "Live",
+        statusDraft: "Draf",
+        lockedBadge: "Dikunci",
+        lockedReason: "Alasan",
+        lock: "Kunci",
+        unlock: "Buka Kunci",
+        lockTitle: "Kunci Situs",
+        lockDesc: "Anda akan mengunci situs \"{name}\". Situs ini tidak akan dapat diakses publik sampai dibuka kembali.",
+        reasonLabel: "Alasan pelanggaran",
+        reasonPlaceholder: "Mis. Konten judi online",
+        reasonRequired: "Alasan wajib diisi (min. 3 karakter)",
+        confirmLock: "Ya, Kunci",
+        cancel: "Batal",
+        lockSuccess: "Situs berhasil dikunci",
+        unlockTitle: "Buka Kunci Situs",
+        unlockDesc: "Situs \"{name}\" akan diaktifkan kembali dan dapat diakses publik.",
+        confirmUnlock: "Ya, Buka Kunci",
+        unlockSuccess: "Situs berhasil dibuka",
       },
       tenantDetail: {
         loadFailed: "Gagal memuat detail tenant",
@@ -6107,6 +6171,7 @@ export const translations: Record<Locale, Translations> = {
         designAssets: "Design Assets",
         metrics: "Metrics",
         aiSettings: "AI Settings",
+        adminSites: "Site Moderation",
         sites: "My Websites",
         domains: "Custom Domain",
         leads: "Customer Leads",
@@ -6198,6 +6263,8 @@ export const translations: Record<Locale, Translations> = {
         clearSearch: "Clear Search",
         statusLive: "Live",
         statusDraft: "Draft",
+        statusLocked: "Locked",
+        lockedNotice: "This website is disabled for violating policy",
         moreOptions: "More options",
         actionDuplicate: "Duplicate",
         actionRename: "Rename",
@@ -7340,6 +7407,35 @@ export const translations: Record<Locale, Translations> = {
         thSites: "Sites",
         thCreated: "Created",
         manage: "Manage",
+      },
+      adminSites: {
+        title: "Site Moderation",
+        accessDenied: "You don't have access to this page.",
+        searchPlaceholder: "Search site name, subdomain, or tenant...",
+        emptyTitle: "No sites found",
+        loadFailed: "Failed to load sites",
+        thSite: "Site",
+        thTenant: "Tenant",
+        thStatus: "Status",
+        thActions: "Actions",
+        statusPublished: "Live",
+        statusDraft: "Draft",
+        lockedBadge: "Locked",
+        lockedReason: "Reason",
+        lock: "Lock",
+        unlock: "Unlock",
+        lockTitle: "Lock Site",
+        lockDesc: "You are about to lock site \"{name}\". It will be inaccessible to the public until unlocked.",
+        reasonLabel: "Violation reason",
+        reasonPlaceholder: "E.g. Online gambling content",
+        reasonRequired: "Reason is required (min. 3 characters)",
+        confirmLock: "Yes, Lock",
+        cancel: "Cancel",
+        lockSuccess: "Site locked successfully",
+        unlockTitle: "Unlock Site",
+        unlockDesc: "Site \"{name}\" will be reactivated and accessible to the public.",
+        confirmUnlock: "Yes, Unlock",
+        unlockSuccess: "Site unlocked successfully",
       },
       tenantDetail: {
         loadFailed: "Failed to load tenant details",
