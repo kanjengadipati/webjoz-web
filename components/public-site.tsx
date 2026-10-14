@@ -395,13 +395,17 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
         return;
       }
       if (!res.ok || envelope.status !== "success") {
-        throw new Error(envelope.message || "Gagal mengirim formulir.");
+        const apiErr = new Error(envelope.message || "Gagal mengirim formulir.") as Error & { code?: string };
+        apiErr.code = envelope?.code;
+        throw apiErr;
       }
 
       setLeadSuccess(true);
       return envelope?.data?.order_no as string | undefined;
     } catch (err: any) {
-      setLeadError(err.message || "Gagal mengirim pesan. Silakan coba beberapa saat lagi.");
+      const message = err?.message || "Gagal mengirim pesan. Silakan coba beberapa saat lagi.";
+      setLeadError(message);
+      throw err instanceof Error ? err : new Error(message);
     } finally {
       setLeadSubmitting(false);
     }

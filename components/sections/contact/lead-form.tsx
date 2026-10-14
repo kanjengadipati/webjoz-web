@@ -57,7 +57,7 @@ export default function DynamicLeadForm({
   }
 
   return (
-    <form onSubmit={(e) => { e.preventDefault(); onSubmit && onSubmit({ name, email, phone, message }); }} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+    <form onSubmit={(e) => { e.preventDefault(); if (onSubmit) void onSubmit({ name, email, phone, message }).catch(() => {}); }} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       {error && <div style={{ padding: "0.75rem 1rem", background: "#fee2e2", borderRadius: "var(--dt-radius)", color: "#991b1b", fontSize: "0.875rem" }}>{error}</div>}
       <div>
         <label style={{ display: "block", fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--dt-text-muted)", marginBottom: "0.375rem" }}>{isEN ? "Full Name" : "Nama Lengkap"}</label>
