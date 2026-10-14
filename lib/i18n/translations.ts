@@ -2065,6 +2065,9 @@ export interface Translations {
       variantsTypeSingle: string;
       variantsTypeMultiple: string;
       variantsRequired: string;
+      variantsMin: string;
+      variantsMax: string;
+      variantsMaxPlaceholder: string;
       variantsOptionsTitle: string;
       variantsOptionName: string;
       variantsOptionNamePlaceholder: string;
@@ -4870,6 +4873,9 @@ export const translations: Record<Locale, Translations> = {
         variantsTypeSingle: "Pilih 1 Saja (Radio)",
         variantsTypeMultiple: "Bisa Pilih Banyak (Checkbox)",
         variantsRequired: "Wajib Dipilih Pengunjung",
+        variantsMin: "Min",
+        variantsMax: "Maks",
+        variantsMaxPlaceholder: "semua",
         variantsOptionsTitle: "Daftar Pilihan / Opsi",
         variantsOptionName: "Nama Pilihan",
         variantsOptionNamePlaceholder: "cth. Regular, Large, Ekstra Keju",
@@ -7745,6 +7751,9 @@ export const translations: Record<Locale, Translations> = {
         variantsTypeSingle: "Single Choice (Radio)",
         variantsTypeMultiple: "Multiple Choice (Checkbox)",
         variantsRequired: "Required for Visitors",
+        variantsMin: "Min",
+        variantsMax: "Max",
+        variantsMaxPlaceholder: "all",
         variantsOptionsTitle: "Option Choices",
         variantsOptionName: "Option Name",
         variantsOptionNamePlaceholder: "e.g. Regular, Large, Extra Cheese",

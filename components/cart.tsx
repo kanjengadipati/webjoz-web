@@ -13,7 +13,26 @@ import React, { createContext, useContext, useState, useCallback, useRef, useEff
 import { ShoppingCart, X, Plus, Minus, Trash2, MessageSquare, ArrowLeft, CheckCircle, CreditCard, Truck, RotateCcw, Building2, QrCode, Wallet, Banknote } from "lucide-react";
 
 import type { ItemVariantGroup, PaymentConfig } from "@/components/templates/types";
-import { formatIdNumber } from "@/lib/utils";
+import { formatIdNumber, formatPriceWithAmount } from "@/lib/utils";
+
+/**
+ * Resolves the selection bounds for a variant group.
+ * - `single` groups always allow at most one option.
+ * - `multiple` groups allow up to `max` (default: all options).
+ * - `min` defaults to 1 when the group is required, otherwise 0.
+ */
+export function variantGroupBounds(grp: ItemVariantGroup): { min: number; max: number } {
+  const optionCount = grp.options?.length ?? 0;
+  if (grp.type === "single") {
+    return { min: grp.required === true ? 1 : 0, max: 1 };
+  }
+  const max = typeof grp.max === "number" && grp.max > 0 ? Math.min(grp.max, optionCount) : optionCount;
+  const rawMin = typeof grp.min === "number" && grp.min >= 0
+    ? grp.min
+    : (grp.required === true ? 1 : 0);
+  const min = Math.min(rawMin, max);
+  return { min, max };
+}
 
 export function PaymentMethodIcon({ type, className = "w-3.5 h-3.5 shrink-0" }: { type?: string; className?: string }) {
   switch (type) {
@@ -42,7 +61,10 @@ export interface SelectedVariant {
 }
 
 export interface CartItem {
-  id: string;         // unique: `${categoryName}__${itemName}` or `${itemId}__${variantKey}`
+  id: string;         // unique line id: `${base_id}` or `${base_id}__${variantSignature}`
+  /** Stable id of the underlying item (without the variant signature). Used to
+   *  group all variant lines of the same item (badge count) without parsing ids. */
+  base_id?: string;
   name: string;
   /** Legacy display string kept for backward compat with templates that pass price directly */
   price: string | null;
@@ -317,7 +339,7 @@ export function AddToCartButton({
 
   // If item has variants, count all matching items in cart regardless of variant
   const totalItemQty = items
-    .filter((i) => i.id === itemId || i.id.startsWith(`${itemId}__`))
+    .filter((i) => i.base_id === itemId || i.id === itemId)
     .reduce((s, i) => s + i.qty, 0);
 
   if (disabled) {
@@ -378,6 +400,7 @@ export function AddToCartButton({
         type="button"
         onClick={() => add({
           id: itemId,
+          base_id: itemId,
           name: itemName,
           price: effectiveDisplay ?? null,
           price_amount: effectiveAmount ?? null,
@@ -449,7 +472,8 @@ export function VariantSelectorModal({
   const [selectedMap, setSelectedMap] = useState<Record<string, string[]>>(() => {
     const init: Record<string, string[]> = {};
     for (const grp of variant_groups) {
-      if (grp.type === "single" && grp.options.length > 0 && grp.required !== false) {
+      const bounds = variantGroupBounds(grp);
+      if (grp.type === "single" && bounds.min >= 1 && grp.options.length > 0) {
         init[grp.id] = [grp.options[0].id];
       } else {
         init[grp.id] = [];
@@ -463,10 +487,15 @@ export function VariantSelectorModal({
       if (group.type === "single") {
         return { ...prev, [group.id]: [optionId] };
       }
+      const bounds = variantGroupBounds(group);
       const current = prev[group.id] || [];
       const exists = current.includes(optionId);
-      const next = exists ? current.filter((id) => id !== optionId) : [...current, optionId];
-      return { ...prev, [group.id]: next };
+      if (exists) {
+        return { ...prev, [group.id]: current.filter((id) => id !== optionId) };
+      }
+      // Ignore selections beyond the max instead of silently exceeding it.
+      if (current.length >= bounds.max) return prev;
+      return { ...prev, [group.id]: [...current, optionId] };
     });
   };
 
@@ -496,10 +525,9 @@ export function VariantSelectorModal({
 
   // Validate required groups
   const isValid = variant_groups.every((grp) => {
-    if (grp.type === "single" && grp.required !== false) {
-      return (selectedMap[grp.id] || []).length > 0;
-    }
-    return true;
+    const bounds = variantGroupBounds(grp);
+    const count = (selectedMap[grp.id] || []).length;
+    return count >= bounds.min && count <= bounds.max;
   });
 
   const hasNumericBase = typeof itemPriceAmount === "number" && itemPriceAmount > 0;
@@ -507,18 +535,23 @@ export function VariantSelectorModal({
 
   const handleAddToCart = () => {
     if (!isValid) return;
-    optionKeys.sort();
-    const variantSignature = optionKeys.length > 0 ? optionKeys.join("_") : "default";
+    // Build a collision-safe variant signature: option ids are URL-encoded
+    // before joining so a delimiter inside an id can't be confused with the
+    // separator (e.g. ["a_b","c"] vs ["a","b_c"]).
+    const variantSignature = optionKeys.length > 0
+      ? optionKeys.map((k) => encodeURIComponent(k)).sort().join("|")
+      : "default";
     const cartItemId = `${itemId}__${variantSignature}`;
 
-    // Format display label
+    // Format display label from the numeric amount, not by parsing the label
     let formattedPriceDisplay = itemPriceDisplay || itemPrice || null;
-    if (computedTotalAmount !== null && itemPriceDisplay) {
-      formattedPriceDisplay = itemPriceDisplay.replace(/[\d.,]+/, () => formatIdNumber(computedTotalAmount));
+    if (computedTotalAmount !== null) {
+      formattedPriceDisplay = formatPriceWithAmount(computedTotalAmount, itemPriceDisplay || itemPrice);
     }
 
     add({
       id: cartItemId,
+      base_id: itemId,
       name: itemName,
       price: itemPrice ?? null,
       price_amount: computedTotalAmount,
@@ -576,6 +609,19 @@ export function VariantSelectorModal({
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {variant_groups.map((grp) => {
             const chosen = selectedMap[grp.id] || [];
+            const bounds = variantGroupBounds(grp);
+            let hint: string;
+            if (grp.type === "single") {
+              hint = bounds.min >= 1 ? "Pilih 1 (Wajib)" : "Pilih 1 (Opsional)";
+            } else if (bounds.min >= 1 && bounds.max < grp.options.length) {
+              hint = `Pilih ${bounds.min}–${bounds.max}`;
+            } else if (bounds.min >= 1) {
+              hint = `Pilih min. ${bounds.min}`;
+            } else if (bounds.max < grp.options.length) {
+              hint = `Maks. ${bounds.max}`;
+            } else {
+              hint = "Boleh Pilih Banyak";
+            }
             return (
               <div key={grp.id} className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -586,7 +632,7 @@ export function VariantSelectorModal({
                       color: "var(--dt-primary, #4F46E5)",
                     }}
                   >
-                    {grp.type === "single" ? (grp.required !== false ? "Pilih 1 (Wajib)" : "Pilih 1 (Opsional)") : "Boleh Pilih Banyak"}
+                    {hint}
                   </span>
                 </div>
 
@@ -631,7 +677,7 @@ export function VariantSelectorModal({
             <span className="text-[10px] opacity-60 block">Total Item</span>
             <span className="text-sm font-bold" style={{ color: "var(--dt-primary, #4F46E5)" }}>
               {computedTotalAmount !== null
-                ? (itemPriceDisplay ? itemPriceDisplay.replace(/[\d.,]+/, () => formatIdNumber(computedTotalAmount)) : formatIdNumber(computedTotalAmount))
+                ? formatPriceWithAmount(computedTotalAmount, itemPriceDisplay || itemPrice)
                 : (itemPriceDisplay || itemPrice || "-")}
             </span>
           </div>
@@ -707,7 +753,7 @@ function buildWAMessage(items: CartItem[], brandName?: string): string {
       if (typeof item.price_amount === "number" && item.price_amount > 0 && item.qty > 1) {
         // Show per-item line total when qty > 1
         const itemTotal = item.price_amount * item.qty;
-        lineTotal = ` = ${isReal ? displayLabel!.replace(/[\d.,]+/, () => formatIdNumber(itemTotal)) : formatIdNumber(itemTotal)}`;
+        lineTotal = ` = ${isReal ? formatPriceWithAmount(itemTotal, displayLabel) : formatIdNumber(itemTotal)}`;
       }
 
       const variantStr = item.selected_variants && item.selected_variants.length > 0
