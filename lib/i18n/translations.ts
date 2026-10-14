@@ -1157,6 +1157,44 @@ export interface Translations {
       capacityWebsMin: string;
       capacityWebsHour: string;
       capacityWebsDay: string;
+      tabStatus: string;
+      tabConfig: string;
+      addOverride: string;
+      editOverride: string;
+      pola1NoticeTitle: string;
+      pola1NoticeDesc: string;
+      tableTier: string;
+      tableProvider: string;
+      tableModel: string;
+      tableBaseUrl: string;
+      tableApiKey: string;
+      tableDailyLimit: string;
+      tableStatus: string;
+      tableActions: string;
+      active: string;
+      disabled: string;
+      defaultFallback: string;
+      dbOverride: string;
+      noConfigsTitle: string;
+      noConfigsDesc: string;
+      formTier: string;
+      formTierPlaceholder: string;
+      formProvider: string;
+      formModel: string;
+      formBaseUrl: string;
+      formApiKey: string;
+      formApiKeyPlaceholder: string;
+      formDailyLimit: string;
+      formDailyLimitHint: string;
+      formEnabled: string;
+      saveConfig: string;
+      cancel: string;
+      saving: string;
+      deleteConfirm: string;
+      edit: string;
+      delete: string;
+      pageTitle: string;
+      pageSubtitle: string;
     };
     adminMetrics: {
       noAccess: string;
@@ -3891,6 +3929,44 @@ export const translations: Record<Locale, Translations> = {
         capacityWebsMin: "web/menit",
         capacityWebsHour: "web/jam",
         capacityWebsDay: "web/hari (approx)",
+        tabStatus: "Status & Kuota",
+        tabConfig: "Konfigurasi Runtime",
+        addOverride: "Tambah Override",
+        editOverride: "Edit Override",
+        pola1NoticeTitle: "Pola 1 — DB Override",
+        pola1NoticeDesc: "Nilai di bawah ini meng-override konfigurasi .env saat runtime. Tier yang belum punya record akan menggunakan nilai .env sebagai fallback. API key disimpan terenkripsi dan hanya ditampilkan sebagai hint.",
+        tableTier: "Tier",
+        tableProvider: "Provider",
+        tableModel: "Model",
+        tableBaseUrl: "Base URL",
+        tableApiKey: "API Key",
+        tableDailyLimit: "Batas Harian",
+        tableStatus: "Status",
+        tableActions: "Aksi",
+        active: "Aktif",
+        disabled: "Nonaktif",
+        defaultFallback: ".env",
+        dbOverride: "DB Override",
+        noConfigsTitle: "Belum Ada Override Runtime",
+        noConfigsDesc: "Semua tier AI saat ini menggunakan konfigurasi default dari file .env. Klik 'Tambah Override' untuk menyesuaikan model atau limit dari dashboard.",
+        formTier: "Tier AI",
+        formTierPlaceholder: "mis. primary, fast, smart, fallback",
+        formProvider: "Provider",
+        formModel: "Nama Model",
+        formBaseUrl: "Base URL (Opsional)",
+        formApiKey: "API Key",
+        formApiKeyPlaceholder: "Masukkan API key baru (kosongkan jika tidak diubah)",
+        formDailyLimit: "Batas Request Harian",
+        formDailyLimitHint: "0 = tanpa batas tambahan",
+        formEnabled: "Aktifkan Tier Ini",
+        saveConfig: "Simpan Konfigurasi",
+        cancel: "Batal",
+        saving: "Menyimpan...",
+        deleteConfirm: "Hapus override untuk tier ini dan kembali ke fallback .env?",
+        edit: "Edit",
+        delete: "Hapus",
+        pageTitle: "Pengaturan AI",
+        pageSubtitle: "Monitor status provider, kuota penggunaan, dan atur parameter runtime AI",
       },
       adminMetrics: {
         noAccess: "Anda tidak memiliki akses ke halaman ini.",
@@ -6695,6 +6771,44 @@ export const translations: Record<Locale, Translations> = {
         capacityWebsMin: "web/min",
         capacityWebsHour: "web/hour",
         capacityWebsDay: "web/day (approx)",
+        tabStatus: "Status & Quota",
+        tabConfig: "Runtime Config",
+        addOverride: "Add Override",
+        editOverride: "Edit Override",
+        pola1NoticeTitle: "Pattern 1 — DB Override",
+        pola1NoticeDesc: "Values below override .env configurations at runtime. Tiers without DB records fall back to .env values. API keys are safely masked and only shown as hints.",
+        tableTier: "Tier",
+        tableProvider: "Provider",
+        tableModel: "Model",
+        tableBaseUrl: "Base URL",
+        tableApiKey: "API Key",
+        tableDailyLimit: "Daily Limit",
+        tableStatus: "Status",
+        tableActions: "Actions",
+        active: "Active",
+        disabled: "Disabled",
+        defaultFallback: ".env",
+        dbOverride: "DB Override",
+        noConfigsTitle: "No Runtime Overrides Yet",
+        noConfigsDesc: "All AI tiers currently use default settings from the .env file. Click 'Add Override' to customize models or limits from the dashboard.",
+        formTier: "AI Tier",
+        formTierPlaceholder: "e.g. primary, fast, smart, fallback",
+        formProvider: "Provider",
+        formModel: "Model Name",
+        formBaseUrl: "Base URL (Optional)",
+        formApiKey: "API Key",
+        formApiKeyPlaceholder: "Enter new API key (leave empty to keep existing)",
+        formDailyLimit: "Daily Request Limit",
+        formDailyLimitHint: "0 = no custom limit",
+        formEnabled: "Enable This Tier",
+        saveConfig: "Save Configuration",
+        cancel: "Cancel",
+        saving: "Saving...",
+        deleteConfirm: "Delete override for this tier and revert to .env fallback?",
+        edit: "Edit",
+        delete: "Delete",
+        pageTitle: "AI Settings",
+        pageSubtitle: "Monitor provider status and configure runtime AI parameters",
       },
       adminMetrics: {
         noAccess: "You do not have access to this page.",
