@@ -483,7 +483,8 @@ export function VariantSelectorModal({
     for (const grp of variant_groups) {
       const bounds = variantGroupBounds(grp);
       if (grp.type === "single" && bounds.min >= 1 && grp.options.length > 0) {
-        init[grp.id] = [grp.options[0].id];
+        const firstAvailable = grp.options.find((o) => o.is_available !== false);
+        init[grp.id] = firstAvailable ? [firstAvailable.id] : [];
       } else {
         init[grp.id] = [];
       }
@@ -492,6 +493,8 @@ export function VariantSelectorModal({
   });
 
   const handleSelectOption = (group: ItemVariantGroup, optionId: string) => {
+    const target = group.options.find((o) => o.id === optionId);
+    if (target && target.is_available === false) return;
     setSelectedMap((prev) => {
       if (group.type === "single") {
         return { ...prev, [group.id]: [optionId] };
@@ -648,15 +651,19 @@ export function VariantSelectorModal({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {grp.options.map((opt) => {
                     const isSelected = chosen.includes(opt.id);
+                    const soldOut = opt.is_available === false;
                     return (
                       <button
                         key={opt.id}
                         type="button"
                         onClick={() => handleSelectOption(grp, opt.id)}
-                        className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-medium border transition-all cursor-pointer text-left ${
-                          isSelected
-                            ? "border-primary ring-1 ring-primary"
-                            : "border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20"
+                        disabled={soldOut}
+                        className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-medium border transition-all text-left ${
+                          soldOut
+                            ? "cursor-not-allowed opacity-50 border-black/10 dark:border-white/10"
+                            : isSelected
+                              ? "cursor-pointer border-primary ring-1 ring-primary"
+                              : "cursor-pointer border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20"
                         }`}
                         style={{
                           background: isSelected
@@ -665,8 +672,10 @@ export function VariantSelectorModal({
                           color: isSelected ? "var(--dt-primary, #4F46E5)" : "inherit",
                         }}
                       >
-                        <span className="truncate mr-1">{opt.name}</span>
-                        {opt.price_display || (typeof opt.price_delta === "number" && opt.price_delta > 0) ? (
+                        <span className={`truncate mr-1 ${soldOut ? "line-through" : ""}`}>{opt.name}</span>
+                        {soldOut ? (
+                          <span className="text-[10px] font-bold uppercase tracking-wide opacity-70 shrink-0">Habis</span>
+                        ) : opt.price_display || (typeof opt.price_delta === "number" && opt.price_delta > 0) ? (
                           <span className="text-[10px] font-bold opacity-80 shrink-0">
                             {opt.price_display || `+${formatIdNumber(opt.price_delta!)}`}
                           </span>

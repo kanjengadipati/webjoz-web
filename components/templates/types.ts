@@ -58,6 +58,8 @@ export interface ItemVariantOption {
   name: string;
   price_delta?: number;
   price_display?: string;
+  /** When false, the option is sold out and cannot be selected. */
+  is_available?: boolean;
 }
 
 export interface ItemVariantGroup {
