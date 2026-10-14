@@ -34,7 +34,7 @@ const NAV_LABEL_KEYS: Record<string, string> = {
   templates: "dashboard.nav.templates",
   "design-assets": "dashboard.nav.designAssets",
   metrics: "dashboard.nav.metrics",
-  "ai-status": "dashboard.nav.aiStatus",
+  "ai-settings": "dashboard.nav.aiSettings",
   sites: "dashboard.nav.sites",
   domains: "dashboard.nav.domains",
   leads: "dashboard.nav.leads",
