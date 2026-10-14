@@ -863,6 +863,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
   const [isSuccess, setIsSuccess] = useState(false);
   const [orderNo, setOrderNo] = useState<string>("");
   const [noteOpen, setNoteOpen] = useState<Record<string, boolean>>({});
+  const [orderError, setOrderError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!open) {
@@ -872,6 +873,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
       setCustomerNotes("");
       setIsSuccess(false);
       setOrderNo("");
+      setOrderError(null);
     }
   }, [open]);
 
@@ -902,6 +904,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
       }
 
       setLeadLoading(true);
+      setOrderError(null);
       try {
         const cartMessage = buildWAMessage(items, brandName);
         const fullMessage = `${cartMessage}\n\n*Catatan/Alamat Tambahan:*\n${customerNotes.trim() || "-"}`;
@@ -929,6 +932,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
         clear();
       } catch (err) {
         console.error("Failed to submit order lead:", err);
+        setOrderError(err instanceof Error ? err.message : "Gagal mengirim pesanan. Silakan coba lagi.");
       } finally {
         setLeadLoading(false);
       }
@@ -939,6 +943,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
     const phone = normalizePhone(waPhone);
 
     setLeadLoading(true);
+    setOrderError(null);
     try {
       let orderNoFromServer: string | void;
       let message = buildWAMessage(items, brandName);
@@ -967,6 +972,11 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
       window.open(url, "_blank", "noopener,noreferrer");
       setOpen(false);
     } catch (err) {
+      const code = (err as { code?: string })?.code;
+      if (code === "ERR_VARIANT_INVALID") {
+        setOrderError(err instanceof Error ? err.message : "Pesanan tidak valid. Periksa kembali pilihan Anda.");
+        return;
+      }
       console.error("Failed to auto-record WhatsApp order snapshot:", err);
       const url = `https://wa.me/${phone}?text=${encodeURIComponent(buildWAMessage(items, brandName))}`;
       window.open(url, "_blank", "noopener,noreferrer");
@@ -1119,9 +1129,14 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
           </div>
 
           {/* Footer */}
-          <div className="px-4 py-3 shrink-0"
+          <div className="px-4 py-3 shrink-0 space-y-2"
             style={{ borderTop: "1px solid color-mix(in srgb, var(--dt-text, #1e293b) 8%, transparent)" }}
           >
+            {orderError && (
+              <p className="text-[11px] font-medium text-red-600 bg-red-500/10 border border-red-500/20 rounded-lg px-2.5 py-1.5">
+                {orderError}
+              </p>
+            )}
             <button
               type="submit"
               disabled={leadLoading}
@@ -1420,6 +1435,11 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
                   </div>
                 );
               })()}
+              {orderError && (
+                <p className="text-[11px] font-medium text-red-600 bg-red-500/10 border border-red-500/20 rounded-lg px-2.5 py-1.5">
+                  {orderError}
+                </p>
+              )}
               <button
                 type="button"
                 onClick={() => handleCheckout()}

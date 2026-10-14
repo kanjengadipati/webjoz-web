@@ -2740,7 +2740,7 @@ const LeadForm: React.FC<LeadFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ name, email, phone, message });
+    void onSubmit({ name, email, phone, message }).catch(() => {});
   };
 
   if (success) {
