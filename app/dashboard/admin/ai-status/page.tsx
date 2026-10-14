@@ -21,6 +21,9 @@ interface AiProviderStatus {
   http_status?: number;
   latency_ms?: number;
   error?: string;
+  daily_requests_limit?: number;
+  daily_tokens_limit?: number;
+  tier_policy?: string;
 }
 
 interface AiStatusReport {
@@ -150,40 +153,6 @@ function rateLimitUsedPct(rl: RateLimitInfo | null): number | null {
   }
   if (limit == null || remaining == null || limit <= 0) return null;
   return Math.min(100, Math.max(0, Math.round(((limit - remaining) / limit) * 100)));
-}
-
-interface FreeTierPolicy {
-  dailyRequests: number;
-}
-
-// Preset riset kuota Free Tier resmi per provider/model
-function getFreeTierPolicy(provider?: string, model?: string): FreeTierPolicy | null {
-  const p = (provider || "").toLowerCase();
-  const m = (model || "").toLowerCase();
-
-  // Google Gemini (Free tier)
-  if (p.includes("gemini") || p.includes("google") || p.includes("generativelanguage")) {
-    if (m.includes("pro")) {
-      return { dailyRequests: 50 }; // Gemini Pro free tier: 50 RPD
-    }
-    // Gemini Flash (1.5, 2.0, 2.5, 3.5 Flash / Flash Lite): 1.500 RPD
-    return { dailyRequests: 1500 };
-  }
-
-  // Groq (Free tier)
-  if (p.includes("groq")) {
-    if (m.includes("70b") || m.includes("deepseek")) {
-      return { dailyRequests: 1000 };
-    }
-    return { dailyRequests: 14400 };
-  }
-
-  // OpenRouter Free (:free models)
-  if (p.includes("openrouter") && m.includes(":free")) {
-    return { dailyRequests: 200 };
-  }
-
-  return null;
 }
 
 function todayUsagePath() {
@@ -398,8 +367,8 @@ export default function AdminAiStatusPage() {
                   // 1. Cek apakah ada data rate-limit resmi dari response header provider (mis. Groq/OpenRouter)
                   const hasDirectRateLimit = rl != null && (rl.limit_requests != null || rl.limit_tokens != null);
 
-                  // 2. Jika tidak ada header resmi, gunakan riset estimasi batas Free Tier
-                  const freeTier = !hasDirectRateLimit ? getFreeTierPolicy(p.provider, p.model) : null;
+                  // 2. Jika tidak ada header resmi, gunakan batas kuota dari backend API (tersimpan di DB / provider limits)
+                  const backendDailyLimit = !hasDirectRateLimit && p.daily_requests_limit && p.daily_requests_limit > 0 ? p.daily_requests_limit : null;
 
                   let effectiveLimit: string | null = null;
                   let effectiveRemaining: string | null = null;
@@ -429,10 +398,10 @@ export default function AdminAiStatusPage() {
                         : rl.remaining_requests != null
                           ? `${formatNumber(rl.remaining_requests)} ${t("dashboard.adminAiStatus.colRequests")}`
                           : null;
-                  } else if (freeTier) {
-                    isFreeTier = true;
+                  } else if (backendDailyLimit) {
+                    isFreeTier = p.tier_policy === "free_tier" || !p.tier_policy;
                     const requestsUsed = used?.requests ?? 0;
-                    const limitReq = freeTier.dailyRequests;
+                    const limitReq = backendDailyLimit;
                     const remReq = Math.max(0, limitReq - requestsUsed);
                     quotaPct = Math.min(100, Math.max(0, Math.round((requestsUsed / limitReq) * 100)));
                     rlTone = remReq <= 0 ? "red" : remReq / limitReq > 0.5 ? "green" : "yellow";
