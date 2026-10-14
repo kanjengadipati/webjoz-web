@@ -275,8 +275,9 @@ export default function AdminAiSettingsPage() {
     setConfigLoading(true);
     setConfigError("");
     try {
-      const res = await request<{ data: AIRuntimeConfig[] }>("/admin/ai/settings", {}, token);
-      setConfigs(res.data?.data ?? []);
+      const res = await request<AIRuntimeConfig[]>("/admin/ai/settings", {}, token);
+      const list = Array.isArray(res.data) ? res.data : ((res.data as unknown as { data?: AIRuntimeConfig[] })?.data ?? []);
+      setConfigs(list);
     } catch (err: unknown) {
       setConfigError((err as { message?: string })?.message || "Failed to load configs");
     } finally {
@@ -405,10 +406,10 @@ export default function AdminAiSettingsPage() {
         <div>
           <h1 className="text-xl font-bold tracking-tight flex items-center gap-3">
             <Cpu className="size-5 text-primary" />
-            AI Settings
+            {t("dashboard.adminAiStatus.pageTitle")}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Monitor provider status and configure runtime AI parameters
+            {t("dashboard.adminAiStatus.pageSubtitle")}
           </p>
         </div>
         {activeTab === "status" && (
@@ -431,7 +432,7 @@ export default function AdminAiSettingsPage() {
             className="gap-2 shrink-0"
           >
             <Plus className="size-3.5" />
-            Add Override
+            {t("dashboard.adminAiStatus.addOverride")}
           </Button>
         )}
       </div>
@@ -449,9 +450,9 @@ export default function AdminAiSettingsPage() {
             }`}
           >
             {tab === "status" ? (
-              <span className="flex items-center gap-1.5"><Server className="size-3.5" />Status & Quota</span>
+              <span className="flex items-center gap-1.5"><Server className="size-3.5" />{t("dashboard.adminAiStatus.tabStatus")}</span>
             ) : (
-              <span className="flex items-center gap-1.5"><Settings2 className="size-3.5" />Runtime Config</span>
+              <span className="flex items-center gap-1.5"><Settings2 className="size-3.5" />{t("dashboard.adminAiStatus.tabConfig")}</span>
             )}
           </button>
         ))}
@@ -791,7 +792,7 @@ export default function AdminAiSettingsPage() {
             <CardContent className="p-4 pt-4 flex gap-3 items-start">
               <AlertTriangle className="size-4 text-amber-500 shrink-0 mt-0.5" />
               <div className="text-xs text-muted-foreground leading-relaxed">
-                <b className="text-foreground">Pola 1 — DB Override:</b> Nilai di bawah ini meng-override konfigurasi <code className="px-1 rounded bg-muted font-mono">.env</code> saat server memuat provider. Tier yang belum punya record akan menggunakan nilai <code className="px-1 rounded bg-muted font-mono">.env</code> sebagai fallback. API key disimpan terenkripsi dan hanya ditampilkan sebagai hint.
+                <b className="text-foreground">{t("dashboard.adminAiStatus.pola1NoticeTitle")}:</b> {t("dashboard.adminAiStatus.pola1NoticeDesc")}
               </div>
             </CardContent>
           </Card>
@@ -801,49 +802,49 @@ export default function AdminAiSettingsPage() {
             <Card className="border-primary/30 shadow-sm">
               <CardContent className="p-5 pt-5 space-y-4">
                 <p className="text-sm font-semibold text-foreground">
-                  {editingTier === "__new__" ? "Add New Override" : `Edit: ${editingTier}`}
+                  {editingTier === "__new__" ? t("dashboard.adminAiStatus.addOverride") : `${t("dashboard.adminAiStatus.editOverride")}: ${editingTier}`}
                 </p>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Tier (unique key)</label>
+                    <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formTier")}</label>
                     <input
                       className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
-                      placeholder="e.g. primary, fallback.1, router-low.1"
+                      placeholder={t("dashboard.adminAiStatus.formTierPlaceholder")}
                       value={formData.tier}
                       disabled={editingTier !== "__new__"}
                       onChange={(e) => setFormData((f) => ({ ...f, tier: e.target.value }))}
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Provider</label>
+                    <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formProvider")}</label>
                     <input
                       className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50"
-                      placeholder="e.g. gemini, openai, groq"
+                      placeholder="e.g. gemini, groq, openrouter"
                       value={formData.provider}
                       onChange={(e) => setFormData((f) => ({ ...f, provider: e.target.value }))}
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Model</label>
+                    <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formModel")}</label>
                     <input
                       className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
-                      placeholder="e.g. gemini-2.0-flash"
+                      placeholder="e.g. gemini-2.5-flash"
                       value={formData.model}
                       onChange={(e) => setFormData((f) => ({ ...f, model: e.target.value }))}
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Base URL (optional)</label>
+                    <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formBaseUrl")}</label>
                     <input
                       className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
-                      placeholder="Leave empty for default"
+                      placeholder="https://..."
                       value={formData.base_url}
                       onChange={(e) => setFormData((f) => ({ ...f, base_url: e.target.value }))}
                     />
                   </div>
                   <div className="space-y-1">
                     <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
-                      API Key {editingTier !== "__new__" && <span className="normal-case font-normal">(leave empty to keep existing)</span>}
+                      {t("dashboard.adminAiStatus.formApiKey")} {editingTier !== "__new__" && <span className="normal-case font-normal text-muted-foreground">({t("dashboard.adminAiStatus.formApiKeyPlaceholder")})</span>}
                     </label>
                     <div className="relative">
                       <input
@@ -863,12 +864,12 @@ export default function AdminAiSettingsPage() {
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Daily Requests Limit</label>
+                    <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formDailyLimit")}</label>
                     <input
                       className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm tabular-nums focus:outline-none focus:ring-1 focus:ring-primary/50"
                       type="number"
                       min={0}
-                      placeholder="0 = unlimited"
+                      placeholder={t("dashboard.adminAiStatus.formDailyLimitHint")}
                       value={formData.daily_requests_limit}
                       onChange={(e) => setFormData((f) => ({ ...f, daily_requests_limit: parseInt(e.target.value) || 0 }))}
                     />
@@ -882,7 +883,7 @@ export default function AdminAiSettingsPage() {
                       onChange={(e) => setFormData((f) => ({ ...f, is_enabled: e.target.checked }))}
                       className="rounded border-border/50"
                     />
-                    Enabled
+                    {t("dashboard.adminAiStatus.formEnabled")}
                   </label>
                 </div>
                 {saveError && (
@@ -893,10 +894,10 @@ export default function AdminAiSettingsPage() {
                 <div className="flex items-center gap-2 pt-1">
                   <Button size="sm" onClick={saveConfig} disabled={saving} className="gap-1.5">
                     {saving ? <Loader2 className="size-3.5 animate-spin" /> : <Save className="size-3.5" />}
-                    Save
+                    {saving ? t("dashboard.adminAiStatus.saving") : t("dashboard.adminAiStatus.saveConfig")}
                   </Button>
                   <Button size="sm" variant="ghost" onClick={cancelEdit} disabled={saving}>
-                    Cancel
+                    {t("dashboard.adminAiStatus.cancel")}
                   </Button>
                 </div>
               </CardContent>
@@ -918,10 +919,10 @@ export default function AdminAiSettingsPage() {
             </Card>
           ) : configs.length === 0 ? (
             <Card className="border-border/40 border-dashed">
-              <CardContent className="p-8 pt-8 flex flex-col items-center gap-3 text-muted-foreground">
+              <CardContent className="p-8 pt-8 flex flex-col items-center gap-3 text-muted-foreground text-center">
                 <Settings2 className="size-8 opacity-30" />
-                <p className="text-sm">No runtime overrides configured.</p>
-                <p className="text-xs">All providers use <code className="px-1 rounded bg-muted font-mono">.env</code> values. Click "Add Override" to configure.</p>
+                <p className="text-sm font-medium text-foreground">{t("dashboard.adminAiStatus.noConfigsTitle")}</p>
+                <p className="text-xs max-w-md">{t("dashboard.adminAiStatus.noConfigsDesc")}</p>
               </CardContent>
             </Card>
           ) : (
@@ -936,26 +937,30 @@ export default function AdminAiSettingsPage() {
                           <code className="text-xs font-mono font-semibold text-foreground">{cfg.tier}</code>
                         </div>
                         <div>
-                          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Provider / Model</p>
+                          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.tableProvider")} / {t("dashboard.adminAiStatus.tableModel")}</p>
                           <p className="text-xs font-medium text-foreground">{cfg.provider} · <span className="font-mono">{cfg.model}</span></p>
                         </div>
                         <div>
-                          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">API Key</p>
+                          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.tableApiKey")}</p>
                           <p className="text-xs font-mono text-muted-foreground">{cfg.api_key_hint || "—"}</p>
                         </div>
                         <div>
-                          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Daily Limit</p>
-                          <p className="text-xs tabular-nums text-foreground">{cfg.daily_requests_limit > 0 ? formatNumber(cfg.daily_requests_limit) : "unlimited"}</p>
+                          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.tableDailyLimit")}</p>
+                          <p className="text-xs tabular-nums text-foreground">{cfg.daily_requests_limit > 0 ? `${formatNumber(cfg.daily_requests_limit)} /hari` : t("dashboard.adminAiStatus.rateLimitUnknown")}</p>
                         </div>
                       </div>
                       <div className="shrink-0 flex items-center gap-1">
-                        <Button size="sm" variant="ghost" onClick={() => startEdit(cfg)} className="h-7 px-2 text-xs">
-                          Edit
+                        <Button size="sm" variant="ghost" onClick={() => startEdit(cfg)} className="h-7 px-2.5 text-xs">
+                          {t("dashboard.adminAiStatus.edit")}
                         </Button>
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => deleteConfig(cfg.tier)}
+                          onClick={() => {
+                            if (window.confirm(t("dashboard.adminAiStatus.deleteConfirm"))) {
+                              deleteConfig(cfg.tier);
+                            }
+                          }}
                           disabled={deleting === cfg.tier}
                           className="h-7 px-2 text-destructive hover:text-destructive"
                         >
