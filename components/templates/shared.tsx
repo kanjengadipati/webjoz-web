@@ -1472,20 +1472,22 @@ function MenuCatalogCard({
 
   const displayPrice = itemPriceDisplay || itemPrice;
   const showPrice = (displayPrice && !isPlaceholderPrice(displayPrice)) || Boolean(isEditorMode);
+  const hasPromo = typeof itemPromoPriceAmount === "number" && itemPromoPriceAmount > 0 &&
+    (typeof itemPriceAmount !== "number" || itemPriceAmount <= 0 || itemPromoPriceAmount < itemPriceAmount);
+  const effectiveBaseAmount = hasPromo ? itemPromoPriceAmount : itemPriceAmount;
   // When an item has priced variant options, surface the cheapest possible
   // total as "From …" on the card (view mode only — the editor still edits the
   // raw base price string).
-  const minVariantAmount = minVariantPriceAmount(itemPriceAmount, variant_groups);
+  const minVariantAmount = minVariantPriceAmount(effectiveBaseAmount, variant_groups);
   let fromPriceDisplay: string | null = null;
   if (minVariantAmount != null) {
     const fromLabel = t("dashboard.sitesKatalog.priceFrom", "Mulai dari");
-    const alreadyHasFrom = (displayPrice || "").toLowerCase().includes(fromLabel.toLowerCase());
-    const template = alreadyHasFrom ? displayPrice : `${fromLabel} ${displayPrice ?? ""}`;
+    const baseTemplate = (hasPromo && itemPromoPriceDisplay) ? itemPromoPriceDisplay : displayPrice;
+    const alreadyHasFrom = (baseTemplate || "").toLowerCase().includes(fromLabel.toLowerCase());
+    const template = alreadyHasFrom ? baseTemplate : `${fromLabel} ${baseTemplate ?? ""}`;
     fromPriceDisplay = formatPriceWithAmount(minVariantAmount, template);
   }
   const priceValue = isEditorMode ? (displayPrice ?? "") : (fromPriceDisplay ?? displayPrice ?? "");
-  const hasPromo = typeof itemPromoPriceAmount === "number" && itemPromoPriceAmount > 0 &&
-    (typeof itemPriceAmount !== "number" || itemPriceAmount <= 0 || itemPromoPriceAmount < itemPriceAmount);
   const isOutOfStock = is_available === false;
 
   const handleTriggerUpload = (e: React.MouseEvent | React.TouchEvent) => {

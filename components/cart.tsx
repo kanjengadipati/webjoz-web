@@ -497,6 +497,11 @@ export function VariantSelectorModal({
     if (target && target.is_available === false) return;
     setSelectedMap((prev) => {
       if (group.type === "single") {
+        const bounds = variantGroupBounds(group);
+        const current = prev[group.id] || [];
+        if (bounds.min === 0 && current.includes(optionId)) {
+          return { ...prev, [group.id]: [] };
+        }
         return { ...prev, [group.id]: [optionId] };
       }
       const bounds = variantGroupBounds(group);
@@ -675,9 +680,9 @@ export function VariantSelectorModal({
                         <span className={`truncate mr-1 ${soldOut ? "line-through" : ""}`}>{opt.name}</span>
                         {soldOut ? (
                           <span className="text-[10px] font-bold uppercase tracking-wide opacity-70 shrink-0">Habis</span>
-                        ) : opt.price_display || (typeof opt.price_delta === "number" && opt.price_delta > 0) ? (
-                          <span className="text-[10px] font-bold opacity-80 shrink-0">
-                            {opt.price_display || `+${formatIdNumber(opt.price_delta!)}`}
+                        ) : opt.price_display || (typeof opt.price_delta === "number" && opt.price_delta !== 0) ? (
+                          <span className={`text-[10px] font-bold opacity-80 shrink-0 ${typeof opt.price_delta === "number" && opt.price_delta < 0 ? "text-emerald-600 dark:text-emerald-400" : ""}`}>
+                            {opt.price_display || (opt.price_delta! > 0 ? `+${formatIdNumber(opt.price_delta!)}` : `-${formatIdNumber(Math.abs(opt.price_delta!))}`)}
                           </span>
                         ) : null}
                       </button>
