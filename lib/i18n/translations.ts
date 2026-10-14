@@ -497,7 +497,7 @@ export interface Translations {
       templates: string;
       designAssets: string;
       metrics: string;
-      aiStatus: string;
+      aiSettings: string;
       sites: string;
       domains: string;
       leads: string;
@@ -3226,7 +3226,7 @@ export const translations: Record<Locale, Translations> = {
         templates: "Galeri Template",
         designAssets: "Aset Desain",
         metrics: "Metrik",
-        aiStatus: "Status AI",
+        aiSettings: "Pengaturan AI",
         sites: "Website Saya",
         domains: "Custom Domain",
         leads: "Customer Leads",
@@ -6030,7 +6030,7 @@ export const translations: Record<Locale, Translations> = {
         templates: "Template Gallery",
         designAssets: "Design Assets",
         metrics: "Metrics",
-        aiStatus: "AI Status",
+        aiSettings: "AI Settings",
         sites: "My Websites",
         domains: "Custom Domain",
         leads: "Customer Leads",
