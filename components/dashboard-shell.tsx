@@ -4,7 +4,7 @@ import React, { ReactNode, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, LayoutGrid, Home, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, ChevronDown, Plus, Palette, Users, DollarSign, Share2, Percent, Menu, X, Receipt, Cpu } from "lucide-react";
+import { LayoutDashboard, LayoutGrid, Home, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, ChevronDown, Plus, Palette, Users, DollarSign, Share2, Percent, Menu, X, Receipt, Cpu, Shield } from "lucide-react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator, MoonIcon, SunIcon, MOTION } from "webjoz-ui";
 import { clearAuthSession, useAuthReady, useAuthToken, useStoredEmail } from "@/lib/auth-store";
 import { ENV_NAME } from "@/lib/config";
@@ -35,6 +35,7 @@ const NAV_LABEL_KEYS: Record<string, string> = {
   "design-assets": "dashboard.nav.designAssets",
   metrics: "dashboard.nav.metrics",
   "ai-settings": "dashboard.nav.aiSettings",
+  "admin-sites": "dashboard.nav.adminSites",
   sites: "dashboard.nav.sites",
   domains: "dashboard.nav.domains",
   leads: "dashboard.nav.leads",
@@ -188,6 +189,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     "bar-chart": BarChart2,
     receipt: Receipt,
     cpu: Cpu,
+    shield: Shield,
   };
 
   return (
@@ -454,55 +456,62 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           : "max-w-7xl gap-6 px-4 py-6 pb-28 lg:h-full lg:min-h-0 lg:px-8 lg:pb-6 lg:grid-cols-[290px_minmax(0,1fr)] lg:overflow-hidden"
       )}>
         {!isFullscreenWorkspace && (
-          <aside className="hidden lg:block lg:h-full lg:min-h-0 lg:overflow-y-auto">
-            <Card className="overflow-hidden border-border/40 shadow-xl shadow-primary/5 bg-card dark:bg-card/90 backdrop-blur-md">
-              <CardHeader className="space-y-4 border-b border-border/40 bg-gradient-to-br from-primary/10 via-transparent to-transparent p-6">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-3">
-                    <Image
-                      src="/logo2.png"
-                      alt="Webjoz logo"
-                      width={120}
-                      height={72}
-                      className="h-8 w-auto object-contain"
-                      priority
-                    />
-                    <CardTitle className="text-2xl font-bold tracking-tighter">{t("dashboard.consoleTitle")}</CardTitle>
+          <aside className="hidden lg:flex lg:flex-col lg:h-full lg:min-h-0 lg:overflow-hidden">
+            <Card className="flex flex-col h-full min-h-0 overflow-hidden border-border/40 shadow-xl shadow-primary/5 bg-card dark:bg-card/90 backdrop-blur-md">
+              {/* Fixed Top: Logo, Title & User Badge */}
+              <div className="shrink-0 border-b border-border/40 bg-gradient-to-br from-primary/10 via-transparent to-transparent">
+                <CardHeader className="space-y-4 p-5 pb-3">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-3">
+                      <Image
+                        src="/logo2.png"
+                        alt="Webjoz logo"
+                        width={120}
+                        height={72}
+                        className="h-8 w-auto object-contain"
+                        priority
+                      />
+                      <CardTitle className="text-2xl font-bold tracking-tighter">{t("dashboard.consoleTitle")}</CardTitle>
+                    </div>
+                    <CardDescription className="text-xs font-medium opacity-80">
+                      {t("dashboard.adminWorkspace")}
+                    </CardDescription>
                   </div>
-                  <CardDescription className="text-xs font-medium opacity-80">
-                    {t("dashboard.adminWorkspace")}
-                  </CardDescription>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-6 p-4">
-                <div className="rounded-2xl border border-border/30 bg-muted/40 dark:bg-white/[0.03] p-4 shadow-inner">
-                  <div className="flex items-center justify-between gap-3 mb-2">
-                    <div className="text-xs font-medium text-muted-foreground/70">{t("dashboard.mode")}</div>
-                    <div className="flex items-center gap-2">
-                      <span className="inline-flex items-center rounded-full border border-border/40 bg-muted/60 dark:bg-white/10 px-2.5 py-0.5 text-[11px] font-bold text-foreground capitalize">{activeTenant?.tenant.plan || "free"}</span>
-                      {activeTenant?.tenant.plan === "free" && (
-                        <Link href="/dashboard/upgrade" className="text-[9px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase tracking-wider leading-none hover:opacity-80 transition-opacity">
-                          {t("dashboard.upgradeLabel")}
-                        </Link>
-                      )}
-                      <div className={cn(
-                        "size-2 rounded-full",
-                        isAuthenticated ? "bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.8)]" : "bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.6)]",
-                      )} aria-hidden="true" />
+                </CardHeader>
+
+                <div className="px-4 pb-3">
+                  <div className="rounded-2xl border border-border/30 bg-muted/40 dark:bg-white/[0.03] p-3.5 shadow-inner">
+                    <div className="flex items-center justify-between gap-3 mb-1.5">
+                      <div className="text-xs font-medium text-muted-foreground/70">{t("dashboard.mode")}</div>
+                      <div className="flex items-center gap-2">
+                        <span className="inline-flex items-center rounded-full border border-border/40 bg-muted/60 dark:bg-white/10 px-2.5 py-0.5 text-[11px] font-bold text-foreground capitalize">{activeTenant?.tenant.plan || "free"}</span>
+                        {activeTenant?.tenant.plan === "free" && (
+                          <Link href="/dashboard/upgrade" className="text-[9px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase tracking-wider leading-none hover:opacity-80 transition-opacity">
+                            {t("dashboard.upgradeLabel")}
+                          </Link>
+                        )}
+                        <div className={cn(
+                          "size-2 rounded-full",
+                          isAuthenticated ? "bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.8)]" : "bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.6)]",
+                        )} aria-hidden="true" />
+                      </div>
+                    </div>
+                    <div className="text-sm font-bold tracking-tight">
+                      {isAuthenticated ? (
+                        <div className="flex items-center justify-between gap-2">
+                          <span>{t("dashboard.authenticated")}</span>
+                          <Badge variant="secondary" className="capitalize text-[9px] px-2 py-0 h-4 bg-primary/10 text-primary border-none font-bold">
+                            {userRole}
+                          </Badge>
+                        </div>
+                      ) : t("dashboard.locked")}
                     </div>
                   </div>
-                  <div className="text-sm font-bold tracking-tight">
-                    {isAuthenticated ? (
-                      <div className="flex items-center justify-between gap-2">
-                        <span>{t("dashboard.authenticated")}</span>
-                        <Badge variant="secondary" className="capitalize text-[9px] px-2 py-0 h-4 bg-primary/10 text-primary border-none font-bold">
-                          {userRole}
-                        </Badge>
-                      </div>
-                    ) : t("dashboard.locked")}
-                  </div>
                 </div>
+              </div>
 
+              {/* Scrollable Middle: Navigation Menu only */}
+              <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-5">
                 <nav className="space-y-5">
                   {Array.from(new Set(filteredNavItems.map(item => item.section))).map((sectionName) => {
                     const sectionItems = filteredNavItems.filter(item => item.section === sectionName);
@@ -554,73 +563,71 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     );
                   })}
                 </nav>
+              </div>
 
-                <Separator />
+              {/* Fixed Bottom: Dock & Logout */}
+              <div className="shrink-0 p-4 border-t border-border/40 bg-card/60 dark:bg-card/90 space-y-3">
+                <div className="flex items-center justify-between rounded-2xl border border-border/50 bg-background/50 p-2 shadow-inner">
+                  {/* Left: Accent & Theme toggles */}
+                  <div className="flex items-center gap-1.5">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-9 rounded-xl border border-border/40 bg-card/60 hover:bg-primary/10 transition-all cursor-pointer"
+                      aria-label={isMonochrome ? t("dashboard.switchAccentBlue") : t("dashboard.switchAccentMonochrome")}
+                      aria-pressed={!isMonochrome}
+                      onClick={toggleAccent}
+                    >
+                      <div className={cn(
+                        "size-4 rounded-full border-2",
+                        MOTION.slow,
+                        accent === "monochrome" ? "bg-slate-500 border-slate-300" : "bg-primary border-primary/80 shadow-[0_0_8px_color-mix(in_srgb,var(--primary)_50%,transparent)]"
+                      )} aria-hidden="true" />
+                    </Button>
 
-                <div className="grid gap-3">
-                  {/* Minimalist Control Dock (Idea 2) */}
-                  <div className="flex items-center justify-between rounded-2xl border border-border/50 bg-background/50 p-2 shadow-inner">
-                    {/* Left: Accent & Theme toggles */}
-                    <div className="flex items-center gap-1.5">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="size-9 rounded-xl border border-border/40 bg-card/60 hover:bg-primary/10 transition-all cursor-pointer"
-                        aria-label={isMonochrome ? t("dashboard.switchAccentBlue") : t("dashboard.switchAccentMonochrome")}
-                        aria-pressed={!isMonochrome}
-                        onClick={toggleAccent}
-                      >
-                        <div className={cn(
-                          "size-4 rounded-full border-2",
-                          MOTION.slow,
-                          accent === "monochrome" ? "bg-slate-500 border-slate-300" : "bg-primary border-primary/80 shadow-[0_0_8px_color-mix(in_srgb,var(--primary)_50%,transparent)]"
-                        )} aria-hidden="true" />
-                      </Button>
-
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="size-9 rounded-xl border border-border/40 bg-card/60 hover:bg-primary/10 transition-all cursor-pointer"
-                        aria-label={theme === "dark" ? t("dashboard.switchLight") : t("dashboard.switchDark")}
-                        aria-pressed={theme === "dark"}
-                        onClick={toggleTheme}
-                      >
-                        <ThemeIcon mode={theme} />
-                      </Button>
-                    </div>
-
-                    {/* Divider */}
-                    <div className="h-6 w-px bg-border/50 mx-1 shrink-0" aria-hidden="true" />
-
-                    {/* Right: Language Pill */}
-                    <div className="inline-flex items-center rounded-full border border-border/60 bg-card/60 p-0.5 text-[11px] font-semibold shadow-inner">
-                      {(["id", "en"] as const).map((code) => (
-                        <button
-                          key={code}
-                          type="button"
-                          aria-label={`Switch language to ${code === "id" ? "Bahasa Indonesia" : "English"}`}
-                          aria-pressed={locale === code}
-                          onClick={() => setLocale(code)}
-                          className={cn(
-                            "rounded-full px-3 py-1 transition-all cursor-pointer font-bold",
-                            locale === code
-                              ? "bg-primary text-primary-foreground shadow-sm"
-                              : "text-muted-foreground hover:text-foreground"
-                          )}
-                        >
-                          {code === "id" ? "ID" : "EN"}
-                        </button>
-                      ))}
-                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-9 rounded-xl border border-border/40 bg-card/60 hover:bg-primary/10 transition-all cursor-pointer"
+                      aria-label={theme === "dark" ? t("dashboard.switchLight") : t("dashboard.switchDark")}
+                      aria-pressed={theme === "dark"}
+                      onClick={toggleTheme}
+                    >
+                      <ThemeIcon mode={theme} />
+                    </Button>
                   </div>
 
-                  {isAuthenticated && (
-                    <Button variant="secondary" className="rounded-xl" onClick={() => void handleLogout()}>
-                      {t("dashboard.logout")}
-                    </Button>
-                  )}
+                  {/* Divider */}
+                  <div className="h-6 w-px bg-border/50 mx-1 shrink-0" aria-hidden="true" />
+
+                  {/* Right: Language Pill */}
+                  <div className="inline-flex items-center rounded-full border border-border/60 bg-card/60 p-0.5 text-[11px] font-semibold shadow-inner">
+                    {(["id", "en"] as const).map((code) => (
+                      <button
+                        key={code}
+                        type="button"
+                        aria-label={`Switch language to ${code === "id" ? "Bahasa Indonesia" : "English"}`}
+                        aria-pressed={locale === code}
+                        onClick={() => setLocale(code)}
+                        className={cn(
+                          "rounded-full px-3 py-1 transition-all cursor-pointer font-bold",
+                          locale === code
+                            ? "bg-primary text-primary-foreground shadow-sm"
+                            : "text-muted-foreground hover:text-foreground"
+                        )}
+                      >
+                        {code === "id" ? "ID" : "EN"}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </CardContent>
+
+                {isAuthenticated && (
+                  <Button variant="secondary" className="w-full rounded-xl" onClick={() => void handleLogout()}>
+                    {t("dashboard.logout")}
+                  </Button>
+                )}
+              </div>
             </Card>
           </aside>
         )}
