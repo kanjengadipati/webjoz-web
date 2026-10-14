@@ -36,7 +36,6 @@ export default function CatalogCards({ catalog, onUpdateField, isEditorMode, isS
   const query = searchQuery.trim().toLowerCase();
 
   const filteredCategories = categories
-    .filter((cat) => activeCategory === "all" || cat.name === activeCategory)
     .map((cat, originalCatIdx) => {
       const items = (cat.items || [])
         .map((item, originalItemIdx) => ({ item, originalCatIdx, originalItemIdx }))
@@ -50,7 +49,7 @@ export default function CatalogCards({ catalog, onUpdateField, isEditorMode, isS
         });
       return { ...cat, originalCatIdx, filteredItems: items };
     })
-    .filter((cat) => isEditorMode || cat.filteredItems.length > 0);
+    .filter((cat) => (activeCategory === "all" || cat.name === activeCategory) && (isEditorMode || cat.filteredItems.length > 0));
 
   return (
     <section id="catalog" style={{ padding: "var(--dt-spacing) 1.5rem", background: `color-mix(in srgb, ${brandPrimary} 4%, ${brandBg})`, borderTop: `1px solid color-mix(in srgb, ${brandPrimary} 12%, transparent)` }}>
