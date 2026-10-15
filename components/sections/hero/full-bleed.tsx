@@ -202,7 +202,7 @@ export default function HeroFullBleed({
         </motion.div>
 
         {/* Opening Hours Badge (optional) */}
-        {(h.opening_hours || isEditorMode) && (
+        {Boolean(h.opening_hours?.trim()) && (
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -219,6 +219,7 @@ export default function HeroFullBleed({
               section="hero"
               fieldKey="opening_hours"
               value={h.opening_hours}
+              placeholder="Atur jam operasional..."
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}

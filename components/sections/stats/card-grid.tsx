@@ -38,7 +38,7 @@ export default function StatsCardGrid({
     >
       <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-          {(stats.eyebrow || isEditorMode) && (
+          {Boolean(stats.eyebrow?.trim()) && (
             <span
               style={{
                 display: "inline-flex",

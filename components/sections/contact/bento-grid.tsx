@@ -116,7 +116,7 @@ export default function BentoGrid({ contact: c, footer, onSubmitLead, leadSubmit
         {/* Block 4: Hours + Social */}
         <div className="lg:col-span-4" style={{ background: "var(--dt-surface)", padding: "1.5rem 2rem", borderRadius: "var(--dt-radius-lg)", border: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
           <div>
-            {(c.opening_hours?.trim() || isEditorMode) && (
+            {Boolean(c.opening_hours?.trim()) && (
               <>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", marginBottom: "0.5rem" }}>
                   <Clock style={{ width: 14, height: 14, color: "var(--dt-text-muted)" }} />
@@ -126,6 +126,7 @@ export default function BentoGrid({ contact: c, footer, onSubmitLead, leadSubmit
                   section="contact"
                   fieldKey="opening_hours"
                   value={c.opening_hours ?? ""}
+                  placeholder={isEN ? "Add opening hours..." : "Tambah jam operasional..."}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
