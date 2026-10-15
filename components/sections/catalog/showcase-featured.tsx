@@ -86,7 +86,7 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
 
               {/* Featured items — large cards (up to 2) */}
               {featuredWithIdx.length > 0 && (
-                <div style={{ display: "grid", gridTemplateColumns: featuredWithIdx.length === 1 ? "1fr" : "1fr 1fr", gap: "1.25rem", marginBottom: "1.5rem" }}>
+                <div className={featuredWithIdx.length === 1 ? "grid grid-cols-1" : "grid grid-cols-1 sm:grid-cols-2"} style={{ gap: "1.25rem", marginBottom: "1.5rem" }}>
                   {featuredWithIdx.slice(0, 2).map(({ item, originalIdx: itemIdx }) => {
                     const showPrice = item.price && !isPlaceholderPrice(item.price);
                     return (
