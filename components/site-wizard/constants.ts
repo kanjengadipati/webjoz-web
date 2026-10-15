@@ -258,15 +258,14 @@ export const WIREFRAME_STEPS = ["Tentang", "Keunggulan", "Kontak"] as const;
 
 // Variants for name acknowledgement / confirmation
 export const NAME_ACK_VARIANTS = [
-  "Baik, nama telah dicatat.",
-  "Nama berhasil disimpan.",
-  "Oke, nama sudah tersimpan.",
-  "Siap, nama tercatat.",
-  "Nama Anda sudah masuk sistem.",
-  "Baik, nama sudah terdaftar."
+  "Siap!",
+  "Baik!",
+  "Oke!",
+  "Mantap!",
+  "Keren!"
 ];
 
-export const DESCRIPTION_PROMPT = "Ceritakan bisnis atau profil Anda secara singkat — cukup 1-2 kalimat. Misalnya: karya/jasa yang ditawarkan, keahlian Anda, atau untuk siapa. Tekan Enter untuk lanjut jika ingin skip.";
+export const DESCRIPTION_PROMPT = "Ceritakan sekilas tentang bisnis atau profil Anda 1-2 paragraf. (Tekan Enter untuk lewati)";
 export const DESCRIPTION_SKIP_KEYWORD = "lewat";
 export const DESCRIPTION_INFERENCE_HIGH = "Saya lihat Anda bergerak di bidang %s — %s. Langsung buat website-nya?";
 export const DESCRIPTION_INFERENCE_MEDIUM = "Saya lihat bidang usaha Anda adalah %s. Bisa pilih yang lebih spesifik?";
