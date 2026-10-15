@@ -137,9 +137,9 @@ export default function ProductClassic({
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: isMenu ? "1.25rem" : "1.5rem", alignItems: isMenu ? undefined : "stretch" }}>
                 {cat.filteredItems.map(({ item, originalCatIdx, originalItemIdx }) => (
                   <MenuCatalogCard
-                    key={item.id || `${cat.name}__${item.name}__${originalCatIdx}_${originalItemIdx}`}
+                    key={item.id || `${kind}-classic-${originalCatIdx}-${originalItemIdx}`}
                     item={{
-                      id: item.id || `${cat.name}__${item.name}__${originalCatIdx}_${originalItemIdx}`,
+                      id: item.id || `${kind}-classic-${originalCatIdx}-${originalItemIdx}`,
                       name: item.name,
                       price: item.price,
                       priceAmount: item.price_amount,

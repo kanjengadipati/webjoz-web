@@ -134,7 +134,7 @@ export default function ProductCards({
 
               <div style={{ display: "grid", gridTemplateColumns: `repeat(auto-fill, minmax(${isMenu ? 320 : 280}px, 1fr))`, gap: "1.5rem", ...(isMenu ? { alignItems: "stretch" } : {}) }}>
                 {cat.filteredItems.map(({ item, originalCatIdx, originalItemIdx }) => {
-                  const cardKey = item.id || `${cat.name}__${item.name}__${originalCatIdx}_${originalItemIdx}`;
+                  const cardKey = item.id || `${kind}-cards-${originalCatIdx}-${originalItemIdx}`;
                   const cardEl = (
                     <MenuCatalogCard
                       item={{
