@@ -100,7 +100,7 @@ export default function HeroNaturalOrganic({
         }}
       >
         {/* Badge */}
-        {(h.eyebrow || h.badge_text || isEditorMode) && (
+        {Boolean(h.eyebrow?.trim() || h.badge_text?.trim()) && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -125,6 +125,7 @@ export default function HeroNaturalOrganic({
               section="hero"
               fieldKey={h.eyebrow ? "eyebrow" : "badge_text"}
               value={h.eyebrow || h.badge_text}
+              placeholder="Badge..."
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -280,7 +281,7 @@ export default function HeroNaturalOrganic({
         </motion.div>
 
         {/* Opening hours if set */}
-        {(h.opening_hours || isEditorMode) && (
+        {Boolean(h.opening_hours?.trim()) && (
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -299,6 +300,7 @@ export default function HeroNaturalOrganic({
               section="hero"
               fieldKey="opening_hours"
               value={h.opening_hours ?? ""}
+              placeholder="Atur jam operasional..."
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}

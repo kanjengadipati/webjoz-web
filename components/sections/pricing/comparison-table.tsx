@@ -176,7 +176,7 @@ export default function PricingComparisonTable({
                           : "transparent",
                       }}
                     >
-                      {(plan.badge || isEditorMode) && (
+                      {Boolean(plan.badge?.trim()) && (
                         <span
                           className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider mb-2"
                           style={{ background: brandPrimary, color: brandBg }}

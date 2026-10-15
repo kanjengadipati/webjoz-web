@@ -82,7 +82,7 @@ export default function PricingSingleTierHighlight({
             boxShadow: "0 24px 48px color-mix(in srgb, var(--dt-primary) 20%, transparent)",
           }}
         >
-          {(plan.badge || isEditorMode) && (
+          {Boolean(plan.badge?.trim()) && (
             <span
               style={{
                 display: "inline-block", background: "var(--dt-primary)", color: "var(--dt-bg)",

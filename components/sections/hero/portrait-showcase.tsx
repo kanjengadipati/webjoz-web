@@ -160,7 +160,7 @@ export default function HeroPortraitShowcase({
           gap: "1.75rem",
         }}
       >
-        {(h.eyebrow || isEditorMode) && (
+        {Boolean(h.eyebrow?.trim()) && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -181,6 +181,7 @@ export default function HeroPortraitShowcase({
                 section="hero"
                 fieldKey="eyebrow"
                 value={h.eyebrow ?? ""}
+                placeholder="Eyebrow..."
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}

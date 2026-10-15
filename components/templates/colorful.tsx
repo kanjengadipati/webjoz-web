@@ -66,9 +66,9 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
         <MemoSectionContent content={hero} render={(h) => (
           <section className="py-14 px-6 max-w-5xl mx-auto grid md:grid-cols-12 gap-8 items-center" style={h.background_color ? { background: h.background_color } : undefined}>
             <div className="md:col-span-7 space-y-5">
-              {(h.eyebrow || isEditorMode) && (
+              {Boolean(h.eyebrow?.trim()) && (
                 <span className="inline-flex items-center gap-1.5 border-2 border-black px-3 py-1 text-[10px] font-black uppercase tracking-wider" style={{ boxShadow: "2px 2px 0px #000", background: `color-mix(in srgb, ${yellow} 35%, white)`, color: black }}>
-                  <SparkleIcon className="w-[18px] h-[18px]" /> <InlineText section="hero" fieldKey="eyebrow" value={h.eyebrow} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "hero"} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                  <SparkleIcon className="w-[18px] h-[18px]" /> <InlineText section="hero" fieldKey="eyebrow" value={h.eyebrow} placeholder="Eyebrow..." onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "hero"} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                 </span>
               )}
               <InlineText section="hero" fieldKey="headline" value={h.headline} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "hero"} multiline as="h1" className="text-4xl md:text-6xl font-black uppercase leading-tight tracking-tight" style={{ color: black, ...headingVars }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
