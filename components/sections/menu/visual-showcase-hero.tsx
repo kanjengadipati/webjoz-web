@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Utensils } from "lucide-react";
 import { InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
+import { AddToCartButton } from "@/components/cart";
 import { SectionHeader } from "../section-header";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
@@ -151,13 +152,32 @@ export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, 
                       >
                         {isEN ? "View detail" : "Lihat Detail"}
                       </button>
+
+                      {/* Order trigger */}
+                      <div className="absolute bottom-4 left-4 z-10" onClick={(e) => e.stopPropagation()}>
+                        <AddToCartButton
+                          itemId={item.id || `menu-hero-${catIndex}-${itemIndex}`}
+                          itemName={item.name ?? ""}
+                          itemPrice={item.price_display || item.price || null}
+                          itemPriceAmount={item.price_amount}
+                          itemPriceDisplay={item.price_display || item.price}
+                          itemPromoPriceAmount={item.promo_price_amount}
+                          itemPromoPriceDisplay={item.promo_price_display}
+                          discountLabel={item.discount_label}
+                          itemDescription={item.description}
+                          category={category.name ?? ""}
+                          variant_groups={item.variant_groups}
+                          disabled={item.is_available === false}
+                          className="inline-flex items-center gap-1 bg-dt-primary text-dt-primary-foreground text-[10px] font-semibold tracking-widest uppercase px-3 py-1.5 border border-dt-border rounded-none shadow-xs font-dt-heading cursor-pointer transition-all hover:brightness-110"
+                        />
+                      </div>
                     </div>
 
                     <div className="flex-1 p-6 flex flex-col justify-between bg-dt-surface">
                       <div className="flex items-start justify-between gap-4">
-                        <InlineText section="menu" fieldKey={"categories." + catIndex + ".items." + itemIndex + ".name"} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h4" className="text-lg font-medium tracking-tight font-dt-heading text-dt-text leading-snug group-hover:text-dt-primary transition-colors duration-300" />
+                        <InlineText section="menu" fieldKey={"categories." + catIndex + ".items." + itemIndex + ".name"} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h4" className="min-w-0 flex-1 text-lg font-medium tracking-tight font-dt-heading text-dt-text leading-snug group-hover:text-dt-primary transition-colors duration-300" />
                         {item.price && (
-                          <InlineText section="menu" fieldKey={"categories." + catIndex + ".items." + itemIndex + ".price"} value={item.price ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" className="text-base font-semibold font-dt-heading text-dt-primary" />
+                          <InlineText section="menu" fieldKey={"categories." + catIndex + ".items." + itemIndex + ".price"} value={item.price ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" className="shrink-0 whitespace-nowrap text-base font-semibold font-dt-heading text-dt-primary" />
                         )}
                       </div>
 

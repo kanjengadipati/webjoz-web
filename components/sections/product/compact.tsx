@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { InlineText, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
+import { AddToCartButton } from "@/components/cart";
 import { SectionHeader, pillEyebrowStyle, headerTitleStyle } from "../section-header";
 import { productCategories, type ProductVariantProps } from "./types";
 
@@ -87,6 +88,24 @@ export default function ProductCompact({
                       ))}
                     </div>
                   )}
+                  <div className="mt-2 w-full" onClick={(e) => e.stopPropagation()}>
+                    <AddToCartButton
+                      itemId={item.id || `${kind}-compact-${catIdx}-${itemIdx}`}
+                      itemName={item.name ?? ""}
+                      itemPrice={item.price_display || item.price || null}
+                      itemPriceAmount={item.price_amount}
+                      itemPriceDisplay={item.price_display || item.price}
+                      itemPromoPriceAmount={item.promo_price_amount}
+                      itemPromoPriceDisplay={item.promo_price_display}
+                      discountLabel={item.discount_label}
+                      itemDescription={item.description}
+                      category={cat.name ?? ""}
+                      variant_groups={item.variant_groups}
+                      disabled={item.is_available === false}
+                      className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-[0.7rem] font-bold cursor-pointer transition-all duration-200 hover:brightness-110"
+                      style={{ background: brandPrimary, color: "var(--dt-primary-foreground)", border: "none" }}
+                    />
+                  </div>
                   <button
                     type="button"
                     onClick={(e) => { e.stopPropagation(); setQuickView({ catIdx, itemIdx }); }}
