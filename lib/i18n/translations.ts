@@ -5368,19 +5368,18 @@ export const translations: Record<Locale, Translations> = {
       wizard: {
         initialMessage: "Halo! Saya Joz-AI, asisten AI yang akan membantu Anda membuat website. Mari kita mulai: apa nama bisnis atau brand Anda?",
         nameAckVariants: [
-          "Baik, nama telah dicatat.",
-          "Nama berhasil disimpan.",
-          "Oke, nama sudah tersimpan.",
-          "Siap, nama tercatat.",
-          "Nama Anda sudah masuk sistem.",
-          "Baik, nama sudah terdaftar."
+          "Siap!",
+          "Baik!",
+          "Oke!",
+          "Mantap!",
+          "Keren!"
         ],
         nameConfirmVariants: [
           "Itu nama aslinya, atau masih nama sementara? Pilih 'Ya' untuk lanjut, atau 'Ganti' jika ingin diubah 😊",
           "Apakah itu nama sebenarnya? Klik 'Ya' untuk lanjut, atau 'Ganti' jika ingin memasukkan nama lain.",
           "Nama tersebut terdengar seperti percobaan — pastikan ini yang Anda mau. Klik 'Ya' untuk lanjut atau 'Ganti'."
         ],
-        descriptionPrompt: "Ceritakan bisnis atau profil Anda secara singkat — cukup 1-2 kalimat. Misalnya: karya/jasa yang ditawarkan, keahlian Anda, atau untuk siapa. Tekan Enter untuk lanjut jika ingin skip.",
+        descriptionPrompt: "Ceritakan sekilas tentang bisnis atau profil Anda 1-2 paragraf. (Tekan Enter untuk lewati)",
         descriptionSkipKeyword: "lewat",
         descriptionInferenceHigh: "Sepertinya Anda cocok di kategori **{subType}**. Langsung buat website-nya?",
         descriptionInferenceMedium: "Sepertinya bidang Anda adalah {type}. Bisa pilih yang lebih spesifik?",
@@ -8249,19 +8248,18 @@ export const translations: Record<Locale, Translations> = {
       wizard: {
         initialMessage: "Hi! I'm Joz-AI, an AI assistant who will help you create a website. Let's get started: what's the name of your business or brand?",
         nameAckVariants: [
-          "Got it, name recorded.",
-          "Name saved successfully.",
-          "Okay, the name is saved.",
-          "Understood, name noted.",
-          "Your name is in the system.",
-          "Great, name saved."
+          "Got it!",
+          "Great!",
+          "Awesome!",
+          "Sounds good!",
+          "Perfect!"
         ],
         nameConfirmVariants: [
           "Is that the official name, or a temporary one? Click 'Yes' to continue, or 'Change' if you'd like to edit it 😊",
           "Is that the actual name? Click 'Yes' to continue, or 'Change' to enter a different one.",
           "That name sounds like a placeholder — make sure it's the one you want. Click 'Yes' or 'Change'."
         ],
-        descriptionPrompt: "Tell us briefly about your business or profile — 1-2 sentences is enough. For example: services/work you showcase, your expertise, or who it's for. Press Enter or click Next to skip.",
+        descriptionPrompt: "Tell us briefly about your business or profile in 1-2 paragraphs. (Press Enter to skip)",
         descriptionSkipKeyword: "skip",
         descriptionInferenceHigh: "Looks like you fit into the **{subType}** category. Shall we create the website?",
         descriptionInferenceMedium: "Looks like your field is {type}. Could you pick a more specific category?",
