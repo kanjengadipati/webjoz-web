@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Image as _ImageIcon } from "lucide-react";
 import { InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
+import { SectionHeader } from "../section-header";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 import { AddToCartButton } from "@/components/cart";
 
@@ -40,66 +41,37 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
       }}
     >
       {/* Header with High-Contrast Layout */}
-      <div
-        className="mb-16 p-8 border-[3px] border-solid"
-        style={{
+      <SectionHeader
+        section="catalog"
+        eyebrow={(eyebrow || isEditorMode) ? (eyebrow ?? "") : undefined}
+        title={title}
+        subtitle={(subtitle || isEditorMode) ? (subtitle ?? "") : undefined}
+        wrapperClassName="mb-16 p-8 border-[3px] border-solid"
+        wrapperStyle={{
           borderColor: "var(--dt-border)",
           backgroundColor: "var(--dt-surface)",
           boxShadow: "6px 6px 0px 0px var(--dt-accent)",
-          borderRadius: "var(--dt-radius, 0px)"
+          borderRadius: "var(--dt-radius, 0px)",
         }}
-      >
-        {(eyebrow || isEditorMode) && (
-          <InlineText
-            section="catalog"
-            fieldKey="eyebrow"
-            value={eyebrow}
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={isSelected}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-            as="span"
-            className="text-xs font-black uppercase tracking-wider inline-block px-2 py-0.5 border-2 mb-3"
-            style={{
-              borderColor: "var(--dt-border)",
-              backgroundColor: "var(--dt-accent)",
-              color: "var(--dt-primary-foreground)"
-            }}
-          />
-        )}
-        <InlineText
-          section="catalog"
-          fieldKey="title"
-          value={title}
-          onUpdateField={onUpdateField}
-          isEditorMode={isEditorMode}
-          isSelected={isSelected}
-          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-          onEditingStateChange={onEditingStateChange}
-          as="h2"
-          className="text-3xl md:text-5xl font-extrabold tracking-tight uppercase mb-4"
-          style={{
-            color: "var(--dt-text)",
-            fontFamily: "var(--dt-heading-font, sans-serif)"
-          }}
-        />
-        {(subtitle || isEditorMode) && (
-          <InlineText
-            section="catalog"
-            fieldKey="subtitle"
-            value={subtitle}
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={isSelected}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-            as="p"
-            className="text-base font-bold leading-relaxed max-w-3xl"
-            style={{ color: "var(--dt-text)" }}
-          />
-        )}
-      </div>
+        eyebrowClassName="text-xs font-black uppercase tracking-wider inline-block px-2 py-0.5 border-2 mb-3"
+        eyebrowStyle={{
+          borderColor: "var(--dt-border)",
+          backgroundColor: "var(--dt-accent)",
+          color: "var(--dt-primary-foreground)",
+        }}
+        titleClassName="text-3xl md:text-5xl font-extrabold tracking-tight uppercase mb-4"
+        titleStyle={{
+          color: "var(--dt-text)",
+          fontFamily: "var(--dt-heading-font, sans-serif)",
+        }}
+        subtitleClassName="text-base font-bold leading-relaxed max-w-3xl"
+        subtitleStyle={{ color: "var(--dt-text)" }}
+        onUpdateField={onUpdateField}
+        isEditorMode={isEditorMode}
+        isSelected={isSelected}
+        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+        onEditingStateChange={onEditingStateChange}
+      />
 
       {/* Categories */}
       <div className="space-y-24">

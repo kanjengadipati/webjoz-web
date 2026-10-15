@@ -3,6 +3,7 @@ import React from "react";
 import { Utensils, Image as ImageIcon } from "lucide-react";
 import { MenuCatalogCard, InlineText, type MenuCatalogCardStyles } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
+import { SectionHeader } from "../section-header";
 import { productCategories, type ProductVariantProps } from "./types";
 
 export default function ProductMasonryFlow({
@@ -50,55 +51,28 @@ export default function ProductMasonryFlow({
       }}
     >
       {/* Header */}
-      <div className="mb-16 text-center max-w-2xl mx-auto">
-        {(data.eyebrow || isEditorMode) && (
-          <InlineText
-            section={kind}
-            fieldKey="eyebrow"
-            value={data.eyebrow ?? eyebrowDefault}
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={isSelected}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-            as="span"
-            className="text-xs uppercase tracking-widest font-semibold block mb-2"
-            style={{ color: brandPrimary, fontFamily: headingFont }}
-          />
-        )}
-        <InlineText
-          section={kind}
-          fieldKey="title"
-          value={data.title}
-          onUpdateField={onUpdateField}
-          isEditorMode={isEditorMode}
-          isSelected={isSelected}
-          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-          onEditingStateChange={onEditingStateChange}
-          as="h2"
-          className="text-3xl md:text-4xl font-normal tracking-tight mb-4"
-          style={{
-            color: brandText,
-            fontFamily: headingFont,
-            fontWeight: headingWeight as React.CSSProperties["fontWeight"],
-          }}
-        />
-        {(data.subtitle || isEditorMode) && (
-          <InlineText
-            section={kind}
-            fieldKey="subtitle"
-            value={data.subtitle}
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={isSelected}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-            as="p"
-            className="text-base font-light leading-relaxed"
-            style={{ color: "var(--dt-text-muted)" }}
-          />
-        )}
-      </div>
+      <SectionHeader
+        section={kind}
+        eyebrow={(data.eyebrow || isEditorMode) ? (data.eyebrow ?? eyebrowDefault) : undefined}
+        title={data.title}
+        subtitle={(data.subtitle || isEditorMode) ? (data.subtitle ?? "") : undefined}
+        wrapperClassName="mb-16 text-center max-w-2xl mx-auto"
+        eyebrowClassName="text-xs uppercase tracking-widest font-semibold block mb-2"
+        eyebrowStyle={{ color: brandPrimary, fontFamily: headingFont }}
+        titleClassName="text-3xl md:text-4xl font-normal tracking-tight mb-4"
+        titleStyle={{
+          color: brandText,
+          fontFamily: headingFont,
+          fontWeight: headingWeight as React.CSSProperties["fontWeight"],
+        }}
+        subtitleClassName="text-base font-light leading-relaxed"
+        subtitleStyle={{ color: "var(--dt-text-muted)" }}
+        onUpdateField={onUpdateField}
+        isEditorMode={isEditorMode}
+        isSelected={isSelected}
+        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+        onEditingStateChange={onEditingStateChange}
+      />
 
       {/* Categories */}
       <div className="space-y-24">

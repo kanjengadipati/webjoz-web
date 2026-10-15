@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Image as ImageIcon } from "lucide-react";
 import { InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
+import { SectionHeader } from "../section-header";
 import { AddToCartButton } from "@/components/cart";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
@@ -63,56 +64,29 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
       }}
     >
       {/* Header */}
-      <div className="mb-16 max-w-2xl">
-        {(eyebrow || isEditorMode) && (
-          <InlineText
-            section="catalog"
-            fieldKey="eyebrow"
-            value={eyebrow}
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={isSelected}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-            as="span"
-            className="text-xs uppercase tracking-widest font-medium block mb-3"
-            style={{ color: "var(--dt-accent)", fontFamily: "var(--dt-heading-font)" }}
-          />
-        )}
-        <InlineText
-          section="catalog"
-          fieldKey="title"
-          value={title}
-          onUpdateField={onUpdateField}
-          isEditorMode={isEditorMode}
-          isSelected={isSelected}
-          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-          onEditingStateChange={onEditingStateChange}
-          as="h2"
-          className="text-4xl md:text-5xl font-light tracking-tight mb-4"
-          style={{
-            color: "var(--dt-text)",
-            fontFamily: "var(--dt-heading-font)",
-            fontWeight: "var(--dt-heading-weight, 300)" as any,
-          }}
-        />
-        {(subtitle || isEditorMode) && (
-          <InlineText
-            section="catalog"
-            fieldKey="subtitle"
-            value={subtitle}
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={isSelected}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-            as="p"
-            multiline
-            className="text-base font-light leading-relaxed"
-            style={{ color: "var(--dt-text-muted)" }}
-          />
-        )}
-      </div>
+      <SectionHeader
+        section="catalog"
+        eyebrow={(eyebrow || isEditorMode) ? (eyebrow ?? "") : undefined}
+        title={title}
+        subtitle={(subtitle || isEditorMode) ? (subtitle ?? "") : undefined}
+        wrapperClassName="mb-16 max-w-2xl"
+        eyebrowClassName="text-xs uppercase tracking-widest font-medium block mb-3"
+        eyebrowStyle={{ color: "var(--dt-accent)", fontFamily: "var(--dt-heading-font)" }}
+        titleClassName="text-4xl md:text-5xl font-light tracking-tight mb-4"
+        titleStyle={{
+          color: "var(--dt-text)",
+          fontFamily: "var(--dt-heading-font)",
+          fontWeight: "var(--dt-heading-weight, 300)" as React.CSSProperties["fontWeight"],
+        }}
+        subtitleClassName="text-base font-light leading-relaxed"
+        subtitleStyle={{ color: "var(--dt-text-muted)" }}
+        subtitleMultiline
+        onUpdateField={onUpdateField}
+        isEditorMode={isEditorMode}
+        isSelected={isSelected}
+        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+        onEditingStateChange={onEditingStateChange}
+      />
 
       {/* Categories Mapping */}
       <div className="space-y-24">

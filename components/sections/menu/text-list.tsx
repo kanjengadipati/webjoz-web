@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { InlineText, isPlaceholderPrice, AddToCartButton, CatalogMenuFilterBar, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import { useCatalogFilter } from "../use-catalog-filter";
+import { SectionHeader, pillEyebrowStyle, headerTitleStyle, headerDividerStyle } from "../section-header";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 /**
@@ -34,33 +35,21 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
     <section id="menu" style={{ padding: "var(--dt-spacing) 1.5rem", background: `color-mix(in srgb, ${p} 4%, ${bg})`, borderTop: `1px solid color-mix(in srgb, ${p} 12%, transparent)` }}>
       <div style={{ maxWidth: "48rem", margin: "0 auto" }}>
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
-          <InlineText
-            section="menu"
-            fieldKey="eyebrow"
-            value={menu.eyebrow ?? "Daftar Menu"}
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={isSelected}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-            as="span"
-            style={{ display: "inline-block", fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.18em", color: p, background: `color-mix(in srgb, ${p} 10%, transparent)`, padding: "0.45rem 0.85rem", borderRadius: "9999px" }}
-          />
-          <InlineText
-            section="menu"
-            fieldKey="title"
-            value={menu.title}
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={isSelected}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-            as="h2"
-            style={{ fontFamily: hFont, fontWeight: hWeight as any, fontSize: "clamp(1.5rem, 5cqw, 2.5rem)", color: text, marginTop: "0.85rem", lineHeight: 1.15 }}
-          />
-          <div style={{ width: "3rem", height: "3px", background: p, borderRadius: "4px", margin: "0.75rem auto 0" }} />
-        </div>
+        <SectionHeader
+          section="menu"
+          eyebrow={menu.eyebrow ?? "Daftar Menu"}
+          title={menu.title}
+          wrapperStyle={{ textAlign: "center", marginBottom: "2.5rem" }}
+          eyebrowStyle={pillEyebrowStyle(p)}
+          titleStyle={headerTitleStyle(hFont, hWeight, text)}
+          divider
+          dividerStyle={headerDividerStyle(p)}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
 
         {/* Realtime Search & Category Filter */}
         <CatalogMenuFilterBar

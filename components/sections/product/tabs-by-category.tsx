@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Utensils, Image as ImageIcon, X } from "lucide-react";
 import { MenuCatalogCard, InlineText, type MenuCatalogCardStyles } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
+import { SectionHeader, pillEyebrowStyle, headerTitleStyle, headerDividerStyle } from "../section-header";
 import { productCategories, type ProductVariantProps } from "./types";
 
 /**
@@ -70,33 +71,21 @@ export default function ProductTabsByCategory({
     <section id={kind} style={{ padding: "var(--dt-spacing) 1.5rem", background: `color-mix(in srgb, ${p} 4%, ${bg})`, borderTop: `1px solid color-mix(in srgb, ${p} 12%, transparent)` }}>
       <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-          <InlineText
-            section={kind}
-            fieldKey="eyebrow"
-            value={data.eyebrow ?? eyebrowDefault}
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={isSelected}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-            as="span"
-            style={{ display: "inline-block", fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.18em", color: p, background: `color-mix(in srgb, ${p} 10%, transparent)`, padding: "0.45rem 0.85rem", borderRadius: "9999px" }}
-          />
-          <InlineText
-            section={kind}
-            fieldKey="title"
-            value={data.title}
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={isSelected}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-            as="h2"
-            style={{ fontFamily: hFont, fontWeight: hWeight as React.CSSProperties["fontWeight"], fontSize: "clamp(1.5rem, 5cqw, 2.5rem)", color: text, marginTop: "0.85rem", lineHeight: 1.15 }}
-          />
-          <div style={{ width: "3rem", height: "3px", background: p, borderRadius: "4px", margin: "0.75rem auto 0" }} />
-        </div>
+        <SectionHeader
+          section={kind}
+          eyebrow={data.eyebrow ?? eyebrowDefault}
+          title={data.title}
+          wrapperStyle={{ textAlign: "center", marginBottom: "2rem" }}
+          eyebrowStyle={pillEyebrowStyle(p)}
+          titleStyle={headerTitleStyle(hFont, hWeight, text)}
+          divider
+          dividerStyle={headerDividerStyle(p)}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
 
         {/* Search bar */}
         <div className="w-full max-w-md mx-auto mb-6 relative flex items-center">

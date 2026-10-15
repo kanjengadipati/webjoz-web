@@ -4,6 +4,7 @@ import { Utensils, Image as ImageIcon } from "lucide-react";
 import { MenuCatalogCard, InlineText, CatalogMenuFilterBar, type MenuCatalogCardStyles } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import { useCatalogFilter } from "../use-catalog-filter";
+import { SectionHeader, pillEyebrowStyle, headerTitleStyle } from "../section-header";
 import { productCategories, type ProductVariantProps } from "./types";
 
 export default function ProductClassic({
@@ -60,34 +61,20 @@ export default function ProductClassic({
   return (
     <section id={kind} style={{ padding: `var(--dt-spacing) 1.5rem`, background: `color-mix(in srgb, ${brandPrimary} 4%, ${brandBg})`, borderTop: `1px solid color-mix(in srgb, ${brandPrimary} 12%, transparent)` }}>
       <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.18em", color: brandPrimary, background: `color-mix(in srgb, ${brandPrimary} 10%, transparent)`, padding: "0.45rem 0.85rem", borderRadius: "9999px" }}>
-          <InlineText
-            section={kind}
-            fieldKey="eyebrow"
-            value={data.eyebrow ?? eyebrowDefault}
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={isSelected}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-            as="span"
-          />
-          </span>
-          <InlineText
-            section={kind}
-            fieldKey="title"
-            value={data.title}
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={isSelected}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-            as="h2"
-            style={{ fontFamily: headingFont, fontWeight: headingWeight as React.CSSProperties["fontWeight"], fontSize: "clamp(1.5rem, 5cqw, 2.5rem)", color: brandText, marginTop: "0.85rem", lineHeight: 1.15 }}
-          />
-          <div style={{ width: "3rem", height: "3px", background: brandPrimary, borderRadius: "4px", margin: "0.75rem auto 0" }} />
-        </div>
+        <SectionHeader
+          section={kind}
+          eyebrow={data.eyebrow ?? eyebrowDefault}
+          title={data.title}
+          wrapperStyle={{ textAlign: "center", marginBottom: "2.5rem" }}
+          eyebrowWrapperStyle={pillEyebrowStyle(brandPrimary)}
+          titleStyle={headerTitleStyle(headingFont, headingWeight, brandText)}
+          divider
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
 
         {/* Realtime Search & Category Filter */}
         <CatalogMenuFilterBar
