@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Image as ImageIcon } from "lucide-react";
 import { InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
+import { SectionHeader } from "../section-header";
 import { AddToCartButton } from "@/components/cart";
 import type { TemplateProps, DesignToken, CatalogItem } from "../../templates/types";
 
@@ -135,51 +136,24 @@ export default function CatalogProductTable({ catalog, onUpdateField, isEditorMo
     >
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-12 text-center max-w-2xl mx-auto">
-          {(catalog.eyebrow || isEditorMode) && (
-            <InlineText
-              section="catalog"
-              fieldKey="eyebrow"
-              value={catalog.eyebrow ?? ""}
-              onUpdateField={onUpdateField}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
-              as="span"
-              className="text-xs uppercase tracking-widest font-semibold block mb-2"
-              style={{ color: "var(--dt-accent)", fontFamily: "var(--dt-heading-font)" }}
-            />
-          )}
-          <InlineText
-            section="catalog"
-            fieldKey="title"
-            value={catalog.title}
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={isSelected}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-            as="h2"
-            className="text-3xl md:text-4xl font-normal tracking-tight"
-            style={{ color: "var(--dt-text)", fontFamily: "var(--dt-heading-font, serif)" }}
-          />
-          {(catalog.subtitle || isEditorMode) && (
-            <InlineText
-              section="catalog"
-              fieldKey="subtitle"
-              value={catalog.subtitle ?? ""}
-              onUpdateField={onUpdateField}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
-              as="p"
-              className="text-base font-light leading-relaxed mt-3"
-              style={{ color: "var(--dt-text-muted)" }}
-            />
-          )}
-        </div>
+        <SectionHeader
+          section="catalog"
+          eyebrow={(catalog.eyebrow || isEditorMode) ? (catalog.eyebrow ?? "") : undefined}
+          title={catalog.title}
+          subtitle={(catalog.subtitle || isEditorMode) ? (catalog.subtitle ?? "") : undefined}
+          wrapperClassName="mb-12 text-center max-w-2xl mx-auto"
+          eyebrowClassName="text-xs uppercase tracking-widest font-semibold block mb-2"
+          eyebrowStyle={{ color: "var(--dt-accent)", fontFamily: "var(--dt-heading-font)" }}
+          titleClassName="text-3xl md:text-4xl font-normal tracking-tight"
+          titleStyle={{ color: "var(--dt-text)", fontFamily: "var(--dt-heading-font, serif)" }}
+          subtitleClassName="text-base font-light leading-relaxed mt-3"
+          subtitleStyle={{ color: "var(--dt-text-muted)" }}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
 
         {categories.length === 0 && !isEditorMode ? (
           <p className="text-center text-sm py-10" style={{ color: "var(--dt-text-muted)" }}>{labels.empty}</p>

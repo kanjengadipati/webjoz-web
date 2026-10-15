@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Utensils } from "lucide-react";
 import { InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
+import { SectionHeader } from "../section-header";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface MenuVariantProps {
@@ -46,48 +47,21 @@ export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSe
       className="w-full py-16 px-4 md:px-8 bg-dt-bg text-dt-text font-dt-body scroll-mt-20"
     >
       <div className="max-w-7xl mx-auto">
-        <div id="bento-header" className="text-center mb-16 max-w-2xl mx-auto">
-          {(eyebrow || isEditorMode) && (
-            <InlineText
-              section="menu"
-              fieldKey="eyebrow"
-              value={eyebrow}
-              onUpdateField={onUpdateField}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
-              as="span"
-              className="text-xs font-medium tracking-wider uppercase text-dt-text-muted block mb-2 font-dt-heading"
-            />
-          )}
-          <InlineText
-            section="menu"
-            fieldKey="title"
-            value={title}
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={isSelected}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-            as="h2"
-            className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-dt-text font-dt-heading"
-          />
-          {(subtitle || isEditorMode) && (
-            <InlineText
-              section="menu"
-              fieldKey="subtitle"
-              value={subtitle}
-              onUpdateField={onUpdateField}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
-              as="p"
-              className="text-sm md:text-base text-dt-text-muted"
-            />
-          )}
-        </div>
+        <SectionHeader
+          section="menu"
+          eyebrow={(eyebrow || isEditorMode) ? (eyebrow ?? "") : undefined}
+          title={title}
+          subtitle={(subtitle || isEditorMode) ? (subtitle ?? "") : undefined}
+          wrapperClassName="text-center mb-16 max-w-2xl mx-auto"
+          eyebrowClassName="text-xs font-medium tracking-wider uppercase text-dt-text-muted block mb-2 font-dt-heading"
+          titleClassName="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-dt-text font-dt-heading"
+          subtitleClassName="text-sm md:text-base text-dt-text-muted"
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
 
         {categories.map((category, catIndex) => (
           <div

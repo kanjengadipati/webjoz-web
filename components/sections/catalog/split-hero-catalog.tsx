@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { ArrowRight, Image as ImageIcon } from "lucide-react";
 import { InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
+import { SectionHeader } from "../section-header";
 import { AddToCartButton } from "@/components/cart";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
@@ -46,54 +47,26 @@ export default function CatalogSplitHeroCatalog({ catalog, onUpdateField, isEdit
 
         {/* Left Pane: Sticky Brand Visual & Header */}
         <div className="lg:col-span-5 lg:sticky lg:top-8 space-y-8 flex flex-col justify-between h-auto">
-          <div>
-            {(eyebrow || isEditorMode) && (
-              <InlineText
-                section="catalog"
-                fieldKey="eyebrow"
-                value={eyebrow}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={isSelected}
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                onEditingStateChange={onEditingStateChange}
-                as="span"
-                className="text-xs uppercase tracking-widest font-semibold block mb-3"
-                style={{ color: "var(--dt-accent)", fontFamily: "var(--dt-heading-font)" }}
-              />
-            )}
-            <InlineText
-              section="catalog"
-              fieldKey="title"
-              value={title}
-              onUpdateField={onUpdateField}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
-              as="h2"
-              className="text-4xl md:text-5xl font-light tracking-tight leading-tight mb-4"
-              style={{
-                color: "var(--dt-text)",
-                fontFamily: "var(--dt-heading-font, serif)"
-              }}
-            />
-            {(subtitle || isEditorMode) && (
-              <InlineText
-                section="catalog"
-                fieldKey="subtitle"
-                value={subtitle}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={isSelected}
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                onEditingStateChange={onEditingStateChange}
-                as="p"
-                className="text-base md:text-lg font-light leading-relaxed mb-6"
-                style={{ color: "var(--dt-text-muted)" }}
-              />
-            )}
-          </div>
+          <SectionHeader
+            section="catalog"
+            eyebrow={(eyebrow || isEditorMode) ? (eyebrow ?? "") : undefined}
+            title={title}
+            subtitle={(subtitle || isEditorMode) ? (subtitle ?? "") : undefined}
+            eyebrowClassName="text-xs uppercase tracking-widest font-semibold block mb-3"
+            eyebrowStyle={{ color: "var(--dt-accent)", fontFamily: "var(--dt-heading-font)" }}
+            titleClassName="text-4xl md:text-5xl font-light tracking-tight leading-tight mb-4"
+            titleStyle={{
+              color: "var(--dt-text)",
+              fontFamily: "var(--dt-heading-font, serif)",
+            }}
+            subtitleClassName="text-base md:text-lg font-light leading-relaxed mb-6"
+            subtitleStyle={{ color: "var(--dt-text-muted)" }}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
 
           {/* Large Sticky Brand Image */}
           <div

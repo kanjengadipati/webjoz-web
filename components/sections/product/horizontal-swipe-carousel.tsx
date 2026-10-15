@@ -3,6 +3,7 @@ import React, { useState, useRef } from "react";
 import { ChevronLeft, ChevronRight, Utensils, Image as ImageIcon } from "lucide-react";
 import { MenuCatalogCard, InlineText, type MenuCatalogCardStyles } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
+import { SectionHeader } from "../section-header";
 import { productCategories, type ProductVariantProps } from "./types";
 
 export default function ProductHorizontalSwipeCarousel({
@@ -72,55 +73,28 @@ export default function ProductHorizontalSwipeCarousel({
     >
       {/* Header */}
       <div className="mb-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-        <div className="max-w-xl">
-          {(data.eyebrow || isEditorMode) && (
-            <InlineText
-              section={kind}
-              fieldKey="eyebrow"
-              value={data.eyebrow ?? eyebrowDefault}
-              onUpdateField={onUpdateField}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
-              as="span"
-              className="text-xs uppercase tracking-widest font-semibold block mb-2"
-              style={{ color: brandPrimary, fontFamily: headingFont }}
-            />
-          )}
-          <InlineText
-            section={kind}
-            fieldKey="title"
-            value={data.title}
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={isSelected}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-            as="h2"
-            className="text-3xl md:text-4xl font-normal tracking-tight mb-3"
-            style={{
-              color: brandText,
-              fontFamily: headingFont,
-              fontWeight: headingWeight as React.CSSProperties["fontWeight"],
-            }}
-          />
-          {(data.subtitle || isEditorMode) && (
-            <InlineText
-              section={kind}
-              fieldKey="subtitle"
-              value={data.subtitle}
-              onUpdateField={onUpdateField}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
-              as="p"
-              className="text-base font-light leading-relaxed"
-              style={{ color: "var(--dt-text-muted)" }}
-            />
-          )}
-        </div>
+        <SectionHeader
+          section={kind}
+          eyebrow={(data.eyebrow || isEditorMode) ? (data.eyebrow ?? eyebrowDefault) : undefined}
+          title={data.title}
+          subtitle={(data.subtitle || isEditorMode) ? (data.subtitle ?? "") : undefined}
+          wrapperClassName="max-w-xl"
+          eyebrowClassName="text-xs uppercase tracking-widest font-semibold block mb-2"
+          eyebrowStyle={{ color: brandPrimary, fontFamily: headingFont }}
+          titleClassName="text-3xl md:text-4xl font-normal tracking-tight mb-3"
+          titleStyle={{
+            color: brandText,
+            fontFamily: headingFont,
+            fontWeight: headingWeight as React.CSSProperties["fontWeight"],
+          }}
+          subtitleClassName="text-base font-light leading-relaxed"
+          subtitleStyle={{ color: "var(--dt-text-muted)" }}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
 
         {/* Desktop Slide Controls */}
         <div className="hidden md:flex items-center gap-2">
