@@ -7,6 +7,7 @@ import { request, ApiError } from "@/lib/api/client";
 import { useAuthToken } from "@/lib/auth-store";
 import { usePermissions } from "@/hooks/use-permissions";
 import { useToast } from "@/components/toast-provider";
+import { formatIdNumber } from "@/lib/utils";
 import {
   Palette, 
   Layers, 
@@ -569,7 +570,7 @@ export default function TemplateGalleryPage() {
             </div>
             <div className="min-w-0">
               <p className="text-xs font-semibold text-foreground">
-                {unreviewedCount.toLocaleString()} {t("dashboard.adminTemplates.pendingAestheticLabel")}
+                {formatIdNumber(unreviewedCount)} {t("dashboard.adminTemplates.pendingAestheticLabel")}
               </p>
               <div className="flex items-center gap-2 mt-1">
                 <div className="flex-1 h-1.5 rounded-full bg-muted/60 overflow-hidden max-w-[160px]">

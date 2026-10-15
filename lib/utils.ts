@@ -25,20 +25,34 @@ export function formatIdNumber(value: number): string {
 export function formatPriceWithAmount(amount: number, template?: string | null): string {
   const formatted = formatIdNumber(amount);
   if (!template) return formatted;
+  const trimmed = template.trim();
 
-  // 1. Anchor on currency prefix (Rp / IDR) if present so leading bare numbers
-  // (e.g. "2 for Rp 50.000") are ignored and trailing units are preserved.
-  const currencyMatch = template.match(/(rp\.?|idr)(\s*)(\d[\d.,]*(?:\s*(?:rb|k|ribu|jt|juta)\b)?)/i);
+  // 1. If template is "Gratis" / "Free" (or "Mulai dari Gratis"), replace with currency amount
+  if (/^(?:mulai\s+(?:dari\s+)?|from\s+)?(?:gratis|free)$/i.test(trimmed)) {
+    return template.replace(/(?:gratis|free)/i, `Rp ${formatted}`);
+  }
+
+  // 2. Price range: e.g. "Rp 20.000 - Rp 35.000" or "Rp 20.000 - 35.000 / porsi"
+  // Replace the entire range with the single formatted price.
+  const rangeMatch = template.match(/(rp\.?|idr)(\s*)(\d+(?:[.,]\d+)*(?:\s*(?:rb|k|ribu|jt|juta)\b)?)\s*[-–—]\s*(?:(?:rp\.?|idr)\s*)?(\d+(?:[.,]\d+)*(?:\s*(?:rb|k|ribu|jt|juta)\b)?)/i);
+  if (rangeMatch && rangeMatch.index !== undefined) {
+    const [full, cur, space] = rangeMatch;
+    return template.replace(full, `${cur}${space}${formatted}`);
+  }
+
+  // 3. Anchor on currency prefix (Rp / IDR) if present so leading bare numbers
+  // (e.g. "2 for Rp 50.000") are ignored and trailing units (e.g. "/malam", "/ porsi", ",-", ".") are preserved.
+  const currencyMatch = template.match(/(rp\.?|idr)(\s*)(\d+(?:[.,]\d+)*(?:\s*(?:rb|k|ribu|jt|juta)\b)?)/i);
   if (currencyMatch && currencyMatch.index !== undefined) {
     const [full, cur, space] = currencyMatch;
     return template.replace(full, `${cur}${space}${formatted}`);
   }
 
-  // 2. Otherwise replace the first standalone number and its optional suffix.
-  const numMatch = template.match(/(\d[\d.,]*(?:\s*(?:rb|k|ribu|jt|juta)\b)?)/i);
+  // 4. Otherwise replace the first standalone number and its optional suffix.
+  const numMatch = template.match(/(\d+(?:[.,]\d+)*(?:\s*(?:rb|k|ribu|jt|juta)\b)?)/i);
   if (numMatch) {
     return template.replace(numMatch[0], formatted);
   }
 
-  return `${template.trim()} ${formatted}`;
+  return `${trimmed} ${formatted}`;
 }

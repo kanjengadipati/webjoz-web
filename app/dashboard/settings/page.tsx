@@ -469,7 +469,7 @@ function DevicesTab() {
   const formatDate = (v?: string) => {
     if (!v) return "-";
     const d = new Date(v);
-    return Number.isNaN(d.getTime()) ? "-" : d.toLocaleString();
+    return Number.isNaN(d.getTime()) ? "-" : d.toLocaleString("id-ID");
   };
 
   return (
@@ -944,7 +944,7 @@ function AuditLogsTab() {
                         <div className="mt-1 text-sm text-muted-foreground">{log.description || t("dashboard.settings.noDescription")}</div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <div className="text-xs text-muted-foreground">{log.created_at ? new Date(log.created_at).toLocaleString() : "-"}</div>
+                        <div className="text-xs text-muted-foreground">{log.created_at ? new Date(log.created_at).toLocaleString("id-ID") : "-"}</div>
                         <StatusBadge status={log.status} />
                       </div>
                     </button>

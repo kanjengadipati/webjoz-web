@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { Loader2, TrendingUp, TrendingDown, DollarSign, CreditCard, RefreshCw, Users, BarChart2, ArrowUpRight, AlertCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatIdNumber } from "@/lib/utils";
 import { request } from "@/lib/api/client";
 import { useAuthToken } from "@/lib/auth-store";
 import { useToast } from "@/components/toast-provider";
@@ -474,10 +474,10 @@ export default function AdminReportsPage() {
       {/* Summary cards — row 2 */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Total Transaksi", value: s.total_transactions.toLocaleString(), icon: CreditCard, accent: "violet" as const },
-          { label: "Berhasil", value: s.successful_transactions.toLocaleString(), icon: TrendingUp, accent: "emerald" as const },
-          { label: "Pending", value: s.pending_transactions.toLocaleString(), icon: BarChart2, accent: "amber" as const },
-          { label: "Refund", value: s.refunded_transactions.toLocaleString(), icon: TrendingDown, accent: "rose" as const },
+          { label: "Total Transaksi", value: formatIdNumber(s.total_transactions), icon: CreditCard, accent: "violet" as const },
+          { label: "Berhasil", value: formatIdNumber(s.successful_transactions), icon: TrendingUp, accent: "emerald" as const },
+          { label: "Pending", value: formatIdNumber(s.pending_transactions), icon: BarChart2, accent: "amber" as const },
+          { label: "Refund", value: formatIdNumber(s.refunded_transactions), icon: TrendingDown, accent: "rose" as const },
         ].map((c) => (
           <StatCard key={c.label} label={c.label} value={c.value} icon={c.icon} accent={c.accent} />
         ))}
@@ -600,7 +600,7 @@ export default function AdminReportsPage() {
                   />
                 </div>
                 <span className="tabular-nums text-xs text-muted-foreground w-16 text-right shrink-0">
-                  {s.count.toLocaleString()} ({pct.toFixed(1)}%)
+                  {formatIdNumber(s.count)} ({pct.toFixed(1)}%)
                 </span>
               </div>
             );

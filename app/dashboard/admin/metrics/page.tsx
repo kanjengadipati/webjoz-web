@@ -352,7 +352,7 @@ export default function AdminMetricsPage() {
                               {log.failure_reason}
                             </p>
                           )}
-                          <p className="text-[10px] text-muted-foreground truncate">{new Date(log.created_at).toLocaleString()}</p>
+                          <p className="text-[10px] text-muted-foreground truncate">{new Date(log.created_at).toLocaleString("id-ID")}</p>
                         </div>
                       );
                     })}
