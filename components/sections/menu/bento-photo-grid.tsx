@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Utensils } from "lucide-react";
 import { InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
+import { AddToCartButton } from "@/components/cart";
 import { SectionHeader } from "../section-header";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
@@ -183,14 +184,31 @@ export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSe
                         }`} />
                       )}
 
-                      <button
-                        type="button"
-                        onClick={(e) => { e.stopPropagation(); setQuickView({ catIdx: catIndex, itemIdx: itemIndex }); }}
-                        onPointerDown={(e) => e.stopPropagation()}
-                        className="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-white/90 underline underline-offset-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity cursor-pointer"
-                      >
-                        {isEN ? "View detail" : "Lihat Detail"}
-                      </button>
+                      <div className="mt-3 flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
+                        <AddToCartButton
+                          itemId={item.id || `menu-bento-${catIndex}-${itemIndex}`}
+                          itemName={item.name ?? ""}
+                          itemPrice={item.price_display || item.price || null}
+                          itemPriceAmount={item.price_amount}
+                          itemPriceDisplay={item.price_display || item.price}
+                          itemPromoPriceAmount={item.promo_price_amount}
+                          itemPromoPriceDisplay={item.promo_price_display}
+                          discountLabel={item.discount_label}
+                          itemDescription={item.description}
+                          category={category.name ?? ""}
+                          variant_groups={item.variant_groups}
+                          disabled={item.is_available === false}
+                          className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full bg-dt-primary text-dt-primary-foreground cursor-pointer transition-transform duration-200 hover:scale-105"
+                        />
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); setQuickView({ catIdx: catIndex, itemIdx: itemIndex }); }}
+                          onPointerDown={(e) => e.stopPropagation()}
+                          className="text-[11px] font-semibold uppercase tracking-wider text-white/90 underline underline-offset-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity cursor-pointer"
+                        >
+                          {isEN ? "View detail" : "Lihat Detail"}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 );

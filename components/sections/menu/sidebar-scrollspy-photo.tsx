@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Utensils, ChevronRight } from "lucide-react";
 import { InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
+import { AddToCartButton } from "@/components/cart";
 import { SectionHeader } from "../section-header";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
@@ -283,6 +284,24 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
                             {item.description && (
                               <InlineText section="menu" fieldKey={"categories." + index + ".items." + itemIndex + ".description"} value={item.description ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="p" multiline className="text-xs md:text-sm text-dt-text-muted leading-relaxed line-clamp-3 md:line-clamp-2" />
                             )}
+                          </div>
+
+                          <div className="mt-4" onClick={(e) => e.stopPropagation()}>
+                            <AddToCartButton
+                              itemId={item.id || `menu-scrollspy-${index}-${itemIndex}`}
+                              itemName={item.name ?? ""}
+                              itemPrice={item.price_display || item.price || null}
+                              itemPriceAmount={item.price_amount}
+                              itemPriceDisplay={item.price_display || item.price}
+                              itemPromoPriceAmount={item.promo_price_amount}
+                              itemPromoPriceDisplay={item.promo_price_display}
+                              discountLabel={item.discount_label}
+                              itemDescription={item.description}
+                              category={category.name ?? ""}
+                              variant_groups={item.variant_groups}
+                              disabled={item.is_available === false}
+                              className="inline-flex items-center gap-1 text-[0.7rem] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full bg-dt-primary text-dt-primary-foreground cursor-pointer transition-all hover:brightness-110"
+                            />
                           </div>
 
                         </div>
