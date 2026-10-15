@@ -11,6 +11,7 @@ import { Loader2, Check, ArrowLeft, X } from "lucide-react";
 import Link from "next/link";
 import { PricingCards, PlanItem } from "@/components/pricing-cards";
 import { useI18n } from "@/lib/i18n/context";
+import { formatIdNumber } from "@/lib/utils";
 
 
 
@@ -455,9 +456,9 @@ export default function UpgradePage() {
             </div>
             <p className="text-xs text-emerald-600/80 mt-1">
               Diskon {paymentGateway === "paypal" ? "$" : "Rp "}
-              {promoValidation.discount_amount.toLocaleString()} — Harga akhir{" "}
+              {paymentGateway === "paypal" ? promoValidation.discount_amount.toLocaleString() : formatIdNumber(promoValidation.discount_amount)} — Harga akhir{" "}
               {paymentGateway === "paypal" ? "$" : "Rp "}
-              {promoValidation.final_price.toLocaleString()}
+              {paymentGateway === "paypal" ? promoValidation.final_price.toLocaleString() : formatIdNumber(promoValidation.final_price)}
             </p>
           </div>
         )}

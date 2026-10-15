@@ -14,6 +14,7 @@ import {
 import { Button, Card, CardContent, CardHeader, CardTitle, Dialog, CustomSelect } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
+import { formatIdNumber } from "@/lib/utils";
 
 interface CartVariantTag {
   group_name: string;
@@ -298,7 +299,7 @@ export default function LeadsPage() {
                     )}
                   </div>
                   <div className="text-right shrink-0 font-bold text-foreground">
-                    {item.price_display || item.price || (item.price_amount ? `Rp ${item.price_amount.toLocaleString()}` : "-")}
+                    {item.price_display || item.price || (item.price_amount ? `Rp ${formatIdNumber(item.price_amount)}` : "-")}
                   </div>
                 </div>
               ))}
@@ -308,7 +309,7 @@ export default function LeadsPage() {
                 <div className="p-3.5 bg-emerald-500/10 dark:bg-emerald-500/15 flex items-center justify-between text-xs font-bold border-t border-emerald-500/20">
                   <span className="text-foreground">{t("dashboard.leads.totalOrderAmount")}:</span>
                   <span className="text-emerald-600 dark:text-emerald-400 text-sm font-extrabold">
-                    Rp {lead.total_amount.toLocaleString()}
+                    Rp {formatIdNumber(lead.total_amount)}
                   </span>
                 </div>
               )}
@@ -414,8 +415,8 @@ export default function LeadsPage() {
                 <DollarSign className="w-4 h-4" />
               </div>
             </div>
-            <div className="text-lg sm:text-xl font-black text-foreground mt-2 truncate" title={`Rp ${totalRevenue.toLocaleString()}`}>
-              Rp {totalRevenue >= 1000000 ? `${(totalRevenue / 1000000).toFixed(1)} jt` : totalRevenue.toLocaleString()}
+            <div className="text-lg sm:text-xl font-black text-foreground mt-2 truncate" title={`Rp ${formatIdNumber(totalRevenue)}`}>
+              Rp {totalRevenue >= 1000000 ? `${(totalRevenue / 1000000).toFixed(1)} jt` : formatIdNumber(totalRevenue)}
             </div>
           </Card>
         </div>
@@ -601,7 +602,7 @@ export default function LeadsPage() {
                       <h4 className="font-bold text-sm text-foreground">{lead.name || "Anonim"}</h4>
                       {isOrder && lead.total_amount ? (
                         <span className="font-extrabold text-emerald-600 dark:text-emerald-400 text-xs">
-                          Rp {lead.total_amount.toLocaleString()}
+                          Rp {formatIdNumber(lead.total_amount)}
                         </span>
                       ) : null}
                     </div>
@@ -698,7 +699,7 @@ export default function LeadsPage() {
                           <td className="p-3.5">
                             {isOrder && lead.total_amount ? (
                               <div className="font-bold text-emerald-600 dark:text-emerald-400 text-xs">
-                                Rp {lead.total_amount.toLocaleString()}
+                                Rp {formatIdNumber(lead.total_amount)}
                               </div>
                             ) : (
                               <div className="text-muted-foreground truncate max-w-[180px] font-normal">
