@@ -8,6 +8,7 @@ import { Building2, Loader2, Users, Globe, ArrowLeft, Mail, Calendar, Zap, Credi
 import { Button, Card, CardContent, CardHeader, CardTitle, CustomSelect } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
+import { formatIdNumber } from "@/lib/utils";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 
@@ -224,11 +225,11 @@ export default function AdminTenantDetailPage() {
               </div>
               <div>
                 <p className="text-xs font-medium text-muted-foreground">{t("dashboard.tenantDetail.usageTokenInput")}</p>
-                <p className="text-2xl font-bold">{usage.token_input.toLocaleString()}</p>
+                <p className="text-2xl font-bold">{formatIdNumber(usage.token_input)}</p>
               </div>
               <div>
                 <p className="text-xs font-medium text-muted-foreground">{t("dashboard.tenantDetail.usageTokenOutput")}</p>
-                <p className="text-2xl font-bold">{usage.token_output.toLocaleString()}</p>
+                <p className="text-2xl font-bold">{formatIdNumber(usage.token_output)}</p>
               </div>
             </div>
           ) : (
