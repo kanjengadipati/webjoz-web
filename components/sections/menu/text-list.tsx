@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { InlineText, isPlaceholderPrice, AddToCartButton, CatalogMenuFilterBar, ProductQuickView, toQuickViewItem } from "../../templates/shared";
+import { minVariantPriceAmount } from "../../templates/helpers";
+import { formatPriceWithAmount } from "@/lib/utils";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import { useCatalogFilter } from "../use-catalog-filter";
 import { SectionHeader, pillEyebrowStyle, headerTitleStyle, headerDividerStyle } from "../section-header";
@@ -100,7 +102,25 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
               {/* Items */}
               <div style={{ display: "flex", flexDirection: "column" }}>
                 {cat.filteredItems.map(({ item, originalCatIdx, originalItemIdx }) => {
-                  const showPrice = item.price && !isPlaceholderPrice(item.price);
+                  const displayPrice = item.price_display || item.price;
+                  const showPrice = (displayPrice && !isPlaceholderPrice(displayPrice)) || Boolean(isEditorMode);
+                  const hasPromo = typeof item.promo_price_amount === "number" && item.promo_price_amount > 0 &&
+                    (typeof item.price_amount !== "number" || item.price_amount <= 0 || item.promo_price_amount < item.price_amount);
+                  const effectiveBaseAmount = hasPromo ? item.promo_price_amount : item.price_amount;
+                  const minVariantAmount = minVariantPriceAmount(effectiveBaseAmount, item.variant_groups);
+                  const fromLabel = isEN ? "From" : "Mulai dari";
+                  let fromPriceDisplay: string | null = null;
+                  if (minVariantAmount != null) {
+                    const baseTemplate = (hasPromo && item.promo_price_display) ? item.promo_price_display : displayPrice;
+                    const alreadyHasFrom = (baseTemplate || "").toLowerCase().includes(fromLabel.toLowerCase());
+                    const template = alreadyHasFrom ? baseTemplate : `${fromLabel} ${baseTemplate ?? ""}`;
+                    fromPriceDisplay = formatPriceWithAmount(minVariantAmount, template);
+                  }
+                  const priceValue = isEditorMode ? (displayPrice ?? "") : (fromPriceDisplay ?? displayPrice ?? "");
+                  const promoBaseDisplay = item.promo_price_display
+                    || (hasPromo && typeof item.promo_price_amount === "number" ? formatPriceWithAmount(item.promo_price_amount, displayPrice) : displayPrice)
+                    || "";
+                  const promoPriceValue = isEditorMode ? promoBaseDisplay : (fromPriceDisplay ?? promoBaseDisplay);
                   return (
                     <div key={item.id || `menu-tl-${originalCatIdx}-${originalItemIdx}`} className="relative group cursor-pointer" onClick={() => setQuickView({ catIdx: originalCatIdx, itemIdx: originalItemIdx })} style={{
                       padding: "0.875rem 0",
@@ -130,7 +150,15 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
                           </span>
                         )}
                         {showPrice && (
-                          <InlineText section="menu" fieldKey={"categories." + originalCatIdx + ".items." + originalItemIdx + ".price"} value={item.price_display || item.price || ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontFamily: hFont, fontWeight: 700, fontSize: "0.875rem", color: p, flexShrink: 0 }} />
+                          hasPromo ? (
+                            <span style={{ display: "inline-flex", alignItems: "baseline", gap: "0.35rem", flexShrink: 0 }}>
+                              <InlineText section="menu" fieldKey={"categories." + originalCatIdx + ".items." + originalItemIdx + ".discount_label"} value={item.discount_label || "Promo"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: `color-mix(in srgb, ${p} 16%, transparent)`, color: p }} />
+                              <InlineText section="menu" fieldKey={"categories." + originalCatIdx + ".items." + originalItemIdx + ".promo_price_display"} value={promoPriceValue} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontFamily: hFont, fontWeight: 700, fontSize: "0.875rem", color: p }} />
+                              <span className="line-through opacity-45" style={{ fontSize: "0.75rem", color: muted }}>{displayPrice}</span>
+                            </span>
+                          ) : (
+                            <InlineText section="menu" fieldKey={"categories." + originalCatIdx + ".items." + originalItemIdx + ".price"} value={priceValue} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontFamily: hFont, fontWeight: 700, fontSize: "0.875rem", color: p, flexShrink: 0 }} />
+                          )
                         )}
                       </div>
                       {/* Description */}

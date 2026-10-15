@@ -2,6 +2,8 @@
 import React from "react";
 import { Image as ImageIcon } from "lucide-react";
 import { MenuCatalogCard, InlineText, InlineImage, isPlaceholderPrice } from "../../templates/shared";
+import { minVariantPriceAmount } from "../../templates/helpers";
+import { formatPriceWithAmount } from "@/lib/utils";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import { SectionHeader, pillEyebrowStyle, headerTitleStyle, headerDividerStyle } from "../section-header";
 import { AddToCartButton } from "@/components/cart";
@@ -88,7 +90,25 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
               {featuredWithIdx.length > 0 && (
                 <div className={featuredWithIdx.length === 1 ? "grid grid-cols-1" : "grid grid-cols-1 sm:grid-cols-2"} style={{ gap: "1.25rem", marginBottom: "1.5rem" }}>
                   {featuredWithIdx.slice(0, 2).map(({ item, originalIdx: itemIdx }) => {
-                    const showPrice = item.price && !isPlaceholderPrice(item.price);
+                    const displayPrice = item.price_display || item.price;
+                    const showPrice = (displayPrice && !isPlaceholderPrice(displayPrice)) || Boolean(isEditorMode);
+                    const hasPromo = typeof item.promo_price_amount === "number" && item.promo_price_amount > 0 &&
+                      (typeof item.price_amount !== "number" || item.price_amount <= 0 || item.promo_price_amount < item.price_amount);
+                    const effectiveBaseAmount = hasPromo ? item.promo_price_amount : item.price_amount;
+                    const minVariantAmount = minVariantPriceAmount(effectiveBaseAmount, item.variant_groups);
+                    const fromLabel = isEN ? "From" : "Mulai dari";
+                    let fromPriceDisplay: string | null = null;
+                    if (minVariantAmount != null) {
+                      const baseTemplate = (hasPromo && item.promo_price_display) ? item.promo_price_display : displayPrice;
+                      const alreadyHasFrom = (baseTemplate || "").toLowerCase().includes(fromLabel.toLowerCase());
+                      const template = alreadyHasFrom ? baseTemplate : `${fromLabel} ${baseTemplate ?? ""}`;
+                      fromPriceDisplay = formatPriceWithAmount(minVariantAmount, template);
+                    }
+                    const priceValue = isEditorMode ? (displayPrice ?? "") : (fromPriceDisplay ?? displayPrice ?? "");
+                    const promoBaseDisplay = item.promo_price_display
+                      || (hasPromo && typeof item.promo_price_amount === "number" ? formatPriceWithAmount(item.promo_price_amount, displayPrice) : displayPrice)
+                      || "";
+                    const promoPriceValue = isEditorMode ? promoBaseDisplay : (fromPriceDisplay ?? promoBaseDisplay);
                     return (
                       <div
                         key={itemIdx}
@@ -123,7 +143,15 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem" }}>
                             <InlineText section="catalog" fieldKey={"categories." + ci + ".items." + itemIdx + ".name"} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h4" style={{ fontFamily: hFont, fontWeight: 700, fontSize: "1rem", color: text, margin: 0 }} />
                             {showPrice && (
-                              <InlineText section="catalog" fieldKey={"categories." + ci + ".items." + itemIdx + ".price"} value={item.price ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontFamily: hFont, fontWeight: 800, fontSize: "0.9rem", color: p, flexShrink: 0 }} />
+                              hasPromo ? (
+                                <span style={{ display: "inline-flex", alignItems: "baseline", gap: "0.35rem", flexShrink: 0, flexWrap: "wrap", justifyContent: "flex-end" }}>
+                                  <InlineText section="catalog" fieldKey={"categories." + ci + ".items." + itemIdx + ".discount_label"} value={item.discount_label || "Promo"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: `color-mix(in srgb, ${p} 16%, transparent)`, color: p }} />
+                                  <InlineText section="catalog" fieldKey={"categories." + ci + ".items." + itemIdx + ".promo_price_display"} value={promoPriceValue} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontFamily: hFont, fontWeight: 800, fontSize: "0.9rem", color: p, flexShrink: 0 }} />
+                                  <span className="line-through opacity-45" style={{ fontSize: "0.75rem", color: muted }}>{displayPrice}</span>
+                                </span>
+                              ) : (
+                                <InlineText section="catalog" fieldKey={"categories." + ci + ".items." + itemIdx + ".price"} value={priceValue} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontFamily: hFont, fontWeight: 800, fontSize: "0.9rem", color: p, flexShrink: 0 }} />
+                              )
                             )}
                           </div>
                           {item.description && (

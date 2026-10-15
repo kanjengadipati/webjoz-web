@@ -42,8 +42,8 @@ export default function ProductClassic({
     : {
         className: "group transition-all duration-300",
         style: { background: brandBg, border: `1px solid color-mix(in srgb, ${brandPrimary} 14%, transparent)`, borderRadius: "16px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" },
-        image: { className: "w-full aspect-[4/5] object-cover transition-transform duration-500 group-hover:scale-105" },
-        placeholder: { className: "w-full aspect-[4/5] flex items-center justify-center transition-transform duration-500 group-hover:scale-105", style: { background: `color-mix(in srgb, ${brandPrimary} 8%, transparent)` }, iconClassName: "w-12 h-12", iconStyle: { color: `color-mix(in srgb, ${brandPrimary} 30%, transparent)`, opacity: 0.6 } },
+        image: { className: "w-full aspect-square object-cover transition-transform duration-500 group-hover:scale-105 sm:aspect-[4/5]" },
+        placeholder: { className: "w-full aspect-square flex items-center justify-center transition-transform duration-500 group-hover:scale-105 sm:aspect-[4/5]", style: { background: `color-mix(in srgb, ${brandPrimary} 8%, transparent)` }, iconClassName: "w-12 h-12", iconStyle: { color: `color-mix(in srgb, ${brandPrimary} 30%, transparent)`, opacity: 0.6 } },
         content: { className: "p-4 flex flex-col flex-1 min-w-0" },
         header: { className: "flex flex-col gap-1.5 mb-2 min-w-0" },
         title: { className: "font-bold text-sm leading-tight line-clamp-2", style: { color: brandText, fontFamily: headingFont } },
@@ -121,7 +121,10 @@ export default function ProductClassic({
                 <span style={{ width: 6, height: 6, borderRadius: "50%", background: brandPrimary, flexShrink: 0 }} />
                 <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, ${brandPrimary} 18%, transparent)` }} />
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: isMenu ? "1.25rem" : "1.5rem", alignItems: isMenu ? undefined : "stretch" }}>
+              <div
+                className={isMenu ? undefined : "grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3 lg:grid-cols-4"}
+                style={isMenu ? { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "1.25rem" } : undefined}
+              >
                 {cat.filteredItems.map(({ item, originalCatIdx, originalItemIdx }) => (
                   <MenuCatalogCard
                     key={item.id || `${kind}-classic-${originalCatIdx}-${originalItemIdx}`}

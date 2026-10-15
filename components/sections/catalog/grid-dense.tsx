@@ -93,7 +93,7 @@ export default function CatalogGridDense({ catalog, onUpdateField, isEditorMode,
 
                 <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, ${p} 18%, transparent)` }} />
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "0.875rem", alignItems: "stretch" }}>
+              <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                 {cat.filteredItems.map(({ item, originalCatIdx, originalItemIdx }) => (
                   <MenuCatalogCard
                     key={item.id || `cat-dense-${originalCatIdx}-${originalItemIdx}`}

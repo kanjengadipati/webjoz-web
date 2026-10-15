@@ -343,7 +343,9 @@ export function AddToCartButton({
   const hasPromo = typeof itemPromoPriceAmount === "number" && itemPromoPriceAmount > 0 &&
     (typeof itemPriceAmount !== "number" || itemPriceAmount <= 0 || itemPromoPriceAmount < itemPriceAmount);
   const effectiveAmount = hasPromo ? itemPromoPriceAmount : itemPriceAmount;
-  const effectiveDisplay = hasPromo ? (itemPromoPriceDisplay || itemPriceDisplay) : (itemPriceDisplay || itemPrice);
+  const effectiveDisplay = hasPromo
+    ? (itemPromoPriceDisplay || formatPriceWithAmount(itemPromoPriceAmount as number, itemPriceDisplay || itemPrice || null))
+    : (itemPriceDisplay || itemPrice);
 
   // If item has variants, count all matching items in cart regardless of variant
   const totalItemQty = items
