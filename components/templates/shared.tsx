@@ -1488,6 +1488,8 @@ function MenuCatalogCard({
     fromPriceDisplay = formatPriceWithAmount(minVariantAmount, template);
   }
   const priceValue = isEditorMode ? (displayPrice ?? "") : (fromPriceDisplay ?? displayPrice ?? "");
+  const promoBaseDisplay = itemPromoPriceDisplay || displayPrice || "";
+  const promoPriceValue = isEditorMode ? promoBaseDisplay : (fromPriceDisplay ?? promoBaseDisplay);
   const isOutOfStock = is_available === false;
 
   const handleTriggerUpload = (e: React.MouseEvent | React.TouchEvent) => {
@@ -1684,7 +1686,7 @@ function MenuCatalogCard({
           hasPromo ? (
             <div className={`${priceClassName ?? ""} flex items-center gap-1.5 flex-wrap mt-1`} style={priceStyle}>
               <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".discount_label" : ""} value={discountLabel || "Promo"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 16%, transparent)", color: "var(--dt-primary)" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-              <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".promo_price_display" : ""} value={itemPromoPriceDisplay || displayPrice} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+              <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".promo_price_display" : ""} value={promoPriceValue} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
               <span className="line-through opacity-45 text-xs">{displayPrice}</span>
             </div>
           ) : (
@@ -1696,7 +1698,7 @@ function MenuCatalogCard({
         hasPromo ? (
           <div className={`${priceClassName ?? ""} flex items-center gap-1.5 whitespace-nowrap shrink-0`} style={priceStyle}>
             <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".discount_label" : ""} value={discountLabel || "Promo"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 16%, transparent)", color: "var(--dt-primary)" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-            <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".promo_price_display" : ""} value={itemPromoPriceDisplay || displayPrice} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+            <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".promo_price_display" : ""} value={promoPriceValue} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             <span className="line-through opacity-45 text-xs">{displayPrice}</span>
           </div>
         ) : (
