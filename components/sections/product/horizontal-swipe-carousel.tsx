@@ -182,7 +182,7 @@ export default function ProductHorizontalSwipeCarousel({
               return (
                 <div
                   key={cardKey}
-                  className="min-w-[280px] sm:min-w-[320px] md:min-w-[360px] snap-start flex-shrink-0 flex flex-col group relative"
+                  className="w-[82%] max-w-[360px] sm:w-auto sm:max-w-none sm:min-w-[320px] md:min-w-[360px] snap-start flex-shrink-0 flex flex-col group relative"
                   style={{ borderRadius: dtRadius }}
                 >
                   <MenuCatalogCard
@@ -225,7 +225,7 @@ export default function ProductHorizontalSwipeCarousel({
               <InlineAddTile
                 label={isEN ? (isMenu ? "Add Menu Item" : "Add Product") : (isMenu ? "Tambah Menu" : "Tambah Produk")}
                 variant="card"
-                className="min-w-[280px] sm:min-w-[320px] md:min-w-[360px] snap-start h-full min-h-[320px] flex-shrink-0"
+                className="w-[82%] max-w-[360px] sm:w-auto sm:max-w-none sm:min-w-[320px] md:min-w-[360px] snap-start h-full min-h-[320px] flex-shrink-0"
                 style={{ borderRadius: dtRadius }}
                 onClick={() => onAddItem(safeActiveIdx)}
               />

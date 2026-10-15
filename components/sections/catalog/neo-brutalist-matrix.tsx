@@ -236,12 +236,8 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
                     </div>
 
                     {/* Row with action circular button */}
-                    <div className="flex justify-between items-center mt-auto pt-4 border-t-2 border-dashed" style={{ borderColor: "var(--dt-border)" }}>
-                      <span className="text-xs font-black uppercase tracking-wider text-muted-foreground">
-                        Spec.
-                      </span>
-
-                      {/* Circular "Add" button */}
+                    <div className="flex justify-end items-center mt-auto pt-4 border-t-2 border-dashed" style={{ borderColor: "var(--dt-border)" }}>
+                      {/* Pill "Add" button (label fits: "Pilih Opsi" / "Tambah" / "Habis") */}
                     <AddToCartButton
                       itemId={item.id || `cat-nbm-${catIdx}-${index}`}
                       itemName={item.name}
@@ -254,7 +250,7 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
                       category={category.name}
                       variant_groups={item.variant_groups}
                       disabled={item.is_available === false}
-                      className="w-12 h-12 rounded-full border-[3px] border-solid flex items-center justify-center transition-all duration-200 hover:scale-110 active:translate-x-0.5 active:translate-y-0.5 cursor-pointer p-0"
+                      className="h-11 px-4 gap-1.5 text-xs font-black uppercase tracking-wider border-[3px] border-solid flex items-center justify-center whitespace-nowrap transition-all duration-200 hover:scale-105 active:translate-x-0.5 active:translate-y-0.5 cursor-pointer"
                       style={{
                         borderColor: "var(--dt-border)",
                         backgroundColor: "var(--dt-primary)",

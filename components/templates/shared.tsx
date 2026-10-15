@@ -1488,7 +1488,9 @@ function MenuCatalogCard({
     fromPriceDisplay = formatPriceWithAmount(minVariantAmount, template);
   }
   const priceValue = isEditorMode ? (displayPrice ?? "") : (fromPriceDisplay ?? displayPrice ?? "");
-  const promoBaseDisplay = itemPromoPriceDisplay || displayPrice || "";
+  const promoBaseDisplay = itemPromoPriceDisplay
+    || (hasPromo && typeof itemPromoPriceAmount === "number" ? formatPriceWithAmount(itemPromoPriceAmount, displayPrice) : displayPrice)
+    || "";
   const promoPriceValue = isEditorMode ? promoBaseDisplay : (fromPriceDisplay ?? promoBaseDisplay);
   const isOutOfStock = is_available === false;
 
@@ -1678,7 +1680,7 @@ function MenuCatalogCard({
   );
 
   const header = (
-    <div className={headerClassName} style={headerStyle}>
+    <div className={`${headerClassName ?? ""}${hasPromo && !headerClassName?.includes("flex-col") ? " flex-wrap" : ""}`} style={headerStyle}>
       <div className="min-w-0 flex-1">
         {/* Badge zone removed — badge is now a floating overlay on the image */}
         <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".name" : ""} value={itemName ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="h4" className={titleClassName} style={titleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
@@ -1696,7 +1698,7 @@ function MenuCatalogCard({
       </div>
       {showPrice && !headerClassName?.includes("flex-col") && (
         hasPromo ? (
-          <div className={`${priceClassName ?? ""} flex items-center gap-1.5 whitespace-nowrap shrink-0`} style={priceStyle}>
+          <div className={`${priceClassName ?? ""} flex items-center gap-1.5 flex-wrap basis-full`} style={priceStyle}>
             <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".discount_label" : ""} value={discountLabel || "Promo"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 16%, transparent)", color: "var(--dt-primary)" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".promo_price_display" : ""} value={promoPriceValue} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             <span className="line-through opacity-45 text-xs">{displayPrice}</span>
@@ -1769,7 +1771,7 @@ function MenuCatalogCard({
       type="button"
       onClick={(e) => { e.stopPropagation(); e.preventDefault(); setQuickViewOpen(true); }}
       onPointerDown={(e) => e.stopPropagation()}
-      className={`absolute top-2.5 left-2.5 z-40 w-8 h-8 rounded-full flex items-center justify-center bg-slate-900/70 text-white backdrop-blur-sm shadow-md border border-white/20 hover:bg-slate-900 transition-all cursor-pointer ${isEditorMode ? "opacity-100" : "opacity-0 group-hover:opacity-100"} pointer-coarse:opacity-100`}
+      className={`absolute ${layout === "compact" ? "bottom-2.5 right-2.5" : isEditorMode ? "top-2.5 left-2.5" : "top-2.5 right-2.5"} z-40 w-9 h-9 rounded-full flex items-center justify-center bg-slate-900/70 text-white backdrop-blur-sm shadow-md border border-white/20 hover:bg-slate-900 transition-all cursor-pointer ${isEditorMode ? "opacity-100" : "opacity-0 group-hover:opacity-100"} pointer-coarse:opacity-100`}
       aria-label={t("dashboard.sitesKatalog.quickView", "Lihat Detail")}
       title={t("dashboard.sitesKatalog.quickView", "Lihat Detail")}
     >
