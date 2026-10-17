@@ -23,7 +23,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 > [!IMPORTANT]
 > **PANDUAN ARSITEKTUR AI & MOOD**:
 > Untuk perubahan wizard, taksonomi tipe bisnis, preset mood, atau integrasi generator AI, baca panduan arsitektur di [`api/docs/AI_GENERATION_PIPELINE.md`](file:///Users/meilanasapta/Code/giwangan-web-gen/api/docs/AI_GENERATION_PIPELINE.md).
-> Pegang teguh prinsip: **Kategori/Sub-Kategori** menentukan fungsi & struktur; **Mood** menentukan estetika visual & copywriting.
+> - **Kategori vs Mood**: **Kategori/Sub-Kategori** menentukan fungsi & struktur; **Mood** menentukan estetika visual & copywriting.
+> - **AI-First (DILARANG Menambah Clue Hardcode)**: Gunakan AI-First. Serahkan ekstraksi konteks, inferensi jenis bisnis, dan pemformatan semantik kepada model AI. Dilarang menambah daftar clue kata kunci atau regex hardcode untuk meng-cover kasus input tertentu. Clue/heuristik **HANYA** untuk offline fallback.
 
 Setiap kerja fitur yang menyentuh section/komponen website, wajib periksa semua poin berikut —
 jangan pernah selesai hanya karena render utama sudah jalan:
