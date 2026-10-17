@@ -64,7 +64,7 @@ export function formatText(text: string, isUser: boolean) {
 export function capitalizeWords(val: string): string {
   return val
     .split(/\s+/)
-    .map((w) => (w.length > 0 ? w[0].toUpperCase() + w.slice(1).toLowerCase() : ""))
+    .map((w) => (w.length > 0 ? (w === w.toUpperCase() ? w : w[0].toUpperCase() + w.slice(1).toLowerCase()) : ""))
     .join(" ");
 }
 
