@@ -88,17 +88,31 @@ interface BuiltinAssetsResponse {
 
 // Emergency fallback — minimal set used only when both API and localStorage are empty.
 const EMERGENCY_FONT_PAIRINGS: TypographyPairing[] = [
-  { id: "neo-clean", name: "Neo Clean", description: "Jernih dan modern", heading_font: "Inter", body_font: "Inter", heading_weight: "700", heading_size_hero: "3rem" },
-  { id: "organic-warm", name: "Organik Hangat", description: "Alami dan ramah", heading_font: "Lora", body_font: "Work Sans", heading_weight: "600", heading_size_hero: "3rem" },
-  { id: "bold-display", name: "Bold Display", description: "Tegas dan berenergi", heading_font: "Montserrat", body_font: "Open Sans", heading_weight: "800", heading_size_hero: "3.5rem" },
-  { id: "tech-forward", name: "Tech Modern", description: "Geometris digital", heading_font: "Space Grotesk", body_font: "Inter", heading_weight: "700", heading_size_hero: "3rem" },
+  { id: "neo-clean",        name: "Neo Clean",         description: "Jernih dan modern",    heading_font: "Inter",          body_font: "Inter",       heading_weight: "700", heading_size_hero: "3rem" },
+  { id: "organic-warm",     name: "Organik Hangat",    description: "Alami dan ramah",      heading_font: "Lora",           body_font: "Work Sans",   heading_weight: "600", heading_size_hero: "3rem" },
+  { id: "bold-display",     name: "Bold Display",      description: "Tegas dan berenergi",  heading_font: "Montserrat",     body_font: "Open Sans",   heading_weight: "800", heading_size_hero: "3.5rem" },
+  { id: "tech-forward",     name: "Tech Modern",       description: "Geometris digital",    heading_font: "Space Grotesk",  body_font: "Inter",       heading_weight: "700", heading_size_hero: "3rem" },
+  // Additional pairings required by INDUSTRY_PRESETS (kafe, salon, otomotif, klinik, properti, pendidikan)
+  { id: "fraunces-organic", name: "Fraunces Organic",  description: "Serif hangat kafe",    heading_font: "Fraunces",       body_font: "Work Sans",   heading_weight: "600", heading_size_hero: "3rem" },
+  { id: "luxury-serif",     name: "Luxury Serif",      description: "Anggun dan eksklusif", heading_font: "Playfair Display", body_font: "Lato",      heading_weight: "700", heading_size_hero: "3rem" },
+  { id: "urban-street",     name: "Urban Street",      description: "Gelap bertenaga",      heading_font: "Barlow Condensed", body_font: "Barlow",    heading_weight: "800", heading_size_hero: "3.5rem", heading_transform: "uppercase" },
+  { id: "friendly-round",   name: "Friendly Round",    description: "Bersih dan ramah",     heading_font: "Nunito",         body_font: "Nunito",      heading_weight: "700", heading_size_hero: "3rem" },
+  { id: "sora-industrial",  name: "Sora Industrial",   description: "Industrial solid",     heading_font: "Sora",           body_font: "Inter",       heading_weight: "700", heading_size_hero: "3rem" },
+  { id: "jakarta-pro",      name: "Jakarta Pro",       description: "Elegan modern",        heading_font: "Plus Jakarta Sans", body_font: "Plus Jakarta Sans", heading_weight: "700", heading_size_hero: "3rem" },
 ];
 
 const EMERGENCY_COLOR_PATTERNS: ColorPattern[] = [
-  { id: "profesional", name: "Profesional", description: "Biru elegan", palette: { primary: "#4F46E5", accent: "#7C3AED", background: "#F8FAFC", surface: "#FFFFFF", text: "#0F172A" }, theme_mode: "light" },
-  { id: "hangat", name: "Hangat", description: "Cokelat hangat", palette: { primary: "#78350F", accent: "#B45309", background: "#FAF7F2", surface: "#FFFFFF", text: "#2C2620" }, theme_mode: "light" },
-  { id: "malam", name: "Malam Gelap", description: "Gelap elegan", palette: { primary: "#C9A84C", accent: "#A07830", background: "#0D0D0B", surface: "#1A1A17", text: "#F5F0E8" }, theme_mode: "dark" },
-  { id: "segar", name: "Segar Alami", description: "Hijau alami", palette: { primary: "#2D6A4F", accent: "#40916C", background: "#F0FDF4", surface: "#FFFFFF", text: "#1B2E20" }, theme_mode: "light" },
+  { id: "profesional",  name: "Profesional",   description: "Biru elegan",      palette: { primary: "#4F46E5", accent: "#7C3AED", background: "#F8FAFC", surface: "#FFFFFF", text: "#0F172A" }, theme_mode: "light" },
+  { id: "hangat",       name: "Hangat",         description: "Cokelat hangat",   palette: { primary: "#78350F", accent: "#B45309", background: "#FAF7F2", surface: "#FFFFFF", text: "#2C2620" }, theme_mode: "light" },
+  { id: "malam",        name: "Malam Gelap",    description: "Gelap elegan",     palette: { primary: "#C9A84C", accent: "#A07830", background: "#0D0D0B", surface: "#1A1A17", text: "#F5F0E8" }, theme_mode: "dark" },
+  { id: "segar",        name: "Segar Alami",    description: "Hijau alami",      palette: { primary: "#2D6A4F", accent: "#40916C", background: "#F0FDF4", surface: "#FFFFFF", text: "#1B2E20" }, theme_mode: "light" },
+  // Additional patterns required by INDUSTRY_PRESETS
+  { id: "mentari",      name: "Mentari",        description: "Krem hangat kafe", palette: { primary: "#92400E", accent: "#D97706", background: "#FFFBF0", surface: "#FFFFFF", text: "#1C1917" }, theme_mode: "light" },
+  { id: "mawar",        name: "Mawar",          description: "Fashion vibrant",  palette: { primary: "#9D174D", accent: "#DB2777", background: "#FFF1F5", surface: "#FFFFFF", text: "#1E1017" }, theme_mode: "light" },
+  { id: "laut",         name: "Laut",           description: "Biru bersih",      palette: { primary: "#1D4ED8", accent: "#3B82F6", background: "#F0F7FF", surface: "#FFFFFF", text: "#0F172A" }, theme_mode: "light" },
+  { id: "lembayung",    name: "Lembayung",      description: "Ungu anggun",      palette: { primary: "#7C3AED", accent: "#A78BFA", background: "#FAF5FF", surface: "#FFFFFF", text: "#1E1035" }, theme_mode: "light" },
+  { id: "modern-gelap", name: "Modern Gelap",   description: "Otomotif gelap",   palette: { primary: "#F59E0B", accent: "#EF4444", background: "#0A0A0A", surface: "#1C1C1C", text: "#F5F5F5" }, theme_mode: "dark" },
+  { id: "tenang-abu",   name: "Tenang Abu",     description: "Properti netral",  palette: { primary: "#374151", accent: "#6B7280", background: "#F9FAFB", surface: "#FFFFFF", text: "#111827" }, theme_mode: "light" },
 ];
 
 // In-memory builtin cache (populated by loadBuiltinAssets)
