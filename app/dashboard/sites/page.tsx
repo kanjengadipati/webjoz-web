@@ -20,6 +20,7 @@ import { encodeSiteId } from "@/lib/sqids";
 import { BASE_DOMAIN } from "@/lib/site-config";
 import TermsAcceptance from "@/components/terms-acceptance";
 import ModerationBlock, { type ModerationViolation } from "@/components/moderation-block";
+import { isReservedSubdomain } from "@/lib/subdomain";
 
 /* ── Delete Confirmation Modal ─────────────────────────────────────── */
 interface DeleteModalProps {
@@ -233,7 +234,8 @@ function PublishModal({ site, onConfirm, onCancel, loading, violations, onAppeal
     setSubdomain(cleaned);
   };
 
-  const isInputValid = subdomainRegex.test(subdomain);
+  const isReserved = isReservedSubdomain(subdomain);
+  const isInputValid = subdomainRegex.test(subdomain) && !isReserved;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -344,6 +346,8 @@ function PublishModal({ site, onConfirm, onCancel, loading, violations, onAppeal
               <span className="truncate leading-none">
                 {isInputValid
                   ? t("dashboard.sites.subdomainAvailable", undefined, { url: `https://${previewDomain}` })
+                  : isReserved
+                  ? t("dashboard.sites.subdomainReservedHint")
                   : t("dashboard.sites.subdomainInvalidHint")}
               </span>
             </div>
