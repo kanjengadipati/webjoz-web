@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { isReservedSubdomain } from '@/lib/subdomain'
 
 const DASHBOARD_HOST = 'app.webjoz.com'
 const BASE_DOMAIN = 'webjoz.com'
@@ -45,19 +46,20 @@ export function proxy(request: NextRequest) {
   if (localSubdomainMatch) {
     const subdomain = localSubdomainMatch[1]
     const port = localSubdomainMatch[2] || ''
-    if (subdomain !== 'app' && subdomain !== 'www') {
+    if (!isReservedSubdomain(subdomain)) {
       const pathUrl = new URL(request.url)
       pathUrl.hostname = 'localhost'
       pathUrl.port = port.replace(':', '') || '3000'
       pathUrl.pathname = `/s/${subdomain}${request.nextUrl.pathname === '/' ? '' : request.nextUrl.pathname}`
       return NextResponse.redirect(pathUrl)
     }
+    return next()
   }
 
   // Production Subdomain check (e.g. cafe-jogja.webjoz.com)
   if (host.endsWith(`.${BASE_DOMAIN}`)) {
     const subdomain = host.replace(`.${BASE_DOMAIN}`, '')
-    if (subdomain === 'app' || subdomain === 'www') {
+    if (isReservedSubdomain(subdomain)) {
       return next()
     }
     return NextResponse.rewrite(

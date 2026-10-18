@@ -531,6 +531,7 @@ export interface Translations {
       subdomainPlaceholder: string;
       subdomainAvailable: string;
       subdomainInvalidHint: string;
+      subdomainReservedHint: string;
       subdomainHint: string;
       connectCustomDomain: string;
       customDomainDescPre: string;
@@ -3337,6 +3338,7 @@ export const translations: Record<Locale, Translations> = {
         subdomainPlaceholder: "namaanda",
         subdomainAvailable: "Tersedia: {url}",
         subdomainInvalidHint: "Gunakan huruf kecil, angka, atau tanda hubung (-)",
+        subdomainReservedHint: "Subdomain ini dicadangkan untuk sistem dan tidak dapat digunakan",
         subdomainHint: "Hanya huruf kecil, angka, dan tanda hubung. Subdomain tidak bisa diubah setelah dipublikasikan.",
         connectCustomDomain: "Hubungkan Custom Domain",
         customDomainDescPre: "Ingin brand yang lebih profesional seperti domainanda.com? Anda dapat mengaturnya di",
@@ -6217,6 +6219,7 @@ export const translations: Record<Locale, Translations> = {
         subdomainPlaceholder: "yourname",
         subdomainAvailable: "Available: {url}",
         subdomainInvalidHint: "Use lowercase letters, numbers, or hyphens (-)",
+        subdomainReservedHint: "This subdomain is reserved for the system and cannot be used",
         subdomainHint: "Only lowercase letters, numbers, and hyphens. Subdomain cannot be changed after publishing.",
         connectCustomDomain: "Connect Custom Domain",
         customDomainDescPre: "Want a more professional brand like domainanda.com? You can set it up in",
