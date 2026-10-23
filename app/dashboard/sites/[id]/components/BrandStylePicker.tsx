@@ -260,11 +260,42 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
             );
           })}
 
+          {/* Custom Font yang sedang aktif (Upload / URL) */}
+          {currentHeadingUrl && (
+            <div className="flex items-center justify-between px-3 py-2 rounded-xl border text-xs border-primary bg-primary/10 text-sidebar-foreground font-semibold ring-1 ring-primary/40">
+              <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                <span className="w-3.5 h-3.5 rounded-full border border-primary bg-primary text-primary-foreground flex items-center justify-center shrink-0">
+                  <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                </span>
+                <span className="truncate" style={{ fontFamily: currentHeading }}>
+                  {currentHeading}
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                <span className="inline-flex items-center gap-1 text-[10px] bg-primary/20 text-primary px-1.5 py-0.5 rounded-md font-medium">
+                  <Sparkles className="w-2.5 h-2.5" />
+                  Custom Font
+                </span>
+                <button
+                  type="button"
+                  onClick={() => handleResetCustomFont("heading")}
+                  className="hover:text-red-500 text-sidebar-subtle-foreground cursor-pointer p-0.5"
+                  title={locale === "id" ? "Reset ke font bawaan" : "Reset to default"}
+                >
+                  <Trash2 className="w-3 h-3" />
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Opsi Font Tambahan dari Google Fonts */}
           {!currentHeadingUrl && (
             <div className="pt-0.5">
               <FontPicker
-                value={isHeadingCustom ? currentHeading : (locale === "id" ? "Pilih Google Font lainnya..." : "Choose more Google fonts...")}
+                value={currentHeading}
+                isSelected={isHeadingCustom}
+                placeholder={locale === "id" ? "Pilih Google Font lainnya..." : "Choose more Google fonts..."}
+                badgeLabel="Google Font"
                 onChange={(val) => handleSelectHeading(val)}
               />
             </div>
@@ -322,11 +353,42 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
             );
           })}
 
+          {/* Custom Font yang sedang aktif (Upload / URL) */}
+          {currentBodyUrl && (
+            <div className="flex items-center justify-between px-3 py-2 rounded-xl border text-xs border-primary bg-primary/10 text-sidebar-foreground font-semibold ring-1 ring-primary/40">
+              <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                <span className="w-3.5 h-3.5 rounded-full border border-primary bg-primary text-primary-foreground flex items-center justify-center shrink-0">
+                  <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                </span>
+                <span className="truncate" style={{ fontFamily: currentBody }}>
+                  {currentBody}
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                <span className="inline-flex items-center gap-1 text-[10px] bg-primary/20 text-primary px-1.5 py-0.5 rounded-md font-medium">
+                  <Sparkles className="w-2.5 h-2.5" />
+                  Custom Font
+                </span>
+                <button
+                  type="button"
+                  onClick={() => handleResetCustomFont("body")}
+                  className="hover:text-red-500 text-sidebar-subtle-foreground cursor-pointer p-0.5"
+                  title={locale === "id" ? "Reset ke font bawaan" : "Reset to default"}
+                >
+                  <Trash2 className="w-3 h-3" />
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Opsi Font Tambahan dari Google Fonts */}
           {!currentBodyUrl && (
             <div className="pt-0.5">
               <FontPicker
-                value={isBodyCustom ? currentBody : (locale === "id" ? "Pilih Google Font lainnya..." : "Choose more Google fonts...")}
+                value={currentBody}
+                isSelected={isBodyCustom}
+                placeholder={locale === "id" ? "Pilih Google Font lainnya..." : "Choose more Google fonts..."}
+                badgeLabel="Google Font"
                 onChange={(val) => handleSelectBody(val)}
               />
             </div>

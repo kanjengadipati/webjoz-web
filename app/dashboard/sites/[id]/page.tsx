@@ -3028,6 +3028,15 @@ export default function SiteEditorPage() {
 
                   <div className="border-t border-border" />
 
+                  {/* Brand Style: Quick consistent font & accent color picker */}
+                  <BrandStylePicker
+                    designToken={designToken}
+                    onUpdateField={updateDesignTokenField}
+                    locale={locale}
+                  />
+
+                  <div className="border-t border-border" />
+
                   {/* ColorPatternPicker */}
                   <ColorPatternPicker
                     designToken={designToken}
