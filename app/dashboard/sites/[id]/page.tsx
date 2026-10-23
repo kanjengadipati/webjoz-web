@@ -833,7 +833,6 @@ export default function SiteEditorPage() {
     // Skip if template_id is matching and no new design token is provided
     if (templateId === siteDetails.template_id && !customDesignToken) return;
 
-    setTemplatePickerOpen(false);
     setSiteDetails({ ...siteDetails, template_id: templateId });
 
     if (customDesignToken) {
