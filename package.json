@@ -27,7 +27,7 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "sqids": "^0.3.0",
-    "webjoz-ui": "git+ssh://git@github.com/kanjengadipati/webjoz-ui.git"
+    "webjoz-ui": "github:kanjengadipati/webjoz-ui"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",
