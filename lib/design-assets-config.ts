@@ -32,6 +32,10 @@ export interface TypographyPairing {
   heading_style?: string;
   heading_transform?: string;
   heading_tracking?: string;
+  /** Custom font URL (non-Google). E.g. Google Fonts CSS @import URL or direct .woff2/.ttf URL. */
+  heading_font_url?: string;
+  /** Custom font URL for body font. */
+  body_font_url?: string;
   is_custom?: boolean;
 }
 

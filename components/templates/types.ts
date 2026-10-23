@@ -222,6 +222,8 @@ export interface DesignToken {
   typography?: {
     heading_font?: string;
     body_font?: string;
+    heading_font_url?: string;
+    body_font_url?: string;
     heading_weight?: string;
     heading_size_hero?: string;
     heading_style?: string;
