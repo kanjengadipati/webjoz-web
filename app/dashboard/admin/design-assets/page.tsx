@@ -1196,15 +1196,55 @@ const EMPTY_PAIRING: Omit<TypographyPairing, "id"> = {
   heading_weight: "700", heading_size_hero: "3rem",
 };
 
+function FontSourceToggle({
+  value, onChange, labelGoogle, labelCustom,
+}: { value: "google" | "custom"; onChange: (v: "google" | "custom") => void; labelGoogle: string; labelCustom: string; }) {
+  return (
+    <div className="flex rounded-md border border-border/50 overflow-hidden text-[10px] font-semibold h-6 shrink-0">
+      <button
+        type="button"
+        onClick={() => onChange("google")}
+        className={`flex-1 px-2 transition-colors ${value === "google" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:bg-muted"}`}
+      >
+        {labelGoogle}
+      </button>
+      <button
+        type="button"
+        onClick={() => onChange("custom")}
+        className={`flex-1 px-2 transition-colors ${value === "custom" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:bg-muted"}`}
+      >
+        {labelCustom}
+      </button>
+    </div>
+  );
+}
+
 function AddPairingForm({ onAdd, onCancel }: { onAdd: (p: TypographyPairing) => void; onCancel: () => void }) {
   const { t } = useI18n();
   const [form, setForm] = useState({ ...EMPTY_PAIRING });
+  const [headingMode, setHeadingMode] = useState<"google" | "custom">("google");
+  const [bodyMode, setBodyMode] = useState<"google" | "custom">("google");
+  const [headingUrl, setHeadingUrl] = useState("");
+  const [bodyUrl, setBodyUrl] = useState("");
   const set = (k: string, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
   const handleSubmit = () => {
     if (!form.name.trim() || !form.heading_font || !form.body_font) return;
-    onAdd({ ...form, id: `custom-${Date.now()}`, is_custom: true });
+    const pairing: TypographyPairing = {
+      ...form,
+      id: `custom-${Date.now()}`,
+      is_custom: true,
+      heading_font_url: headingMode === "custom" && headingUrl.trim() ? headingUrl.trim() : undefined,
+      body_font_url: bodyMode === "custom" && bodyUrl.trim() ? bodyUrl.trim() : undefined,
+    };
+    onAdd(pairing);
   };
+
+  const labelGoogle = t("dashboard.adminDesignAssets.fontSourceGoogle");
+  const labelCustom = t("dashboard.adminDesignAssets.fontSourceCustom");
+  const urlPlaceholder = t("dashboard.adminDesignAssets.fontUrlPlaceholder");
+  const namePlaceholder = t("dashboard.adminDesignAssets.fontNamePlaceholder");
+  const urlHelp = t("dashboard.adminDesignAssets.fontUrlHelp");
 
   return (
     <Card className="border-primary/30 bg-primary/5">
@@ -1219,18 +1259,65 @@ function AddPairingForm({ onAdd, onCancel }: { onAdd: (p: TypographyPairing) => 
             <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.description")}</label>
             <Input value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="Singkat, 1 kalimat" className="h-8 text-xs" />
           </div>
-          <div className="space-y-1">
-            <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.headingFont")}</label>
-            <select value={form.heading_font} onChange={(e) => set("heading_font", e.target.value)} className="w-full h-8 px-2 text-xs border border-border/50 rounded-md bg-background">
-              {GOOGLE_FONTS_WHITELIST.map((f) => <option key={f} value={f}>{f}</option>)}
-            </select>
+
+          {/* ── Heading Font ── */}
+          <div className="sm:col-span-2 space-y-2 rounded-lg border border-border/40 bg-muted/20 p-3">
+            <div className="flex items-center justify-between gap-2">
+              <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.headingFont")}</label>
+              <FontSourceToggle value={headingMode} onChange={setHeadingMode} labelGoogle={labelGoogle} labelCustom={labelCustom} />
+            </div>
+            {headingMode === "google" ? (
+              <select value={form.heading_font} onChange={(e) => set("heading_font", e.target.value)} className="w-full h-8 px-2 text-xs border border-border/50 rounded-md bg-background">
+                {GOOGLE_FONTS_WHITELIST.map((f) => <option key={f} value={f}>{f}</option>)}
+              </select>
+            ) : (
+              <div className="space-y-1.5">
+                <Input
+                  value={form.heading_font}
+                  onChange={(e) => set("heading_font", e.target.value)}
+                  placeholder={namePlaceholder}
+                  className="h-8 text-xs"
+                />
+                <Input
+                  value={headingUrl}
+                  onChange={(e) => setHeadingUrl(e.target.value)}
+                  placeholder={urlPlaceholder}
+                  className="h-8 text-xs font-mono"
+                />
+                <p className="text-[10px] text-muted-foreground leading-snug">{urlHelp}</p>
+              </div>
+            )}
           </div>
-          <div className="space-y-1">
-            <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.bodyFont")}</label>
-            <select value={form.body_font} onChange={(e) => set("body_font", e.target.value)} className="w-full h-8 px-2 text-xs border border-border/50 rounded-md bg-background">
-              {GOOGLE_FONTS_WHITELIST.map((f) => <option key={f} value={f}>{f}</option>)}
-            </select>
+
+          {/* ── Body Font ── */}
+          <div className="sm:col-span-2 space-y-2 rounded-lg border border-border/40 bg-muted/20 p-3">
+            <div className="flex items-center justify-between gap-2">
+              <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.bodyFont")}</label>
+              <FontSourceToggle value={bodyMode} onChange={setBodyMode} labelGoogle={labelGoogle} labelCustom={labelCustom} />
+            </div>
+            {bodyMode === "google" ? (
+              <select value={form.body_font} onChange={(e) => set("body_font", e.target.value)} className="w-full h-8 px-2 text-xs border border-border/50 rounded-md bg-background">
+                {GOOGLE_FONTS_WHITELIST.map((f) => <option key={f} value={f}>{f}</option>)}
+              </select>
+            ) : (
+              <div className="space-y-1.5">
+                <Input
+                  value={form.body_font}
+                  onChange={(e) => set("body_font", e.target.value)}
+                  placeholder={namePlaceholder}
+                  className="h-8 text-xs"
+                />
+                <Input
+                  value={bodyUrl}
+                  onChange={(e) => setBodyUrl(e.target.value)}
+                  placeholder={urlPlaceholder}
+                  className="h-8 text-xs font-mono"
+                />
+                <p className="text-[10px] text-muted-foreground leading-snug">{urlHelp}</p>
+              </div>
+            )}
           </div>
+
           <div className="space-y-1">
             <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.weight")}</label>
             <select value={form.heading_weight} onChange={(e) => set("heading_weight", e.target.value)} className="w-full h-8 px-2 text-xs border border-border/50 rounded-md bg-background">
@@ -1272,7 +1359,7 @@ function PairingsTab({
   );
 
   useEffect(() => {
-    allPairings.forEach((p) => loadGoogleFont(p.heading_font, p.body_font));
+    allPairings.forEach((p) => loadGoogleFont(p.heading_font, p.body_font, p.heading_font_url, p.body_font_url));
   }, [customPairings.length]);
 
   return (
