@@ -12,7 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 import { getWhatsAppUrl, SUPPORT_EMAIL } from "@/lib/site-config";
 import { useI18n } from "@/lib/i18n/context";
-import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
+import { Button, buttonClassName, SparkleIcon, SparkleGenAI } from "webjoz-ui";
 
 // ─── Interfaces ───────────────────────────────────────────────────────────────
 
@@ -1039,7 +1039,7 @@ export default function HelpCenterPage() {
                         <div className="pt-1">
                           <Link
                             href={guide.actionUrl}
-                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-foreground text-background text-xs font-semibold hover:opacity-90 transition"
+                            className={buttonClassName({ variant: "default", size: "sm" })}
                           >
                             <span>{guide.actionLabel}</span>
                             <ArrowRight className="w-3.5 h-3.5" />
@@ -1050,14 +1050,16 @@ export default function HelpCenterPage() {
 
                     {/* Expand Button */}
                     <div className="pt-1 mt-auto">
-                      <button
+                      <Button
                         type="button"
+                        variant="secondary"
+                        size="sm"
                         onClick={() => setExpandedGuideId(isExpanded ? null : guide.id)}
-                        className="w-full py-1.5 px-3 rounded-lg border border-border bg-muted/30 hover:bg-muted text-xs font-medium text-foreground transition flex items-center justify-center gap-1 cursor-pointer"
+                        className="w-full flex items-center justify-center gap-1 cursor-pointer"
                       >
                         <span>{isExpanded ? text.hideDetails : text.viewDetails}</span>
                         <ChevronRight className={cn("w-3.5 h-3.5 transition-transform", isExpanded && "rotate-90")} />
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 );
@@ -1209,14 +1211,14 @@ export default function HelpCenterPage() {
               href={getWhatsAppUrl(text.waMsg)}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 hover:opacity-90 transition"
+              className={buttonClassName({ variant: "default" })}
             >
               <span>{text.ctaWa}</span>
-              <ExternalLink className="size-3 opacity-70" />
+              <ExternalLink className="size-3.5 opacity-70" />
             </a>
             <a
               href={`mailto:${SUPPORT_EMAIL}`}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-border bg-muted/30 text-xs font-semibold text-foreground hover:bg-muted transition"
+              className={buttonClassName({ variant: "secondary" })}
             >
               <Mail className="size-3.5" />
               <span>{text.ctaEmail}</span>
