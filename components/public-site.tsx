@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { API_BASE_URL } from "@/lib/config";
-import { Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle, ExternalLink } from "lucide-react";
 import { getTemplate } from "@/lib/template-registry";
 import SiteSuspended from "@/components/site-suspended";
 import SiteLocked from "@/components/site-locked";
@@ -468,17 +468,18 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
   if (showDomainBanner && domainUrl) {
     return (
       <div className="flex flex-col h-screen overflow-hidden">
-        <div className="flex-shrink-0 w-full bg-emerald-950 border-b border-emerald-700/50 px-4 py-2.5 flex items-center justify-center gap-2 text-sm text-emerald-300">
-          <span className="hidden sm:inline text-emerald-500">●</span>
+        <div className="flex-shrink-0 w-full bg-zinc-950 border-b border-zinc-800/80 px-4 py-2.5 flex items-center justify-center gap-2 text-xs sm:text-sm text-zinc-400">
+          <span className="hidden sm:inline text-zinc-600 text-[10px]">●</span>
           <span>
             Situs ini sudah live di{" "}
             <a
               href={domainUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-semibold underline underline-offset-2 hover:text-emerald-200 transition-colors"
+              className="font-medium text-zinc-200 underline underline-offset-4 decoration-zinc-700 hover:text-white hover:decoration-zinc-400 transition-colors inline-flex items-center gap-1.5"
             >
-              {domainUrl}
+              <span>{domainUrl}</span>
+              <ExternalLink className="w-3 h-3 text-zinc-400 inline shrink-0" />
             </a>
           </span>
         </div>
