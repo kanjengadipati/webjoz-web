@@ -2156,6 +2156,17 @@ export function SiteWizard({
                   <Plus className="h-4 w-4" />
                   Lengkapi Data
                 </button>
+
+                {/* Popover anchored directly above button with left edge aligned */}
+                <div className="hidden md:block">
+                  <BusinessDetailsSheet
+                    isOpen={sheetOpen}
+                    onClose={() => setSheetOpen(false)}
+                    chat={chat}
+                    onSave={handleDetailsSheetSave}
+                    variant="popover"
+                  />
+                </div>
               </div>
 
               {/* Edit & Publikasikan */}
@@ -2208,12 +2219,15 @@ export function SiteWizard({
         showLengkapiHint={showLengkapiHint}
       />
 
-      <BusinessDetailsSheet
-        isOpen={sheetOpen}
-        onClose={() => setSheetOpen(false)}
-        chat={chat}
-        onSave={handleDetailsSheetSave}
-      />
+      <div className="md:hidden">
+        <BusinessDetailsSheet
+          isOpen={sheetOpen}
+          onClose={() => setSheetOpen(false)}
+          chat={chat}
+          onSave={handleDetailsSheetSave}
+          variant="sheet"
+        />
+      </div>
 
       <WizardUpgradeModal
         open={showUpgradeModal}
