@@ -131,7 +131,7 @@ export default function HeroSplitEditorial({
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          padding: "clamp(3rem, 7vw, 6rem) clamp(1.5rem, 4vw, 4rem)",
+          padding: "max(6rem, clamp(3rem, 7vw, 6rem)) clamp(1.5rem, 4vw, 4rem)",
           gap: "2rem",
         }}
       >

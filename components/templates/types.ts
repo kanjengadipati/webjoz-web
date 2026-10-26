@@ -298,6 +298,7 @@ export interface TemplateProps {
       nav_cta_href?: string;
       icon?: string;
       logo_url?: string;
+      logo_url_light?: string;
       tagline?: string;
       nav_labels?: Record<string, string>;
     };

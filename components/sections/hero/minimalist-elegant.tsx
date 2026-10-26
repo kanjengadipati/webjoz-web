@@ -41,7 +41,7 @@ export default function HeroMinimalistElegant({
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          padding: "clamp(3rem, 8vw, 7rem) clamp(1.5rem, 5vw, 5rem)",
+          padding: "max(6rem, clamp(3rem, 8vw, 7rem)) clamp(1.5rem, 5vw, 5rem)",
           gap: "1.75rem",
           position: "relative",
           zIndex: 1,

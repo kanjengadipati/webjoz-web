@@ -986,6 +986,11 @@ export default function SectionForms({
             <FileUpload label="" value={content.header?.logo_url || ""} onChange={(val) => updateField("header", "logo_url", val)} placeholder="https://..." maxWidth={400} maxHeight={400} quality={0.85} previewSize="sm" objectFit="contain" />
           </div>
           <div className="space-y-1">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Logo Versi Terang (opsional)</label>
+            <p className="text-[11px] text-sidebar-subtle-foreground">Dipakai di header transparan saat berada di atas hero gelap. Kosongkan untuk memutihkan logo utama otomatis.</p>
+            <FileUpload label="" value={content.header?.logo_url_light || ""} onChange={(val) => updateField("header", "logo_url_light", val)} placeholder="https://..." maxWidth={400} maxHeight={400} quality={0.85} previewSize="sm" objectFit="contain" />
+          </div>
+          <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Favicon</label>
             <FileUpload label="" value={content.seo?.favicon_url || ""} onChange={(val) => updateField("seo", "favicon_url", val)} placeholder="https://..." accept=".ico,.png,.jpg,.jpeg" maxWidth={128} maxHeight={128} quality={0.9} previewSize="icon" objectFit="contain" />
           </div>
