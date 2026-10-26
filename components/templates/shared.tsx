@@ -626,7 +626,10 @@ const WAFloatingButton: React.FC<{
 
   const digits = phone ? phone.replace(/\D/g, "") : "";
   const hasWa = digits.length >= 8 && !isPlaceholderPhone(phone);
-  const waUrl = hasWa ? (digits.startsWith("0") ? `https://wa.me/62${digits.slice(1)}` : `https://wa.me/${digits}`) : "#";
+  // Remove hardcoded country code — gunakan angka langsung setelah dibersihkan.
+  // Jika pengguna menyertakan kode negara (misal: +62 atau 62), link akan bekerja.
+  // Jika hanya angka lokal (misal: 0812...), link akan tetap dibuat namun perlu dicek di masing-masing negara.
+  const waUrl = hasWa ? `https://wa.me/${digits}` : "#";
 
   // Resolve effective type — default to whatsapp
   const effectiveType = floatingType ?? (isPremium ? "chat_bubble" : "whatsapp");
