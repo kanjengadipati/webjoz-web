@@ -469,7 +469,7 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
     return (
       <div className="flex flex-col h-screen overflow-hidden">
         <div className="flex-shrink-0 w-full bg-zinc-950 border-b border-zinc-800/80 px-4 py-2.5 flex items-center justify-center gap-2 text-xs sm:text-sm text-zinc-400">
-          <span className="hidden sm:inline text-zinc-600 text-[10px]">●</span>
+          <span className="hidden sm:inline text-emerald-500">●</span>
           <span>
             Situs ini sudah live di{" "}
             <a
