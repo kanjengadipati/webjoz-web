@@ -263,9 +263,9 @@ export interface DesignToken {
      * "none"         → no floating button
      * "whatsapp"     → simple green WA button (requires contact.phone)
      * "chat_bubble"  → premium interactive WA chat widget (requires pro plan + contact.phone)
-     * "contact_link" → scroll-to-contact button (no phone required)
+     * "whatsapp_pill" → expandable right-docked pill tab (expands on hover/tap)
      */
-    floating_button?: "none" | "whatsapp" | "chat_bubble" | "contact_link";
+    floating_button?: "none" | "whatsapp" | "chat_bubble" | "contact_link" | "whatsapp_pill";
   };
   mood?: string;
   theme_mode?: 'light' | 'dark';

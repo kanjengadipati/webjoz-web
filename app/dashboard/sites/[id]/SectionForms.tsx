@@ -3866,10 +3866,11 @@ export default function SectionForms({
             <label className="text-[10px] font-bold uppercase tracking-wider text-sidebar-subtle-foreground">Tipe Tombol</label>
             <div className="grid grid-cols-2 gap-2">
               {([
-                { value: "none",         label: "Tidak Ada",   icon: "🚫", desc: "Tidak tampil tombol" },
-                { value: "whatsapp",     label: "WhatsApp",    icon: "💬", desc: "Tombol WA sederhana" },
-                { value: "chat_bubble",  label: "Chat Bubble", icon: "✨",    desc: "Widget chat interaktif" },
-                { value: "contact_link", label: "Link Kontak", icon: "📋", desc: "Scroll ke section Kontak" },
+                { value: "none",          label: "Tidak Ada",     icon: "🚫", desc: "Tidak tampil tombol" },
+                { value: "whatsapp",      label: "WhatsApp",      icon: "💬", desc: "Tombol WA sederhana" },
+                { value: "whatsapp_pill", label: "WhatsApp Pill", icon: "🟢", desc: "Tab kanan membesar saat hover" },
+                { value: "chat_bubble",   label: "Chat Bubble",   icon: "✨", desc: "Widget chat interaktif" },
+                { value: "contact_link",  label: "Link Kontak",   icon: "📋", desc: "Scroll ke section Kontak" },
               ] as const).map((opt) => {
                 const current = designToken?.layout?.floating_button ?? "whatsapp";
                 const isActive = current === opt.value;
@@ -3895,7 +3896,7 @@ export default function SectionForms({
               <p className="text-[10px] text-amber-400/80 leading-relaxed">✨ Chat Bubble tersedia untuk plan <strong className="text-amber-400">Pro</strong>.</p>
             )}
           </div>
-          {(designToken?.layout?.floating_button === "whatsapp" || designToken?.layout?.floating_button === "chat_bubble" || !designToken?.layout?.floating_button) && (
+          {(designToken?.layout?.floating_button === "whatsapp" || designToken?.layout?.floating_button === "whatsapp_pill" || designToken?.layout?.floating_button === "chat_bubble" || !designToken?.layout?.floating_button) && (
             <div className="space-y-2 pt-2 border-t border-border">
               <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
                 Nomor WhatsApp <span className="text-red-400">*</span>
@@ -3921,6 +3922,7 @@ export default function SectionForms({
           {designToken?.layout?.floating_button !== "none" && (
             <div className="rounded-lg border border-border bg-muted/40 p-3 text-[11px] text-sidebar-muted-foreground leading-relaxed">
               {(designToken?.layout?.floating_button === "whatsapp" || !designToken?.layout?.floating_button) && "Tombol hijau WhatsApp tampil di pojok kanan bawah. Klik langsung membuka WA."}
+              {designToken?.layout?.floating_button === "whatsapp_pill" && "Tab WhatsApp di sisi kanan layar. Menyusut rapi saat diam, membesar saat kursor mendekat atau disentuh."}
               {designToken?.layout?.floating_button === "chat_bubble" && (isPremium ? "Widget chat WA interaktif. Pengunjung bisa ketik pesan sebelum diarahkan ke WA." : "Aktifkan plan Pro untuk Chat Bubble.")}
               {designToken?.layout?.floating_button === "contact_link" && "Tombol scroll ke section Kontak. Tidak membutuhkan nomor WA."}
             </div>
