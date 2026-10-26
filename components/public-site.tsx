@@ -465,20 +465,45 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
     ? `https://${siteInfo.subdomain}.${process.env.NEXT_PUBLIC_BASE_DOMAIN ?? "webjoz.com"}`
     : null;
 
+  // Height of the preview banner — must match the rendered height of the banner div below.
+  // Using a fixed value (37px = py-2 + text-sm line-height) avoids layout shift.
+  const BANNER_H = 37;
+
   return (
-    <>
+    <div
+      style={
+        showDomainBanner && domainUrl
+          ? ({ "--preview-banner-height": `${BANNER_H}px` } as React.CSSProperties)
+          : undefined
+      }
+    >
       {showDomainBanner && domainUrl && (
-        <div className="w-full bg-emerald-600/10 border-b border-emerald-600/20 px-4 py-2 text-center text-sm text-emerald-400">
-          Situs ini sudah live di{" "}
-          <a
-            href={domainUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-semibold underline hover:text-emerald-300"
+        <>
+          {/* Inject CSS to push sticky headers below the preview banner */}
+          {/* eslint-disable-next-line react/no-danger */}
+          <style dangerouslySetInnerHTML={{ __html: `
+            header.sticky, [data-sticky-header] {
+              top: ${BANNER_H}px !important;
+            }
+          ` }} />
+          {/* Fixed banner pinned to top of viewport */}
+          <div
+            style={{ height: BANNER_H }}
+            className="fixed top-0 left-0 right-0 z-[9999] w-full bg-emerald-950/95 backdrop-blur-sm border-b border-emerald-600/30 px-4 flex items-center justify-center text-sm text-emerald-400"
           >
-            {domainUrl}
-          </a>
-        </div>
+            Situs ini sudah live di{" "}
+            <a
+              href={domainUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-1 font-semibold underline hover:text-emerald-300 transition-colors"
+            >
+              {domainUrl}
+            </a>
+          </div>
+          {/* Spacer so page content starts below the fixed banner */}
+          <div style={{ height: BANNER_H }} />
+        </>
       )}
       <TemplateComponent
         content={content}
@@ -490,6 +515,6 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
         isPremium={is_premium === true}
         language={siteInfo?.language === "en" ? "en" : "id"}
       />
-    </>
+    </div>
   );
 }
