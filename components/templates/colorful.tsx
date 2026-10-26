@@ -279,7 +279,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
       </MemoPreviewSectionWrapper>
       {isEditorMode && <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} currentVariant={getSectionVariant(dt, "seo")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}><MemoSectionContent content={seo} render={(s) => <SeoEditorPreview seo={s} domain={tenantDomain} />} /></MemoPreviewSectionWrapper>}
       <CartFab colorStyle={{ background: pink, color: ctaText }} />
-      <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} onSubmitLead={onSubmitLead} brandName={header?.brand_name} isPremium={isPremium} floatingType={design_token?.layout?.floating_button} />
+      <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} onSubmitLead={onSubmitLead} brandName={header?.brand_name} isPremium={isPremium} floatingType={design_token?.layout?.floating_button} language={language} />
       <BackToTop isEditorMode={isEditorMode} />
     </div>
     </CartProvider>

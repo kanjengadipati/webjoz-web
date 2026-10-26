@@ -619,7 +619,11 @@ const WAFloatingButton: React.FC<{
    * "none"          → hidden
    */
   floatingType?: "none" | "whatsapp" | "whatsapp_pill" | "chat_bubble" | "contact_link";
-}> = ({ phone, isEditorMode, brandName = "Customer Support", isPremium = false, floatingType }) => {
+  /** Site language — "id" (default) or "en". Controls all visible & aria text. */
+  language?: string;
+}> = ({ phone, isEditorMode, brandName = "Customer Support", isPremium = false, floatingType, language = "id" }) => {
+  const isEN = language === "en";
+
   const digits = phone ? phone.replace(/\D/g, "") : "";
   const hasWa = digits.length >= 8 && !isPlaceholderPhone(phone);
   const waUrl = hasWa ? (digits.startsWith("0") ? `https://wa.me/62${digits.slice(1)}` : `https://wa.me/${digits}`) : "#";
@@ -680,7 +684,7 @@ const WAFloatingButton: React.FC<{
       <a
         href={isEditorMode ? "#" : "#contact"}
         onClick={isEditorMode ? (e) => e.preventDefault() : undefined}
-        aria-label="Hubungi Kami"
+        aria-label={isEN ? "Contact Us" : "Hubungi Kami"}
         className="fixed right-6 z-40 flex items-center justify-center w-14 h-14 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none"
         style={{ bottom: "var(--floating-bottom-desktop, var(--floating-bottom-mobile, 6rem))", background: "var(--dt-primary, #4F46E5)", color: "var(--dt-primary-foreground, #fff)" }}
       >
@@ -696,8 +700,8 @@ const WAFloatingButton: React.FC<{
     if (effectiveType === "whatsapp_pill") {
       return (
         <div
-          aria-label="Chat via WhatsApp (nomor belum diisi)"
-          title="Isi nomor WhatsApp di editor untuk mengaktifkan tombol ini"
+          aria-label={isEN ? "Chat via WhatsApp (phone number not set)" : "Chat via WhatsApp (nomor belum diisi)"}
+          title={isEN ? "Add a WhatsApp number in the editor to activate this button" : "Isi nomor WhatsApp di editor untuk mengaktifkan tombol ini"}
           className="fixed right-0 z-40 flex items-center pl-2.5 pr-2 py-2 rounded-l-full bg-white/20 dark:bg-white/10 backdrop-blur-md border-l border-t border-b border-white/30 dark:border-white/20 cursor-not-allowed select-none opacity-40 shadow-sm"
           style={{ bottom: "var(--floating-bottom-desktop, var(--floating-bottom-mobile, 6rem))" }}
         >
@@ -710,8 +714,8 @@ const WAFloatingButton: React.FC<{
     if (effectiveType === "whatsapp" || effectiveType === "chat_bubble") {
       return (
         <div
-          aria-label="Chat via WhatsApp (nomor belum diisi)"
-          title="Isi nomor WhatsApp di editor untuk mengaktifkan tombol ini"
+          aria-label={isEN ? "Chat via WhatsApp (phone number not set)" : "Chat via WhatsApp (nomor belum diisi)"}
+          title={isEN ? "Add a WhatsApp number in the editor to activate this button" : "Isi nomor WhatsApp di editor untuk mengaktifkan tombol ini"}
           className="fixed right-6 z-40 flex items-center justify-center w-14 h-14 rounded-full cursor-not-allowed select-none"
           style={{ bottom: "var(--floating-bottom-desktop, var(--floating-bottom-mobile, 6rem))", background: "#25D366", opacity: 0.35, filter: "grayscale(30%)" }}
         >
@@ -750,7 +754,7 @@ const WAFloatingButton: React.FC<{
           target={isEditorMode ? undefined : "_blank"}
           rel="noopener noreferrer"
           onClick={handlePillClick}
-          aria-label="Chat with us on WhatsApp"
+          aria-label={isEN ? "Chat with us on WhatsApp" : "Chat dengan kami via WhatsApp"}
           className={`group flex items-center transition-all duration-300 ease-out cursor-pointer ${
             isMobileExpanded
               ? "bg-white text-slate-900 shadow-[0_10px_35px_-5px_rgba(0,0,0,0.25)] border border-slate-200/80 rounded-full mr-3 sm:mr-4 pl-2.5 pr-5 py-2.5 gap-3"
@@ -771,7 +775,7 @@ const WAFloatingButton: React.FC<{
             }`}
           >
             <span className="text-[11px] font-medium text-slate-600 leading-tight">
-              Chat with us on
+              {isEN ? "Chat with us on" : "Chat dengan kami via"}
             </span>
             <span className="text-[16px] font-extrabold text-slate-950 tracking-tight leading-tight">
               WhatsApp
@@ -790,7 +794,7 @@ const WAFloatingButton: React.FC<{
         target={isEditorMode ? undefined : "_blank"}
         rel="noopener noreferrer"
         onClick={isEditorMode ? (e) => e.preventDefault() : undefined}
-        aria-label="Chat via WhatsApp"
+        aria-label={isEN ? "Chat via WhatsApp" : "Chat via WhatsApp"}
         className="fixed right-6 z-40 flex items-center justify-center w-14 h-14 rounded-full shadow-[0_4px_20px_rgba(37,211,102,0.45)] hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2"
         style={{ bottom: "var(--floating-bottom-desktop, var(--floating-bottom-mobile, 6rem))", background: "#25D366" }}
       >
@@ -832,14 +836,16 @@ const WAFloatingButton: React.FC<{
                 </div>
                 <div>
                   <h4 className="font-semibold text-sm leading-tight">{brandName}</h4>
-                  <span className="text-[11px] text-white/80">Online • Balas dalam sekejap</span>
+                  <span className="text-[11px] text-white/80">
+                    {isEN ? "Online • Replies instantly" : "Online • Balas dalam sekejap"}
+                  </span>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setIsWidgetOpen(false)}
                 className="p-1 rounded-full hover:bg-white/10 text-white/80 hover:text-white transition-colors"
-                aria-label="Tutup Chat"
+                aria-label={isEN ? "Close Chat" : "Tutup Chat"}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -864,7 +870,9 @@ const WAFloatingButton: React.FC<{
               ) : (
                 <div className="self-start bg-white py-2.5 px-4 rounded-2xl rounded-tl-none shadow-sm max-w-[85%] text-xs text-stone-800 leading-relaxed animate-[widgetMessageIn_0.2s_ease-out_forwards]">
                   <p className="font-semibold text-[10px] text-[#075E54] mb-0.5">{brandName}</p>
-                  Halo! Ada yang bisa kami bantu hari ini? Silakan ketik pesan Anda di bawah untuk mulai berkonsultasi secara langsung via WhatsApp. 😊
+                  {isEN
+                    ? "Hi! How can we help you today? Type your message below to start chatting with us directly via WhatsApp. 😊"
+                    : "Halo! Ada yang bisa kami bantu hari ini? Silakan ketik pesan Anda di bawah untuk mulai berkonsultasi secara langsung via WhatsApp. 😊"}
                 </div>
               )}
             </div>
@@ -875,7 +883,7 @@ const WAFloatingButton: React.FC<{
                 type="text"
                 value={userMessage}
                 onChange={(e) => setUserMessage(e.target.value)}
-                placeholder="Ketik pesan di sini..."
+                placeholder={isEN ? "Type your message..." : "Ketik pesan di sini..."}
                 disabled={isEditorMode}
                 className="flex-1 px-4 py-2 text-xs bg-stone-100 rounded-full outline-none focus:bg-stone-50 border border-stone-200 focus:border-[#075E54]/40 transition-colors"
               />
@@ -883,7 +891,7 @@ const WAFloatingButton: React.FC<{
                 type="submit"
                 disabled={!userMessage.trim() || isEditorMode}
                 className="w-8 h-8 rounded-full bg-[#075E54] hover:bg-[#128C7E] active:scale-95 transition-all text-white flex items-center justify-center disabled:opacity-50 disabled:scale-100 cursor-pointer"
-                aria-label="Kirim Pesan"
+                aria-label={isEN ? "Send Message" : "Kirim Pesan"}
               >
                 <Send className="w-3.5 h-3.5 fill-white stroke-none translate-x-[1px]" />
               </button>
@@ -895,7 +903,7 @@ const WAFloatingButton: React.FC<{
         <button
           type="button"
           onClick={() => setIsWidgetOpen(!isWidgetOpen)}
-          aria-label="Chat via WhatsApp"
+          aria-label={isEN ? "Chat via WhatsApp" : "Chat via WhatsApp"}
           className="flex items-center justify-center w-14 h-14 rounded-full shadow-[0_6px_24px_rgba(37,211,102,0.45)] hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 cursor-pointer"
           style={{ background: "#25D366" }}
         >
