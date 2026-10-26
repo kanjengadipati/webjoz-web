@@ -6,6 +6,8 @@ export interface HeaderVariantProps {
     brand_name?: string;
     tagline?: string;
     logo_url?: string;
+    /** Logo versi terang (opsional) untuk header transparan di atas hero gelap. */
+    logo_url_light?: string;
     icon?: string;
     nav_cta_text?: string;
     nav_cta_hidden?: boolean;

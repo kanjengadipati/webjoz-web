@@ -115,7 +115,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
     background: "var(--dt-bg)",
     color: "var(--dt-text)",
     minHeight: "100vh",
-    overflowX: "hidden",
+    overflowX: "clip",
     containerType: "inline-size",
   };
 
@@ -137,7 +137,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       case "hero": {
         const h = sec.data as TemplateProps["content"]["hero"];
         return (
-          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode} hasHeaderOverlay={getVariantFor("header") === "transparent-overlay"}>
             <MemoSectionContent content={{ hero: h, dt }} render={(data) => {
               const { hero: hh, dt: dd } = data;
               return (

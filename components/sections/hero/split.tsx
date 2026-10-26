@@ -15,7 +15,7 @@ export default function HeroSplit({ hero, language, onUpdateField, isEditorMode,
       {/* Left: text column */}
       <div
         className="relative z-10 flex flex-col justify-center"
-        style={{ padding: "clamp(3rem, 6vw, 5rem) clamp(1.5rem, 5vw, 4rem)", gap: "1.25rem", alignItems: "flex-start" }}
+        style={{ padding: "max(6rem, clamp(3rem, 6vw, 5rem)) clamp(1.5rem, 5vw, 4rem)", gap: "1.25rem", alignItems: "flex-start" }}
       >
         <HeroContent
           hero={hero}

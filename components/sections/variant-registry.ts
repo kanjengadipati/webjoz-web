@@ -150,7 +150,7 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
   header: [
     { value: "left-logo-inline-nav", label: "Logo Kiri + Nav Inline", description: "Logo di kiri, navigasi sejajar di kanan, CTA tombol." },
     { value: "centered-logo", label: "Logo Tengah", description: "Logo di tengah, navigasi di bawahnya, CTA tombol." },
-    { value: "transparent-overlay", label: "Transparan (Hero Overlay)", description: "Transparan di atas hero, solid setelah scroll." },
+    { value: "transparent-overlay", label: "Transparan (Hero Overlay)", description: "Menimpa hero (teks putih), mengecil dan menjadi kaca buram setelah scroll." },
     { value: "logo-with-cta-button", label: "Logo + CTA Tombol", description: "Logo kiri, nav tengah, tombol CTA warna solid di kanan." },
     { value: "stacked-logo-tagline", label: "Logo + Tagline Tumpuk", description: "Logo dan tagline vertikal di tengah, nav tipis di bawah." },
   ],

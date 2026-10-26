@@ -380,6 +380,8 @@ interface NavMenuProps {
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  containerClass?: string;
+  containerStyle?: React.CSSProperties;
 }
 
 const NavMenu: React.FC<NavMenuProps> = ({
@@ -395,6 +397,8 @@ const NavMenu: React.FC<NavMenuProps> = ({
   isSelected,
   collapseSheetForInlineEdit,
   onEditingStateChange,
+  containerClass,
+  containerStyle,
 }) => {
   const [open, setOpen] = useState(false);
   const [drawerTop, setDrawerTop] = useState(0);
@@ -491,7 +495,12 @@ const NavMenu: React.FC<NavMenuProps> = ({
 
   return (
     <>
-      <nav data-nav-menu="true" className="hidden md:flex items-center gap-1" aria-label="Navigasi utama">
+      <nav
+        data-nav-menu="true"
+        className={`hidden md:flex items-center gap-1 ${containerClass || ""}`}
+        style={containerStyle}
+        aria-label="Navigasi utama"
+      >
         {navItems.map((item) => {
           const isExtraLink = extraLinks.some(l => l.href === item.key);
           return (
@@ -4147,10 +4156,6 @@ export function InlineText({
     if (parentInteractive && !(e.metaKey || e.ctrlKey)) {
       e.preventDefault();
       elementRef.current?.focus();
-      if (fieldKey && fieldKey.startsWith("nav_labels.")) {
-        const sectionKey = fieldKey.replace("nav_labels.", "");
-        smoothScrollToSection(sectionKey, e.currentTarget.ownerDocument || document);
-      }
     }
   };
 
