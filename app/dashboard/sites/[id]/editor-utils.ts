@@ -126,7 +126,7 @@ export const getOrderedSections = (designToken: any, content?: any, hiddenByAdmi
     return true;
   });
   const bodyOrder = [...tokenOrder, ...availableBodyKeys.filter((key) => !tokenOrder.includes(key))];
-  return ["header", ...bodyOrder, "footer", "seo", "floating"].filter((key) => !adminHidden.has(key));
+  return ["header", ...bodyOrder, "footer", "seo", "preloader", "floating"].filter((key) => !adminHidden.has(key));
 };
 
 export const cloneData = <T,>(value: T): T => JSON.parse(JSON.stringify(value));
