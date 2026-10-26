@@ -18,7 +18,7 @@ import { Button, Card, Dialog, CustomSelect } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { getTemplate, TEMPLATE_REGISTRY } from "@/lib/template-registry";
 import { getTemplateDefaultDesignToken } from "@/lib/template-defaults";
-import { setEditorSiteId } from "@/components/templates/shared";
+import { setEditorSiteId, getFeatureMarker, FeatureMarkerIcon } from "@/components/templates/shared";
 import { SectionShortcutContext, type SectionShortcutHandler } from "@/components/templates/editor";
 import {
   stripRegeneratedMarkers,
@@ -58,6 +58,18 @@ import {
 } from "@/lib/design-assets-config";
 import { SECTION_VARIANT_OPTIONS, HERO_STYLE_OPTIONS } from "@/components/sections/variant-registry";
 import { tenantHost } from "@/lib/site-config";
+
+const FEATURE_MARKER_OPTIONS = [
+  { value: "auto", label: "⚡ Otomatis (Sesuai Mood)" },
+  { value: "check", label: "✓ Centang (Klasik)" },
+  { value: "dot", label: "• Titik (Minimalis)" },
+  { value: "sparkle", label: "✦ Sparkle (Eksklusif)" },
+  { value: "plus", label: "+ Plus (Paket/Bundling)" },
+  { value: "shield", label: "🛡 Tameng (Terverifikasi)" },
+  { value: "diamond", label: "◆ Diamond (Mewah)" },
+  { value: "arrow", label: "› Panah (Modern)" },
+  { value: "leaf", label: "🍃 Daun (Alami / Organik)" },
+];
 
 import TypographyPairingPicker from "./components/TypographyPairingPicker";
 import ColorPatternPicker from "./components/ColorPatternPicker";
@@ -1888,6 +1900,47 @@ export default function SiteEditorPage() {
                       />
                     </div>
 
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.featureMarker")}</label>
+                        <span className="text-[10px] text-sidebar-subtle-foreground font-mono">
+                          {!designToken?.layout?.feature_marker || designToken?.layout?.feature_marker === "auto"
+                            ? `(${getFeatureMarker(designToken)})`
+                            : ""}
+                        </span>
+                      </div>
+                      <CustomSelect
+                        value={designToken?.layout?.feature_marker || "auto"}
+                        onChange={(val) => updateDesignTokenField("layout", "feature_marker", val === "auto" ? "" : val)}
+                        size="sm"
+                        triggerClassName="bg-sidebar-input text-sidebar-foreground border-border text-[12px] h-9"
+                        options={FEATURE_MARKER_OPTIONS}
+                      />
+                      <div className="flex items-center gap-1 flex-wrap pt-0.5">
+                        {(["check", "dot", "sparkle", "plus", "shield", "diamond", "arrow", "leaf"] as const).map((mKey) => {
+                          const isExplicit = designToken?.layout?.feature_marker === mKey;
+                          const isAutoCurrent = (!designToken?.layout?.feature_marker || designToken?.layout?.feature_marker === "auto") && getFeatureMarker(designToken) === mKey;
+                          return (
+                            <button
+                              key={mKey}
+                              type="button"
+                              onClick={() => updateDesignTokenField("layout", "feature_marker", isExplicit ? "" : mKey)}
+                              className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
+                                isExplicit
+                                  ? "bg-primary text-primary-foreground shadow-xs ring-1 ring-primary"
+                                  : isAutoCurrent
+                                  ? "bg-primary/10 text-primary border border-primary/40"
+                                  : "bg-sidebar-input text-sidebar-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-muted/60 border border-border"
+                              }`}
+                              title={isExplicit ? `${mKey} (Terkunci)` : isAutoCurrent ? `${mKey} (Aktif dari Mood)` : mKey}
+                            >
+                              <FeatureMarkerIcon style={mKey} className="w-3.5 h-3.5" />
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
                     {/* Page Layout & Section Variants Hub */}
                     {isDynamic && (
                       <div className="pt-2 border-t border-border">
@@ -3139,6 +3192,23 @@ export default function SiteEditorPage() {
                         { value: "relaxed", label: t("dashboard.sitesEditor.spacingRelaxedShort") },
                       ]}
                     />
+                    <div className="space-y-1 pt-1">
+                      <div className="flex items-center justify-between">
+                        <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.featureMarker")}</label>
+                        <span className="text-[9px] text-sidebar-subtle-foreground font-mono">
+                          {!designToken?.layout?.feature_marker || designToken?.layout?.feature_marker === "auto"
+                            ? `(${getFeatureMarker(designToken)})`
+                            : ""}
+                        </span>
+                      </div>
+                      <CustomSelect
+                        value={designToken?.layout?.feature_marker || "auto"}
+                        onChange={(val) => updateDesignTokenField("layout", "feature_marker", val === "auto" ? "" : val)}
+                        size="sm"
+                        triggerClassName="bg-sidebar-input text-sidebar-foreground border-border text-[11px] h-8"
+                        options={FEATURE_MARKER_OPTIONS}
+                      />
+                    </div>
                     {isDynamic && (
                       <div className="pt-2 border-t border-border">
                         <PageLayoutHub

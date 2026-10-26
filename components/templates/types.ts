@@ -266,6 +266,18 @@ export interface DesignToken {
      * "whatsapp_pill" → expandable right-docked pill tab (expands on hover/tap)
      */
     floating_button?: "none" | "whatsapp" | "chat_bubble" | "contact_link" | "whatsapp_pill";
+    /**
+     * Icon/marker gaya untuk checklist fitur di kartu produk/layanan (catalog & menu).
+     * - "check"    → centang klasik ✓ (default)
+     * - "dot"      → titik solid minimalis •
+     * - "sparkle"  → bintang / sparkle ✦ (premium/eksklusif)
+     * - "plus"     → plus + (paket/bundling)
+     * - "shield"   → tameng / verified (medis, garansi)
+     * - "diamond"  → berlian ◆ (mewah/elegan)
+     * - "arrow"    → panah mini › (dinamis/tech)
+     * - "leaf"     → daun organik (natural/eco)
+     */
+    feature_marker?: "check" | "dot" | "sparkle" | "plus" | "shield" | "diamond" | "arrow" | "leaf";
   };
   mood?: string;
   theme_mode?: 'light' | 'dark';

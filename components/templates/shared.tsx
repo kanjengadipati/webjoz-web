@@ -36,6 +36,103 @@ export function isPlaceholderMap(url: string | null | undefined): boolean {
   return lower === "https://maps.google.com" || lower === "https://maps.google.com/" || lower === "https://google.com/maps" || lower === "https://maps.apple.com";
 }
 
+// ─── Feature Marker (Checklist Product Card) ──────────────────────────────────
+
+export type FeatureMarkerStyle = "check" | "dot" | "sparkle" | "plus" | "shield" | "diamond" | "arrow" | "leaf";
+
+export const FeatureMarkerContext = React.createContext<FeatureMarkerStyle>("check");
+
+export function FeatureMarkerProvider({
+  marker,
+  children,
+}: {
+  marker?: FeatureMarkerStyle;
+  children: React.ReactNode;
+}) {
+  return <FeatureMarkerContext.Provider value={marker ?? "check"}>{children}</FeatureMarkerContext.Provider>;
+}
+
+export function useFeatureMarker(explicit?: FeatureMarkerStyle): FeatureMarkerStyle {
+  const ctx = React.useContext(FeatureMarkerContext);
+  return explicit ?? ctx ?? "check";
+}
+
+/**
+ * Menentukan marker style default berdasarkan mood design token.
+ * Jika designToken.layout.feature_marker ada → gunakan itu (user override).
+ * Jika tidak → fallback otomatis berdasarkan mood.
+ */
+export function getFeatureMarker(designToken?: { mood?: string; layout?: { feature_marker?: string } } | null): FeatureMarkerStyle {
+  const explicit = designToken?.layout?.feature_marker as FeatureMarkerStyle | undefined;
+  if (explicit && (explicit as string) !== "auto") return explicit;
+  const mood = (designToken?.mood ?? "").toLowerCase();
+  if (mood.includes("dark-premium") || mood.includes("elegan"))   return "diamond";
+  if (mood.includes("futuristic") || mood.includes("tech"))        return "arrow";
+  if (mood.includes("bold-dark") || mood.includes("berenergi"))    return "plus";
+  if (mood.includes("warm-earthy") || mood.includes("alami"))      return "leaf";
+  if (mood.includes("bold-vibrant") || mood.includes("ceria"))     return "sparkle";
+  if (mood.includes("retro") || mood.includes("klasik"))           return "dot";
+  // clean-modern & fallback default → check
+  return "check";
+}
+
+/** SVG icon untuk setiap jenis marker */
+export function FeatureMarkerIcon({ style, className = "w-3 h-3 flex-shrink-0 pointer-events-none" }: { style: FeatureMarkerStyle; className?: string }) {
+  switch (style) {
+    case "dot":
+      return (
+        <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+          <circle cx="12" cy="12" r="4" />
+        </svg>
+      );
+    case "sparkle":
+      return (
+        <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+          <path d="M12 2 L13.5 9 L20 10.5 L13.5 12 L12 19 L10.5 12 L4 10.5 L10.5 9 Z" />
+        </svg>
+      );
+    case "plus":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className={className}>
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+      );
+    case "shield":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          <polyline points="9 12 11 14 15 10" />
+        </svg>
+      );
+    case "diamond":
+      return (
+        <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+          <path d="M12 3 L20 11 L12 21 L4 11 Z" />
+        </svg>
+      );
+    case "arrow":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+          <polyline points="9 6 15 12 9 18" />
+        </svg>
+      );
+    case "leaf":
+      return (
+        <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+          <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 0 0 8 20C19 20 22 3 22 3c-1 2-8 2-8 2z" />
+        </svg>
+      );
+    case "check":
+    default:
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={className}>
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      );
+  }
+}
+
 // ─── WA Lead Modal ────────────────────────────────────────────────────────────
 
 function WaLeadModal({ onSubmitLead, onClose }: {
@@ -1558,12 +1655,16 @@ interface MenuCatalogCardProps {
   editSection?: string;
   pathBase?: string;
   onDelete?: () => void;
+  /** Gaya icon marker untuk feature pills. Default: 'check' atau sesuai FeatureMarkerContext. */
+  featureMarker?: FeatureMarkerStyle;
 }
 
 function MenuCatalogCard({
   item, styles: stylesProp, icon, layout = "grid",
   onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, editSection, pathBase, onDelete,
+  featureMarker: explicitFeatureMarker,
 }: MenuCatalogCardProps) {
+  const featureMarker = useFeatureMarker(explicitFeatureMarker);
   const styles = stylesProp ?? {};
   const {
     id: itemId, name: itemName, price: itemPrice, priceAmount: itemPriceAmount, priceDisplay: itemPriceDisplay,
@@ -1930,6 +2031,7 @@ function MenuCatalogCard({
       isSelected={isSelected}
       collapseSheetForInlineEdit={collapseSheetForInlineEdit}
       onEditingStateChange={onEditingStateChange}
+      featureMarker={featureMarker}
     />
   );
 
@@ -2009,7 +2111,7 @@ function MenuCatalogCard({
                   className="group/feat relative flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full"
                   style={{ background: "color-mix(in srgb, var(--dt-primary) 10%, transparent)", color: "var(--dt-primary)" }}
                 >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3 h-3 flex-shrink-0 pointer-events-none"><polyline points="20 6 9 17 4 12"/></svg>
+                  <FeatureMarkerIcon style={featureMarker} />
                   <InlineText
                     section={editSection ?? ""}
                     fieldKey={pathBase ? pathBase + ".features." + fi : ""}
@@ -2165,6 +2267,8 @@ export interface ProductQuickViewProps {
   cartPrimaryColor?: string;
   cartPrimaryFg?: string;
   language?: "id" | "en";
+  /** Gaya marker icon untuk item features */
+  featureMarker?: FeatureMarkerStyle;
 }
 
 export function ProductQuickView(props: ProductQuickViewProps) {
@@ -2189,7 +2293,9 @@ export function ProductQuickView(props: ProductQuickViewProps) {
 function ProductQuickViewInner({
   onClose, item, icon, editSection, pathBase, onUpdateField,
   isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
+  featureMarker: explicitFeatureMarker,
 }: ProductQuickViewProps) {
+  const featureMarker = useFeatureMarker(explicitFeatureMarker);
   const { t } = useI18n();
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIdx, setLightboxIdx] = useState(0);
@@ -2467,7 +2573,7 @@ function ProductQuickViewInner({
               <ul className="flex flex-wrap gap-1.5 mt-1">
                 {item.features.map((f, fi) => (
                   <li key={fi} className="flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full" style={{ background: `color-mix(in srgb, var(--dt-primary, #4F46E5) 10%, transparent)`, color: "var(--dt-primary, #4F46E5)" }}>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3 h-3 flex-shrink-0"><polyline points="20 6 9 17 4 12" /></svg>
+                    <FeatureMarkerIcon style={featureMarker} />
                     <InlineText section={editSection ?? ""} fieldKey={pathBase ? `${pathBase}.features.${fi}` : ""} value={f} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                   </li>
                 ))}
@@ -4786,4 +4892,7 @@ export {
   SharedBenefitsSection,
   SharedBenefitsSection as BenefitsSection,
 };
-export type { MenuCatalogCardProps, CatalogMenuFilterBarProps, NavMenuProps, TestimonialsSectionProps, LeadFormProps, ContactSectionProps, BenefitsSectionProps };
+export type {
+  MenuCatalogCardProps, CatalogMenuFilterBarProps, NavMenuProps,
+  TestimonialsSectionProps, LeadFormProps, ContactSectionProps, BenefitsSectionProps,
+};

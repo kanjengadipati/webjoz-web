@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Image as ImageIcon } from "lucide-react";
-import { MenuCatalogCard, InlineText, InlineImage, isPlaceholderPrice } from "../../templates/shared";
+import { MenuCatalogCard, InlineText, InlineImage, isPlaceholderPrice, useFeatureMarker, FeatureMarkerIcon } from "../../templates/shared";
 import { minVariantPriceAmount } from "../../templates/helpers";
 import { formatPriceWithAmount } from "@/lib/utils";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
@@ -33,6 +33,7 @@ interface CatalogVariantProps {
  */
 export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: CatalogVariantProps) {
   const isEN = language === "en";
+  const marker = useFeatureMarker();
   if (!catalog) return null;
   const p = "var(--dt-primary)";
   const bg = "var(--dt-bg)";
@@ -169,7 +170,7 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
                             <ul style={{ margin: "0.25rem 0 0 0", padding: 0, listStyle: "none", display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
                               {item.features.map((f: string, feaIdx: number) => (
                                 <li key={feaIdx} style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem", fontSize: "0.7rem", fontWeight: 500, padding: "0.15rem 0.45rem", borderRadius: "9999px", background: `color-mix(in srgb, ${p} 10%, transparent)`, color: p }}>
-                                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: "0.65rem", height: "0.65rem" }}><polyline points="20 6 9 17 4 12"/></svg>
+                                  <FeatureMarkerIcon style={marker} className="w-2.5 h-2.5 flex-shrink-0" />
                                   {f}
                                 </li>
                               ))}
