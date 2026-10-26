@@ -465,12 +465,10 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
     ? `https://${siteInfo.subdomain}.${process.env.NEXT_PUBLIC_BASE_DOMAIN ?? "webjoz.com"}`
     : null;
 
-  return (
-    <>
-      {showDomainBanner && domainUrl && (
-        // Sticky banner — scrolls with the page so when it disappears the site
-        // header sticks naturally at top:0 with no overlap and no gap needed.
-        <div className="sticky top-0 z-[9999] w-full bg-emerald-950 border-b border-emerald-700/50 px-4 py-2.5 flex items-center justify-center gap-2 text-sm text-emerald-300">
+  if (showDomainBanner && domainUrl) {
+    return (
+      <div className="flex flex-col h-screen overflow-hidden">
+        <div className="flex-shrink-0 w-full bg-emerald-950 border-b border-emerald-700/50 px-4 py-2.5 flex items-center justify-center gap-2 text-sm text-emerald-300">
           <span className="hidden sm:inline text-emerald-500">●</span>
           <span>
             Situs ini sudah live di{" "}
@@ -484,17 +482,32 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
             </a>
           </span>
         </div>
-      )}
-      <TemplateComponent
-        content={content}
-        design_token={design_token ?? null}
-        onSubmitLead={handleSubmitLead}
-        leadSubmitting={leadSubmitting}
-        leadSuccess={leadSuccess}
-        leadError={leadError}
-        isPremium={is_premium === true}
-        language={siteInfo?.language === "en" ? "en" : "id"}
-      />
-    </>
+        <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto">
+          <TemplateComponent
+            content={content}
+            design_token={design_token ?? null}
+            onSubmitLead={handleSubmitLead}
+            leadSubmitting={leadSubmitting}
+            leadSuccess={leadSuccess}
+            leadError={leadError}
+            isPremium={is_premium === true}
+            language={siteInfo?.language === "en" ? "en" : "id"}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <TemplateComponent
+      content={content}
+      design_token={design_token ?? null}
+      onSubmitLead={handleSubmitLead}
+      leadSubmitting={leadSubmitting}
+      leadSuccess={leadSuccess}
+      leadError={leadError}
+      isPremium={is_premium === true}
+      language={siteInfo?.language === "en" ? "en" : "id"}
+    />
   );
 }

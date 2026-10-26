@@ -112,9 +112,9 @@ export default function TransparentOverlay({
       <div aria-hidden className="relative h-0 w-full pointer-events-none">
         <div ref={sentinelRef} className="absolute left-0 top-20 h-px w-px" />
       </div>
-      {/* Outer: fixed di public/preview (ala webarq.com), sticky di editor canvas */}
+      {/* Outer: sticky header with negative margin to overlay hero */}
       <div
-        className={`${isEditorMode ? "sticky top-0" : "fixed top-0 left-0 right-0"} z-50 pointer-events-none`}
+        className="sticky top-0 z-50 pointer-events-none w-full"
         style={{ height: H, marginBottom: -H }}
       >
     <header
