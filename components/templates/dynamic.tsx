@@ -4,7 +4,7 @@ import React from "react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
   WAFloatingButton, BackToTop, SeoEditorPreview, CartFab,
-  CartProvider,
+  CartProvider, FeatureMarkerProvider, getFeatureMarker,
 } from "./shared";
 import { BlogPostsSection } from "./blog-section";
 
@@ -444,56 +444,58 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
   }, [dt, header, content?.preloader, isEditorMode]);
 
   return (
-    <div style={rootStyle}>
-      {preloaderVisual && <SiteLoadingScreen visual={preloaderVisual} />}
-      {(() => {
-        const renderedSections = resolvedSections
-          .filter((sec) => !(dt?.layout?.hidden_sections ?? []).includes(sec.type))
-          .filter((sec) => !arrivedSections || arrivedSections.includes(sec.type));
-        const renderedSectionOrder = renderedSections.map((sec) => sec.type);
-        return (
-          <>
-            <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} currentVariant={getVariantFor("header")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
-              <HeaderSection header={header} design_token={dt} sectionOrder={renderedSectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "header"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-            </MemoPreviewSectionWrapper>
+    <FeatureMarkerProvider marker={getFeatureMarker(dt)}>
+      <div style={rootStyle}>
+        {preloaderVisual && <SiteLoadingScreen visual={preloaderVisual} />}
+        {(() => {
+          const renderedSections = resolvedSections
+            .filter((sec) => !(dt?.layout?.hidden_sections ?? []).includes(sec.type))
+            .filter((sec) => !arrivedSections || arrivedSections.includes(sec.type));
+          const renderedSectionOrder = renderedSections.map((sec) => sec.type);
+          return (
+            <>
+              <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} currentVariant={getVariantFor("header")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+                <HeaderSection header={header} design_token={dt} sectionOrder={renderedSectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "header"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+              </MemoPreviewSectionWrapper>
 
-            {renderedSections.map((sec) => {
-              const arrivedIndex = arrivedSections?.indexOf(sec.type) ?? -1;
-              const isStreaming = arrivedSections !== undefined && arrivedIndex !== -1;
-              return (
-                <div
-                  key={sec.type}
-                  className={isStreaming ? "animate-slide-up" : ""}
-                  style={isStreaming ? {
-                    animationDelay: `${arrivedIndex * 60}ms`,
-                    opacity: 0,
-                    animationFillMode: "forwards",
-                  } : undefined}
-                >
-                  {renderSectionFromContent(sec)}
-                </div>
-              );
-            })}
-          </>
-        );
-      })()}
+              {renderedSections.map((sec) => {
+                const arrivedIndex = arrivedSections?.indexOf(sec.type) ?? -1;
+                const isStreaming = arrivedSections !== undefined && arrivedIndex !== -1;
+                return (
+                  <div
+                    key={sec.type}
+                    className={isStreaming ? "animate-slide-up" : ""}
+                    style={isStreaming ? {
+                      animationDelay: `${arrivedIndex * 60}ms`,
+                      opacity: 0,
+                      animationFillMode: "forwards",
+                    } : undefined}
+                  >
+                    {renderSectionFromContent(sec)}
+                  </div>
+                );
+              })}
+            </>
+          );
+        })()}
 
-      <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} currentVariant={getVariantFor("footer")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
-        <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} language={language} hasBlog={!!(content.blog?.posts?.length)} contactAddress={content.contact?.address} contactMapsUrl={content.contact?.maps_url ?? undefined} contactOpeningHours={content.contact?.opening_hours} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "footer"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-      </MemoPreviewSectionWrapper>
-
-      {isEditorMode && (
-        <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
-          <MemoSectionContent content={{ seo, dt }} render={(data) => {
-            const { seo: s } = data;
-            return <SeoEditorPreview seo={s} domain={tenantDomain} />;
-          }} />
+        <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} currentVariant={getVariantFor("footer")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+          <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} language={language} hasBlog={!!(content.blog?.posts?.length)} contactAddress={content.contact?.address} contactMapsUrl={content.contact?.maps_url ?? undefined} contactOpeningHours={content.contact?.opening_hours} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "footer"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
         </MemoPreviewSectionWrapper>
-      )}
-      <CartFab />
-      <WAFloatingButton phone={content?.contact?.phone} isEditorMode={isEditorMode} onSubmitLead={onSubmitLead} brandName={content?.header?.brand_name} isPremium={isPremium} floatingType={dt?.layout?.floating_button} language={language} />
-      <BackToTop isEditorMode={isEditorMode} />
-    </div>
+
+        {isEditorMode && (
+          <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+            <MemoSectionContent content={{ seo, dt }} render={(data) => {
+              const { seo: s } = data;
+              return <SeoEditorPreview seo={s} domain={tenantDomain} />;
+            }} />
+          </MemoPreviewSectionWrapper>
+        )}
+        <CartFab />
+        <WAFloatingButton phone={content?.contact?.phone} isEditorMode={isEditorMode} onSubmitLead={onSubmitLead} brandName={content?.header?.brand_name} isPremium={isPremium} floatingType={dt?.layout?.floating_button} language={language} />
+        <BackToTop isEditorMode={isEditorMode} />
+      </div>
+    </FeatureMarkerProvider>
   );
 };
 

@@ -2200,6 +2200,7 @@ export interface Translations {
       cornerSharp: string;
       cornerSoft: string;
       cornerRounded: string;
+      featureMarker: string;
       heroStyle: string;
       heroCentered: string;
       heroSplit: string;
@@ -5012,6 +5013,7 @@ export const translations: Record<Locale, Translations> = {
         cornerSharp: "Tajam (0px)",
         cornerSoft: "Lembut (8px)",
         cornerRounded: "Bulat (20px)",
+        featureMarker: "Ikon Checklist Produk",
         heroStyle: "Gaya Hero",
         heroCentered: "Hero: Centered",
         heroSplit: "Hero: Split Screen",
@@ -7893,6 +7895,7 @@ export const translations: Record<Locale, Translations> = {
         cornerSharp: "Sharp (0px)",
         cornerSoft: "Soft (8px)",
         cornerRounded: "Rounded (20px)",
+        featureMarker: "Product Checklist Icon",
         heroStyle: "Hero Style",
         heroCentered: "Hero: Centered",
         heroSplit: "Hero: Split Screen",
