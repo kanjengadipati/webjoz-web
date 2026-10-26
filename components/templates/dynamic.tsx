@@ -10,6 +10,7 @@ import { BlogPostsSection } from "./blog-section";
 
 import { buildCssVars, loadGoogleFont, filterEmptySections, getSectionVariant } from "./helpers";
 import type { TemplateProps, DesignToken, ContentSection } from "./types";
+import { SiteLoadingScreen, resolvePreloaderConfig } from "webjoz-ui";
 
 // Section components (Phase 1 extraction)
 import HeroSection from "../sections/hero";
@@ -437,8 +438,14 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
     }
   };
 
+  const preloaderVisual = React.useMemo(() => {
+    if (isEditorMode) return null;
+    return resolvePreloaderConfig(dt, header);
+  }, [dt, header, isEditorMode]);
+
   return (
     <div style={rootStyle}>
+      {preloaderVisual && <SiteLoadingScreen visual={preloaderVisual} />}
       {(() => {
         const renderedSections = resolvedSections
           .filter((sec) => !(dt?.layout?.hidden_sections ?? []).includes(sec.type))

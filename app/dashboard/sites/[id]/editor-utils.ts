@@ -1,5 +1,5 @@
 import { 
-  Layout, User, Award, HelpCircle, Mail, BookOpen, Globe, UtensilsCrossed, ShoppingBag, Star, Camera, MessageCircle, TrendingUp, Handshake, CreditCard, Briefcase, Sparkles
+  Layout, User, Award, HelpCircle, Mail, BookOpen, Globe, UtensilsCrossed, ShoppingBag, Star, Camera, MessageCircle, TrendingUp, Handshake, CreditCard, Briefcase, Sparkles, Loader2
 } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 
@@ -47,6 +47,7 @@ export const SECTION_META: Record<string, { label: string; labelEn: string; icon
   footer:       { label: "Footer", labelEn: "Footer", icon: BookOpen },
   payments:     { label: "Pembayaran", labelEn: "Payments", icon: CreditCard },
   seo:          { label: "SEO", labelEn: "SEO", icon: Globe },
+  preloader:    { label: "Preloader Halaman", labelEn: "Page Preloader", icon: Loader2 },
   floating:     { label: "Tombol Aksi", labelEn: "Action Button", icon: MessageCircle },
 };
 
