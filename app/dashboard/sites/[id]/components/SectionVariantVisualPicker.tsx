@@ -17,6 +17,102 @@ interface SectionVariantVisualPickerProps {
 
 // Mini SVG wireframe illustrations for section layouts
 function VariantWireframe({ section, variant }: { section: string; variant: string }) {
+  // Preloader variants
+  if (section === "preloader") {
+    if (variant === "none") {
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-2 flex items-center justify-center text-[10px] text-slate-500 font-mono">
+          [ Langsung Tampil ]
+        </div>
+      );
+    }
+    if (variant === "top-bar") {
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-2 flex flex-col justify-between overflow-hidden">
+          <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+            <div className="h-full w-2/3 bg-primary rounded-full animate-pulse" />
+          </div>
+          <div className="flex items-center justify-center">
+            <span className="text-[9px] text-slate-400 font-mono">Top Progress Bar</span>
+          </div>
+        </div>
+      );
+    }
+    if (variant === "minimal-fade") {
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-2 flex items-center justify-center">
+          <span className="text-[10px] tracking-[0.2em] uppercase font-bold text-slate-200 animate-pulse">BRAND</span>
+        </div>
+      );
+    }
+    if (variant === "minimal-spinner") {
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-2 flex flex-col items-center justify-center gap-1.5">
+          <div className="w-4 h-4 rounded-full border border-primary/20 border-t-primary animate-spin" />
+          <span className="text-[8px] tracking-wider text-slate-400 uppercase">Brand</span>
+        </div>
+      );
+    }
+    if (variant === "minimal-counter") {
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-2 flex flex-col items-center justify-center font-mono">
+          <span className="text-sm font-bold text-primary">78%</span>
+          <span className="text-[8px] tracking-widest text-slate-500 uppercase">Loading</span>
+        </div>
+      );
+    }
+    if (variant === "pulse-logo") {
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-2 flex flex-col items-center justify-center gap-1">
+          <div className="w-5 h-5 rounded-lg bg-primary/30 border border-primary flex items-center justify-center text-[10px] font-bold text-primary animate-pulse">W</div>
+          <div className="w-8 h-1 rounded-full bg-slate-300" />
+        </div>
+      );
+    }
+    if (variant === "orbit-ring") {
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-2 flex items-center justify-center">
+          <div className="relative w-8 h-8 rounded-full border border-primary/40 flex items-center justify-center">
+            <div className="w-3 h-3 rounded-full bg-primary/20 flex items-center justify-center text-[7px] font-bold text-primary">W</div>
+            <div className="absolute -top-0.5 w-1.5 h-1.5 rounded-full bg-primary" />
+          </div>
+        </div>
+      );
+    }
+    if (variant === "progress-line") {
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-2 flex flex-col justify-center gap-1.5 px-3">
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 rounded bg-primary text-[7px] font-bold text-white flex items-center justify-center">W</div>
+            <div className="w-10 h-1 rounded bg-slate-300" />
+          </div>
+          <div className="w-full h-1 rounded-full bg-white/10 overflow-hidden">
+            <div className="w-1/2 h-full bg-primary rounded-full animate-pulse" />
+          </div>
+        </div>
+      );
+    }
+    if (variant === "shimmer-reveal") {
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-2 flex items-center justify-center">
+          <span className="text-xs font-bold bg-gradient-to-r from-slate-400 via-white to-slate-400 bg-clip-text text-transparent animate-pulse">BRAND SHIMMER</span>
+        </div>
+      );
+    }
+    if (variant === "stagger-dots") {
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-2 flex flex-col items-center justify-center gap-2">
+          <div className="w-10 h-1 rounded bg-slate-300" />
+          <div className="flex gap-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" />
+            <div className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce [animation-delay:150ms]" />
+            <div className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce [animation-delay:300ms]" />
+          </div>
+        </div>
+      );
+    }
+  }
+
   // 1. Header variants
   if (section === "header" || variant.includes("logo") || variant === "transparent-overlay") {
     if (variant === "left-logo-inline-nav") {

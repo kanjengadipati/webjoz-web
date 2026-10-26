@@ -167,6 +167,18 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "featured", label: "Unggulan", description: "Satu postingan besar hero + grid kecil di bawah." },
     { value: "minimal", label: "Minimal", description: "Daftar judul dan tanggal tanpa gambar." },
   ],
+  preloader: [
+    { value: "none", label: "Tanpa Preloader", description: "Halaman langsung tampil seketika tanpa jeda loading." },
+    { value: "top-bar", label: "Garis Atas (Top Progress)", group: "Minimalis", description: "Garis tipis di bibir atas layar tanpa menutupi konten (ala Linear / YouTube)." },
+    { value: "minimal-fade", label: "Fade Tipografi", group: "Minimalis", description: "Nama brand tipografis halus di tengah layar tanpa ornamen tambahan." },
+    { value: "minimal-spinner", label: "Monoline Ring", group: "Minimalis", description: "Cincin putar satu garis super tipis dan bersih di tengah layar." },
+    { value: "minimal-counter", label: "Counter Angka", group: "Minimalis", description: "Persentase angka monospace minimalis yang menghitung cepat." },
+    { value: "pulse-logo", label: "Logo Berdenyut (Pulse)", group: "Branding", description: "Logo brand berdenyut halus di tengah layar." },
+    { value: "orbit-ring", label: "Cincin Orbit", group: "Modern", description: "Cincin berputar mengelilingi inisial logo brand." },
+    { value: "progress-line", label: "Bar Progres Ramping", group: "Modern", description: "Logo dengan bar progres horizontal di bawahnya." },
+    { value: "shimmer-reveal", label: "Shimmer Kilau", group: "Editorial", description: "Efek kilau gradien cahaya menyapu teks brand." },
+    { value: "stagger-dots", label: "Titik Gelombang", group: "Minimalis", description: "Tiga titik bergelombang halus di bawah brand." },
+  ],
 };
 
 export function getVariantLabel(section: string, value: string, t?: any): string {

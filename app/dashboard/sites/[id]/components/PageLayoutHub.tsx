@@ -39,7 +39,7 @@ export default function PageLayoutHub({
 
   // Determine sections present in current site content
   const activeSections = Object.keys(SECTION_VARIANT_OPTIONS).filter((secKey) => {
-    if (secKey === "header" || secKey === "footer" || secKey === "hero") return true;
+    if (secKey === "header" || secKey === "footer" || secKey === "hero" || secKey === "preloader") return true;
     return Boolean(content?.[secKey]);
   });
 
