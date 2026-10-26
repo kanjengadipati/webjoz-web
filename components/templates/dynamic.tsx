@@ -440,8 +440,8 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
 
   const preloaderVisual = React.useMemo(() => {
     if (isEditorMode) return null;
-    return resolvePreloaderConfig(dt, header);
-  }, [dt, header, isEditorMode]);
+    return resolvePreloaderConfig(dt, header, content?.preloader);
+  }, [dt, header, content?.preloader, isEditorMode]);
 
   return (
     <div style={rootStyle}>

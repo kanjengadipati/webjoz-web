@@ -1,3 +1,5 @@
+import type { PreloaderContent } from "webjoz-ui";
+
 export interface TestimonialItem {
   quote: string;
   name: string;
@@ -291,6 +293,7 @@ export interface TemplateProps {
         created_at: string;
       }>;
     };
+    preloader?: PreloaderContent;
     header: {
       brand_name: string;
       nav_cta_text: string;
