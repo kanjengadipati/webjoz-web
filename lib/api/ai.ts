@@ -11,7 +11,7 @@ export type ProcessBusinessDescriptionResult = {
   refined_text: string;
   type?: string;
   sub_type?: string;
-  confidence?: "high" | "low";
+  confidence?: "high" | "medium" | "low";
 };
 
 export async function processBusinessDescription(rawText: string, businessName?: string, language?: string) {
