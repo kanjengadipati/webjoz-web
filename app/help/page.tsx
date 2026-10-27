@@ -1246,22 +1246,22 @@ const TEXT = {
 // ─── Screenshot Map ──────────────────────────────────────────────────────────
 
 const GUIDE_SCREENSHOTS: Record<string, string> = {
-  "ai-create": "/guide/step-ai-generate.png",
-  "inline-edit": "/guide/step-editor-overview.png",
-  "brand-style": "/guide/step-editor-design.png",
-  "catalog-manage": "/guide/step-catalog.png",
-  "wa-order": "/guide/step-wa-order.png",
-  "publish-domain": "/guide/step-publish-preview.png",
-  "seo-meta": "/guide/step-seo.png",
-  "integrations": "/guide/step-integrations.png",
-  "blog-ai": "/guide/step-editor-panel.png",
-  "leads-inbox": "/guide/step-dashboard-sites.png",
-  "testimonials-manage": "/guide/step-dashboard-sites.png",
-  "analytics-dashboard": "/guide/step-dashboard-sites.png",
-  "orders-tracker": "/guide/step-dashboard-sites.png",
-  "team-invite": "/guide/step-dashboard-sites.png",
-  "usage-quota": "/guide/step-dashboard-sites.png",
-  "account-security": "/guide/step-dashboard-sites.png",
+  "ai-create": "/guide/step-ai-generate.webp",
+  "inline-edit": "/guide/step-editor-overview.webp",
+  "brand-style": "/guide/step-editor-design.webp",
+  "catalog-manage": "/guide/step-catalog.webp",
+  "wa-order": "/guide/step-wa-order.webp",
+  "publish-domain": "/guide/step-publish-preview.webp",
+  "seo-meta": "/guide/step-seo.webp",
+  "integrations": "/guide/step-integrations.webp",
+  "blog-ai": "/guide/step-editor-panel.webp",
+  "leads-inbox": "/guide/step-dashboard-sites.webp",
+  "testimonials-manage": "/guide/step-dashboard-sites.webp",
+  "analytics-dashboard": "/guide/step-dashboard-sites.webp",
+  "orders-tracker": "/guide/step-dashboard-sites.webp",
+  "team-invite": "/guide/step-dashboard-sites.webp",
+  "usage-quota": "/guide/step-dashboard-sites.webp",
+  "account-security": "/guide/step-dashboard-sites.webp",
 };
 
 // ─── Guide Illustration (Real UI Screenshot) ─────────────────────────────────
@@ -1649,7 +1649,7 @@ export default function HelpCenterPage() {
                     controls
                     preload="metadata"
                     playsInline
-                    poster="/guide/video-poster.png"
+                    poster="/guide/video-poster.webp"
                     className="w-full h-full object-contain"
                   >
                     <source src="https://res.cloudinary.com/dckbihkyp/video/upload/v1793092413/guide-webjoz-gabung.mp4" type="video/mp4" />
