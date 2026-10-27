@@ -25,6 +25,7 @@ const TAB_LABELS: Record<Tab, { id: string; en: string }> = {
  * Business filter: only used for tech/startup/digital businesses.
  */
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
+import { safeHref, isExternalHref } from "@/lib/safe-url";
 
 export default function HeroTechSaaS({
   hero: h,
@@ -38,7 +39,7 @@ export default function HeroTechSaaS({
 }: HeroVariantProps) {
   const [activeTab, setActiveTab] = useState<Tab>("analytics");
   const [isInlineEditing, setIsInlineEditing] = useState(false);
-  const hasSecondary = h.cta_secondary_text && h.cta_secondary_url;
+  const hasSecondary = Boolean(h.cta_secondary_text?.trim() && h.cta_secondary_url?.trim());
 
   const dw = h.dashboard_widget;
   const isHidden = dw?.hidden === true;
@@ -222,7 +223,9 @@ export default function HeroTechSaaS({
           style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", justifyContent: "center" }}
         >
           <a
-            href={h.cta_url}
+            href={safeHref(h.cta_url, "#contact")}
+            target={isExternalHref(h.cta_url) ? "_blank" : undefined}
+            rel={isExternalHref(h.cta_url) ? "noopener noreferrer" : undefined}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -250,7 +253,9 @@ export default function HeroTechSaaS({
           </a>
           {hasSecondary && (
             <a
-              href={h.cta_secondary_url!}
+              href={safeHref(h.cta_secondary_url, "#contact")}
+              target={isExternalHref(h.cta_secondary_url) ? "_blank" : undefined}
+              rel={isExternalHref(h.cta_secondary_url) ? "noopener noreferrer" : undefined}
               style={{
                 display: "inline-flex",
                 alignItems: "center",

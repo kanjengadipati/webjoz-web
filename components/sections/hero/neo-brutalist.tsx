@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import PhotoCredit from "../PhotoCredit";
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
+import { safeHref, isExternalHref } from "@/lib/safe-url";
 
 /**
  * Neo-Brutalist — thick borders, offset shadows, sticker-style badges.
@@ -21,7 +22,7 @@ export default function HeroNeoBrutalist({
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: HeroVariantProps) {
-  const hasSecondary = h.cta_secondary_text && h.cta_secondary_url;
+  const hasSecondary = Boolean(h.cta_secondary_text?.trim() && h.cta_secondary_url?.trim());
 
   return (
     <section
@@ -180,7 +181,9 @@ export default function HeroNeoBrutalist({
             style={{ display: "flex", gap: "0.875rem", flexWrap: "wrap" }}
           >
             <a
-              href={h.cta_url}
+              href={safeHref(h.cta_url, "#contact")}
+              target={isExternalHref(h.cta_url) ? "_blank" : undefined}
+              rel={isExternalHref(h.cta_url) ? "noopener noreferrer" : undefined}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -220,7 +223,9 @@ export default function HeroNeoBrutalist({
             </a>
             {hasSecondary && (
               <a
-                href={h.cta_secondary_url!}
+                href={safeHref(h.cta_secondary_url, "#contact")}
+                target={isExternalHref(h.cta_secondary_url) ? "_blank" : undefined}
+                rel={isExternalHref(h.cta_secondary_url) ? "noopener noreferrer" : undefined}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",

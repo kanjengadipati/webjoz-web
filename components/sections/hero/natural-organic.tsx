@@ -11,6 +11,7 @@ import PhotoCredit from "../PhotoCredit";
  * Suited for: organic products, wellness, farm-to-table, eco brands.
  */
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
+import { safeHref, isExternalHref } from "@/lib/safe-url";
 
 export default function HeroNaturalOrganic({
   hero: h,
@@ -22,7 +23,7 @@ export default function HeroNaturalOrganic({
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: HeroVariantProps) {
-  const hasSecondary = h.cta_secondary_text && h.cta_secondary_url;
+  const hasSecondary = Boolean(h.cta_secondary_text?.trim() && h.cta_secondary_url?.trim());
 
   return (
     <section
@@ -220,7 +221,9 @@ export default function HeroNaturalOrganic({
           style={{ display: "flex", gap: "0.875rem", flexWrap: "wrap", justifyContent: "center" }}
         >
           <a
-            href={h.cta_url}
+            href={safeHref(h.cta_url, "#contact")}
+            target={isExternalHref(h.cta_url) ? "_blank" : undefined}
+            rel={isExternalHref(h.cta_url) ? "noopener noreferrer" : undefined}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -251,7 +254,9 @@ export default function HeroNaturalOrganic({
           </a>
           {hasSecondary && (
             <a
-              href={h.cta_secondary_url!}
+              href={safeHref(h.cta_secondary_url, "#contact")}
+              target={isExternalHref(h.cta_secondary_url) ? "_blank" : undefined}
+              rel={isExternalHref(h.cta_secondary_url) ? "noopener noreferrer" : undefined}
               style={{
                 display: "inline-flex",
                 alignItems: "center",

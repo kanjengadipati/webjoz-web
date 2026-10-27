@@ -5,6 +5,7 @@ import { ArrowRight, ArrowUpRight } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import PhotoCredit from "../PhotoCredit";
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
+import { safeHref, isExternalHref } from "@/lib/safe-url";
 
 /**
  * Chronology Badge — personal-brand businesses with track record (coach,
@@ -24,7 +25,7 @@ export default function HeroChronologyBadge({
   onEditingStateChange,
 }: HeroVariantProps) {
   const [activeRow, setActiveRow] = useState<number | null>(null);
-  const hasSecondary = h.cta_secondary_text && h.cta_secondary_url;
+  const hasSecondary = Boolean(h.cta_secondary_text?.trim() && h.cta_secondary_url?.trim());
   const isEN = language === "en";
   const availLabel = isEN ? "Available for work" : "Tersedia untuk kerja";
   const yearsFallback = isEN ? "Years" : "Tahun";
@@ -413,7 +414,9 @@ export default function HeroChronologyBadge({
           style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}
         >
           <a
-            href={h.cta_url}
+            href={safeHref(h.cta_url, "#contact")}
+            target={isExternalHref(h.cta_url) ? "_blank" : undefined}
+            rel={isExternalHref(h.cta_url) ? "noopener noreferrer" : undefined}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -442,7 +445,9 @@ export default function HeroChronologyBadge({
           </a>
           {hasSecondary && (
             <a
-              href={h.cta_secondary_url!}
+              href={safeHref(h.cta_secondary_url, "#contact")}
+              target={isExternalHref(h.cta_secondary_url) ? "_blank" : undefined}
+              rel={isExternalHref(h.cta_secondary_url) ? "noopener noreferrer" : undefined}
               style={{
                 display: "inline-flex",
                 alignItems: "center",

@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ArrowRight, ChevronLeft, ChevronRight, Plus, Trash2, Clock } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Plus, Trash2, Clock, Pause, Play } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import type { HeroVariantProps } from "./types";
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
 import PhotoCredit from "../PhotoCredit";
+import { safeHref, isExternalHref } from "@/lib/safe-url";
 
 /**
  * HeroImageCarousel — Cinematic hero section with multi-image slideshow.
@@ -26,35 +27,35 @@ export default function HeroImageCarousel({
   onEditingStateChange,
 }: HeroVariantProps) {
   // Resolve slides array: prioritize hero.images, then fallback to hero.image_url
-  const rawImages: string[] = Array.isArray(h.images) && h.images.length > 0
+  const slides: string[] = Array.isArray(h.images) && h.images.length > 0
     ? h.images.filter(Boolean)
     : (h.image_url ? [h.image_url] : []);
 
-  const [slides, setSlides] = useState<string[]>(rawImages);
+  const slideCount = slides.length;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
-  // Sync state if h.images or h.image_url updates from outside
+  // Check prefers-reduced-motion (WCAG 2.2.2)
   useEffect(() => {
-    const next = Array.isArray(h.images) && h.images.length > 0
-      ? h.images.filter(Boolean)
-      : (h.image_url ? [h.image_url] : []);
-    setSlides(next);
-    if (currentIndex >= next.length && next.length > 0) {
-      setCurrentIndex(0);
-    }
-  }, [h.images, h.image_url]);
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
+    mq.addEventListener?.("change", handler);
+    return () => mq.removeEventListener?.("change", handler);
+  }, []);
 
-  const slideCount = slides.length;
+  const safeIndex = slideCount > 0 ? Math.min(currentIndex, slideCount - 1) : 0;
 
-  // Auto-play interval (disabled in editor mode to avoid disruptive changes while typing)
+  // Auto-play interval (disabled in editor mode, when user pauses, or when prefers-reduced-motion is active)
   useEffect(() => {
-    if (isEditorMode || isPaused || slideCount <= 1) return;
+    if (isEditorMode || isPaused || prefersReducedMotion || slideCount <= 1) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % slideCount);
     }, 5500);
     return () => clearInterval(interval);
-  }, [isEditorMode, isPaused, slideCount]);
+  }, [isEditorMode, isPaused, prefersReducedMotion, slideCount]);
 
   const handlePrev = (e?: React.MouseEvent) => {
     e?.stopPropagation();
@@ -75,11 +76,10 @@ export default function HeroImageCarousel({
 
   const handleUpdateCurrentSlideImage = (newUrl: string) => {
     const updated = [...slides];
-    updated[currentIndex] = newUrl;
-    setSlides(updated);
+    updated[safeIndex] = newUrl;
     if (onUpdateField) {
       onUpdateField("hero", "images", updated);
-      if (currentIndex === 0) {
+      if (safeIndex === 0) {
         onUpdateField("hero", "image_url", newUrl);
       }
     }
@@ -87,9 +87,8 @@ export default function HeroImageCarousel({
 
   const handleAddSlide = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const fallbackImage = h.image_url || "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&auto=format&fit=crop&q=80";
+    const fallbackImage = h.image_url || "";
     const updated = [...slides, fallbackImage];
-    setSlides(updated);
     setCurrentIndex(updated.length - 1);
     if (onUpdateField) {
       onUpdateField("hero", "images", updated);
@@ -99,8 +98,7 @@ export default function HeroImageCarousel({
   const handleDeleteCurrentSlide = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (slides.length <= 1) return;
-    const updated = slides.filter((_, i) => i !== currentIndex);
-    setSlides(updated);
+    const updated = slides.filter((_, i) => i !== safeIndex);
     setCurrentIndex((prev) => (prev >= updated.length ? updated.length - 1 : prev));
     if (onUpdateField) {
       onUpdateField("hero", "images", updated);
@@ -111,9 +109,9 @@ export default function HeroImageCarousel({
   };
 
   const isEN = language === "en";
-  const hasSecondary = Boolean(h.cta_secondary_text && h.cta_secondary_url);
+  const hasSecondary = Boolean(h.cta_secondary_text?.trim() && h.cta_secondary_url?.trim());
   const defaultCta = isEN ? "Get Started" : "Mulai Sekarang";
-  const activeImage = slides[currentIndex] || h.image_url || "";
+  const activeImage = slides[safeIndex] || h.image_url || "";
 
   return (
     <section
@@ -142,7 +140,7 @@ export default function HeroImageCarousel({
         <AnimatePresence initial={false} mode="wait">
           {activeImage || isEditorMode ? (
             <motion.div
-              key={currentIndex}
+              key={safeIndex}
               initial={{ opacity: 0, scale: 1.05 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
@@ -151,9 +149,9 @@ export default function HeroImageCarousel({
             >
               <InlineImage
                 section="hero"
-                fieldKey={`slide_${currentIndex}`}
+                fieldKey={`slide_${safeIndex}`}
                 src={activeImage}
-                alt={`${h.headline || "Hero image"} (Slide ${currentIndex + 1})`}
+                alt={`${h.headline || "Hero image"} (Slide ${safeIndex + 1})`}
                 onUpdateField={(_, __, val) => handleUpdateCurrentSlideImage(val)}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
@@ -348,7 +346,9 @@ export default function HeroImageCarousel({
           className="flex flex-wrap items-center gap-3.5 pt-2"
         >
           <a
-            href={h.cta_url || "#"}
+            href={safeHref(h.cta_url, "#contact")}
+            target={isExternalHref(h.cta_url) ? "_blank" : undefined}
+            rel={isExternalHref(h.cta_url) ? "noopener noreferrer" : undefined}
             className="group inline-flex items-center gap-2 px-6 py-3.5 text-sm md:text-base font-bold rounded-xl transition-all duration-300 shadow-2xl hover:scale-[1.02] active:scale-[0.98]"
             style={{
               background: "#FFFFFF",
@@ -374,7 +374,9 @@ export default function HeroImageCarousel({
 
           {hasSecondary && (
             <a
-              href={h.cta_secondary_url || "#"}
+              href={safeHref(h.cta_secondary_url, "#contact")}
+              target={isExternalHref(h.cta_secondary_url) ? "_blank" : undefined}
+              rel={isExternalHref(h.cta_secondary_url) ? "noopener noreferrer" : undefined}
               className="inline-flex items-center gap-2 px-5 py-3.5 text-sm md:text-base font-medium rounded-xl transition-all duration-300 backdrop-blur-md hover:bg-white/15 active:scale-[0.98]"
               style={{
                 color: "#FFFFFF",
@@ -417,8 +419,8 @@ export default function HeroImageCarousel({
           <div className="flex items-center gap-2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20 text-xs text-white">
             <span>
               {isEN
-                ? `Slide ${currentIndex + 1} of ${slideCount}`
-                : `Slide ${currentIndex + 1} dari ${slideCount}`}
+                ? `Slide ${safeIndex + 1} of ${slideCount}`
+                : `Slide ${safeIndex + 1} dari ${slideCount}`}
             </span>
             <button
               type="button"
@@ -441,9 +443,18 @@ export default function HeroImageCarousel({
           </div>
         )}
 
-        {/* Slide pagination dots / pills */}
+        {/* Slide pagination dots / pills + pause button */}
         {slideCount > 1 && (
           <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-2 rounded-full border border-white/10 shadow-lg">
+            <button
+              type="button"
+              onClick={() => setIsPaused((prev) => !prev)}
+              aria-label={isPaused ? (isEN ? "Resume autoplay" : "Lanjutkan putar otomatis") : (isEN ? "Pause autoplay" : "Jeda putar otomatis")}
+              title={isPaused ? (isEN ? "Resume autoplay" : "Lanjutkan putar otomatis") : (isEN ? "Pause autoplay" : "Jeda putar otomatis")}
+              className="text-white/60 hover:text-white transition-colors mr-1 cursor-pointer"
+            >
+              {isPaused ? <Play className="size-3" /> : <Pause className="size-3" />}
+            </button>
             {slides.map((_, idx) => (
               <button
                 key={idx}
@@ -451,7 +462,7 @@ export default function HeroImageCarousel({
                 onClick={(e) => handleSelectSlide(idx, e)}
                 aria-label={isEN ? `Go to slide ${idx + 1}` : `Menuju slide ${idx + 1}`}
                 className={`transition-all duration-300 rounded-full ${
-                  idx === currentIndex
+                  idx === safeIndex
                     ? "w-7 h-2 bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]"
                     : "w-2 h-2 bg-white/40 hover:bg-white/70"
                 }`}
