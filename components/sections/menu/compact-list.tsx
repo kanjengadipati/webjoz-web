@@ -32,7 +32,7 @@ export default function MenuCompactList({ menu, onUpdateField, isEditorMode, isS
       <div style={{ maxWidth: "56rem", margin: "0 auto" }}>
         <SectionHeader
           section="menu"
-          eyebrow={menu.eyebrow ?? "Pilihan Menu"}
+          eyebrow={menu.eyebrow ?? (isEN ? "Menu Selection" : "Pilihan Menu")}
           title={menu.title}
           wrapperStyle={{ textAlign: "center", marginBottom: "2.5rem" }}
           eyebrowStyle={pillEyebrowStyle(p)}
@@ -53,13 +53,13 @@ export default function MenuCompactList({ menu, onUpdateField, isEditorMode, isS
           onSelectCategory={setActiveCategory}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
-          placeholder="Cari menu..."
+          placeholder={isEN ? "Search menu..." : "Cari menu..."}
         />
 
         {filteredCategories.length === 0 ? (
           <div style={{ textAlign: "center", padding: "4rem 1rem", opacity: 0.75 }}>
             <p style={{ fontWeight: 600, fontSize: "1rem", color: text }}>
-              Tidak ada menu yang cocok dengan pencarian "{searchQuery}".
+              {isEN ? `No menu items match "${searchQuery}".` : `Tidak ada menu yang cocok dengan pencarian "${searchQuery}".`}
             </p>
           </div>
         ) : (
@@ -122,7 +122,7 @@ export default function MenuCompactList({ menu, onUpdateField, isEditorMode, isS
                       content: { className: "flex flex-col flex-1 min-w-0", style: { gap: "0.25rem" } },
                       header: { className: "flex items-start justify-between gap-2" },
                       title: { className: "font-semibold text-sm leading-tight", style: { color: text, fontFamily: hFont } },
-                      description: { className: "text-xs leading-relaxed", style: { color: `color-mix(in srgb, ${text} 60%, transparent)` } },
+                      description: { className: "text-xs leading-relaxed line-clamp-2 max-w-xs", style: { color: `color-mix(in srgb, ${text} 60%, transparent)` } },
                       price: { className: "text-xs font-bold px-2 py-0.5 rounded-full whitespace-nowrap shrink-0", style: { background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p } },
                       button: { className: "mt-auto self-start flex items-center gap-1 text-[11px] font-bold px-3 py-1.5 rounded-lg transition-all hover:brightness-110", style: { background: p, color: bg, border: "none" } },
                     }}
@@ -139,7 +139,7 @@ export default function MenuCompactList({ menu, onUpdateField, isEditorMode, isS
               </div>
               {isEditorMode && onAddItem && (
                 <div style={{ marginTop: "0.75rem" }}>
-                  <InlineAddTile label="Tambah Item" onClick={() => onAddItem(cat.originalCatIdx)} />
+                  <InlineAddTile label={isEN ? "Add Item" : "Tambah Item"} onClick={() => onAddItem(cat.originalCatIdx)} />
                 </div>
               )}
             </div>

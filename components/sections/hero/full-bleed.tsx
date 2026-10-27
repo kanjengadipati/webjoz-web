@@ -55,6 +55,7 @@ export default function HeroFullBleed({
             onUpdateField={onUpdateField}
             isEditorMode={isEditorMode}
             isSelected={isSelected}
+            isBackground={true}
             className="w-full h-full"
             style={{
               width: "100%",

@@ -243,7 +243,7 @@ export default function CatalogSplitHeroCatalog({ catalog, onUpdateField, isEdit
                         {item.capacity != null && item.capacity > 0 && (
                           <div className="mb-2">
                             <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 10%, transparent)", color: "var(--dt-primary)" }}>
-                              s/d <InlineText section="catalog" fieldKey={"categories." + catIdx + ".items." + index + ".capacity"} value={item.capacity != null ? String(item.capacity) : ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" /> tamu
+                              {isEN ? "up to" : "s/d"} <InlineText section="catalog" fieldKey={"categories." + catIdx + ".items." + index + ".capacity"} value={item.capacity != null ? String(item.capacity) : ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" /> {isEN ? "guests" : "tamu"}
                             </span>
                           </div>
                         )}
@@ -297,7 +297,7 @@ export default function CatalogSplitHeroCatalog({ catalog, onUpdateField, isEdit
                 ))}
                 {isEditorMode && onAddItem && (
                   <InlineAddTile
-                    label="Tambah Item"
+                    label={isEN ? "Add Item" : "Tambah Item"}
                     variant="card"
                     className="rounded-2xl min-h-[160px] w-full"
                     onClick={() => onAddItem(catIdx)}

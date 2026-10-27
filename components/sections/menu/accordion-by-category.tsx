@@ -30,7 +30,7 @@ export default function MenuAccordionByCategory({ menu, onUpdateField, isEditorM
         {/* Header */}
         <SectionHeader
           section="menu"
-          eyebrow={menu.eyebrow ?? "Pilihan Menu"}
+          eyebrow={menu.eyebrow ?? (isEN ? "Menu Selection" : "Pilihan Menu")}
           title={menu.title}
           wrapperStyle={{ textAlign: "center", marginBottom: "3rem" }}
           eyebrowStyle={pillEyebrowStyle(p)}
@@ -86,7 +86,7 @@ export default function MenuAccordionByCategory({ menu, onUpdateField, isEditorM
                 >
                   <InlineText section="menu" fieldKey={"categories." + ci + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontFamily: hFont, fontWeight: 700, fontSize: "0.9rem", color: isOpen ? p : text }} />
                   <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                    <span style={{ fontSize: "0.65rem", color: muted, fontWeight: 500 }}>{cat.items?.length ?? 0} item</span>
+                    <span style={{ fontSize: "0.65rem", color: muted, fontWeight: 500 }}>{cat.items?.length ?? 0} {isEN ? ((cat.items?.length ?? 0) === 1 ? "item" : "items") : "item"}</span>
                     <ChevronDown
                       style={{
                         width: 16, height: 16, color: p,
@@ -146,7 +146,7 @@ export default function MenuAccordionByCategory({ menu, onUpdateField, isEditorM
                                 <InlineText section="menu" fieldKey={"categories." + ci + ".items." + ii + ".name"} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontFamily: hFont, fontWeight: 600, fontSize: "0.875rem", color: text }} />
                                 {item.is_available === false && (
                                   <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-rose-500 text-white flex-shrink-0">
-                                    Habis
+                                    {isEN ? "Sold Out" : "Habis"}
                                   </span>
                                 )}
                               </div>
@@ -178,7 +178,7 @@ export default function MenuAccordionByCategory({ menu, onUpdateField, isEditorM
                     })}
                     {isEditorMode && onAddItem && (
                       <div style={{ padding: "0.875rem 1.25rem", borderTop: `1px solid color-mix(in srgb, ${p} 10%, transparent)` }}>
-                        <InlineAddTile compact label="Tambah Item" onClick={() => onAddItem(ci)} />
+                        <InlineAddTile compact label={isEN ? "Add Item" : "Tambah Item"} onClick={() => onAddItem(ci)} />
                       </div>
                     )}
                   </div>

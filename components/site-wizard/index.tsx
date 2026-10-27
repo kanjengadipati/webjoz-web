@@ -2140,8 +2140,12 @@ export function SiteWizard({
                           <Phone className="w-3.5 h-3.5 text-slate-200" />
                         </div>
                         <div className="space-y-1 pr-3">
-                          <p className="text-xs font-bold text-slate-100 leading-tight">Lengkapi data kontak</p>
-                          <p className="text-[11px] text-slate-400 leading-snug">Tambah nomor WA supaya tombol kontak di website aktif.</p>
+                          <p className="text-xs font-bold text-slate-100 leading-tight">
+                            {t("dashboard.wizard.completeContactDataTitle", "Lengkapi data kontak")}
+                          </p>
+                          <p className="text-[11px] text-slate-400 leading-snug">
+                            {t("dashboard.wizard.completeContactDataDesc", "Tambah nomor WA supaya tombol kontak di website aktif.")}
+                          </p>
                         </div>
                       </div>
                       <div className="absolute -bottom-1.5 right-[28px] w-3 h-3 bg-[#1a1d24] border-r border-b border-white/10 transform rotate-45" />
@@ -2154,7 +2158,7 @@ export function SiteWizard({
                   className="flex items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold bg-white text-slate-900 shadow-[0_8px_25px_rgba(0,0,0,0.2)] transition-all hover:scale-105 active:scale-95 hover:brightness-110 active:brightness-95"
                 >
                   <Plus className="h-4 w-4" />
-                  Lengkapi Data
+                  {t("dashboard.wizard.btnCompleteData", "Lengkapi Data")}
                 </button>
 
                 {/* Popover anchored directly above button with left edge aligned */}
@@ -2176,7 +2180,7 @@ export function SiteWizard({
                 className="btn-primary flex items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold shadow-[0_14px_35px_rgba(0,0,0,0.25)] transition-all hover:scale-105 active:scale-95"
               >
                 <Pencil className="h-4 w-4" />
-                Edit &amp; Publikasikan
+                {t("dashboard.wizard.btnEditPublish", "Edit & Publikasikan")}
                 <ArrowRight className="h-4 w-4" />
               </button>
 
@@ -2196,8 +2200,8 @@ export function SiteWizard({
 
       <WizardErrorModal
         open={generate.tooManyRequests}
-        title="Terlalu cepat!"
-        message="Kamu sudah generate beberapa kali dalam waktu singkat. Tunggu 30 detik, lalu coba lagi ya."
+        title={t("dashboard.wizard.tooFastTitle", "Terlalu cepat!")}
+        message={t("dashboard.wizard.tooFastMessage", "Kamu sudah generate beberapa kali dalam waktu singkat. Tunggu 30 detik, lalu coba lagi ya.")}
         variant="warning"
         onCancel={handleCancelGenerationError}
         onRetry={handleRetryGeneration}

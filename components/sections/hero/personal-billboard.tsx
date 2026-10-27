@@ -68,6 +68,7 @@ export default function HeroPersonalBillboard({
             onUpdateField={onUpdateField}
             isEditorMode={isEditorMode}
             isSelected={isSelected}
+            isBackground={true}
             className="w-full h-full"
             style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.09, mixBlendMode: "luminosity" }}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}

@@ -7,7 +7,7 @@ import { SectionHeader } from "../section-header";
 import { productCategories, type ProductVariantProps } from "./types";
 
 export default function ProductHorizontalSwipeCarousel({
-  kind, data, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
+  kind, data, design_token, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
   onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id",
 }: ProductVariantProps) {
   const isEN = language === "en";
@@ -186,7 +186,7 @@ export default function ProductHorizontalSwipeCarousel({
                   style={{ borderRadius: dtRadius }}
                 >
                   <MenuCatalogCard
-                    layout="grid"
+                    layout={design_token?.layout?.card_style ?? "grid"}
                     item={{
                       id: cardKey,
                       name: item.name,

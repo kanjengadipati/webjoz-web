@@ -229,20 +229,50 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
                           className="text-lg font-light tracking-tight"
                           style={{ color: "var(--dt-text)" }}
                         />
-                        {item.price && (
-                          <InlineText
-                            section="catalog"
-                            fieldKey={"categories." + catIdx + ".items." + index + ".price"}
-                            value={item.price ?? ""}
-                            onUpdateField={onUpdateField}
-                            isEditorMode={isEditorMode}
-                            isSelected={isSelected}
-                            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                            onEditingStateChange={onEditingStateChange}
-                            as="span"
-                            className="text-sm font-medium tracking-tight self-start"
-                            style={{ color: "var(--dt-text)" }}
-                          />
+                        {(item.price || item.price_display || isEditorMode) && (
+                          <div className="flex items-baseline gap-2 self-start flex-wrap">
+                            {item.promo_price_amount && item.promo_price_amount > 0 ? (
+                              <>
+                                <InlineText
+                                  section="catalog"
+                                  fieldKey={"categories." + catIdx + ".items." + index + ".promo_price_display"}
+                                  value={item.promo_price_display || item.promo_price || ""}
+                                  placeholder="+ Promo"
+                                  onUpdateField={onUpdateField}
+                                  isEditorMode={isEditorMode}
+                                  isSelected={isSelected}
+                                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                                  onEditingStateChange={onEditingStateChange}
+                                  as="span"
+                                  className="text-sm font-semibold tracking-tight"
+                                  style={{ color: "var(--dt-primary)" }}
+                                />
+                                <span className="text-xs line-through opacity-50" style={{ color: "var(--dt-text)" }}>
+                                  {item.price_display || item.price}
+                                </span>
+                              </>
+                            ) : (
+                              <InlineText
+                                section="catalog"
+                                fieldKey={"categories." + catIdx + ".items." + index + ".price"}
+                                value={item.price_display || item.price || ""}
+                                placeholder="+ Harga"
+                                onUpdateField={onUpdateField}
+                                isEditorMode={isEditorMode}
+                                isSelected={isSelected}
+                                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                                onEditingStateChange={onEditingStateChange}
+                                as="span"
+                                className="text-sm font-medium tracking-tight"
+                                style={{ color: "var(--dt-text)" }}
+                              />
+                            )}
+                            {item.discount_label && (
+                              <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 15%, transparent)", color: "var(--dt-primary)" }}>
+                                {item.discount_label}
+                              </span>
+                            )}
+                          </div>
                         )}
                       </div>
 
@@ -277,7 +307,7 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
                       {item.capacity != null && item.capacity > 0 && (
                         <div className="mt-2">
                           <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 10%, transparent)", color: "var(--dt-primary)" }}>
-                            s/d <InlineText section="catalog" fieldKey={"categories." + catIdx + ".items." + index + ".capacity"} value={item.capacity != null ? String(item.capacity) : ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" /> tamu
+                            {isEN ? "up to" : "s/d"} <InlineText section="catalog" fieldKey={"categories." + catIdx + ".items." + index + ".capacity"} value={item.capacity != null ? String(item.capacity) : ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" /> {isEN ? "guests" : "tamu"}
                           </span>
                         </div>
                       )}
@@ -333,7 +363,7 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
               })}
               {isEditorMode && onAddItem && (
                 <InlineAddTile
-                  label="Tambah Item"
+                  label={isEN ? "Add Item" : "Tambah Item"}
                   variant="card"
                   className={`w-full rounded-2xl ${getAddTileClass(category.items?.length ?? 0)}`}
                   onClick={() => onAddItem(catIdx)}

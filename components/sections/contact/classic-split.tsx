@@ -41,6 +41,8 @@ export default function ClassicSplit({
     flexShrink: 0,
   };
 
+  const defaultEyebrow = isEN ? "Contact Us" : "Kontak Kami";
+
   return (
     <section id="contact" style={{ padding: "var(--dt-spacing) 1.5rem", background: "color-mix(in srgb, var(--dt-primary) 4%, var(--dt-bg))", borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)" }}>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12" style={{ maxWidth: "72rem", margin: "0 auto" }}>
@@ -49,7 +51,8 @@ export default function ClassicSplit({
             <InlineText
               section="contact"
               fieldKey="eyebrow"
-              value={c.eyebrow ?? ""}
+              value={c.eyebrow || defaultEyebrow}
+              placeholder={defaultEyebrow}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}

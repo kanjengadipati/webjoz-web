@@ -653,7 +653,7 @@ export const MOCK_SHOWCASE_DATA = {
             promo_price_amount: 1999000,
             badge: "Paling Laris",
             features: ["Garansi 5 Tahun", "Adjustable Armrest", "Breathable Mesh"],
-            image_url: "https://images.unsplash.com/photo-1580481077195-c328a37db71a?w=600&auto=format&fit=crop&q=80",
+            image_url: "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=600&auto=format&fit=crop&q=80",
             variant_groups: [
               {
                 id: "vg-color",

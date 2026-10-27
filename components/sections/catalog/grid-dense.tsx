@@ -26,7 +26,7 @@ interface CatalogVariantProps {
  * Grid Dense — tighter grid, smaller cards, fits more items per row.
  * Best for catalogs with 20+ items. Cards use minmax(180px, 1fr).
  */
-export default function CatalogGridDense({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: CatalogVariantProps) {
+export default function CatalogGridDense({ catalog, design_token, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: CatalogVariantProps) {
   const isEN = language === "en";
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -46,7 +46,7 @@ export default function CatalogGridDense({ catalog, onUpdateField, isEditorMode,
       <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
         <SectionHeader
           section="catalog"
-          eyebrow={catalog.eyebrow ?? ""}
+          eyebrow={(catalog.eyebrow || isEditorMode) ? (catalog.eyebrow ?? (isEN ? "Product Collection" : "Koleksi Produk")) : undefined}
           title={catalog.title}
           wrapperStyle={{ textAlign: "center", marginBottom: "2.5rem" }}
           eyebrowStyle={pillEyebrowStyle(p)}
@@ -67,13 +67,13 @@ export default function CatalogGridDense({ catalog, onUpdateField, isEditorMode,
           onSelectCategory={setActiveCategory}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
-          placeholder="Cari produk..."
+          placeholder={isEN ? "Search products..." : "Cari produk..."}
         />
 
         {filteredCategories.length === 0 ? (
           <div style={{ textAlign: "center", padding: "4rem 1rem", opacity: 0.75 }}>
             <p style={{ fontWeight: 600, fontSize: "1rem", color: text }}>
-              Tidak ada produk yang cocok dengan pencarian "{searchQuery}".
+              {isEN ? `No products match the search "${searchQuery}".` : `Tidak ada produk yang cocok dengan pencarian "${searchQuery}".`}
             </p>
           </div>
         ) : (
@@ -93,7 +93,7 @@ export default function CatalogGridDense({ catalog, onUpdateField, isEditorMode,
 
                 <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, ${p} 18%, transparent)` }} />
               </div>
-              <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+              <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5">
                 {cat.filteredItems.map(({ item, originalCatIdx, originalItemIdx }) => (
                   <MenuCatalogCard
                     key={item.id || `cat-dense-${originalCatIdx}-${originalItemIdx}`}
@@ -114,20 +114,22 @@ export default function CatalogGridDense({ catalog, onUpdateField, isEditorMode,
                       is_available: item.is_available,
                       variant_groups: item.variant_groups,
                       features: item.features,
+                      maxFeatures: 2,
                       capacity: item.capacity,
                     }}
                     icon={ImageIcon}
+                    layout={design_token?.layout?.card_style ?? "grid"}
                     styles={{
                       className: "group transition-all duration-300",
                       style: { background: bg, border: `1px solid color-mix(in srgb, ${p} 12%, transparent)`, borderRadius: "12px", overflow: "hidden" },
                       image: { className: "w-full h-36 object-cover transition-transform duration-500 group-hover:scale-105" },
-                      placeholder: { className: "w-full h-36 flex items-center justify-center", style: { background: `color-mix(in srgb, ${p} 8%, transparent)` }, iconClassName: "w-9 h-9", iconStyle: { color: `color-mix(in srgb, ${p} 30%, transparent)`, opacity: 0.6 } },
+                      placeholder: { className: "w-full h-36 flex flex-col items-center justify-center p-3 text-center", style: { background: `color-mix(in srgb, ${p} 8%, transparent)` }, iconClassName: "w-9 h-9", iconStyle: { color: `color-mix(in srgb, ${p} 30%, transparent)`, opacity: 0.6 } },
                       content: { className: "p-3.5 flex flex-col flex-1 min-w-0" },
                       header: { className: "flex flex-col gap-1 mb-1.5 min-w-0" },
                       title: { className: "font-semibold text-[13px] leading-tight line-clamp-2", style: { color: text, fontFamily: hFont } },
                       description: { className: "text-[11px] leading-relaxed line-clamp-2", style: { color: `color-mix(in srgb, ${text} 60%, transparent)` } },
-                      price: { className: "self-start text-[11px] font-bold px-2 py-0.5 rounded-full", style: { background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p } },
-                      badge: { className: "inline-block text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full", style: { background: p, color: bg } },
+                      price: { className: "self-start text-[11px] font-bold px-2 py-0.5 rounded-md whitespace-nowrap", style: { background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p } },
+                      badge: { className: "inline-block text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full whitespace-nowrap", style: { background: p, color: bg } },
                       button: { className: "w-full flex items-center justify-center gap-1 py-2 px-2 rounded-lg text-[11px] font-bold cursor-pointer transition-all duration-200 hover:brightness-110", style: { background: p, color: bg, border: "none" } },
                     }}
                     editSection="catalog"
@@ -142,7 +144,7 @@ export default function CatalogGridDense({ catalog, onUpdateField, isEditorMode,
                 ))}
                 {isEditorMode && onAddItem && (
                   <InlineAddTile
-                    label="Tambah Item"
+                    label={isEN ? "Add Item" : "Tambah Item"}
                     variant="card"
                     className="rounded-xl"
                     onClick={() => onAddItem(cat.originalCatIdx)}

@@ -39,7 +39,7 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
         {/* Header */}
         <SectionHeader
           section="menu"
-          eyebrow={menu.eyebrow ?? "Daftar Menu"}
+          eyebrow={menu.eyebrow ?? (isEN ? "Menu List" : "Daftar Menu")}
           title={menu.title}
           wrapperStyle={{ textAlign: "center", marginBottom: "2.5rem" }}
           eyebrowStyle={pillEyebrowStyle(p)}
@@ -60,13 +60,13 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
           onSelectCategory={setActiveCategory}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
-          placeholder="Cari menu..."
+          placeholder={isEN ? "Search menu..." : "Cari menu..."}
         />
 
         {filteredCategories.length === 0 ? (
           <div style={{ textAlign: "center", padding: "4rem 1rem", opacity: 0.75 }}>
             <p style={{ fontWeight: 600, fontSize: "1rem", color: text }}>
-              Tidak ada menu yang cocok dengan pencarian "{searchQuery}".
+              {isEN ? `No menu items match "${searchQuery}".` : `Tidak ada menu yang cocok dengan pencarian "${searchQuery}".`}
             </p>
           </div>
         ) : (
@@ -146,7 +146,7 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
                         }} />
                         {item.is_available === false && (
                           <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-rose-500 text-white">
-                            Habis
+                            {isEN ? "Sold Out" : "Habis"}
                           </span>
                         )}
                         {showPrice && (
@@ -248,7 +248,7 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
               </div>
               {isEditorMode && onAddItem && (
                 <div style={{ marginTop: "0.75rem" }}>
-                  <InlineAddTile label="Tambah Item" onClick={() => onAddItem(cat.originalCatIdx)} />
+                  <InlineAddTile label={isEN ? "Add Item" : "Tambah Item"} onClick={() => onAddItem(cat.originalCatIdx)} />
                 </div>
               )}
             </div>

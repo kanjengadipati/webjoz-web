@@ -1646,7 +1646,7 @@ interface MenuCatalogCardProps {
   item: MenuCatalogCardItem;
   styles?: MenuCatalogCardStyles;
   icon: React.ElementType;
-  layout?: "grid" | "compact";
+  layout?: "grid" | "compact" | "standard" | "horizontal" | "minimal" | "overlay" | "magazine";
   onUpdateField?: (section: string, key: string, value: any) => void;
   isEditorMode?: boolean;
   isSelected?: boolean;
@@ -1694,7 +1694,8 @@ function MenuCatalogCard({
   const badgeStyle = styles.badge?.style;
   const buttonClassName = styles.button?.className;
   const buttonStyle = styles.button?.style;
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const isEN = locale === "en";
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -1772,7 +1773,7 @@ function MenuCatalogCard({
       {/* Floating badge overlay — top-left */}
       {isOutOfStock ? (
         <span className="absolute top-2.5 left-2.5 z-20 inline-flex items-center text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full shadow-lg select-none" style={{ background: "rgba(220,38,38,0.92)", color: "#fff", backdropFilter: "blur(4px)" }}>
-          Habis
+          {t("dashboard.sitesKatalog.outOfStock", "Habis")}
         </span>
       ) : badge ? (
         <span className={`absolute top-2.5 left-2.5 z-20 inline-flex items-center select-none ${badgeClassName ?? "text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full shadow-lg"}`} style={badgeStyle ?? { background: "var(--dt-primary)", color: "var(--dt-cta-text, #fff)", backdropFilter: "blur(4px)" }}>
@@ -1799,7 +1800,7 @@ function MenuCatalogCard({
             ))}
           </div>
           <span className="text-[9px] font-bold text-white/90 bg-black/50 backdrop-blur-sm px-1.5 py-0.5 rounded-full">
-            {allImages.length} Foto
+            {allImages.length} {isEN ? (allImages.length === 1 ? "Photo" : "Photos") : "Foto"}
           </span>
         </div>
       )}
@@ -1852,7 +1853,7 @@ function MenuCatalogCard({
     </div>
   ) : (
     <div
-      className={`${placeholderClassName || "w-full h-44 flex flex-col items-center justify-center relative overflow-hidden"} ${isOutOfStock ? "opacity-60 grayscale-[30%]" : ""}`}
+      className={`relative overflow-hidden flex flex-col items-center justify-center text-center p-3 ${placeholderClassName || "w-full h-44"} ${isOutOfStock ? "opacity-60 grayscale-[30%]" : ""}`}
       style={{
         background: placeholderStyle?.background || `linear-gradient(135deg, color-mix(in srgb, var(--dt-primary) 14%, var(--dt-surface)) 0%, color-mix(in srgb, var(--dt-surface) 96%, transparent) 100%)`,
         ...placeholderStyle,
@@ -1861,21 +1862,21 @@ function MenuCatalogCard({
       {/* Floating badge overlay on placeholder too */}
       {isOutOfStock ? (
         <span className="absolute top-2.5 left-2.5 z-20 inline-flex items-center text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full shadow-lg select-none" style={{ background: "rgba(220,38,38,0.92)", color: "#fff", backdropFilter: "blur(4px)" }}>
-          Habis
+          {t("dashboard.sitesKatalog.outOfStock", "Habis")}
         </span>
       ) : badge ? (
         <span className={`absolute top-2.5 left-2.5 z-20 inline-flex items-center select-none ${badgeClassName ?? "text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full shadow-lg"}`} style={badgeStyle ?? { background: "var(--dt-primary)", color: "var(--dt-cta-text, #fff)", backdropFilter: "blur(4px)" }}>
           {badge}
         </span>
       ) : null}
-      <div className="w-12 h-12 rounded-2xl flex items-center justify-center border border-white/10 bg-muted/50 shadow-sm">
+      <div className="w-12 h-12 rounded-2xl flex items-center justify-center border border-white/10 bg-muted/50 shadow-sm shrink-0">
         {React.createElement(icon, {
           className: placeholderIconClassName || "w-6 h-6",
           style: placeholderIconStyle || { color: "var(--dt-primary)", opacity: 0.9 }
         })}
       </div>
       {category && (
-        <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".category" : ""} value={category ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className="mt-2 text-[10px] font-bold uppercase tracking-wider opacity-60" style={{ color: "var(--dt-text)" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+        <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".category" : ""} value={category ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className="mt-2 text-[10px] font-bold uppercase tracking-wider opacity-60 text-center px-2 max-w-full truncate" style={{ color: "var(--dt-text)" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
       )}
 
       {/* Inline photo upload button on placeholder in editor mode */}
@@ -1918,25 +1919,37 @@ function MenuCatalogCard({
         <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".name" : ""} value={itemName ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="h4" className={titleClassName} style={titleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
         {showPrice && headerClassName?.includes("flex-col") && (
           hasPromo ? (
-            <div className={`${priceClassName ?? ""} flex items-center gap-1.5 flex-wrap mt-1`} style={priceStyle}>
-              <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".discount_label" : ""} value={discountLabel || "Promo"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 16%, transparent)", color: "var(--dt-primary)" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-              <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".promo_price_display" : ""} value={promoPriceValue} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-              <span className="line-through opacity-45 text-xs">{displayPrice}</span>
+            <div className="flex items-center gap-1.5 flex-wrap mt-1 min-w-0">
+              <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-md shrink-0 select-none" style={{ background: "color-mix(in srgb, var(--dt-primary) 16%, transparent)", color: "var(--dt-primary)" }}>
+                <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".discount_label" : ""} value={discountLabel || "Promo"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+              </span>
+              <span className={`${priceClassName ?? ""} whitespace-nowrap shrink-0`} style={priceStyle}>
+                <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".promo_price_display" : ""} value={promoPriceValue} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+              </span>
+              <span className="line-through opacity-45 text-xs whitespace-nowrap shrink-0">{displayPrice}</span>
             </div>
           ) : (
-            <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".price" : ""} value={priceValue} placeholder="+ Harga" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className={priceClassName} style={{ ...priceStyle, marginTop: "0.375rem", display: "inline-block" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+            <span className={`${priceClassName ?? ""} whitespace-nowrap inline-block`} style={{ ...priceStyle, marginTop: "0.375rem" }}>
+              <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".price" : ""} value={priceValue} placeholder="+ Harga" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+            </span>
           )
         )}
       </div>
       {showPrice && !headerClassName?.includes("flex-col") && (
         hasPromo ? (
-          <div className={`${priceClassName ?? ""} flex items-center gap-1.5 flex-wrap basis-full`} style={priceStyle}>
-            <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".discount_label" : ""} value={discountLabel || "Promo"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 16%, transparent)", color: "var(--dt-primary)" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-            <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".promo_price_display" : ""} value={promoPriceValue} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-            <span className="line-through opacity-45 text-xs">{displayPrice}</span>
+          <div className="flex items-center gap-1.5 flex-wrap basis-full min-w-0 mt-1">
+            <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-md shrink-0 select-none" style={{ background: "color-mix(in srgb, var(--dt-primary) 16%, transparent)", color: "var(--dt-primary)" }}>
+              <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".discount_label" : ""} value={discountLabel || "Promo"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+            </span>
+            <span className={`${priceClassName ?? ""} whitespace-nowrap shrink-0`} style={priceStyle}>
+              <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".promo_price_display" : ""} value={promoPriceValue} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+            </span>
+            <span className="line-through opacity-45 text-xs whitespace-nowrap shrink-0">{displayPrice}</span>
           </div>
         ) : (
-          <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".price" : ""} value={priceValue} placeholder="+ Harga" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className={priceClassName} style={priceStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+          <span className={`${priceClassName ?? ""} whitespace-nowrap inline-block`} style={priceStyle}>
+            <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".price" : ""} value={priceValue} placeholder="+ Harga" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+          </span>
         )
       )}
     </div>
@@ -2003,7 +2016,7 @@ function MenuCatalogCard({
       type="button"
       onClick={(e) => { e.stopPropagation(); e.preventDefault(); setQuickViewOpen(true); }}
       onPointerDown={(e) => e.stopPropagation()}
-      className={`absolute ${layout === "compact" ? "bottom-2.5 right-2.5" : isEditorMode ? "top-2.5 left-2.5" : "top-2.5 right-2.5"} z-40 w-9 h-9 rounded-full flex items-center justify-center bg-slate-900/70 text-white backdrop-blur-sm shadow-md border border-white/20 hover:bg-slate-900 transition-all cursor-pointer ${isEditorMode ? "opacity-100" : "opacity-0 group-hover:opacity-100"} pointer-coarse:opacity-100`}
+      className={`absolute ${layout === "compact" || layout === "horizontal" ? "bottom-2.5 right-2.5" : isEditorMode ? "top-2.5 left-2.5" : "top-2.5 right-2.5"} z-40 w-9 h-9 rounded-full flex items-center justify-center bg-slate-900/70 text-white backdrop-blur-sm shadow-md border border-white/20 hover:bg-slate-900 transition-all cursor-pointer ${isEditorMode ? "opacity-100" : "opacity-0 group-hover:opacity-100"} pointer-coarse:opacity-100`}
       aria-label={t("dashboard.sitesKatalog.quickView", "Lihat Detail")}
       title={t("dashboard.sitesKatalog.quickView", "Lihat Detail")}
     >
@@ -2072,6 +2085,189 @@ function MenuCatalogCard({
     );
   }
 
+  // ── Horizontal: image left small, content right (menu/service list style) ──
+  if (layout === "horizontal") {
+    return (
+      <div className={`relative group cursor-pointer ${className || ""}`} style={style} onClick={() => setQuickViewOpen(true)}>
+        {isEditorMode && onDelete && (
+          <InlineDeleteButton onDelete={onDelete} className="absolute top-2.5 right-2.5 z-40" />
+        )}
+        {quickViewTrigger}
+        <div className="flex items-start gap-3 h-full">
+          <div className="flex-shrink-0 w-24 sm:w-28">{imageNode}</div>
+          <div className="min-w-0 flex-1 flex flex-col h-full" style={contentStyle}>
+            {header}
+            {descriptionElement}
+            {tagsAndPlatforms}
+            <div className="mt-auto pt-2" onClick={(e) => e.stopPropagation()}>
+              <AddToCartButton
+                itemId={itemId}
+                itemName={itemName}
+                itemPrice={displayPrice ?? null}
+                itemPriceAmount={itemPriceAmount}
+                itemPriceDisplay={displayPrice}
+                itemPromoPriceAmount={itemPromoPriceAmount}
+                itemPromoPriceDisplay={itemPromoPriceDisplay}
+                discountLabel={discountLabel}
+                category={category}
+                variant_groups={variant_groups}
+                className={buttonClassName}
+                style={buttonStyle}
+                disabled={isOutOfStock}
+              />
+            </div>
+          </div>
+        </div>
+        {quickViewModal}
+      </div>
+    );
+  }
+
+  // ── Minimal: clean, no feature pills, prominent price — fashion/lifestyle ──
+  if (layout === "minimal") {
+    return (
+      <div className={`relative group cursor-pointer ${className || ""} flex flex-col h-full`} style={style} onClick={() => setQuickViewOpen(true)}>
+        {isEditorMode && onDelete && (
+          <InlineDeleteButton onDelete={onDelete} className="absolute top-2.5 right-2.5 z-40" />
+        )}
+        {quickViewTrigger}
+        {imageNode}
+        <div className={`${contentClassName || ""} flex-grow flex flex-col`} style={contentStyle}>
+          {header}
+          {descriptionElement}
+          {tagsAndPlatforms}
+          {/* feature pills intentionally hidden in minimal layout */}
+          <div className="mt-auto pt-3" onClick={(e) => e.stopPropagation()}>
+            <AddToCartButton
+              itemId={itemId}
+              itemName={itemName}
+              itemPrice={displayPrice ?? null}
+              itemPriceAmount={itemPriceAmount}
+              itemPriceDisplay={displayPrice}
+              itemPromoPriceAmount={itemPromoPriceAmount}
+              itemPromoPriceDisplay={itemPromoPriceDisplay}
+              discountLabel={discountLabel}
+              category={category}
+              variant_groups={variant_groups}
+              className={buttonClassName}
+              style={buttonStyle}
+              disabled={isOutOfStock}
+            />
+          </div>
+        </div>
+        {quickViewModal}
+      </div>
+    );
+  }
+
+  // ── Overlay: fullbleed image, text overlaid at bottom — kuliner visual ──
+  if (layout === "overlay") {
+    return (
+      <div className={`relative group cursor-pointer overflow-hidden ${className || ""}`} style={style} onClick={() => setQuickViewOpen(true)}>
+        {isEditorMode && onDelete && (
+          <InlineDeleteButton onDelete={onDelete} className="absolute top-2.5 right-2.5 z-40" />
+        )}
+        {quickViewTrigger}
+        {/* Fullbleed image */}
+        <div className="absolute inset-0">{imageNode}</div>
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+        {/* Text overlay content at bottom */}
+        <div className="relative z-10 flex flex-col justify-end h-full p-3" style={contentStyle}>
+          <div className={headerClassName ?? "flex flex-col"} style={headerStyle}>
+            <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".name" : ""} value={itemName ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="h4" className={titleClassName} style={{ ...titleStyle, color: titleStyle?.color ?? "#fff" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+            {showPrice && (
+              hasPromo ? (
+                <div className={`${priceClassName ?? ""} flex items-center gap-1.5 flex-wrap mt-1`} style={priceStyle}>
+                  <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".discount_label" : ""} value={discountLabel || "Promo"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 30%, transparent)", color: "#fff" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                  <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".promo_price_display" : ""} value={promoPriceValue} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" style={{ color: "#fff", fontWeight: 700 }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                  <span className="line-through opacity-60 text-xs text-white">{displayPrice}</span>
+                </div>
+              ) : (
+                <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".price" : ""} value={priceValue} placeholder="+ Harga" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className={priceClassName} style={{ ...priceStyle, color: priceStyle?.color ?? "#fff", marginTop: "0.25rem", display: "inline-block", fontWeight: 700 }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+              )
+            )}
+          </div>
+          <div className="mt-2" onClick={(e) => e.stopPropagation()}>
+            <AddToCartButton
+              itemId={itemId}
+              itemName={itemName}
+              itemPrice={displayPrice ?? null}
+              itemPriceAmount={itemPriceAmount}
+              itemPriceDisplay={displayPrice}
+              itemPromoPriceAmount={itemPromoPriceAmount}
+              itemPromoPriceDisplay={itemPromoPriceDisplay}
+              discountLabel={discountLabel}
+              category={category}
+              variant_groups={variant_groups}
+              className={buttonClassName}
+              style={buttonStyle}
+              disabled={isOutOfStock}
+            />
+          </div>
+        </div>
+        {quickViewModal}
+      </div>
+    );
+  }
+
+  // ── Magazine: asymmetric, large image left ~45%, stacked info right — editorial/premium ──
+  if (layout === "magazine") {
+    return (
+      <div className={`relative group cursor-pointer ${className || ""}`} style={style} onClick={() => setQuickViewOpen(true)}>
+        {isEditorMode && onDelete && (
+          <InlineDeleteButton onDelete={onDelete} className="absolute top-2.5 right-2.5 z-40" />
+        )}
+        {quickViewTrigger}
+        <div className="flex h-full">
+          <div className="w-2/5 flex-shrink-0 overflow-hidden">{imageNode}</div>
+          <div className="min-w-0 flex-1 flex flex-col" style={contentStyle}>
+            {header}
+            {descriptionElement}
+            {(() => {
+              const hasMaxFeatures = typeof maxFeatures === "number";
+              const displayedFeatures = hasMaxFeatures && !isEditorMode
+                ? (features ?? []).slice(0, maxFeatures)
+                : (features ?? []);
+              const showFeaturesList = (displayedFeatures && displayedFeatures.length > 0) ||
+                (isEditorMode && editSection === "catalog" && onUpdateField && pathBase && (!hasMaxFeatures || maxFeatures! > 0));
+              if (!showFeaturesList) return null;
+              return (
+                <ul className="mt-2 flex flex-col gap-1">
+                  {displayedFeatures.map((f, fi) => (
+                    <li key={fi} className="flex items-center gap-1.5 text-[11px] font-medium" style={{ color: "var(--dt-text)" }}>
+                      <FeatureMarkerIcon style={featureMarker} />
+                      <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".features." + fi : ""} value={f ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                    </li>
+                  ))}
+                </ul>
+              );
+            })()}
+            {tagsAndPlatforms}
+            <div className="mt-auto pt-3" onClick={(e) => e.stopPropagation()}>
+              <AddToCartButton
+                itemId={itemId}
+                itemName={itemName}
+                itemPrice={displayPrice ?? null}
+                itemPriceAmount={itemPriceAmount}
+                itemPriceDisplay={displayPrice}
+                itemPromoPriceAmount={itemPromoPriceAmount}
+                itemPromoPriceDisplay={itemPromoPriceDisplay}
+                discountLabel={discountLabel}
+                category={category}
+                variant_groups={variant_groups}
+                className={buttonClassName}
+                style={buttonStyle}
+                disabled={isOutOfStock}
+              />
+            </div>
+          </div>
+        </div>
+        {quickViewModal}
+      </div>
+    );
+  }
+
   return (
     <div className={`relative group cursor-pointer ${className || ""} flex flex-col h-full`} style={style} onClick={() => setQuickViewOpen(true)}>
       {isEditorMode && onDelete && (
@@ -2108,21 +2304,23 @@ function MenuCatalogCard({
               {displayedFeatures.map((f, fi) => (
                 <li
                   key={fi}
-                  className="group/feat relative flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full"
+                  className="group/feat relative flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-md whitespace-nowrap max-w-full"
                   style={{ background: "color-mix(in srgb, var(--dt-primary) 10%, transparent)", color: "var(--dt-primary)" }}
                 >
                   <FeatureMarkerIcon style={featureMarker} />
-                  <InlineText
-                    section={editSection ?? ""}
-                    fieldKey={pathBase ? pathBase + ".features." + fi : ""}
-                    value={f ?? ""}
-                    onUpdateField={onUpdateField}
-                    isEditorMode={isEditorMode}
-                    isSelected={isSelected}
-                    as="span"
-                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                    onEditingStateChange={onEditingStateChange}
-                  />
+                  <span className="truncate max-w-[150px]">
+                    <InlineText
+                      section={editSection ?? ""}
+                      fieldKey={pathBase ? pathBase + ".features." + fi : ""}
+                      value={f ?? ""}
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={isSelected}
+                      as="span"
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      onEditingStateChange={onEditingStateChange}
+                    />
+                  </span>
                   {isEditorMode && onUpdateField && editSection && pathBase && (
                     <button
                       type="button"
@@ -2141,7 +2339,7 @@ function MenuCatalogCard({
               ))}
               {extraFeaturesCount > 0 && (
                 <li
-                  className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
+                  className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md whitespace-nowrap shrink-0"
                   style={{ background: "color-mix(in srgb, var(--dt-primary) 6%, transparent)", color: "var(--dt-primary)", opacity: 0.8 }}
                 >
                   +{extraFeaturesCount} lainnya
@@ -4443,6 +4641,8 @@ export interface InlineImageProps {
   collapseSheetForInlineEdit?: () => void;
   compact?: boolean;
   fallbackIcon?: React.ReactNode;
+  isBackground?: boolean;
+  overlayPosition?: "center" | "top-right" | "bottom-right" | "bottom-left" | "top-left";
 }
 
 export const DEFAULT_IMAGE_POOL = [
@@ -4473,6 +4673,8 @@ export function InlineImage({
   collapseSheetForInlineEdit,
   compact,
   fallbackIcon,
+  isBackground = false,
+  overlayPosition: explicitOverlayPosition,
 }: InlineImageProps) {
   const { t } = useI18n();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -4483,6 +4685,23 @@ export function InlineImage({
   // Touch device: tap to reveal overlay, auto-dismiss after 2.5s
   const [isTouched, setIsTouched] = useState(false);
   const touchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const overlayPos = explicitOverlayPosition ?? (isBackground ? "top-right" : "center");
+  const positionClasses = {
+    "center": "items-center justify-center p-4",
+    "top-right": "items-start justify-end p-4 sm:p-6",
+    "bottom-right": "items-end justify-end p-4 sm:p-6",
+    "bottom-left": "items-end justify-start p-4 sm:p-6",
+    "top-left": "items-start justify-start p-4 sm:p-6",
+  }[overlayPos];
+
+  const backdropClass = isBackground
+    ? "bg-transparent pointer-events-none"
+    : "bg-black/40 backdrop-blur-[1.5px]";
+
+  const pointerEventsClass = isBackground
+    ? "pointer-events-none"
+    : (isSelected || showUrlInput || isTouched ? "pointer-events-auto" : "group-hover/inline-img:pointer-events-auto");
 
   const handleTouchReveal = (e: React.TouchEvent) => {
     // Only activate if not already showing URL input
@@ -4655,18 +4874,20 @@ export function InlineImage({
         className="hidden"
       />
 
-      {/* Centered hover overlay or URL input */}
+      {/* Hover overlay or URL input – position/backdrop driven by isBackground/overlayPosition */}
       {(src || showUrlInput) && (
         <div
-          className={`absolute inset-0 z-30 flex items-center justify-center bg-black/40 backdrop-blur-[1.5px] transition-all duration-200 pointer-events-none ${
-            isSelected || showUrlInput || isTouched
-              ? "opacity-100 pointer-events-auto"
-              : "opacity-0 group-hover/inline-img:opacity-100 group-hover/inline-img:pointer-events-auto"
+          className={`absolute inset-0 ${isBackground ? "z-[100]" : "z-30"} flex ${positionClasses} ${backdropClass} transition-all duration-200 pointer-events-none ${
+            isBackground
+              ? "opacity-100 pointer-events-none" // background: always visible, buttons inside have pointer-events-auto
+              : isSelected || showUrlInput || isTouched
+                ? "opacity-100 pointer-events-auto"
+                : "opacity-0 group-hover/inline-img:opacity-100 group-hover/inline-img:pointer-events-auto"
           }`}
         >
           {showUrlInput ? (
             <div
-              className="flex items-center gap-1.5 p-1 bg-slate-900/95 border border-white/20 rounded-full shadow-2xl backdrop-blur-md max-w-[92%] w-72 sm:w-80 pointer-events-auto animate-in fade-in zoom-in-95 duration-150"
+              className="flex items-center gap-1.5 p-1 bg-slate-900/95 border border-white/20 rounded-full shadow-2xl backdrop-blur-md max-w-[92%] w-72 sm:w-80 pointer-events-auto animate-in fade-in zoom-in-95 duration-150 z-10 relative"
               onClick={(e) => e.stopPropagation()}
               onPointerDown={(e) => e.stopPropagation()}
               onTouchStart={(e) => e.stopPropagation()}
@@ -4711,7 +4932,7 @@ export function InlineImage({
               </button>
             </div>
           ) : isCompact ? (
-            <div className="flex items-center justify-center p-0.5">
+            <div className="flex items-center justify-center p-0.5 pointer-events-auto relative z-10">
               <button
                 type="button"
                 onClick={handleTriggerUpload}
@@ -4729,7 +4950,7 @@ export function InlineImage({
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-1.5 p-1 max-w-[90%]">
+            <div className="flex items-center gap-1.5 p-1 max-w-[90%] pointer-events-auto relative z-10">
               {/* Main Change Photo Button */}
               <button
                 type="button"

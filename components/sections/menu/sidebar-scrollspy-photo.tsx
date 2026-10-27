@@ -311,7 +311,7 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
                   })}
                   {isEditorMode && onAddItem && (
                     <div style={{ marginTop: "0.875rem" }}>
-                      <InlineAddTile label="Tambah Item" onClick={() => onAddItem(index)} />
+                      <InlineAddTile label={isEN ? "Add Item" : "Tambah Item"} onClick={() => onAddItem(index)} />
                     </div>
                   )}
                 </div>
