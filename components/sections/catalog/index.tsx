@@ -83,15 +83,18 @@ export default function CatalogSection({
       if (!categories[catIdx]) return;
       const items = [...(categories[catIdx].items ?? [])];
       const itemNumber = items.length + 1;
+      const isEN = language === "en";
       const existingFeatures = items.find((it) => it.features && it.features.length > 0)?.features;
       const defaultFeatures = existingFeatures && existingFeatures.length > 0
-        ? existingFeatures.map((_, i) => `Fitur ${i + 1}`)
-        : ["Fitur Unggulan 1", "Fitur Unggulan 2", "Garansi Resmi"];
+        ? existingFeatures.map((_, i) => (isEN ? `Feature ${i + 1}` : `Fitur ${i + 1}`))
+        : isEN
+          ? ["Key Feature 1", "Key Feature 2", "Official Warranty"]
+          : ["Fitur Unggulan 1", "Fitur Unggulan 2", "Garansi Resmi"];
 
       items.push({
         id: genId(),
         name: `Item ${itemNumber}`,
-        description: "Deskripsi item",
+        description: isEN ? "Item description" : "Deskripsi item",
         price: "",
         price_display: "",
         price_amount: null,
@@ -109,7 +112,7 @@ export default function CatalogSection({
       categories[catIdx] = { ...categories[catIdx], items };
       onUpdateField("catalog", "categories", categories);
     },
-    [catalog?.categories, onUpdateField]
+    [catalog?.categories, onUpdateField, language]
   );
 
   const onDeleteItem = useCallback(

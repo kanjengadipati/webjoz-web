@@ -126,7 +126,7 @@ export default function ProductTabsByCategory({
           style={{ WebkitOverflowScrolling: "touch" }}
         >
           {cats.map((cat, i) => {
-            const isActive = i === activeIdx;
+            const isActive = i === safeActiveIdx;
             return (
               <span key={i} className="relative inline-flex items-center">
                 <button
