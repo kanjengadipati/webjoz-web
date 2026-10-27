@@ -135,7 +135,7 @@ export default function HeroImageCarousel({
         style={{
           position: "absolute",
           inset: 0,
-          zIndex: isEditorMode ? 2 : 0,
+          zIndex: 0,
           overflow: "hidden",
         }}
       >
@@ -222,15 +222,21 @@ export default function HeroImageCarousel({
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase backdrop-blur-md"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase backdrop-blur-md shadow-lg"
             style={{
-              background: "rgba(255, 255, 255, 0.08)",
-              color: "var(--dt-primary, #A78BFA)",
-              border: "1px solid rgba(255, 255, 255, 0.15)",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+              background: "rgba(10, 14, 23, 0.65)",
+              color: "color-mix(in srgb, var(--dt-primary, #34D399) 55%, #FFFFFF)",
+              border: "1px solid color-mix(in srgb, var(--dt-primary, #34D399) 35%, rgba(255, 255, 255, 0.25))",
+              boxShadow: "0 4px 16px rgba(0,0,0,0.35)",
             }}
           >
-            <SparkleIcon className="size-3.5 text-primary" />
+            <SparkleIcon
+              className="size-3.5 shrink-0"
+              style={{
+                color: "color-mix(in srgb, var(--dt-primary, #34D399) 75%, #FFFFFF)",
+                filter: "drop-shadow(0 0 4px color-mix(in srgb, var(--dt-primary, #34D399) 60%, transparent))",
+              }}
+            />
             <InlineText
               section="hero"
               fieldKey={h.eyebrow ? "eyebrow" : "badge_text"}
