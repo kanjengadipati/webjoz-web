@@ -647,7 +647,7 @@ function GuideIllustration({ type }: { type: string }) {
         width={1200}
         height={700}
         className="w-full h-auto object-cover object-top"
-        style={{ maxHeight: "220px", objectPosition: "top left" }}
+        style={{ maxHeight: "220px", objectPosition: type === "publish-domain" || type === "ai-create" ? "top center" : "top left" }}
       />
     </div>
   );
