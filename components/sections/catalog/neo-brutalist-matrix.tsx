@@ -108,17 +108,17 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
               {category.items?.map((item, index) => (
                 <div
                   key={index}
-                  className="group flex flex-col border-[3px] border-solid transition-all duration-200 hover:-translate-x-1 hover:-translate-y-1 min-w-0 relative cursor-pointer"
+                  className="group flex flex-col border-[3px] border-solid transition-all duration-150 hover:-translate-x-1 hover:-translate-y-1 min-w-0 relative cursor-pointer rounded-none"
                   onClick={() => setQuickView({ catIdx, itemIdx: index })}
                   style={{
-                    borderColor: "var(--dt-border)",
+                    borderColor: "var(--dt-text, #18181b)",
                     backgroundColor: "var(--dt-surface)",
-                    boxShadow: "6px 6px 0px 0px var(--dt-accent)",
-                    borderRadius: "var(--dt-radius, 0px)"
+                    boxShadow: "5px 5px 0px 0px var(--dt-text, #18181b)",
+                    borderRadius: "0px",
                   }}
                 >
                   {/* Image Container */}
-                  <div className="relative aspect-square overflow-hidden border-b-[3px] border-solid" style={{ borderColor: "var(--dt-border)" }}>
+                  <div className="relative aspect-square overflow-hidden border-b-[3px] border-solid rounded-none bg-neutral-100 dark:bg-neutral-900" style={{ borderColor: "var(--dt-text, #18181b)" }}>
                     <InlineImage
                       section="catalog"
                       fieldKey={"categories." + catIdx + ".items." + index + ".image_url"}
@@ -128,17 +128,18 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
                       isEditorMode={isEditorMode}
                       isSelected={isSelected}
                       collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
 
                     {/* Left corner Badge */}
                     {item.badge && (
                       <div
-                        className="absolute top-3 left-3 text-xs font-black uppercase tracking-wider px-2 py-1 border-2 border-solid"
+                        className="absolute top-3 left-3 text-xs font-black uppercase tracking-wider px-2.5 py-1 border-2 border-solid rounded-none z-10"
                         style={{
                           backgroundColor: "var(--dt-bg)",
                           color: "var(--dt-text)",
-                          borderColor: "var(--dt-border)"
+                          borderColor: "var(--dt-text, #18181b)",
+                          boxShadow: "2px 2px 0px 0px var(--dt-text, #18181b)",
                         }}
                       >
                         <InlineText section="catalog" fieldKey={"categories." + catIdx + ".items." + index + ".badge"} value={item.badge ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
@@ -150,17 +151,22 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
                       type="button"
                       onClick={(e) => { e.stopPropagation(); setQuickView({ catIdx, itemIdx: index }); }}
                       onPointerDown={(e) => e.stopPropagation()}
-                      className="absolute top-3 right-3 z-20 text-[11px] font-black uppercase tracking-wider px-2 py-1 border-2 border-solid opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity cursor-pointer"
-                      style={{ backgroundColor: "var(--dt-surface)", color: "var(--dt-text)", borderColor: "var(--dt-border)" }}
+                      className="absolute top-3 right-3 z-20 text-[11px] font-black uppercase tracking-wider px-2.5 py-1 border-2 border-solid opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity cursor-pointer rounded-none"
+                      style={{
+                        backgroundColor: "var(--dt-surface)",
+                        color: "var(--dt-text)",
+                        borderColor: "var(--dt-text, #18181b)",
+                        boxShadow: "2px 2px 0px 0px var(--dt-text, #18181b)",
+                      }}
                     >
                       {isEN ? "Detail" : "Lihat"}
                     </button>
                   </div>
 
                   {/* Body Content */}
-                  <div className="p-5 flex-grow flex flex-col justify-between">
+                  <div className="p-5 flex-grow flex flex-col justify-between rounded-none">
                     <div>
-                      <div className="flex flex-col gap-2 mb-4 min-w-0">
+                      <div className="flex flex-col gap-2.5 mb-4 min-w-0">
                         <InlineText
                           section="catalog"
                           fieldKey={"categories." + catIdx + ".items." + index + ".name"}
@@ -175,26 +181,67 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
                           style={{ color: "var(--dt-text)" }}
                         />
 
-                        {/* Large Bold Price Tag */}
-                        {item.price && (
-                          <div className="self-start max-w-full">
-                            <InlineText
-                              section="catalog"
-                              fieldKey={"categories." + catIdx + ".items." + index + ".price"}
-                              value={item.price ?? ""}
-                              onUpdateField={onUpdateField}
-                              isEditorMode={isEditorMode}
-                              isSelected={isSelected}
-                              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                              onEditingStateChange={onEditingStateChange}
-                              as="span"
-                              className="inline-block text-sm sm:text-base font-black uppercase tracking-wider px-2.5 py-1 border-[3px] border-solid break-words max-w-full"
-                              style={{
-                                borderColor: "var(--dt-border)",
-                                backgroundColor: "var(--dt-accent)",
-                                color: "var(--dt-primary-foreground)"
-                              }}
-                            />
+                        {/* Large Bold Brutalist Price Tag */}
+                        {(item.price || item.price_display || isEditorMode) && (
+                          <div className="flex items-center gap-2 flex-wrap self-start max-w-full">
+                            {item.promo_price_amount && item.promo_price_amount > 0 ? (
+                              <>
+                                <InlineText
+                                  section="catalog"
+                                  fieldKey={"categories." + catIdx + ".items." + index + ".promo_price_display"}
+                                  value={item.promo_price_display || item.promo_price || ""}
+                                  placeholder="+ Promo"
+                                  onUpdateField={onUpdateField}
+                                  isEditorMode={isEditorMode}
+                                  isSelected={isSelected}
+                                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                                  onEditingStateChange={onEditingStateChange}
+                                  as="span"
+                                  className="inline-block text-sm sm:text-base font-black uppercase tracking-wider px-2.5 py-1 border-[3px] border-solid rounded-none break-words"
+                                  style={{
+                                    borderColor: "var(--dt-text, #18181b)",
+                                    backgroundColor: "var(--dt-accent)",
+                                    color: "var(--dt-primary-foreground)",
+                                    boxShadow: "2px 2px 0px 0px var(--dt-text, #18181b)",
+                                  }}
+                                />
+                                <span className="text-xs font-bold line-through opacity-60" style={{ color: "var(--dt-text)" }}>
+                                  {item.price_display || item.price}
+                                </span>
+                              </>
+                            ) : (
+                              <InlineText
+                                section="catalog"
+                                fieldKey={"categories." + catIdx + ".items." + index + ".price"}
+                                value={item.price_display || item.price || ""}
+                                placeholder="+ Harga"
+                                onUpdateField={onUpdateField}
+                                isEditorMode={isEditorMode}
+                                isSelected={isSelected}
+                                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                                onEditingStateChange={onEditingStateChange}
+                                as="span"
+                                className="inline-block text-sm sm:text-base font-black uppercase tracking-wider px-2.5 py-1 border-[3px] border-solid rounded-none break-words max-w-full"
+                                style={{
+                                  borderColor: "var(--dt-text, #18181b)",
+                                  backgroundColor: "var(--dt-accent)",
+                                  color: "var(--dt-primary-foreground)",
+                                  boxShadow: "2px 2px 0px 0px var(--dt-text, #18181b)",
+                                }}
+                              />
+                            )}
+                            {item.discount_label && (
+                              <span
+                                className="text-[10px] font-black uppercase px-1.5 py-0.5 border-2 border-solid rounded-none"
+                                style={{
+                                  borderColor: "var(--dt-text, #18181b)",
+                                  backgroundColor: "var(--dt-primary)",
+                                  color: "var(--dt-primary-foreground)",
+                                }}
+                              >
+                                {item.discount_label}
+                              </span>
+                            )}
                           </div>
                         )}
                       </div>
@@ -218,16 +265,16 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
 
                       {item.capacity != null && item.capacity > 0 && (
                         <div className="mb-2">
-                          <span className="inline-flex items-center gap-1 text-[11px] font-black uppercase px-2 py-0.5 border-2" style={{ borderColor: "var(--dt-border)", background: "var(--dt-accent)", color: "var(--dt-primary-foreground)" }}>
-                            s/d <InlineText section="catalog" fieldKey={"categories." + catIdx + ".items." + index + ".capacity"} value={item.capacity != null ? String(item.capacity) : ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" /> tamu
+                          <span className="inline-flex items-center gap-1 text-[11px] font-black uppercase px-2 py-0.5 border-2 rounded-none" style={{ borderColor: "var(--dt-text, #18181b)", background: "var(--dt-accent)", color: "var(--dt-primary-foreground)" }}>
+                            {isEN ? "up to" : "s/d"} <InlineText section="catalog" fieldKey={"categories." + catIdx + ".items." + index + ".capacity"} value={item.capacity != null ? String(item.capacity) : ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" /> {isEN ? "guests" : "tamu"}
                           </span>
                         </div>
                       )}
 
                       {item.features && item.features.length > 0 && (
-                        <div className="mb-4 flex flex-wrap gap-1">
+                        <div className="mb-4 flex flex-wrap gap-1.5">
                           {item.features.map((f: string, fi: number) => (
-                            <span key={fi} className="text-[10px] font-bold uppercase px-2 py-0.5 border-2" style={{ borderColor: "var(--dt-border)", color: "var(--dt-text)" }}>
+                            <span key={fi} className="text-[10px] font-bold uppercase px-2 py-0.5 border-2 rounded-none" style={{ borderColor: "var(--dt-text, #18181b)", color: "var(--dt-text)", backgroundColor: "color-mix(in srgb, var(--dt-surface) 90%, var(--dt-text))" }}>
                               {f}
                             </span>
                           ))}
@@ -237,7 +284,6 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
 
                     {/* Row with action circular button */}
                     <div className="flex justify-end items-center mt-auto pt-4 border-t-2 border-dashed" style={{ borderColor: "var(--dt-border)" }}>
-                      {/* Pill "Add" button (label fits: "Pilih Opsi" / "Tambah" / "Habis") */}
                     <AddToCartButton
                       itemId={item.id || `cat-nbm-${catIdx}-${index}`}
                       itemName={item.name}
@@ -250,12 +296,12 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
                       category={category.name}
                       variant_groups={item.variant_groups}
                       disabled={item.is_available === false}
-                      className="h-11 px-4 gap-1.5 text-xs font-black uppercase tracking-wider border-[3px] border-solid flex items-center justify-center whitespace-nowrap transition-all duration-200 hover:scale-105 active:translate-x-0.5 active:translate-y-0.5 cursor-pointer"
+                      className="w-full h-11 px-4 gap-1.5 text-xs font-black uppercase tracking-wider border-[3px] border-solid flex items-center justify-center whitespace-nowrap transition-all duration-150 active:translate-x-0.5 active:translate-y-0.5 cursor-pointer rounded-none"
                       style={{
-                        borderColor: "var(--dt-border)",
+                        borderColor: "var(--dt-text, #18181b)",
                         backgroundColor: "var(--dt-primary)",
                         color: "var(--dt-primary-foreground)",
-                        boxShadow: "2px 2px 0px 0px var(--dt-text)",
+                        boxShadow: "3px 3px 0px 0px var(--dt-text, #18181b)",
                       }}
                     />
                     </div>
@@ -270,7 +316,7 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
               ))}
               {isEditorMode && onAddItem && (
                 <InlineAddTile
-                  label="Tambah Item"
+                  label={isEN ? "Add Item" : "Tambah Item"}
                   variant="card"
                   className="rounded-none border-4 border-black dark:border-white"
                   onClick={() => onAddItem(catIdx)}

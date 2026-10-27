@@ -19,7 +19,7 @@ export default function ProductCompact({
   const headingFont = "var(--dt-heading-font)";
   const headingWeight = "var(--dt-heading-weight)";
   const cats = productCategories(data);
-  const eyebrowDefault = isMenu ? "Pilihan Menu" : "";
+  const eyebrowDefault = isMenu ? (isEN ? "Menu Selection" : "Pilihan Menu") : (isEN ? "Product Collection" : "Koleksi Produk");
   const qvCategory = quickView ? cats[quickView.catIdx] : undefined;
   const qvItem = qvCategory?.items?.[quickView?.itemIdx ?? -1];
 
@@ -66,7 +66,7 @@ export default function ProductCompact({
                     <div style={{ display: "flex", alignItems: "center", gap: isMenu ? "0.375rem" : "0.5rem" }}>
                       <InlineText section={kind} fieldKey={"categories." + catIdx + ".items." + itemIdx + ".name"} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontWeight: 600, fontSize: "0.9rem", color: brandText, fontFamily: headingFont }} />
                       {item.is_available === false ? (
-                        <span style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", padding: "0.1rem 0.35rem", borderRadius: "4px", background: "#f43f5e", color: "#fff" }}>Habis</span>
+                        <span style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", padding: "0.1rem 0.35rem", borderRadius: "4px", background: "#f43f5e", color: "#fff" }}>{isEN ? "Sold Out" : "Habis"}</span>
                       ) : !isMenu && item.badge ? (
                         <span style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "0.15rem 0.5rem", borderRadius: "9999px", background: brandPrimary, color: "var(--dt-bg)" }}><InlineText section={kind} fieldKey={"categories." + catIdx + ".items." + itemIdx + ".badge"} value={item.badge ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" /></span>
                       ) : null}
@@ -76,7 +76,7 @@ export default function ProductCompact({
                   {item.description && <InlineText section={kind} fieldKey={"categories." + catIdx + ".items." + itemIdx + ".description"} value={item.description ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" multiline style={{ fontSize: "0.8rem", color: "var(--dt-text-muted)", lineHeight: 1.4 }} />}
                   {!isMenu && item.capacity != null && item.capacity > 0 && (
                     <span style={{ fontSize: "0.7rem", fontWeight: 600, color: brandPrimary, marginTop: "0.15rem" }}>
-                      s/d <InlineText section={kind} fieldKey={"categories." + catIdx + ".items." + itemIdx + ".capacity"} value={item.capacity != null ? String(item.capacity) : ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" /> tamu
+                      {isEN ? "up to" : "s/d"} <InlineText section={kind} fieldKey={"categories." + catIdx + ".items." + itemIdx + ".capacity"} value={item.capacity != null ? String(item.capacity) : ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" /> {isEN ? "guests" : "tamu"}
                     </span>
                   )}
                   {!isMenu && item.features && item.features.length > 0 && (
@@ -122,7 +122,7 @@ export default function ProductCompact({
               ))}
               {isEditorMode && onAddItem && (
                 <InlineAddTile
-                  label="Tambah Item"
+                  label={isEN ? (isMenu ? "Add Menu" : "Add Item") : (isMenu ? "Tambah Menu" : "Tambah Item")}
                   variant="card"
                   className="rounded-xl min-h-[140px]"
                   onClick={() => onAddItem(catIdx)}

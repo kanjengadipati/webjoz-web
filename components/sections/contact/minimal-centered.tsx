@@ -21,13 +21,16 @@ export default function MinimalCentered({
   const isEN = language === "en";
   const hasLeadForm = Boolean(c.show_lead_form && onSubmitLead);
 
+  const defaultEyebrow = isEN ? "Contact Us" : "Kontak Kami";
+
   return (
     <section id="contact" style={{ padding: "var(--dt-spacing) 1.5rem", background: "color-mix(in srgb, var(--dt-primary) 4%, var(--dt-bg))", borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)" }}>
       <div style={{ maxWidth: "32rem", margin: "0 auto", textAlign: "center" }}>
         <InlineText
           section="contact"
           fieldKey="eyebrow"
-          value={c.eyebrow ?? ""}
+          value={c.eyebrow || defaultEyebrow}
+          placeholder={defaultEyebrow}
           onUpdateField={onUpdateField}
           isEditorMode={isEditorMode}
           isSelected={isSelected}

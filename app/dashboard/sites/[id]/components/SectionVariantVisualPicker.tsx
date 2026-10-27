@@ -1036,10 +1036,17 @@ export default function SectionVariantVisualPicker({
 
   const currentOpt = enabledOpts.find((o) => o.value === currentVal) || enabledOpts[0];
 
-  // When the picker opens, switch to the group containing the active variant
+  // When the picker FIRST opens, switch to the group containing the active variant
   // and scroll the active card into view.
+  // IMPORTANT: do NOT include currentOpt.group in deps — that would re-filter
+  // the list every time the user selects a variant, hiding other cards.
+  const prevExpandedRef = useRef(false);
   useEffect(() => {
-    if (!isExpanded) return;
+    const justOpened = isExpanded && !prevExpandedRef.current;
+    prevExpandedRef.current = isExpanded;
+    if (!justOpened) return;
+
+    // On open: jump to the group of the currently active variant
     if (currentOpt?.group) {
       setSelectedGroup(currentOpt.group);
     } else {
@@ -1050,7 +1057,7 @@ export default function SectionVariantVisualPicker({
       activeCardRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
     }, 80);
     return () => clearTimeout(id);
-  }, [isExpanded, currentOpt?.group]);
+  }, [isExpanded]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!SECTION_VARIANT_OPTIONS[sectionKey] || enabledOpts.length <= 1) {
     return null;

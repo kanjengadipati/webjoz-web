@@ -35,8 +35,12 @@ export function MobileActionBar({
         {showLengkapiHint && (
           <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 z-50 pointer-events-none animate-in fade-in slide-in-from-bottom-1 duration-300">
             <div className="relative bg-[#1a2236] border border-white/20 rounded-xl px-3 py-2 shadow-lg whitespace-nowrap text-center">
-              <p className="text-[11px] font-semibold text-white leading-snug">📋 Tambah nomor WA & area</p>
-              <p className="text-[10px] text-slate-400 mt-0.5 leading-snug">Supaya tombol kontak aktif</p>
+              <p className="text-[11px] font-semibold text-white leading-snug">
+                {t("dashboard.wizard.mobileHintTitle", "📋 Tambah nomor WA & area")}
+              </p>
+              <p className="text-[10px] text-slate-400 mt-0.5 leading-snug">
+                {t("dashboard.wizard.mobileHintDesc", "Supaya tombol kontak aktif")}
+              </p>
               <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0"
                 style={{ borderLeft: "6px solid transparent", borderRight: "6px solid transparent", borderTop: "6px solid rgba(255,255,255,0.2)" }}
               />

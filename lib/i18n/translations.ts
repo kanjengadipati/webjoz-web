@@ -2677,6 +2677,12 @@ export interface Translations {
       btnLater: string;
       btnCompleteData: string;
       btnEditPublish: string;
+      completeContactDataTitle: string;
+      completeContactDataDesc: string;
+      mobileHintTitle: string;
+      mobileHintDesc: string;
+      tooFastTitle: string;
+      tooFastMessage: string;
       btnConfirmYes: string;
       btnChangeCategory: string;
       btnTryOtherRecommendation: string;
@@ -5500,6 +5506,12 @@ export const translations: Record<Locale, Translations> = {
         btnLater: "Nanti saja",
         btnCompleteData: "Lengkapi Data",
         btnEditPublish: "Edit & Publikasikan",
+        completeContactDataTitle: "Lengkapi data kontak",
+        completeContactDataDesc: "Tambah nomor WA supaya tombol kontak di website aktif.",
+        mobileHintTitle: "📋 Tambah nomor WA & area",
+        mobileHintDesc: "Supaya tombol kontak aktif",
+        tooFastTitle: "Terlalu cepat!",
+        tooFastMessage: "Kamu sudah generate beberapa kali dalam waktu singkat. Tunggu 30 detik, lalu coba lagi ya.",
         btnConfirmYes: "Ya, lanjut",
         btnChangeCategory: "Ganti kategori",
         btnTryOtherRecommendation: "Coba rekomendasi lain ({current}/{total})",
@@ -8382,6 +8394,12 @@ export const translations: Record<Locale, Translations> = {
         btnLater: "Later",
         btnCompleteData: "Complete Info",
         btnEditPublish: "Edit & Publish",
+        completeContactDataTitle: "Complete contact info",
+        completeContactDataDesc: "Add your WhatsApp number so contact buttons on the website work.",
+        mobileHintTitle: "📋 Add WhatsApp & service area",
+        mobileHintDesc: "To activate contact buttons",
+        tooFastTitle: "Too fast!",
+        tooFastMessage: "You've generated multiple times in a short window. Please wait 30 seconds and try again.",
         btnConfirmYes: "Yes, continue",
         btnChangeCategory: "Change category",
         btnTryOtherRecommendation: "Try other recommendation ({current}/{total})",

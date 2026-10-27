@@ -278,6 +278,15 @@ export interface DesignToken {
      * - "leaf"     → daun organik (natural/eco)
      */
     feature_marker?: "check" | "dot" | "sparkle" | "plus" | "shield" | "diamond" | "arrow" | "leaf";
+    /**
+     * Gaya visual kartu item pada section catalog/menu.
+     * - "standard"   → vertikal klasik: gambar atas, konten bawah (default, all-purpose)
+     * - "horizontal" → gambar kiri, konten kanan — cocok untuk menu/service list
+     * - "minimal"    → bersih tanpa border, harga prominens — cocok untuk fashion/lifestyle
+     * - "overlay"    → gambar fullbleed, teks overlay bawah — cocok untuk kuliner visual
+     * - "magazine"   → asimetris, gambar besar kiri — cocok untuk editorial/premium
+     */
+    card_style?: "standard" | "horizontal" | "minimal" | "overlay" | "magazine";
   };
   mood?: string;
   theme_mode?: 'light' | 'dark';

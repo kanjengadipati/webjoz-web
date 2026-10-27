@@ -215,7 +215,7 @@ export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSe
               })}
               {isEditorMode && onAddItem && (
                 <InlineAddTile
-                  label="Tambah Item"
+                  label={isEN ? "Add Item" : "Tambah Item"}
                   variant="card"
                   className="rounded-3xl min-h-[220px] md:min-h-[248px] md:col-span-1 md:row-span-1 w-full"
                   onClick={() => onAddItem(catIndex)}

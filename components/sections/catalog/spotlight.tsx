@@ -23,7 +23,7 @@ interface CatalogVariantProps {
   language?: "id" | "en";
 }
 
-export default function CatalogSpotlight({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id" }: CatalogVariantProps) {
+export default function CatalogSpotlight({ catalog, design_token, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id" }: CatalogVariantProps) {
   const isEN = language === "en";
   const [quickView, setQuickView] = useState<{ catIdx: number; itemIdx: number } | null>(null);
   if (!catalog) return null;
@@ -307,6 +307,7 @@ export default function CatalogSpotlight({ catalog, onUpdateField, isEditorMode,
                       capacity: item.capacity,
                     }}
                     icon={ImageIcon}
+                    layout={design_token?.layout?.card_style ?? "grid"}
                     styles={{
                       className: "group transition-all duration-300",
                       style: { background: "var(--dt-surface)", border: "1px solid var(--dt-border)", borderRadius: "var(--dt-radius)", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" },

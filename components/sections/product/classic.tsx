@@ -8,7 +8,7 @@ import { SectionHeader, pillEyebrowStyle, headerTitleStyle } from "../section-he
 import { productCategories, type ProductVariantProps } from "./types";
 
 export default function ProductClassic({
-  kind, data, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
+  kind, data, design_token, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
   onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id",
 }: ProductVariantProps) {
   const isEN = language === "en";
@@ -43,19 +43,19 @@ export default function ProductClassic({
         className: "group transition-all duration-300",
         style: { background: brandBg, border: `1px solid color-mix(in srgb, ${brandPrimary} 14%, transparent)`, borderRadius: "16px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" },
         image: { className: "w-full aspect-square object-cover transition-transform duration-500 group-hover:scale-105 sm:aspect-[4/5]" },
-        placeholder: { className: "w-full aspect-square flex items-center justify-center transition-transform duration-500 group-hover:scale-105 sm:aspect-[4/5]", style: { background: `color-mix(in srgb, ${brandPrimary} 8%, transparent)` }, iconClassName: "w-12 h-12", iconStyle: { color: `color-mix(in srgb, ${brandPrimary} 30%, transparent)`, opacity: 0.6 } },
+        placeholder: { className: "w-full aspect-square flex flex-col items-center justify-center p-4 text-center transition-transform duration-500 group-hover:scale-105 sm:aspect-[4/5]", style: { background: `color-mix(in srgb, ${brandPrimary} 8%, transparent)` }, iconClassName: "w-12 h-12", iconStyle: { color: `color-mix(in srgb, ${brandPrimary} 30%, transparent)`, opacity: 0.6 } },
         content: { className: "p-4 flex flex-col flex-1 min-w-0" },
         header: { className: "flex flex-col gap-1.5 mb-2 min-w-0" },
         title: { className: "font-bold text-sm leading-tight line-clamp-2", style: { color: brandText, fontFamily: headingFont } },
         description: { className: "text-xs leading-relaxed line-clamp-2", style: { color: `color-mix(in srgb, ${brandText} 60%, transparent)` } },
-        price: { className: "self-start text-xs font-bold px-2.5 py-1 rounded-full", style: { background: `color-mix(in srgb, ${brandPrimary} 12%, transparent)`, color: brandPrimary } },
-        badge: { className: "inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap", style: { background: brandPrimary, color: brandBg } },
-        button: { className: "w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md", style: { background: brandPrimary, color: brandBg, border: "none" } },
+        price: { className: "self-start text-xs font-bold px-2.5 py-1 rounded-md whitespace-nowrap", style: { background: `color-mix(in srgb, ${brandPrimary} 12%, transparent)`, color: brandPrimary } },
+        badge: { className: "inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap", style: { background: brandPrimary, color: "var(--dt-cta-text, #fff)" } },
+        button: { className: "w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md", style: { background: brandPrimary, color: "var(--dt-cta-text, #fff)", border: "none" } },
       };
 
-  const eyebrowDefault = isMenu ? "Pilihan Menu" : "Koleksi Produk";
-  const searchPlaceholder = isMenu ? "Cari menu..." : "Cari produk...";
-  const emptyLabel = isMenu ? "menu" : "produk";
+  const eyebrowDefault = isMenu ? (isEN ? "Menu Selection" : "Pilihan Menu") : (isEN ? "Product Collection" : "Koleksi Produk");
+  const searchPlaceholder = isMenu ? (isEN ? "Search menu..." : "Cari menu...") : (isEN ? "Search products..." : "Cari produk...");
+  const emptyLabel = isMenu ? (isEN ? "menu item" : "menu") : (isEN ? "product" : "produk");
   const Icon = isMenu ? Utensils : ImageIcon;
 
   return (
@@ -89,7 +89,7 @@ export default function ProductClassic({
         {filteredCategories.length === 0 ? (
           <div style={{ textAlign: "center", padding: "4rem 1rem", opacity: 0.75 }}>
             <p style={{ fontWeight: 600, fontSize: "1rem", color: brandText }}>
-              Tidak ada {emptyLabel} yang cocok dengan pencarian &quot;{searchQuery}&quot;.
+              {isEN ? `No ${emptyLabel} matches "${searchQuery}".` : `Tidak ada ${emptyLabel} yang cocok dengan pencarian "${searchQuery}".`}
             </p>
           </div>
         ) : (
@@ -148,6 +148,7 @@ export default function ProductClassic({
                         : { badge: item.badge, features: item.features, maxFeatures: 2, capacity: item.capacity }),
                     }}
                     icon={Icon}
+                    layout={design_token?.layout?.card_style ?? "grid"}
                     styles={cardStyles}
                     editSection={kind}
                     pathBase={"categories." + originalCatIdx + ".items." + originalItemIdx}
@@ -161,7 +162,7 @@ export default function ProductClassic({
                 ))}
                 {isEditorMode && onAddItem && (
                   <InlineAddTile
-                    label="Tambah Item"
+                    label={isEN ? (isMenu ? "Add Menu" : "Add Item") : (isMenu ? "Tambah Menu" : "Tambah Item")}
                     variant="card"
                     className="rounded-2xl"
                     onClick={() => onAddItem(cat.originalCatIdx)}

@@ -31,7 +31,7 @@ interface CatalogVariantProps {
  * Remaining items shown in standard grid below.
  * Reuses badge field: any item with badge != null/empty is "featured".
  */
-export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: CatalogVariantProps) {
+export default function CatalogShowcaseFeatured({ catalog, design_token, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: CatalogVariantProps) {
   const isEN = language === "en";
   const marker = useFeatureMarker();
   if (!catalog) return null;
@@ -49,7 +49,7 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
         {/* Header */}
         <SectionHeader
           section="catalog"
-          eyebrow={catalog.eyebrow ?? "Koleksi Produk"}
+          eyebrow={catalog.eyebrow ?? (isEN ? "Product Collection" : "Koleksi Produk")}
           title={catalog.title}
           wrapperStyle={{ textAlign: "center", marginBottom: "3rem" }}
           eyebrowStyle={pillEyebrowStyle(p)}
@@ -162,7 +162,7 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
                             <div style={{ marginTop: "0.25rem" }}>
                               <span style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem", fontSize: "0.7rem", fontWeight: 600, padding: "0.15rem 0.5rem", borderRadius: "9999px", background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p }}>
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" style={{ width: "0.75rem", height: "0.75rem" }}><circle cx="9" cy="7" r="2"/><path d="M3 21v-1a6 6 0 0 1 12 0v1"/><circle cx="17" cy="7" r="2"/><path d="M21 21v-1a5 5 0 0 0-3-4.6"/></svg>
-                                s/d <InlineText section="catalog" fieldKey={"categories." + ci + ".items." + itemIdx + ".capacity"} value={item.capacity != null ? String(item.capacity) : ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" /> tamu
+                                {isEN ? "up to" : "s/d"} <InlineText section="catalog" fieldKey={"categories." + ci + ".items." + itemIdx + ".capacity"} value={item.capacity != null ? String(item.capacity) : ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" /> {isEN ? "guests" : "tamu"}
                               </span>
                             </div>
                           )}
@@ -233,16 +233,17 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
                           capacity: item.capacity,
                         }}
                         icon={ImageIcon}
+                        layout={design_token?.layout?.card_style ?? "grid"}
                         styles={{
                           className: "group transition-all duration-300",
                           style: { background: bg, border: `1px solid color-mix(in srgb, ${p} 14%, transparent)`, borderRadius: "14px", overflow: "hidden" },
                           image: { className: "w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105" },
-                          placeholder: { className: "w-full h-40 flex items-center justify-center", style: { background: `color-mix(in srgb, ${p} 8%, transparent)` }, iconClassName: "w-10 h-10", iconStyle: { color: `color-mix(in srgb, ${p} 30%, transparent)`, opacity: 0.6 } },
+                          placeholder: { className: "w-full h-40 flex flex-col items-center justify-center text-center p-3", style: { background: `color-mix(in srgb, ${p} 8%, transparent)` }, iconClassName: "w-10 h-10", iconStyle: { color: `color-mix(in srgb, ${p} 30%, transparent)`, opacity: 0.6 } },
                           content: { className: "p-4 flex flex-col flex-1 min-w-0" },
                           header: { className: "flex flex-col gap-1.5 mb-2 min-w-0" },
                           title: { className: "font-semibold text-sm leading-tight line-clamp-2", style: { color: text, fontFamily: hFont } },
                           description: { className: "text-xs leading-relaxed line-clamp-3", style: { color: muted } },
-                          price: { className: "self-start text-xs font-bold px-2 py-0.5 rounded-full", style: { background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p } },
+                          price: { className: "self-start text-xs font-bold px-2.5 py-1 rounded-md whitespace-nowrap", style: { background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p } },
                           button: { className: "w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all hover:brightness-110", style: { background: p, color: bg, border: "none" } },
                         }}
                         editSection="catalog"
@@ -261,7 +262,7 @@ export default function CatalogShowcaseFeatured({ catalog, onUpdateField, isEdit
 
               {isEditorMode && onAddItem && (
                 <div style={{ marginTop: "1rem" }}>
-                  <InlineAddTile label="Tambah Item" onClick={() => onAddItem(ci)} />
+                  <InlineAddTile label={isEN ? "Add Item" : "Tambah Item"} onClick={() => onAddItem(ci)} />
                 </div>
               )}
 

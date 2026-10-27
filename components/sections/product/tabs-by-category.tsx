@@ -11,7 +11,7 @@ import { productCategories, type ProductVariantProps } from "./types";
  * Best for menus/catalogs with 3+ categories where scrolling per-category is too long.
  */
 export default function ProductTabsByCategory({
-  kind, data, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
+  kind, data, design_token, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
   onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id",
 }: ProductVariantProps) {
   const isEN = language === "en";
@@ -47,10 +47,10 @@ export default function ProductTabsByCategory({
     });
 
   const itemKeyPrefix = isMenu ? "menu-tab" : "cat-tab";
-  const eyebrowDefault = isMenu ? "Pilihan Menu" : "Koleksi Produk";
-  const searchPlaceholder = isMenu ? "Cari menu di kategori ini..." : "Cari produk di kategori ini...";
-  const emptySearchLabel = isMenu ? "menu" : "produk";
-  const emptyAddLabel = isMenu ? "Tambah Menu" : "Tambah Item";
+  const eyebrowDefault = isMenu ? (isEN ? "Menu Selection" : "Pilihan Menu") : (isEN ? "Product Collection" : "Koleksi Produk");
+  const searchPlaceholder = isMenu ? (isEN ? "Search menu in this category..." : "Cari menu di kategori ini...") : (isEN ? "Search products in this category..." : "Cari produk di kategori ini...");
+  const emptySearchLabel = isMenu ? (isEN ? "menu item" : "menu") : (isEN ? "product" : "produk");
+  const emptyAddLabel = isMenu ? (isEN ? "Add Menu" : "Tambah Menu") : (isEN ? "Add Item" : "Tambah Item");
   const Icon = isMenu ? Utensils : ImageIcon;
 
   const cardStyles: MenuCatalogCardStyles = {
@@ -170,7 +170,13 @@ export default function ProductTabsByCategory({
           activeItems.length === 0 ? (
             <div style={{ textAlign: "center", padding: "4rem 1rem", opacity: 0.85 }}>
               <p style={{ fontWeight: 600, fontSize: "1rem", color: text }}>
-                {searchQuery ? `Tidak ada ${emptySearchLabel} yang cocok dengan pencarian "${searchQuery}".` : "Belum ada item di kategori ini."}
+                {searchQuery
+                  ? (isEN
+                      ? `No ${emptySearchLabel} matches "${searchQuery}".`
+                      : `Tidak ada ${emptySearchLabel} yang cocok dengan pencarian "${searchQuery}".`)
+                  : (isEN
+                      ? "No items in this category yet."
+                      : "Belum ada item di kategori ini.")}
               </p>
               {isEditorMode && onAddItem && (
                 <div style={{ marginTop: "1.5rem", display: "flex", justifyContent: "center" }}>
@@ -208,6 +214,7 @@ export default function ProductTabsByCategory({
                       : { badge: item.badge, features: item.features, capacity: item.capacity }),
                   }}
                   icon={Icon}
+                  layout={design_token?.layout?.card_style ?? "grid"}
                   styles={cardStyles}
                   editSection={kind}
                   pathBase={"categories." + safeActiveIdx + ".items." + originalItemIdx}
@@ -221,7 +228,7 @@ export default function ProductTabsByCategory({
               ))}
               {isEditorMode && onAddItem && (
                 <InlineAddTile
-                  label="Tambah Item"
+                  label={emptyAddLabel}
                   variant="card"
                   className="rounded-2xl"
                   onClick={() => onAddItem(safeActiveIdx)}

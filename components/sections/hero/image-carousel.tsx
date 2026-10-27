@@ -157,6 +157,7 @@ export default function HeroImageCarousel({
                 onUpdateField={(_, __, val) => handleUpdateCurrentSlideImage(val)}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
+                isBackground={true}
                 className="w-full h-full"
                 style={{
                   width: "100%",

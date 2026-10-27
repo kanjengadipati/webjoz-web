@@ -192,7 +192,7 @@ export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, 
               })}
               {isEditorMode && onAddItem && (
                 <InlineAddTile
-                  label="Tambah Item"
+                  label={isEN ? "Add Item" : "Tambah Item"}
                   variant="card"
                   className="rounded-2xl min-h-[160px]"
                   onClick={() => onAddItem(catIndex)}

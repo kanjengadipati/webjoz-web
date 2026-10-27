@@ -7,7 +7,7 @@ import { SectionHeader } from "../section-header";
 import { productCategories, type ProductVariantProps } from "./types";
 
 export default function ProductMasonryFlow({
-  kind, data, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
+  kind, data, design_token, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
   onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id",
 }: ProductVariantProps) {
   const isEN = language === "en";
@@ -21,18 +21,37 @@ export default function ProductMasonryFlow({
   const brandText = "var(--dt-text)";
   const headingFont = "var(--dt-heading-font)";
   const headingWeight = "var(--dt-heading-weight)";
-  const dtRadius = "var(--dt-radius)";
+  const dtRadius = "var(--dt-radius, 20px)";
 
-  const cardStyles: MenuCatalogCardStyles = {
-    className: "h-full transition-all duration-300 group-hover:shadow-lg",
-    style: { background: "var(--dt-surface)", border: "none", borderRadius: dtRadius, overflow: "hidden" },
-    image: { className: "w-full aspect-auto object-cover" },
-    placeholder: { className: "w-full aspect-[4/3] flex items-center justify-center", style: { background: `color-mix(in srgb, ${brandPrimary} 8%, transparent)` }, iconClassName: "w-10 h-10", iconStyle: { color: `color-mix(in srgb, ${brandPrimary} 35%, transparent)` } },
-    content: { className: "flex flex-col gap-2 p-4" },
-    title: { className: "font-semibold text-base leading-tight", style: { color: brandText, fontFamily: headingFont } },
-    description: { className: "text-sm leading-relaxed", style: { color: `color-mix(in srgb, ${brandText} 70%, transparent)` } },
-    price: { className: "text-sm font-bold px-2 py-0.5 rounded-full self-start", style: { background: `color-mix(in srgb, ${brandPrimary} 12%, transparent)`, color: brandPrimary } },
-    button: { className: "mt-2 w-full flex items-center justify-center gap-2 text-sm font-semibold py-2 px-4 rounded-lg transition-all hover:brightness-110", style: { background: brandPrimary, color: brandBg, border: "none" } },
+  const MASONRY_ASPECTS = [
+    "aspect-[3/4]",
+    "aspect-[4/5]",
+    "aspect-square",
+    "aspect-[2/3]",
+    "aspect-[16/11]",
+    "aspect-[3/4]",
+  ];
+
+  const getMasonryCardStyles = (index: number): MenuCatalogCardStyles => {
+    const aspect = MASONRY_ASPECTS[index % MASONRY_ASPECTS.length];
+    return {
+      className: "h-full transition-all duration-300 flex flex-col",
+      style: { background: "var(--dt-surface)", border: "none", overflow: "hidden" },
+      image: { className: `w-full ${aspect} object-cover transition-transform duration-500 group-hover:scale-105` },
+      placeholder: {
+        className: `w-full ${aspect} flex items-center justify-center transition-transform duration-500 group-hover:scale-105`,
+        style: { background: `color-mix(in srgb, ${brandPrimary} 8%, transparent)` },
+        iconClassName: "w-10 h-10",
+        iconStyle: { color: `color-mix(in srgb, ${brandPrimary} 35%, transparent)` },
+      },
+      content: { className: "flex flex-col gap-2 p-4 flex-grow" },
+      header: { className: "flex flex-col gap-1.5 mb-1" },
+      title: { className: "font-bold text-base leading-tight", style: { color: brandText, fontFamily: headingFont } },
+      description: { className: "text-xs leading-relaxed line-clamp-3", style: { color: `color-mix(in srgb, ${brandText} 70%, transparent)` } },
+      price: { className: "text-xs font-bold px-2.5 py-1 rounded-full self-start", style: { background: `color-mix(in srgb, ${brandPrimary} 12%, transparent)`, color: brandPrimary } },
+      badge: { className: "inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap", style: { background: brandPrimary, color: "var(--dt-cta-text, #fff)" } },
+      button: { className: "mt-auto w-full flex items-center justify-center gap-2 text-xs font-bold py-2.5 px-4 rounded-xl transition-all hover:brightness-110 shadow-sm cursor-pointer", style: { background: brandPrimary, color: "var(--dt-cta-text, #fff)", border: "none" } },
+    };
   };
 
   const eyebrowDefault = isMenu ? "Pilihan Menu" : "Koleksi Produk";
@@ -111,16 +130,17 @@ export default function ProductMasonryFlow({
                 return (
                   <div
                     key={cardKey}
-                    className="break-inside-avoid mb-6 flex flex-col group relative overflow-hidden"
+                    className="break-inside-avoid mb-6 flex flex-col group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
                     style={{
                       borderColor: "var(--dt-border)",
                       backgroundColor: "var(--dt-surface)",
                       borderRadius: dtRadius,
                       border: `1px solid color-mix(in srgb, ${brandPrimary} 12%, transparent)`,
+                      boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
                     }}
                   >
                     <MenuCatalogCard
-                      layout="grid"
+                      layout={design_token?.layout?.card_style ?? "grid"}
                       item={{
                         id: cardKey,
                         name: item.name,
@@ -142,7 +162,7 @@ export default function ProductMasonryFlow({
                           : { badge: item.badge, features: item.features, maxFeatures: 2, capacity: item.capacity }),
                       }}
                       icon={Icon}
-                      styles={cardStyles}
+                      styles={getMasonryCardStyles(index)}
                       editSection={kind}
                       pathBase={"categories." + catIdx + ".items." + index}
                       onUpdateField={onUpdateField}
