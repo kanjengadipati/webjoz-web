@@ -68,7 +68,6 @@ export default function CatalogShowcaseFeatured({ catalog, design_token, onUpdat
           const featuredWithIdx = (cat.items ?? [])
             .map((it, idx) => ({ item: it, originalIdx: idx }))
             .filter(({ item }) => item.badge);
-          const rest = cat.items?.filter((it) => !it.badge) ?? [];
           return (
             <div key={ci} style={{ marginBottom: "4rem" }}>
               {/* Category label */}
