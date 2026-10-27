@@ -92,11 +92,80 @@
 - WhatsApp integration otomatis
 - Backup konten harian
 
-### Langkah 5: Manajemen Website
-- **Edit website**: Dari dashboard, klik website, buka editor
-- **Buat website tambahan**: Klik `+ Website Baru`, ulangi wizard
-- **Hapus/arsipkan**: Pilih website, klik delete/archive
-- **Lihat analytics**: Akses tab **`Analytics`** untuk statistik kunjungan
+### Langkah 5: Katalog & Menu Produk
+1. Buka tab **`Katalog`** dari editor atau dashboard website.
+2. Klik **`+ Tambah Produk`**:
+   - **Nama & Foto Produk**: Unggah foto jelas dengan rasio persegi (1:1).
+   - **Harga Reguler & Harga Coret (Promo)**: Tampilkan diskon menarik untuk meningkatkan konversi.
+   - **Kategori & Varian**: Kelompokkan menu/produk (contoh: Makanan, Minuman, Paket Hemat).
+   - **Badge Unggulan**: Sematkan tanda *"Best Seller"* atau *"Promo"* agar tampil di sorotan utama.
+   - **Status Stok**: Aktifkan toggle *"Stok Habis"* saat persediaan kosong agar tombol pesan otomatis nonaktif.
+
+### Langkah 6: Pemesanan Langsung via WhatsApp
+Webjoz dilengkapi sistem keranjang belanja interaktif tanpa memotong komisi penjualan:
+1. **Atur Nomor WhatsApp**: Buka bagian Kontak di editor atau dashboard, isi nomor WhatsApp bisnis berawalan kode negara (contoh: `628123456789`).
+2. **Pengalaman Pengunjung**:
+   - Pengunjung memilih menu/produk dan menentukan jumlah pesanan.
+   - Klik **`+ Pesan`** untuk memasukkan ke keranjang (*Cart Drawer*).
+   - Klik **`Kirim Pesanan`**.
+3. **Format Rekap Otomatis**: WhatsApp akan terbuka langsung dengan pesan rekap rapi berisikan daftar produk, jumlah, dan perkiraan total harga siap kirim.
+4. **Konfirmasi & Pembayaran**: Penjual dapat langsung menyapa pembeli, mengonfirmasi stok, dan mengirimkan nomor rekening atau QRIS.
+
+### Langkah 7: Optimasi SEO & Google Search
+1. Buka tab **`SEO`** dari bilah navigasi editor website.
+2. **Meta Title & Meta Description**:
+   - Gunakan fitur **`Generate dengan AI`** untuk membuat judul dan deskripsi yang memikat dan ramah SEO dalam 1 klik.
+   - Panjang ideal: Meta Title (50-60 karakter), Meta Description (140-155 karakter).
+3. **Kata Kunci (Keywords)**: Tambahkan istilah pencarian yang sering diketik calon pelanggan di Google.
+4. **Favicon & Thumbnail Berbagi**: Unggah ikon kecil website dan gambar OpenGraph agar saat link dibagikan di WhatsApp, Twitter, atau Facebook muncul kartu pratinjau yang profesional.
+
+### Langkah 8: Integrasi Google Analytics & Meta Pixel
+1. Buka tab **`Integrasi`** pada dashboard website.
+2. **Google Analytics 4**: Masukkan *Measurement ID* Anda (`G-XXXXXXXXXX`) untuk memantau jumlah pengunjung, kota asal, dan halaman terpopuler.
+3. **Meta Pixel**: Masukkan *Pixel ID* (15-16 digit) dari Facebook/Instagram Ads Manager untuk merekam konversi iklan dan membuat *custom audience*.
+4. Klik **`Simpan`** — pelacak langsung aktif tanpa perlu menyisipkan kode script manual ke HTML.
+
+### Langkah 9: Video Tutorial Interaktif
+Untuk melihat demo langsung cara membuat dan memodifikasi website dari awal:
+- Buka halaman **`/help`** di aplikasi Webjoz.
+- Tonton video **`Video Tutorial: Membuat Website dengan AI (Walkthrough)`** (durasi 2:20 menit) yang mendemonstrasikan proses dari input nama brand hingga website siap tayang.
+
+### Langkah 10: Manajemen Website & Analitik
+- **Edit website**: Dari dashboard, klik kartu website dan buka editor visual.
+- **Buat website tambahan**: Klik `+ Website Baru`, jalankan wizard AI.
+- **Hapus/arsipkan**: Pilih website di dashboard, klik menu opsi untuk menghapus atau mengarsipkan.
+- **Pantau Kunjungan**: Akses menu **`Analytics`** untuk melihat tren pengunjung harian dan mingguan.
+
+### Langkah 11: Blog & Artikel AI
+Webjoz dilengkapi Blog Manager yang memungkinkan kamu menerbitkan artikel untuk meningkatkan SEO organik:
+1. Dari editor website, klik tab **`Blog`**.
+2. Masukkan topik atau judul artikel di kolom tersedia, lalu klik **`Generate AI`**.
+3. AI akan menghasilkan artikel lengkap beserta paragraf, heading, dan kesimpulan secara otomatis.
+4. Buka editor artikel untuk menyempurnakan isi, mengganti gambar cover, dan mengisi meta SEO.
+5. **Pilih Layout Tampilan Blog**: Grid, List, Featured, atau Minimal sesuai estetika website.
+6. Klik **`Publikasikan`** — artikel langsung tampil di halaman blog website.
+
+> 💡 **Tips**: Targetkan satu kata kunci utama per artikel. Konsistensi publikasi (minimal 2x/bulan) meningkatkan ranking Google secara signifikan.
+
+### Langkah 12: Leads & Form Kontak
+Semua pesan dari form kontak website tersimpan otomatis di **Leads Inbox**:
+1. Dari sidebar dashboard, klik **`Leads`**.
+2. Klik kartu lead untuk melihat detail: nama, email, nomor telepon, dan pesan pengunjung.
+3. Klik tombol **WhatsApp** atau **Email** di kartu lead untuk membalas calon pelanggan dalam satu klik.
+4. Gunakan **dropdown filter** untuk melihat leads dari website tertentu jika kamu mengelola lebih dari satu website.
+5. Leads pesanan dari cart WhatsApp juga tercatat di sini dengan rincian item dan total harga.
+
+> 💡 **Tips**: Balas leads dalam **1 jam pertama** meningkatkan kemungkinan konversi hingga 7x lipat dibandingkan membalas setelah 24 jam.
+
+### Langkah 13: Kumpulkan & Kelola Testimoni Pelanggan
+Webjoz menyediakan sistem pengumpulan ulasan bintang dengan moderasi sebelum tampil di website:
+1. Di editor website, klik tab **`Testimoni`**.
+2. Salin **link form testimoni** dan kirim ke pelanggan via WhatsApp setelah transaksi selesai.
+3. Pelanggan mengisi formulir online dengan nama, jabatan/peran, ulasan teks, dan rating bintang (1–5).
+4. Ulasan masuk dengan status **"Pending"** — klik ✓ **Setujui** atau ✗ **Tolak** sebelum tampil di website.
+5. Testimoni yang disetujui langsung muncul di seksi ulasan website secara otomatis.
+
+> 💡 **Tips**: Testimoni dengan foto profil dan nama lengkap meningkatkan kepercayaan calon pelanggan baru secara signifikan.
 
 ---
 
