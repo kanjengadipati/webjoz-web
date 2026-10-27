@@ -1775,26 +1775,7 @@ export function SiteWizard({
             );
           })}
 
-          {chat.isPreFetchingName && !chat.isAnalyzingDescription && chat.chatStage === "description" && (
-            <div className="flex gap-2.5 justify-start animate-in fade-in duration-300">
-              <div className="w-7 h-7 rounded-full bg-white/[0.08] border border-white/10 flex items-center justify-center shrink-0 mt-0.5 text-slate-300 shadow-xs">
-                <SparkleGenAI className="w-4 h-4 text-primary animate-pulse" />
-              </div>
-              <div
-                className="rounded-2xl rounded-tl-sm px-3.5 py-2 flex items-center gap-2 text-xs text-slate-300"
-                style={{ background: "rgba(255,255,255,0.04)", border: "1px dashed rgba(255,255,255,0.12)" }}
-              >
-                <span>{t("dashboard.wizard.preFetchingNameHint", "AI menganalisis kategori nama usaha...")}</span>
-                <span className="flex gap-1 items-center">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary/70 animate-bounce [animation-delay:-0.3s]" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary/70 animate-bounce [animation-delay:-0.15s]" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary/70 animate-bounce" />
-                </span>
-              </div>
-            </div>
-          )}
-
-          {chat.isAnalyzingDescription && (
+          {(chat.isAnalyzingDescription || chat.isPreFetchingName) && (
             <div className="flex gap-2.5 justify-start animate-in fade-in duration-200">
               <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center shrink-0 mt-0.5 text-slate-900 shadow-xs">
                 <SparkleGenAI className="w-[21px] h-[21px]" />
@@ -1943,16 +1924,16 @@ export function SiteWizard({
                           t("dashboard.wizard.inputPlaceholderName", "Masukkan nama bisnis Anda...")
                   }
                   autoFocus
-                  disabled={chat.isAiTyping || chat.isAnalyzingDescription || chat.isProcessingAudio}
+                  disabled={chat.isAiTyping || chat.isAnalyzingDescription || chat.isProcessingAudio || chat.isPreFetchingName}
                   className="flex-1 bg-transparent border-none py-2.5 text-base md:text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50"
                 />
                 {chat.chatStage === "description" && (
                   <div className="relative shrink-0 flex items-center">
-                    <MicOnboardingHint visible={!chat.isRecording && !chat.isProcessingAudio && !chat.isAnalyzingDescription} />
+                    <MicOnboardingHint visible={!chat.isRecording && !chat.isProcessingAudio && !chat.isAnalyzingDescription && !chat.isPreFetchingName} />
                     <button
                       type="button"
                       onClick={chat.startRecording}
-                      disabled={chat.isAiTyping || chat.isAnalyzingDescription || chat.isProcessingAudio}
+                      disabled={chat.isAiTyping || chat.isAnalyzingDescription || chat.isProcessingAudio || chat.isPreFetchingName}
                       className="w-8 h-8 flex items-center justify-center rounded-xl bg-white/[0.06] border border-border text-slate-400 hover:text-white hover:bg-white/[0.12] transition-all disabled:opacity-30 shrink-0 active:scale-95 animate-mic-pulse cursor-pointer"
                       title={t("dashboard.wizard.sttStartRecording", "Bicara dengan mic")}
                     >
@@ -1962,10 +1943,10 @@ export function SiteWizard({
                 )}
                 <button
                   type="submit"
-                  disabled={chat.isAiTyping || chat.isAnalyzingDescription || chat.isProcessingAudio || (chat.chatStage === "name" && !chat.inputValue.trim())}
+                  disabled={chat.isAiTyping || chat.isAnalyzingDescription || chat.isProcessingAudio || chat.isPreFetchingName || (chat.chatStage === "name" && !chat.inputValue.trim())}
                   className="w-8 h-8 flex items-center justify-center rounded-xl bg-white text-slate-900 hover:bg-slate-100 transition-all disabled:opacity-30 shrink-0 cursor-pointer shadow-xs"
                 >
-                  {chat.isAnalyzingDescription ? (
+                  {chat.isAnalyzingDescription || chat.isPreFetchingName ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   ) : (
                     <ArrowRight className="w-3.5 h-3.5" />

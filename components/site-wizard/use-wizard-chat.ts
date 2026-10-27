@@ -674,6 +674,59 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     }
   };
 
+  const analyzeBusinessNameAndAdvance = (name: string) => {
+    setIsPreFetchingName(true);
+    const prefetchCall = processBusinessDescription("", name, locale)
+      .then((aiRes) => {
+        const d = aiRes?.data;
+        if (d && (d.confidence === "high" || d.confidence === "medium")) {
+          const validHint = validateClassification(d.type, d.sub_type);
+          if (validHint?.subType) {
+            const aiHint = {
+              type: validHint.type,
+              subType: validHint.subType,
+              refinedText: d.refined_text?.trim(),
+            };
+            suggestedHintRef.current = aiHint;
+            setSuggestedHint((prev) => ({ ...prev, ...aiHint }));
+          }
+        }
+      })
+      .catch((err) => {
+        console.warn("AI prefetch failed:", err);
+      });
+
+    // Timeout safety of 8s so the bot never hangs if AI takes too long or errors out
+    const timeoutPromise = new Promise<void>((resolve) => setTimeout(resolve, 8000));
+
+    const finalPromise: Promise<void> = Promise.race<void>([prefetchCall, timeoutPromise]).then(() => {}).finally(() => {
+      setIsPreFetchingName(false);
+      prefetchPromiseRef.current = null;
+
+      if (prefill?.businessType && prefill?.businessSubType) {
+        typeMessage(
+          `${pickVariant(nameAckVariants)} ${t("dashboard.wizard.prefillTypePrompt", "Saya sudah memperkirakan kategori website Anda. Lanjutkan jika sesuai, atau ubah dulu:")}`,
+          () => {
+            setMessages((prev) => [
+              ...prev,
+              { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
+            ]);
+            setChatStage("type");
+          }
+        );
+      } else {
+        typeMessage(
+          `${pickVariant(nameAckVariants)} ${t("dashboard.wizard.descriptionPrompt", DESCRIPTION_PROMPT)}`,
+          () => {
+            setChatStage("description");
+          }
+        );
+      }
+    });
+
+    prefetchPromiseRef.current = finalPromise;
+  };
+
   const handleSendText = (
     e: React.FormEvent,
     onGenerate: (name: string, type: string, overrides: any) => void
@@ -694,48 +747,24 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
       if (awaitingNameConfirm) {
         const lower = val.toLowerCase();
         const isConfirm = ["ya", "y", "yes", "oke", "ok"].includes(lower);
-        if (!isConfirm) setBusinessName(capitalized);
+        const confirmedName = isConfirm ? businessNameRef.current || businessName : capitalized;
+        if (!isConfirm) {
+          setBusinessName(capitalized);
+          businessNameRef.current = capitalized;
+        }
         setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: val }]);
         setAwaitingNameConfirm(false);
-        setTimeout(() => {
-          typeMessage(`${pickVariant(nameAckVariants)} ${t("dashboard.wizard.descriptionPrompt", DESCRIPTION_PROMPT)}`, () => {
-            setChatStage("description");
-          });
-        }, 500);
+        analyzeBusinessNameAndAdvance(confirmedName);
         return;
       }
 
       const msgId = `user-name-${Date.now()}`;
       setNameMessageId(msgId);
       setBusinessName(capitalized);
+      businessNameRef.current = capitalized;
       setMessages((prev) => [...prev, { id: msgId, sender: "user", text: val }]);
 
       const flagged = isLikelyGibberish(val);
-
-      // Pre-fetch AI analysis of business name in background so skip/inference is instant.
-      // We store the promise in prefetchPromiseRef so the skip-flow can await it.
-      setIsPreFetchingName(true);
-      prefetchPromiseRef.current = processBusinessDescription("", capitalized, locale)
-        .then((aiRes) => {
-          const d = aiRes?.data;
-          if (d && d.confidence === "high") {
-            const validHint = validateClassification(d.type, d.sub_type);
-            if (validHint?.subType) {
-              const aiHint = {
-                type: validHint.type,
-                subType: validHint.subType,
-                refinedText: d.refined_text?.trim(),
-              };
-              suggestedHintRef.current = aiHint;
-              setSuggestedHint((prev) => ({ ...prev, ...aiHint }));
-            }
-          }
-        })
-        .catch(() => {})
-        .finally(() => {
-          setIsPreFetchingName(false);
-          prefetchPromiseRef.current = null;
-        });
 
       if (flagged && !hasAskedNameConfirmRef.current) {
         hasAskedNameConfirmRef.current = true;
@@ -751,24 +780,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
         return;
       }
 
-      setTimeout(() => {
-        if (prefill?.businessType && prefill?.businessSubType) {
-          // Prefill dari galeri dibawa — tapi jangan di-skip: tampilkan chip
-          // kategori website yang sudah terpilih supaya user bisa mengoreksinya
-          // sebelum lanjut ke bahasa/generate.
-          typeMessage(`${pickVariant(nameAckVariants)} ${t("dashboard.wizard.prefillTypePrompt", "Saya sudah memperkirakan kategori website Anda. Lanjutkan jika sesuai, atau ubah dulu:")}`, () => {
-            setMessages((prev) => [
-              ...prev,
-              { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
-            ]);
-            setChatStage("type");
-          });
-        } else {
-          typeMessage(`${pickVariant(nameAckVariants)} ${t("dashboard.wizard.descriptionPrompt", DESCRIPTION_PROMPT)}`, () => {
-            setChatStage("description");
-          });
-        }
-      }, 500);
+      analyzeBusinessNameAndAdvance(capitalized);
     }
 
     if (chatStage === "description") {
@@ -787,37 +799,10 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     const msgId = `user-name-${Date.now()}`;
     setNameMessageId(msgId);
     setBusinessName(capitalized);
+    businessNameRef.current = capitalized;
     setMessages((prev) => [...prev, { id: msgId, sender: "user", text: sampleName }]);
 
-    // Pre-fetch AI analysis of business name in background so skip/inference is instant.
-    setIsPreFetchingName(true);
-    prefetchPromiseRef.current = processBusinessDescription("", capitalized, locale)
-      .then((aiRes) => {
-        const d = aiRes?.data;
-        if (d && d.confidence === "high") {
-          const validHint = validateClassification(d.type, d.sub_type);
-          if (validHint?.subType) {
-            const aiHint = {
-              type: validHint.type,
-              subType: validHint.subType,
-              refinedText: d.refined_text?.trim(),
-            };
-            suggestedHintRef.current = aiHint;
-            setSuggestedHint((prev) => ({ ...prev, ...aiHint }));
-          }
-        }
-      })
-      .catch(() => {})
-      .finally(() => {
-        setIsPreFetchingName(false);
-        prefetchPromiseRef.current = null;
-      });
-
-    setTimeout(() => {
-      typeMessage(`${pickVariant(nameAckVariants)} ${t("dashboard.wizard.descriptionPrompt", DESCRIPTION_PROMPT)}`, () => {
-        setChatStage("description");
-      });
-    }, 400);
+    analyzeBusinessNameAndAdvance(capitalized);
   };
 
   const processDescriptionSubmission = async (
@@ -843,11 +828,12 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
 
       // Use suggestedHintRef (always fresh) — avoids stale closure from state capture
       const nameHint = suggestedHintRef.current;
+      const currentBizName = businessNameRef.current || businessName;
 
-      // If we already have a high-confidence category hint (from pre-fetched AI)
+      // If we already have a high/medium-confidence category hint (from pre-fetched AI)
       if (nameHint?.type && nameHint?.subType) {
-        const autoDesc = nameHint.refinedText || generateDescriptionFromBusinessName(businessName, nameHint, locale);
-        const detectedLoc = extractLocationFromDescription(businessName);
+        const autoDesc = nameHint.refinedText || generateDescriptionFromBusinessName(currentBizName, nameHint, locale);
+        const detectedLoc = extractLocationFromDescription(currentBizName);
         if (detectedLoc && !serviceArea) {
           setServiceArea(detectedLoc);
         }
@@ -858,9 +844,9 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
       // AI-First Fallback: If no hint is ready yet, invoke AI to analyze the business name
       setIsAnalyzingDescription(true);
       try {
-        const aiRes = await processBusinessDescription("", businessNameRef.current || businessName, locale);
+        const aiRes = await processBusinessDescription("", currentBizName, locale);
         const d = aiRes?.data;
-        if (d && d.confidence === "high") {
+        if (d && (d.confidence === "high" || d.confidence === "medium")) {
           const validHint = validateClassification(d.type, d.sub_type);
           if (validHint?.subType) {
             const aiHint = {
@@ -869,8 +855,8 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
               refinedText: d.refined_text?.trim(),
             };
             setSuggestedHint(aiHint);
-            const autoDesc = aiHint.refinedText || generateDescriptionFromBusinessName(businessName, aiHint, locale);
-            const detectedLoc = extractLocationFromDescription(businessName);
+            const autoDesc = aiHint.refinedText || generateDescriptionFromBusinessName(currentBizName, aiHint, locale);
+            const detectedLoc = extractLocationFromDescription(currentBizName);
             if (detectedLoc && !serviceArea) {
               setServiceArea(detectedLoc);
             }
