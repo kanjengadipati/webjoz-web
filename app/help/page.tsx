@@ -7,7 +7,7 @@ import {
   Search, HelpCircle, Mail, ExternalLink,
   BookOpen, Sparkles, MousePointerClick, Palette,
   ShoppingBag, MessageCircle, Globe, ChevronRight,
-  Lightbulb, ArrowRight, Check,
+  Lightbulb, ArrowRight, Check, Play,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getWhatsAppUrl, SUPPORT_EMAIL } from "@/lib/site-config";
@@ -586,6 +586,10 @@ const TEXT = {
     waMsg: "Halo CS Webjoz, saya butuh panduan penggunaan",
     matchingGuides: "Petunjuk Penggunaan",
     matchingFaq: "Tanya Jawab",
+    videoBadge: "Video Tutorial",
+    videoDuration: "2:20 Menit",
+    videoTitle: "Membuat Website Pertama dengan AI (Walkthrough)",
+    videoDesc: "Tonton langkah demi langkah dari mengisi nama usaha, proses rancang otomatis AI, hingga website siap dipublikasikan.",
   },
   en: {
     back: "← Back to Home",
@@ -612,6 +616,10 @@ const TEXT = {
     waMsg: "Hi Webjoz Support, I need some guidance",
     matchingGuides: "User Guides",
     matchingFaq: "FAQ Items",
+    videoBadge: "Video Tutorial",
+    videoDuration: "2:20 Min",
+    videoTitle: "Building Your First Website with AI (Walkthrough)",
+    videoDesc: "Watch step-by-step from entering your business name, AI generation, to publishing your ready website.",
   },
 };
 
@@ -969,6 +977,53 @@ export default function HelpCenterPage() {
                 </button>
               ))}
             </div>
+
+            {/* Featured Video Tutorial */}
+            {(!activeGuideCategory || activeGuideCategory === "start") && (
+              <div className="rounded-xl border border-border bg-card overflow-hidden shadow-xs">
+                <div className="p-4 sm:p-5 flex items-center justify-between flex-wrap gap-3 border-b border-border/70">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-foreground/10 text-foreground flex items-center justify-center shrink-0">
+                      <Play className="w-4 h-4 fill-current ml-0.5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-foreground/10 text-foreground">
+                          {text.videoBadge}
+                        </span>
+                        <span className="text-[11px] font-mono text-muted-foreground">
+                          {text.videoDuration}
+                        </span>
+                      </div>
+                      <h3 className="text-sm font-semibold text-foreground">
+                        {text.videoTitle}
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {text.videoDesc}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="relative aspect-video w-full bg-black/90">
+                  <video
+                    controls
+                    preload="metadata"
+                    playsInline
+                    poster="/guide/video-poster.png"
+                    className="w-full h-full object-contain"
+                  >
+                    <source src="/guide/webjoz-gabung.mp4" type="video/mp4" />
+                    <source src="/guide/webjoz-gabung.mov" type="video/quicktime" />
+                    <p className="text-xs text-muted-foreground p-4 text-center">
+                      {lang === "id"
+                        ? "Browser Anda tidak mendukung pemutaran video secara langsung."
+                        : "Your browser does not support inline video playback."}
+                    </p>
+                  </video>
+                </div>
+              </div>
+            )}
 
             {/* Guides Grid */}
             <div className="grid gap-4 md:grid-cols-2">
