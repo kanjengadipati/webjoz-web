@@ -40,6 +40,7 @@ export const metadata: Metadata = {
     description: "Buat website bisnis profesional dalam 5 menit dengan AI.",
     url: SITE_URL,
     siteName: "Webjoz",
+    images: [{ url: "/opengraph-image.png?v=2", width: 1200, height: 630 }],
     locale: "id_ID",
     type: "website",
   },
@@ -48,6 +49,7 @@ export const metadata: Metadata = {
     title: "Webjoz — AI Website Builder untuk Bisnis",
     description: "Buat website bisnis profesional dalam 5 menit dengan AI.",
     site: "@webjoz",
+    images: ["/opengraph-image.png?v=2"],
   },
   robots: {
     index: true,
