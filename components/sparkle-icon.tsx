@@ -1,4 +1,6 @@
-function MaskIcon({ src, className }: { src: string; className?: string }) {
+import React from "react";
+
+function MaskIcon({ src, className, style }: { src: string; className?: string; style?: React.CSSProperties }) {
   return (
     <span
       className={className}
@@ -13,15 +15,16 @@ function MaskIcon({ src, className }: { src: string; className?: string }) {
         WebkitMaskSize: "contain",
         WebkitMaskRepeat: "no-repeat",
         WebkitMaskPosition: "center",
+        ...style,
       }}
     />
   );
 }
 
-export function SparkleIcon({ className }: { className?: string }) {
-  return <MaskIcon src="/sparkle.png" className={className} />;
+export function SparkleIcon({ className, style }: { className?: string; style?: React.CSSProperties }) {
+  return <MaskIcon src="/sparkle.png" className={className} style={style} />;
 }
 
-export function SparkleGenAI({ className }: { className?: string }) {
-  return <MaskIcon src="/sparkle-gen-ai.png" className={className} />;
+export function SparkleGenAI({ className, style }: { className?: string; style?: React.CSSProperties }) {
+  return <MaskIcon src="/sparkle-gen-ai.png" className={className} style={style} />;
 }
