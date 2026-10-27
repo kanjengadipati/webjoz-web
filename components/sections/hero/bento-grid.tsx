@@ -12,6 +12,7 @@ import PhotoCredit from "../PhotoCredit";
  * Stats: generalized from about.highlight_stat_* if available.
  */
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
+import { safeHref, isExternalHref } from "@/lib/safe-url";
 
 export default function HeroBentoGrid({
   hero: h,
@@ -24,7 +25,7 @@ export default function HeroBentoGrid({
   onEditingStateChange,
 }: HeroVariantProps) {
   const [isInlineEditing, setIsInlineEditing] = useState(false);
-  const hasSecondary = h.cta_secondary_text && h.cta_secondary_url;
+  const hasSecondary = Boolean(h.cta_secondary_text?.trim() && h.cta_secondary_url?.trim());
 
   const handleEditingStateChange = useCallback((editing: boolean) => {
     setIsInlineEditing(editing);
@@ -153,7 +154,9 @@ export default function HeroBentoGrid({
             />
             <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
               <a
-                href={h.cta_url}
+                href={safeHref(h.cta_url, "#contact")}
+                target={isExternalHref(h.cta_url) ? "_blank" : undefined}
+                rel={isExternalHref(h.cta_url) ? "noopener noreferrer" : undefined}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -181,7 +184,9 @@ export default function HeroBentoGrid({
               </a>
               {hasSecondary && (
                 <a
-                  href={h.cta_secondary_url!}
+                  href={safeHref(h.cta_secondary_url, "#contact")}
+                  target={isExternalHref(h.cta_secondary_url) ? "_blank" : undefined}
+                  rel={isExternalHref(h.cta_secondary_url) ? "noopener noreferrer" : undefined}
                   style={{
                     display: "inline-flex",
                     alignItems: "center",

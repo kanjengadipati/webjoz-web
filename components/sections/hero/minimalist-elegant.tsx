@@ -11,6 +11,7 @@ import PhotoCredit from "../PhotoCredit";
  * Layout: full-width editorial with large serif headline + side image column.
  */
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
+import { safeHref, isExternalHref } from "@/lib/safe-url";
 
 export default function HeroMinimalistElegant({
   hero: h,
@@ -22,7 +23,7 @@ export default function HeroMinimalistElegant({
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: HeroVariantProps) {
-  const hasSecondary = h.cta_secondary_text && h.cta_secondary_url;
+  const hasSecondary = Boolean(h.cta_secondary_text?.trim() && h.cta_secondary_url?.trim());
 
   return (
     <section
@@ -154,7 +155,9 @@ export default function HeroMinimalistElegant({
           style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}
         >
           <a
-            href={h.cta_url}
+            href={safeHref(h.cta_url, "#contact")}
+            target={isExternalHref(h.cta_url) ? "_blank" : undefined}
+            rel={isExternalHref(h.cta_url) ? "noopener noreferrer" : undefined}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -183,7 +186,9 @@ export default function HeroMinimalistElegant({
           </a>
           {hasSecondary && (
             <a
-              href={h.cta_secondary_url!}
+              href={safeHref(h.cta_secondary_url, "#contact")}
+              target={isExternalHref(h.cta_secondary_url) ? "_blank" : undefined}
+              rel={isExternalHref(h.cta_secondary_url) ? "noopener noreferrer" : undefined}
               style={{
                 display: "inline-flex",
                 alignItems: "center",

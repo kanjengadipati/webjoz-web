@@ -6,6 +6,9 @@ import type { TemplateProps } from "../../templates/types";
 import type { HeroVariantProps } from "./types";
 
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
+import { safeHref, isExternalHref } from "@/lib/safe-url";
+
+export { safeHref, isExternalHref };
 
 export function HeroContent({
   hero: h,
@@ -54,7 +57,12 @@ export function HeroContent({
           <InlineText section="hero" fieldKey="opening_hours" value={h.opening_hours ?? ""} placeholder="Atur jam operasional..." onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
         </span>
       )}
-      <a href={h.cta_url} className="px-4 py-2.5 md:px-8 md:py-3.5 text-xs md:text-base font-bold" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "var(--dt-radius)", textDecoration: "none", transition: "opacity 0.2s" }}
+      <a
+        href={safeHref(h.cta_url, "#contact")}
+        target={isExternalHref(h.cta_url) ? "_blank" : undefined}
+        rel={isExternalHref(h.cta_url) ? "noopener noreferrer" : undefined}
+        className="px-4 py-2.5 md:px-8 md:py-3.5 text-xs md:text-base font-bold"
+        style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "var(--dt-radius)", textDecoration: "none", transition: "opacity 0.2s" }}
         onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
         onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
       >

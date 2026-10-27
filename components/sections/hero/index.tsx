@@ -20,21 +20,21 @@ import HeroChronologyBadge from "./chronology-badge";
 import HeroImageCarousel from "./image-carousel";
 
 const variants: Record<string, ComponentType<HeroVariantProps>> = {
-  // Original 4
+  // Core classic (4)
   centered: HeroCentered,
   split: HeroSplit,
   minimal: HeroMinimal,
   "full-bleed": HeroFullBleed,
   "image-carousel": HeroImageCarousel,
-  carousel: HeroImageCarousel,
-  // New 6
+  carousel: HeroImageCarousel, // Legacy alias for backward compatibility
+  // Curated layout styles (6)
   "minimalist-elegant": HeroMinimalistElegant,
   "tech-saas": HeroTechSaaS,
   "neo-brutalist": HeroNeoBrutalist,
   "bento-grid": HeroBentoGrid,
   "split-editorial": HeroSplitEditorial,
   "natural-organic": HeroNaturalOrganic,
-  // Portfolio / personal-brand 4
+  // Portfolio & personal-brand (4)
   "personal-billboard": HeroPersonalBillboard,
   "portrait-showcase": HeroPortraitShowcase,
   "work-preview-strip": HeroWorkPreviewStrip,
@@ -51,7 +51,8 @@ export default function HeroSection({
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: HeroVariantProps) {
-  const heroStyle = (design_token?.layout?.section_variants?.hero as string | undefined) || design_token?.layout?.hero_style || "centered";
+  // Authoritative field is design_token.layout.hero_style; fallback to section_variants.hero
+  const heroStyle = design_token?.layout?.hero_style || (design_token?.layout?.section_variants?.hero as string | undefined) || "centered";
   const Renderer = variants[heroStyle] ?? HeroCentered;
   return (
     <div style={{ containerType: "inline-size", width: "100%" }}>

@@ -12,6 +12,7 @@ import PhotoCredit from "../PhotoCredit";
  * Business filter: photography/studio/travel/content/media businesses.
  */
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
+import { safeHref, isExternalHref } from "@/lib/safe-url";
 
 export default function HeroSplitEditorial({
   hero: h,
@@ -24,7 +25,7 @@ export default function HeroSplitEditorial({
   onEditingStateChange,
 }: HeroVariantProps) {
   const [activeStatIdx, setActiveStatIdx] = useState<number | null>(null);
-  const hasSecondary = h.cta_secondary_text && h.cta_secondary_url;
+  const hasSecondary = Boolean(h.cta_secondary_text?.trim() && h.cta_secondary_url?.trim());
 
   const rawStats = h.badge_text?.includes("|")
     ? h.badge_text.split(",").map((s) => {
@@ -245,7 +246,9 @@ export default function HeroSplitEditorial({
           style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}
         >
           <a
-            href={h.cta_url}
+            href={safeHref(h.cta_url, "#contact")}
+            target={isExternalHref(h.cta_url) ? "_blank" : undefined}
+            rel={isExternalHref(h.cta_url) ? "noopener noreferrer" : undefined}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -274,7 +277,9 @@ export default function HeroSplitEditorial({
           </a>
           {hasSecondary && (
             <a
-              href={h.cta_secondary_url!}
+              href={safeHref(h.cta_secondary_url, "#contact")}
+              target={isExternalHref(h.cta_secondary_url) ? "_blank" : undefined}
+              rel={isExternalHref(h.cta_secondary_url) ? "noopener noreferrer" : undefined}
               style={{
                 display: "inline-flex",
                 alignItems: "center",

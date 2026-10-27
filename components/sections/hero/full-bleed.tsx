@@ -7,6 +7,7 @@ import { SparkleIcon } from "@/components/sparkle-icon";
 import type { HeroVariantProps } from "./types";
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
 import PhotoCredit from "../PhotoCredit";
+import { safeHref, isExternalHref } from "@/lib/safe-url";
 
 /**
  * HeroFullBleed — Cinematic full-bleed photographic hero with dark directional overlay.
@@ -21,7 +22,7 @@ export default function HeroFullBleed({
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: HeroVariantProps) {
-  const hasSecondary = Boolean(h.cta_secondary_text && h.cta_secondary_url);
+  const hasSecondary = Boolean(h.cta_secondary_text?.trim() && h.cta_secondary_url?.trim());
   const defaultCta = language === "en" ? "Get Started" : "Mulai Sekarang";
 
   return (
@@ -246,7 +247,9 @@ export default function HeroFullBleed({
         >
           {/* Primary CTA button (White pill / high-contrast rounded button with dark text & arrow) */}
           <a
-            href={h.cta_url || "#"}
+            href={safeHref(h.cta_url, "#contact")}
+            target={isExternalHref(h.cta_url) ? "_blank" : undefined}
+            rel={isExternalHref(h.cta_url) ? "noopener noreferrer" : undefined}
             className="group inline-flex items-center gap-2 px-6 py-3.5 text-sm md:text-base font-bold rounded-xl transition-all duration-300 shadow-2xl hover:scale-[1.02] active:scale-[0.98]"
             style={{
               background: "#FFFFFF",
@@ -273,7 +276,9 @@ export default function HeroFullBleed({
           {/* Secondary CTA button (Clean glass border button) */}
           {hasSecondary && (
             <a
-              href={h.cta_secondary_url || "#"}
+              href={safeHref(h.cta_secondary_url, "#contact")}
+              target={isExternalHref(h.cta_secondary_url) ? "_blank" : undefined}
+              rel={isExternalHref(h.cta_secondary_url) ? "noopener noreferrer" : undefined}
               className="inline-flex items-center gap-2 px-6 py-3.5 text-sm md:text-base font-semibold rounded-xl backdrop-blur-md transition-all duration-300 hover:bg-white/15"
               style={{
                 background: "rgba(255, 255, 255, 0.08)",
