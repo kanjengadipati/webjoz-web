@@ -31,3 +31,8 @@ yarn-error.log*
 .env*.local
 .env.local
 
+# large media / video files (use Cloudinary / CDN instead)
+*.mp4
+*.mov
+*.webm
+*.avi

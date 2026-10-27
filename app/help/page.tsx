@@ -1652,8 +1652,7 @@ export default function HelpCenterPage() {
                     poster="/guide/video-poster.png"
                     className="w-full h-full object-contain"
                   >
-                    <source src="/guide/webjoz-gabung.mp4" type="video/mp4" />
-                    <source src="/guide/webjoz-gabung.mov" type="video/quicktime" />
+                    <source src="https://res.cloudinary.com/dckbihkyp/video/upload/v1793092413/guide-webjoz-gabung.mp4" type="video/mp4" />
                     <p className="text-xs text-muted-foreground p-4 text-center">
                       {lang === "id"
                         ? "Browser Anda tidak mendukung pemutaran video secara langsung."
