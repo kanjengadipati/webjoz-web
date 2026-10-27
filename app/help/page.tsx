@@ -1646,6 +1646,7 @@ export default function HelpCenterPage() {
 
                 <div className="relative aspect-video w-full bg-black/90">
                   <video
+                    src="https://res.cloudinary.com/dckbihkyp/video/upload/v1793092413/guide-webjoz-gabung.mp4"
                     controls
                     preload="metadata"
                     playsInline
