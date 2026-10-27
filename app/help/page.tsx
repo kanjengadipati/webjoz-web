@@ -23,7 +23,7 @@ interface GuideStep {
 
 interface GuideItem {
   id: string;
-  category: "start" | "edit" | "design" | "catalog" | "orders" | "domain";
+  category: "start" | "edit" | "design" | "catalog" | "orders" | "domain" | "seo" | "integrations" | "blog" | "leads" | "testimonials";
   badge: string;
   timeEst: string;
   title: string;
@@ -238,6 +238,161 @@ const GUIDES_DATA: Record<"id" | "en", GuideItem[]> = {
       actionLabel: "Publikasikan Website",
       tags: ["publish", "publikasikan", "domain", "alamat website", "custom domain", "online", "live"],
     },
+    {
+      id: "seo-meta",
+      category: "seo",
+      badge: "SEO & Google",
+      timeEst: "3 Menit",
+      title: "Optimasi SEO & Tampilan Berbagi Link",
+      summary: "Atur judul, deskripsi pencarian Google, kata kunci, dan gambar cuplikan agar websitemu mudah ditemukan dan tampil menarik saat link dibagikan.",
+      illustration: "seo-meta",
+      steps: [
+        {
+          title: "Buka Pengaturan SEO",
+          desc: "Di bilah navigasi editor website atau dashboard, klik menu 'SEO'.",
+        },
+        {
+          title: "Gunakan 'Generate dengan AI'",
+          desc: "Klik tombol 'Generate dengan AI' di samping Meta Title dan Meta Description untuk menghasilkan teks yang ramah mesin pencari secara otomatis.",
+        },
+        {
+          title: "Masukkan Kata Kunci (Keywords)",
+          desc: "Ketik kata kunci yang sering dicari calon pelanggan (misal: 'kuliner jogja', 'catering enak') lalu tekan Enter.",
+        },
+        {
+          title: "Simpan & Cek Hasil",
+          desc: "Klik tombol 'Simpan'. Mesin pencari seperti Google akan membaca data ini saat mengindeks websitemu.",
+        },
+      ],
+      tip: "Meta Description yang ringkas dan persuasif (140-155 karakter) meningkatkan kemungkinan link websitemu diklik di hasil pencarian Google.",
+      actionUrl: "/dashboard",
+      actionLabel: "Buka Pengaturan SEO",
+      tags: ["seo", "google", "meta title", "meta description", "keywords", "ranking", "favicon", "pencarian"],
+    },
+    {
+      id: "integrations",
+      category: "integrations",
+      badge: "Pelacakan & Iklan",
+      timeEst: "2 Menit",
+      title: "Memasang Google Analytics & Meta Pixel",
+      summary: "Hubungkan alat analisis pengunjung dan pelacak iklan Facebook/Instagram tanpa perlu koding atau mengubah kode HTML.",
+      illustration: "integrations",
+      steps: [
+        {
+          title: "Buka Menu Integrasi",
+          desc: "Dari dashboard situs atau editor, pilih tab 'Integrasi'.",
+        },
+        {
+          title: "Masukkan ID Google Analytics 4",
+          desc: "Salin Measurement ID dari Google Analytics (format: G-XXXXXXXXXX) ke kolom GA4.",
+        },
+        {
+          title: "Masukkan ID Meta Pixel",
+          desc: "Salin Pixel ID dari Meta Events Manager (format angka 15-16 digit) untuk melacak konversi iklan IG/FB.",
+        },
+        {
+          title: "Klik Simpan",
+          desc: "Klik tombol 'Simpan'. Script analitik otomatis terpasang aktif di seluruh halaman situsmu.",
+        },
+      ],
+      tip: "Data pengunjung mulai terekam di Google Analytics dan Meta Events Manager dalam beberapa jam setelah disimpan.",
+      actionUrl: "/dashboard",
+      actionLabel: "Buka Tab Integrasi",
+      tags: ["analytics", "pixel", "facebook ads", "google analytics", "ga4", "tracking", "meta pixel", "iklan"],
+    },
+    {
+      id: "blog-ai",
+      category: "blog",
+      badge: "Blog & Artikel",
+      timeEst: "5 Menit",
+      title: "Buat & Kelola Artikel Blog dengan AI",
+      summary: "Tambahkan halaman blog ke website bisnismu. Gunakan AI untuk menghasilkan artikel profesional berdasarkan topik yang kamu tentukan.",
+      illustration: "blog-ai",
+      steps: [
+        {
+          title: "Buka Menu Blog",
+          desc: "Di editor website, klik tab 'Blog' untuk membuka manajemen artikel.",
+        },
+        {
+          title: "Generate Artikel dengan AI",
+          desc: "Ketikkan topik atau judul yang diinginkan, lalu klik 'Generate AI'. Artikel lengkap dengan paragraf rapi akan dibuat otomatis.",
+        },
+        {
+          title: "Edit & Sempurnakan Konten",
+          desc: "Buka editor artikel untuk menyesuaikan judul, isi, gambar cover, dan meta SEO sebelum dipublikasikan.",
+        },
+        {
+          title: "Pilih Layout Tampilan Blog",
+          desc: "Pilih gaya tampilan halaman blog: Grid, List, Featured, atau Minimal sesuai estetika website.",
+        },
+      ],
+      tip: "Artikel blog membantu meningkatkan SEO organik. Targetkan kata kunci yang relevan di setiap artikel agar mudah ditemukan di Google.",
+      actionUrl: "/dashboard",
+      actionLabel: "Buka Blog Manager",
+      tags: ["blog", "artikel", "konten", "ai generate", "seo blog", "tulisan"],
+    },
+    {
+      id: "leads-inbox",
+      category: "leads",
+      badge: "Leads & Kontak",
+      timeEst: "2 Menit",
+      title: "Mengelola Leads & Pesan Pengunjung",
+      summary: "Semua pesan yang masuk dari form kontak website tersimpan otomatis di Leads Inbox. Balas langsung via WhatsApp atau email dari sini.",
+      illustration: "leads-inbox",
+      steps: [
+        {
+          title: "Buka Menu Leads",
+          desc: "Dari sidebar dashboard, klik 'Leads' untuk melihat semua pesan yang masuk dari pengunjung website.",
+        },
+        {
+          title: "Lihat Detail Pesan",
+          desc: "Klik kartu lead untuk melihat detail lengkap: nama, email, nomor telpon, dan isi pesan pengunjung.",
+        },
+        {
+          title: "Balas via WhatsApp atau Email",
+          desc: "Klik tombol WhatsApp atau Email di kartu lead untuk langsung membalas calon pelanggan dalam satu klik.",
+        },
+        {
+          title: "Filter Berdasarkan Website",
+          desc: "Gunakan dropdown filter untuk melihat leads dari website tertentu jika kamu memiliki lebih dari satu website.",
+        },
+      ],
+      tip: "Balas leads dalam 1 jam pertama meningkatkan kemungkinan konversi hingga 7x lipat dibandingkan membalas setelah 24 jam.",
+      actionUrl: "/dashboard/leads",
+      actionLabel: "Buka Leads Inbox",
+      tags: ["leads", "pesan masuk", "form kontak", "inbox", "calon pelanggan", "follow up"],
+    },
+    {
+      id: "testimonials-manage",
+      category: "testimonials",
+      badge: "Testimoni",
+      timeEst: "3 Menit",
+      title: "Kumpulkan & Tampilkan Testimoni Pelanggan",
+      summary: "Bagikan link khusus ke pelanggan untuk mengumpulkan ulasan bintang. Moderasi dan setujui testimoni sebelum tampil otomatis di website.",
+      illustration: "testimonials-manage",
+      steps: [
+        {
+          title: "Buka Tab Testimoni",
+          desc: "Di editor website, klik tab 'Testimoni' untuk mengelola ulasan pelanggan.",
+        },
+        {
+          title: "Bagikan Link Formulir",
+          desc: "Salin link form testimoni dan kirim ke pelanggan via WhatsApp. Mereka dapat mengisi nama, ulasan, dan rating bintang.",
+        },
+        {
+          title: "Moderasi Ulasan Masuk",
+          desc: "Ulasan baru masuk dengan status 'Pending'. Klik ✓ untuk Setujui atau ✗ untuk Tolak sebelum tampil di website.",
+        },
+        {
+          title: "Testimoni Tampil Otomatis",
+          desc: "Testimoni yang disetujui langsung muncul di seksi ulasan website dalam tampilan kartu yang elegan.",
+        },
+      ],
+      tip: "Testimoni dengan foto dan nama lengkap lebih dipercaya. Minta pelanggan mengisi form sesaat setelah transaksi selesai.",
+      actionUrl: "/dashboard",
+      actionLabel: "Kelola Testimoni",
+      tags: ["testimoni", "review", "ulasan", "rating", "bintang", "pelanggan", "kepercayaan"],
+    },
   ],
   en: [
     {
@@ -425,6 +580,161 @@ const GUIDES_DATA: Record<"id" | "en", GuideItem[]> = {
       actionUrl: "/dashboard",
       actionLabel: "Publish Website",
       tags: ["publish", "domain", "custom domain", "live", "address", "dns"],
+    },
+    {
+      id: "seo-meta",
+      category: "seo",
+      badge: "SEO & Search",
+      timeEst: "3 Mins",
+      title: "Optimizing SEO & Link Previews",
+      summary: "Configure titles, Google search snippets, keywords, and preview thumbnails so your website ranks well and looks great when shared.",
+      illustration: "seo-meta",
+      steps: [
+        {
+          title: "Open SEO Settings",
+          desc: "From the editor top bar or site dashboard, click the 'SEO' tab.",
+        },
+        {
+          title: "Use 'Generate with AI'",
+          desc: "Click 'Generate dengan AI' next to Meta Title and Meta Description to create search-optimized copy automatically.",
+        },
+        {
+          title: "Add Target Keywords",
+          desc: "Enter terms prospective customers search for (e.g., 'jogja culinary', 'premium catering') and hit Enter.",
+        },
+        {
+          title: "Save Changes",
+          desc: "Click 'Simpan' to apply. Search engines will read these metadata tags when indexing your site.",
+        },
+      ],
+      tip: "Keep Meta Descriptions between 140-155 characters for optimal display on Google search result cards.",
+      actionUrl: "/dashboard",
+      actionLabel: "Open SEO Settings",
+      tags: ["seo", "google", "meta title", "meta description", "keywords", "ranking", "favicon", "search"],
+    },
+    {
+      id: "integrations",
+      category: "integrations",
+      badge: "Analytics & Ads",
+      timeEst: "2 Mins",
+      title: "Connecting Google Analytics & Meta Pixel",
+      summary: "Connect visitor analytics and Facebook/Instagram ad conversion tracking without writing any code or editing HTML.",
+      illustration: "integrations",
+      steps: [
+        {
+          title: "Open Integrations Tab",
+          desc: "From your site dashboard or editor, select the 'Integrasi' tab.",
+        },
+        {
+          title: "Enter Google Analytics 4 ID",
+          desc: "Paste your GA4 Measurement ID (format: G-XXXXXXXXXX) into the Google Analytics field.",
+        },
+        {
+          title: "Enter Meta Pixel ID",
+          desc: "Paste your 15-16 digit Pixel ID from Meta Events Manager to track Instagram & Facebook ad conversions.",
+        },
+        {
+          title: "Click Save",
+          desc: "Click 'Simpan'. Tracking scripts will immediately activate across all pages of your website.",
+        },
+      ],
+      tip: "Traffic metrics will start populating in your Google Analytics and Meta Events Manager dashboards within a few hours.",
+      actionUrl: "/dashboard",
+      actionLabel: "Open Integrations",
+      tags: ["analytics", "pixel", "facebook ads", "google analytics", "ga4", "tracking", "meta pixel", "ads"],
+    },
+    {
+      id: "blog-ai",
+      category: "blog",
+      badge: "Blog & Articles",
+      timeEst: "5 Mins",
+      title: "Create & Manage Blog Articles with AI",
+      summary: "Add a blog section to your website. Use AI to generate professional articles based on topics you specify.",
+      illustration: "blog-ai",
+      steps: [
+        {
+          title: "Open the Blog Tab",
+          desc: "In the site editor, click the 'Blog' tab to open the article management panel.",
+        },
+        {
+          title: "Generate an Article with AI",
+          desc: "Type in a topic or title, then click 'Generate AI'. A complete, well-structured article is created automatically.",
+        },
+        {
+          title: "Edit & Refine Content",
+          desc: "Open the article editor to adjust the title, body, cover image, and SEO meta fields before publishing.",
+        },
+        {
+          title: "Choose Blog Layout",
+          desc: "Select a blog page display style: Grid, List, Featured, or Minimal to match your site aesthetic.",
+        },
+      ],
+      tip: "Blog articles improve organic SEO. Target relevant keywords in each post to increase Google discoverability.",
+      actionUrl: "/dashboard",
+      actionLabel: "Open Blog Manager",
+      tags: ["blog", "articles", "content", "ai generate", "seo blog", "writing"],
+    },
+    {
+      id: "leads-inbox",
+      category: "leads",
+      badge: "Leads & Contact",
+      timeEst: "2 Mins",
+      title: "Managing Leads & Visitor Messages",
+      summary: "All messages submitted through your website's contact form are automatically saved in the Leads Inbox. Reply directly via WhatsApp or email.",
+      illustration: "leads-inbox",
+      steps: [
+        {
+          title: "Open the Leads Menu",
+          desc: "From the dashboard sidebar, click 'Leads' to view all incoming messages from website visitors.",
+        },
+        {
+          title: "View Lead Details",
+          desc: "Click a lead card to see full details: name, email, phone number, and the visitor's message.",
+        },
+        {
+          title: "Reply via WhatsApp or Email",
+          desc: "Click the WhatsApp or Email button on the lead card to respond to prospective customers in one click.",
+        },
+        {
+          title: "Filter by Website",
+          desc: "Use the filter dropdown to view leads from a specific site if you manage multiple websites.",
+        },
+      ],
+      tip: "Responding to leads within the first hour increases conversion rates by up to 7x compared to responding after 24 hours.",
+      actionUrl: "/dashboard/leads",
+      actionLabel: "Open Leads Inbox",
+      tags: ["leads", "contact form", "inbox", "messages", "customers", "follow up"],
+    },
+    {
+      id: "testimonials-manage",
+      category: "testimonials",
+      badge: "Testimonials",
+      timeEst: "3 Mins",
+      title: "Collect & Display Customer Testimonials",
+      summary: "Share a dedicated link to collect star ratings and reviews. Moderate and approve submissions before they appear on your live website.",
+      illustration: "testimonials-manage",
+      steps: [
+        {
+          title: "Open the Testimonials Tab",
+          desc: "In the site editor, click the 'Testimoni' tab to manage customer reviews.",
+        },
+        {
+          title: "Share the Submission Link",
+          desc: "Copy the testimonial form link and send it to customers via WhatsApp. They can fill in their name, review, and star rating.",
+        },
+        {
+          title: "Moderate Incoming Reviews",
+          desc: "New reviews arrive with 'Pending' status. Click ✓ to Approve or ✗ to Reject before they appear on your site.",
+        },
+        {
+          title: "Testimonials Publish Automatically",
+          desc: "Approved testimonials immediately appear in your website's review section in an elegant card layout.",
+        },
+      ],
+      tip: "Testimonials with a full name and role tend to build more trust. Request reviews right after a successful transaction.",
+      actionUrl: "/dashboard",
+      actionLabel: "Manage Testimonials",
+      tags: ["testimonials", "reviews", "ratings", "stars", "customer trust", "social proof"],
     },
   ],
 };
@@ -630,8 +940,13 @@ const GUIDE_SCREENSHOTS: Record<string, string> = {
   "inline-edit": "/guide/step-editor-overview.png",
   "brand-style": "/guide/step-editor-design.png",
   "catalog-manage": "/guide/step-catalog.png",
-  "wa-order": "/guide/step-integrations.png",
+  "wa-order": "/guide/step-wa-order.png",
   "publish-domain": "/guide/step-publish-preview.png",
+  "seo-meta": "/guide/step-seo.png",
+  "integrations": "/guide/step-integrations.png",
+  "blog-ai": "/guide/step-editor-panel.png",
+  "leads-inbox": "/guide/step-dashboard-sites.png",
+  "testimonials-manage": "/guide/step-dashboard-sites.png",
 };
 
 // ─── Guide Illustration (Real UI Screenshot) ─────────────────────────────────
@@ -647,7 +962,7 @@ function GuideIllustration({ type }: { type: string }) {
         width={1200}
         height={700}
         className="w-full h-auto object-cover object-top"
-        style={{ maxHeight: "220px", objectPosition: type === "publish-domain" || type === "ai-create" ? "top center" : "top left" }}
+        style={{ maxHeight: "220px", objectPosition: type === "publish-domain" || type === "ai-create" || type === "wa-order" ? "top center" : "top left" }}
       />
     </div>
   );
@@ -962,6 +1277,11 @@ export default function HelpCenterPage() {
                 { id: "catalog", label: lang === "id" ? "Katalog & Menu" : "Catalog" },
                 { id: "orders", label: lang === "id" ? "Pesanan WA" : "Orders" },
                 { id: "domain", label: lang === "id" ? "Publikasi & Domain" : "Domain" },
+                { id: "seo", label: "SEO & Google" },
+                { id: "integrations", label: lang === "id" ? "Integrasi Pixel" : "Integrations" },
+                { id: "blog", label: "Blog & Artikel" },
+                { id: "leads", label: lang === "id" ? "Leads & Kontak" : "Leads" },
+                { id: "testimonials", label: lang === "id" ? "Testimoni" : "Testimonials" },
               ].map((c) => (
                 <button
                   key={c.id}
