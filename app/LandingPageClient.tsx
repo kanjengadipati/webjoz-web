@@ -479,8 +479,8 @@ export default function LandingPageClient() {
         </div>
       </section>
 
-      {/* ── Key Features: Two real feature highlights ──────────────────────── */}
-      <section id="features" className="px-4 py-16 sm:px-6 lg:px-10 max-w-6xl mx-auto scroll-mt-16">
+      {/* ── Key Features & Why Webjoz ────────────────────────────────────────── */}
+      <section id="features" className="px-4 py-16 sm:px-6 lg:px-10 max-w-6xl mx-auto scroll-mt-16 space-y-16 sm:space-y-20">
         <div className="mx-auto max-w-6xl space-y-8">
           <div className="text-center space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
@@ -569,32 +569,10 @@ export default function LandingPageClient() {
             </Card>
           </div>
         </div>
-      </section>
 
-      {/* ── Template Showcase ───────────────────────────────────────────────── */}
-      <section id="templates" className="px-4 py-16 sm:px-6 lg:px-10 max-w-6xl mx-auto">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-12 text-center space-y-3">
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
-              {t("landing.templatesEyebrow")}
-            </p>
-            <h2
-              className="text-3xl font-bold tracking-tight sm:text-4xl text-foreground"
-              dangerouslySetInnerHTML={{ __html: t("landing.templatesTitle") }}
-            />
-            <p className="mx-auto max-w-2xl text-base text-muted-foreground">
-              {t("landing.templatesDesc")}
-            </p>
-          </div>
-
-          <LandingTemplateShowcase onStart={(item) => startWizard(item)} />
-        </div>
-      </section>
-
-      {/* ── Features Grid ──────────────────────────────────────────────────── */}
-      <section className="px-4 py-16 sm:px-6 lg:px-10 max-w-6xl mx-auto">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-12 text-center space-y-3">
+        {/* Why Webjoz Capabilities Grid */}
+        <div className="mx-auto max-w-6xl space-y-8 pt-4">
+          <div className="text-center space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
               {t("landing.whyEyebrow")}
             </p>
@@ -618,6 +596,26 @@ export default function LandingPageClient() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── Template Showcase ───────────────────────────────────────────────── */}
+      <section id="templates" className="px-4 py-16 sm:px-6 lg:px-10 max-w-6xl mx-auto">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-12 text-center space-y-3">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+              {t("landing.templatesEyebrow")}
+            </p>
+            <h2
+              className="text-3xl font-bold tracking-tight sm:text-4xl text-foreground"
+              dangerouslySetInnerHTML={{ __html: t("landing.templatesTitle") }}
+            />
+            <p className="mx-auto max-w-2xl text-base text-muted-foreground">
+              {t("landing.templatesDesc")}
+            </p>
+          </div>
+
+          <LandingTemplateShowcase onStart={(item) => startWizard(item)} />
         </div>
       </section>
 
