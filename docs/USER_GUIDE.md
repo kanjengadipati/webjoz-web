@@ -167,6 +167,46 @@ Webjoz menyediakan sistem pengumpulan ulasan bintang dengan moderasi sebelum tam
 
 > 💡 **Tips**: Testimoni dengan foto profil dan nama lengkap meningkatkan kepercayaan calon pelanggan baru secara signifikan.
 
+### Langkah 14: Pantau Traffic & Analitik Pengunjung
+Webjoz dilengkapi dashboard analitik bawaan tanpa perlu memasang script pihak ketiga:
+1. Dari sidebar dashboard, klik **`Analitik`**.
+2. Pilih filter rentang waktu: **7 Hari**, **30 Hari**, **90 Hari**, atau tanggal kustom dengan kalender.
+3. Pilih website spesifik dari dropdown untuk memfilter data website tertentu.
+4. Pantau 4 kartu metrik utama: **Total Pageviews**, **Pengunjung Unik (Unique Visitors)**, **Rata-rata Durasi Sesi**, dan **Total Leads Masuk**.
+5. Gulir ke bawah untuk melihat daftar **Halaman Paling Banyak Dikunjungi** dan **Sumber Traffic (Referrer)** (misalnya: Google, WhatsApp, Direct).
+
+> 💡 **Tips**: Bandingkan performa 30 hari terakhir dengan bulan sebelumnya untuk mengukur efektivitas kampanye promosi atau perubahan konten website.
+
+### Langkah 15: Pantau & Kelola Status Pesanan (Orders Tracker)
+Semua pesanan yang masuk melalui katalog WhatsApp terekam di pusat pesanan dashboard:
+1. Dari sidebar dashboard, klik **`Pesanan`** (Orders).
+2. Klik baris pesanan untuk melihat detail lengkap: daftar item, varian, catatan, total harga, nama pembeli, dan nomor WhatsApp.
+3. Perbarui status pesanan sesuai tahapan fulfillment: **Baru (New)** → **Dikonfirmasi (Confirmed)** → **Diproses (Processing)** → **Dikirim (Shipped)** → **Selesai (Done)** atau **Dibatalkan (Cancelled)**.
+4. Gunakan kolom pencarian atau filter status dan website untuk melacak pesanan tertentu secara cepat.
+
+> 💡 **Tips**: Memperbarui status pesanan secara real-time membantu tim menjaga alur operasional tetap rapi dan memberikan update cepat kepada pelanggan.
+
+### Langkah 16: Undang Anggota Tim & Kolaborasi
+Bagi tugas pengelolaan website dengan mengundang rekan kerja atau staf ke akun bisnis Webjoz:
+1. Dari sidebar dashboard, klik **`Tim`** (Team).
+2. Masukkan alamat email rekan kerja yang ingin diundang.
+3. Pilih peran akses:
+   - **Editor**: Dapat mengedit konten, mengelola blog, melihat pesanan & leads, tanpa akses ke billing.
+   - **Admin**: Akses penuh termasuk manajemen tim dan tagihan.
+4. Klik **`Undang Anggota`** — email berisi link bergabung akan dikirimkan otomatis.
+5. Kelola daftar anggota yang sudah bergabung, ubah peran, atau cabut akses kapan saja.
+
+> 💡 **Tips**: Fitur kolaborasi tim tersedia pada paket Pro ke atas. Pastikan menetapkan peran "Editor" untuk staf operasional agar pengaturan langganan tetap terlindungi.
+
+### Langkah 17: Pantau Kuota & Batas Penggunaan AI
+Ketahui sisa kuota generate AI dan batas website aktif secara transparan:
+1. Dari sidebar dashboard atau menu profil, klik **`Penggunaan`** (Usage).
+2. Lihat meteran kuota **"Buat Website AI"** untuk memantau frekuensi penggunaan generate AI dari total kuota paket.
+3. Cek jumlah **Website Aktif** dibandingkan batas maksimum website yang diizinkan paketmu.
+4. Jika kuota menipis, klik tombol **`Upgrade Paket`** untuk beralih ke paket dengan kuota lebih besar dan fitur tanpa batas.
+
+> 💡 **Tips**: Kuota generate AI otomatis direset setiap bulan pada tanggal yang sama dengan tanggal awal berlangganan.
+
 ---
 
 ## 🛠 Troubleshooting Umum

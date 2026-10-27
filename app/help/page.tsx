@@ -23,7 +23,7 @@ interface GuideStep {
 
 interface GuideItem {
   id: string;
-  category: "start" | "edit" | "design" | "catalog" | "orders" | "domain" | "seo" | "integrations" | "blog" | "leads" | "testimonials";
+  category: "start" | "edit" | "design" | "catalog" | "orders" | "domain" | "seo" | "integrations" | "blog" | "leads" | "testimonials" | "analytics" | "team" | "usage";
   badge: string;
   timeEst: string;
   title: string;
@@ -393,6 +393,130 @@ const GUIDES_DATA: Record<"id" | "en", GuideItem[]> = {
       actionLabel: "Kelola Testimoni",
       tags: ["testimoni", "review", "ulasan", "rating", "bintang", "pelanggan", "kepercayaan"],
     },
+    {
+      id: "analytics-dashboard",
+      category: "analytics",
+      badge: "Analitik",
+      timeEst: "2 Menit",
+      title: "Memantau Trafik & Performa Website",
+      summary: "Pantau total pengunjung, halaman populer, asal trafik, dan durasi kunjungan. Filter berdasarkan periode dan per-website.",
+      illustration: "analytics-dashboard",
+      steps: [
+        {
+          title: "Buka Menu Analytics",
+          desc: "Dari sidebar dashboard, klik 'Analytics' untuk melihat ringkasan performa semua website.",
+        },
+        {
+          title: "Filter Periode & Website",
+          desc: "Gunakan preset (7 hari, 30 hari, 90 hari) atau pilih rentang tanggal kustom. Filter juga berdasarkan website tertentu.",
+        },
+        {
+          title: "Baca Statistik Kunci",
+          desc: "Perhatikan 4 kartu utama: Total Tayangan, Pengunjung Unik, Rata-rata Durasi Kunjungan, dan Total Leads yang masuk.",
+        },
+        {
+          title: "Analisis Halaman & Sumber Trafik",
+          desc: "Scroll ke bawah untuk melihat halaman paling sering dikunjungi dan dari mana asal pengunjung (Google, WhatsApp, dll).",
+        },
+      ],
+      tip: "Bandingkan performa 30 hari ini vs periode sebelumnya untuk mengukur dampak konten atau promosi yang kamu jalankan.",
+      actionUrl: "/dashboard/analytics",
+      actionLabel: "Buka Analytics",
+      tags: ["analytics", "trafik", "pengunjung", "statistik", "pageview", "performa", "laporan"],
+    },
+    {
+      id: "orders-tracker",
+      category: "orders",
+      badge: "Riwayat Pesanan",
+      timeEst: "2 Menit",
+      title: "Melacak & Mengelola Status Pesanan",
+      summary: "Lihat semua pesanan dari keranjang WhatsApp di satu dashboard. Perbarui status pesanan dari Baru hingga Selesai.",
+      illustration: "orders-tracker",
+      steps: [
+        {
+          title: "Buka Menu Orders",
+          desc: "Dari sidebar dashboard, klik 'Orders' untuk melihat semua pesanan WhatsApp yang masuk.",
+        },
+        {
+          title: "Lihat Detail Pesanan",
+          desc: "Klik baris pesanan untuk melihat rincian: daftar item, total harga, nama & nomor pelanggan.",
+        },
+        {
+          title: "Perbarui Status Pesanan",
+          desc: "Ubah status pesanan sesuai progres: Baru → Dikonfirmasi → Diproses → Dikirim → Selesai (atau Dibatalkan).",
+        },
+        {
+          title: "Filter & Cari Pesanan",
+          desc: "Gunakan kolom pencarian atau filter status dan website untuk menemukan pesanan tertentu dengan cepat.",
+        },
+      ],
+      tip: "Update status pesanan secara berkala memudahkan kamu melacak fulfillment dan menjaga pengalaman pelanggan tetap baik.",
+      actionUrl: "/dashboard/orders",
+      actionLabel: "Buka Daftar Pesanan",
+      tags: ["orders", "pesanan", "status", "tracking", "fulfillment", "riwayat pesanan"],
+    },
+    {
+      id: "team-invite",
+      category: "team",
+      badge: "Tim & Kolaborasi",
+      timeEst: "2 Menit",
+      title: "Mengundang Anggota Tim ke Akun",
+      summary: "Tambahkan kolega atau asisten ke akun Webjoz bisnismu. Atur peran masing-masing anggota agar aksesnya sesuai tanggung jawab.",
+      illustration: "team-invite",
+      steps: [
+        {
+          title: "Buka Menu Tim",
+          desc: "Dari sidebar dashboard, klik 'Tim' untuk melihat daftar anggota dan undangan aktif.",
+        },
+        {
+          title: "Masukkan Email & Peran",
+          desc: "Ketik email kolega di kolom undangan. Pilih peran: 'Editor' (bisa edit website) atau 'Admin' (akses penuh termasuk billing).",
+        },
+        {
+          title: "Kirim Undangan",
+          desc: "Klik 'Undang'. Kolega akan menerima email berisi link untuk bergabung ke akun tim.",
+        },
+        {
+          title: "Kelola Anggota",
+          desc: "Anggota yang sudah bergabung tampil di daftar. Kamu bisa mengubah peran atau mencabut akses kapan saja.",
+        },
+      ],
+      tip: "Fitur Tim tersedia untuk paket Pro. Anggota dengan peran Editor tidak dapat mengakses halaman Billing & Upgrade.",
+      actionUrl: "/dashboard/team",
+      actionLabel: "Kelola Tim",
+      tags: ["tim", "team", "undang", "kolaborasi", "editor", "admin", "anggota"],
+    },
+    {
+      id: "usage-quota",
+      category: "usage",
+      badge: "Penggunaan & Kuota",
+      timeEst: "1 Menit",
+      title: "Memantau Kuota AI & Batas Paket",
+      summary: "Lihat berapa banyak generate AI yang sudah terpakai, sisa kuota website, dan detail paket aktifmu dalam satu halaman ringkas.",
+      illustration: "usage-quota",
+      steps: [
+        {
+          title: "Buka Halaman Penggunaan",
+          desc: "Dari sidebar atau menu akun, klik 'Penggunaan' untuk melihat ringkasan kuota paket aktif.",
+        },
+        {
+          title: "Pantau Kuota AI Generate",
+          desc: "Lihat berapa kali kamu sudah menggunakan fitur 'Buat Website AI' dari total kuota yang tersedia di paketmu.",
+        },
+        {
+          title: "Cek Batas Jumlah Website",
+          desc: "Tampilan meter menunjukkan jumlah website aktif vs batas maksimum paketmu.",
+        },
+        {
+          title: "Upgrade Jika Kuota Habis",
+          desc: "Jika mendekati batas, klik tombol 'Upgrade Paket' untuk mendapatkan kuota lebih besar dan fitur premium.",
+        },
+      ],
+      tip: "Kuota AI generate direset setiap bulan pada tanggal yang sama dengan tanggal berlangganan pertamamu.",
+      actionUrl: "/dashboard/usage",
+      actionLabel: "Lihat Penggunaan",
+      tags: ["kuota", "usage", "ai generate", "batas", "paket", "upgrade", "limit"],
+    },
   ],
   en: [
     {
@@ -736,6 +860,130 @@ const GUIDES_DATA: Record<"id" | "en", GuideItem[]> = {
       actionLabel: "Manage Testimonials",
       tags: ["testimonials", "reviews", "ratings", "stars", "customer trust", "social proof"],
     },
+    {
+      id: "analytics-dashboard",
+      category: "analytics",
+      badge: "Analytics",
+      timeEst: "2 Mins",
+      title: "Monitoring Traffic & Website Performance",
+      summary: "Track total visitors, popular pages, traffic sources, and session duration. Filter by date range and individual website.",
+      illustration: "analytics-dashboard",
+      steps: [
+        {
+          title: "Open Analytics",
+          desc: "From the dashboard sidebar, click 'Analytics' to view performance summaries across all your websites.",
+        },
+        {
+          title: "Filter by Period & Website",
+          desc: "Use presets (7 days, 30 days, 90 days) or a custom date range. Filter further by a specific website.",
+        },
+        {
+          title: "Read Key Metrics",
+          desc: "Review the 4 main cards: Total Pageviews, Unique Visitors, Average Session Duration, and Total Leads.",
+        },
+        {
+          title: "Analyze Pages & Traffic Sources",
+          desc: "Scroll down to see your most visited pages and where visitors arrived from (Google, WhatsApp, direct, etc.).",
+        },
+      ],
+      tip: "Compare the last 30 days vs the previous period to measure the impact of any content updates or promotions you ran.",
+      actionUrl: "/dashboard/analytics",
+      actionLabel: "Open Analytics",
+      tags: ["analytics", "traffic", "visitors", "statistics", "pageviews", "performance", "reports"],
+    },
+    {
+      id: "orders-tracker",
+      category: "orders",
+      badge: "Order Tracking",
+      timeEst: "2 Mins",
+      title: "Tracking & Managing Order Status",
+      summary: "View all WhatsApp cart orders in one dashboard. Update order status from New through to Completed.",
+      illustration: "orders-tracker",
+      steps: [
+        {
+          title: "Open Orders Menu",
+          desc: "From the dashboard sidebar, click 'Orders' to view all incoming WhatsApp orders.",
+        },
+        {
+          title: "View Order Details",
+          desc: "Click an order row to see full details: item list, total price, customer name and phone number.",
+        },
+        {
+          title: "Update Order Status",
+          desc: "Change the status to reflect fulfillment progress: New → Confirmed → Processing → Shipped → Done (or Cancelled).",
+        },
+        {
+          title: "Filter & Search Orders",
+          desc: "Use the search field or filter by status and website to quickly locate a specific order.",
+        },
+      ],
+      tip: "Keeping order statuses up to date makes it easy to track fulfillment and maintain a good customer experience.",
+      actionUrl: "/dashboard/orders",
+      actionLabel: "View Orders",
+      tags: ["orders", "status", "tracking", "fulfillment", "order history"],
+    },
+    {
+      id: "team-invite",
+      category: "team",
+      badge: "Team & Collaboration",
+      timeEst: "2 Mins",
+      title: "Inviting Team Members to Your Account",
+      summary: "Add colleagues or assistants to your Webjoz business account. Assign roles so each member gets appropriate access.",
+      illustration: "team-invite",
+      steps: [
+        {
+          title: "Open Team Settings",
+          desc: "From the dashboard sidebar, click 'Team' to see current members and active invitations.",
+        },
+        {
+          title: "Enter Email & Role",
+          desc: "Type your colleague's email. Select a role: 'Editor' (can edit websites) or 'Admin' (full access including billing).",
+        },
+        {
+          title: "Send Invitation",
+          desc: "Click 'Invite'. Your colleague will receive an email with a link to join your team account.",
+        },
+        {
+          title: "Manage Members",
+          desc: "Joined members appear in the list. You can change roles or revoke access at any time.",
+        },
+      ],
+      tip: "Team features are available on the Pro plan. Editor-role members cannot access the Billing & Upgrade section.",
+      actionUrl: "/dashboard/team",
+      actionLabel: "Manage Team",
+      tags: ["team", "invite", "collaboration", "editor", "admin", "members"],
+    },
+    {
+      id: "usage-quota",
+      category: "usage",
+      badge: "Usage & Quota",
+      timeEst: "1 Min",
+      title: "Monitoring AI Quota & Plan Limits",
+      summary: "See how many AI generations you've used, remaining website slots, and your active plan details — all in one concise view.",
+      illustration: "usage-quota",
+      steps: [
+        {
+          title: "Open Usage Page",
+          desc: "From the sidebar or account menu, click 'Usage' to view a summary of your active plan quota.",
+        },
+        {
+          title: "Check AI Generate Quota",
+          desc: "See how many times you've used 'AI Create Website' from your plan's total quota.",
+        },
+        {
+          title: "Check Website Slot Usage",
+          desc: "A usage meter shows your current active website count vs your plan's maximum.",
+        },
+        {
+          title: "Upgrade When Nearing the Limit",
+          desc: "When approaching your quota ceiling, click 'Upgrade Plan' to unlock a larger quota and premium features.",
+        },
+      ],
+      tip: "AI generate quota resets monthly on the same date as your original subscription date.",
+      actionUrl: "/dashboard/usage",
+      actionLabel: "View Usage",
+      tags: ["quota", "usage", "ai generate", "limit", "plan", "upgrade"],
+    },
   ],
 };
 
@@ -947,6 +1195,10 @@ const GUIDE_SCREENSHOTS: Record<string, string> = {
   "blog-ai": "/guide/step-editor-panel.png",
   "leads-inbox": "/guide/step-dashboard-sites.png",
   "testimonials-manage": "/guide/step-dashboard-sites.png",
+  "analytics-dashboard": "/guide/step-dashboard-sites.png",
+  "orders-tracker": "/guide/step-dashboard-sites.png",
+  "team-invite": "/guide/step-dashboard-sites.png",
+  "usage-quota": "/guide/step-dashboard-sites.png",
 };
 
 // ─── Guide Illustration (Real UI Screenshot) ─────────────────────────────────
@@ -1282,6 +1534,10 @@ export default function HelpCenterPage() {
                 { id: "blog", label: "Blog & Artikel" },
                 { id: "leads", label: lang === "id" ? "Leads & Kontak" : "Leads" },
                 { id: "testimonials", label: lang === "id" ? "Testimoni" : "Testimonials" },
+                { id: "analytics", label: lang === "id" ? "Analitik" : "Analytics" },
+                { id: "orders", label: lang === "id" ? "Riwayat Pesanan" : "Orders" },
+                { id: "team", label: lang === "id" ? "Tim" : "Team" },
+                { id: "usage", label: lang === "id" ? "Kuota & Paket" : "Usage" },
               ].map((c) => (
                 <button
                   key={c.id}
