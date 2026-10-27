@@ -32,6 +32,7 @@ import {
   PanelLeft,
   PanelLeftClose,
   X,
+  ArrowUp,
 } from "lucide-react";
 import { CartProvider } from "@/components/cart";
 import { buildCssVars, loadGoogleFont } from "@/components/templates/helpers";
@@ -106,17 +107,24 @@ export default function SectionShowcasePage() {
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "hidden">("all");
   const [copiedVariant, setCopiedVariant] = useState<string | null>(null);
   const [cardStyle, setCardStyle] = useState<"standard" | "horizontal" | "minimal" | "overlay" | "magazine">("standard");
-  const [fullscreenVariant, setFullscreenVariant] = useState<{
-    sectionKey: string;
-    variant: { value: string; label: string; description?: string; group?: string };
-  } | null>(null);
+  const [fullscreenSection, setFullscreenSection] = useState<string | null>(null);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
+
+  const handleOpenFullscreenSection = useCallback((sectionKey: string, targetVariant?: string) => {
+    setFullscreenSection(sectionKey);
+    if (targetVariant) {
+      setTimeout(() => {
+        const el = document.getElementById(`fs-variant-${targetVariant}`);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 150);
+    }
+  }, []);
 
   // Close fullscreen on Escape
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        setFullscreenVariant(null);
+        setFullscreenSection(null);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -196,24 +204,7 @@ export default function SectionShowcasePage() {
     };
   }, [activePreset, currentThemeMode]);
 
-  // Scoped design token for fullscreen preview
-  const fullscreenDesignToken = useMemo<DesignToken>(() => {
-    if (!fullscreenVariant) return currentToken;
-    return {
-      ...currentToken,
-      layout: {
-        ...(currentToken.layout ?? {}),
-        hero_style: (fullscreenVariant.sectionKey === "hero" ? fullscreenVariant.variant.value : currentToken.layout?.hero_style) as any,
-        card_style: (fullscreenVariant.sectionKey === "catalog" || fullscreenVariant.sectionKey === "menu" ? cardStyle : currentToken.layout?.card_style) as any,
-        section_variants: {
-          ...((currentToken.layout?.section_variants ?? {}) as any),
-          [fullscreenVariant.sectionKey]: fullscreenVariant.variant.value,
-        },
-      },
-    };
-  }, [currentToken, fullscreenVariant, cardStyle]);
 
-  const fullscreenCssVars = useMemo(() => buildCssVars(fullscreenDesignToken), [fullscreenDesignToken]);
 
   // Load Google Fonts when preset changes
   useEffect(() => {
@@ -582,6 +573,16 @@ export default function SectionShowcasePage() {
                     <EyeOff className="size-3" /> {hiddenCountForCurrentSec} tersembunyi
                   </span>
                 )}
+                {/* Full Screen Section button */}
+                <button
+                  type="button"
+                  onClick={() => handleOpenFullscreenSection(selectedSection)}
+                  className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/25 transition-all shadow-2xs"
+                  title="Buka semua varian dalam full screen (scroll)"
+                >
+                  <Expand className="size-3" />
+                  <span>Full Screen Section</span>
+                </button>
               </div>
               <p className="text-xs text-muted-foreground">
                 {displayMode === "all"
@@ -688,7 +689,7 @@ export default function SectionShowcasePage() {
                         setSelectedVariant(v.value);
                         setDisplayMode("single");
                       }}
-                      onFullScreen={() => setFullscreenVariant({ sectionKey: selectedSection, variant: v })}
+                      onFullScreen={() => handleOpenFullscreenSection(selectedSection, v.value)}
                     />
                   );
                 })}
@@ -733,10 +734,7 @@ export default function SectionShowcasePage() {
                     onCopyVariant={handleCopyVariant}
                     onToggleHide={() => handleToggleVariantVisibility(selectedSection, selectedVariant)}
                     isSingleFocus={true}
-                    onFullScreen={() => {
-                      const vObj = allSectionOptions.find((o) => o.value === selectedVariant) ?? { value: selectedVariant, label: selectedVariant };
-                      setFullscreenVariant({ sectionKey: selectedSection, variant: vObj });
-                    }}
+                    onFullScreen={() => handleOpenFullscreenSection(selectedSection, selectedVariant)}
                   />
                 )}
               </div>
@@ -745,137 +743,223 @@ export default function SectionShowcasePage() {
         </div>
       </div>
 
-      {/* ── Full Screen Overlay ──────────────────────────────── */}
-      {fullscreenVariant && (
-        <div
-          className="fixed inset-0 z-[200] bg-background/95 backdrop-blur-md flex flex-col animate-in fade-in duration-200"
-          style={fullscreenCssVars as React.CSSProperties}
-        >
-          {/* Fullscreen topbar */}
-          <div className="shrink-0 flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 border-b border-border/80 bg-card/90 backdrop-blur-md shadow-xs">
-            <div className="flex items-center gap-3">
-              <div className="size-8 rounded-lg bg-gradient-to-br from-primary/20 via-primary/10 to-transparent border border-primary/30 flex items-center justify-center">
-                <Expand className="size-3.5 text-primary" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-sm font-bold">{fullscreenVariant.variant.label}</span>
-                  <code className="text-[11px] font-mono bg-muted border border-border/60 text-muted-foreground px-2 py-0.5 rounded">
-                    {fullscreenVariant.variant.value}
-                  </code>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium uppercase border border-primary/20">
-                    {fullscreenVariant.sectionKey}
-                  </span>
+      {/* ── Full Screen Section Overlay ──────────────────────────────── */}
+      {fullscreenSection && (() => {
+        const fsSectionVariants = SECTION_VARIANT_OPTIONS[fullscreenSection] ?? [];
+        const fsCssVars = buildCssVars(currentToken);
+        return (
+          <div
+            className="fixed inset-0 z-[200] bg-background flex flex-col animate-in fade-in duration-200"
+            style={fsCssVars as React.CSSProperties}
+          >
+            {/* ── Sticky top bar ── */}
+            <div className="shrink-0 flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 border-b border-border/80 bg-card/95 backdrop-blur-md shadow-xs">
+              {/* Left: identity */}
+              <div className="flex items-center gap-3">
+                <div className="size-8 rounded-lg bg-gradient-to-br from-indigo-500/20 via-indigo-500/10 to-transparent border border-indigo-500/30 flex items-center justify-center">
+                  <Expand className="size-3.5 text-indigo-500" />
                 </div>
-                <p className="text-[11px] text-muted-foreground">{fullscreenVariant.variant.description}</p>
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-sm font-bold capitalize">Section: {fullscreenSection}</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold uppercase border border-indigo-500/20">
+                      {fsSectionVariants.length} varian
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">Scroll untuk melihat semua varian. Klik nama varian untuk melompat.</p>
+                </div>
               </div>
-            </div>
 
-            <div className="flex flex-wrap items-center gap-2">
-              {/* Card style for catalog/menu */}
-              {(fullscreenVariant.sectionKey === "catalog" || fullscreenVariant.sectionKey === "menu") && (
+              {/* Right: controls */}
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Quick jump dropdown */}
                 <div className="flex items-center gap-1.5 bg-muted/50 p-1 rounded-lg border border-border/60">
-                  <Sliders className="size-3.5 text-muted-foreground ml-1" />
+                  <ArrowUp className="size-3.5 text-muted-foreground ml-1" />
                   <select
-                    value={cardStyle}
-                    onChange={(e) => setCardStyle(e.target.value as any)}
+                    defaultValue=""
+                    onChange={(e) => {
+                      const el = document.getElementById(`fs-variant-${e.target.value}`);
+                      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                      e.target.value = "";
+                    }}
                     className="bg-transparent text-xs font-semibold text-foreground focus:outline-hidden py-1 px-1.5 rounded cursor-pointer"
                   >
-                    <option value="standard">Standard</option>
-                    <option value="horizontal">Horizontal</option>
-                    <option value="minimal">Minimal</option>
-                    <option value="overlay">Overlay</option>
-                    <option value="magazine">Magazine</option>
+                    <option value="" disabled>Lompat ke varian…</option>
+                    {fsSectionVariants.map((v) => (
+                      <option key={v.value} value={v.value}>{v.label}</option>
+                    ))}
                   </select>
                 </div>
-              )}
 
-              {/* Viewport toggle */}
-              <div className="flex items-center bg-muted/50 p-0.5 rounded-lg border border-border/60">
-                {(["desktop", "tablet", "mobile"] as const).map((vp) => (
+                {/* Card style for catalog/menu */}
+                {(fullscreenSection === "catalog" || fullscreenSection === "menu") && (
+                  <div className="flex items-center gap-1.5 bg-muted/50 p-1 rounded-lg border border-border/60">
+                    <Sliders className="size-3.5 text-muted-foreground ml-1" />
+                    <select
+                      value={cardStyle}
+                      onChange={(e) => setCardStyle(e.target.value as any)}
+                      className="bg-transparent text-xs font-semibold text-foreground focus:outline-hidden py-1 px-1.5 rounded cursor-pointer"
+                    >
+                      <option value="standard">Standard</option>
+                      <option value="horizontal">Horizontal</option>
+                      <option value="minimal">Minimal</option>
+                      <option value="overlay">Overlay</option>
+                      <option value="magazine">Magazine</option>
+                    </select>
+                  </div>
+                )}
+
+                {/* Viewport toggle */}
+                <div className="flex items-center bg-muted/50 p-0.5 rounded-lg border border-border/60">
+                  {(["desktop", "tablet", "mobile"] as const).map((vp) => (
+                    <button
+                      key={vp}
+                      type="button"
+                      onClick={() => setViewport(vp)}
+                      className={`flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-md transition-all ${
+                        viewport === vp
+                          ? "bg-background text-foreground shadow-xs"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      {vp === "desktop" && <Monitor className="size-3.5" />}
+                      {vp === "tablet" && <Tablet className="size-3.5" />}
+                      {vp === "mobile" && <Smartphone className="size-3.5" />}
+                      <span className="hidden sm:inline capitalize">{vp}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Theme toggle */}
+                <div className="flex items-center bg-muted/50 p-0.5 rounded-lg border border-border/60">
                   <button
-                    key={vp}
                     type="button"
-                    onClick={() => setViewport(vp)}
-                    className={`flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-md transition-all ${
-                      viewport === vp
-                        ? "bg-background text-foreground shadow-xs"
-                        : "text-muted-foreground hover:text-foreground"
+                    onClick={() => setCurrentThemeMode("light")}
+                    className={`p-1.5 rounded-md transition-all ${
+                      currentThemeMode === "light" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    {vp === "desktop" && <Monitor className="size-3.5" />}
-                    {vp === "tablet" && <Tablet className="size-3.5" />}
-                    {vp === "mobile" && <Smartphone className="size-3.5" />}
-                    <span className="hidden sm:inline capitalize">{vp}</span>
+                    <Sun className="size-3.5" />
                   </button>
-                ))}
-              </div>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentThemeMode("dark")}
+                    className={`p-1.5 rounded-md transition-all ${
+                      currentThemeMode === "dark" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Moon className="size-3.5" />
+                  </button>
+                </div>
 
-              {/* Theme toggle */}
-              <div className="flex items-center bg-muted/50 p-0.5 rounded-lg border border-border/60">
+                {/* Section switcher */}
+                <div className="flex items-center gap-1.5 bg-muted/50 p-1 rounded-lg border border-border/60">
+                  <Layers className="size-3.5 text-muted-foreground ml-1" />
+                  <select
+                    value={fullscreenSection}
+                    onChange={(e) => handleOpenFullscreenSection(e.target.value)}
+                    className="bg-transparent text-xs font-semibold text-foreground focus:outline-hidden py-1 px-1.5 rounded cursor-pointer"
+                  >
+                    {SECTION_CONFIG_LIST.map((sec) => (
+                      <option key={sec.id} value={sec.id}>{sec.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Close */}
                 <button
                   type="button"
-                  onClick={() => setCurrentThemeMode("light")}
-                  className={`p-1.5 rounded-md transition-all ${
-                    currentThemeMode === "light" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
-                  }`}
+                  onClick={() => setFullscreenSection(null)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-destructive/10 hover:bg-destructive/20 text-destructive border border-destructive/30 transition-all"
+                  title="Tutup Full Screen (Esc)"
                 >
-                  <Sun className="size-3.5" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCurrentThemeMode("dark")}
-                  className={`p-1.5 rounded-md transition-all ${
-                    currentThemeMode === "dark" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <Moon className="size-3.5" />
+                  <X className="size-3.5" />
+                  <span>Tutup (Esc)</span>
                 </button>
               </div>
+            </div>
 
-              {/* Close */}
-              <button
-                type="button"
-                onClick={() => setFullscreenVariant(null)}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-destructive/10 hover:bg-destructive/20 text-destructive border border-destructive/30 transition-all"
-                title="Tutup Full Screen (Esc)"
+            {/* ── Scrollable content: all variants sequentially ── */}
+            <div className="flex-1 overflow-y-auto overscroll-contain">
+              <CartProvider
+                waPhone="6281234567890"
+                brandName="Webjoz Showcase"
+                previewMode={true}
+                primaryColor={currentToken.palette?.primary ?? "#4F46E5"}
               >
-                <X className="size-3.5" />
-                <span>Tutup (Esc)</span>
-              </button>
+                <div className={viewportWidthClass}>
+                  {fsSectionVariants.map((v, idx) => {
+                    const isHidden = (hiddenVariants[fullscreenSection] ?? []).includes(v.value);
+                    const variantToken: DesignToken = {
+                      ...currentToken,
+                      layout: {
+                        ...(currentToken.layout ?? {}),
+                        hero_style: (fullscreenSection === "hero" ? v.value : currentToken.layout?.hero_style) as any,
+                        card_style: (fullscreenSection === "catalog" || fullscreenSection === "menu" ? cardStyle : currentToken.layout?.card_style) as any,
+                        section_variants: {
+                          ...((currentToken.layout?.section_variants ?? {}) as any),
+                          [fullscreenSection]: v.value,
+                        },
+                      },
+                    };
+                    const variantCssVars = buildCssVars(variantToken);
+                    return (
+                      <div key={v.value} id={`fs-variant-${v.value}`}>
+                        {/* Variant label band */}
+                        <div className={`sticky top-0 z-10 flex items-center justify-between gap-3 px-4 py-2 border-b text-xs font-medium ${
+                          isHidden
+                            ? "bg-destructive/10 border-destructive/30 text-destructive"
+                            : "bg-card/90 border-border/60 text-muted-foreground"
+                        } backdrop-blur-md`}>
+                          <div className="flex items-center gap-2">
+                            <span className="size-5 rounded-full flex items-center justify-center font-bold text-[10px] bg-primary/10 text-primary border border-primary/20">{idx + 1}</span>
+                            <span className="font-semibold text-foreground">{v.label}</span>
+                            <code className="text-[10px] font-mono bg-muted border border-border/60 text-muted-foreground px-1.5 py-0.5 rounded">{v.value}</code>
+                            {v.group && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{v.group}</span>}
+                            {isHidden && (
+                              <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-destructive/10 text-destructive border border-destructive/20 text-[10px] font-semibold">
+                                <EyeOff className="size-2.5" /> Disembunyikan
+                              </span>
+                            )}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleToggleVariantVisibility(fullscreenSection, v.value)}
+                            className={`flex items-center gap-1 px-2 py-0.5 rounded-md border text-[10px] font-semibold transition-all ${
+                              isHidden
+                                ? "bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
+                                : "bg-background hover:bg-destructive/10 text-muted-foreground hover:text-destructive border-border/60"
+                            }`}
+                          >
+                            {isHidden ? <><Eye className="size-2.5" /> Aktifkan</> : <><EyeOff className="size-2.5" /> Sembunyikan</>}
+                          </button>
+                        </div>
+
+                        {/* Variant render */}
+                        <div
+                          style={{
+                            ...variantCssVars as React.CSSProperties,
+                            backgroundColor: "var(--dt-bg, #ffffff)",
+                            color: "var(--dt-text, #1e293b)",
+                            fontFamily: "var(--dt-body-font, sans-serif)",
+                            width: "100%",
+                          }}
+                        >
+                          <RenderSectionComponent
+                            sectionKey={fullscreenSection}
+                            variantKey={v.value}
+                            designToken={variantToken}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CartProvider>
             </div>
           </div>
-
-          {/* Fullscreen content — scrollable */}
-          <div className="flex-1 overflow-y-auto overscroll-contain">
-            <CartProvider
-              waPhone="6281234567890"
-              brandName="Webjoz Showcase"
-              previewMode={true}
-              primaryColor={fullscreenDesignToken.palette?.primary ?? "#4F46E5"}
-            >
-              <div className={viewportWidthClass}>
-                <div
-                  style={{
-                    ...fullscreenCssVars as React.CSSProperties,
-                    backgroundColor: "var(--dt-bg, #ffffff)",
-                    color: "var(--dt-text, #1e293b)",
-                    fontFamily: "var(--dt-body-font, sans-serif)",
-                    width: "100%",
-                    minHeight: "100vh",
-                  }}
-                >
-                  <RenderSectionComponent
-                    sectionKey={fullscreenVariant.sectionKey}
-                    variantKey={fullscreenVariant.variant.value}
-                    designToken={fullscreenDesignToken}
-                  />
-                </div>
-              </div>
-            </CartProvider>
-          </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 }
