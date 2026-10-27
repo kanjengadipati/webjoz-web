@@ -23,7 +23,7 @@ interface GuideStep {
 
 interface GuideItem {
   id: string;
-  category: "start" | "edit" | "design" | "catalog" | "orders" | "domain" | "seo" | "integrations" | "blog" | "leads" | "testimonials" | "analytics" | "team" | "usage";
+  category: "start" | "edit" | "design" | "catalog" | "orders" | "domain" | "seo" | "integrations" | "blog" | "leads" | "testimonials" | "analytics" | "team" | "usage" | "settings";
   badge: string;
   timeEst: string;
   title: string;
@@ -517,6 +517,37 @@ const GUIDES_DATA: Record<"id" | "en", GuideItem[]> = {
       actionLabel: "Lihat Penggunaan",
       tags: ["kuota", "usage", "ai generate", "batas", "paket", "upgrade", "limit"],
     },
+    {
+      id: "account-security",
+      category: "settings",
+      badge: "Pengaturan & Keamanan",
+      timeEst: "2 Menit",
+      title: "Keamanan Akun, Notifikasi & Sesi Perangkat",
+      summary: "Ubah password, kelola preferensi notifikasi email & push, serta pantau dan cabut sesi login perangkat lain untuk menjaga keamanan akun bisnismu.",
+      illustration: "account-security",
+      steps: [
+        {
+          title: "Buka Halaman Pengaturan",
+          desc: "Dari sidebar dashboard atau menu profil di kanan atas, klik 'Pengaturan'.",
+        },
+        {
+          title: "Ubah Password Akun",
+          desc: "Buka tab 'Keamanan', masukkan kata sandi saat ini dan tentukan password baru yang aman.",
+        },
+        {
+          title: "Atur Preferensi Notifikasi",
+          desc: "Buka tab 'Notifikasi' untuk memilih alert apa saja yang dikirimkan via email (pesanan baru, leads masuk, atau update sistem).",
+        },
+        {
+          title: "Pantau & Cabut Sesi Perangkat",
+          desc: "Buka tab 'Perangkat' untuk melihat daftar sesi aktif. Klik 'Cabut Sesi' jika ada perangkat mencurigakan.",
+        },
+      ],
+      tip: "Gunakan password unik dan periksa daftar perangkat aktif secara berkala demi menjaga keamanan data bisnis.",
+      actionUrl: "/dashboard/settings",
+      actionLabel: "Buka Pengaturan",
+      tags: ["pengaturan", "keamanan", "password", "notifikasi", "perangkat", "sesi", "settings", "profil"],
+    },
   ],
   en: [
     {
@@ -984,6 +1015,37 @@ const GUIDES_DATA: Record<"id" | "en", GuideItem[]> = {
       actionLabel: "View Usage",
       tags: ["quota", "usage", "ai generate", "limit", "plan", "upgrade"],
     },
+    {
+      id: "account-security",
+      category: "settings",
+      badge: "Account & Security",
+      timeEst: "2 Mins",
+      title: "Account Security, Notifications & Active Sessions",
+      summary: "Change your password, manage email & push alert preferences, and inspect or revoke active login sessions across devices.",
+      illustration: "account-security",
+      steps: [
+        {
+          title: "Open Settings",
+          desc: "From the dashboard sidebar or your user menu at top right, click 'Settings'.",
+        },
+        {
+          title: "Change Account Password",
+          desc: "Under the 'Security' tab, provide your current password and set a new secure password.",
+        },
+        {
+          title: "Set Notification Preferences",
+          desc: "In the 'Notifications' tab, choose which alerts you receive by email (new orders, leads, or system updates).",
+        },
+        {
+          title: "Inspect & Revoke Device Sessions",
+          desc: "Under the 'Devices' tab, review currently active sessions and revoke any unfamiliar device immediately.",
+        },
+      ],
+      tip: "Keep your password unique and periodically review active sessions to safeguard your business account.",
+      actionUrl: "/dashboard/settings",
+      actionLabel: "Open Settings",
+      tags: ["settings", "security", "password", "notifications", "devices", "sessions", "profile"],
+    },
   ],
 };
 
@@ -1199,6 +1261,7 @@ const GUIDE_SCREENSHOTS: Record<string, string> = {
   "orders-tracker": "/guide/step-dashboard-sites.png",
   "team-invite": "/guide/step-dashboard-sites.png",
   "usage-quota": "/guide/step-dashboard-sites.png",
+  "account-security": "/guide/step-dashboard-sites.png",
 };
 
 // ─── Guide Illustration (Real UI Screenshot) ─────────────────────────────────
@@ -1527,7 +1590,7 @@ export default function HelpCenterPage() {
                 { id: "edit", label: lang === "id" ? "Edit Layar" : "Inline Edit" },
                 { id: "design", label: lang === "id" ? "Desain & Gaya" : "Brand Style" },
                 { id: "catalog", label: lang === "id" ? "Katalog & Menu" : "Catalog" },
-                { id: "orders", label: lang === "id" ? "Pesanan WA" : "Orders" },
+                { id: "orders", label: lang === "id" ? "Pesanan & WA" : "Orders & WA" },
                 { id: "domain", label: lang === "id" ? "Publikasi & Domain" : "Domain" },
                 { id: "seo", label: "SEO & Google" },
                 { id: "integrations", label: lang === "id" ? "Integrasi Pixel" : "Integrations" },
@@ -1535,9 +1598,9 @@ export default function HelpCenterPage() {
                 { id: "leads", label: lang === "id" ? "Leads & Kontak" : "Leads" },
                 { id: "testimonials", label: lang === "id" ? "Testimoni" : "Testimonials" },
                 { id: "analytics", label: lang === "id" ? "Analitik" : "Analytics" },
-                { id: "orders", label: lang === "id" ? "Riwayat Pesanan" : "Orders" },
                 { id: "team", label: lang === "id" ? "Tim" : "Team" },
                 { id: "usage", label: lang === "id" ? "Kuota & Paket" : "Usage" },
+                { id: "settings", label: lang === "id" ? "Pengaturan & Keamanan" : "Settings" },
               ].map((c) => (
                 <button
                   key={c.id}

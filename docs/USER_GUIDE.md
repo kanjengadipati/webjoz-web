@@ -207,6 +207,16 @@ Ketahui sisa kuota generate AI dan batas website aktif secara transparan:
 
 > 💡 **Tips**: Kuota generate AI otomatis direset setiap bulan pada tanggal yang sama dengan tanggal awal berlangganan.
 
+### Langkah 18: Pengaturan Akun, Keamanan & Notifikasi
+Kelola profil, keamanan kata sandi, dan preferensi notifikasi bisnis:
+1. Dari sidebar dashboard atau menu profil di pojok kanan atas, klik **`Pengaturan`** (Settings).
+2. **Tab Profil**: Perbarui nama lengkap, nomor telepon kontak WhatsApp, dan kelola akun yang tertaut.
+3. **Tab Keamanan**: Ubah kata sandi dengan memasukkan password lama dan menetapkan password baru yang aman.
+4. **Tab Notifikasi**: Atur alert yang ingin kamu terima melalui email, seperti pemberitahuan leads masuk, pesanan baru dari cart WhatsApp, atau ringkasan performa mingguan.
+5. **Tab Perangkat (Devices)**: Pantau seluruh sesi login aktif di berbagai browser atau perangkat. Klik **`Cabut Sesi`** jika menemukan perangkat yang tidak kamu kenali.
+
+> 💡 **Tips**: Periksa daftar sesi perangkat secara berkala dan aktifkan notifikasi leads agar tim tidak melewatkan prospek pelanggan yang masuk.
+
 ---
 
 ## 🛠 Troubleshooting Umum
