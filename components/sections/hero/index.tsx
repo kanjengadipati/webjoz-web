@@ -18,6 +18,8 @@ import HeroPortraitShowcase from "./portrait-showcase";
 import HeroWorkPreviewStrip from "./work-preview-strip";
 import HeroChronologyBadge from "./chronology-badge";
 import HeroImageCarousel from "./image-carousel";
+import HeroCarouselSplit from "./carousel-split";
+import HeroCarouselFilmstrip from "./carousel-filmstrip";
 
 const variants: Record<string, ComponentType<HeroVariantProps>> = {
   // Core classic (4)
@@ -27,6 +29,8 @@ const variants: Record<string, ComponentType<HeroVariantProps>> = {
   "full-bleed": HeroFullBleed,
   "image-carousel": HeroImageCarousel,
   carousel: HeroImageCarousel, // Legacy alias for backward compatibility
+  "carousel-split": HeroCarouselSplit,
+  "carousel-filmstrip": HeroCarouselFilmstrip,
   // Curated layout styles (6)
   "minimalist-elegant": HeroMinimalistElegant,
   "tech-saas": HeroTechSaaS,

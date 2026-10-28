@@ -233,11 +233,11 @@ export interface DesignToken {
     heading_tracking?: string;
   };
   layout?: {
-    hero_style?: "full-bleed" | "split" | "centered" | "minimal" | "minimalist-elegant" | "tech-saas" | "neo-brutalist" | "bento-grid" | "split-editorial" | "natural-organic" | "personal-billboard" | "portrait-showcase" | "work-preview-strip" | "chronology-badge" | "image-carousel";
+    hero_style?: "full-bleed" | "split" | "centered" | "minimal" | "minimalist-elegant" | "tech-saas" | "neo-brutalist" | "bento-grid" | "split-editorial" | "natural-organic" | "personal-billboard" | "portrait-showcase" | "work-preview-strip" | "chronology-badge" | "image-carousel" | "carousel-split" | "carousel-filmstrip";
     section_spacing?: "compact" | "normal" | "relaxed";
     corner_radius?: "sharp" | "soft" | "rounded";
     section_variants?: {
-      hero?: "full-bleed" | "split" | "centered" | "minimal" | "minimalist-elegant" | "tech-saas" | "neo-brutalist" | "bento-grid" | "split-editorial" | "natural-organic" | "personal-billboard" | "portrait-showcase" | "work-preview-strip" | "chronology-badge" | "image-carousel";
+      hero?: "full-bleed" | "split" | "centered" | "minimal" | "minimalist-elegant" | "tech-saas" | "neo-brutalist" | "bento-grid" | "split-editorial" | "natural-organic" | "personal-billboard" | "portrait-showcase" | "work-preview-strip" | "chronology-badge" | "image-carousel" | "carousel-split" | "carousel-filmstrip";
       about?: "classic" | "split-image" | "stat-heavy" | "timeline" | "team-grid";
       benefits?: "grid" | "stat-grid" | "checklist" | "comparison-table" | "featured-grid" | "icon-row" | "bento-grid" | "trust-bar" | "how-it-works";
       testimonials?: "carousel" | "compact" | "grid" | "logo-wall" | "featured-spotlight" | "google-reviews" | "video-wall";
