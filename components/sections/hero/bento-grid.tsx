@@ -38,6 +38,8 @@ export default function HeroBentoGrid({
     .map((s) => ({ value: s?.value?.trim() ?? "", label: s?.label?.trim() ?? "" }))
     .filter((s) => s.value || s.label);
 
+  const hasMetricContent = stats.length > 0 || Boolean(h.badge_text?.trim()) || Boolean(isEditorMode);
+
   return (
     <section
       id="hero"
@@ -72,9 +74,8 @@ export default function HeroBentoGrid({
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55 }}
+            className={`order-1 lg:order-none lg:col-start-1 ${hasMetricContent ? "lg:row-start-1" : "lg:row-span-2"}`}
             style={{
-              gridColumn: "1",
-              gridRow: "1",
               background: "var(--dt-surface)",
               border: "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)",
               borderRadius: "var(--dt-radius-lg)",
@@ -220,17 +221,14 @@ export default function HeroBentoGrid({
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.1 }}
+            className="order-2 lg:order-none lg:col-start-2 lg:row-span-2 min-h-[260px] sm:min-h-[320px] lg:min-h-0"
             style={{
-              gridColumn: "2",
-              gridRow: "1 / 3",
               background: "color-mix(in srgb, var(--dt-primary) 8%, var(--dt-surface))",
               border: "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)",
               borderRadius: "var(--dt-radius-lg)",
               overflow: "hidden",
-              minHeight: "320px",
               position: "relative",
             }}
-            className="hidden lg:block"
           >
             {(h.image_url || isEditorMode) ? (
               <>
@@ -283,73 +281,74 @@ export default function HeroBentoGrid({
           </motion.div>
 
           {/* Metric widget */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, delay: 0.2 }}
-            style={{
-              gridColumn: "1",
-              gridRow: "2",
-              background: "var(--dt-surface)",
-              border: "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)",
-              borderRadius: "var(--dt-radius-lg)",
-              padding: "1.25rem 1.5rem",
-              display: "flex",
-              flexDirection: "column",
-              gap: "1rem",
-            }}
-          >
-            {/* Stats row */}
-            {(stats.length > 0 || isEditorMode) && (
-            <div style={{ display: "flex", gap: "1rem" }}>
-              {stats.map((s, i) => (
-                <div key={`${s.label}-${i}`} style={{ flex: 1, textAlign: "center" }}>
-                  <p style={{ margin: 0, fontWeight: 800, fontSize: "1.1rem", color: "var(--dt-primary)" }}>
-                    <InlineText
-                      section="hero"
-                      fieldKey={`stats.${i}.value`}
-                      value={s.value}
-                      onUpdateField={onUpdateField}
-                      isEditorMode={isEditorMode}
-                      isSelected={isSelected}
-                      as="span"
-                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                      onEditingStateChange={handleEditingStateChange}
-                    />
-                  </p>
-                  <p style={{ margin: 0, fontSize: "0.55rem", color: "var(--dt-text-muted)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
-                    <InlineText
-                      section="hero"
-                      fieldKey={`stats.${i}.label`}
-                      value={s.label}
-                      onUpdateField={onUpdateField}
-                      isEditorMode={isEditorMode}
-                      isSelected={isSelected}
-                      as="span"
-                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                      onEditingStateChange={handleEditingStateChange}
-                    />
-                  </p>
-                </div>
-              ))}
-            </div>
-            )}
-            {(h.badge_text || isEditorMode) && (
-              <p style={{ margin: 0, fontSize: "0.65rem", color: "var(--dt-text-muted)" }}>
-                <InlineText
-                  section="hero"
-                  fieldKey="badge_text"
-                  value={h.badge_text ?? ""}
-                  onUpdateField={onUpdateField}
-                  isEditorMode={isEditorMode}
-                  isSelected={isSelected}
-                  as="span"
-                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                  onEditingStateChange={handleEditingStateChange}
-                />
-              </p>
-            )}
-          </motion.div>
+          {hasMetricContent && (
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, delay: 0.2 }}
+              className="order-3 lg:order-none lg:col-start-1 lg:row-start-2"
+              style={{
+                background: "var(--dt-surface)",
+                border: "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)",
+                borderRadius: "var(--dt-radius-lg)",
+                padding: "1.25rem 1.5rem",
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+              }}
+            >
+              {/* Stats row */}
+              {(stats.length > 0 || isEditorMode) && (
+              <div style={{ display: "flex", gap: "1rem" }}>
+                {stats.map((s, i) => (
+                  <div key={`${s.label}-${i}`} style={{ flex: 1, textAlign: "center" }}>
+                    <p style={{ margin: 0, fontWeight: 800, fontSize: "1.1rem", color: "var(--dt-primary)" }}>
+                      <InlineText
+                        section="hero"
+                        fieldKey={`stats.${i}.value`}
+                        value={s.value}
+                        onUpdateField={onUpdateField}
+                        isEditorMode={isEditorMode}
+                        isSelected={isSelected}
+                        as="span"
+                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                        onEditingStateChange={handleEditingStateChange}
+                      />
+                    </p>
+                    <p style={{ margin: 0, fontSize: "0.55rem", color: "var(--dt-text-muted)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                      <InlineText
+                        section="hero"
+                        fieldKey={`stats.${i}.label`}
+                        value={s.label}
+                        onUpdateField={onUpdateField}
+                        isEditorMode={isEditorMode}
+                        isSelected={isSelected}
+                        as="span"
+                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                        onEditingStateChange={handleEditingStateChange}
+                      />
+                    </p>
+                  </div>
+                ))}
+              </div>
+              )}
+              {(h.badge_text || isEditorMode) && (
+                <p style={{ margin: 0, fontSize: "0.65rem", color: "var(--dt-text-muted)" }}>
+                  <InlineText
+                    section="hero"
+                    fieldKey="badge_text"
+                    value={h.badge_text ?? ""}
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="span"
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={handleEditingStateChange}
+                  />
+                </p>
+              )}
+            </motion.div>
+          )}
         </div>
       </div>
     </section>
