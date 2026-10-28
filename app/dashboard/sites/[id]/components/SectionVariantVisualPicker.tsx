@@ -678,6 +678,37 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
     );
   }
 
+  if (variant === "carousel-split") {
+    return (
+      <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex items-center gap-1.5 overflow-hidden">
+        <div className="w-1/2 space-y-1">
+          <div className="w-3/4 h-1.5 rounded-full bg-white" />
+          <div className="w-full h-1 rounded-full bg-slate-400" />
+          <div className="w-1/2 h-1.5 rounded-full bg-primary" />
+        </div>
+        <div className="flex-1 h-11 rounded-md bg-primary/20 border border-primary/40 flex items-center justify-center p-1">
+          <div className="w-full h-full rounded bg-primary/30 flex items-center justify-between px-1">
+            <div className="w-1 h-1 rounded-full bg-white/60" />
+            <div className="w-1 h-1 rounded-full bg-white/60" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (variant === "carousel-filmstrip") {
+    return (
+      <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1 flex flex-col justify-between overflow-hidden">
+        <div className="w-1/2 h-1 rounded-full bg-white mx-auto mt-0.5" />
+        <div className="flex gap-1 overflow-hidden px-0.5">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="w-6 h-8 rounded bg-slate-800 border border-primary/30 shrink-0" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   if (variant === "chronology-badge" || variant === "timeline") {
     return (
       <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex flex-col justify-center items-center gap-1 overflow-hidden">
