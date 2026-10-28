@@ -38,6 +38,7 @@ import {
   Home,
   Hotel,
   Hourglass,
+  Landmark,
   Leaf,
   Loader2,
   Mic,
@@ -143,6 +144,7 @@ const SUB_TYPE_ICONS: Record<string, React.ElementType> = {
   "Jasa Rumah & Kebersihan":  Home,
   "Pendidikan & Kursus":      GraduationCap,
   "Biro Jasa & Perizinan":    ClipboardCheck,
+  "Koperasi & Simpan Pinjam": Landmark,
   // Toko
   "Fashion & Pakaian":        Shirt,
   "Elektronik":               Smartphone,

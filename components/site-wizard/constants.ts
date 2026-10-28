@@ -180,6 +180,7 @@ export const SUB_TYPES: Record<string, SubTypeItem[]> = {
     { value: "Jasa Rumah & Kebersihan", emoji: "🧹", label: "Jasa Rumah & Bersih" },
     { value: "Pendidikan & Kursus", emoji: "📚", label: "Les & Kursus" },
     { value: "Biro Jasa & Perizinan", emoji: "📋", label: "Biro Jasa" },
+    { value: "Koperasi & Simpan Pinjam", emoji: "🏦", label: "Koperasi & Simpan Pinjam" },
   ],
   "Jasa & Booking": [
     { value: "Rental Mobil & Kendaraan", emoji: "🚗", label: "Rental Mobil & Kendaraan" },
@@ -196,6 +197,7 @@ export const SUB_TYPES: Record<string, SubTypeItem[]> = {
     { value: "Jasa Rumah & Kebersihan", emoji: "🧹", label: "Jasa Rumah & Bersih" },
     { value: "Pendidikan & Kursus", emoji: "📚", label: "Les & Kursus" },
     { value: "Biro Jasa & Perizinan", emoji: "📋", label: "Biro Jasa" },
+    { value: "Koperasi & Simpan Pinjam", emoji: "🏦", label: "Koperasi & Simpan Pinjam" },
   ],
   // "Portofolio" — individual / personal brand
   "Portofolio": PORTOFOLIO_PERSONAL_SUB_TYPES,
