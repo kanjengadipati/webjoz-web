@@ -57,13 +57,13 @@ export default function HeroSplitEditorial({
       }}
       className="flex flex-col lg:grid lg:grid-cols-2"
     >
-      {/* Left: editorial image column */}
+      {/* Left: editorial image column (visible on mobile with proportional height) */}
       <motion.div
         initial={{ opacity: 0, x: -30 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.7 }}
-        style={{ position: "relative", minHeight: "50vh" }}
-        className="hidden lg:block"
+        style={{ position: "relative" }}
+        className="min-h-[42vh] sm:min-h-[48vh] lg:min-h-0"
       >
         {(h.image_url || isEditorMode) ? (
           <>
@@ -132,7 +132,7 @@ export default function HeroSplitEditorial({
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          padding: "max(6rem, clamp(3rem, 7vw, 6rem)) clamp(1.5rem, 4vw, 4rem)",
+          padding: "clamp(2.5rem, 6vw, 6rem) clamp(1.5rem, 4vw, 4rem)",
           gap: "2rem",
         }}
       >

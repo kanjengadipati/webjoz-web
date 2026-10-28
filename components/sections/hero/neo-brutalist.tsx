@@ -394,7 +394,7 @@ export default function HeroNeoBrutalist({
               boxShadow: "2px 2px 0 var(--dt-text)",
             }}
           >
-            ★<br />New
+            ★<br />{language === "en" ? "NEW" : "BARU"}
           </div>
         </motion.div>
       </div>
