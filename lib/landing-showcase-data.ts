@@ -9,7 +9,7 @@ export const TEMPLATE_PREFILL_MAP: Record<string, { businessType: string; busine
   TEMPLATE_ELEGANT:   { businessType: "Jasa & Booking", businessSubType: "Salon & Kecantikan" },
   TEMPLATE_NATURAL:   { businessType: "Toko & UMKM", businessSubType: "Produk Lokal Handmade" },
   TEMPLATE_MINIMALIST:{ businessType: "Portofolio & Kreator", businessSubType: "Konsultan" },
-  TEMPLATE_BOLD:      { businessType: "Jasa & Booking", businessSubType: "Otomotif & Bengkel" },
+  TEMPLATE_BOLD:      { businessType: "Jasa & Booking", businessSubType: "Bengkel Motor" },
   TEMPLATE_FUTURISTIC:{ businessType: "Toko & UMKM", businessSubType: "Elektronik" },
   TEMPLATE_DYNAMIC:   { businessType: "Jasa & Booking", businessSubType: "Klinik & Kesehatan" },
 };
