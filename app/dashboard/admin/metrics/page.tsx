@@ -105,7 +105,6 @@ export default function AdminMetricsPage() {
   const [sourceFilter, setSourceFilter] = useState("all");
   const [providerFilter, setProviderFilter] = useState("all");
   const [activeRequests, setActiveRequests] = useState(0);
-  const [sectionDialogOpen, setSectionDialogOpen] = useState(false);
   const [variantsDialogOpen, setVariantsDialogOpen] = useState(false);
   const [sourcesDialogOpen, setSourcesDialogOpen] = useState(false);
   const [selectedLog, setSelectedLog] = useState<GenerationLog | null>(null);
@@ -523,7 +522,7 @@ export default function AdminMetricsPage() {
                                         className="h-7 gap-1.5 text-xs"
                                         onClick={() => {
                                           setSelectedLog(log);
-                                          setSectionDialogOpen(true);
+                                          setVariantsDialogOpen(true);
                                         }}
                                       >
                                         <Eye className="size-3.5" />
