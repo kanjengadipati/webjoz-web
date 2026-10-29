@@ -84,6 +84,7 @@ import { useToast } from "@/components/toast-provider";
 import { buildFullContent } from "@/lib/build-full-content";
 import { SiteWizardProps, PreviewData } from "./types";
 import { PENDING_KEY, BUSINESS_TYPES, SUB_TYPES, MOOD_OPTIONS, INITIAL_MESSAGE } from "./constants";
+import { useTaxonomy } from "@/hooks/use-taxonomy";
 import { selectTemplate, formatText, generateSubdomain, generateSlug, getTemplatePool, getDynamicDescriptionPlaceholder } from "./helpers";
 import { sanitizeClassificationPair } from "./taxonomy";
 import {
@@ -396,6 +397,12 @@ export function SiteWizard({
   const chat = useWizardChat({ businessType: initialBusinessType, businessSubType: initialBusinessSubType });
   const preview = useWizardPreview();
   const device = useWizardDevice();
+
+  const wizardLang = chat.siteLanguage || (locale === "en" ? "en" : "id");
+  const { businessTypes: dynamicBusinessTypes, subTypes: dynamicSubTypes } = useTaxonomy(wizardLang);
+
+  const [customSubTypeOpen, setCustomSubTypeOpen] = React.useState(false);
+  const [customSubTextInput, setCustomSubTextInput] = React.useState("");
 
   // Mobile transition delay ref to avoid jarring instant screen cuts
   const mobileTransitionTimerRef = React.useRef<NodeJS.Timeout | null>(null);
@@ -1317,9 +1324,9 @@ export function SiteWizard({
               const isLocked = !!chat.siteLanguage;
               const inferredType = chat.businessType;
               const inferredSubType = chat.businessSubType;
-              const availableSubTypes = inferredType ? (SUB_TYPES[inferredType] ?? []) : [];
+              const availableSubTypes = inferredType ? (dynamicSubTypes[inferredType] ?? []) : [];
               // Category label for breadcrumb (e.g. "Toko Online & Retail")
-              const inferredCategoryLabel = BUSINESS_TYPES.find((bt) => bt.value === inferredType)?.label;
+              const inferredCategoryLabel = dynamicBusinessTypes.find((bt) => bt.value === inferredType)?.label;
 
               // Reorder: chip terpilih tampil pertama
               const orderedSubTypes = inferredSubType
@@ -1361,7 +1368,7 @@ export function SiteWizard({
 
             if (m.widget === "subtype-chips") {
               const isLocked = chat.chatStage === "language" || chat.chatStage === "mood" || chat.chatStage === "done";
-              const subTypes = chat.businessType ? SUB_TYPES[chat.businessType] : [];
+              const subTypes = chat.businessType ? (dynamicSubTypes[chat.businessType] ?? []) : [];
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400">
                   {chat.typeWasInferred && (
@@ -1388,7 +1395,7 @@ export function SiteWizard({
                     {subTypes.map((st) => {
                       const isSubSelected = chat.businessSubType === st.value;
                       const SubIcon = SUB_TYPE_ICONS[st.value] ?? Tag;
-                      const labelText = t(`dashboard.wizard.subtypes.${st.value}`, st.label);
+                      const labelText = st.label || t(`dashboard.wizard.subtypes.${st.value}`, st.label);
                       return (
                         <button
                           key={st.value}
@@ -1406,6 +1413,52 @@ export function SiteWizard({
                         </button>
                       );
                     })}
+
+                    {!isLocked && (!customSubTypeOpen ? (
+                      <button
+                        type="button"
+                        onClick={() => setCustomSubTypeOpen(true)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border border-dashed border-white/20 text-slate-400 hover:border-white/40 hover:text-white transition-all cursor-pointer"
+                      >
+                        <span>+ {t("dashboard.wizard.otherSubType", "Lainnya")}</span>
+                      </button>
+                    ) : (
+                      <div className="flex items-center gap-1.5">
+                        <input
+                          type="text"
+                          maxLength={60}
+                          value={customSubTextInput}
+                          onChange={(e) => setCustomSubTextInput(e.target.value)}
+                          placeholder={t("dashboard.wizard.otherSubTypePlaceholder", "Tulis sub-kategori spesifik...")}
+                          className="px-2.5 py-1 text-xs bg-black/40 border border-white/20 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-primary"
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              const clean = customSubTextInput.replace(/<[^>]*>?/gm, "").trim().slice(0, 60);
+                              if (clean) {
+                                handleSelectSubType(clean);
+                                setCustomSubTypeOpen(false);
+                                setCustomSubTextInput("");
+                              }
+                            }
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const clean = customSubTextInput.replace(/<[^>]*>?/gm, "").trim().slice(0, 60);
+                            if (clean) {
+                              handleSelectSubType(clean);
+                              setCustomSubTypeOpen(false);
+                              setCustomSubTextInput("");
+                            }
+                          }}
+                          className="px-2.5 py-1 text-xs font-semibold bg-primary text-white rounded-lg hover:bg-primary/90"
+                        >
+                          ✓
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 </div>
               );
@@ -1516,11 +1569,11 @@ export function SiteWizard({
 
             if (m.widget === "type-chips") {
               const isLocked = chat.chatStage === "language" || chat.chatStage === "mood" || chat.chatStage === "done";
-              const subTypes = chat.businessType ? SUB_TYPES[chat.businessType] : null;
+              const subTypes = chat.businessType ? (dynamicSubTypes[chat.businessType] ?? null) : null;
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2.5">
                   <div className="flex flex-wrap gap-1.5 mt-1.5">
-                    {BUSINESS_TYPES.map((bt) => {
+                    {dynamicBusinessTypes.map((bt) => {
                       const isSelected = chat.businessType === bt.value;
                       const categoryKeyMap: Record<string, { label: string; desc: string }> = {
                         "Kuliner": { label: "kuliner", desc: "kulinerDesc" },
@@ -1588,7 +1641,7 @@ export function SiteWizard({
                         {subTypes.map((st) => {
                           const isSubSelected = chat.businessSubType === st.value;
                           const SubIcon = SUB_TYPE_ICONS[st.value] ?? Tag;
-                          const labelText = t(`dashboard.wizard.subtypes.${st.value}`, st.label);
+                          const labelText = st.label || t(`dashboard.wizard.subtypes.${st.value}`, st.label);
                           return (
                             <button
                               key={st.value}
@@ -1609,6 +1662,52 @@ export function SiteWizard({
                             </button>
                           );
                         })}
+
+                        {!isLocked && (!customSubTypeOpen ? (
+                          <button
+                            type="button"
+                            onClick={() => setCustomSubTypeOpen(true)}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border border-dashed border-white/20 text-slate-400 hover:border-white/40 hover:text-white transition-all cursor-pointer"
+                          >
+                            <span>+ {t("dashboard.wizard.otherSubType", "Lainnya")}</span>
+                          </button>
+                        ) : (
+                          <div className="flex items-center gap-1.5">
+                            <input
+                              type="text"
+                              maxLength={60}
+                              value={customSubTextInput}
+                              onChange={(e) => setCustomSubTextInput(e.target.value)}
+                              placeholder={t("dashboard.wizard.otherSubTypePlaceholder", "Tulis sub-kategori spesifik...")}
+                              className="px-2.5 py-1 text-xs bg-black/40 border border-white/20 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-primary"
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  const clean = customSubTextInput.replace(/<[^>]*>?/gm, "").trim().slice(0, 60);
+                                  if (clean) {
+                                    handleSelectSubType(clean);
+                                    setCustomSubTypeOpen(false);
+                                    setCustomSubTextInput("");
+                                  }
+                                }
+                              }}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const clean = customSubTextInput.replace(/<[^>]*>?/gm, "").trim().slice(0, 60);
+                                if (clean) {
+                                  handleSelectSubType(clean);
+                                  setCustomSubTypeOpen(false);
+                                  setCustomSubTextInput("");
+                                }
+                              }}
+                              className="px-2.5 py-1 text-xs font-semibold bg-primary text-white rounded-lg hover:bg-primary/90"
+                            >
+                              ✓
+                            </button>
+                          </div>
+                        ))}
                       </div>
                       {chat.businessSubType && (
                         <button
