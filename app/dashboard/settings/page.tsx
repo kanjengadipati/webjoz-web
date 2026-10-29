@@ -38,7 +38,6 @@ const TABS: TabDef[] = [
   { id: "security", labelKey: "dashboard.settings.tabSecurity", group: "personal" },
   { id: "notifications", labelKey: "dashboard.settings.tabNotifications", group: "personal" },
   { id: "devices", labelKey: "dashboard.settings.tabDevices", group: "admin", permission: "dashboard.view" },
-  { id: "users", labelKey: "dashboard.settings.tabUsers", group: "admin", permission: "permission.read" },
   { id: "permissions", labelKey: "dashboard.settings.tabPermissions", group: "admin", permission: "role.update_permissions" },
   { id: "logs", labelKey: "dashboard.settings.tabLogs", group: "admin", permission: "role.read" },
   { id: "investigate", labelKey: "dashboard.settings.tabInvestigate", group: "admin", permission: "role.read" },
@@ -108,7 +107,6 @@ export default function SettingsPage() {
         {activeTab === "security" && <SecurityTab />}
         {activeTab === "notifications" && <NotificationsTab />}
         {activeTab === "devices" && <DevicesTab />}
-        {activeTab === "users" && <UsersTab />}
         {activeTab === "permissions" && <PermissionsTab />}
         {activeTab === "logs" && <AuditLogsTab />}
         {activeTab === "investigate" && <InvestigateTab />}

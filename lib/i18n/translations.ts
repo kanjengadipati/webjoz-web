@@ -494,6 +494,7 @@ export interface Translations {
       adminPayments: string;
       adminReports: string;
       tenants: string;
+      users: string;
       templates: string;
       designAssets: string;
       metrics: string;
@@ -3315,6 +3316,7 @@ export const translations: Record<Locale, Translations> = {
         adminPayments: "Manajemen Pembayaran",
         adminReports: "Revenue Report",
         tenants: "Daftar Klien",
+        users: "Manajemen Pengguna",
         templates: "Galeri Template",
         designAssets: "Aset Desain",
         metrics: "Metrik",
@@ -6211,6 +6213,7 @@ export const translations: Record<Locale, Translations> = {
         adminPayments: "Payment Management",
         adminReports: "Revenue Report",
         tenants: "All Tenants",
+        users: "User Management",
         templates: "Template Gallery",
         designAssets: "Design Assets",
         metrics: "Metrics",
