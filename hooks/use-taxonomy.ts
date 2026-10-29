@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { fetchTaxonomy, TaxonomyResponse, TaxonomyType, TaxonomySubType } from "@/lib/api/taxonomy";
+import { BUSINESS_TYPES, SUB_TYPES } from "@/components/site-wizard/constants";
 
 export interface BusinessTypeItem {
   value: string;
@@ -39,24 +40,47 @@ export function useTaxonomy(lang: "id" | "en" = "id", region?: string) {
   }, [load]);
 
   const businessTypes = useMemo((): BusinessTypeItem[] => {
-    if (!taxonomy) return [];
-    return taxonomy.types.map((t) => ({
-      value: t.value,
-      label: t.label,
-      emoji: "",
-      desc: t.desc,
-    }));
+    if (!taxonomy || !Array.isArray(taxonomy.types) || taxonomy.types.length === 0) {
+      return BUSINESS_TYPES;
+    }
+    return taxonomy.types.map((t) => {
+      const fb = BUSINESS_TYPES.find((b) => b.value === t.value);
+      return {
+        value: t.value,
+        label: t.label || fb?.label || t.value,
+        emoji: fb?.emoji || "✨",
+        desc: t.desc || fb?.desc || "",
+      };
+    });
   }, [taxonomy]);
 
   const subTypes = useMemo((): Record<string, SubTypeItem[]> => {
-    if (!taxonomy) return {};
-    const result: Record<string, SubTypeItem[]> = {};
+    if (!taxonomy || !Array.isArray(taxonomy.types) || taxonomy.types.length === 0) {
+      return SUB_TYPES;
+    }
+    const result: Record<string, SubTypeItem[]> = { ...SUB_TYPES };
     for (const t of taxonomy.types) {
-      result[t.value] = t.sub_types.map((s) => ({
-        value: s.value,
-        label: s.label,
-        emoji: "",
-      }));
+      const fbList = SUB_TYPES[t.value] ?? [];
+      result[t.value] = t.sub_types.map((s) => {
+        const fbSub = fbList.find((sub) => sub.value === s.value);
+        return {
+          value: s.value,
+          label: s.label || fbSub?.label || s.value,
+          emoji: fbSub?.emoji || "🏷️",
+        };
+      });
+    }
+    // Retain legacy type alias keys for backwards compatibility
+    if (result["Toko"]) {
+      result["Toko & UMKM"] = result["Toko"];
+      result["Toko Online & Retail"] = result["Toko"];
+    }
+    if (result["Portofolio"]) {
+      result["Portofolio & Kreator"] = result["Portofolio"];
+    }
+    if (result["Layanan & Reservasi"]) {
+      result["Jasa & Booking"] = result["Layanan & Reservasi"];
+      result["Jasa"] = result["Layanan & Reservasi"];
     }
     return result;
   }, [taxonomy]);

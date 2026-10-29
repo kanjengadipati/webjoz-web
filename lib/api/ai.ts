@@ -33,33 +33,6 @@ export async function processBusinessDescription(rawText: string, businessName?:
 export const refineTranscript = (transcript: string, businessName?: string, language?: string) =>
   processBusinessDescription(transcript, businessName, language);
 
-export type TaxonomySubTypeItem = {
-  id: string;
-  value: string;
-  label: string;
-  regions?: string[];
-};
-
-export type TaxonomyTypeItem = {
-  id: string;
-  value: string;
-  label: string;
-  description: string;
-  sub_types: TaxonomySubTypeItem[];
-};
-
-export type TaxonomyResponse = {
-  version: number;
-  lang: string;
-  types: TaxonomyTypeItem[];
-};
-
-export async function getTaxonomy(lang = "id", region?: string): Promise<TaxonomyResponse> {
-  const normLang = (lang || "id").split(/[-_]/)[0].toLowerCase();
-  const params = new URLSearchParams({ lang: normLang });
-  if (region && region.trim()) {
-    params.set("region", region.trim());
-  }
-  const res = await request<TaxonomyResponse>(`/ai/public/taxonomy?${params.toString()}`);
-  return res.data;
-}
+// Re-export taxonomy API and types from dedicated module
+export { fetchTaxonomy, fetchTaxonomy as getTaxonomy, resolveTaxonomy } from "./taxonomy";
+export type { TaxonomyResponse, TaxonomyType, TaxonomySubType, ResolvedTaxonomy } from "./taxonomy";
