@@ -137,6 +137,7 @@ const SUB_TYPE_ICONS: Record<string, React.ElementType> = {
   "Hotel & Penginapan":       Hotel,
   "Salon & Kecantikan":       Flower2,
   "Barbershop":               Scissors,
+  "Makeup Artist (MUA)":      Paintbrush,
   "Klinik & Kesehatan":       Stethoscope,
   "Gym & Olahraga":           Dumbbell,
   "Event & Wedding Organizer": Calendar,
