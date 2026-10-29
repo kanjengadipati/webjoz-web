@@ -185,7 +185,7 @@ export default function AdminTenantDetailPage() {
             {t("dashboard.tenantDetail.planAssignmentTitle")}
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-6 space-y-3">
+        <CardContent className="p-6 space-y-3 overflow-visible">
           <div className="flex items-center gap-4">
             <div className="flex-1">
               <label className="mb-2 block text-xs font-medium text-muted-foreground">{t("dashboard.tenantDetail.currentPlanLabel")}</label>
@@ -203,6 +203,8 @@ export default function AdminTenantDetailPage() {
                       ...plans.map((p) => ({ value: p.id.toString(), label: p.name })),
                     ]}
                     size="sm"
+                    className="relative z-50"
+                    menuClassName="!z-[200]"
                   />
                 </div>
                 <Button size="sm" onClick={handleAssignPlan} disabled={!selectedPlanId || assigning}>
