@@ -105,8 +105,8 @@ export default function AdminMetricsPage() {
   const [sourceFilter, setSourceFilter] = useState("all");
   const [providerFilter, setProviderFilter] = useState("all");
   const [activeRequests, setActiveRequests] = useState(0);
-  const [variantsDialogOpen, setVariantsDialogOpen] = useState(false);
-  const [sourcesDialogOpen, setSourcesDialogOpen] = useState(false);
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+  const [detailTab, setDetailTab] = useState<"variants" | "sources">("variants");
   const [selectedLog, setSelectedLog] = useState<GenerationLog | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -522,7 +522,8 @@ export default function AdminMetricsPage() {
                                         className="h-7 gap-1.5 text-xs"
                                         onClick={() => {
                                           setSelectedLog(log);
-                                          setVariantsDialogOpen(true);
+                                          setDetailTab("variants");
+                                          setDetailDialogOpen(true);
                                         }}
                                       >
                                         <Eye className="size-3.5" />
@@ -574,115 +575,200 @@ export default function AdminMetricsPage() {
         </>
       ) : null}
 
-      {variantsDialogOpen && selectedLog && (
+      {detailDialogOpen && selectedLog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/60" onClick={() => { setVariantsDialogOpen(false); setSelectedLog(null); }} />
-          <div className="relative w-[95vw] max-w-6xl max-h-[90vh] overflow-hidden rounded-xl border border-border bg-background shadow-2xl">
-            <div className="flex items-start justify-between gap-4 border-b border-border/60 px-6 py-4">
+          <div className="absolute inset-0 bg-black/60" onClick={() => { setDetailDialogOpen(false); setSelectedLog(null); }} />
+          <div className="relative w-[95vw] max-w-5xl max-h-[90vh] overflow-hidden rounded-xl border border-border bg-background shadow-2xl flex flex-col">
+            {/* Header */}
+            <div className="flex items-start justify-between gap-4 border-b border-border/60 px-6 py-4 shrink-0">
               <div className="space-y-1">
-                <h2 className="text-lg font-semibold">Section Variants</h2>
+                <div className="flex items-center gap-3">
+                  <h2 className="text-lg font-semibold">Detail Section</h2>
+                  {/* Tabs */}
+                  <div className="flex items-center gap-1 bg-muted/50 rounded-lg p-0.5">
+                    {(["variants", "sources"] as const).map((tab) => (
+                      <button
+                        key={tab}
+                        onClick={() => setDetailTab(tab)}
+                        className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
+                          detailTab === tab
+                            ? "bg-background shadow-sm text-foreground"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {tab === "variants" ? "Variants" : "Sources"}
+                        {tab === "variants" && selectedLog.section_variants
+                          ? ` (${Object.keys(selectedLog.section_variants).length})`
+                          : tab === "sources" && selectedLog.section_sources
+                          ? ` (${Object.keys(selectedLog.section_sources).length})`
+                          : ""}
+                      </button>
+                    ))}
+                  </div>
+                </div>
                 <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                   <span className="font-mono">{selectedLog.request_id}</span>
                   <span>•</span>
                   <span>Bisnis: <span className="text-foreground">{selectedLog.business_type || "-"}</span></span>
                   <span>•</span>
-                  <span>Sub Bisnis: <span className="text-foreground">{selectedLog.business_sub_type || "-"}</span></span>
+                  <span>Sub: <span className="text-foreground">{selectedLog.business_sub_type || "-"}</span></span>
                   <span>•</span>
-                  <span>Hero Varian: <span className="text-foreground">{selectedLog.hero_style || "-"}</span></span>
+                  <span>Hero: <span className="text-foreground">{selectedLog.hero_style || "-"}</span></span>
                   <span>•</span>
                   <span>Template: <span className="text-foreground">{selectedLog.template_id || "-"}</span></span>
                 </div>
               </div>
-              <Button variant="ghost" size="icon" onClick={() => { setVariantsDialogOpen(false); setSelectedLog(null); }}>
+              <Button variant="ghost" size="icon" onClick={() => { setDetailDialogOpen(false); setSelectedLog(null); }}>
                 <X className="size-4" />
               </Button>
             </div>
-            <div className="max-h-[calc(90vh-80px)] overflow-auto">
-              {selectedLog.section_variants && Object.keys(selectedLog.section_variants).length > 0 ? (
-                <table className="w-full text-sm">
-                  <thead className="sticky top-0 bg-muted/80 backdrop-blur">
-                    <tr className="border-b border-border/60">
-                      <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-6">Section</th>
-                      <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-4">Variant</th>
-                      <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-4">Source</th>
-                      <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-4">Picked by</th>
-                      <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-6">Reason</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Object.entries(selectedLog.section_variants)
-                      .sort(([a], [b]) => a.localeCompare(b))
-                      .map(([sec, v]) => (
-                        <tr key={sec} className="border-b border-border/40 hover:bg-muted/20">
-                          <td className="py-2.5 px-6 font-medium whitespace-nowrap">{sec}</td>
-                          <td className="py-2.5 px-4 whitespace-nowrap">{v.variant}</td>
-                          <td className="py-2.5 px-4 uppercase text-xs whitespace-nowrap">{v.source}</td>
-                          <td className="py-2.5 px-4 text-xs whitespace-nowrap">{v.picked_by}</td>
-                          <td className="py-2.5 px-6 text-xs text-muted-foreground">{v.reason || "-"}</td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              ) : (
-                <p className="text-sm text-muted-foreground p-6">Tidak ada data section_variants</p>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
 
-      {sourcesDialogOpen && selectedLog && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/60" onClick={() => { setSourcesDialogOpen(false); setSelectedLog(null); }} />
-          <div className="relative w-[95vw] max-w-3xl max-h-[90vh] overflow-hidden rounded-xl border border-border bg-background shadow-2xl">
-            <div className="flex items-start justify-between gap-4 border-b border-border/60 px-6 py-4">
-              <div className="space-y-1">
-                <h2 className="text-lg font-semibold">Section Sources</h2>
-                <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                  <span className="font-mono">{selectedLog.request_id}</span>
-                  <span>•</span>
-                  <span>Bisnis: <span className="text-foreground">{selectedLog.business_type || "-"}</span></span>
-                  <span>•</span>
-                  <span>Sub Bisnis: <span className="text-foreground">{selectedLog.business_sub_type || "-"}</span></span>
-                  <span>•</span>
-                  <span>Hero Varian: <span className="text-foreground">{selectedLog.hero_style || "-"}</span></span>
-                  <span>•</span>
-                  <span>Template: <span className="text-foreground">{selectedLog.template_id || "-"}</span></span>
-                </div>
-              </div>
-              <Button variant="ghost" size="icon" onClick={() => { setSourcesDialogOpen(false); setSelectedLog(null); }}>
-                <X className="size-4" />
-              </Button>
-            </div>
-            <div className="max-h-[calc(90vh-80px)] overflow-auto">
-              {selectedLog.section_sources && Object.keys(selectedLog.section_sources).length > 0 ? (
-                <table className="w-full text-sm">
-                  <thead className="sticky top-0 bg-muted/80 backdrop-blur">
-                    <tr className="border-b border-border/60">
-                      <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-6">Section</th>
-                      <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-6">Source</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Object.entries(selectedLog.section_sources)
-                      .sort(([a], [b]) => a.localeCompare(b))
-                      .map(([sec, ssrc]) => {
-                        const meta = sourceMetaFromStr(ssrc);
-                        return (
-                          <tr key={sec} className="border-b border-border/40 hover:bg-muted/20">
-                            <td className="py-2.5 px-6 font-medium whitespace-nowrap">{sec}</td>
-                            <td className="py-2.5 px-6">
-                              <span className={`inline-flex text-[10px] font-medium px-1.5 py-0.5 rounded ${meta.cls}`}>
-                                {t(`dashboard.adminMetrics.${meta.labelKey}`)}
-                              </span>
-                            </td>
+            {/* Body */}
+            <div className="overflow-auto flex-1">
+              {detailTab === "variants" ? (
+                (() => {
+                  const entries = selectedLog.section_variants
+                    ? Object.entries(selectedLog.section_variants).sort(([a], [b]) => a.localeCompare(b))
+                    : [];
+                  if (entries.length === 0) {
+                    return <p className="text-sm text-muted-foreground p-6">Tidak ada data section_variants</p>;
+                  }
+                  // Detect if all rows share the same source / picked_by / reason
+                  const sources = [...new Set(entries.map(([, v]) => v.source))];
+                  const pickedBys = [...new Set(entries.map(([, v]) => v.picked_by))];
+                  const reasons = [...new Set(entries.map(([, v]) => v.reason || ""))];
+                  const uniformSource = sources.length === 1;
+                  const uniformPickedBy = pickedBys.length === 1;
+                  const uniformReason = reasons.length === 1;
+                  const showBanner = uniformSource && uniformPickedBy && uniformReason;
+                  const hasCandidates = entries.some(([, v]) => v.candidates && v.candidates.length > 0);
+                  const hasScores = entries.some(([, v]) => v.scores && Object.keys(v.scores).length > 0);
+
+                  return (
+                    <>
+                      {showBanner && (
+                        <div className="px-6 py-3 border-b border-border/40 bg-muted/30 flex flex-wrap items-center gap-3 text-xs">
+                          <span className="text-muted-foreground">Semua section:</span>
+                          <span className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-600 font-medium px-2 py-0.5 rounded-full">
+                            source: {sources[0]}
+                          </span>
+                          <span className="inline-flex items-center gap-1 bg-blue-500/10 text-blue-600 font-medium px-2 py-0.5 rounded-full">
+                            picked by: {pickedBys[0]}
+                          </span>
+                          {reasons[0] && (
+                            <span className="text-muted-foreground italic">{reasons[0]}</span>
+                          )}
+                        </div>
+                      )}
+                      <table className="w-full text-sm">
+                        <thead className="sticky top-0 bg-muted/80 backdrop-blur z-10">
+                          <tr className="border-b border-border/60">
+                            <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-6">Section</th>
+                            <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-4">Variant</th>
+                            {!showBanner && (
+                              <>
+                                <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-4">Source</th>
+                                <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-4">Picked by</th>
+                                <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-6">Reason</th>
+                              </>
+                            )}
+                            {hasCandidates && (
+                              <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-4">Candidates</th>
+                            )}
+                            {hasScores && (
+                              <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-4">Scores</th>
+                            )}
                           </tr>
-                        );
-                      })}
-                  </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                          {entries.map(([sec, v]) => (
+                            <tr key={sec} className="border-b border-border/40 hover:bg-muted/20">
+                              <td className="py-2 px-6 font-medium whitespace-nowrap">{sec}</td>
+                              <td className="py-2 px-4 font-mono text-xs whitespace-nowrap">{v.variant || "-"}</td>
+                              {!showBanner && (
+                                <>
+                                  <td className="py-2 px-4 uppercase text-xs whitespace-nowrap">{v.source}</td>
+                                  <td className="py-2 px-4 text-xs whitespace-nowrap">{v.picked_by}</td>
+                                  <td className="py-2 px-6 text-xs text-muted-foreground">{v.reason || "-"}</td>
+                                </>
+                              )}
+                              {hasCandidates && (
+                                <td className="py-2 px-4">
+                                  <div className="flex flex-wrap gap-1">
+                                    {(v.candidates || []).map((c) => (
+                                      <span key={c} className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${c === v.variant ? "bg-emerald-500/15 text-emerald-600 font-semibold" : "bg-muted text-muted-foreground"}`}>{c}</span>
+                                    ))}
+                                  </div>
+                                </td>
+                              )}
+                              {hasScores && (
+                                <td className="py-2 px-4">
+                                  <div className="flex flex-wrap gap-1">
+                                    {Object.entries(v.scores || {}).sort(([, a], [, b]) => b - a).map(([k, s]) => (
+                                      <span key={k} className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${k === v.variant ? "bg-emerald-500/15 text-emerald-600" : "bg-muted text-muted-foreground"}`}>{k}: {s}</span>
+                                    ))}
+                                  </div>
+                                </td>
+                              )}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </>
+                  );
+                })()
               ) : (
-                <p className="text-sm text-muted-foreground p-6">Tidak ada data section_sources</p>
+                (() => {
+                  const entries = selectedLog.section_sources
+                    ? Object.entries(selectedLog.section_sources).sort(([a], [b]) => a.localeCompare(b))
+                    : [];
+                  if (entries.length === 0) {
+                    return <p className="text-sm text-muted-foreground p-6">Tidak ada data section_sources</p>;
+                  }
+                  // Check if all sources are the same
+                  const allSources = [...new Set(entries.map(([, s]) => s))];
+                  const uniformSource = allSources.length === 1;
+                  const bannerMeta = uniformSource ? sourceMetaFromStr(allSources[0]) : null;
+                  return (
+                    <>
+                      {uniformSource && bannerMeta && (
+                        <div className="px-6 py-3 border-b border-border/40 bg-muted/30 flex items-center gap-3 text-xs">
+                          <span className="text-muted-foreground">Semua section:</span>
+                          <span className={`inline-flex font-medium px-2 py-0.5 rounded-full ${bannerMeta.cls}`}>
+                            {t(`dashboard.adminMetrics.${bannerMeta.labelKey}`)}
+                          </span>
+                        </div>
+                      )}
+                      <table className="w-full text-sm">
+                        <thead className="sticky top-0 bg-muted/80 backdrop-blur z-10">
+                          <tr className="border-b border-border/60">
+                            <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-6">Section</th>
+                            {!uniformSource && (
+                              <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-6">Source</th>
+                            )}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {entries.map(([sec, ssrc]) => {
+                            const meta = sourceMetaFromStr(ssrc);
+                            return (
+                              <tr key={sec} className="border-b border-border/40 hover:bg-muted/20">
+                                <td className="py-2 px-6 font-medium whitespace-nowrap">{sec}</td>
+                                {!uniformSource && (
+                                  <td className="py-2 px-6">
+                                    <span className={`inline-flex text-[10px] font-medium px-1.5 py-0.5 rounded ${meta.cls}`}>
+                                      {t(`dashboard.adminMetrics.${meta.labelKey}`)}
+                                    </span>
+                                  </td>
+                                )}
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </>
+                  );
+                })()
               )}
             </div>
           </div>
