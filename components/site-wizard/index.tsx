@@ -140,7 +140,9 @@ const SUB_TYPE_ICONS: Record<string, React.ElementType> = {
   "Klinik & Kesehatan":       Stethoscope,
   "Gym & Olahraga":           Dumbbell,
   "Event & Wedding Organizer": Calendar,
-  "Otomotif & Bengkel":       Wrench,
+  "Otomotif & Bengkel":       Wrench, // legacy
+  "Bengkel Motor":            Wrench,
+  "Bengkel Mobil & Otomotif": Wrench,
   "Laundry":                  Shirt,
   "Jasa Rumah & Kebersihan":  Home,
   "Pendidikan & Kursus":      GraduationCap,
