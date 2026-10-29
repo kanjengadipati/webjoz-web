@@ -360,9 +360,9 @@ export function generateDescriptionFromBusinessName(
         return `Professional catering services for events, weddings, and special occasions by ${name}.`;
       case "Minuman & Bubble Tea":
         return `Refreshing drinks, specialty teas, and delicious beverages crafted by ${name}.`;
-      case "Otomotif & Bengkel": // legacy
       case "Bengkel Motor":
         return `Trusted motorcycle service, periodic maintenance, and repair by ${name}.`;
+      case "Otomotif & Bengkel": // legacy
       case "Bengkel Mobil & Otomotif":
         return `Professional car service, repair, and vehicle maintenance by ${name}.`;
       case "Rental Mobil & Kendaraan":
@@ -420,9 +420,9 @@ export function generateDescriptionFromBusinessName(
       return `Melayani jasa katering prasmanan, nasi kotak, dan paket acara berkualitas bersama ${name}.`;
     case "Minuman & Bubble Tea":
       return `Menyajikan aneka minuman segar kekinian dengan aneka pilihan rasa favorit di ${name}.`;
-    case "Otomotif & Bengkel": // legacy
     case "Bengkel Motor":
       return `Melayani jasa servis motor, perawatan berkala, dan perbaikan terpercaya di ${name}.`;
+    case "Otomotif & Bengkel": // legacy
     case "Bengkel Mobil & Otomotif":
       return `Melayani jasa servis mobil, perawatan berkala, dan perbaikan kendaraan roda empat di ${name}.`;
     case "Rental Mobil & Kendaraan":
@@ -487,9 +487,9 @@ export function getDynamicDescriptionPlaceholder(
         return "Example: Traditional heritage dishes, authentic local spices, dine-in & takeaway (Press Enter to skip)";
       case "Fashion & Pakaian":
         return "Example: Authentic batik shirts, modern dresses, premium casual wear, retail & wholesale (Press Enter to skip)";
-      case "Otomotif & Bengkel": // legacy
       case "Bengkel Motor":
         return "Example: Periodic service, oil change, brake repair, 24-hour emergency (Press Enter to skip)";
+      case "Otomotif & Bengkel": // legacy
       case "Bengkel Mobil & Otomotif":
         return "Example: Engine tune-up, oil change, body repair, car detailing (Press Enter to skip)";
       case "Rental Mobil & Kendaraan":
@@ -514,9 +514,9 @@ export function getDynamicDescriptionPlaceholder(
       return "Contoh: Kuliner khas daerah resep warisan, bumbu rempah autentik, melayani pesanan besek/catering (Tekan Enter untuk lewati)";
     case "Fashion & Pakaian":
       return "Contoh: Jual aneka batik tulis, kemeja batik pria, dress batik wanita, motif khas (Tekan Enter untuk lewati)";
-    case "Otomotif & Bengkel": // legacy
     case "Bengkel Motor":
       return "Contoh: Melayani servis rutin motor, ganti oli, tune up, dan panggilan darurat (Tekan Enter untuk lewati)";
+    case "Otomotif & Bengkel": // legacy
     case "Bengkel Mobil & Otomotif":
       return "Contoh: Melayani servis rutin mobil, ganti oli, tune up mesin, body repair (Tekan Enter untuk lewati)";
     case "Rental Mobil & Kendaraan":
