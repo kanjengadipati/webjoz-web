@@ -2694,6 +2694,8 @@ export interface Translations {
       notThisType: string;
       changeSubType: string;
       moreSpecific: string;
+      otherSubType: string;
+      otherSubTypePlaceholder: string;
       chooseMoodHint: string;
       suggestedBadge: string;
       typeSelectedChooseSub: string;
@@ -5525,6 +5527,8 @@ export const translations: Record<Locale, Translations> = {
         notThisType: "Bukan ini? Pilih kategori lain",
         changeSubType: "Pilih jenis lain",
         moreSpecific: "Lebih spesifik:",
+        otherSubType: "Lainnya",
+        otherSubTypePlaceholder: "Tulis sub-kategori spesifik...",
         chooseMoodHint: "Pilih mood yang sesuai dengan brand Anda",
         suggestedBadge: "✨ Disarankan",
         typeSelectedChooseSub: "✓ Dipilih — pilih jenis di bawah",
@@ -8416,6 +8420,8 @@ export const translations: Record<Locale, Translations> = {
         notThisType: "Not this? Choose another category",
         changeSubType: "Choose another type",
         moreSpecific: "More specific:",
+        otherSubType: "Other",
+        otherSubTypePlaceholder: "Enter your specific business sub-type...",
         chooseMoodHint: "Choose a mood that fits your brand",
         suggestedBadge: "✨ Suggested",
         typeSelectedChooseSub: "✓ Selected — choose type below",
