@@ -1115,7 +1115,7 @@ export default function SectionVariantVisualPicker({
       <button
         type="button"
         onClick={() => setIsExpanded((prev) => !prev)}
-        className="w-full flex items-center justify-between gap-2 px-3 py-2 text-left cursor-pointer transition-colors focus:outline-none"
+        className="w-full flex items-center justify-between gap-2 px-3 py-2 text-left cursor-pointer transition-colors focus:outline-none group"
       >
         {/* Left: active variant info */}
         <div className="flex items-center gap-2 min-w-0">
@@ -1124,7 +1124,7 @@ export default function SectionVariantVisualPicker({
             {getOptionLabel(currentOpt)}
           </span>
           {currentOpt.group && (
-            <span className="text-[9px] font-medium px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-700 dark:text-sky-300 border border-sky-500/30 shrink-0">
+            <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-400/40 shrink-0">
               {currentOpt.group}
             </span>
           )}
@@ -1132,13 +1132,13 @@ export default function SectionVariantVisualPicker({
 
         {/* Right: "Pilih Varian (N)" + chevron */}
         <div className="flex items-center gap-1 shrink-0">
-          <span className="text-[10px] font-semibold text-muted-foreground">
+          <span className="text-[10px] font-semibold text-slate-300 group-hover:text-white transition-colors">
             {isExpanded
               ? (t("dashboard.sitesEditor.closeGallery") || "Tutup")
               : `${t("dashboard.sitesEditor.pickVariant") || "Pilih Varian"} (${enabledOpts.length})`}
           </span>
           <ChevronDown
-            className={`w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 ${isExpanded ? "rotate-180 text-sky-600 dark:text-sky-400" : ""}`}
+            className={`w-3.5 h-3.5 text-slate-300 group-hover:text-white transition-all duration-200 ${isExpanded ? "rotate-180 text-sky-400" : ""}`}
           />
         </div>
       </button>
@@ -1155,7 +1155,7 @@ export default function SectionVariantVisualPicker({
                 className={`px-2 py-0.5 rounded-full text-[10px] font-medium transition whitespace-nowrap cursor-pointer ${
                   selectedGroup === "Semua"
                     ? "bg-sky-500 text-slate-950 font-bold shadow-xs"
-                    : "bg-muted text-muted-foreground hover:text-foreground hover:bg-muted"
+                    : "bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-700/80 border border-slate-700/50"
                 }`}
               >
                 {t("dashboard.sitesEditor.allVariants") || "Semua"} ({enabledOpts.length})
@@ -1170,7 +1170,7 @@ export default function SectionVariantVisualPicker({
                     className={`px-2 py-0.5 rounded-full text-[10px] font-medium transition whitespace-nowrap cursor-pointer ${
                       selectedGroup === grp
                         ? "bg-sky-500 text-slate-950 font-bold shadow-xs"
-                        : "bg-muted text-muted-foreground hover:text-foreground hover:bg-muted"
+                        : "bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-700/80 border border-slate-700/50"
                     }`}
                   >
                     {grp} ({count})
@@ -1213,7 +1213,7 @@ export default function SectionVariantVisualPicker({
                   <div className="flex items-center justify-between gap-1 mb-1">
                     <span
                       className={`text-[11px] font-bold line-clamp-1 ${
-                        isActive ? "text-sky-700 dark:text-sky-300 font-extrabold" : "text-foreground group-hover:text-foreground"
+                        isActive ? "text-sky-300 font-extrabold" : "text-slate-200 group-hover:text-white"
                       }`}
                     >
                       {getOptionLabel(opt)}
@@ -1222,14 +1222,14 @@ export default function SectionVariantVisualPicker({
 
                   {/* Group Tag */}
                   {opt.group && (
-                    <span className={`text-[8px] font-semibold uppercase tracking-wider mb-1 ${isActive ? "text-sky-700 dark:text-sky-400/80" : "text-muted-foreground"}`}>
+                    <span className={`text-[8px] font-semibold uppercase tracking-wider mb-1 ${isActive ? "text-sky-300" : "text-slate-400"}`}>
                       {opt.group}
                     </span>
                   )}
 
                   {/* Description */}
                   {opt.description && (
-                    <p className="text-[10px] text-muted-foreground line-clamp-2 leading-relaxed">
+                    <p className="text-[10px] text-slate-400 line-clamp-2 leading-relaxed">
                       {opt.description}
                     </p>
                   )}
@@ -1238,12 +1238,12 @@ export default function SectionVariantVisualPicker({
             })}
           </div>
 
-          <div className="flex items-center justify-between text-[10px] text-muted-foreground px-1 pt-1 border-t border-white/5">
+          <div className="flex items-center justify-between text-[10px] text-slate-400 px-1 pt-1 border-t border-slate-800">
             <span>{t("dashboard.sitesEditor.variantPreviewHint") || "Klik varian untuk pratinjau langsung di kanvas."}</span>
             <button
               type="button"
               onClick={() => setIsExpanded(false)}
-              className="text-[10px] text-sky-700 dark:text-sky-400 hover:text-sky-800 dark:hover:text-sky-300 hover:underline font-bold px-1.5 py-0.5 rounded cursor-pointer"
+              className="text-[10px] text-sky-400 hover:text-sky-300 hover:underline font-bold px-1.5 py-0.5 rounded cursor-pointer"
             >
               {t("dashboard.sitesEditor.done") || "Selesai"}
             </button>
