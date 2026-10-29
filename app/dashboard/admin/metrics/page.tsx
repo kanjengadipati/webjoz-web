@@ -200,7 +200,7 @@ export default function AdminMetricsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full min-w-0 max-w-full">
       <div className="flex items-start justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold tracking-tight flex items-center gap-3">
@@ -353,8 +353,8 @@ export default function AdminMetricsPage() {
             </Card>
           </div>
 
-          <div className="grid gap-4">
-            <Card className="border-border/40 shadow-sm">
+          <div className="grid gap-4 w-full min-w-0 max-w-full">
+            <Card className="border-border/40 shadow-sm w-full min-w-0 max-w-full overflow-hidden">
               <CardHeader className="p-5 pb-0 flex flex-col gap-3">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
@@ -364,7 +364,7 @@ export default function AdminMetricsPage() {
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] text-muted-foreground">Per halaman</span>
+                    <span className="text-[11px] text-muted-foreground whitespace-nowrap">Per halaman</span>
                     <CustomSelect
                       value={String(logsLimit)}
                       onChange={onLimitChange}
@@ -435,28 +435,28 @@ export default function AdminMetricsPage() {
                   )}
                 </div>
               </CardHeader>
-              <CardContent className="p-0 pt-4">
+              <CardContent className="p-0 pt-4 w-full min-w-0 max-w-full overflow-hidden">
                 {recentLogs.length === 0 ? (
                   <p className="text-xs text-muted-foreground px-5 pb-5 py-2">{t("dashboard.adminMetrics.noRequestsLogged")}</p>
                 ) : (
                   <>
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-sm">
+                    <div className="overflow-x-auto w-full max-w-full">
+                      <table className="w-full text-sm min-w-[1250px]">
                         <thead>
-                          <tr className="border-y border-border/60 bg-muted/30">
-                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-5 py-2">Waktu</th>
-                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2">Bisnis / Sub Bisnis</th>
-                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2">Request ID</th>
-                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2">Template</th>
-                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2">Hero Varian</th>
-                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2">Provider</th>
-                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2">Sumber</th>
-                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2">Status</th>
-                            <th className="text-right text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2">Durasi</th>
-                            <th className="text-right text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2">AI Req / Token</th>
-                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2">Section Variants</th>
-                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2">Section Sources</th>
-                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-5 py-2">Kegagalan</th>
+                          <tr className="border-y border-border/60 bg-muted/30 whitespace-nowrap">
+                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-5 py-2.5 whitespace-nowrap">Waktu</th>
+                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2.5 whitespace-nowrap">Bisnis / Sub Bisnis</th>
+                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2.5 whitespace-nowrap">Request ID</th>
+                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2.5 whitespace-nowrap">Template</th>
+                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2.5 whitespace-nowrap">Hero Varian</th>
+                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2.5 whitespace-nowrap">Provider</th>
+                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2.5 whitespace-nowrap">Sumber</th>
+                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2.5 whitespace-nowrap">Status</th>
+                            <th className="text-right text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2.5 whitespace-nowrap">Durasi</th>
+                            <th className="text-right text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2.5 whitespace-nowrap">AI Req / Token</th>
+                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2.5 whitespace-nowrap">Section Variants</th>
+                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2.5 whitespace-nowrap">Section Sources</th>
+                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-5 py-2.5 whitespace-nowrap">Kegagalan</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -465,50 +465,50 @@ export default function AdminMetricsPage() {
                             const created = new Date(log.created_at);
                             return (
                               <tr key={log.id || `log-${idx}`} className="border-b border-border/40 hover:bg-muted/20 transition-colors">
-                                <td className="px-5 py-2 align-top">
+                                <td className="px-5 py-2.5 align-top whitespace-nowrap">
                                   <div className="flex flex-col">
                                     <span className="text-xs font-medium">{created.toLocaleDateString("id-ID")}</span>
                                     <span className="text-[10px] text-muted-foreground">{created.toLocaleTimeString("id-ID")}</span>
                                   </div>
                                 </td>
-                                <td className="px-3 py-2 align-top max-w-[220px]">
+                                <td className="px-3 py-2.5 align-top max-w-[200px] min-w-[140px]">
                                   <div className="flex flex-col">
                                     <span className="text-xs font-medium truncate">{log.business_type || "-"}</span>
                                     <span className="text-[10px] text-muted-foreground truncate">{log.business_sub_type || "-"}</span>
                                   </div>
                                 </td>
-                                <td className="px-3 py-2 align-top max-w-[200px]">
-                                  <span className="text-[10px] text-muted-foreground font-mono truncate block">{log.request_id}</span>
+                                <td className="px-3 py-2.5 align-top whitespace-nowrap">
+                                  <span className="text-[10px] text-muted-foreground font-mono">{log.request_id}</span>
                                 </td>
-                                <td className="px-3 py-2 align-top">
+                                <td className="px-3 py-2.5 align-top whitespace-nowrap">
                                   <span className="text-xs truncate block max-w-[140px]">{log.template_id || "-"}</span>
                                 </td>
-                                <td className="px-3 py-2 align-top">
+                                <td className="px-3 py-2.5 align-top whitespace-nowrap">
                                   <span className="text-xs truncate block max-w-[140px]">{log.hero_style || "-"}</span>
                                 </td>
-                                <td className="px-3 py-2 align-top">
+                                <td className="px-3 py-2.5 align-top whitespace-nowrap">
                                   <span className="text-xs">{log.provider || "-"}</span>
                                 </td>
-                                <td className="px-3 py-2 align-top">
+                                <td className="px-3 py-2.5 align-top whitespace-nowrap">
                                   <span className={`inline-flex text-[10px] font-medium px-1.5 py-0.5 rounded ${src.cls}`}>
                                     {t(`dashboard.adminMetrics.${src.labelKey}`)}
                                   </span>
                                 </td>
-                                <td className="px-3 py-2 align-top">
+                                <td className="px-3 py-2.5 align-top whitespace-nowrap">
                                   <span className={`inline-flex text-[10px] font-medium px-1.5 py-0.5 rounded ${log.status === "ok" ? "bg-green-500/10 text-green-600" : "bg-red-500/10 text-red-600"}`}>
                                     {log.status}
                                   </span>
                                 </td>
-                                <td className="px-3 py-2 align-top text-right">
+                                <td className="px-3 py-2.5 align-top text-right whitespace-nowrap">
                                   <span className="text-xs font-mono">{log.duration_ms}ms</span>
                                 </td>
-                                <td className="px-3 py-2 align-top text-right">
+                                <td className="px-3 py-2.5 align-top text-right whitespace-nowrap">
                                   <div className="flex flex-col text-[10px] text-muted-foreground">
                                     <span>{log.ai_requests_total} req</span>
                                     <span>{log.tokens_total} tok</span>
                                   </div>
                                 </td>
-                                <td className="px-3 py-2 align-top">
+                                <td className="px-3 py-2.5 align-top whitespace-nowrap">
                                   {log.section_variants && Object.keys(log.section_variants).length > 0 ? (
                                     <Button
                                       variant="ghost"
@@ -526,7 +526,7 @@ export default function AdminMetricsPage() {
                                     <span className="text-[10px] text-muted-foreground">-</span>
                                   )}
                                 </td>
-                                <td className="px-3 py-2 align-top">
+                                <td className="px-3 py-2.5 align-top whitespace-nowrap">
                                   {log.section_sources && Object.keys(log.section_sources).length > 0 ? (
                                     <Button
                                       variant="ghost"
@@ -544,7 +544,7 @@ export default function AdminMetricsPage() {
                                     <span className="text-[10px] text-muted-foreground">-</span>
                                   )}
                                 </td>
-                                <td className="px-5 py-2 align-top max-w-[320px]">
+                                <td className="px-5 py-2.5 align-top min-w-[240px] max-w-[380px]">
                                   {log.failure_reason ? (
                                     <p className="text-[10px] leading-snug text-red-500 dark:text-red-400 line-clamp-2" title={log.failure_reason}>
                                       {log.failure_reason}

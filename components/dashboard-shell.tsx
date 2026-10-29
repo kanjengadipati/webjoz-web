@@ -167,6 +167,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const isEditPage = pathname.startsWith("/dashboard/sites/") && pathname !== "/dashboard/sites/new" && pathParts.length <= 3;
   const isNewSitePage = pathname === "/dashboard/sites/new";
   const isFullscreenWorkspace = isEditPage || isNewSitePage;
+  const isWidePage = pathname.startsWith("/dashboard/admin");
 
   const NAV_ICON_MAP: Record<string, React.ElementType> = {
     layout: LayoutDashboard,
@@ -453,7 +454,10 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         "mx-auto grid min-h-screen",
         isFullscreenWorkspace 
           ? "max-w-none w-full grid-cols-1 p-0 gap-0" 
-          : "max-w-7xl gap-6 px-4 py-6 pb-28 lg:h-full lg:min-h-0 lg:px-8 lg:pb-6 lg:grid-cols-[290px_minmax(0,1fr)] lg:overflow-hidden"
+          : cn(
+              isWidePage ? "max-w-[1600px]" : "max-w-7xl",
+              "gap-6 px-4 py-6 pb-28 lg:h-full lg:min-h-0 lg:px-8 lg:pb-6 lg:grid-cols-[290px_minmax(0,1fr)] lg:overflow-hidden"
+            )
       )}>
         {!isFullscreenWorkspace && (
           <aside className="hidden lg:flex lg:flex-col lg:h-full lg:min-h-0 lg:overflow-hidden">
@@ -648,7 +652,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           </aside>
         )}
 
-        <div ref={contentScrollRef} className={cn("flex min-w-0 flex-col gap-6", !isFullscreenWorkspace && "lg:h-full lg:min-h-0 lg:overflow-y-auto")}>
+        <div ref={contentScrollRef} className={cn("flex min-w-0 flex-col gap-6", !isFullscreenWorkspace && "lg:h-full lg:min-h-0 lg:overflow-y-auto lg:overflow-x-hidden")}>
           {!isFullscreenWorkspace && (
             <header className="sticky top-0 z-20 rounded-3xl border border-border/80 bg-card/90 px-6 py-4 backdrop-blur-xl shadow-lg shadow-slate-900/10 dark:border-border/40 dark:bg-background/60 dark:shadow-black/5">
               <div className="flex flex-wrap items-center justify-between gap-4">
