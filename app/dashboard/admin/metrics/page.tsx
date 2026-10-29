@@ -44,6 +44,7 @@ interface GenerationLog {
   failure_reason: string | null;
   tokens_total: number;
   ai_requests_total: number;
+  is_preview: boolean;
   created_at: string;
 }
 
@@ -104,6 +105,7 @@ export default function AdminMetricsPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [sourceFilter, setSourceFilter] = useState("all");
   const [providerFilter, setProviderFilter] = useState("all");
+  const [hidePreview, setHidePreview] = useState(true);
   const [activeRequests, setActiveRequests] = useState(0);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [detailTab, setDetailTab] = useState<"variants" | "sources">("variants");
@@ -130,6 +132,7 @@ export default function AdminMetricsPage() {
       if (statusFilter !== "all") logsParams.set("status", statusFilter);
       if (sourceFilter !== "all") logsParams.set("source", sourceFilter);
       if (providerFilter !== "all") logsParams.set("provider", providerFilter);
+      logsParams.set("hide_preview", hidePreview ? "true" : "false");
 
       const [summaryRes, liveRes, trendRes, logsRes] = await Promise.all([
         request<SummaryMetrics>("/admin/metrics/ai-generation", {}, token),
@@ -149,7 +152,7 @@ export default function AdminMetricsPage() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [token, isSuperAdmin, t, logsLimit, logsPage, statusFilter, sourceFilter, providerFilter]);
+  }, [token, isSuperAdmin, t, logsLimit, logsPage, statusFilter, sourceFilter, providerFilter, hidePreview]);
 
   useEffect(() => {
     fetchAll();
@@ -159,7 +162,7 @@ export default function AdminMetricsPage() {
 
   useEffect(() => {
     setLogsPage(1);
-  }, [statusFilter, sourceFilter, providerFilter]);
+  }, [statusFilter, sourceFilter, providerFilter, hidePreview]);
 
   const totalPages = Math.max(1, Math.ceil(logsTotal / logsLimit));
   const canPrev = logsPage > 1;
@@ -433,6 +436,18 @@ export default function AdminMetricsPage() {
                       Clear
                     </Button>
                   )}
+                  {/* Toggle hide preview */}
+                  <button
+                    onClick={() => setHidePreview((v) => !v)}
+                    className={`h-7 inline-flex items-center gap-1.5 px-2.5 rounded-md text-xs font-medium border transition-colors ${
+                      hidePreview
+                        ? "bg-primary/10 border-primary/30 text-primary"
+                        : "bg-muted/50 border-border text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Eye className="size-3.5" />
+                    {hidePreview ? "Hanya saved" : "Termasuk preview"}
+                  </button>
                 </div>
               </CardHeader>
               <CardContent className="p-0 pt-4 w-full min-w-0 max-w-full overflow-hidden">
@@ -494,9 +509,16 @@ export default function AdminMetricsPage() {
                                   </span>
                                 </td>
                                 <td className="px-3 py-2.5 align-top whitespace-nowrap">
-                                  <span className={`inline-flex text-[10px] font-medium px-1.5 py-0.5 rounded ${log.status === "ok" ? "bg-green-500/10 text-green-600" : "bg-red-500/10 text-red-600"}`}>
-                                    {log.status}
-                                  </span>
+                                  <div className="flex flex-col gap-0.5">
+                                    <span className={`inline-flex text-[10px] font-medium px-1.5 py-0.5 rounded ${log.status === "ok" ? "bg-green-500/10 text-green-600" : "bg-red-500/10 text-red-600"}`}>
+                                      {log.status}
+                                    </span>
+                                    {log.is_preview && (
+                                      <span className="inline-flex text-[10px] font-medium px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-600">
+                                        preview
+                                      </span>
+                                    )}
+                                  </div>
                                 </td>
                                 <td className="px-3 py-2.5 align-top text-right whitespace-nowrap">
                                   <span className="text-xs font-mono">{log.duration_ms}ms</span>
