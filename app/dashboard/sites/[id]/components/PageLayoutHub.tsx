@@ -7,6 +7,7 @@ import {
   getVariantLabel,
   getVariantDescription,
 } from "@/components/sections/variant-registry";
+import { getHeroStyle } from "@/components/sections/hero/meta";
 import {
   LayoutList,
   Layers,
@@ -72,7 +73,7 @@ export default function PageLayoutHub({
 
           const currentVal =
             (secKey === "hero"
-              ? (designToken?.layout?.section_variants?.hero || designToken?.layout?.hero_style)
+              ? (getHeroStyle(designToken) || enabledVars[0].value)
               : designToken?.layout?.section_variants?.[secKey]) || enabledVars[0].value;
 
           const currentOpt = enabledVars.find((v) => v.value === currentVal);
