@@ -46,7 +46,8 @@ interface TenantDetail {
 }
 
 export default function AdminTenantDetailPage() {
-  const { id } = useParams<{ id: string }>();
+  const params = useParams();
+  const id = (params?.id as string) || "";
   const token = useAuthToken();
   const router = useRouter();
   const { pushToast } = useToast();
@@ -66,18 +67,30 @@ export default function AdminTenantDetailPage() {
     (async () => {
       try {
         setLoading(true);
-        const [tenantRes, plansRes, usageRes] = await Promise.all([
-          request<TenantDetail>(`/tenants/${id}`, {}, token),
-          request<PlanItem[]>("/admin/plans", {}, token),
-          request<AIUsage>(`/admin/tenants/${id}/usage`, {}, token),
-        ]);
+        const tenantRes = await request<TenantDetail>(`/tenants/${id}`, {}, token);
         setTenant(tenantRes.data || null);
-        setPlans(plansRes.data || []);
-        setUsage(usageRes.data);
       } catch (err: any) {
         pushToast(err.message || t("dashboard.tenantDetail.loadFailed"), "error");
       } finally {
         setLoading(false);
+      }
+    })();
+
+    (async () => {
+      try {
+        const plansRes = await request<PlanItem[]>("/admin/plans", {}, token);
+        setPlans(plansRes.data || []);
+      } catch (err: any) {
+        pushToast(err.message || t("dashboard.tenantDetail.loadFailed"), "error");
+      }
+    })();
+
+    (async () => {
+      try {
+        const usageRes = await request<AIUsage>(`/admin/tenants/${id}/usage`, {}, token);
+        setUsage(usageRes.data);
+      } catch {
+        /* usage is optional */
       }
     })();
   }, [token, id, isAdmin]);
