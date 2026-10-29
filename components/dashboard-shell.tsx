@@ -33,16 +33,19 @@ const NAV_LABEL_KEYS: Record<string, string> = {
   tenants: "dashboard.nav.tenants",
   templates: "dashboard.nav.templates",
   "design-assets": "dashboard.nav.designAssets",
+  "section-showcase": "dashboard.nav.sectionShowcase",
   metrics: "dashboard.nav.metrics",
   "ai-settings": "dashboard.nav.aiSettings",
   "admin-sites": "dashboard.nav.adminSites",
   sites: "dashboard.nav.sites",
   domains: "dashboard.nav.domains",
   leads: "dashboard.nav.leads",
+  orders: "dashboard.nav.orders",
   analytics: "dashboard.nav.analytics",
   "sales-referral": "dashboard.nav.salesReferral",
   "sales-commissions": "dashboard.nav.salesCommissions",
   team: "dashboard.nav.team",
+  usage: "dashboard.nav.usage",
   billing: "dashboard.nav.billing",
   upgrade: "dashboard.nav.upgrade",
   settings: "dashboard.nav.settings",
@@ -205,7 +208,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               if (!item) return null;
               const active = pathname === item.href;
               return (
-                <Link key="overview" href={item.href} aria-label="Beranda" aria-current={active ? "page" : undefined}
+                <Link key="overview" href={item.href} aria-label={t(NAV_LABEL_KEYS[item.id] ?? "", item.label)} aria-current={active ? "page" : undefined}
                   className={cn("relative flex items-center justify-center h-10 w-12 rounded-2xl transition-all duration-200",
                     active ? "bg-primary/15 text-primary shadow-sm" : "text-muted-foreground hover:text-foreground hover:bg-muted/40")}>
                   <Home className={cn("size-5 transition-transform duration-200", active ? "stroke-[2.25] scale-110" : "stroke-[1.75]")} aria-hidden="true" />
@@ -272,7 +275,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               const Icon = NAV_ICON_MAP[item.icon] ?? LayoutDashboard;
               const showBadge = unreadCount > 0;
               return (
-                <Link key="notifications" href={item.href} aria-label="Notifikasi" aria-current={active ? "page" : undefined}
+                <Link key="notifications" href={item.href} aria-label={t(NAV_LABEL_KEYS[item.id] ?? "", item.label)} aria-current={active ? "page" : undefined}
                   className={cn("relative flex items-center justify-center h-10 w-12 rounded-2xl transition-all duration-200",
                     active ? "bg-primary/15 text-primary shadow-sm" : "text-muted-foreground hover:text-foreground hover:bg-muted/40")}>
                   <div className="relative flex items-center justify-center">
@@ -746,15 +749,15 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         <Link
           href="/help"
           className="inline-flex fixed bottom-20 right-5 md:bottom-6 md:right-6 z-[70] items-center justify-center gap-2 rounded-full border border-border/60 bg-card/95 hover:bg-muted text-foreground hover:text-primary shadow-lg shadow-slate-900/10 backdrop-blur-xl transition-all hover:brightness-105 active:scale-95 p-0 size-8 md:size-auto md:px-4 md:py-3 text-sm font-semibold"
-          title="Pusat Bantuan"
-          aria-label="Pusat Bantuan"
+          title={t("landing.footerHelp")}
+          aria-label={t("landing.footerHelp")}
         >
           <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="10"/>
             <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
             <path d="M12 17h.01"/>
           </svg>
-          <span className="hidden md:inline">Bantuan</span>
+          <span className="hidden md:inline">{t("landing.navHelp")}</span>
         </Link>
       )}
     </div>

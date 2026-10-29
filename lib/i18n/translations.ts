@@ -499,9 +499,11 @@ export interface Translations {
       metrics: string;
       aiSettings: string;
       adminSites: string;
+      sectionShowcase: string;
       sites: string;
       domains: string;
       leads: string;
+      orders: string;
       analytics: string;
       salesOverview: string;
       salesReferral: string;
@@ -3318,9 +3320,11 @@ export const translations: Record<Locale, Translations> = {
         metrics: "Metrik",
         aiSettings: "Pengaturan AI",
         adminSites: "Moderasi Situs",
+        sectionShowcase: "Showcase Section",
         sites: "Website Saya",
         domains: "Custom Domain",
         leads: "Customer Leads",
+        orders: "Pesanan",
         analytics: "Web Statistik",
         salesOverview: "Sales Overview",
         salesReferral: "Kode Referral",
@@ -6212,9 +6216,11 @@ export const translations: Record<Locale, Translations> = {
         metrics: "Metrics",
         aiSettings: "AI Settings",
         adminSites: "Site Moderation",
+        sectionShowcase: "Section Showcase",
         sites: "My Websites",
         domains: "Custom Domain",
         leads: "Customer Leads",
+        orders: "Orders",
         analytics: "Web Statistics",
         salesOverview: "Sales Overview",
         salesReferral: "Referral Code",
