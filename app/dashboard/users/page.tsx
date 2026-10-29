@@ -124,13 +124,16 @@ export default function UsersPage() {
                       <StatusBadge status={user.is_verified ? "verified" : "unverified"} />
                     </div>
                     <CustomSelect
-                      value={user.role}
+                      value={user.role || "user"}
                       onChange={(val) => void handleChangeRole(user, val)}
                       options={[
-                        { value: "user", label: "User" },
-                        { value: "sales", label: "Sales" },
-                        { value: "admin", label: "Admin" },
-                        ...(currentRole === "superadmin" ? [{ value: "superadmin", label: "Superadmin" }] : []),
+                        { value: "user", label: t("dashboard.settings.roleUser") },
+                        { value: "sales", label: t("dashboard.settings.roleSales") },
+                        { value: "admin", label: t("dashboard.settings.roleAdmin") },
+                        ...(currentRole === "superadmin" ? [{ value: "superadmin", label: t("dashboard.settings.roleSuperadmin") }] : []),
+                        ...(!["user", "sales", "admin", "superadmin"].includes(user.role)
+                          ? [{ value: user.role, label: user.role }]
+                          : []),
                       ]}
                       size="sm"
                       className="w-32"
