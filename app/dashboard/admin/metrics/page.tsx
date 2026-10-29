@@ -640,7 +640,7 @@ export default function AdminMetricsPage() {
                   const uniformSource = sources.length === 1;
                   const uniformPickedBy = pickedBys.length === 1;
                   const uniformReason = reasons.length === 1;
-                  const showBanner = uniformSource && uniformPickedBy && uniformReason;
+                  const showBanner = uniformSource || uniformPickedBy || uniformReason;
                   const hasCandidates = entries.some(([, v]) => v.candidates && v.candidates.length > 0);
                   const hasScores = entries.some(([, v]) => v.scores && Object.keys(v.scores).length > 0);
 
@@ -649,14 +649,20 @@ export default function AdminMetricsPage() {
                       {showBanner && (
                         <div className="px-6 py-3 border-b border-border/40 bg-muted/30 flex flex-wrap items-center gap-3 text-xs">
                           <span className="text-muted-foreground">Semua section:</span>
-                          <span className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-600 font-medium px-2 py-0.5 rounded-full">
-                            source: {sources[0]}
-                          </span>
-                          <span className="inline-flex items-center gap-1 bg-blue-500/10 text-blue-600 font-medium px-2 py-0.5 rounded-full">
-                            picked by: {pickedBys[0]}
-                          </span>
-                          {reasons[0] && (
-                            <span className="text-muted-foreground italic">{reasons[0]}</span>
+                          {uniformSource && (
+                            <span className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-600 font-medium px-2 py-0.5 rounded-full">
+                              source: {sources[0]}
+                            </span>
+                          )}
+                          {uniformPickedBy && (
+                            <span className="inline-flex items-center gap-1 bg-blue-500/10 text-blue-600 font-medium px-2 py-0.5 rounded-full">
+                              picked by: {pickedBys[0]}
+                            </span>
+                          )}
+                          {uniformReason && reasons[0] && (
+                            <span className="inline-flex items-center gap-1 bg-violet-500/10 text-violet-600 font-medium px-2 py-0.5 rounded-full">
+                              reason: {reasons[0]}
+                            </span>
                           )}
                         </div>
                       )}
@@ -665,12 +671,14 @@ export default function AdminMetricsPage() {
                           <tr className="border-b border-border/60">
                             <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-6">Section</th>
                             <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-4">Variant</th>
-                            {!showBanner && (
-                              <>
-                                <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-4">Source</th>
-                                <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-4">Picked by</th>
-                                <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-6">Reason</th>
-                              </>
+                            {!uniformSource && (
+                              <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-4">Source</th>
+                            )}
+                            {!uniformPickedBy && (
+                              <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-4">Picked by</th>
+                            )}
+                            {!uniformReason && (
+                              <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-6">Reason</th>
                             )}
                             {hasCandidates && (
                               <th className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-medium py-2.5 px-4">Candidates</th>
@@ -685,12 +693,14 @@ export default function AdminMetricsPage() {
                             <tr key={sec} className="border-b border-border/40 hover:bg-muted/20">
                               <td className="py-2 px-6 font-medium whitespace-nowrap">{sec}</td>
                               <td className="py-2 px-4 font-mono text-xs whitespace-nowrap">{v.variant || "-"}</td>
-                              {!showBanner && (
-                                <>
-                                  <td className="py-2 px-4 uppercase text-xs whitespace-nowrap">{v.source}</td>
-                                  <td className="py-2 px-4 text-xs whitespace-nowrap">{v.picked_by}</td>
-                                  <td className="py-2 px-6 text-xs text-muted-foreground">{v.reason || "-"}</td>
-                                </>
+                              {!uniformSource && (
+                                <td className="py-2 px-4 uppercase text-xs whitespace-nowrap">{v.source}</td>
+                              )}
+                              {!uniformPickedBy && (
+                                <td className="py-2 px-4 text-xs whitespace-nowrap">{v.picked_by}</td>
+                              )}
+                              {!uniformReason && (
+                                <td className="py-2 px-6 text-xs text-muted-foreground">{v.reason || "-"}</td>
                               )}
                               {hasCandidates && (
                                 <td className="py-2 px-4">
