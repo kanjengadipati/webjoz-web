@@ -1077,7 +1077,7 @@ export default function SectionVariantVisualPicker({
   // Derive current variant for hero or normal section
   const currentVal =
     (sectionKey === "hero"
-      ? (designToken?.layout?.section_variants?.hero || designToken?.layout?.hero_style)
+      ? (designToken?.layout?.hero_style || designToken?.layout?.section_variants?.hero)
       : designToken?.layout?.section_variants?.[sectionKey]) || enabledOpts[0]?.value;
 
   const currentOpt = enabledOpts.find((o) => o.value === currentVal) || enabledOpts[0];

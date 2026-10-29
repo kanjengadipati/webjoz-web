@@ -2,6 +2,8 @@
 import React from "react";
 import type { ComponentType } from "react";
 import type { HeroVariantProps } from "./types";
+import type { HeroStyle } from "./meta";
+import { getHeroStyle } from "./meta";
 import { DesignToken, TemplateProps } from "../../templates/types";
 import HeroCentered from "./centered";
 import HeroSplit from "./split";
@@ -21,7 +23,9 @@ import HeroImageCarousel from "./image-carousel";
 import HeroCarouselSplit from "./carousel-split";
 import HeroCarouselFilmstrip from "./carousel-filmstrip";
 
-const variants: Record<string, ComponentType<HeroVariantProps>> = {
+// Typed against HeroStyle (hero/meta.ts): adding a variant to the catalog without
+// registering its component here is a compile error. "carousel" is a legacy alias.
+const variants: Record<HeroStyle | "carousel", ComponentType<HeroVariantProps>> = {
   // Core classic (4)
   centered: HeroCentered,
   split: HeroSplit,
@@ -56,8 +60,8 @@ export default function HeroSection({
   onEditingStateChange,
 }: HeroVariantProps) {
   // Authoritative field is design_token.layout.hero_style; fallback to section_variants.hero
-  const heroStyle = design_token?.layout?.hero_style || (design_token?.layout?.section_variants?.hero as string | undefined) || "centered";
-  const Renderer = variants[heroStyle] ?? HeroCentered;
+  const heroStyle = getHeroStyle(design_token) ?? "centered";
+  const Renderer = (variants as Record<string, ComponentType<HeroVariantProps>>)[heroStyle] ?? HeroCentered;
   return (
     <div style={{ containerType: "inline-size", width: "100%" }}>
       <Renderer
