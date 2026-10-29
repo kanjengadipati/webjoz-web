@@ -355,11 +355,11 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
         if (res.data.refined_text) {
           refinedText = res.data.refined_text;
         }
-        const sttValid = validateClassification(res.data.type, res.data.sub_type);
-        if (sttValid?.subType) {
+        const sttValid = validateClassification(res.data.type, res.data.sub_type) ?? validateClassification(res.data.type, "");
+        if (sttValid?.type) {
           inferredResult = {
             type: sttValid.type,
-            subType: sttValid.subType,
+            subType: sttValid.subType || "",
           };
         }
       }
@@ -680,11 +680,11 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
       .then((aiRes) => {
         const d = aiRes?.data;
         if (d && (d.confidence === "high" || d.confidence === "medium")) {
-          const validHint = validateClassification(d.type, d.sub_type);
-          if (validHint?.subType) {
+          const validHint = validateClassification(d.type, d.sub_type) ?? validateClassification(d.type, "");
+          if (validHint?.type) {
             const aiHint = {
               type: validHint.type,
-              subType: validHint.subType,
+              subType: validHint.subType || "",
               refinedText: d.refined_text?.trim(),
             };
             suggestedHintRef.current = aiHint;
@@ -839,6 +839,14 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
         }
         processDescriptionSubmission(autoDesc, { type: nameHint.type, subType: nameHint.subType });
         return;
+      } else if (nameHint?.type) {
+        const autoDesc = nameHint.refinedText || generateDescriptionFromBusinessName(currentBizName, nameHint, locale);
+        const detectedLoc = extractLocationFromDescription(currentBizName);
+        if (detectedLoc && !serviceArea) {
+          setServiceArea(detectedLoc);
+        }
+        processDescriptionSubmission(autoDesc, { type: nameHint.type, subType: "" });
+        return;
       }
 
       // AI-First Fallback: If no hint is ready yet, invoke AI to analyze the business name
@@ -847,11 +855,11 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
         const aiRes = await processBusinessDescription("", currentBizName, locale);
         const d = aiRes?.data;
         if (d && (d.confidence === "high" || d.confidence === "medium")) {
-          const validHint = validateClassification(d.type, d.sub_type);
-          if (validHint?.subType) {
+          const validHint = validateClassification(d.type, d.sub_type) ?? validateClassification(d.type, "");
+          if (validHint?.type) {
             const aiHint = {
               type: validHint.type,
-              subType: validHint.subType,
+              subType: validHint.subType || "",
               refinedText: d.refined_text?.trim(),
             };
             setSuggestedHint(aiHint);
@@ -911,14 +919,14 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     // Classification is server-side only — the client never guesses categories.
     // =========================================================================
     const preValid =
-      preInferred?.type && preInferred?.subType
-        ? validateClassification(preInferred.type, preInferred.subType)
+      preInferred?.type
+        ? (validateClassification(preInferred.type, preInferred.subType) ?? validateClassification(preInferred.type, ""))
         : null;
-    if (preValid?.subType) {
+    if (preValid?.type) {
       result = {
         type: preValid.type,
-        subType: preValid.subType,
-        confidence: "high",
+        subType: preValid.subType || "",
+        confidence: preValid.subType ? "high" : "medium",
       };
     } else {
       setIsAnalyzingDescription(true);
@@ -943,12 +951,12 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
               }
             }
           }
-          const aiValid = validateClassification(aiRes.data.type, aiRes.data.sub_type);
-          if (aiValid?.subType) {
+          const aiValid = validateClassification(aiRes.data.type, aiRes.data.sub_type) ?? validateClassification(aiRes.data.type, "");
+          if (aiValid?.type) {
             result = {
               type: aiValid.type,
-              subType: aiValid.subType,
-              confidence: aiRes.data.confidence === "high" ? "high" : "low",
+              subType: aiValid.subType || "",
+              confidence: aiRes.data.confidence === "high" && aiValid.subType ? "high" : "medium",
             };
           }
         }
@@ -965,6 +973,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     // =========================================================================
     // STEP 4: ROUTING & AUTO-ADVANCE
     // If confidence is HIGH: show category chips for 2s, then auto-advance to language.
+    // If TYPE is known but SUBTYPE is broad/unstated: skip 6 categories, show subtype chips directly.
     // If confidence is LOW: present manual category selection chips.
     // =========================================================================
     if (result.confidence === "high" && result.type && result.type.trim() && result.subType && result.subType.trim()) {
@@ -1005,6 +1014,46 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
             inferenceAutoConfirmRef.current = null;
           }
         }, 2000);
+      }, 300);
+      return;
+    }
+
+    // Type-only inference: Type is recognized, but subtype is broad or unstated.
+    // Directly present subtype chips without pre-selecting a false-positive chip.
+    if (result.type && result.type.trim() && (!result.subType || !result.subType.trim())) {
+      const confirmedType = result.type.trim();
+      setBusinessType(confirmedType);
+      setBusinessSubType("");
+      setTypeWasInferred(true);
+      setChatStage("type");
+
+      const categoryKeyMap: Record<string, string> = {
+        "Kuliner": "kuliner",
+        "Toko": "tokoUmkm",
+        "Toko & UMKM": "tokoUmkm",
+        "Toko Online & Retail": "tokoUmkm",
+        "Layanan & Reservasi": "jasaBooking",
+        "Jasa & Booking": "jasaBooking",
+        "Kreatif & Profesional": "portofolioKreator",
+        "Portofolio & Kreator": "portofolioKreator",
+        "Portofolio": "portofolioKreator",
+        "Company Profile": "company",
+        "Company": "company",
+      };
+      const key = categoryKeyMap[confirmedType];
+      const categoryLabel = key ? t(`dashboard.wizard.categories.${key}`, confirmedType) : confirmedType;
+      const promptMsg = t(
+        "dashboard.wizard.descriptionInferenceTypeOnly",
+        "Bagus! Bisnis Anda masuk kategori {category}. Lebih spesifiknya, pilih jenis yang paling pas di bawah:"
+      ).replace("{category}", categoryLabel);
+
+      setTimeout(() => {
+        typeMessage(promptMsg, () => {
+          setMessages((prev) => [
+            ...prev,
+            { id: `widget-subtype-chips-${Date.now()}`, sender: "ai", text: "", widget: "subtype-chips" as const },
+          ]);
+        });
       }, 300);
       return;
     }
