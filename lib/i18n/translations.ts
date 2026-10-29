@@ -2566,6 +2566,7 @@ export interface Translations {
       descriptionSkipKeyword: string;
       descriptionInferenceHigh: string;
       descriptionInferenceMedium: string;
+      descriptionInferenceTypeOnly: string;
       descriptionInferenceNone: string;
       descriptionAiFailed: string;
       analyzingDescription: string;
@@ -5399,6 +5400,7 @@ export const translations: Record<Locale, Translations> = {
         descriptionSkipKeyword: "lewat",
         descriptionInferenceHigh: "Sepertinya Anda cocok di kategori **{subType}**. Langsung buat website-nya?",
         descriptionInferenceMedium: "Sepertinya bidang Anda adalah {type}. Bisa pilih yang lebih spesifik?",
+        descriptionInferenceTypeOnly: "Bagus! Bisnis Anda masuk kategori {category}. Lebih spesifiknya, pilih jenis yang paling pas di bawah:",
         descriptionInferenceNone: "Baik, silakan pilih kategori Anda:",
         descriptionAiFailed: "Koneksi ke AI bermasalah. Silakan pilih kategori Anda:",
         analyzingDescription: "Menganalisis profil Anda...",
@@ -8292,6 +8294,7 @@ export const translations: Record<Locale, Translations> = {
         descriptionSkipKeyword: "skip",
         descriptionInferenceHigh: "Looks like you fit into the **{subType}** category. Shall we create the website?",
         descriptionInferenceMedium: "Looks like your field is {type}. Could you pick a more specific category?",
+        descriptionInferenceTypeOnly: "Great! Your business belongs to {category}. More specifically, please choose the best match below:",
         descriptionInferenceNone: "Alright, please select your category:",
         descriptionAiFailed: "AI is having trouble. Please select your category manually:",
         analyzingDescription: "Analyzing your profile...",
