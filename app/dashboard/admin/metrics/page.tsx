@@ -105,6 +105,7 @@ export default function AdminMetricsPage() {
   const [sourceFilter, setSourceFilter] = useState("all");
   const [providerFilter, setProviderFilter] = useState("all");
   const [activeRequests, setActiveRequests] = useState(0);
+  const [sectionDialogOpen, setSectionDialogOpen] = useState(false);
   const [variantsDialogOpen, setVariantsDialogOpen] = useState(false);
   const [sourcesDialogOpen, setSourcesDialogOpen] = useState(false);
   const [selectedLog, setSelectedLog] = useState<GenerationLog | null>(null);
@@ -454,8 +455,7 @@ export default function AdminMetricsPage() {
                             <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2.5 whitespace-nowrap">Status</th>
                             <th className="text-right text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2.5 whitespace-nowrap">Durasi</th>
                             <th className="text-right text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2.5 whitespace-nowrap">AI Req / Token</th>
-                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2.5 whitespace-nowrap">Section Variants</th>
-                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2.5 whitespace-nowrap">Section Sources</th>
+                            <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-3 py-2.5 whitespace-nowrap">Detail Section</th>
                             <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground font-medium px-5 py-2.5 whitespace-nowrap">Kegagalan</th>
                           </tr>
                         </thead>
@@ -509,40 +509,28 @@ export default function AdminMetricsPage() {
                                   </div>
                                 </td>
                                 <td className="px-3 py-2.5 align-top whitespace-nowrap">
-                                  {log.section_variants && Object.keys(log.section_variants).length > 0 ? (
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      className="h-7 gap-1.5 text-xs"
-                                      onClick={() => {
-                                        setSelectedLog(log);
-                                        setVariantsDialogOpen(true);
-                                      }}
-                                    >
-                                      <Eye className="size-3.5" />
-                                      Lihat ({Object.keys(log.section_variants).length})
-                                    </Button>
-                                  ) : (
-                                    <span className="text-[10px] text-muted-foreground">-</span>
-                                  )}
-                                </td>
-                                <td className="px-3 py-2.5 align-top whitespace-nowrap">
-                                  {log.section_sources && Object.keys(log.section_sources).length > 0 ? (
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      className="h-7 gap-1.5 text-xs"
-                                      onClick={() => {
-                                        setSelectedLog(log);
-                                        setSourcesDialogOpen(true);
-                                      }}
-                                    >
-                                      <Eye className="size-3.5" />
-                                      Lihat ({Object.keys(log.section_sources).length})
-                                    </Button>
-                                  ) : (
-                                    <span className="text-[10px] text-muted-foreground">-</span>
-                                  )}
+                                  {(() => {
+                                    const vCount = log.section_variants ? Object.keys(log.section_variants).length : 0;
+                                    const sCount = log.section_sources ? Object.keys(log.section_sources).length : 0;
+                                    const count = Math.max(vCount, sCount);
+                                    if (count === 0) {
+                                      return <span className="text-[10px] text-muted-foreground">-</span>;
+                                    }
+                                    return (
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-7 gap-1.5 text-xs"
+                                        onClick={() => {
+                                          setSelectedLog(log);
+                                          setSectionDialogOpen(true);
+                                        }}
+                                      >
+                                        <Eye className="size-3.5" />
+                                        Lihat ({count})
+                                      </Button>
+                                    );
+                                  })()}
                                 </td>
                                 <td className="px-5 py-2.5 align-top min-w-[240px] max-w-[380px]">
                                   {log.failure_reason ? (
