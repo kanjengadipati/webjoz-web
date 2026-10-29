@@ -26,6 +26,7 @@ export const DASHBOARD_NAVIGATION = [
   { id: "usage", href: "/dashboard/usage", label: "Pemakaian", permission: "", icon: "gauge", section: "Website Builder", groupStart: false },
   { id: "billing", href: "/dashboard/billing", label: "Riwayat Tagihan", permission: "", icon: "receipt", section: "Website Builder", groupStart: false },
   { id: "upgrade", href: "/dashboard/upgrade", label: "Upgrade Paket", permission: "", icon: "credit-card", section: "Website Builder", groupStart: false },
+  { id: "users", href: "/dashboard/users", label: "User Management", permission: "user.read_all", icon: "users", section: "Sistem", groupStart: false, adminOnly: true },
   { id: "settings", href: "/dashboard/settings", label: "Pengaturan", permission: "", icon: "settings", section: "Sistem", groupStart: false },
 ] as const;
 

@@ -31,6 +31,7 @@ const NAV_LABEL_KEYS: Record<string, string> = {
   "admin-payments": "dashboard.nav.adminPayments",
   "admin-reports": "dashboard.nav.adminReports",
   tenants: "dashboard.nav.tenants",
+  users: "dashboard.nav.users",
   templates: "dashboard.nav.templates",
   "design-assets": "dashboard.nav.designAssets",
   "section-showcase": "dashboard.nav.sectionShowcase",
