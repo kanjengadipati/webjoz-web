@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "check:hero": "node scripts/check-hero-catalog.mjs",
+    "check:taxonomy": "node scripts/check-taxonomy.mjs",
     "test:e2e": "npx playwright test",
     "test:e2e:ui": "npx playwright test --ui",
     "test:e2e:debug": "npx playwright test --debug",

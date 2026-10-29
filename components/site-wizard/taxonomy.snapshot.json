@@ -1,0 +1,282 @@
+[
+  {
+    "type": "Kuliner",
+    "subType": "Restoran \u0026 Warung Makan",
+    "id": "food.restaurant"
+  },
+  {
+    "type": "Kuliner",
+    "subType": "Kuliner Tradisional \u0026 Nusantara",
+    "id": "food.traditional"
+  },
+  {
+    "type": "Kuliner",
+    "subType": "Kafe",
+    "id": "food.cafe"
+  },
+  {
+    "type": "Kuliner",
+    "subType": "Bakery \u0026 Pastry",
+    "id": "food.bakery"
+  },
+  {
+    "type": "Kuliner",
+    "subType": "Catering",
+    "id": "food.catering"
+  },
+  {
+    "type": "Kuliner",
+    "subType": "Minuman \u0026 Bubble Tea",
+    "id": "food.beverage"
+  },
+  {
+    "type": "Kuliner",
+    "subType": "Makanan Rumahan \u0026 Frozen Food",
+    "id": "food.home_kitchen"
+  },
+  {
+    "type": "Kuliner",
+    "subType": "Frozen Food Homemade",
+    "id": "food.frozen_homemade"
+  },
+  {
+    "type": "Kuliner",
+    "subType": "Kuliner Kaki Lima \u0026 Angkringan",
+    "id": "food.street_stall"
+  },
+  {
+    "type": "Kuliner",
+    "subType": "Jajanan Pasar \u0026 Kuliner Tradisional",
+    "id": "food.market_snacks"
+  },
+  {
+    "type": "Kuliner",
+    "subType": "Herbal \u0026 Jamu",
+    "id": "food.herbal"
+  },
+  {
+    "type": "Toko",
+    "subType": "Fashion \u0026 Pakaian",
+    "id": "shop.fashion"
+  },
+  {
+    "type": "Toko",
+    "subType": "Elektronik",
+    "id": "shop.electronics"
+  },
+  {
+    "type": "Toko",
+    "subType": "Kecantikan \u0026 Kosmetik",
+    "id": "shop.beauty"
+  },
+  {
+    "type": "Toko",
+    "subType": "Produk Lokal Handmade",
+    "id": "shop.handmade"
+  },
+  {
+    "type": "Toko",
+    "subType": "Minimarket \u0026 Sembako",
+    "id": "shop.grocery"
+  },
+  {
+    "type": "Toko",
+    "subType": "Perabot \u0026 Furnitur",
+    "id": "shop.furniture"
+  },
+  {
+    "type": "Toko",
+    "subType": "Otomotif \u0026 Sparepart",
+    "id": "shop.auto_parts"
+  },
+  {
+    "type": "Toko",
+    "subType": "Pertanian \u0026 Peternakan",
+    "id": "shop.agri_pet"
+  },
+  {
+    "type": "Layanan \u0026 Reservasi",
+    "subType": "Rental Mobil \u0026 Kendaraan",
+    "id": "service.vehicle_rental"
+  },
+  {
+    "type": "Layanan \u0026 Reservasi",
+    "subType": "Travel \u0026 Wisata",
+    "id": "service.travel"
+  },
+  {
+    "type": "Layanan \u0026 Reservasi",
+    "subType": "Hotel \u0026 Penginapan",
+    "id": "service.lodging"
+  },
+  {
+    "type": "Layanan \u0026 Reservasi",
+    "subType": "Makeup Artist (MUA)",
+    "id": "service.makeup_artist"
+  },
+  {
+    "type": "Layanan \u0026 Reservasi",
+    "subType": "Salon \u0026 Kecantikan",
+    "id": "service.salon"
+  },
+  {
+    "type": "Layanan \u0026 Reservasi",
+    "subType": "Barbershop",
+    "id": "service.barbershop"
+  },
+  {
+    "type": "Layanan \u0026 Reservasi",
+    "subType": "Klinik \u0026 Kesehatan",
+    "id": "service.clinic"
+  },
+  {
+    "type": "Layanan \u0026 Reservasi",
+    "subType": "Gym \u0026 Olahraga",
+    "id": "service.fitness"
+  },
+  {
+    "type": "Layanan \u0026 Reservasi",
+    "subType": "Event \u0026 Wedding Organizer",
+    "id": "service.event_wedding"
+  },
+  {
+    "type": "Layanan \u0026 Reservasi",
+    "subType": "Bengkel Motor",
+    "id": "service.motorcycle_repair"
+  },
+  {
+    "type": "Layanan \u0026 Reservasi",
+    "subType": "Bengkel Mobil \u0026 Otomotif",
+    "id": "service.auto_repair"
+  },
+  {
+    "type": "Layanan \u0026 Reservasi",
+    "subType": "Laundry",
+    "id": "service.laundry"
+  },
+  {
+    "type": "Layanan \u0026 Reservasi",
+    "subType": "Jasa Rumah \u0026 Kebersihan",
+    "id": "service.home_cleaning"
+  },
+  {
+    "type": "Layanan \u0026 Reservasi",
+    "subType": "Pendidikan \u0026 Kursus",
+    "id": "service.education"
+  },
+  {
+    "type": "Layanan \u0026 Reservasi",
+    "subType": "Biro Jasa \u0026 Perizinan",
+    "id": "service.permits_agency"
+  },
+  {
+    "type": "Layanan \u0026 Reservasi",
+    "subType": "Koperasi \u0026 Simpan Pinjam",
+    "id": "service.cooperative"
+  },
+  {
+    "type": "Portofolio",
+    "subType": "Fotografer",
+    "id": "portfolio.photographer"
+  },
+  {
+    "type": "Portofolio",
+    "subType": "Videografer",
+    "id": "portfolio.videographer"
+  },
+  {
+    "type": "Portofolio",
+    "subType": "Desainer",
+    "id": "portfolio.designer"
+  },
+  {
+    "type": "Portofolio",
+    "subType": "Ilustrator \u0026 Seniman",
+    "id": "portfolio.illustrator_artist"
+  },
+  {
+    "type": "Portofolio",
+    "subType": "Konten Kreator",
+    "id": "portfolio.content_creator"
+  },
+  {
+    "type": "Portofolio",
+    "subType": "Developer \u0026 IT",
+    "id": "portfolio.developer"
+  },
+  {
+    "type": "Portofolio",
+    "subType": "Penulis \u0026 Copywriter",
+    "id": "portfolio.writer"
+  },
+  {
+    "type": "Portofolio",
+    "subType": "Arsitek \u0026 Desainer Interior",
+    "id": "portfolio.architect_interior"
+  },
+  {
+    "type": "Portofolio",
+    "subType": "Musisi \u0026 Entertainer",
+    "id": "portfolio.musician_entertainer"
+  },
+  {
+    "type": "Kreatif \u0026 Profesional",
+    "subType": "Digital \u0026 Marketing Agency",
+    "id": "professional.digital_agency"
+  },
+  {
+    "type": "Kreatif \u0026 Profesional",
+    "subType": "SEO \u0026 Digital Specialist",
+    "id": "professional.seo_specialist"
+  },
+  {
+    "type": "Kreatif \u0026 Profesional",
+    "subType": "Konsultan",
+    "id": "professional.consultant"
+  },
+  {
+    "type": "Kreatif \u0026 Profesional",
+    "subType": "Tutor \u0026 Life Coach",
+    "id": "professional.tutor_coach"
+  },
+  {
+    "type": "Kreatif \u0026 Profesional",
+    "subType": "Public Speaker \u0026 Trainer",
+    "id": "professional.speaker_trainer"
+  },
+  {
+    "type": "Kreatif \u0026 Profesional",
+    "subType": "Notaris \u0026 PPAT",
+    "id": "professional.notary"
+  },
+  {
+    "type": "Company Profile",
+    "subType": "Properti \u0026 Real Estate",
+    "id": "company.real_estate"
+  },
+  {
+    "type": "Company Profile",
+    "subType": "Konstruksi \u0026 Kontraktor",
+    "id": "company.construction"
+  },
+  {
+    "type": "Company Profile",
+    "subType": "Manufaktur \u0026 Pabrik",
+    "id": "company.manufacturing"
+  },
+  {
+    "type": "Company Profile",
+    "subType": "Logistik \u0026 Ekspedisi",
+    "id": "company.logistics"
+  },
+  {
+    "type": "Company Profile",
+    "subType": "Yayasan \u0026 Organisasi Nonprofit",
+    "id": "company.nonprofit"
+  },
+  {
+    "type": "Company Profile",
+    "subType": "Institusi Pendidikan \u0026 Pesantren",
+    "id": "company.institution_school"
+  }
+]
