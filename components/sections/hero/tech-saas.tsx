@@ -57,9 +57,10 @@ export default function HeroTechSaaS({
     onEditingStateChange?.(editing);
   }, [onEditingStateChange]);
 
-  // Auto-cycle tabs — pause only when inline editing inside widget is active
+  // Auto-cycle tabs — pause when inline editing, in editor mode, or prefers-reduced-motion
   useEffect(() => {
-    if (isInlineEditing) return;
+    if (isInlineEditing || isEditorMode) return;
+    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const interval = setInterval(() => {
       setActiveTab((prev) => {
         const idx = TABS.indexOf(prev);
@@ -67,7 +68,7 @@ export default function HeroTechSaaS({
       });
     }, 2500);
     return () => clearInterval(interval);
-  }, [isInlineEditing]);
+  }, [isInlineEditing, isEditorMode]);
 
   return (
     <section

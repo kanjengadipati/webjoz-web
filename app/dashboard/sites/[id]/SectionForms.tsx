@@ -1111,21 +1111,6 @@ export default function SectionForms({
           </div>
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>Matra / Tagline</span>
-              {renderFieldActions("hero", "matra")}
-            </label>
-            <input
-              id="field-hero.matra"
-              type="text"
-              value={content.hero?.matra || ""}
-              onChange={(e) => updateField("hero", "matra", e.target.value)}
-              placeholder="cth. Cita Rasa Jogja · Sejak 2010"
-              className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
-            />
-            <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Slogan singkat yang muncul di antara headline and subheadline dengan garis dekoratif.</p>
-          </div>
-          <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span className="flex items-center gap-1">
                 Subheadline {needsAttention("hero.subheadline") && <span className="text-amber-300">⚠️</span>}
               </span>

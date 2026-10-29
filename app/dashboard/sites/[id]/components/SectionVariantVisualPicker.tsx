@@ -349,7 +349,7 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
     );
   }
 
-  if (variant === "carousel" || variant === "horizontal-swipe-carousel") {
+  if (variant === "image-carousel" || variant === "carousel" || variant === "horizontal-swipe-carousel") {
     return (
       <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex items-center justify-between gap-1 overflow-hidden">
         <div className="w-3 h-full rounded bg-slate-800/40 opacity-40" />
@@ -718,6 +718,21 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
         </div>
         <div className="w-3/4 h-1.5 rounded-full bg-white" />
         <div className="w-1/2 h-1 rounded-full bg-slate-400" />
+      </div>
+    );
+  }
+
+  if (variant === "natural-organic") {
+    return (
+      <div className="w-full h-14 rounded-lg border-2 border-[#6B8F71]/60 overflow-hidden relative"
+        style={{ background: "linear-gradient(135deg, #f5f0e8 0%, #e8f0e9 100%)" }}>
+        <div className="absolute inset-0 opacity-20"
+          style={{ backgroundImage: "radial-gradient(circle at 20% 80%, #6B8F71 1px, transparent 1px), radial-gradient(circle at 80% 20%, #8B6914 1px, transparent 1px)", backgroundSize: "12px 12px" }} />
+        <div className="relative z-10 p-1.5 flex flex-col justify-center h-full gap-1">
+          <div className="w-3/4 h-1.5 rounded-full bg-[#2D4A1E]/70" />
+          <div className="w-full h-1 rounded-full bg-[#2D4A1E]/40" />
+          <div className="w-1/3 h-2 rounded-full bg-[#6B8F71]" />
+        </div>
       </div>
     );
   }
