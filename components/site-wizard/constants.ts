@@ -144,6 +144,7 @@ export const SUB_TYPES: Record<string, SubTypeItem[]> = {
     { value: "Perabot & Furnitur", emoji: "🪑", label: "Furnitur" },
     { value: "Otomotif & Sparepart", emoji: "🏎️", label: "Sparepart & Aksesoris" },
     { value: "Pertanian & Peternakan", emoji: "🌾", label: "Pertanian & Peternakan" },
+    { value: "Material & Bahan Bangunan", emoji: "🧱", label: "Material & Bangunan" },
   ],
   "Toko & UMKM": [
     { value: "Fashion & Pakaian", emoji: "👗", label: "Fashion" },
@@ -154,6 +155,7 @@ export const SUB_TYPES: Record<string, SubTypeItem[]> = {
     { value: "Perabot & Furnitur", emoji: "🪑", label: "Furnitur" },
     { value: "Otomotif & Sparepart", emoji: "🏎️", label: "Sparepart & Aksesoris" },
     { value: "Pertanian & Peternakan", emoji: "🌾", label: "Pertanian & Peternakan" },
+    { value: "Material & Bahan Bangunan", emoji: "🧱", label: "Material & Bangunan" },
   ],
   "Toko Online & Retail": [
     { value: "Fashion & Pakaian", emoji: "👗", label: "Fashion" },
@@ -164,6 +166,7 @@ export const SUB_TYPES: Record<string, SubTypeItem[]> = {
     { value: "Perabot & Furnitur", emoji: "🪑", label: "Furnitur" },
     { value: "Otomotif & Sparepart", emoji: "🏎️", label: "Sparepart & Aksesoris" },
     { value: "Pertanian & Peternakan", emoji: "🌾", label: "Pertanian & Peternakan" },
+    { value: "Material & Bahan Bangunan", emoji: "🧱", label: "Material & Bangunan" },
   ],
   "Layanan & Reservasi": [
     { value: "Rental Mobil & Kendaraan", emoji: "🚗", label: "Rental Mobil & Kendaraan" },

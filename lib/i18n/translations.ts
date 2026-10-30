@@ -5620,6 +5620,7 @@ export const translations: Record<Locale, Translations> = {
           "Perabot & Furnitur": "Furnitur",
           "Otomotif & Sparepart": "Sparepart & Aksesoris",
           "Pertanian & Peternakan": "Pertanian & Peternakan",
+          "Material & Bahan Bangunan": "Material & Bangunan",
           // Layanan & Reservasi
           "Rental Mobil & Kendaraan": "Rental Mobil & Kendaraan",
           "Travel & Wisata": "Travel & Wisata",
@@ -8519,6 +8520,7 @@ export const translations: Record<Locale, Translations> = {
           "Perabot & Furnitur": "Furniture",
           "Otomotif & Sparepart": "Auto Parts & Accessories",
           "Pertanian & Peternakan": "Agriculture & Livestock",
+          "Material & Bahan Bangunan": "Building Materials & Hardware",
           // Services & Booking
           "Rental Mobil & Kendaraan": "Car & Vehicle Rental",
           "Travel & Wisata": "Travel & Tourism",
