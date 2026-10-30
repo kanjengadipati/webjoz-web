@@ -95,6 +95,11 @@
     "id": "shop.agri_pet"
   },
   {
+    "type": "Toko",
+    "subType": "Material \u0026 Bahan Bangunan",
+    "id": "shop.building_materials"
+  },
+  {
     "type": "Layanan \u0026 Reservasi",
     "subType": "Rental Mobil \u0026 Kendaraan",
     "id": "service.vehicle_rental"

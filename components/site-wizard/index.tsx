@@ -72,6 +72,7 @@ import {
   Video,
   Waves,
   Wheat,
+  HardHat,
   Wrench,
   X,
   Zap,
@@ -159,6 +160,7 @@ const SUB_TYPE_ICONS: Record<string, React.ElementType> = {
   "Perabot & Furnitur":       Axe,
   "Otomotif & Sparepart":     Wrench,
   "Pertanian & Peternakan":   Wheat,
+  "Material & Bahan Bangunan": HardHat,
   // Portofolio & Kreator / Kreatif & Profesional
   "Konten Kreator":           Video,
   "Fotografer":               Camera,
