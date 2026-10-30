@@ -15,7 +15,6 @@ export interface WizardResumeChat {
   siteLanguage: "id" | "en" | null;
   awaitingNameConfirm: boolean;
   inferenceResult: InferenceResult | null;
-  suggestedHint: { type?: string; subType?: string; refinedText?: string } | null;
   typeWasInferred: boolean;
 }
 
