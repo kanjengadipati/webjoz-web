@@ -121,6 +121,49 @@ const KREATIF_PRO_SUB_TYPES: SubTypeItem[] = [
   { value: "Notaris & PPAT", emoji: "⚖️", label: "Notaris & PPAT" },
 ];
 
+// Sub-tipe untuk "Toko" — toko fisik, online retail, dan UMKM produk
+const TOKO_SUB_TYPES: SubTypeItem[] = [
+  { value: "Fashion & Pakaian", emoji: "👗", label: "Fashion" },
+  { value: "Elektronik", emoji: "📱", label: "Elektronik" },
+  { value: "Kecantikan & Kosmetik", emoji: "💄", label: "Kosmetik & Skincare" },
+  { value: "Produk Lokal Handmade", emoji: "🧺", label: "Handmade" },
+  { value: "Minimarket & Sembako", emoji: "🏪", label: "Minimarket & Sembako" },
+  { value: "Perabot & Furnitur", emoji: "🪑", label: "Furnitur" },
+  { value: "Otomotif & Sparepart", emoji: "🏎️", label: "Sparepart & Aksesoris" },
+  { value: "Pertanian & Peternakan", emoji: "🌾", label: "Pertanian & Peternakan" },
+  { value: "Material & Bahan Bangunan", emoji: "🧱", label: "Material & Bangunan" },
+];
+
+// Sub-tipe untuk "Layanan & Reservasi" — semua jasa yang bisa dipesan/booking
+const LAYANAN_SUB_TYPES: SubTypeItem[] = [
+  { value: "Rental Mobil & Kendaraan", emoji: "🚗", label: "Rental Mobil & Kendaraan" },
+  { value: "Travel & Wisata", emoji: "✈️", label: "Travel & Wisata" },
+  { value: "Hotel & Penginapan", emoji: "🏨", label: "Penginapan" },
+  { value: "Makeup Artist (MUA)", emoji: "💄", label: "Makeup Artist (MUA)" },
+  { value: "Salon & Kecantikan", emoji: "💇", label: "Salon & Spa" },
+  { value: "Barbershop", emoji: "✂️", label: "Barbershop" },
+  { value: "Klinik & Kesehatan", emoji: "🏥", label: "Klinik & Kesehatan" },
+  { value: "Gym & Olahraga", emoji: "🏋️", label: "Gym & Olahraga" },
+  { value: "Event & Wedding Organizer", emoji: "🎉", label: "Event Organizer" },
+  { value: "Bengkel Motor", emoji: "🏍️", label: "Bengkel Motor" },
+  { value: "Bengkel Mobil & Otomotif", emoji: "🔧", label: "Bengkel Mobil & Servis" },
+  { value: "Laundry", emoji: "🧺", label: "Laundry" },
+  { value: "Jasa Rumah & Kebersihan", emoji: "🧹", label: "Jasa Rumah & Bersih" },
+  { value: "Pendidikan & Kursus", emoji: "📚", label: "Les & Kursus" },
+  { value: "Biro Jasa & Perizinan", emoji: "📋", label: "Biro Jasa" },
+  { value: "Koperasi & Simpan Pinjam", emoji: "🏦", label: "Koperasi & Simpan Pinjam" },
+];
+
+// Sub-tipe untuk "Company Profile" — perusahaan & institusi besar
+const COMPANY_SUB_TYPES: SubTypeItem[] = [
+  { value: "Properti & Real Estate", emoji: "🏠", label: "Properti" },
+  { value: "Konstruksi & Kontraktor", emoji: "🏗️", label: "Konstruksi" },
+  { value: "Manufaktur & Pabrik", emoji: "🏭", label: "Manufaktur" },
+  { value: "Logistik & Ekspedisi", emoji: "🚚", label: "Logistik & Kargo" },
+  { value: "Yayasan & Organisasi Nonprofit", emoji: "🤝", label: "Yayasan & Organisasi" },
+  { value: "Institusi Pendidikan & Pesantren", emoji: "🏫", label: "Sekolah & Kampus" },
+];
+
 export const SUB_TYPES: Record<string, SubTypeItem[]> = {
   "Kuliner": [
     { value: "Restoran & Warung Makan", emoji: "🍛", label: "Restoran" },
@@ -135,96 +178,20 @@ export const SUB_TYPES: Record<string, SubTypeItem[]> = {
     { value: "Jajanan Pasar & Kuliner Tradisional", emoji: "🍘", label: "Jajanan Pasar" },
     { value: "Herbal & Jamu", emoji: "🌿", label: "Herbal & Jamu" },
   ],
-  "Toko": [
-    { value: "Fashion & Pakaian", emoji: "👗", label: "Fashion" },
-    { value: "Elektronik", emoji: "📱", label: "Elektronik" },
-    { value: "Kecantikan & Kosmetik", emoji: "💄", label: "Kosmetik & Skincare" },
-    { value: "Produk Lokal Handmade", emoji: "🧺", label: "Handmade" },
-    { value: "Minimarket & Sembako", emoji: "🏪", label: "Minimarket & Sembako" },
-    { value: "Perabot & Furnitur", emoji: "🪑", label: "Furnitur" },
-    { value: "Otomotif & Sparepart", emoji: "🏎️", label: "Sparepart & Aksesoris" },
-    { value: "Pertanian & Peternakan", emoji: "🌾", label: "Pertanian & Peternakan" },
-    { value: "Material & Bahan Bangunan", emoji: "🧱", label: "Material & Bangunan" },
-  ],
-  "Toko & UMKM": [
-    { value: "Fashion & Pakaian", emoji: "👗", label: "Fashion" },
-    { value: "Elektronik", emoji: "📱", label: "Elektronik" },
-    { value: "Kecantikan & Kosmetik", emoji: "💄", label: "Kosmetik & Skincare" },
-    { value: "Produk Lokal Handmade", emoji: "🧺", label: "Handmade" },
-    { value: "Minimarket & Sembako", emoji: "🏪", label: "Minimarket & Sembako" },
-    { value: "Perabot & Furnitur", emoji: "🪑", label: "Furnitur" },
-    { value: "Otomotif & Sparepart", emoji: "🏎️", label: "Sparepart & Aksesoris" },
-    { value: "Pertanian & Peternakan", emoji: "🌾", label: "Pertanian & Peternakan" },
-    { value: "Material & Bahan Bangunan", emoji: "🧱", label: "Material & Bangunan" },
-  ],
-  "Toko Online & Retail": [
-    { value: "Fashion & Pakaian", emoji: "👗", label: "Fashion" },
-    { value: "Elektronik", emoji: "📱", label: "Elektronik" },
-    { value: "Kecantikan & Kosmetik", emoji: "💄", label: "Kosmetik & Skincare" },
-    { value: "Produk Lokal Handmade", emoji: "🧺", label: "Handmade" },
-    { value: "Minimarket & Sembako", emoji: "🏪", label: "Minimarket & Sembako" },
-    { value: "Perabot & Furnitur", emoji: "🪑", label: "Furnitur" },
-    { value: "Otomotif & Sparepart", emoji: "🏎️", label: "Sparepart & Aksesoris" },
-    { value: "Pertanian & Peternakan", emoji: "🌾", label: "Pertanian & Peternakan" },
-    { value: "Material & Bahan Bangunan", emoji: "🧱", label: "Material & Bangunan" },
-  ],
-  "Layanan & Reservasi": [
-    { value: "Rental Mobil & Kendaraan", emoji: "🚗", label: "Rental Mobil & Kendaraan" },
-    { value: "Travel & Wisata", emoji: "✈️", label: "Travel & Wisata" },
-    { value: "Hotel & Penginapan", emoji: "🏨", label: "Penginapan" },
-    { value: "Makeup Artist (MUA)", emoji: "💄", label: "Makeup Artist (MUA)" },
-    { value: "Salon & Kecantikan", emoji: "💇", label: "Salon & Spa" },
-    { value: "Barbershop", emoji: "✂️", label: "Barbershop" },
-    { value: "Klinik & Kesehatan", emoji: "🏥", label: "Klinik & Kesehatan" },
-    { value: "Gym & Olahraga", emoji: "🏋️", label: "Gym & Olahraga" },
-    { value: "Event & Wedding Organizer", emoji: "🎉", label: "Event Organizer" },
-    { value: "Bengkel Motor", emoji: "🏍️", label: "Bengkel Motor" },
-    { value: "Bengkel Mobil & Otomotif", emoji: "🔧", label: "Bengkel Mobil & Servis" },
-    { value: "Laundry", emoji: "🧺", label: "Laundry" },
-    { value: "Jasa Rumah & Kebersihan", emoji: "🧹", label: "Jasa Rumah & Bersih" },
-    { value: "Pendidikan & Kursus", emoji: "📚", label: "Les & Kursus" },
-    { value: "Biro Jasa & Perizinan", emoji: "📋", label: "Biro Jasa" },
-    { value: "Koperasi & Simpan Pinjam", emoji: "🏦", label: "Koperasi & Simpan Pinjam" },
-  ],
-  "Jasa & Booking": [
-    { value: "Rental Mobil & Kendaraan", emoji: "🚗", label: "Rental Mobil & Kendaraan" },
-    { value: "Travel & Wisata", emoji: "✈️", label: "Travel & Wisata" },
-    { value: "Hotel & Penginapan", emoji: "🏨", label: "Penginapan" },
-    { value: "Makeup Artist (MUA)", emoji: "💄", label: "Makeup Artist (MUA)" },
-    { value: "Salon & Kecantikan", emoji: "💇", label: "Salon & Spa" },
-    { value: "Barbershop", emoji: "✂️", label: "Barbershop" },
-    { value: "Klinik & Kesehatan", emoji: "🏥", label: "Klinik & Kesehatan" },
-    { value: "Gym & Olahraga", emoji: "🏋️", label: "Gym & Olahraga" },
-    { value: "Event & Wedding Organizer", emoji: "🎉", label: "Event Organizer" },
-    { value: "Bengkel Motor", emoji: "🏍️", label: "Bengkel Motor" },
-    { value: "Bengkel Mobil & Otomotif", emoji: "🔧", label: "Bengkel Mobil & Servis" },
-    { value: "Laundry", emoji: "🧺", label: "Laundry" },
-    { value: "Jasa Rumah & Kebersihan", emoji: "🧹", label: "Jasa Rumah & Bersih" },
-    { value: "Pendidikan & Kursus", emoji: "📚", label: "Les & Kursus" },
-    { value: "Biro Jasa & Perizinan", emoji: "📋", label: "Biro Jasa" },
-    { value: "Koperasi & Simpan Pinjam", emoji: "🏦", label: "Koperasi & Simpan Pinjam" },
-  ],
-  // "Portofolio" — individual / personal brand
+  // Toko — gunakan konstanta bersama agar alias legacy otomatis sinkron
+  "Toko": TOKO_SUB_TYPES,
+  "Toko & UMKM": TOKO_SUB_TYPES,          // alias legacy
+  "Toko Online & Retail": TOKO_SUB_TYPES, // alias legacy
+  // Layanan & Reservasi — gunakan konstanta bersama
+  "Layanan & Reservasi": LAYANAN_SUB_TYPES,
+  "Jasa & Booking": LAYANAN_SUB_TYPES,    // alias legacy
+  // Portofolio — individual / personal brand
   "Portofolio": PORTOFOLIO_PERSONAL_SUB_TYPES,
-  // Backward-compat aliases (data lama di database)
-  "Portofolio & Kreator": PORTOFOLIO_PERSONAL_SUB_TYPES,
+  "Portofolio & Kreator": PORTOFOLIO_PERSONAL_SUB_TYPES, // alias legacy
   "Kreatif & Profesional": KREATIF_PRO_SUB_TYPES,
-  "Company Profile": [
-    { value: "Properti & Real Estate", emoji: "🏠", label: "Properti" },
-    { value: "Konstruksi & Kontraktor", emoji: "🏗️", label: "Konstruksi" },
-    { value: "Manufaktur & Pabrik", emoji: "🏭", label: "Manufaktur" },
-    { value: "Logistik & Ekspedisi", emoji: "🚚", label: "Logistik & Kargo" },
-    { value: "Yayasan & Organisasi Nonprofit", emoji: "🤝", label: "Yayasan & Organisasi" },
-    { value: "Institusi Pendidikan & Pesantren", emoji: "🏫", label: "Sekolah & Kampus" },
-  ],
-  "Company": [
-    { value: "Properti & Real Estate", emoji: "🏠", label: "Properti" },
-    { value: "Konstruksi & Kontraktor", emoji: "🏗️", label: "Konstruksi" },
-    { value: "Manufaktur & Pabrik", emoji: "🏭", label: "Manufaktur" },
-    { value: "Logistik & Ekspedisi", emoji: "🚚", label: "Logistik & Kargo" },
-    { value: "Yayasan & Organisasi Nonprofit", emoji: "🤝", label: "Yayasan & Organisasi" },
-    { value: "Institusi Pendidikan & Pesantren", emoji: "🏫", label: "Sekolah & Kampus" },
-  ],
+  // Company Profile — gunakan konstanta bersama
+  "Company Profile": COMPANY_SUB_TYPES,
+  "Company": COMPANY_SUB_TYPES, // alias legacy
 };
 
 export const TEMPLATE_NAMES: Record<string, string> = {
