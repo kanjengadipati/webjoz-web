@@ -3,7 +3,7 @@ import { BUSINESS_TYPES, SUB_TYPES } from "./constants";
 export type Classification = { type: string; subType: string };
 
 // Legacy business_type values → canonical type.
-// Mirror of api/internal/modules/aisite/taxonomy.go legacyTypeAliases — keep in sync.
+// Mirror of api/internal/taxonomy/taxonomy.go legacyTypeAliases — keep in sync.
 const LEGACY_TYPE_ALIASES: Record<string, string> = {
   "Jasa": "Layanan & Reservasi",
   "Jasa & Booking": "Layanan & Reservasi",
