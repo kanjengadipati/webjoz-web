@@ -52,7 +52,7 @@ for (const e of snapshot) {
 }
 
 // 5. Every sub-type must appear ≥2× in translations.ts (ID + EN blocks).
-const keyRe = (s) => new RegExp(`"${s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"\s*:`, "g");
+const keyRe = (s) => new RegExp(`"${s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"\\s*:`, "g");
 for (const e of snapshot) {
   const n = (translations.match(keyRe(e.subType)) || []).length;
   if (n < 2) {
