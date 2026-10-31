@@ -60,7 +60,6 @@ test.describe("Wizard Chat Stages", () => {
         siteLanguage: "id",
         awaitingNameConfirm: false,
         inferenceResult: null,
-        suggestedHint: null,
         typeWasInferred: false,
       },
       preview: null,

@@ -467,69 +467,18 @@ export function generateDescriptionFromBusinessName(
 }
 
 /**
- * [STEP 3: DYNAMIC PLACEHOLDER BASED ON DETECTED BUSINESS TYPE]
- * Returns a contextual chat input placeholder based on the inferred business type.
+ * Returns a contextual chat input placeholder for the description step.
+ * Previously accepted a hint parameter to show sub-type-specific examples,
+ * but since the AI call was moved to post-description, hint is no longer
+ * available at this stage. Returns a locale-appropriate generic prompt.
  */
 export function getDynamicDescriptionPlaceholder(
-  hint?: { type?: string; subType?: string } | null,
   locale: string = "id"
 ): string {
-  const isEn = locale === "en";
-  const subType = hint?.subType;
-
-  if (isEn) {
-    switch (subType) {
-      case "Kafe":
-        return "Example: Specialty pour-over coffee, iced latte, pastries, cozy seating (Press Enter to skip)";
-      case "Restoran & Warung Makan":
-        return "Example: Authentic family recipes, grilled dishes, dine-in & takeaway (Press Enter to skip)";
-      case "Kuliner Tradisional & Nusantara":
-        return "Example: Traditional heritage dishes, authentic local spices, dine-in & takeaway (Press Enter to skip)";
-      case "Fashion & Pakaian":
-        return "Example: Authentic batik shirts, modern dresses, premium casual wear, retail & wholesale (Press Enter to skip)";
-      case "Bengkel Motor":
-        return "Example: Periodic service, oil change, brake repair, 24-hour emergency (Press Enter to skip)";
-      case "Otomotif & Bengkel": // legacy
-      case "Bengkel Mobil & Otomotif":
-        return "Example: Engine tune-up, oil change, body repair, car detailing (Press Enter to skip)";
-      case "Rental Mobil & Kendaraan":
-        return "Example: Self-drive or with chauffeur, daily & monthly car rental (Press Enter to skip)";
-      case "Fotografer":
-        return "Example: Wedding & pre-wedding photo sessions, graduation, studio portraits (Press Enter to skip)";
-      case "Klinik & Kesehatan":
-        return "Example: General dental check-up, teeth scaling, aesthetic orthodontic care (Press Enter to skip)";
-      case "Laundry":
-        return "Example: Kiloan wash, 3-hour express service, free pickup and delivery (Press Enter to skip)";
-      default:
-        return "Tell us briefly about your business (Press Enter to skip)...";
-    }
+  if (locale === "en") {
+    return "Tell us briefly about your business (Press Enter to skip)...";
   }
-
-  switch (subType) {
-    case "Kafe":
-      return "Contoh: Jual aneka kopi manual brew, espresso, tempat nongkrong asik (Tekan Enter untuk lewati)";
-    case "Restoran & Warung Makan":
-      return "Contoh: Menu masakan khas Nusantara, paket hemat makan siang, melayani delivery (Tekan Enter untuk lewati)";
-    case "Kuliner Tradisional & Nusantara":
-      return "Contoh: Kuliner khas daerah resep warisan, bumbu rempah autentik, melayani pesanan besek/catering (Tekan Enter untuk lewati)";
-    case "Fashion & Pakaian":
-      return "Contoh: Jual aneka batik tulis, kemeja batik pria, dress batik wanita, motif khas (Tekan Enter untuk lewati)";
-    case "Bengkel Motor":
-      return "Contoh: Melayani servis rutin motor, ganti oli, tune up, dan panggilan darurat (Tekan Enter untuk lewati)";
-    case "Otomotif & Bengkel": // legacy
-    case "Bengkel Mobil & Otomotif":
-      return "Contoh: Melayani servis rutin mobil, ganti oli, tune up mesin, body repair (Tekan Enter untuk lewati)";
-    case "Rental Mobil & Kendaraan":
-      return "Contoh: Sewa mobil lepas kunci atau dengan sopir, harian/bulanan murah (Tekan Enter untuk lewati)";
-    case "Fotografer":
-      return "Contoh: Jasa foto pernikahan, prewedding, wisuda, dan foto katalog produk (Tekan Enter untuk lewati)";
-    case "Klinik & Kesehatan":
-      return "Contoh: Melayani pemeriksaan gigi umum, scaling, behel, dan perawatan estetik (Tekan Enter untuk lewati)";
-    case "Laundry":
-      return "Contoh: Cuci komplit kiloan, express 3 jam, dan gratis antar jemput (Tekan Enter untuk lewati)";
-    default:
-      return "Contoh: Jual kopi spesial di Jogja, melayani pesanan partai besar (Tekan Enter untuk lewati)";
-  }
+  return "Contoh: Jual kopi spesial di Jogja, melayani pesanan partai besar (Tekan Enter untuk lewati)";
 }
 
 

@@ -2701,7 +2701,6 @@ export interface Translations {
       otherSubType: string;
       otherSubTypePlaceholder: string;
       chooseMoodHint: string;
-      suggestedBadge: string;
       typeSelectedChooseSub: string;
       prefillTypePrompt: string;
       btnContinueType: string;
@@ -2714,7 +2713,6 @@ export interface Translations {
       statusPreviewReady: string;
       statusPreparingAi: string;
       preFetchingNameHint: string;
-      placeholderAnalyzingName: string;
       nameConfirmPlaceholder: string;
       nameConfirmYes: string;
       nameConfirmChange: string;
@@ -5538,7 +5536,6 @@ export const translations: Record<Locale, Translations> = {
         otherSubType: "Lainnya",
         otherSubTypePlaceholder: "Tulis sub-kategori spesifik...",
         chooseMoodHint: "Pilih mood yang sesuai dengan brand Anda",
-        suggestedBadge: "✨ Disarankan",
         typeSelectedChooseSub: "✓ Dipilih — pilih jenis di bawah",
         prefillTypePrompt: "Saya sudah memperkirakan kategori website Anda. Lanjutkan jika sesuai, atau ubah dulu:",
         btnContinueType: "Lanjut dengan jenis ini →",
@@ -5551,7 +5548,6 @@ export const translations: Record<Locale, Translations> = {
         statusPreviewReady: "Preview siap ✓",
         statusPreparingAi: "Menyiapkan AI...",
         preFetchingNameHint: "AI menganalisis kategori nama usaha...",
-        placeholderAnalyzingName: "Menganalisis nama usaha... atau ketik deskripsi Anda",
         nameConfirmPlaceholder: "Pilih opsi di atas atau ketik nama bisnis...",
         nameConfirmYes: "Ya",
         nameConfirmChange: "Ganti",
@@ -8438,7 +8434,6 @@ export const translations: Record<Locale, Translations> = {
         otherSubType: "Other",
         otherSubTypePlaceholder: "Enter your specific business sub-type...",
         chooseMoodHint: "Choose a mood that fits your brand",
-        suggestedBadge: "✨ Suggested",
         typeSelectedChooseSub: "✓ Selected — choose type below",
         prefillTypePrompt: "I've estimated your website category. Continue if it's correct, or change it first:",
         btnContinueType: "Continue with this type →",
@@ -8451,7 +8446,6 @@ export const translations: Record<Locale, Translations> = {
         statusPreviewReady: "Preview ready ✓",
         statusPreparingAi: "Preparing AI...",
         preFetchingNameHint: "AI analyzing business category...",
-        placeholderAnalyzingName: "Analyzing business name... or type your description",
         nameConfirmPlaceholder: "Choose an option above or type a new name...",
         nameConfirmYes: "Yes",
         nameConfirmChange: "Change",
