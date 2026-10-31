@@ -24,7 +24,6 @@ function makeSnapshot(overrides: Record<string, any> = {}) {
       siteLanguage: "id",
       awaitingNameConfirm: false,
       inferenceResult: null,
-      suggestedHint: null,
       typeWasInferred: false,
       ...overrides.chat,
     },

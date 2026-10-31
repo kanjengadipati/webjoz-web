@@ -155,7 +155,6 @@ const SUB_TYPE_ICONS: Record<string, React.ElementType> = {
   "Elektronik":               Smartphone,
   "Kecantikan & Kosmetik":    SparkleIcon,
   "Produk Lokal Handmade":    PencilRuler,
-  "Toko Online":              ShoppingCart,
   "Minimarket & Sembako":     Store,
   "Perabot & Furnitur":       Axe,
   "Otomotif & Sparepart":     Wrench,
@@ -2013,7 +2012,7 @@ export function SiteWizard({
                     chat.isRecording ? t("dashboard.wizard.sttListening", "Mendengarkan...") :
                       chat.awaitingNameConfirm ? t("dashboard.wizard.nameConfirmPlaceholder", "Ketik 'ya' untuk lanjut, atau nama yang benar...") :
                         chat.chatStage === "description" ? (
-                          getDynamicDescriptionPlaceholder(null, locale)
+                          getDynamicDescriptionPlaceholder(locale)
                         ) :
                           t("dashboard.wizard.inputPlaceholderName", "Masukkan nama bisnis Anda...")
                   }
