@@ -651,6 +651,7 @@ export default function SectionForms({
   const HERO_OPENING_HOURS_VARIANTS = ["centered","minimal","split","carousel-split","full-bleed","image-carousel","natural-organic","proof-bar","video-bg","booking-form"];
   const HERO_BADGE_VARIANTS = ["arch-portrait","bento-grid","image-carousel","carousel-split","carousel-filmstrip","minimalist-elegant","neo-brutalist","tech-saas"];
   const HERO_SECONDARY_VARIANTS = ["bento-grid","carousel-filmstrip","carousel-split","full-bleed","image-carousel","minimalist-elegant","natural-organic","neo-brutalist","personal-billboard","portrait-showcase","split-editorial","tech-saas","video-bg","work-preview-strip","booking-form"];
+  const HERO_DASHBOARD_WIDGET_VARIANTS = ["tech-saas"];
 
   const handleAiText = async (section: string, fieldKey: string, prompt: string, label: string) => {
     if (!token || !activeTenantId || !siteId) return;
@@ -1285,11 +1286,13 @@ export default function SectionForms({
           />
 
           {/* Dashboard Widget — preview widget untuk hero tech-saas */}
+          {showIfVariant(HERO_DASHBOARD_WIDGET_VARIANTS) && (
           <HeroDashboardWidgetEditor
             widget={content.hero?.dashboard_widget || null}
             onChange={(dw) => updateField("hero", "dashboard_widget", dw)}
 
           />
+          )}
         </div>
       )}
 
