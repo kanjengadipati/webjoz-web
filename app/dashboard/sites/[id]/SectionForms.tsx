@@ -643,6 +643,14 @@ export default function SectionForms({
   const heroStyle = getHeroStyle(designToken);
   const heroNeedsImage = getHeroImageNeed(heroStyle) !== "none";
   const heroIsVideo = heroStyle === "video-bg";
+  // Optional hero fields are only relevant to a subset of variants.
+  // When the selected variant is unknown, keep everything visible (safe fallback).
+  const showIfVariant = (variants: string[]) =>
+    !heroStyle || variants.includes(heroStyle);
+  const HERO_EYEBROW_VARIANTS = ["arch-portrait","bento-grid","chronology-badge","floating-card","image-carousel","minimalist-elegant","neo-brutalist","personal-billboard","portrait-showcase","proof-bar","split-editorial","tech-saas","video-bg","work-preview-strip","booking-form","location-map"];
+  const HERO_OPENING_HOURS_VARIANTS = ["centered","minimal","split","carousel-split","full-bleed","image-carousel","natural-organic","proof-bar","video-bg","booking-form"];
+  const HERO_BADGE_VARIANTS = ["arch-portrait","bento-grid","image-carousel","carousel-split","carousel-filmstrip","minimalist-elegant","neo-brutalist","tech-saas"];
+  const HERO_SECONDARY_VARIANTS = ["bento-grid","carousel-filmstrip","carousel-split","full-bleed","image-carousel","minimalist-elegant","natural-organic","neo-brutalist","personal-billboard","portrait-showcase","split-editorial","tech-saas","video-bg","work-preview-strip","booking-form"];
 
   const handleAiText = async (section: string, fieldKey: string, prompt: string, label: string) => {
     if (!token || !activeTenantId || !siteId) return;
@@ -1096,7 +1104,8 @@ export default function SectionForms({
             </p>
           </div>
           )}
-          {/* Eyebrow label (semua template, opsional) */}
+          {/* Eyebrow label (opsional, dipakai oleh beberapa varian) */}
+          {showIfVariant(HERO_EYEBROW_VARIANTS) && (
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>Eyebrow / Label Badge <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
@@ -1112,6 +1121,7 @@ export default function SectionForms({
             />
             <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Label kecil di atas headline (dipakai oleh beberapa template).</p>
           </div>
+          )}
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span className="flex items-center gap-1">
@@ -1189,7 +1199,8 @@ export default function SectionForms({
             suggestedHash={content.catalog ? "#catalog" : content.menu ? "#menu" : "#contact"}
             isEN={locale === "en"}
           />
-          {/* Secondary CTA (optional, used by Futuristic and some templates) */}
+          {/* Secondary CTA (opsional, dipakai oleh beberapa varian) */}
+          {showIfVariant(HERO_SECONDARY_VARIANTS) && (
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>Teks Tombol CTA Kedua <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
@@ -1205,7 +1216,9 @@ export default function SectionForms({
             />
             <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Tombol kedua di samping tombol utama (dipakai oleh beberapa template).</p>
           </div>
+          )}
           {/* Secondary CTA URL */}
+          {showIfVariant(HERO_SECONDARY_VARIANTS) && (
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>URL Tombol CTA Kedua <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
@@ -1221,7 +1234,9 @@ export default function SectionForms({
             />
             <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Link tujuan tombol CTA kedua (section anchor, URL, atau WhatsApp).</p>
           </div>
-          {/* Badge text (small text below CTA, used by Futuristic template) */}
+          )}
+          {/* Badge text (opsional, dipakai oleh beberapa varian) */}
+          {showIfVariant(HERO_BADGE_VARIANTS) && (
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>Teks Badge Bawah CTA <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
@@ -1237,7 +1252,9 @@ export default function SectionForms({
             />
             <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Teks kecil yang muncul di bawah tombol CTA (jam buka, info singkat, dll).</p>
           </div>
-          {/* Opening hours (used by Bold template) */}
+          )}
+          {/* Opening hours (opsional, dipakai oleh beberapa varian) */}
+          {showIfVariant(HERO_OPENING_HOURS_VARIANTS) && (
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>Jam Buka <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
@@ -1252,6 +1269,7 @@ export default function SectionForms({
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
           </div>
+          )}
           {/* Accessory — info bisnis di hero (see HERO_ACCESSORY_PLAN.md) */}
           <HeroAccessoryEditor
             accessory={content.hero?.accessory || null}
