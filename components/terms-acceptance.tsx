@@ -47,7 +47,7 @@ export default function TermsAcceptance({ agreed, onChange, showError, disabled 
           className="w-4 h-4 mt-0.5 accent-primary rounded shrink-0 cursor-pointer"
         />
         <div className="min-w-0">
-          <p className="text-[12px] font-medium text-slate-300 leading-snug">
+          <p className="text-[12px] font-medium text-foreground/70 leading-snug">
             {t("dashboard.sites.publishTermsTitle")}{" "}
             <Link
               href={termsHref}
