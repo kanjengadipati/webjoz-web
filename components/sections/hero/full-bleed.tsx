@@ -319,6 +319,7 @@ export default function HeroFullBleed({
         <div className="absolute bottom-6 sm:bottom-8 right-6 sm:right-12 md:right-16 lg:right-24 z-20">
           <PhotoCredit
             credit={h.image_credit}
+              src={h.image_url}
             language={language}
             section="hero"
             fieldKey="image_credit.name"

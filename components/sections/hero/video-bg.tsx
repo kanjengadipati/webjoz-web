@@ -262,6 +262,7 @@ export default function HeroVideoBg({
         <div className="absolute bottom-5 right-5 sm:bottom-7 sm:right-10 z-20">
           <PhotoCredit
             credit={h.image_credit}
+              src={h.image_url}
             language={language}
             section="hero"
             fieldKey="image_credit.name"
