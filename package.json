@@ -15,7 +15,8 @@
     "test:e2e:debug": "npx playwright test --debug",
     "test:e2e:headed": "npx playwright test --headed",
     "test:e2e:report": "npx playwright show-report",
-    "test:e2e:codegen": "npx playwright codegen http://localhost:3000"
+    "test:e2e:codegen": "npx playwright codegen http://localhost:3000",
+    "test:hero-images": "node --test scripts/hero-images.test.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
