@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import PhotoCredit from "../PhotoCredit";
@@ -25,6 +25,7 @@ export default function HeroChronologyBadge({
   onEditingStateChange,
 }: HeroVariantProps) {
   const [activeRow, setActiveRow] = useState<number | null>(null);
+  const reduce = useReducedMotion();
   const hasSecondary = Boolean(h.cta_secondary_text?.trim() && h.cta_secondary_url?.trim());
   const isEN = language === "en";
   const availLabel = isEN ? "Available for work" : "Tersedia untuk kerja";
@@ -400,8 +401,8 @@ export default function HeroChronologyBadge({
             }}
           >
             <motion.span
-              animate={{ opacity: [1, 0.35, 1] }}
-              transition={{ duration: 2.4, repeat: Infinity }}
+              animate={reduce ? undefined : { opacity: [1, 0.35, 1] }}
+              transition={{ duration: 2.4, repeat: reduce ? 0 : Infinity }}
               style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--dt-primary)", display: "inline-block", flexShrink: 0 }}
             />
             {availLabel}

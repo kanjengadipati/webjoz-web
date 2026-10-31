@@ -1108,17 +1108,26 @@ export default function SectionForms({
           {/* Gambar carousel / kolase (hero.images) */}
           {showIfVariant(HERO_IMAGES_ARRAY_VARIANTS) && (
           <div className="space-y-2">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
+            <button
+              type="button"
+              onClick={() => setHeroImagesOpen(!heroImagesOpen)}
+              className="flex w-full items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground"
+            >
               <span>
                 {locale === "en" ? "Carousel Images" : "Gambar Carousel"}
                 <span className="ml-2 inline-flex items-center px-1.5 py-0.5 rounded-full bg-sidebar-muted text-sidebar-muted-foreground text-[10px] font-medium">
                   {(content.hero?.images || []).length} {locale === "en" ? "images" : "gambar"}
                 </span>
               </span>
-              {renderFieldActions("hero", "images")}
-            </label>
-            <div className="space-y-1.5">
-            {(content.hero?.images || []).map((url: string, idx: number) => {
+              <span className="flex items-center gap-2">
+                {heroImagesOpen ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+              </span>
+            </button>
+
+            {heroImagesOpen ? (
+              <>
+                <div className="space-y-1.5">
+                  {(content.hero?.images || []).map((url: string, idx: number) => {
               const isExpanded = heroImageOpenIdx === idx;
               const isHidden = !!(content.hero?.image_hidden?.[idx]);
               const hasImage = !!url;
@@ -1240,6 +1249,8 @@ export default function SectionForms({
               <Plus className="h-3.5 w-3.5" />
               {locale === "en" ? "+ Add image" : "+ Tambah gambar"}
             </button>
+            </>
+            ) : null}
           </div>
           )}
           {/* Video background (hero varian video-bg) — URL langsung, bukan upload */}
