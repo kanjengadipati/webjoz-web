@@ -6,6 +6,7 @@ import { ArrowRight, ChevronLeft, ChevronRight, Plus, Trash2, Clock, Pause, Play
 import type { HeroVariantProps } from "./types";
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
 import PhotoCredit from "../PhotoCredit";
+import { getHeroSlides, commitHeroSlide, addHeroSlide, removeHeroSlide, writeHeroPatch } from "./images";
 import { safeHref, isExternalHref } from "@/lib/safe-url";
 
 /**
@@ -24,14 +25,8 @@ export default function HeroCarouselSplit({
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: HeroVariantProps) {
-  // Resolve slides array: prioritize hero.images, fallback to hero.image_url
-  const rawSlides = Array.isArray(h.images) && h.images.length > 0
-    ? h.images.filter(Boolean)
-    : (h.image_url ? [h.image_url] : []);
-  
-  const slides: string[] = rawSlides.length > 0 
-    ? rawSlides 
-    : ["https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&auto=format&fit=crop&q=80"];
+  const slideList = getHeroSlides(h);
+  const slides: string[] = slideList.map((s) => s.src);
 
   const slideCount = slides.length;
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -82,26 +77,21 @@ export default function HeroCarouselSplit({
 
   const handleAddSlide = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const fallbackImage = h.image_url || slides[0] || "";
-    const updated = [...slides, fallbackImage];
+    if (slides.length >= 8) return;
+    const fallbackImage = slides[0] ?? "";
+    const fallbackCredit = slideList[0]?.credit ?? null;
+    writeHeroPatch(onUpdateField as any, addHeroSlide(h, fallbackImage, fallbackCredit));
     setDirection(1);
-    setCurrentIndex(updated.length - 1);
-    if (onUpdateField) {
-      onUpdateField("hero", "images", updated);
-    }
+    setCurrentIndex(slides.length);
   };
 
   const handleDeleteCurrentSlide = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (slides.length <= 1) return;
-    const updated = slides.filter((_, i) => i !== safeIndex);
-    setCurrentIndex((prev) => (prev >= updated.length ? updated.length - 1 : prev));
-    if (onUpdateField) {
-      onUpdateField("hero", "images", updated);
-      if (updated.length > 0) {
-        onUpdateField("hero", "image_url", updated[0]);
-      }
-    }
+    const slide = slideList[safeIndex];
+    if (!slide) return;
+    writeHeroPatch(onUpdateField as any, removeHeroSlide(h, slide.index));
+    setCurrentIndex((prev) => (prev >= slides.length - 1 ? slides.length - 2 : prev));
   };
 
   const isEN = language === "en";
@@ -379,10 +369,10 @@ export default function HeroCarouselSplit({
             >
               <InlineImage
                 section="hero"
-                fieldKey={safeIndex === 0 ? "image_url" : `images.${safeIndex}`}
+                fieldKey={`images.${slideList[safeIndex]?.index ?? 0}`}
                 src={activeImage}
                 alt={h.headline || "Slide image"}
-                onUpdateField={onUpdateField}
+                onUpdateField={(_, __, val) => commitHeroSlide(onUpdateField, h, slideList[safeIndex]?.index ?? 0, val)}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
                 className="w-full h-full"
@@ -443,10 +433,11 @@ export default function HeroCarouselSplit({
           {/* Photo Credit Overlay */}
           <div style={{ position: "absolute", bottom: 12, right: 14, zIndex: 20 }}>
             <PhotoCredit
-              credit={h.image_credit}
+              credit={slideList[safeIndex]?.credit}
+              src={slideList[safeIndex]?.src}
               language={language}
               section="hero"
-              fieldKey="image_credit.name"
+              fieldKey={`image_credits.${slideList[safeIndex]?.index ?? 0}.name`}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -463,6 +454,7 @@ export default function HeroCarouselSplit({
                 border: "1px solid rgba(255,255,255,0.2)",
               }}
             >
+            {slideCount < 8 && (
               <button
                 type="button"
                 onClick={handleAddSlide}
@@ -472,6 +464,7 @@ export default function HeroCarouselSplit({
                 <Plus style={{ width: 14, height: 14 }} />
                 <span>{isEN ? "Add Slide" : "Tambah"}</span>
               </button>
+            )}
               {slideCount > 1 && (
                 <button
                   type="button"

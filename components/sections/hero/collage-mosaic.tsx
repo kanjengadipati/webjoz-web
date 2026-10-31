@@ -3,8 +3,9 @@ import React from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import type { HeroVariantProps } from "./types";
-import PhotoCredit from "../PhotoCredit";
+import PhotoCreditList from "../PhotoCreditList";
 import { InlineText, InlineImage } from "../../templates/shared";
+import { getHeroSlides, commitHeroSlide } from "./images";
 import { safeHref, isExternalHref } from "@/lib/safe-url";
 
 /** Collage Mosaic — 3 foto asimetris. ImageNeed: Required, MinImages: 3. */
@@ -30,9 +31,12 @@ export default function HeroCollageMosaic({
   const ext = isExternalHref(h.cta_url);
 
   // Slot 0 selalu image_url (konsisten dengan carousel-filmstrip: 0 → "image_url", n → `images.${n}`)
-  const imgs = (h.images ?? []).filter(Boolean);
-  const slots = [h.image_url || imgs[0], imgs[1], imgs[2]];
-  const keyFor = (i: number) => (i === 0 ? "image_url" : `images.${i}`);
+  const list = getHeroSlides(h);
+  const rawLen = Array.isArray(h.images) ? h.images.length : 0;
+  const idxFor = (i: number) => list[i]?.index ?? Math.max(rawLen, i);
+  const tiles = [0, 1, 2]
+    .map((i) => ({ src: list[i]?.src, index: idxFor(i), i }))
+    .filter((t) => t.src || isEditorMode);
   const aspect = ["4 / 5", "1 / 1", "1 / 1"];
   const fallbackBg = "color-mix(in srgb, var(--dt-primary) 10%, var(--dt-surface, var(--dt-bg)))";
 
@@ -89,43 +93,41 @@ export default function HeroCollageMosaic({
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-3 sm:gap-4">
-          {slots.map((src, i) => (
+        <div className={tiles.length >= 3 ? "grid grid-cols-2 gap-3 sm:gap-4" : tiles.length === 2 ? "grid grid-cols-2 gap-3 sm:gap-4" : "grid grid-cols-1 gap-3 sm:gap-4"}>
+          {tiles.map((t) => {
+            const i = t.i;
+            const src = t.src;
+            return (
             <motion.div
               key={i}
               initial={reduce ? false : { opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: reduce ? 0 : 0.5, delay: reduce ? 0 : i * 0.12 }}
-              className={i === 0 ? "row-span-2" : ""}
+              className={i === 0 && tiles.length >= 3 ? "row-span-2" : ""}
               style={{
                 overflow: "hidden",
                 borderRadius: "var(--dt-radius, 16px)",
-                aspectRatio: i === 0 ? undefined : aspect[i],
-                minHeight: i === 0 ? "100%" : undefined,
+                aspectRatio: i === 0 && tiles.length >= 3 ? undefined : aspect[i],
+                minHeight: i === 0 && tiles.length >= 3 ? "100%" : undefined,
                 position: "relative",
                 background: fallbackBg,
               }}
             >
               <InlineImage
                 {...common}
-                fieldKey={keyFor(i)}
+                fieldKey={`images.${t.index}`}
                 src={src}
                 alt={`${h.headline || (isEN ? "Hero" : "Hero")} ${i + 1}`}
+                onUpdateField={(_, __, val) => commitHeroSlide(onUpdateField, h, t.index, val)}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
                 className="h-full w-full object-cover"
               />
             </motion.div>
-          ))}
+            );
+          })}
           <div className="col-span-2">
-            <PhotoCredit
-              credit={h.image_credit}
-              language={language}
-              section="hero"
-              fieldKey="image_credit.name"
-              onUpdateField={onUpdateField}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            />
+            <PhotoCreditList items={list.slice(0, 3)} language={language} />
           </div>
         </div>
       </div>

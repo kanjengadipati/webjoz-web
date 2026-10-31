@@ -9,6 +9,7 @@ import LocationMapPreview from "@/components/location-map-preview";
 import { GoogleSnippetPreview } from "@/components/google-snippet-preview";
 import { isPlaceholderValue, getAiSuggestions } from "./editor-utils";
 import { getHeroStyle, getHeroImageNeed } from "@/components/sections/hero/meta";
+import { setHeroSlide, removeHeroSlide, addHeroSlide, countDistinctHeroImages, writeHeroPatch, setPrimaryHeroImage } from "@/components/sections/hero/images";
 import { request } from "@/lib/api/client";
 import { tenantHost } from "@/lib/site-config";
 import { getEnabledMapTiles } from "@/lib/design-assets-config";
@@ -644,6 +645,8 @@ export default function SectionForms({
   const heroShowsImage = !heroStyle || !["tech-saas","booking-form","location-map"].includes(heroStyle);
   const heroNeedsImage = heroShowsImage;
   const heroIsVideo = heroStyle === "video-bg";
+  const [heroImagesOpen, setHeroImagesOpen] = useState<boolean | null>(null);
+  const [heroImageOpenIdx, setHeroImageOpenIdx] = useState<number | null>(null);
   // Optional hero fields are only relevant to a subset of variants.
   // When the selected variant is unknown, keep everything visible (safe fallback).
   const showIfVariant = (variants: string[]) =>
@@ -1080,66 +1083,140 @@ export default function SectionForms({
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span className="flex items-center gap-1">
-                Gambar Hero {needsAttention("hero.image_url") && <span className="text-amber-300">⚠️</span>}
+                {heroStyle && HERO_IMAGES_ARRAY_VARIANTS.includes(heroStyle)
+                  ? (locale === "en" ? "Main Image (slide 1)" : "Gambar Utama (slide 1)")
+                  : (locale === "en" ? "Hero Image" : "Gambar Hero")} {needsAttention("hero.image_url") && <span className="text-amber-300">⚠️</span>}
               </span>
-              <AiImageButton businessType={bType} onSelect={(url) => handleAiImage("hero", "image_url", url)}
+              <AiImageButton businessType={bType} onSelect={(url) => {
+                const p = setPrimaryHeroImage(content.hero ?? {}, url);
+                updateField("hero", "image_url", p.image_url);
+                updateField("hero", "image_credit", p.image_credit);
+                if (p.images) updateField("hero", "images", p.images);
+                if (p.image_credits) updateField("hero", "image_credits", p.image_credits);
+              }}
  />
             </label>
-            <FileUpload label="" value={content.hero.image_url || ""} onChange={(val) => updateField("hero", "image_url", val)} placeholder="https://..." maxWidth={1600} maxHeight={1200} quality={0.8} previewSize="lg" />
+            <FileUpload label="" value={content.hero.image_url || ""} onChange={(val) => {
+              const p = setPrimaryHeroImage(content.hero ?? {}, val);
+              updateField("hero", "image_url", p.image_url);
+              updateField("hero", "image_credit", p.image_credit);
+              if (p.images) updateField("hero", "images", p.images);
+              if (p.image_credits) updateField("hero", "image_credits", p.image_credits);
+            }} placeholder="https://..." maxWidth={1600} maxHeight={1200} quality={0.8} previewSize="lg" />
           </div>
           )}
           {/* Gambar carousel / kolase (hero.images) */}
           {showIfVariant(HERO_IMAGES_ARRAY_VARIANTS) && (
           <div className="space-y-2">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>{locale === "en" ? "Carousel Images" : "Gambar Carousel"}</span>
-              {renderFieldActions("hero", "images")}
-            </label>
-            {(content.hero?.images || []).map((url: string, idx: number) => (
-              <div key={idx} className="flex items-start gap-2">
-                <div className="flex-1">
-                  <FileUpload
-                    label=""
-                    value={url || ""}
-                    onChange={(val) => {
-                      const next = [...(content.hero?.images || [])];
-                      next[idx] = val;
-                      updateField("hero", "images", next);
-                    }}
-                    placeholder="https://..."
-                    maxWidth={1600}
-                    maxHeight={1200}
-                    quality={0.8}
-                    previewSize="md"
-                  />
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const next = [...(content.hero?.images || [])];
-                    next.splice(idx, 1);
-                    updateField("hero", "images", next);
-                  }}
-                  className="mt-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border text-sidebar-muted-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground"
-                  title={locale === "en" ? "Remove image" : "Hapus gambar"}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
-            ))}
-            <button
-              type="button"
-              onClick={() => updateField("hero", "images", [...(content.hero?.images || []), ""])}
-              className="flex w-full items-center justify-center gap-1.5 rounded-md border border-dashed border-border px-3 py-2 text-[11px] font-semibold text-sidebar-muted-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground"
-            >
-              <Plus className="h-3.5 w-3.5" />
-              {locale === "en" ? "Add image" : "Tambah gambar"}
-            </button>
-            <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">
-              {locale === "en"
-                ? "Slide images for carousel/collage variants. The first image can also be set in \u201CHero Image\u201D above."
-                : "Gambar slide untuk varian carousel/kolase. Gambar pertama juga bisa diatur di \u201CGambar Hero\u201D di atas."}
-            </p>
+            {(() => {
+              const hero = content.hero ?? {};
+              const isEN = locale === "en";
+              const rows: string[] = Array.isArray(hero.images) && hero.images.length
+                ? hero.images
+                : hero.image_url ? [hero.image_url] : [];
+              const credits = Array.isArray(hero.image_credits) ? hero.image_credits : [];
+              const filled = rows.filter((u) => (u ?? "").trim()).length;
+              const distinct = countDistinctHeroImages(hero);
+              const min = heroStyle === "collage-mosaic" ? 3 : heroStyle === "image-carousel" ? 2 : 1;
+              const open = heroImagesOpen ?? rows.length <= 3;
+              const write = (pp: ReturnType<typeof setHeroSlide>) => writeHeroPatch(updateField, pp);
+
+              return (
+                <>
+                  <button
+                    type="button"
+                    aria-expanded={open}
+                    onClick={() => setHeroImagesOpen(!open)}
+                    className="flex w-full items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground"
+                  >
+                    <span>
+                      {isEN ? "Carousel Images" : "Gambar Carousel"}{" "}
+                      <span className="font-normal normal-case text-sidebar-subtle-foreground">({filled})</span>
+                    </span>
+                    <span className="flex items-center gap-2">
+                      {distinct < min && <span className="normal-case font-medium text-amber-300">{distinct}/{min}</span>}
+                      <ChevronDown className={`h-3.5 w-3.5 transition-transform ${open ? "rotate-180" : ""}`} />
+                    </span>
+                  </button>
+
+                  {open && (
+                    <>
+                      {rows.map((url, idx) => {
+                        const empty = !(url ?? "").trim();
+                        const expanded = heroImageOpenIdx === idx;
+                        const who = credits[idx]?.name;
+                        return (
+                          <div key={idx} className="rounded-md border border-border">
+                            <div className="flex items-center gap-2 p-1.5">
+                              <button
+                                type="button"
+                                aria-expanded={expanded}
+                                onClick={() => setHeroImageOpenIdx(expanded ? null : idx)}
+                                className="flex min-w-0 flex-1 items-center gap-2 text-left"
+                              >
+                                {empty ? (
+                                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded border border-dashed border-border text-sidebar-subtle-foreground">+</span>
+                                ) : (
+                                  // eslint-disable-next-line @next/next/no-img-element
+                                  <img src={url} alt="" loading="lazy" className="h-10 w-10 shrink-0 rounded object-cover" />
+                                )}
+                                <span className="min-w-0 truncate text-[11px] text-sidebar-foreground">
+                                  #{idx + 1}{idx === 0 ? ` · ${isEN ? "main" : "utama"}` : ""}{" "}
+                                  {empty
+                                    ? <em className="text-sidebar-subtle-foreground">{isEN ? "Empty" : "Kosong"}</em>
+                                    : who ? <span className="text-sidebar-subtle-foreground">· {who}</span> : null}
+                                </span>
+                              </button>
+                              <button
+                                type="button"
+                                disabled={rows.length <= 1}
+                                onClick={() => { write(removeHeroSlide(hero, idx)); setHeroImageOpenIdx(null); }}
+                                title={isEN ? "Remove image" : "Hapus gambar"}
+                                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border text-sidebar-muted-foreground hover:bg-sidebar-muted disabled:opacity-40"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
+                            {expanded && (
+                              <div className="p-2 pt-0">
+                                <FileUpload
+                                  label=""
+                                  value={url || ""}
+                                  onChange={(val) => write(setHeroSlide(hero, idx, val))}
+                                  placeholder="https://..."
+                                  maxWidth={1600}
+                                  maxHeight={1200}
+                                  quality={0.8}
+                                  previewSize="md"
+                                />
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+
+                      <button
+                        type="button"
+                        disabled={rows.length >= 8}
+                        onClick={() => { write(addHeroSlide(hero, "")); setHeroImageOpenIdx(rows.length); }}
+                        className="flex w-full items-center justify-center gap-1.5 rounded-md border border-dashed border-border px-3 py-2 text-[11px] font-semibold text-sidebar-muted-foreground hover:bg-sidebar-muted disabled:opacity-40"
+                      >
+                        <Plus className="h-3.5 w-3.5" />
+                        {isEN ? `Add image (${rows.length}/8)` : `Tambah gambar (${rows.length}/8)`}
+                      </button>
+
+                      <p className="text-[10px] leading-relaxed text-sidebar-subtle-foreground">
+                        {isEN
+                          ? "Slide #1 is the main image. Empty slots are not shown on the site."
+                          : "Slide #1 adalah gambar utama. Slot kosong tidak tampil di situs."}
+                        {distinct < min && heroStyle === "collage-mosaic" && (isEN ? ` Collage looks best with 3 different photos (now ${distinct}).` : ` Kolase paling bagus dengan 3 foto berbeda (sekarang ${distinct}).`)}
+                        {distinct < min && heroStyle === "image-carousel" && (isEN ? " Carousel needs at least 2 photos." : " Carousel butuh minimal 2 foto.")}
+                      </p>
+                    </>
+                  )}
+                </>
+              );
+            })()}
           </div>
           )}
           {/* Video background (hero varian video-bg) — URL langsung, bukan upload */}

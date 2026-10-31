@@ -1,8 +1,10 @@
 import type { ImageCredit } from "../templates/types";
 import { InlineText } from "../templates/shared";
+import { isUnsplashUrl } from "./hero/images";
 
 interface PhotoCreditProps {
   credit: ImageCredit | null | undefined;
+  src?: string | null;
   className?: string;
   language?: string;
   section?: string;
@@ -15,6 +17,7 @@ interface PhotoCreditProps {
 
 export default function PhotoCredit({
   credit,
+  src,
   className = "",
   language = "en",
   section,
@@ -24,13 +27,24 @@ export default function PhotoCredit({
   isSelected,
   collapseSheetForInlineEdit,
 }: PhotoCreditProps) {
-  if (!credit?.name) return null;
-
   const isID = language === "id";
   const byLabel = isID ? "Foto oleh" : "Photo by";
   const onLabel = isID ? "di" : "on";
+  const fromLabel = isID ? "Foto dari" : "Photo from";
 
   const canInline = !!(isEditorMode && onUpdateField && section && fieldKey);
+
+  if (!credit?.name) {
+    if (!isUnsplashUrl(src)) return null;
+    return (
+      <p className={`text-[10px] text-white/70 ${className}`}>
+        {fromLabel}{" "}
+        <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-700">
+          Unsplash
+        </a>
+      </p>
+    );
+  }
 
   return (
     <p className={`text-[10px] text-white/70 ${className}`}>

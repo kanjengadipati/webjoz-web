@@ -5,7 +5,8 @@ import { motion } from "motion/react";
 import { ArrowRight, Plus, Trash2, Sparkles, Pause, Play } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
-import PhotoCredit from "../PhotoCredit";
+import PhotoCreditList from "../PhotoCreditList";
+import { getHeroSlides, commitHeroSlide, addHeroSlide, removeHeroSlide, writeHeroPatch } from "./images";
 import { safeHref, isExternalHref } from "@/lib/safe-url";
 
 /**
@@ -29,19 +30,8 @@ export default function HeroCarouselFilmstrip({
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: HeroVariantProps) {
-  // Resolve slides array: prioritize hero.images, then fallback to hero.image_url
-  const rawSlides = Array.isArray(h.images) && h.images.length > 0
-    ? h.images.filter(Boolean)
-    : (h.image_url ? [h.image_url] : []);
-
-  const defaultMock = [
-    "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80",
-  ];
-
-  const slides: string[] = rawSlides.length > 0 ? rawSlides : defaultMock;
+  const slideList = getHeroSlides(h);
+  const slides: string[] = slideList.map((s) => s.src);
   const [isPaused, setIsPaused] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
@@ -60,27 +50,22 @@ export default function HeroCarouselFilmstrip({
 
   const handleAddSlide = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const fallbackImage = h.image_url || slides[0] || "";
-    const updated = [...slides, fallbackImage];
-    if (onUpdateField) {
-      onUpdateField("hero", "images", updated);
-    }
+    if (slides.length >= 8) return;
+    const fallbackImage = slides[0] ?? "";
+    const fallbackCredit = slideList[0]?.credit ?? null;
+    writeHeroPatch(onUpdateField as any, addHeroSlide(h, fallbackImage, fallbackCredit));
   };
 
   const handleDeleteSlide = (idx: number, e: React.MouseEvent) => {
     e.stopPropagation();
     if (slides.length <= 1) return;
-    const updated = slides.filter((_, i) => i !== idx);
-    if (onUpdateField) {
-      onUpdateField("hero", "images", updated);
-      if (idx === 0 && updated.length > 0) {
-        onUpdateField("hero", "image_url", updated[0]);
-      }
-    }
+    const slide = slideList[idx];
+    if (!slide) return;
+    writeHeroPatch(onUpdateField as any, removeHeroSlide(h, slide.index));
   };
 
   // Duplicate slides array for seamless infinite marquee loop
-  const displayCards = slides.length < 5 ? [...slides, ...slides, ...slides] : [...slides, ...slides];
+  const displayCards = slides.length > 0 ? (slides.length < 5 ? [...slides, ...slides, ...slides] : [...slides, ...slides]) : [];
 
   return (
     <section
@@ -307,7 +292,8 @@ export default function HeroCarouselFilmstrip({
           className="flex gap-4 sm:gap-6 w-max px-4"
         >
           {displayCards.map((imgUrl, idx) => {
-            const originalIndex = idx % slides.length;
+            const originalIndex = slides.length > 0 ? idx % slides.length : 0;
+            const slide = slideList[originalIndex];
             return (
               <div
                 key={`${idx}-${imgUrl}`}
@@ -322,10 +308,10 @@ export default function HeroCarouselFilmstrip({
               >
                 <InlineImage
                   section="hero"
-                  fieldKey={originalIndex === 0 ? "image_url" : `images.${originalIndex}`}
+                  fieldKey={`images.${slide?.index ?? 0}`}
                   src={imgUrl}
                   alt={`${h.headline} preview ${originalIndex + 1}`}
-                  onUpdateField={onUpdateField}
+                  onUpdateField={(_, __, val) => commitHeroSlide(onUpdateField, h, slide?.index ?? 0, val)}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
                   className="w-full h-full"
@@ -377,7 +363,7 @@ export default function HeroCarouselFilmstrip({
         </motion.div>
 
         {/* Editor Controls Bar */}
-        {isEditorMode && (
+        {isEditorMode && slides.length < 8 && (
           <div className="flex justify-center items-center gap-3 mt-4">
             <button
               type="button"
@@ -393,16 +379,7 @@ export default function HeroCarouselFilmstrip({
 
       {/* Slide Photo Credit */}
       <div className="relative z-10 px-6 sm:px-12 flex justify-between items-center text-xs opacity-75 mt-4">
-        <PhotoCredit
-          credit={h.image_credit}
-          language={language}
-          section="hero"
-          fieldKey="image_credit.name"
-          onUpdateField={onUpdateField}
-          isEditorMode={isEditorMode}
-          isSelected={isSelected}
-          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-        />
+        <PhotoCreditList items={slideList} language={language} />
 
         {!isEditorMode && slides.length > 1 && (
           <button
