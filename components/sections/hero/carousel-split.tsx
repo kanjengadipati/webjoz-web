@@ -385,6 +385,17 @@ export default function HeroCarouselSplit({
                 collapseSheetForInlineEdit={collapseSheetForInlineEdit}
               />
 
+              {/* Caption for active slide */}
+              {(() => {
+                const idx = slideList[safeIndex]?.index ?? 0;
+                const caption = h.image_captions?.[idx];
+                return caption ? (
+                  <p className="absolute bottom-4 left-4 z-20 max-w-[70%] text-sm font-medium text-white drop-shadow">
+                    {caption}
+                  </p>
+                ) : null;
+              })()}
+
               {/* Gradient edge shading for visual depth */}
               <div
                 style={{
