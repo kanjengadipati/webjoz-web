@@ -651,6 +651,7 @@ export default function SectionForms({
   const HERO_OPENING_HOURS_VARIANTS = ["centered","minimal","split","carousel-split","full-bleed","image-carousel","natural-organic","proof-bar","video-bg","booking-form"];
   const HERO_BADGE_VARIANTS = ["arch-portrait","bento-grid","image-carousel","carousel-split","carousel-filmstrip","minimalist-elegant","neo-brutalist","tech-saas"];
   const HERO_SECONDARY_VARIANTS = ["bento-grid","carousel-filmstrip","carousel-split","full-bleed","image-carousel","minimalist-elegant","natural-organic","neo-brutalist","personal-billboard","portrait-showcase","split-editorial","tech-saas","video-bg","work-preview-strip","booking-form"];
+  const HERO_STATS_VARIANTS = ["bento-grid","chronology-badge","personal-billboard","portrait-showcase","proof-bar","split-editorial","work-preview-strip"];
   const HERO_DASHBOARD_WIDGET_VARIANTS = ["tech-saas"];
 
   const handleAiText = async (section: string, fieldKey: string, prompt: string, label: string) => {
@@ -1278,12 +1279,14 @@ export default function SectionForms({
 
           />
 
-          {/* Hero stats — baris angka di varian Editorial Split, Personal Billboard, dst */}
+          {/* Hero stats — baris angka di varian tertentu */}
+          {showIfVariant(HERO_STATS_VARIANTS) && (
           <HeroStatsEditor
             stats={content.hero?.stats || null}
             onChange={(stats) => updateField("hero", "stats", stats)}
 
           />
+          )}
 
           {/* Dashboard Widget — preview widget untuk hero tech-saas */}
           {showIfVariant(HERO_DASHBOARD_WIDGET_VARIANTS) && (
