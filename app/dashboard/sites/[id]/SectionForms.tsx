@@ -641,7 +641,8 @@ export default function SectionForms({
   // Extract business type from seo title or brand context as best-effort
   const bType = content?.seo?.title?.split("-")?.[1]?.trim() || content?.contact?.address || "";
   const heroStyle = getHeroStyle(designToken);
-  const heroNeedsImage = getHeroImageNeed(heroStyle) !== "none";
+  const heroShowsImage = !heroStyle || !["tech-saas","booking-form","location-map"].includes(heroStyle);
+  const heroNeedsImage = heroShowsImage;
   const heroIsVideo = heroStyle === "video-bg";
   // Optional hero fields are only relevant to a subset of variants.
   // When the selected variant is unknown, keep everything visible (safe fallback).
@@ -650,7 +651,7 @@ export default function SectionForms({
   const HERO_EYEBROW_VARIANTS = ["arch-portrait","bento-grid","chronology-badge","floating-card","image-carousel","minimalist-elegant","neo-brutalist","personal-billboard","portrait-showcase","proof-bar","split-editorial","tech-saas","video-bg","work-preview-strip","booking-form","location-map"];
   const HERO_OPENING_HOURS_VARIANTS = ["centered","minimal","split","carousel-split","full-bleed","image-carousel","natural-organic","proof-bar","video-bg","booking-form"];
   const HERO_BADGE_VARIANTS = ["arch-portrait","bento-grid","image-carousel","carousel-split","carousel-filmstrip","minimalist-elegant","neo-brutalist","tech-saas"];
-  const HERO_SECONDARY_VARIANTS = ["bento-grid","carousel-filmstrip","carousel-split","full-bleed","image-carousel","minimalist-elegant","natural-organic","neo-brutalist","personal-billboard","portrait-showcase","split-editorial","tech-saas","video-bg","work-preview-strip","booking-form"];
+  const HERO_SECONDARY_VARIANTS = ["bento-grid","carousel-filmstrip","carousel-split","chronology-badge","full-bleed","image-carousel","minimalist-elegant","natural-organic","neo-brutalist","personal-billboard","portrait-showcase","split-editorial","tech-saas","video-bg","work-preview-strip","booking-form"];
   const HERO_STATS_VARIANTS = ["bento-grid","chronology-badge","personal-billboard","portrait-showcase","proof-bar","split-editorial","work-preview-strip"];
   const HERO_IMAGES_ARRAY_VARIANTS = ["image-carousel","carousel-split","carousel-filmstrip","collage-mosaic"];
   const HERO_DASHBOARD_WIDGET_VARIANTS = ["tech-saas"];
