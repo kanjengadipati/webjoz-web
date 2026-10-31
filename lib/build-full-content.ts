@@ -82,7 +82,6 @@ export function buildFullContent(
   businessType: string,
   description: string,
   whatsapp: string,
-  matraValue?: string
 ) {
   const c = preserveUserBrand(data.content as Record<string, any>, businessName);
   const primaryColor = data.design_token?.palette?.primary || data.designToken?.palette?.primary;
@@ -105,7 +104,6 @@ export function buildFullContent(
     hero: {
       ...c.hero,                                                    // ← keep ALL fields from AI (eyebrow, cta_secondary_text, opening_hours, etc.)
       headline: c.hero?.headline || businessName,
-      matra: c.hero?.matra || matraValue || "",
       subheadline: c.hero?.subheadline || description,
       cta_text: c.hero?.cta_text || c.hero?.cta_label || "Hubungi Kami",
       // Only override cta_url with WhatsApp link when the original target is a
