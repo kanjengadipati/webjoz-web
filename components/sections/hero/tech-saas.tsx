@@ -25,6 +25,7 @@ const TAB_LABELS: Record<Tab, { id: string; en: string }> = {
  * Business filter: only used for tech/startup/digital businesses.
  */
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
+import { HERO_HEADING_SIZE } from "./primitives";
 import { safeHref, isExternalHref } from "@/lib/safe-url";
 
 export default function HeroTechSaaS({
@@ -174,7 +175,7 @@ export default function HeroTechSaaS({
               fontFamily: "var(--dt-heading-font)",
               fontWeight: "var(--dt-heading-weight)" as any,
               fontStyle: "var(--dt-heading-style)" as any,
-              fontSize: "clamp(2.25rem, 6vw, var(--dt-hero-size, 4rem))",
+              fontSize: HERO_HEADING_SIZE.lg,
               lineHeight: 1.1,
               color: "var(--dt-text)",
               margin: 0,

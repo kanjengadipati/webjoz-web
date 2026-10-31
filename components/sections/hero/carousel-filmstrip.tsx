@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { ArrowRight, Plus, Trash2, Sparkles, Pause, Play } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
+import { HERO_HEADING_SIZE } from "./primitives";
 import PhotoCreditList from "../PhotoCreditList";
 import { getHeroSlides, commitHeroSlide, addHeroSlide, removeHeroSlide, writeHeroPatch } from "./images";
 import { safeHref, isExternalHref } from "@/lib/safe-url";
@@ -148,7 +149,7 @@ export default function HeroCarouselFilmstrip({
               fontFamily: "var(--dt-heading-font)",
               fontWeight: "var(--dt-heading-weight)" as any,
               fontStyle: "var(--dt-heading-style)" as any,
-              fontSize: "clamp(2.25rem, 5.5vw, var(--dt-hero-size, 4rem))",
+              fontSize: HERO_HEADING_SIZE.lg,
               lineHeight: 1.1,
               color: "var(--dt-text)",
               margin: 0,

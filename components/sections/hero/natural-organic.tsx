@@ -1,17 +1,16 @@
 "use client";
 import React from "react";
 import { motion } from "motion/react";
-import { ArrowRight, Leaf } from "lucide-react";
+import { Leaf } from "lucide-react";
 import type { HeroVariantProps } from "./types";
-import PhotoCredit from "../PhotoCredit";
 
 /**
  * Natural Organic — sustainable brand, botanical, organic, health & wellness.
  * Warm earthy palette, soft SVG botanical decoration, centered layout.
  * Suited for: organic products, wellness, farm-to-table, eco brands.
  */
-import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
-import { safeHref, isExternalHref } from "@/lib/safe-url";
+import { InlineText, HeroAccessory } from "../../templates/shared";
+import { HeroCta, HeroImage, HERO_HEADING_SIZE } from "./primitives";
 
 export default function HeroNaturalOrganic({
   hero: h,
@@ -154,7 +153,7 @@ export default function HeroNaturalOrganic({
               fontFamily: "var(--dt-heading-font)",
               fontWeight: "var(--dt-heading-weight)" as any,
               fontStyle: "var(--dt-heading-style)" as any,
-              fontSize: "clamp(2.25rem, 6vw, var(--dt-hero-size, 4rem))",
+              fontSize: HERO_HEADING_SIZE.lg,
               lineHeight: 1.15,
               color: "var(--dt-text)",
               margin: 0,
@@ -220,10 +219,11 @@ export default function HeroNaturalOrganic({
           transition={{ duration: 0.4, delay: 0.4 }}
           style={{ display: "flex", gap: "0.875rem", flexWrap: "wrap", justifyContent: "center" }}
         >
-          <a
-            href={safeHref(h.cta_url, "#contact")}
-            target={isExternalHref(h.cta_url) ? "_blank" : undefined}
-            rel={isExternalHref(h.cta_url) ? "noopener noreferrer" : undefined}
+          <HeroCta
+            href={h.cta_url}
+            label={h.cta_text}
+            fieldKey="cta_text"
+            iconSize={15}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -239,24 +239,18 @@ export default function HeroNaturalOrganic({
             }}
             onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
             onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-          >
-            <InlineText
-              section="hero"
-              fieldKey="cta_text"
-              value={h.cta_text}
-              onUpdateField={onUpdateField}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              as="span"
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
-            /> <ArrowRight style={{ width: 15, height: 15 }} />
-          </a>
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
           {hasSecondary && (
-            <a
-              href={safeHref(h.cta_secondary_url, "#contact")}
-              target={isExternalHref(h.cta_secondary_url) ? "_blank" : undefined}
-              rel={isExternalHref(h.cta_secondary_url) ? "noopener noreferrer" : undefined}
+            <HeroCta
+              href={h.cta_secondary_url}
+              label={h.cta_secondary_text ?? ""}
+              fieldKey="cta_secondary_text"
+              icon={null}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -269,19 +263,12 @@ export default function HeroNaturalOrganic({
                 fontSize: "0.875rem",
                 border: "1px solid color-mix(in srgb, var(--dt-text) 22%, transparent)",
               }}
-            >
-              <InlineText
-                section="hero"
-                fieldKey="cta_secondary_text"
-                value={h.cta_secondary_text ?? ""}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={isSelected}
-                as="span"
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                onEditingStateChange={onEditingStateChange}
-              />
-            </a>
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
           )}
         </motion.div>
 
@@ -332,31 +319,18 @@ export default function HeroNaturalOrganic({
               marginTop: "0.5rem",
             }}
           >
-            <InlineImage
-              section="hero"
-              fieldKey="image_url"
+            <HeroImage
               src={h.image_url}
               alt={h.headline}
+              credit={h.image_credit}
+              language={language}
+              className="w-full h-full"
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
-              className="w-full h-full"
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             />
-            <div style={{ position: "absolute", bottom: 8, right: 8, zIndex: 20 }}>
-              <PhotoCredit
-                  credit={h.image_credit}
-              src={h.image_url}
-                  language={language}
-                  section="hero"
-                  fieldKey="image_credit.name"
-                  onUpdateField={onUpdateField}
-                  isEditorMode={isEditorMode}
-                  isSelected={isSelected}
-                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                />
-            </div>
           </motion.div>
         )}
       </div>

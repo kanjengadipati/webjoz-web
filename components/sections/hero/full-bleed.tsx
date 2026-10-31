@@ -6,6 +6,7 @@ import { ArrowRight, Clock } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import type { HeroVariantProps } from "./types";
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
+import { HERO_HEADING_SIZE } from "./primitives";
 import PhotoCredit from "../PhotoCredit";
 import { safeHref, isExternalHref } from "@/lib/safe-url";
 
@@ -169,7 +170,7 @@ export default function HeroFullBleed({
               fontFamily: "var(--dt-heading-font)",
               fontWeight: "var(--dt-heading-weight, 700)" as React.CSSProperties["fontWeight"],
               fontStyle: "var(--dt-heading-style, normal)" as React.CSSProperties["fontStyle"],
-              fontSize: "clamp(2.4rem, 5.5vw, var(--dt-hero-size, 4rem))",
+              fontSize: HERO_HEADING_SIZE.lg,
               lineHeight: 1.15,
               letterSpacing: "-0.025em",
               color: "#FFFFFF",

@@ -1,9 +1,8 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { ArrowRight } from "lucide-react";
 import type { HeroVariantProps } from "./types";
-import PhotoCredit from "../PhotoCredit";
+
 
 /**
  * Bento Grid — product launch, SaaS, conversion-focused startup.
@@ -11,10 +10,8 @@ import PhotoCredit from "../PhotoCredit";
  * Business filter: tech/startup/product/digital businesses.
  * Stats: generalized from about.highlight_stat_* if available.
  */
-import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
-import { safeHref, isExternalHref } from "@/lib/safe-url";
-
-export default function HeroBentoGrid({
+import { InlineText, HeroAccessory } from "../../templates/shared";
+import { HeroCta, HeroImage, HERO_HEADING_SIZE } from "./primitives";export default function HeroBentoGrid({
   hero: h,
   language,
   design_token,
@@ -125,7 +122,7 @@ export default function HeroBentoGrid({
                 fontFamily: "var(--dt-heading-font)",
                 fontWeight: "var(--dt-heading-weight)" as any,
                 fontStyle: "var(--dt-heading-style)" as any,
-                fontSize: "clamp(2rem, 5vw, var(--dt-hero-size, 3.5rem))",
+                fontSize: HERO_HEADING_SIZE.md,
                 lineHeight: 1.1,
                 color: "var(--dt-text)",
                 margin: 0,
@@ -154,10 +151,11 @@ export default function HeroBentoGrid({
               onEditingStateChange={handleEditingStateChange}
             />
             <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-              <a
-                href={safeHref(h.cta_url, "#contact")}
-                target={isExternalHref(h.cta_url) ? "_blank" : undefined}
-                rel={isExternalHref(h.cta_url) ? "noopener noreferrer" : undefined}
+              <HeroCta
+                href={h.cta_url}
+                label={h.cta_text}
+                fieldKey="cta_text"
+                iconSize={14}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -170,24 +168,18 @@ export default function HeroBentoGrid({
                   fontWeight: 700,
                   fontSize: "0.8rem",
                 }}
-              >
-                <InlineText
-                  section="hero"
-                  fieldKey="cta_text"
-                  value={h.cta_text}
-                  onUpdateField={onUpdateField}
-                  isEditorMode={isEditorMode}
-                  isSelected={isSelected}
-                  as="span"
-                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                  onEditingStateChange={handleEditingStateChange}
-                /> <ArrowRight style={{ width: 14, height: 14 }} />
-              </a>
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={handleEditingStateChange}
+              />
               {hasSecondary && (
-                <a
-                  href={safeHref(h.cta_secondary_url, "#contact")}
-                  target={isExternalHref(h.cta_secondary_url) ? "_blank" : undefined}
-                  rel={isExternalHref(h.cta_secondary_url) ? "noopener noreferrer" : undefined}
+                <HeroCta
+                  href={h.cta_secondary_url}
+                  label={h.cta_secondary_text ?? ""}
+                  fieldKey="cta_secondary_text"
+                  icon={null}
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
@@ -199,19 +191,12 @@ export default function HeroBentoGrid({
                     fontSize: "0.8rem",
                     border: "1px solid color-mix(in srgb, var(--dt-text) 18%, transparent)",
                   }}
-                >
-                  <InlineText
-                    section="hero"
-                    fieldKey="cta_secondary_text"
-                    value={h.cta_secondary_text ?? ""}
-                    onUpdateField={onUpdateField}
-                    isEditorMode={isEditorMode}
-                    isSelected={isSelected}
-                    as="span"
-                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                    onEditingStateChange={handleEditingStateChange}
-                  />
-                </a>
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={handleEditingStateChange}
+                />
               )}
             </div>
           </motion.div>
@@ -231,33 +216,18 @@ export default function HeroBentoGrid({
             }}
           >
             {(h.image_url || isEditorMode) ? (
-              <>
-                <InlineImage
-                  section="hero"
-                  fieldKey="image_url"
-                  src={h.image_url}
-                  alt={h.headline}
-                  onUpdateField={onUpdateField}
-                  isEditorMode={isEditorMode}
-                  isSelected={isSelected}
-                  className="w-full h-full"
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                />
-                <div style={{ position: "absolute", bottom: 8, right: 8, zIndex: 20 }}>
-                  <PhotoCredit
-                    credit={h.image_credit}
-              src={h.image_url}
-                    language={language}
-                    section="hero"
-                    fieldKey="image_credit.name"
-                    onUpdateField={onUpdateField}
-                    isEditorMode={isEditorMode}
-                    isSelected={isSelected}
-                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                  />
-                </div>
-              </>
+              <HeroImage
+                src={h.image_url}
+                alt={h.headline}
+                credit={h.image_credit}
+                language={language}
+                className="w-full h-full"
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              />
             ) : (
               <div
                 style={{

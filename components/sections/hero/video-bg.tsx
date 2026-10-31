@@ -5,6 +5,7 @@ import { ArrowRight, Clock, Play } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import PhotoCredit from "../PhotoCredit";
 import { InlineText, InlineImage } from "../../templates/shared";
+import { HERO_HEADING_SIZE } from "./primitives";
 import { safeHref, isExternalHref } from "@/lib/safe-url";
 
 /**
@@ -171,7 +172,7 @@ export default function HeroVideoBg({
               fontFamily: "var(--dt-heading-font)",
               fontWeight: "var(--dt-heading-weight, 700)" as React.CSSProperties["fontWeight"],
               fontStyle: "var(--dt-heading-style, normal)" as React.CSSProperties["fontStyle"],
-              fontSize: "clamp(2.3rem, 5.5vw, var(--dt-hero-size, 4rem))",
+              fontSize: HERO_HEADING_SIZE.lg,
               lineHeight: 1.12,
               letterSpacing: "-0.025em",
               color: "#FFFFFF",
