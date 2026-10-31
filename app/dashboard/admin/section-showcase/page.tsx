@@ -1247,6 +1247,8 @@ function RenderSectionComponent({
       return (
         <HeroSection
           hero={(zeroState ? {} : d.hero) as any}
+          contact={(zeroState ? undefined : d.contact) as any}
+          onSubmitLead={() => Promise.resolve()}
           design_token={designToken}
           language="id"
           isEditorMode={false}

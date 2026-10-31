@@ -2226,6 +2226,9 @@ export interface Translations {
       heroArchPortrait: string;
       heroCollageMosaic: string;
       heroProofBar: string;
+      heroVideoBg: string;
+      heroBookingForm: string;
+      heroLocationMap: string;
       variantProductTable: string;
       variantSpotlight: string;
       variantMenuCarousel: string;
@@ -5055,6 +5058,9 @@ export const translations: Record<Locale, Translations> = {
         heroArchPortrait: "Hero: Bingkai Lengkung",
         heroCollageMosaic: "Hero: Kolase Mosaik",
         heroProofBar: "Hero: Bukti Angka",
+        heroVideoBg: "Hero: Video Latar",
+        heroBookingForm: "Hero: Formulir Pesanan",
+        heroLocationMap: "Hero: Peta Lokasi",
         variantProductTable: "Tabel Spesifikasi",
         variantSpotlight: "Sorotan Produk",
         variantMenuCarousel: "Carousel Horizontal",
@@ -7957,6 +7963,9 @@ export const translations: Record<Locale, Translations> = {
         heroArchPortrait: "Hero: Arch Portrait",
         heroCollageMosaic: "Hero: Collage Mosaic",
         heroProofBar: "Hero: Proof Bar",
+        heroVideoBg: "Hero: Video Background",
+        heroBookingForm: "Hero: Booking Form",
+        heroLocationMap: "Hero: Location Map",
         variantProductTable: "Spec Table",
         variantSpotlight: "Product Spotlight",
         variantMenuCarousel: "Horizontal Carousel",

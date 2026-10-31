@@ -57,6 +57,11 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
          <MemoSectionContent content={hero} render={(h) => (
           <HeroSection
             hero={{ ...h, cta_url: ctaHref(contact.phone, h.cta_url) }}
+            contact={contact}
+            onSubmitLead={onSubmitLead}
+            leadSubmitting={leadSubmitting}
+            leadSuccess={leadSuccess}
+            leadError={leadError}
             design_token={dt}
             language={language}
             isEditorMode={isEditorMode}

@@ -1070,6 +1070,24 @@ export default function SectionForms({
             </label>
             <FileUpload label="" value={content.hero.image_url || ""} onChange={(val) => updateField("hero", "image_url", val)} placeholder="https://..." maxWidth={1600} maxHeight={1200} quality={0.8} previewSize="lg" />
           </div>
+          {/* Video background (hero varian video-bg) — URL langsung, bukan upload */}
+          <div className="space-y-1">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
+              <span>URL Video Hero <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
+              {renderFieldActions("hero", "video_url")}
+            </label>
+            <input
+              id="field-hero.video_url"
+              type="url"
+              value={content.hero?.video_url || ""}
+              onChange={(e) => updateField("hero", "video_url", e.target.value)}
+              placeholder="https://.../video.mp4"
+              className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
+            />
+            <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">
+              URL langsung video (.mp4 / .webm) untuk varian &quot;Video Latar&quot;. Jika kosong atau tidak valid, hero memakai gambar di atas sebagai poster.
+            </p>
+          </div>
           {/* Eyebrow label (semua template, opsional) */}
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">

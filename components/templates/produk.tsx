@@ -60,6 +60,11 @@ export const TemplateProduk: React.FC<TemplateProps> = ({
         <MemoSectionContent content={hero} render={(hero) => (
       <HeroSection
         hero={{ ...hero, cta_url: ctaHref(contact.phone, hero.cta_url) }}
+        contact={contact}
+        onSubmitLead={onSubmitLead}
+        leadSubmitting={leadSubmitting}
+        leadSuccess={leadSuccess}
+        leadError={leadError}
         design_token={dt}
         language={language}
         onUpdateField={onUpdateField}
