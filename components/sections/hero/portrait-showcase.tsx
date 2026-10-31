@@ -6,6 +6,7 @@ import type { HeroVariantProps } from "./types";
 import PhotoCredit from "../PhotoCredit";
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
 import { safeHref, isExternalHref } from "@/lib/safe-url";
+import { heroStrings } from "./hero-strings";
 
 /**
  * Portrait Showcase — photographer, model, artist, studio, content creator.
@@ -25,9 +26,8 @@ export default function HeroPortraitShowcase({
 }: HeroVariantProps) {
   const [activeStatIdx, setActiveStatIdx] = useState<number | null>(null);
   const reduce = useReducedMotion();
+  const s = heroStrings(language);
   const hasSecondary = Boolean(h.cta_secondary_text?.trim() && h.cta_secondary_url?.trim());
-  const isEN = language === "en";
-  const availLabel = isEN ? "Available for work" : "Tersedia untuk kerja";
 
   const rawStats = h.badge_text?.includes("|")
     ? h.badge_text.split(",").map((s) => {
@@ -123,7 +123,7 @@ export default function HeroPortraitShowcase({
                 transition={{ duration: 2.4, repeat: reduce ? 0 : Infinity }}
                 style={{ width: 7, height: 7, borderRadius: "50%", background: "#4ade80", display: "inline-block", flexShrink: 0 }}
               />
-              {availLabel}
+              {s.availableForWork}
             </span>
           </>
         ) : (

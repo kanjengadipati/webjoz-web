@@ -6,6 +6,7 @@ import type { HeroVariantProps } from "./types";
 import PhotoCredit from "../PhotoCredit";
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
 import { safeHref, isExternalHref } from "@/lib/safe-url";
+import { heroStrings } from "./hero-strings";
 
 /**
  * Work Preview Strip — studio, design/creative studio, agency, developer.
@@ -27,7 +28,7 @@ export default function HeroWorkPreviewStrip({
   const [activeTile, setActiveTile] = useState<number | null>(null);
   const hasSecondary = Boolean(h.cta_secondary_text?.trim() && h.cta_secondary_url?.trim());
   const isEN = language === "en";
-  const stripLabel = isEN ? "Featured Work" : "Karya Unggulan";
+  const s = heroStrings(language);
 
   const rawStats = h.badge_text?.includes("|")
     ? h.badge_text.split(",").map((s) => {
@@ -289,7 +290,7 @@ export default function HeroWorkPreviewStrip({
                 color: "var(--dt-text-muted)",
               }}
             >
-              {stripLabel}
+              {s.featuredWork}
             </p>
             <div
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"

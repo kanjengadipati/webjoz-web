@@ -1,11 +1,12 @@
 "use client";
 import React from "react";
-import { ArrowRight, Clock, Star } from "lucide-react";
+import { Clock, Star } from "lucide-react";
 import PhotoCredit from "../PhotoCredit";
 import type { TemplateProps } from "../../templates/types";
 import type { HeroVariantProps } from "./types";
 
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
+import { HeroCta } from "./primitives";
 import { safeHref, isExternalHref } from "@/lib/safe-url";
 
 export { safeHref, isExternalHref };
@@ -57,27 +58,21 @@ export function HeroContent({
           <InlineText section="hero" fieldKey="opening_hours" value={h.opening_hours ?? ""} placeholder="Atur jam operasional..." onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
         </span>
       )}
-      <a
-        href={safeHref(h.cta_url, "#contact")}
-        target={isExternalHref(h.cta_url) ? "_blank" : undefined}
-        rel={isExternalHref(h.cta_url) ? "noopener noreferrer" : undefined}
+      <HeroCta
+        href={h.cta_url}
+        label={h.cta_text}
+        fieldKey="cta_text"
+        iconSize={18}
         className="px-4 py-2.5 md:px-8 md:py-3.5 text-xs md:text-base font-bold"
         style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "var(--dt-radius)", textDecoration: "none", transition: "opacity 0.2s" }}
         onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
         onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-      >
-        <InlineText
-          section="hero"
-          fieldKey="cta_text"
-          value={h.cta_text}
-          onUpdateField={onUpdateField}
-          isEditorMode={isEditorMode}
-          isSelected={isSelected}
-          as="span"
-          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-          onEditingStateChange={onEditingStateChange}
-        /> <ArrowRight style={{ width: 18, height: 18 }} />
-      </a>
+        onUpdateField={onUpdateField}
+        isEditorMode={isEditorMode}
+        isSelected={isSelected}
+        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+        onEditingStateChange={onEditingStateChange}
+      />
       <HeroAccessory
         accessory={h.accessory}
         onUpdateField={onUpdateField}

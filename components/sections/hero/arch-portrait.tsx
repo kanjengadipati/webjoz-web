@@ -1,11 +1,10 @@
 "use client";
 import React from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowRight } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import PhotoCredit from "../PhotoCredit";
 import { InlineText, InlineImage } from "../../templates/shared";
-import { safeHref, isExternalHref } from "@/lib/safe-url";
+import { HeroCta } from "./primitives";
 
 /** Arch Portrait — foto berbingkai lengkung + stempel badge. ImageNeed: Required (1). */
 export default function HeroArchPortrait({
@@ -26,8 +25,6 @@ export default function HeroArchPortrait({
     isSelected,
     collapseSheetForInlineEdit,
   };
-  const ctaHref = safeHref(h.cta_url);
-  const ext = isExternalHref(h.cta_url);
   const badgeIsStats = h.badge_text?.includes("|") ?? false;
 
   return (
@@ -87,19 +84,23 @@ export default function HeroArchPortrait({
             }}
           />
           {(h.cta_text || isEditorMode) && (
-            <a
-              href={ctaHref}
-              {...(ext ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+            <HeroCta
+              href={h.cta_url}
+              label={h.cta_text}
+              fieldKey="cta_text"
+              icon={<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>}
               className="inline-flex items-center gap-2 mt-8 px-7 py-3.5 font-semibold"
               style={{
                 background: "var(--dt-primary)",
                 color: "var(--dt-on-primary, #fff)",
                 borderRadius: "999px",
               }}
-            >
-              <InlineText {...common} fieldKey="cta_text" value={h.cta_text} />
-              <ArrowRight size={18} aria-hidden />
-            </a>
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
           )}
         </motion.div>
 
