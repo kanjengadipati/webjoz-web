@@ -337,6 +337,7 @@ export interface TemplateProps {
       video_url?: string | null;
       images?: string[];
       image_credits?: Array<ImageCredit | null>;
+      image_captions?: Array<string | null>;
       image_credit?: ImageCredit | null;
       eyebrow?: string;
       cta_secondary_text?: string;

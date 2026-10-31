@@ -489,6 +489,15 @@ export default function HeroImageCarousel({
       </div>
 
       {/* Photo credit for active image */}
+      {(() => {
+        const idx = slideList[safeIndex]?.index ?? 0;
+        const caption = h.image_captions?.[idx];
+        return caption ? (
+          <p className="absolute bottom-12 left-4 z-20 max-w-[60%] text-sm font-medium text-white drop-shadow">
+            {caption}
+          </p>
+        ) : null;
+      })()}
       <PhotoCredit credit={slideList[safeIndex]?.credit} src={slideList[safeIndex]?.src} />
 
     </section>

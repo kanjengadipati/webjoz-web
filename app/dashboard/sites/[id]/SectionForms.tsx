@@ -1178,7 +1178,7 @@ export default function SectionForms({
                               </button>
                             </div>
                             {expanded && (
-                              <div className="p-2 pt-0">
+                              <div className="p-2 pt-0 space-y-2">
                                 <FileUpload
                                   label=""
                                   value={url || ""}
@@ -1188,6 +1188,18 @@ export default function SectionForms({
                                   maxHeight={1200}
                                   quality={0.8}
                                   previewSize="md"
+                                />
+                                <input
+                                  type="text"
+                                  value={(hero.image_captions?.[idx] as string) || ""}
+                                  onChange={(e) => {
+                                    const next = [...(hero.image_captions || [])];
+                                    while (next.length <= idx) next.push(null);
+                                    next[idx] = e.target.value;
+                                    updateField("hero", "image_captions", next);
+                                  }}
+                                  placeholder={locale === "en" ? "Caption (optional)" : "Caption (opsional)"}
+                                  className={`${SIDEBAR_FIELD_CLASS} text-[11px]`}
                                 />
                               </div>
                             )}
