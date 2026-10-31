@@ -367,9 +367,9 @@ function PublishModal({ site, onConfirm, onCancel, loading, violations, onAppeal
             </div>
             <div className="space-y-1">
               <h5 className="text-[12px] font-bold text-foreground flex items-center gap-1.5 leading-none">
-                {t("dashboard.sites.connectCustomDomain")} <span className="text-[9px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase shrink-0 tracking-wider">{t("dashboard.pro")}</span>
+                {t("dashboard.sites.connectCustomDomain")} <span className="text-[9px] px-1.5 py-0.5 bg-foreground text-background rounded font-extrabold uppercase shrink-0 tracking-wider">{t("dashboard.pro")}</span>
               </h5>
-              <p className="text-[11.5px] text-muted-foreground leading-relaxed">
+              <p className="text-[11.5px] text-foreground/70 leading-relaxed">
                 {t("dashboard.sites.customDomainDescPre")}{" "}
                 <Link
                   href="/dashboard/domains"

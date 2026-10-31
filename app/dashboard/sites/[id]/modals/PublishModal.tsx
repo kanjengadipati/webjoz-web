@@ -170,17 +170,17 @@ export default function PublishModal({ site, onConfirm, onCancel, loading, viola
               <Globe className="w-4.5 h-4.5" />
             </div>
             <div className="space-y-1">
-              <h5 className="text-[12px] font-bold text-white flex items-center gap-1.5 leading-none">
+              <h5 className="text-[12px] font-bold text-foreground flex items-center gap-1.5 leading-none">
                 {t("dashboard.sites.connectCustomDomain")}{" "}
-                <span className="text-[9px] px-1.5 py-0.5 bg-primary text-primary-foreground rounded font-extrabold uppercase shrink-0 tracking-wider">
+                <span className="text-[9px] px-1.5 py-0.5 bg-foreground text-background rounded font-extrabold uppercase shrink-0 tracking-wider">
                   {t("dashboard.pro")}
                 </span>
               </h5>
-              <p className="text-[11.5px] text-muted-foreground leading-relaxed">
+              <p className="text-[11.5px] text-foreground/70 leading-relaxed">
                 {t("dashboard.sites.customDomainDescPre")}{" "}
                 <Link
                   href="/dashboard/domains"
-                  className="text-primary font-semibold hover:text-white underline underline-offset-2 transition-colors"
+                  className="text-primary font-semibold hover:text-foreground underline underline-offset-2 transition-colors"
                   onClick={onCancel}
                 >
                   {t("dashboard.sites.customDomainLink")}
