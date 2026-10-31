@@ -1107,68 +1107,138 @@ export default function SectionForms({
           )}
           {/* Gambar carousel / kolase (hero.images) */}
           {showIfVariant(HERO_IMAGES_ARRAY_VARIANTS) && (
-          <div className="space-y-3">
+          <div className="space-y-2">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>{locale === "en" ? "Carousel Images" : "Gambar Carousel"}</span>
+              <span>
+                {locale === "en" ? "Carousel Images" : "Gambar Carousel"}
+                <span className="ml-2 inline-flex items-center px-1.5 py-0.5 rounded-full bg-sidebar-muted text-sidebar-muted-foreground text-[10px] font-medium">
+                  {(content.hero?.images || []).length} {locale === "en" ? "images" : "gambar"}
+                </span>
+              </span>
               {renderFieldActions("hero", "images")}
             </label>
-            {(content.hero?.images || []).map((url: string, idx: number) => (
-              <div key={idx} className="space-y-1.5 rounded-md border border-border p-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-semibold text-sidebar-foreground">
-                    #{idx + 1}{idx === 0 ? ` · ${locale === "en" ? "main" : "utama"}` : ""}
-                  </span>
-                  <button
-                    type="button"
-                    disabled={(content.hero?.images || []).length <= 1}
-                    onClick={() => {
-                      const p = removeHeroSlide(content.hero ?? {}, idx);
-                      writeHeroPatch(updateField, p);
-                    }}
-                    title={locale === "en" ? "Remove image" : "Hapus gambar"}
-                    className="flex h-7 w-7 items-center justify-center rounded-md border border-border text-sidebar-muted-foreground hover:bg-sidebar-muted disabled:opacity-40"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
+            <div className="space-y-1.5">
+            {(content.hero?.images || []).map((url: string, idx: number) => {
+              const isExpanded = heroImageOpenIdx === idx;
+              const isHidden = !!(content.hero?.image_hidden?.[idx]);
+              const hasImage = !!url;
+              const fileName = url ? url.split("/").pop()?.split("?")[0]?.slice(0, 20) || `Slide ${idx + 1}` : (locale === "en" ? "No image" : "Belum ada");
+              return (
+                <div key={idx} className={`rounded-xl border transition-colors ${isExpanded ? "border-primary/40 bg-primary/5" : "border-border bg-background"}`}>
+                  {/* Row header */}
+                  <div className="flex items-center gap-2 px-3 py-2.5">
+                    <GripVertical className="h-3.5 w-3.5 shrink-0 text-sidebar-subtle-foreground cursor-grab" />
+                    {/* Thumbnail mini */}
+                    {hasImage ? (
+                      <div className="w-8 h-8 rounded-md border border-border overflow-hidden shrink-0">
+                        <img src={url} alt="" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+                      </div>
+                    ) : (
+                      <div className="w-8 h-8 rounded-md border border-dashed border-border bg-muted/40 shrink-0 flex items-center justify-center">
+                        <Camera className="h-3 w-3 text-sidebar-subtle-foreground" />
+                      </div>
+                    )}
+                    {/* Name */}
+                    <span className={`flex-1 min-w-0 text-[11px] font-semibold truncate ${isHidden ? "line-through text-sidebar-subtle-foreground" : "text-sidebar-foreground"}`}>
+                      {fileName}
+                    </span>
+                    {/* Status badge */}
+                    <span className={`shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                      hasImage
+                        ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
+                        : "bg-amber-500/10 text-amber-500 border border-amber-500/20"
+                    }`}>
+                      {hasImage
+                        ? <><Check className="h-2.5 w-2.5" />{locale === "en" ? "Set" : "Ada"}</>
+                        : <><X className="h-2.5 w-2.5" />{locale === "en" ? "Empty" : "Kosong"}</>
+                      }
+                    </span>
+                    {/* Eye toggle */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const next = [...(content.hero?.image_hidden || [])];
+                        while (next.length <= idx) next.push(false);
+                        next[idx] = !next[idx];
+                        updateField("hero", "image_hidden", next);
+                      }}
+                      title={isHidden ? (locale === "en" ? "Show slide" : "Tampilkan slide") : (locale === "en" ? "Hide slide" : "Sembunyikan slide")}
+                      className="h-7 w-7 flex items-center justify-center rounded-md text-sidebar-muted-foreground hover:bg-sidebar-muted transition-colors shrink-0"
+                    >
+                      {isHidden ? <EyeOff className="h-3.5 w-3.5 text-sidebar-subtle-foreground" /> : <Eye className="h-3.5 w-3.5" />}
+                    </button>
+                    {/* Chevron expand */}
+                    <button
+                      type="button"
+                      onClick={() => setHeroImageOpenIdx(isExpanded ? null : idx)}
+                      className={`h-7 w-7 flex items-center justify-center rounded-full border transition-colors shrink-0 ${isExpanded ? "border-primary text-primary bg-primary/10" : "border-border text-sidebar-muted-foreground hover:bg-sidebar-muted"}`}
+                    >
+                      {isExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                    </button>
+                    {/* Delete */}
+                    <button
+                      type="button"
+                      disabled={(content.hero?.images || []).length <= 1}
+                      onClick={() => {
+                        const p = removeHeroSlide(content.hero ?? {}, idx);
+                        writeHeroPatch(updateField, p);
+                        if (heroImageOpenIdx === idx) setHeroImageOpenIdx(null);
+                        else if (heroImageOpenIdx !== null && heroImageOpenIdx > idx) setHeroImageOpenIdx(heroImageOpenIdx - 1);
+                      }}
+                      title={locale === "en" ? "Remove image" : "Hapus gambar"}
+                      className="h-7 w-7 flex items-center justify-center rounded-md text-red-400 hover:bg-red-500/10 disabled:opacity-30 transition-colors shrink-0"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                  {/* Expanded body */}
+                  {isExpanded && (
+                    <div className="px-3 pb-3 space-y-2 border-t border-border/50">
+                      <div className="pt-2">
+                        <FileUpload
+                          label=""
+                          value={url || ""}
+                          onChange={(val) => {
+                            const p = setHeroSlide(content.hero ?? {}, idx, val);
+                            writeHeroPatch(updateField, p);
+                          }}
+                          placeholder="https://..."
+                          maxWidth={1600}
+                          maxHeight={1200}
+                          quality={0.8}
+                          previewSize="md"
+                        />
+                      </div>
+                      <input
+                        type="text"
+                        value={(content.hero?.image_captions?.[idx] as string) || ""}
+                        onChange={(e) => {
+                          const next = [...(content.hero?.image_captions || [])];
+                          while (next.length <= idx) next.push(null);
+                          next[idx] = e.target.value;
+                          updateField("hero", "image_captions", next);
+                        }}
+                        placeholder={locale === "en" ? "Caption (optional)" : "Caption (opsional)"}
+                        className={`${SIDEBAR_FIELD_CLASS} text-[11px]`}
+                      />
+                    </div>
+                  )}
                 </div>
-                <FileUpload
-                  label=""
-                  value={url || ""}
-                  onChange={(val) => {
-                    const p = setHeroSlide(content.hero ?? {}, idx, val);
-                    writeHeroPatch(updateField, p);
-                  }}
-                  placeholder="https://..."
-                  maxWidth={1600}
-                  maxHeight={1200}
-                  quality={0.8}
-                  previewSize="md"
-                />
-                <input
-                  type="text"
-                  value={(content.hero?.image_captions?.[idx] as string) || ""}
-                  onChange={(e) => {
-                    const next = [...(content.hero?.image_captions || [])];
-                    while (next.length <= idx) next.push(null);
-                    next[idx] = e.target.value;
-                    updateField("hero", "image_captions", next);
-                  }}
-                  placeholder={locale === "en" ? "Caption (optional)" : "Caption (opsional)"}
-                  className={`${SIDEBAR_FIELD_CLASS} text-[11px]`}
-                />
-              </div>
-            ))}
+              );
+            })}
+            </div>
             <button
               type="button"
               disabled={(content.hero?.images || []).length >= 8}
               onClick={() => {
                 const p = addHeroSlide(content.hero ?? {}, "");
                 writeHeroPatch(updateField, p);
+                setHeroImageOpenIdx((content.hero?.images || []).length);
               }}
-              className="flex w-full items-center justify-center gap-1.5 rounded-md border border-dashed border-border px-3 py-2 text-[11px] font-semibold text-sidebar-muted-foreground hover:bg-sidebar-muted disabled:opacity-40"
+              className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-border px-3 py-2.5 text-[11px] font-semibold text-sidebar-muted-foreground hover:bg-sidebar-muted disabled:opacity-40 transition-colors"
             >
               <Plus className="h-3.5 w-3.5" />
-              {locale === "en" ? "Add image" : "Tambah gambar"}
+              {locale === "en" ? "+ Add image" : "+ Tambah gambar"}
             </button>
           </div>
           )}
