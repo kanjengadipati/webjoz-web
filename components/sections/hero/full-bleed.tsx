@@ -2,13 +2,12 @@
 
 import React from "react";
 import { motion } from "motion/react";
-import { ArrowRight, Clock } from "lucide-react";
+import { Clock } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import type { HeroVariantProps } from "./types";
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
-import { HERO_HEADING_SIZE } from "./primitives";
+import { HeroCta, HERO_HEADING_SIZE } from "./primitives";
 import PhotoCredit from "../PhotoCredit";
-import { safeHref, isExternalHref } from "@/lib/safe-url";
 
 /**
  * HeroFullBleed — Cinematic full-bleed photographic hero with dark directional overlay.
@@ -247,10 +246,11 @@ export default function HeroFullBleed({
           className="flex flex-wrap items-center gap-3.5 pt-2"
         >
           {/* Primary CTA button (White pill / high-contrast rounded button with dark text & arrow) */}
-          <a
-            href={safeHref(h.cta_url, "#contact")}
-            target={isExternalHref(h.cta_url) ? "_blank" : undefined}
-            rel={isExternalHref(h.cta_url) ? "noopener noreferrer" : undefined}
+          <HeroCta
+            href={h.cta_url}
+            label={h.cta_text || defaultCta}
+            fieldKey="cta_text"
+            icon={<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-4.5 transition-transform duration-300 group-hover:translate-x-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>}
             className="group inline-flex items-center gap-2 px-6 py-3.5 text-sm md:text-base font-bold rounded-xl transition-all duration-300 shadow-2xl hover:scale-[1.02] active:scale-[0.98]"
             style={{
               background: "#FFFFFF",
@@ -259,27 +259,20 @@ export default function HeroFullBleed({
               boxShadow: "0 12px 30px -4px rgba(0, 0, 0, 0.4), 0 4px 8px -2px rgba(0, 0, 0, 0.2)",
               textDecoration: "none",
             }}
-          >
-            <InlineText
-              section="hero"
-              fieldKey="cta_text"
-              value={h.cta_text || defaultCta}
-              onUpdateField={onUpdateField}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              as="span"
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
-            />
-            <ArrowRight className="size-4.5 transition-transform duration-300 group-hover:translate-x-1" />
-          </a>
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
 
           {/* Secondary CTA button (Clean glass border button) */}
           {hasSecondary && (
-            <a
-              href={safeHref(h.cta_secondary_url, "#contact")}
-              target={isExternalHref(h.cta_secondary_url) ? "_blank" : undefined}
-              rel={isExternalHref(h.cta_secondary_url) ? "noopener noreferrer" : undefined}
+            <HeroCta
+              href={h.cta_secondary_url}
+              label={h.cta_secondary_text}
+              fieldKey="cta_secondary_text"
+              icon={null}
               className="inline-flex items-center gap-2 px-6 py-3.5 text-sm md:text-base font-semibold rounded-xl backdrop-blur-md transition-all duration-300 hover:bg-white/15"
               style={{
                 background: "rgba(255, 255, 255, 0.08)",
@@ -288,19 +281,12 @@ export default function HeroFullBleed({
                 borderRadius: "var(--dt-radius, 12px)",
                 textDecoration: "none",
               }}
-            >
-              <InlineText
-                section="hero"
-                fieldKey="cta_secondary_text"
-                value={h.cta_secondary_text}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={isSelected}
-                as="span"
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                onEditingStateChange={onEditingStateChange}
-              />
-            </a>
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
           )}
         </motion.div>
 

@@ -1,1 +1,26 @@
-["centered","full-bleed","image-carousel","carousel-split","carousel-filmstrip","split","minimalist-elegant","split-editorial","natural-organic","bento-grid","neo-brutalist","portrait-showcase","personal-billboard","work-preview-strip","chronology-badge","floating-card","arch-portrait","collage-mosaic","proof-bar","video-bg","booking-form","location-map","tech-saas","minimal"]
+[
+  {"name":"centered","imageNeed":"optional","minImages":0},
+  {"name":"full-bleed","imageNeed":"required","minImages":1},
+  {"name":"image-carousel","imageNeed":"required","minImages":2},
+  {"name":"carousel-split","imageNeed":"required","minImages":2},
+  {"name":"carousel-filmstrip","imageNeed":"required","minImages":3},
+  {"name":"split","imageNeed":"optional","minImages":0},
+  {"name":"minimalist-elegant","imageNeed":"optional","minImages":0},
+  {"name":"split-editorial","imageNeed":"optional","minImages":0},
+  {"name":"natural-organic","imageNeed":"optional","minImages":0},
+  {"name":"bento-grid","imageNeed":"optional","minImages":0},
+  {"name":"neo-brutalist","imageNeed":"optional","minImages":0},
+  {"name":"portrait-showcase","imageNeed":"required","minImages":1},
+  {"name":"personal-billboard","imageNeed":"required","minImages":1},
+  {"name":"work-preview-strip","imageNeed":"optional","minImages":0},
+  {"name":"chronology-badge","imageNeed":"optional","minImages":0},
+  {"name":"floating-card","imageNeed":"required","minImages":1},
+  {"name":"arch-portrait","imageNeed":"required","minImages":1},
+  {"name":"collage-mosaic","imageNeed":"required","minImages":3},
+  {"name":"proof-bar","imageNeed":"none","minImages":0},
+  {"name":"video-bg","imageNeed":"required","minImages":1},
+  {"name":"booking-form","imageNeed":"none","minImages":0},
+  {"name":"location-map","imageNeed":"none","minImages":0},
+  {"name":"tech-saas","imageNeed":"none","minImages":0},
+  {"name":"minimal","imageNeed":"optional","minImages":0}
+]

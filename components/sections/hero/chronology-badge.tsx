@@ -6,6 +6,7 @@ import type { HeroVariantProps } from "./types";
 import PhotoCredit from "../PhotoCredit";
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
 import { safeHref, isExternalHref } from "@/lib/safe-url";
+import { heroStrings } from "./hero-strings";
 
 /**
  * Chronology Badge — personal-brand businesses with track record (coach,
@@ -26,11 +27,10 @@ export default function HeroChronologyBadge({
 }: HeroVariantProps) {
   const [activeRow, setActiveRow] = useState<number | null>(null);
   const reduce = useReducedMotion();
+  const s = heroStrings(language);
   const hasSecondary = Boolean(h.cta_secondary_text?.trim() && h.cta_secondary_url?.trim());
   const isEN = language === "en";
-  const availLabel = isEN ? "Available for work" : "Tersedia untuk kerja";
   const yearsFallback = isEN ? "Years" : "Tahun";
-  const journeyFallback = isEN ? "Track record" : "Jejak karier";
 
   const rawStats = h.badge_text?.includes("|")
     ? h.badge_text.split(",").map((s) => {
@@ -202,7 +202,7 @@ export default function HeroChronologyBadge({
                 color: "var(--dt-text-muted)",
               }}
             >
-              {journeyFallback}
+              {s.trackRecord}
             </p>
             {milestones.map((s, i) => (
               <div
@@ -405,7 +405,7 @@ export default function HeroChronologyBadge({
               transition={{ duration: 2.4, repeat: reduce ? 0 : Infinity }}
               style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--dt-primary)", display: "inline-block", flexShrink: 0 }}
             />
-            {availLabel}
+            {s.availableForWork}
           </span>
         </motion.div>
 

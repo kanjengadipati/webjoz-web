@@ -1,12 +1,11 @@
 "use client";
 import React from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowRight } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import PhotoCreditList from "../PhotoCreditList";
 import { InlineText, InlineImage } from "../../templates/shared";
 import { getHeroSlides, commitHeroSlide } from "./images";
-import { safeHref, isExternalHref } from "@/lib/safe-url";
+import { HeroCta } from "./primitives";
 
 /** Collage Mosaic — 3 foto asimetris. ImageNeed: Required, MinImages: 3. */
 export default function HeroCollageMosaic({
@@ -27,8 +26,6 @@ export default function HeroCollageMosaic({
     isSelected,
     collapseSheetForInlineEdit,
   };
-  const ctaHref = safeHref(h.cta_url);
-  const ext = isExternalHref(h.cta_url);
 
   // Slot 0 selalu image_url (konsisten dengan carousel-filmstrip: 0 → "image_url", n → `images.${n}`)
   const list = getHeroSlides(h);
@@ -77,19 +74,23 @@ export default function HeroCollageMosaic({
             }}
           />
           {(h.cta_text || isEditorMode) && (
-            <a
-              href={ctaHref}
-              {...(ext ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+            <HeroCta
+              href={h.cta_url}
+              label={h.cta_text}
+              fieldKey="cta_text"
+              icon={<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>}
               className="inline-flex items-center gap-2 mt-8 px-7 py-3.5 font-semibold"
               style={{
                 background: "var(--dt-primary)",
                 color: "var(--dt-on-primary, #fff)",
                 borderRadius: "var(--dt-radius, 12px)",
               }}
-            >
-              <InlineText {...common} fieldKey="cta_text" value={h.cta_text} />
-              <ArrowRight size={18} aria-hidden />
-            </a>
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
           )}
         </div>
 

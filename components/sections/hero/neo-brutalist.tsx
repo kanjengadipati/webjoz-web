@@ -1,11 +1,10 @@
 "use client";
 import React from "react";
 import { motion } from "motion/react";
-import { ArrowRight } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import PhotoCredit from "../PhotoCredit";
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
-import { safeHref, isExternalHref } from "@/lib/safe-url";
+import { HeroCta } from "./primitives";
 
 /**
  * Neo-Brutalist — thick borders, offset shadows, sticker-style badges.
@@ -180,10 +179,11 @@ export default function HeroNeoBrutalist({
             transition={{ duration: 0.4, delay: 0.3 }}
             style={{ display: "flex", gap: "0.875rem", flexWrap: "wrap" }}
           >
-            <a
-              href={safeHref(h.cta_url, "#contact")}
-              target={isExternalHref(h.cta_url) ? "_blank" : undefined}
-              rel={isExternalHref(h.cta_url) ? "noopener noreferrer" : undefined}
+            <HeroCta
+              href={h.cta_url}
+              label={h.cta_text}
+              fieldKey="cta_text"
+              iconSize={16}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -208,24 +208,18 @@ export default function HeroNeoBrutalist({
                 e.currentTarget.style.boxShadow = "4px 4px 0 var(--dt-text)";
                 e.currentTarget.style.transform = "none";
               }}
-            >
-              <InlineText
-                section="hero"
-                fieldKey="cta_text"
-                value={h.cta_text}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={isSelected}
-                as="span"
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                onEditingStateChange={onEditingStateChange}
-              /> <ArrowRight style={{ width: 16, height: 16 }} />
-            </a>
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
             {hasSecondary && (
-              <a
-                href={safeHref(h.cta_secondary_url, "#contact")}
-                target={isExternalHref(h.cta_secondary_url) ? "_blank" : undefined}
-                rel={isExternalHref(h.cta_secondary_url) ? "noopener noreferrer" : undefined}
+              <HeroCta
+                href={h.cta_secondary_url}
+                label={h.cta_secondary_text ?? ""}
+                fieldKey="cta_secondary_text"
+                icon={null}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -250,19 +244,12 @@ export default function HeroNeoBrutalist({
                   e.currentTarget.style.boxShadow = "4px 4px 0 color-mix(in srgb, var(--dt-text) 40%, transparent)";
                   e.currentTarget.style.transform = "none";
                 }}
-              >
-                <InlineText
-                  section="hero"
-                  fieldKey="cta_secondary_text"
-                  value={h.cta_secondary_text ?? ""}
-                  onUpdateField={onUpdateField}
-                  isEditorMode={isEditorMode}
-                  isSelected={isSelected}
-                  as="span"
-                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                  onEditingStateChange={onEditingStateChange}
-                />
-              </a>
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
             )}
           </motion.div>
 
