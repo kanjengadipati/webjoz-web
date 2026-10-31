@@ -1107,128 +1107,69 @@ export default function SectionForms({
           )}
           {/* Gambar carousel / kolase (hero.images) */}
           {showIfVariant(HERO_IMAGES_ARRAY_VARIANTS) && (
-          <div className="space-y-2">
-            {(() => {
-              const hero = content.hero ?? {};
-              const isEN = locale === "en";
-              const rows: string[] = Array.isArray(hero.images) && hero.images.length
-                ? hero.images
-                : hero.image_url ? [hero.image_url] : [];
-              const credits = Array.isArray(hero.image_credits) ? hero.image_credits : [];
-              const filled = rows.filter((u) => (u ?? "").trim()).length;
-              const distinct = countDistinctHeroImages(hero);
-              const min = heroStyle === "collage-mosaic" ? 3 : heroStyle === "image-carousel" ? 2 : 1;
-              const open = heroImagesOpen ?? rows.length <= 3;
-              const write = (pp: ReturnType<typeof setHeroSlide>) => writeHeroPatch(updateField, pp);
-
-              return (
-                <>
+          <div className="space-y-3">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
+              <span>{locale === "en" ? "Carousel Images" : "Gambar Carousel"}</span>
+              {renderFieldActions("hero", "images")}
+            </label>
+            {(content.hero?.images || []).map((url: string, idx: number) => (
+              <div key={idx} className="space-y-1.5 rounded-md border border-border p-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-semibold text-sidebar-foreground">
+                    #{idx + 1}{idx === 0 ? ` · ${locale === "en" ? "main" : "utama"}` : ""}
+                  </span>
                   <button
                     type="button"
-                    aria-expanded={open}
-                    onClick={() => setHeroImagesOpen(!open)}
-                    className="flex w-full items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground"
+                    disabled={(content.hero?.images || []).length <= 1}
+                    onClick={() => {
+                      const p = removeHeroSlide(content.hero ?? {}, idx);
+                      writeHeroPatch(updateField, p);
+                    }}
+                    title={locale === "en" ? "Remove image" : "Hapus gambar"}
+                    className="flex h-7 w-7 items-center justify-center rounded-md border border-border text-sidebar-muted-foreground hover:bg-sidebar-muted disabled:opacity-40"
                   >
-                    <span>
-                      {isEN ? "Carousel Images" : "Gambar Carousel"}{" "}
-                      <span className="font-normal normal-case text-sidebar-subtle-foreground">({filled})</span>
-                    </span>
-                    <span className="flex items-center gap-2">
-                      {distinct < min && <span className="normal-case font-medium text-amber-300">{distinct}/{min}</span>}
-                      <ChevronDown className={`h-3.5 w-3.5 transition-transform ${open ? "rotate-180" : ""}`} />
-                    </span>
+                    <Trash2 className="h-3.5 w-3.5" />
                   </button>
-
-                  {open && (
-                    <>
-                      {rows.map((url, idx) => {
-                        const empty = !(url ?? "").trim();
-                        const expanded = heroImageOpenIdx === idx;
-                        const who = credits[idx]?.name;
-                        return (
-                          <div key={idx} className="rounded-md border border-border">
-                            <div className="flex items-center gap-2 p-1.5">
-                              <button
-                                type="button"
-                                aria-expanded={expanded}
-                                onClick={() => setHeroImageOpenIdx(expanded ? null : idx)}
-                                className="flex min-w-0 flex-1 items-center gap-2 text-left"
-                              >
-                                {empty ? (
-                                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded border border-dashed border-border text-sidebar-subtle-foreground">+</span>
-                                ) : (
-                                  // eslint-disable-next-line @next/next/no-img-element
-                                  <img src={url} alt="" loading="lazy" className="h-10 w-10 shrink-0 rounded object-cover" />
-                                )}
-                                <span className="min-w-0 truncate text-[11px] text-sidebar-foreground">
-                                  #{idx + 1}{idx === 0 ? ` · ${isEN ? "main" : "utama"}` : ""}{" "}
-                                  {empty
-                                    ? <em className="text-sidebar-subtle-foreground">{isEN ? "Empty" : "Kosong"}</em>
-                                    : who ? <span className="text-sidebar-subtle-foreground">· {who}</span> : null}
-                                </span>
-                              </button>
-                              <button
-                                type="button"
-                                disabled={rows.length <= 1}
-                                onClick={() => { write(removeHeroSlide(hero, idx)); setHeroImageOpenIdx(null); }}
-                                title={isEN ? "Remove image" : "Hapus gambar"}
-                                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border text-sidebar-muted-foreground hover:bg-sidebar-muted disabled:opacity-40"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </button>
-                            </div>
-                            {expanded && (
-                              <div className="p-2 pt-0 space-y-2">
-                                <FileUpload
-                                  label=""
-                                  value={url || ""}
-                                  onChange={(val) => write(setHeroSlide(hero, idx, val))}
-                                  placeholder="https://..."
-                                  maxWidth={1600}
-                                  maxHeight={1200}
-                                  quality={0.8}
-                                  previewSize="md"
-                                />
-                                <input
-                                  type="text"
-                                  value={(hero.image_captions?.[idx] as string) || ""}
-                                  onChange={(e) => {
-                                    const next = [...(hero.image_captions || [])];
-                                    while (next.length <= idx) next.push(null);
-                                    next[idx] = e.target.value;
-                                    updateField("hero", "image_captions", next);
-                                  }}
-                                  placeholder={locale === "en" ? "Caption (optional)" : "Caption (opsional)"}
-                                  className={`${SIDEBAR_FIELD_CLASS} text-[11px]`}
-                                />
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-
-                      <button
-                        type="button"
-                        disabled={rows.length >= 8}
-                        onClick={() => { write(addHeroSlide(hero, "")); setHeroImageOpenIdx(rows.length); }}
-                        className="flex w-full items-center justify-center gap-1.5 rounded-md border border-dashed border-border px-3 py-2 text-[11px] font-semibold text-sidebar-muted-foreground hover:bg-sidebar-muted disabled:opacity-40"
-                      >
-                        <Plus className="h-3.5 w-3.5" />
-                        {isEN ? `Add image (${rows.length}/8)` : `Tambah gambar (${rows.length}/8)`}
-                      </button>
-
-                      <p className="text-[10px] leading-relaxed text-sidebar-subtle-foreground">
-                        {isEN
-                          ? "Slide #1 is the main image. Empty slots are not shown on the site."
-                          : "Slide #1 adalah gambar utama. Slot kosong tidak tampil di situs."}
-                        {distinct < min && heroStyle === "collage-mosaic" && (isEN ? ` Collage looks best with 3 different photos (now ${distinct}).` : ` Kolase paling bagus dengan 3 foto berbeda (sekarang ${distinct}).`)}
-                        {distinct < min && heroStyle === "image-carousel" && (isEN ? " Carousel needs at least 2 photos." : " Carousel butuh minimal 2 foto.")}
-                      </p>
-                    </>
-                  )}
-                </>
-              );
-            })()}
+                </div>
+                <FileUpload
+                  label=""
+                  value={url || ""}
+                  onChange={(val) => {
+                    const p = setHeroSlide(content.hero ?? {}, idx, val);
+                    writeHeroPatch(updateField, p);
+                  }}
+                  placeholder="https://..."
+                  maxWidth={1600}
+                  maxHeight={1200}
+                  quality={0.8}
+                  previewSize="md"
+                />
+                <input
+                  type="text"
+                  value={(content.hero?.image_captions?.[idx] as string) || ""}
+                  onChange={(e) => {
+                    const next = [...(content.hero?.image_captions || [])];
+                    while (next.length <= idx) next.push(null);
+                    next[idx] = e.target.value;
+                    updateField("hero", "image_captions", next);
+                  }}
+                  placeholder={locale === "en" ? "Caption (optional)" : "Caption (opsional)"}
+                  className={`${SIDEBAR_FIELD_CLASS} text-[11px]`}
+                />
+              </div>
+            ))}
+            <button
+              type="button"
+              disabled={(content.hero?.images || []).length >= 8}
+              onClick={() => {
+                const p = addHeroSlide(content.hero ?? {}, "");
+                writeHeroPatch(updateField, p);
+              }}
+              className="flex w-full items-center justify-center gap-1.5 rounded-md border border-dashed border-border px-3 py-2 text-[11px] font-semibold text-sidebar-muted-foreground hover:bg-sidebar-muted disabled:opacity-40"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              {locale === "en" ? "Add image" : "Tambah gambar"}
+            </button>
           </div>
           )}
           {/* Video background (hero varian video-bg) — URL langsung, bukan upload */}
