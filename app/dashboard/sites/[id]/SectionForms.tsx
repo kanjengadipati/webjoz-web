@@ -1090,7 +1090,7 @@ export default function SectionForms({
           {heroIsVideo && (
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>URL Video Hero <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
+              <span>{locale === "en" ? "Hero Video URL" : "URL Video Hero"} <span className="text-sidebar-subtle-foreground font-normal normal-case">({locale === "en" ? "optional" : "opsional"})</span></span>
               {renderFieldActions("hero", "video_url")}
             </label>
             <input
@@ -1102,7 +1102,9 @@ export default function SectionForms({
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
             <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">
-              URL langsung video (.mp4 / .webm) untuk varian &quot;Video Latar&quot;. Jika kosong atau tidak valid, hero memakai gambar di atas sebagai poster.
+              {locale === "en"
+                ? "Direct video URL (.mp4 / .webm) for the \u201CVideo Background\u201D variant. If empty or invalid, the hero falls back to the image above as poster."
+                : "URL langsung video (.mp4 / .webm) untuk varian \u201CVideo Latar\u201D. Jika kosong atau tidak valid, hero memakai gambar di atas sebagai poster."}
             </p>
           </div>
           )}
