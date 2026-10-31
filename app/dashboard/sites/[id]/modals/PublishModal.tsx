@@ -102,10 +102,10 @@ export default function PublishModal({ site, onConfirm, onCancel, loading, viola
             <Rocket className="w-6 h-6 text-primary-foreground" />
           </div>
           <div>
-            <h4 className="text-[13.5px] font-bold text-white leading-snug">
+            <h4 className="text-[13.5px] font-bold text-foreground leading-snug">
               {t("dashboard.sites.publishOneStep")}
             </h4>
-            <p className="text-[11.5px] text-muted-foreground leading-relaxed mt-0.5">
+            <p className="text-[11.5px] text-foreground/60 leading-relaxed mt-0.5">
               {t("dashboard.sites.publishReady", undefined, { name: site.name })}
             </p>
           </div>
@@ -215,11 +215,7 @@ export default function PublishModal({ site, onConfirm, onCancel, loading, viola
           </Button>
           <Button
             type="submit"
-            className={`flex-1 rounded-xl h-11 text-[13.5px] font-bold border-0 transition-all flex items-center justify-center gap-2 cursor-pointer ${
-              !isInputValid || loading || !agreed
-                ? "bg-muted text-muted-foreground cursor-not-allowed"
-                : "bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-[0_4px_14px_color-mix(in_srgb,var(--primary)_25%,transparent)] hover:shadow-[0_4px_18px_color-mix(in_srgb,var(--primary)_35%,transparent)] transform hover:scale-[1.02] active:scale-[0.98]"
-            }`}
+            className="flex-1 rounded-xl h-11 text-[13.5px] font-bold border-0 transition-all flex items-center justify-center gap-2"
             disabled={loading || !isInputValid || !agreed}
           >
             {loading ? (
