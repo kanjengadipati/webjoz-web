@@ -344,17 +344,7 @@ export default function HeroCarouselFilmstrip({
                   ) : null;
                 })()}
 
-                {/* Card Number Tag */}
-                <span
-                  className="absolute bottom-3 left-3 text-[11px] font-mono font-bold tracking-wider px-2 py-0.5 rounded backdrop-blur-md"
-                  style={{
-                    background: "rgba(0,0,0,0.55)",
-                    color: "#ffffff",
-                    border: "1px solid rgba(255,255,255,0.15)",
-                  }}
-                >
-                  0{originalIndex + 1}
-                </span>
+                {/* Card Number Tag removed */}
 
                 {/* Editor Delete Slide Button */}
                 {isEditorMode && idx < slides.length && slides.length > 1 && (

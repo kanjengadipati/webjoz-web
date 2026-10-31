@@ -327,9 +327,7 @@ export default function HeroCarouselSplit({
             ))}
           </div>
 
-          <span className="text-xs font-mono font-medium" style={{ color: "var(--dt-text-muted)" }}>
-            0{safeIndex + 1} / 0{slideCount}
-          </span>
+          {/* counter removed */}
 
           {slideCount > 1 && !isEditorMode && (
             <button
