@@ -144,6 +144,11 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
               return (
                 <HeroSection
                   hero={hh}
+                  contact={content.contact}
+                  onSubmitLead={onSubmitLead}
+                  leadSubmitting={leadSubmitting}
+                  leadSuccess={leadSuccess}
+                  leadError={leadError}
                   design_token={dt}
                   language={language}
                   onUpdateField={onUpdateField}

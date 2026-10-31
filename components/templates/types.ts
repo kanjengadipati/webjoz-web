@@ -333,6 +333,8 @@ export interface TemplateProps {
       cta_text: string;
       cta_url: string;
       image_url?: string;
+      /** Direct video URL (mp4/webm) for the video-bg hero variant. */
+      video_url?: string | null;
       images?: string[];
       image_credit?: ImageCredit | null;
       eyebrow?: string;

@@ -800,6 +800,65 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
     );
   }
 
+  if (variant === "video-bg") {
+    return (
+      <div className="w-full h-14 rounded-lg bg-gradient-to-br from-slate-900 via-slate-800 to-primary/20 border border-primary/30 p-2 flex flex-col items-start justify-center gap-1 relative overflow-hidden">
+        <div className="absolute inset-0 bg-black/35" />
+        <div className="absolute right-1.5 top-1.5 z-10 w-4 h-4 rounded-full bg-white/20 border border-white/50 flex items-center justify-center">
+          <div className="w-0 h-0 border-y-[3px] border-y-transparent border-l-[4px] border-l-white ml-0.5" />
+        </div>
+        <div className="relative z-10 w-2/3 h-1.5 rounded-full bg-white/90" />
+        <div className="relative z-10 w-3/4 h-1 rounded-full bg-slate-200/60" />
+        <div className="relative z-10 w-1/4 h-1.5 rounded-xs bg-white" />
+      </div>
+    );
+  }
+
+  if (variant === "booking-form") {
+    return (
+      <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex items-center gap-1.5 overflow-hidden">
+        <div className="w-1/2 space-y-1 pl-0.5">
+          <div className="w-4/5 h-1.5 rounded-full bg-white" />
+          <div className="w-full h-1 rounded-full bg-slate-400/70" />
+          <div className="w-3/4 h-1 rounded-full bg-slate-500/50" />
+        </div>
+        <div className="w-1/2 h-full rounded-md bg-primary/10 border border-primary/30 p-1 flex flex-col gap-0.5">
+          <div className="w-10 h-0.5 rounded-full bg-primary/70" />
+          <div className="w-full h-2 rounded-xs bg-slate-700/70 border border-white/10" />
+          <div className="w-full h-2 rounded-xs bg-slate-700/70 border border-white/10" />
+          <div className="w-full h-1.5 rounded-xs bg-primary mt-auto" />
+        </div>
+      </div>
+    );
+  }
+
+  if (variant === "location-map") {
+    return (
+      <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex items-center gap-1.5 overflow-hidden">
+        <div className="w-1/2 space-y-1 pl-0.5">
+          <div className="w-4/5 h-1.5 rounded-full bg-white" />
+          <div className="w-full h-1 rounded-full bg-slate-400/70" />
+          <div className="flex items-center gap-0.5 pt-0.5">
+            <div className="w-2 h-2 rounded-full bg-primary/30" />
+            <div className="w-8 h-0.5 rounded-full bg-slate-500/60" />
+          </div>
+          <div className="w-1/3 h-1.5 rounded-xs bg-primary/80 mt-0.5" />
+        </div>
+        <div className="w-1/2 h-full rounded-md bg-slate-800/80 border border-primary/30 relative overflow-hidden">
+          <div
+            className="absolute inset-0 opacity-60"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(148,163,184,0.25) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,0.25) 1px, transparent 1px)",
+              backgroundSize: "7px 7px",
+            }}
+          />
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-primary border-2 border-white/80" />
+        </div>
+      </div>
+    );
+  }
+
   if (variant === "whatsapp-direct") {
     return (
       <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex flex-col items-center justify-center gap-1 overflow-hidden">

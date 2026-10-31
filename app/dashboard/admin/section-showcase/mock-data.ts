@@ -202,6 +202,7 @@ export const MOCK_SHOWCASE_DATA = {
     secondary_cta_text: "Pelajari Lebih Lanjut",
     secondary_cta_url: "#about",
     opening_hours: "Senin–Sabtu, 08.00–17.00",
+    video_url: "https://www.w3schools.com/html/mov_bbb.mp4",
     image_url: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&auto=format&fit=crop&q=80",
     portrait_image_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80",
     images: [
@@ -1092,6 +1093,9 @@ export const MOCK_SHOWCASE_DATA = {
     hours: "Senin - Sabtu: 08:30 - 17:00 WIB",
     whatsapp: "6281234567890",
     map_embed_url: "https://maps.google.com/maps?q=-7.8288,110.3922&hl=id&z=14&output=embed",
+    maps_url: "https://maps.google.com/maps?q=-7.8288,110.3922&hl=id&z=14&output=embed",
+    map_tile_style: "default",
+    show_map: true,
   },
   footer: {
     brand_name: "Webjoz Studio",

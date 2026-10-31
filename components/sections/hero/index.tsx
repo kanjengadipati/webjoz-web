@@ -26,6 +26,9 @@ import HeroProofBar from "./proof-bar";
 import HeroImageCarousel from "./image-carousel";
 import HeroCarouselSplit from "./carousel-split";
 import HeroCarouselFilmstrip from "./carousel-filmstrip";
+import HeroVideoBg from "./video-bg";
+import HeroBookingForm from "./booking-form";
+import HeroLocationMap from "./location-map";
 
 // Typed against HeroStyle (hero/meta.ts): adding a variant to the catalog without
 // registering its component here is a compile error. "carousel" is a legacy alias.
@@ -56,10 +59,19 @@ const variants: Record<HeroStyle | "carousel", ComponentType<HeroVariantProps>> 
   "arch-portrait": HeroArchPortrait,
   "collage-mosaic": HeroCollageMosaic,
   "proof-bar": HeroProofBar,
+  // Tier 2 additions (video_url + contact/lead props)
+  "video-bg": HeroVideoBg,
+  "booking-form": HeroBookingForm,
+  "location-map": HeroLocationMap,
 };
 
 export default function HeroSection({
   hero,
+  contact,
+  onSubmitLead,
+  leadSubmitting,
+  leadSuccess,
+  leadError,
   design_token,
   language,
   onUpdateField,
@@ -75,6 +87,11 @@ export default function HeroSection({
     <div style={{ containerType: "inline-size", width: "100%" }}>
       <Renderer
         hero={hero}
+        contact={contact}
+        onSubmitLead={onSubmitLead}
+        leadSubmitting={leadSubmitting}
+        leadSuccess={leadSuccess}
+        leadError={leadError}
         design_token={design_token}
         language={language}
         onUpdateField={onUpdateField}
