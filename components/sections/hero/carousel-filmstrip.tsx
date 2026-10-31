@@ -334,6 +334,16 @@ export default function HeroCarouselFilmstrip({
                   }}
                 />
 
+                {/* Caption for this slide */}
+                {(() => {
+                  const caption = h.image_captions?.[slide?.index ?? 0];
+                  return caption ? (
+                    <p className="absolute bottom-10 left-3 right-3 z-20 text-xs font-medium text-white drop-shadow line-clamp-2">
+                      {caption}
+                    </p>
+                  ) : null;
+                })()}
+
                 {/* Card Number Tag */}
                 <span
                   className="absolute bottom-3 left-3 text-[11px] font-mono font-bold tracking-wider px-2 py-0.5 rounded backdrop-blur-md"
