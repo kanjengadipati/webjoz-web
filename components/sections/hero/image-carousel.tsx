@@ -7,6 +7,7 @@ import { SparkleIcon } from "@/components/sparkle-icon";
 import type { HeroVariantProps } from "./types";
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
 import PhotoCredit from "../PhotoCredit";
+import { getHeroSlides, commitHeroSlide, addHeroSlide, removeHeroSlide, writeHeroPatch } from "./images";
 import { safeHref, isExternalHref } from "@/lib/safe-url";
 
 /**
@@ -27,9 +28,8 @@ export default function HeroImageCarousel({
   onEditingStateChange,
 }: HeroVariantProps) {
   // Resolve slides array: prioritize hero.images, then fallback to hero.image_url
-  const slides: string[] = Array.isArray(h.images) && h.images.length > 0
-    ? h.images.filter(Boolean)
-    : (h.image_url ? [h.image_url] : []);
+  const slideList = getHeroSlides(h);
+  const slides: string[] = slideList.map((s) => s.src);
 
   const slideCount = slides.length;
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -75,37 +75,27 @@ export default function HeroImageCarousel({
   };
 
   const handleUpdateCurrentSlideImage = (newUrl: string) => {
-    const updated = [...slides];
-    updated[safeIndex] = newUrl;
-    if (onUpdateField) {
-      onUpdateField("hero", "images", updated);
-      if (safeIndex === 0) {
-        onUpdateField("hero", "image_url", newUrl);
-      }
-    }
+    const slide = slideList[safeIndex];
+    if (!slide) return;
+    commitHeroSlide(onUpdateField, h, slide.index, newUrl);
   };
 
   const handleAddSlide = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const fallbackImage = h.image_url || "";
-    const updated = [...slides, fallbackImage];
-    setCurrentIndex(updated.length - 1);
-    if (onUpdateField) {
-      onUpdateField("hero", "images", updated);
-    }
+    if (slides.length >= 8) return;
+    const fallbackImage = slides[0] ?? "";
+    const fallbackCredit = slideList[0]?.credit ?? null;
+    writeHeroPatch(onUpdateField as any, addHeroSlide(h, fallbackImage, fallbackCredit));
+    setCurrentIndex(slides.length);
   };
 
   const handleDeleteCurrentSlide = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (slides.length <= 1) return;
-    const updated = slides.filter((_, i) => i !== safeIndex);
-    setCurrentIndex((prev) => (prev >= updated.length ? updated.length - 1 : prev));
-    if (onUpdateField) {
-      onUpdateField("hero", "images", updated);
-      if (updated.length > 0) {
-        onUpdateField("hero", "image_url", updated[0]);
-      }
-    }
+    const slide = slideList[safeIndex];
+    if (!slide) return;
+    writeHeroPatch(onUpdateField as any, removeHeroSlide(h, slide.index));
+    setCurrentIndex((prev) => (prev >= slides.length - 1 ? slides.length - 2 : prev));
   };
 
   const isEN = language === "en";
@@ -149,7 +139,7 @@ export default function HeroImageCarousel({
             >
               <InlineImage
                 section="hero"
-                fieldKey={`slide_${safeIndex}`}
+                fieldKey={`images.${slideList[safeIndex]?.index ?? 0}`}
                 src={activeImage}
                 alt={`${h.headline || "Hero image"} (Slide ${safeIndex + 1})`}
                 onUpdateField={(_, __, val) => handleUpdateCurrentSlideImage(val)}
@@ -422,14 +412,16 @@ export default function HeroImageCarousel({
                 ? `Slide ${safeIndex + 1} of ${slideCount}`
                 : `Slide ${safeIndex + 1} dari ${slideCount}`}
             </span>
-            <button
-              type="button"
-              onClick={handleAddSlide}
-              title={isEN ? "Add New Slide" : "Tambah Slide Baru"}
-              className="p-1 hover:bg-white/20 rounded-full transition-colors"
-            >
-              <Plus className="size-3.5" />
-            </button>
+            {slideCount < 8 && (
+              <button
+                type="button"
+                onClick={handleAddSlide}
+                title={isEN ? "Add New Slide" : "Tambah Slide Baru"}
+                className="p-1 hover:bg-white/20 rounded-full transition-colors"
+              >
+                <Plus className="size-3.5" />
+              </button>
+            )}
             {slideCount > 1 && (
               <button
                 type="button"
@@ -497,7 +489,8 @@ export default function HeroImageCarousel({
       </div>
 
       {/* Photo credit for active image */}
-      <PhotoCredit credit={h.image_credit} />
+      <PhotoCredit credit={slideList[safeIndex]?.credit} src={slideList[safeIndex]?.src} />
+
     </section>
   );
 }
