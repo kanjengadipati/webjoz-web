@@ -362,7 +362,7 @@ function VariantPreview({ id }: { id: string }) {
       <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="6" width="34" height="36" rx="2" fill="currentColor" opacity=".15"/><rect x="8" y="10" width="16" height="3.5" rx="1" fill="currentColor" opacity=".3"/><rect x="8" y="16" width="24" height="2.5" rx="1" fill="currentColor" opacity=".15"/><rect x="8" y="22" width="20" height="2.5" rx="1" fill="currentColor" opacity=".15"/><rect x="42" y="6" width="34" height="36" rx="2" fill="currentColor" opacity=".1"/><rect x="46" y="10" width="18" height="3.5" rx="1" fill="currentColor" opacity=".3"/><rect x="46" y="16" width="22" height="2.5" rx="1" fill="currentColor" opacity=".15"/><rect x="46" y="22" width="20" height="2.5" rx="1" fill="currentColor" opacity=".15"/></svg>
     ),
 
-    // Hero (14 variants)
+    // Hero (18 variants)
     "hero-centered": (
       <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="20" y="8" width="40" height="6" rx="1" fill="currentColor" opacity=".35"/><rect x="14" y="17" width="52" height="4" rx="1" fill="currentColor" opacity=".2"/><rect x="24" y="24" width="32" height="3" rx="1" fill="currentColor" opacity=".15"/><rect x="28" y="32" width="24" height="8" rx="2" fill="currentColor" opacity=".4"/></svg>
     ),
@@ -404,6 +404,18 @@ function VariantPreview({ id }: { id: string }) {
     ),
     "hero-chronology-badge": (
       <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="6" y="6" width="22" height="6" rx="3" fill="currentColor" opacity=".28"/><rect x="6" y="15" width="44" height="6" rx="1" fill="currentColor" opacity=".35"/>{[24,31,38].map(y=><g key={y}><circle cx="9" cy={y} r="1.8" fill="currentColor" opacity=".4"/><rect x="14" y={y-1.5} width="30" height="3" rx="1" fill="currentColor" opacity=".16"/></g>)}<rect x="52" y="8" width="24" height="32" rx="2" fill="currentColor" opacity=".15"/><rect x="56" y="13" width="16" height="3.5" rx="1" fill="currentColor" opacity=".25"/><rect x="56" y="19" width="12" height="3" rx="1" fill="currentColor" opacity=".15"/><rect x="56" y="26" width="16" height="4" rx="2" fill="currentColor" opacity=".22"/><rect x="56" y="33" width="8" height="3" rx="1" fill="currentColor" opacity=".12"/></svg>
+    ),
+    "hero-floating-card": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="2" y="2" width="76" height="44" rx="3" fill="currentColor" opacity=".18"/><rect x="8" y="20" width="30" height="22" rx="2" fill="currentColor" opacity=".55"/><rect x="12" y="24" width="18" height="2.5" rx="1" fill="currentColor" opacity=".25"/><rect x="12" y="29" width="22" height="2" rx="1" fill="currentColor" opacity=".2"/><rect x="12" y="35" width="12" height="4" rx="1" fill="currentColor" opacity=".35"/></svg>
+    ),
+    "hero-arch-portrait": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="6" y="10" width="34" height="6" rx="1" fill="currentColor" opacity=".35"/><rect x="6" y="19" width="28" height="3.5" rx="1" fill="currentColor" opacity=".2"/><rect x="6" y="25" width="24" height="3" rx="1" fill="currentColor" opacity=".15"/><rect x="6" y="32" width="18" height="7" rx="2" fill="currentColor" opacity=".35"/><path d="M44 42V20a14 14 0 0 1 28 0v22z" fill="currentColor" opacity=".22"/><rect x="40" y="34" width="14" height="5" rx="2.5" fill="currentColor" opacity=".5"/></svg>
+    ),
+    "hero-collage-mosaic": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="4" y="8" width="28" height="5" rx="1" fill="currentColor" opacity=".35"/><rect x="4" y="16" width="24" height="3" rx="1" fill="currentColor" opacity=".2"/><rect x="4" y="23" width="18" height="3" rx="1" fill="currentColor" opacity=".15"/><rect x="4" y="31" width="14" height="6" rx="2" fill="currentColor" opacity=".32"/><rect x="36" y="4" width="18" height="40" rx="2" fill="currentColor" opacity=".25"/><rect x="57" y="4" width="19" height="19" rx="2" fill="currentColor" opacity=".18"/><rect x="57" y="25" width="19" height="19" rx="2" fill="currentColor" opacity=".12"/></svg>
+    ),
+    "hero-proof-bar": (
+      <svg viewBox="0 0 80 48" className="w-full h-full"><rect x="6" y="6" width="44" height="6" rx="1" fill="currentColor" opacity=".35"/><rect x="6" y="15" width="30" height="3" rx="1" fill="currentColor" opacity=".18"/><rect x="6" y="20" width="16" height="5" rx="2" fill="currentColor" opacity=".35"/><line x1="6" y1="31" x2="74" y2="31" stroke="currentColor" strokeWidth=".5" opacity=".2"/>{[6,24,42,60].map(x=><g key={x}><rect x={x} y="34" width="10" height="5" rx="1" fill="currentColor" opacity=".3"/><rect x={x} y="41" width="7" height="2" rx="1" fill="currentColor" opacity=".14"/></g>)}</svg>
     ),
 
     // Hero effects (6)

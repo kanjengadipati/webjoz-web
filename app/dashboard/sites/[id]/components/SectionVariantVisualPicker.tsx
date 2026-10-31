@@ -736,6 +736,70 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
     );
   }
 
+  if (variant === "floating-card") {
+    return (
+      <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 relative overflow-hidden">
+        <div className="absolute inset-1.5 rounded-md bg-slate-700/40 border border-white/5" />
+        <div className="absolute left-2 bottom-2 w-1/2 rounded-md bg-slate-100 p-1 flex flex-col gap-0.5">
+          <div className="w-3/4 h-1 rounded-full bg-slate-500" />
+          <div className="w-full h-0.5 rounded-full bg-slate-400/60" />
+          <div className="w-1/2 h-1 rounded bg-primary/80" />
+        </div>
+      </div>
+    );
+  }
+
+  if (variant === "arch-portrait") {
+    return (
+      <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex items-center gap-1.5 overflow-hidden">
+        <div className="w-1/2 space-y-1">
+          <div className="w-3/4 h-1.5 rounded-full bg-white" />
+          <div className="w-full h-1 rounded-full bg-slate-400" />
+          <div className="w-1/2 h-1.5 rounded-full bg-primary/80" />
+        </div>
+        <div className="w-1/2 h-full rounded-[999px_999px_4px_4px] bg-gradient-to-b from-primary/35 to-slate-700 border border-primary/40 relative">
+          <div className="absolute left-0.5 bottom-2 w-5 h-1.5 rounded-full bg-primary" />
+        </div>
+      </div>
+    );
+  }
+
+  if (variant === "collage-mosaic") {
+    return (
+      <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex items-center gap-1.5 overflow-hidden">
+        <div className="w-2/5 space-y-1">
+          <div className="w-4/5 h-1.5 rounded-full bg-white" />
+          <div className="w-full h-1 rounded-full bg-slate-400" />
+          <div className="w-1/2 h-1.5 rounded-full bg-primary/80" />
+        </div>
+        <div className="flex-1 h-full grid grid-cols-2 gap-1">
+          <div className="row-span-2 rounded bg-slate-700/50 border border-white/5" />
+          <div className="rounded bg-primary/25 border border-primary/30" />
+          <div className="rounded bg-slate-800 border border-white/5" />
+        </div>
+      </div>
+    );
+  }
+
+  if (variant === "proof-bar") {
+    return (
+      <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex flex-col justify-between overflow-hidden">
+        <div className="space-y-1">
+          <div className="w-3/4 h-1.5 rounded-full bg-white" />
+          <div className="w-1/2 h-1 rounded-full bg-slate-400/70" />
+        </div>
+        <div className="grid grid-cols-4 gap-1 pt-1 border-t border-white/10">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="flex flex-col items-center gap-0.5">
+              <div className="w-4 h-1.5 rounded-full bg-primary/80" />
+              <div className="w-3 h-0.5 rounded-full bg-slate-400/50" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   if (variant === "whatsapp-direct") {
     return (
       <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex flex-col items-center justify-center gap-1 overflow-hidden">

@@ -2222,6 +2222,10 @@ export interface Translations {
       heroPortraitShowcase: string;
       heroWorkPreviewStrip: string;
       heroChronologyBadge: string;
+      heroFloatingCard: string;
+      heroArchPortrait: string;
+      heroCollageMosaic: string;
+      heroProofBar: string;
       variantProductTable: string;
       variantSpotlight: string;
       variantMenuCarousel: string;
@@ -5047,6 +5051,10 @@ export const translations: Record<Locale, Translations> = {
         heroPortraitShowcase: "Hero: Showcase Potret",
         heroWorkPreviewStrip: "Hero: Strip Karya Unggulan",
         heroChronologyBadge: "Hero: Badge Kronologi",
+        heroFloatingCard: "Hero: Kartu Melayang",
+        heroArchPortrait: "Hero: Bingkai Lengkung",
+        heroCollageMosaic: "Hero: Kolase Mosaik",
+        heroProofBar: "Hero: Bukti Angka",
         variantProductTable: "Tabel Spesifikasi",
         variantSpotlight: "Sorotan Produk",
         variantMenuCarousel: "Carousel Horizontal",
@@ -7945,6 +7953,10 @@ export const translations: Record<Locale, Translations> = {
         heroPortraitShowcase: "Hero: Portrait Showcase",
         heroWorkPreviewStrip: "Hero: Featured Work Strip",
         heroChronologyBadge: "Hero: Chronology Badge",
+        heroFloatingCard: "Hero: Floating Card",
+        heroArchPortrait: "Hero: Arch Portrait",
+        heroCollageMosaic: "Hero: Collage Mosaic",
+        heroProofBar: "Hero: Proof Bar",
         variantProductTable: "Spec Table",
         variantSpotlight: "Product Spotlight",
         variantMenuCarousel: "Horizontal Carousel",

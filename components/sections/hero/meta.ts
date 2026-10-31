@@ -43,6 +43,10 @@ export const HERO_VARIANTS = [
   { value: "portrait-showcase", label: "Showcase Potret", labelKey: "heroPortraitShowcase", group: "Portofolio & Personal", description: "Potret vertikal elegan dengan ringkasan peran profesional dan kontak cepat." },
   { value: "work-preview-strip", label: "Strip Karya Unggulan", labelKey: "heroWorkPreviewStrip", group: "Portofolio & Personal", description: "Headline ringkas dengan deretan cuplikan thumbnail proyek langsung di hero." },
   { value: "chronology-badge", label: "Badge Kronologi", labelKey: "heroChronologyBadge", group: "Portofolio & Personal", description: "Hero dengan penanda milestone tahunan atau rekam jejak karier." },
+  { value: "floating-card", label: "Kartu Melayang", labelKey: "heroFloatingCard", group: "Visual Foto", description: "Foto besar dengan kartu teks melayang menimpa foto; rapi dan meyakinkan." },
+  { value: "arch-portrait", label: "Bingkai Lengkung", labelKey: "heroArchPortrait", group: "Editorial", description: "Foto berbingkai lengkung dengan stempel badge; kesan hangat dan elegan." },
+  { value: "collage-mosaic", label: "Kolase Mosaik", labelKey: "heroCollageMosaic", group: "Visual Foto", description: "Tiga foto asimetris di samping headline; cocok untuk bisnis visual." },
+  { value: "proof-bar", label: "Bukti Angka", labelKey: "heroProofBar", group: "Dasar", description: "Headline tegas dengan baris angka pencapaian dan jam buka." },
 ] as const satisfies readonly HeroVariantMeta[];
 
 export type HeroStyle = (typeof HERO_VARIANTS)[number]["value"];

@@ -100,6 +100,7 @@ export default function SectionShowcasePage() {
   const [selectedSection, setSelectedSection] = useState<string>("hero");
   const [selectedVariant, setSelectedVariant] = useState<string>("");
   const [displayMode, setDisplayMode] = useState<"all" | "single">("all");
+  const [heroZeroState, setHeroZeroState] = useState<boolean>(false);
   const [viewport, setViewport] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const [activePresetId, setActivePresetId] = useState<string>("modern-tech");
   const [currentThemeMode, setCurrentThemeMode] = useState<"light" | "dark">("light");
@@ -411,6 +412,23 @@ export default function SectionShowcasePage() {
               </button>
             </div>
 
+            {/* Zero-state Toggle (hero only) */}
+            {selectedSection === "hero" && (
+              <button
+                type="button"
+                onClick={() => setHeroZeroState((prev) => !prev)}
+                className={`flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-lg border transition-all ${
+                  heroZeroState
+                    ? "bg-amber-500/15 border-amber-500/40 text-amber-600 dark:text-amber-400 font-semibold"
+                    : "bg-muted/50 border-border/60 text-muted-foreground hover:text-foreground"
+                }`}
+                title="Render hero dengan data kosong (zero-state)"
+              >
+                <AlertTriangle className="size-3.5" />
+                <span>Zero-state</span>
+              </button>
+            )}
+
             {/* Display Mode Toggle */}
             <div className="flex items-center bg-muted/50 p-0.5 rounded-lg border border-border/60">
               <button
@@ -683,6 +701,7 @@ export default function SectionShowcasePage() {
                       viewportClass={viewportWidthClass}
                       copiedVariant={copiedVariant}
                       isHidden={isHidden}
+                      zeroState={selectedSection === "hero" && heroZeroState}
                       onCopyVariant={handleCopyVariant}
                       onToggleHide={() => handleToggleVariantVisibility(selectedSection, v.value)}
                       onFocusSingle={() => {
@@ -731,6 +750,7 @@ export default function SectionShowcasePage() {
                     viewportClass={viewportWidthClass}
                     copiedVariant={copiedVariant}
                     isHidden={currentSectionHiddenSet.has(selectedVariant)}
+                    zeroState={selectedSection === "hero" && heroZeroState}
                     onCopyVariant={handleCopyVariant}
                     onToggleHide={() => handleToggleVariantVisibility(selectedSection, selectedVariant)}
                     isSingleFocus={true}
@@ -949,6 +969,7 @@ export default function SectionShowcasePage() {
                             sectionKey={fullscreenSection}
                             variantKey={v.value}
                             designToken={variantToken}
+                            zeroState={fullscreenSection === "hero" && heroZeroState}
                           />
                         </div>
                       </div>
@@ -974,6 +995,7 @@ interface VariantPreviewCardProps {
   viewportClass: string;
   copiedVariant: string | null;
   isHidden: boolean;
+  zeroState?: boolean;
   onCopyVariant: (val: string) => void;
   onToggleHide: () => void;
   onFocusSingle?: () => void;
@@ -990,6 +1012,7 @@ function VariantPreviewCard({
   viewportClass,
   copiedVariant,
   isHidden,
+  zeroState,
   onCopyVariant,
   onToggleHide,
   onFocusSingle,
@@ -1060,6 +1083,10 @@ function VariantPreviewCard({
               {isHidden ? (
                 <span className="px-2 py-0.5 rounded-full bg-destructive/10 text-destructive border border-destructive/25 text-[10px] font-semibold flex items-center gap-1 shadow-2xs">
                   <EyeOff className="size-3" /> Disembunyikan
+                </span>
+              ) : zeroState ? (
+                <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/25 text-[10px] font-semibold flex items-center gap-1 shadow-2xs">
+                  <AlertTriangle className="size-3" /> Zero-state
                 </span>
               ) : (
                 <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 text-[10px] font-semibold flex items-center gap-1 shadow-2xs">
@@ -1192,6 +1219,7 @@ function VariantPreviewCard({
               sectionKey={sectionKey}
               variantKey={variant.value}
               designToken={sectionDesignToken}
+              zeroState={zeroState}
             />
           </div>
         </div>
@@ -1205,10 +1233,12 @@ function RenderSectionComponent({
   sectionKey,
   variantKey,
   designToken,
+  zeroState = false,
 }: {
   sectionKey: string;
   variantKey: string;
   designToken: DesignToken;
+  zeroState?: boolean;
 }) {
   const d = MOCK_SHOWCASE_DATA;
 
@@ -1216,7 +1246,7 @@ function RenderSectionComponent({
     case "hero":
       return (
         <HeroSection
-          hero={d.hero as any}
+          hero={(zeroState ? {} : d.hero) as any}
           design_token={designToken}
           language="id"
           isEditorMode={false}
