@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import type { ComponentType } from "react";
+import { MotionConfig } from "motion/react";
 import type { HeroVariantProps } from "./types";
 import type { HeroStyle } from "./meta";
 import { getHeroStyle } from "./meta";
@@ -84,22 +85,24 @@ export default function HeroSection({
   const heroStyle = getHeroStyle(design_token) ?? "centered";
   const Renderer = (variants as Record<string, ComponentType<HeroVariantProps>>)[heroStyle] ?? HeroCentered;
   return (
-    <div style={{ containerType: "inline-size", width: "100%" }}>
-      <Renderer
-        hero={hero}
-        contact={contact}
-        onSubmitLead={onSubmitLead}
-        leadSubmitting={leadSubmitting}
-        leadSuccess={leadSuccess}
-        leadError={leadError}
-        design_token={design_token}
-        language={language}
-        onUpdateField={onUpdateField}
-        isEditorMode={isEditorMode}
-        isSelected={isSelected}
-        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-        onEditingStateChange={onEditingStateChange}
-      />
-    </div>
+    <MotionConfig reducedMotion="user">
+      <div style={{ containerType: "inline-size", width: "100%" }}>
+        <Renderer
+          hero={hero}
+          contact={contact}
+          onSubmitLead={onSubmitLead}
+          leadSubmitting={leadSubmitting}
+          leadSuccess={leadSuccess}
+          leadError={leadError}
+          design_token={design_token}
+          language={language}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+        />
+      </div>
+    </MotionConfig>
   );
 }
