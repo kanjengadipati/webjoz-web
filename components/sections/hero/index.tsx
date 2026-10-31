@@ -19,6 +19,10 @@ import HeroPersonalBillboard from "./personal-billboard";
 import HeroPortraitShowcase from "./portrait-showcase";
 import HeroWorkPreviewStrip from "./work-preview-strip";
 import HeroChronologyBadge from "./chronology-badge";
+import HeroFloatingCard from "./floating-card";
+import HeroArchPortrait from "./arch-portrait";
+import HeroCollageMosaic from "./collage-mosaic";
+import HeroProofBar from "./proof-bar";
 import HeroImageCarousel from "./image-carousel";
 import HeroCarouselSplit from "./carousel-split";
 import HeroCarouselFilmstrip from "./carousel-filmstrip";
@@ -47,6 +51,11 @@ const variants: Record<HeroStyle | "carousel", ComponentType<HeroVariantProps>> 
   "portrait-showcase": HeroPortraitShowcase,
   "work-preview-strip": HeroWorkPreviewStrip,
   "chronology-badge": HeroChronologyBadge,
+  // Tier 1 additions (no new fields)
+  "floating-card": HeroFloatingCard,
+  "arch-portrait": HeroArchPortrait,
+  "collage-mosaic": HeroCollageMosaic,
+  "proof-bar": HeroProofBar,
 };
 
 export default function HeroSection({

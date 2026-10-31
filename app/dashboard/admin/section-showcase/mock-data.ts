@@ -193,12 +193,15 @@ export const MOCK_SHOWCASE_DATA = {
   },
   hero: {
     badge: "Solusi Terpercaya 2026",
+    badge_text: "Sejak 2018",
+    eyebrow: "Dipercaya 500+ klien",
     headline: "Bangun Kehadiran Digital Terbaik untuk Bisnis Anda",
     subheadline: "Platform pembuatan website cerdas, cepat, dan teroptimasi untuk konversi tinggi dengan desain estetis modern.",
     cta_text: "Mulai Sekarang",
     cta_url: "#pricing",
     secondary_cta_text: "Pelajari Lebih Lanjut",
     secondary_cta_url: "#about",
+    opening_hours: "Senin–Sabtu, 08.00–17.00",
     image_url: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&auto=format&fit=crop&q=80",
     portrait_image_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80",
     images: [
