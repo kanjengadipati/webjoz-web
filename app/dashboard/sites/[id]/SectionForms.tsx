@@ -1088,25 +1088,57 @@ export default function SectionForms({
             <FileUpload label="" value={content.hero.image_url || ""} onChange={(val) => updateField("hero", "image_url", val)} placeholder="https://..." maxWidth={1600} maxHeight={1200} quality={0.8} previewSize="lg" />
           </div>
           )}
-          {/* Gambar carousel / kolase (hero.images) — satu URL per baris */}
+          {/* Gambar carousel / kolase (hero.images) */}
           {showIfVariant(HERO_IMAGES_ARRAY_VARIANTS) && (
-          <div className="space-y-1">
+          <div className="space-y-2">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>{locale === "en" ? "Carousel Images (one URL per line)" : "Gambar Carousel (satu URL per baris)"}</span>
+              <span>{locale === "en" ? "Carousel Images" : "Gambar Carousel"}</span>
               {renderFieldActions("hero", "images")}
             </label>
-            <textarea
-              id="field-hero.images"
-              rows={4}
-              value={(content.hero?.images || []).join("\n")}
-              onChange={(e) => updateField("hero", "images", e.target.value.split(/\n/).map((s) => s.trim()).filter(Boolean))}
-              placeholder={"https://.../slide-1.jpg\nhttps://.../slide-2.jpg"}
-              className={`${SIDEBAR_FIELD_CLASS} resize-none`}
-            />
+            {(content.hero?.images || []).map((url: string, idx: number) => (
+              <div key={idx} className="flex items-start gap-2">
+                <div className="flex-1">
+                  <FileUpload
+                    label=""
+                    value={url || ""}
+                    onChange={(val) => {
+                      const next = [...(content.hero?.images || [])];
+                      next[idx] = val;
+                      updateField("hero", "images", next);
+                    }}
+                    placeholder="https://..."
+                    maxWidth={1600}
+                    maxHeight={1200}
+                    quality={0.8}
+                    previewSize="md"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const next = [...(content.hero?.images || [])];
+                    next.splice(idx, 1);
+                    updateField("hero", "images", next);
+                  }}
+                  className="mt-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border text-sidebar-muted-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground"
+                  title={locale === "en" ? "Remove image" : "Hapus gambar"}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => updateField("hero", "images", [...(content.hero?.images || []), ""])}
+              className="flex w-full items-center justify-center gap-1.5 rounded-md border border-dashed border-border px-3 py-2 text-[11px] font-semibold text-sidebar-muted-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              {locale === "en" ? "Add image" : "Tambah gambar"}
+            </button>
             <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">
               {locale === "en"
-                ? "Additional slide images for carousel/collage variants. The first image can also be set in \\u201CHero Image\\u201D above."
-                : "Gambar slide tambahan untuk varian carousel/kolase. Gambar pertama juga bisa diatur di \\u201CGambar Hero\\u201D di atas."}
+                ? "Slide images for carousel/collage variants. The first image can also be set in \u201CHero Image\u201D above."
+                : "Gambar slide untuk varian carousel/kolase. Gambar pertama juga bisa diatur di \u201CGambar Hero\u201D di atas."}
             </p>
           </div>
           )}
