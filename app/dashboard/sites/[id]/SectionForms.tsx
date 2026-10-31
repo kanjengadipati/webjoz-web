@@ -652,6 +652,7 @@ export default function SectionForms({
   const HERO_BADGE_VARIANTS = ["arch-portrait","bento-grid","image-carousel","carousel-split","carousel-filmstrip","minimalist-elegant","neo-brutalist","tech-saas"];
   const HERO_SECONDARY_VARIANTS = ["bento-grid","carousel-filmstrip","carousel-split","full-bleed","image-carousel","minimalist-elegant","natural-organic","neo-brutalist","personal-billboard","portrait-showcase","split-editorial","tech-saas","video-bg","work-preview-strip","booking-form"];
   const HERO_STATS_VARIANTS = ["bento-grid","chronology-badge","personal-billboard","portrait-showcase","proof-bar","split-editorial","work-preview-strip"];
+  const HERO_IMAGES_ARRAY_VARIANTS = ["image-carousel","carousel-split","carousel-filmstrip","collage-mosaic"];
   const HERO_DASHBOARD_WIDGET_VARIANTS = ["tech-saas"];
 
   const handleAiText = async (section: string, fieldKey: string, prompt: string, label: string) => {
@@ -1084,6 +1085,28 @@ export default function SectionForms({
  />
             </label>
             <FileUpload label="" value={content.hero.image_url || ""} onChange={(val) => updateField("hero", "image_url", val)} placeholder="https://..." maxWidth={1600} maxHeight={1200} quality={0.8} previewSize="lg" />
+          </div>
+          )}
+          {/* Gambar carousel / kolase (hero.images) — satu URL per baris */}
+          {showIfVariant(HERO_IMAGES_ARRAY_VARIANTS) && (
+          <div className="space-y-1">
+            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
+              <span>{locale === "en" ? "Carousel Images (one URL per line)" : "Gambar Carousel (satu URL per baris)"}</span>
+              {renderFieldActions("hero", "images")}
+            </label>
+            <textarea
+              id="field-hero.images"
+              rows={4}
+              value={(content.hero?.images || []).join("\n")}
+              onChange={(e) => updateField("hero", "images", e.target.value.split(/\n/).map((s) => s.trim()).filter(Boolean))}
+              placeholder={"https://.../slide-1.jpg\nhttps://.../slide-2.jpg"}
+              className={`${SIDEBAR_FIELD_CLASS} resize-none`}
+            />
+            <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">
+              {locale === "en"
+                ? "Additional slide images for carousel/collage variants. The first image can also be set in \\u201CHero Image\\u201D above."
+                : "Gambar slide tambahan untuk varian carousel/kolase. Gambar pertama juga bisa diatur di \\u201CGambar Hero\\u201D di atas."}
+            </p>
           </div>
           )}
           {/* Video background (hero varian video-bg) — URL langsung, bukan upload */}
