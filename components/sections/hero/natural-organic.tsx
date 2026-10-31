@@ -347,6 +347,7 @@ export default function HeroNaturalOrganic({
             <div style={{ position: "absolute", bottom: 8, right: 8, zIndex: 20 }}>
               <PhotoCredit
                   credit={h.image_credit}
+              src={h.image_url}
                   language={language}
                   section="hero"
                   fieldKey="image_credit.name"

@@ -47,6 +47,7 @@ export default function HeroFloatingCard({
           />
           <PhotoCredit
             credit={h.image_credit}
+              src={h.image_url}
             language={language}
             section="hero"
             fieldKey="image_credit.name"

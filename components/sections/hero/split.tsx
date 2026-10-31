@@ -50,6 +50,7 @@ export default function HeroSplit({ hero, language, onUpdateField, isEditorMode,
               <div style={{ position: "absolute", bottom: 12, right: 12, zIndex: 20 }}>
                 <PhotoCredit
                   credit={hero.image_credit}
+              src={hero.image_url}
                   language={language}
                   section="hero"
                   fieldKey="image_credit.name"
