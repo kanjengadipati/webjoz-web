@@ -8,6 +8,7 @@ import LocationPicker from "@/components/location-picker";
 import LocationMapPreview from "@/components/location-map-preview";
 import { GoogleSnippetPreview } from "@/components/google-snippet-preview";
 import { isPlaceholderValue, getAiSuggestions } from "./editor-utils";
+import { getHeroStyle, getHeroImageNeed } from "@/components/sections/hero/meta";
 import { request } from "@/lib/api/client";
 import { tenantHost } from "@/lib/site-config";
 import { getEnabledMapTiles } from "@/lib/design-assets-config";
@@ -639,6 +640,9 @@ export default function SectionForms({
   const businessType = content?.header?.brand_name ? "" : "";
   // Extract business type from seo title or brand context as best-effort
   const bType = content?.seo?.title?.split("-")?.[1]?.trim() || content?.contact?.address || "";
+  const heroStyle = getHeroStyle(designToken);
+  const heroNeedsImage = getHeroImageNeed(heroStyle) !== "none";
+  const heroIsVideo = heroStyle === "video-bg";
 
   const handleAiText = async (section: string, fieldKey: string, prompt: string, label: string) => {
     if (!token || !activeTenantId || !siteId) return;
@@ -1060,6 +1064,7 @@ export default function SectionForms({
       {/* HERO FORM */}
       {activeTab === "hero" && (
         <div className="space-y-3">
+          {heroNeedsImage && (
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span className="flex items-center gap-1">
@@ -1070,7 +1075,9 @@ export default function SectionForms({
             </label>
             <FileUpload label="" value={content.hero.image_url || ""} onChange={(val) => updateField("hero", "image_url", val)} placeholder="https://..." maxWidth={1600} maxHeight={1200} quality={0.8} previewSize="lg" />
           </div>
+          )}
           {/* Video background (hero varian video-bg) — URL langsung, bukan upload */}
+          {heroIsVideo && (
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>URL Video Hero <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
@@ -1088,6 +1095,7 @@ export default function SectionForms({
               URL langsung video (.mp4 / .webm) untuk varian &quot;Video Latar&quot;. Jika kosong atau tidak valid, hero memakai gambar di atas sebagai poster.
             </p>
           </div>
+          )}
           {/* Eyebrow label (semua template, opsional) */}
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
