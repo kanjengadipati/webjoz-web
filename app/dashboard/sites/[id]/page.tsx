@@ -590,16 +590,20 @@ export default function SiteEditorPage() {
     return () => document.removeEventListener("pointerdown", handlePointerDown);
   }, [sectionDropdownOpen]);
 
-  // Cooldown ref: setelah user klik section, tahan scrollspy selama 1.2 detik
-  // agar animasi scroll selesai sebelum scrollspy boleh override activeTab.
-  const scrollspyFrozenUntilRef = useRef<number>(0);
+  // Flag: true saat programmatic scroll sedang berjalan — scrollspy tidak boleh override.
+  // Di-clear 150ms setelah scroll event terakhir (scroll berhenti = idle).
+  const programmaticScrollRef = useRef(false);
+  const programmaticScrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const selectSection = useCallback((section: string, scrollToPreview = true) => {
     shouldScrollToActiveRef.current = scrollToPreview;
     activeTabRef.current = section;
     setActiveTab(section);
-    // Bekukan scrollspy selama animasi scroll preview berlangsung
-    if (scrollToPreview) scrollspyFrozenUntilRef.current = Date.now() + 1200;
+    if (scrollToPreview) {
+      // Bekukan scrollspy sampai scroll benar-benar berhenti
+      programmaticScrollRef.current = true;
+      clearTimeout(programmaticScrollTimerRef.current ?? undefined);
+    }
   }, []);
 
   // Scroll preview to active section
@@ -631,8 +635,8 @@ export default function SiteEditorPage() {
     let frame = 0;
     const syncActiveSection = () => {
       frame = 0;
-      // Jangan override activeTab jika user baru saja klik section (cooldown)
-      if (Date.now() < scrollspyFrozenUntilRef.current) return;
+      // Jangan override activeTab saat programmatic scroll masih berjalan
+      if (programmaticScrollRef.current) return;
       const containerRect = containerEl.getBoundingClientRect();
       let nextSection = activeTabRef.current;
       let bestTop = Number.NEGATIVE_INFINITY;
@@ -670,13 +674,23 @@ export default function SiteEditorPage() {
     const handleScroll = () => {
       if (frame) return;
       frame = requestAnimationFrame(syncActiveSection);
+      // Jika ini scroll dari programmatic, perpanjang lock; clear setelah 150ms idle
+      if (programmaticScrollRef.current) {
+        clearTimeout(programmaticScrollTimerRef.current ?? undefined);
+        programmaticScrollTimerRef.current = setTimeout(() => {
+          programmaticScrollRef.current = false;
+          // Jalankan satu kali sync setelah scroll benar-benar berhenti
+          syncActiveSection();
+        }, 150);
+      }
     };
 
     containerEl.addEventListener("scroll", handleScroll, { passive: true });
-    // Run once on mount or device change
+    // Run once on mount or device change (tidak perlu freeze check di sini)
     syncActiveSection();
     return () => {
       if (frame) cancelAnimationFrame(frame);
+      clearTimeout(programmaticScrollTimerRef.current ?? undefined);
     };
   }, [device, pendingDiff]);
 
