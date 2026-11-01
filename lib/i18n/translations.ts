@@ -2332,6 +2332,12 @@ export interface Translations {
       hideSection: string;
       hidden: string;
       hiddenOnSite: string;
+      hiddenEmpty: string;
+      hiddenEmptyHint: string;
+      showAndFill: string;
+      addToPage: string;
+      statusEmpty: string;
+      statusNotInPlan: string;
       showPageSections: string;
       expandEditArea: string;
       variantOptions: string;
@@ -5169,6 +5175,12 @@ export const translations: Record<Locale, Translations> = {
         hideSection: "Sembunyikan section",
         hidden: "Tersembunyi",
         hiddenOnSite: "Disembunyikan, tidak tampil di situs",
+        hiddenEmpty: "Kosong, belum ada konten",
+        hiddenEmptyHint: "Disembunyikan lagi saat dimuat ulang bila masih kosong",
+        showAndFill: "Tampilkan dan isi",
+        addToPage: "Tambahkan ke halaman",
+        statusEmpty: "Kosong",
+        statusNotInPlan: "Tidak dipilih AI",
         showPageSections: "Tampilkan Bagian Halaman",
         expandEditArea: "Perluas area edit",
         variantOptions: "Variasi Tampilan",
@@ -8079,6 +8091,12 @@ export const translations: Record<Locale, Translations> = {
         hideSection: "Hide section",
         hidden: "Hidden",
         hiddenOnSite: "Hidden, not shown on your site",
+        hiddenEmpty: "Empty, no content yet",
+        hiddenEmptyHint: "Hidden again on reload if still empty",
+        showAndFill: "Show and fill in",
+        addToPage: "Add to page",
+        statusEmpty: "Empty",
+        statusNotInPlan: "Not chosen by AI",
         showPageSections: "Show page sections",
         expandEditArea: "Expand edit area",
         variantOptions: "Layout Variants",

@@ -3,12 +3,14 @@
 import React, { createContext, useContext, useMemo } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import type { SectionStatus } from "@/lib/section-status";
 
 type VisibilityCtx = {
   enabled: boolean;      // false saat pendingDiff aktif
   hideable: string[];    // section yang boleh disembunyikan (BODY_SECTION_KEYS)
   hidden: string[];      // design_token.layout.hidden_sections
   toggle: (key: string) => void;
+  statusOf: (key: string) => SectionStatus;
 };
 
 const SectionVisibilityContext = createContext<VisibilityCtx | null>(null);
@@ -18,17 +20,19 @@ export function SectionVisibilityProvider({
   hideable,
   hidden,
   onToggle,
+  statusOf,
   children,
 }: {
   enabled: boolean;
   hideable: string[];
   hidden: string[];
   onToggle: (key: string) => void;
+  statusOf: (key: string) => SectionStatus;
   children: React.ReactNode;
 }) {
   const value = useMemo<VisibilityCtx>(
-    () => ({ enabled, hideable, hidden, toggle: onToggle }),
-    [enabled, hideable, hidden, onToggle],
+    () => ({ enabled, hideable, hidden, toggle: onToggle, statusOf }),
+    [enabled, hideable, hidden, onToggle, statusOf],
   );
   return (
     <SectionVisibilityContext.Provider value={value}>
@@ -41,8 +45,9 @@ export function SectionVisibilityProvider({
 export function useSectionVisibility(section: string) {
   const ctx = useContext(SectionVisibilityContext);
   const hideable = !!ctx?.enabled && ctx.hideable.includes(section);
-  const isHidden = !!ctx && ctx.hideable.includes(section) && ctx.hidden.includes(section);
-  return { hideable, isHidden, toggle: () => ctx?.toggle(section) };
+  const status: SectionStatus = ctx?.statusOf(section) ?? "visible";
+  const isHidden = status === "hidden-user" || status === "hidden-empty";
+  return { hideable, isHidden, status, toggle: () => ctx?.toggle(section) };
 }
 
 /** Segmen tombol mata di dalam pill label section. */
@@ -79,25 +84,39 @@ export function HiddenSectionNotice({
   section: string;
   className?: string;
 }) {
-  const { toggle } = useSectionVisibility(section);
+  const { status, toggle } = useSectionVisibility(section);
   const { t } = useI18n();
+  const isEmpty = status === "hidden-empty";
+
+  const text = isEmpty
+    ? (t("dashboard.sitesEditor.hiddenEmpty") || "Kosong, belum ada konten")
+    : (t("dashboard.sitesEditor.hiddenOnSite") || "Disembunyikan, tidak tampil di situs");
+
+  const action = isEmpty
+    ? (t("dashboard.sitesEditor.showAndFill") || "Tampilkan dan isi")
+    : (t("dashboard.sitesEditor.show") || "Tampilkan");
+
   return (
     <div
       data-section-ui
-      className={`pointer-events-auto absolute left-1/2 z-[72] flex -translate-x-1/2 items-center gap-2 rounded-full border border-rose-400/50 bg-slate-950/95 px-3 py-1.5 text-[11px] font-semibold text-rose-200 shadow-xl ${className}`}
+      className={`pointer-events-auto absolute left-1/2 z-[72] flex flex-col -translate-x-1/2 items-center gap-1.5 rounded-2xl border border-rose-400/50 bg-slate-950/95 px-4 py-2.5 text-[11px] font-semibold text-rose-200 shadow-xl ${className}`}
     >
-      <EyeOff className="h-3 w-3 shrink-0" />
-      <span>
-        {t("dashboard.sitesEditor.hiddenOnSite") ||
-          "Disembunyikan, tidak tampil di situs"}
-      </span>
-      <button
-        type="button"
-        onClick={(e) => { e.stopPropagation(); toggle(); }}
-        className="rounded-full bg-sky-500/90 px-2 py-0.5 text-[10px] font-bold text-white hover:bg-sky-500"
-      >
-        {t("dashboard.sitesEditor.show") || "Tampilkan"}
-      </button>
+      <div className="flex items-center gap-2">
+        <EyeOff className="h-3 w-3 shrink-0" />
+        <span>{text}</span>
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); toggle(); }}
+          className="rounded-full bg-sky-500/90 px-2 py-0.5 text-[10px] font-bold text-white hover:bg-sky-500"
+        >
+          {action}
+        </button>
+      </div>
+      {isEmpty && (
+        <p className="text-[9px] font-normal text-rose-300/70 max-w-[260px] text-center leading-snug">
+          {t("dashboard.sitesEditor.hiddenEmptyHint") || "Disembunyikan lagi saat dimuat ulang bila masih kosong"}
+        </p>
+      )}
     </div>
   );
 }

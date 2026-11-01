@@ -11,7 +11,7 @@ import {
   Save, Loader2, Zap, Database,
   HelpCircle, AlertCircle,
   Monitor, Smartphone, Tablet, Layout, Globe, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Check, GripVertical, RotateCcw,
-  Eye, EyeOff, Pencil, Send, Rocket, Copy, Sun, Moon, SlidersHorizontal, ExternalLink
+  Eye, EyeOff, Pencil, Send, Rocket, Copy, Sun, Moon, SlidersHorizontal, ExternalLink, Plus
 } from "lucide-react";
 import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import { Button, Card, Dialog, CustomSelect } from "webjoz-ui";
@@ -22,6 +22,7 @@ import { setEditorSiteId, getFeatureMarker, FeatureMarkerIcon } from "@/componen
 import { SectionShortcutContext, type SectionShortcutHandler } from "@/components/templates/editor";
 import { SectionReorderProvider } from "@/components/templates/section-reorder";
 import { SectionVisibilityProvider } from "@/components/templates/section-visibility";
+import { getSectionStatus, addToPlan, type SectionStatus } from "@/lib/section-status";
 import { moveSection } from "@/lib/section-order";
 import {
   stripRegeneratedMarkers,
@@ -986,16 +987,37 @@ export default function SiteEditorPage() {
     if (pendingDiff) return;
     pushGlobalUndo({ force: true });
     const current: string[] = designToken?.layout?.hidden_sections ?? [];
-    const next = current.includes(key)
-      ? current.filter((k) => k !== key)
-      : [...current, key];
+    const showing = current.includes(key);
+    const next = showing ? current.filter((k) => k !== key) : [...current, key];
+    const order = designToken?.layout?.section_order;
+    const nextOrder = showing && Array.isArray(order) && !order.includes(key) ? addToPlan(order, key) : order;
     setDesignToken({
       ...(designToken || {}),
       layout: {
         ...(designToken?.layout || {}),
         hidden_sections: next,
+        ...(nextOrder ? { section_order: nextOrder } : {}),
       },
     });
+  };
+
+  const addSectionToPlan = (key: string) => {
+    if (pendingDiff || !BODY_SECTION_KEYS.includes(key)) return;
+    const order = designToken?.layout?.section_order;
+    if (!Array.isArray(order)) return;
+    pushGlobalUndo({ force: true });
+    setDesignToken({
+      ...(designToken || {}),
+      layout: { ...(designToken?.layout || {}), section_order: addToPlan(order, key) },
+    });
+    selectSection(key, true);
+  };
+
+  // Dari preview: "Tampilkan dan isi" langsung membuka form section bila kosong.
+  const handleToggleFromPreview = (key: string) => {
+    const wasEmpty = getSectionStatus(key, designToken, content) === "hidden-empty";
+    toggleSectionVisibility(key);
+    if (wasEmpty) selectSection(key, true);
   };
 
   const handleAiRegenerateForSection = useCallback(async (section: string, customInstructions?: string) => {
@@ -1699,28 +1721,65 @@ export default function SiteEditorPage() {
                   >
                     <GripVertical className={`h-2.5 w-2.5 shrink-0 ${BODY_SECTION_KEYS.includes(key) ? "text-sidebar-muted-foreground group-hover:text-sidebar-foreground" : "text-sidebar-foreground"}`} />
                     <Icon className={`w-3 h-3 shrink-0 ${activeTab === key ? "text-primary" : "text-sidebar-muted-foreground group-hover:text-sidebar-foreground"}`} />
-                    <span className={`flex-1 text-[11px] truncate ${activeTab === key ? "text-sidebar-foreground font-medium" : hiddenSections.includes(key) ? "line-through text-sidebar-subtle-foreground" : "text-sidebar-muted-foreground group-hover:text-sidebar-foreground"}`}>
-                      {label}
-                    </span>
-                    {key === "seo" && !(activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise") && (
-                      <span className="text-[7px] px-1 py-0.5 bg-primary/30 text-primary rounded font-extrabold uppercase tracking-wider leading-none ml-1">
-                        Pro
-                      </span>
-                    )}
-                    {!["header", "footer", "seo"].includes(key) && (
-                      <div
-                        role="button" tabIndex={0}
-                        onClick={(e) => { e.stopPropagation(); toggleSectionVisibility(key); }}
-                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); toggleSectionVisibility(key); } }}
-                        title={hiddenSections.includes(key) ? t("dashboard.sitesEditor.show") : t("dashboard.sitesEditor.hide")}
-                        className="p-0.5 rounded transition-colors cursor-pointer shrink-0"
-                      >
-                        {hiddenSections.includes(key)
-                          ? <EyeOff className="w-2.5 h-2.5 text-sidebar-muted-foreground" />
-                          : <Eye className="w-2.5 h-2.5 text-sidebar-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                        }
-                      </div>
-                    )}
+                    {(() => {
+                      const sectionStatus: SectionStatus = BODY_SECTION_KEYS.includes(key) ? getSectionStatus(key, designToken, content) : "visible";
+                      const isNotInPlan = sectionStatus === "not-in-plan";
+                      const isHiddenEmpty = sectionStatus === "hidden-empty";
+                      const isHidden = hiddenSections.includes(key);
+                      const STATUS_BADGE: Partial<Record<SectionStatus, { key: string; fallback: string; cls: string }>> = {
+                        "hidden-empty": { key: "dashboard.sitesEditor.statusEmpty", fallback: "Kosong", cls: "bg-amber-500/15 text-amber-500" },
+                        "not-in-plan":  { key: "dashboard.sitesEditor.statusNotInPlan", fallback: "Tidak dipilih AI", cls: "bg-sky-500/15 text-sky-400" },
+                      };
+                      const badge = STATUS_BADGE[sectionStatus];
+                      return (
+                        <>
+                          <span className={`flex-1 text-[11px] truncate ${
+                            activeTab === key ? "text-sidebar-foreground font-medium"
+                            : isHidden ? "line-through text-sidebar-subtle-foreground"
+                            : isNotInPlan ? "italic text-sidebar-subtle-foreground"
+                            : "text-sidebar-muted-foreground group-hover:text-sidebar-foreground"
+                          }`}>
+                            {label}
+                          </span>
+                          {badge && (
+                            <span className={`shrink-0 rounded px-1 py-0.5 text-[8px] font-bold uppercase tracking-wide leading-none ${badge.cls}`}>
+                              {t(badge.key as any) || badge.fallback}
+                            </span>
+                          )}
+                          {key === "seo" && !(activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise") && (
+                            <span className="text-[7px] px-1 py-0.5 bg-primary/30 text-primary rounded font-extrabold uppercase tracking-wider leading-none ml-1">
+                              Pro
+                            </span>
+                          )}
+                          {!["header", "footer", "seo"].includes(key) && (
+                            isNotInPlan ? (
+                              <button
+                                type="button"
+                                onClick={(e) => { e.stopPropagation(); addSectionToPlan(key); }}
+                                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); addSectionToPlan(key); } }}
+                                title={t("dashboard.sitesEditor.addToPage") || "Tambahkan ke halaman"}
+                                className="p-0.5 rounded transition-colors cursor-pointer shrink-0 text-sky-400 hover:text-sky-300"
+                              >
+                                <Plus className="w-2.5 h-2.5" />
+                              </button>
+                            ) : (
+                              <div
+                                role="button" tabIndex={0}
+                                onClick={(e) => { e.stopPropagation(); toggleSectionVisibility(key); }}
+                                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); toggleSectionVisibility(key); } }}
+                                title={isHidden ? t("dashboard.sitesEditor.show") : t("dashboard.sitesEditor.hide")}
+                                className="p-0.5 rounded transition-colors cursor-pointer shrink-0"
+                              >
+                                {isHidden
+                                  ? <EyeOff className="w-2.5 h-2.5 text-sidebar-muted-foreground" />
+                                  : <Eye className="w-2.5 h-2.5 text-sidebar-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                                }
+                              </div>
+                            )
+                          )}
+                        </>
+                      );
+                    })()}
                     <div className="flex items-center gap-1 shrink-0">
                       {["header", "footer", "seo"].includes(key) ? null : (() => {
                         const score = getSectionScore(content, key);
@@ -2011,20 +2070,38 @@ export default function SiteEditorPage() {
                     {t("dashboard.sitesEditor.editLabel", undefined, { label: SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab })}
                   </p>
                   <div className="flex items-center gap-1 shrink-0">
-                    {activeTab !== "seo" && activeTab !== "header" && activeTab !== "footer" && (
-                      <button
-                        type="button"
-                        onClick={() => toggleSectionVisibility(activeTab)}
-                        title={hiddenSections.includes(activeTab) ? t("dashboard.sitesEditor.showSection") : t("dashboard.sitesEditor.hideSection")}
-                        className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold transition-all hover:bg-sidebar-muted cursor-pointer"
-                        style={{ color: hiddenSections.includes(activeTab) ? "#f87171" : "#94a3b8" }}
-                      >
-                        {hiddenSections.includes(activeTab)
-                          ? <><EyeOff className="w-3 h-3" /> {t("dashboard.sitesEditor.hidden")}</>
-                          : <><Eye className="w-3 h-3" /> {t("dashboard.sitesEditor.hide")}</>
-                        }
-                      </button>
-                    )}
+                    {activeTab !== "seo" && activeTab !== "header" && activeTab !== "footer" && (() => {
+                      const activeStatus = getSectionStatus(activeTab, designToken, content);
+                      const isHiddenActive = hiddenSections.includes(activeTab);
+                      if (activeStatus === "not-in-plan") {
+                        return (
+                          <button
+                            type="button"
+                            onClick={() => addSectionToPlan(activeTab)}
+                            title={t("dashboard.sitesEditor.addToPage") || "Tambahkan ke halaman"}
+                            className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold transition-all hover:bg-sidebar-muted cursor-pointer"
+                            style={{ color: "#38bdf8" }}
+                          >
+                            <Plus className="w-3 h-3" />
+                            {t("dashboard.sitesEditor.addToPage") || "Tambahkan"}
+                          </button>
+                        );
+                      }
+                      return (
+                        <button
+                          type="button"
+                          onClick={() => toggleSectionVisibility(activeTab)}
+                          title={isHiddenActive ? t("dashboard.sitesEditor.showSection") : t("dashboard.sitesEditor.hideSection")}
+                          className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold transition-all hover:bg-sidebar-muted cursor-pointer"
+                          style={{ color: isHiddenActive ? "#f87171" : "#94a3b8" }}
+                        >
+                          {isHiddenActive
+                            ? <><EyeOff className="w-3 h-3" /> {activeStatus === "hidden-empty" ? (t("dashboard.sitesEditor.statusEmpty") || "Kosong") : t("dashboard.sitesEditor.hidden")}</>
+                            : <><Eye className="w-3 h-3" /> {t("dashboard.sitesEditor.hide")}</>
+                          }
+                        </button>
+                      );
+                    })()}
                     <button
                       type="button"
                       onClick={() => setSectionNavCollapsed(v => !v)}
@@ -2727,7 +2804,8 @@ export default function SiteEditorPage() {
                 enabled={!pendingDiff}
                 hideable={BODY_SECTION_KEYS}
                 hidden={hiddenSections}
-                onToggle={toggleSectionVisibility}
+                onToggle={handleToggleFromPreview}
+                statusOf={(k) => getSectionStatus(k, designToken, content)}
               >
               <SectionReorderProvider
                 enabled={!pendingDiff}
@@ -2983,17 +3061,36 @@ export default function SiteEditorPage() {
                       <span className="text-[10px] font-semibold text-sidebar-muted-foreground uppercase tracking-wider">
                         {SECTIONS.find(s => s.key === activeTab)?.label ?? activeTab}
                       </span>
-                      <button
-                        type="button"
-                        onClick={() => toggleSectionVisibility(activeTab)}
-                        className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-semibold transition-all hover:bg-sidebar-muted"
-                        style={{ color: hiddenSections.includes(activeTab) ? "#f87171" : "#94a3b8" }}
-                      >
-                        {hiddenSections.includes(activeTab)
-                          ? <><EyeOff className="w-3 h-3" /> {t("dashboard.sitesEditor.hidden")}</>
-                          : <><Eye className="w-3 h-3" /> {t("dashboard.sitesEditor.hide")}</>
+                      {(() => {
+                        const activeStatus = getSectionStatus(activeTab, designToken, content);
+                        const isHiddenActive = hiddenSections.includes(activeTab);
+                        if (activeStatus === "not-in-plan") {
+                          return (
+                            <button
+                              type="button"
+                              onClick={() => addSectionToPlan(activeTab)}
+                              className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-semibold transition-all hover:bg-sidebar-muted"
+                              style={{ color: "#38bdf8" }}
+                            >
+                              <Plus className="w-3 h-3" />
+                              {t("dashboard.sitesEditor.addToPage") || "Tambahkan"}
+                            </button>
+                          );
                         }
-                      </button>
+                        return (
+                          <button
+                            type="button"
+                            onClick={() => toggleSectionVisibility(activeTab)}
+                            className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-semibold transition-all hover:bg-sidebar-muted"
+                            style={{ color: isHiddenActive ? "#f87171" : "#94a3b8" }}
+                          >
+                            {isHiddenActive
+                              ? <><EyeOff className="w-3 h-3" /> {activeStatus === "hidden-empty" ? (t("dashboard.sitesEditor.statusEmpty") || "Kosong") : t("dashboard.sitesEditor.hidden")}</>
+                              : <><Eye className="w-3 h-3" /> {t("dashboard.sitesEditor.hide")}</>
+                            }
+                          </button>
+                        );
+                      })()}
                     </div>
                   )}
 
