@@ -674,6 +674,13 @@ export default function SectionForms({
   const heroIsVideo = heroStyle === "video-bg";
   const [heroImagesOpen, setHeroImagesOpen] = useState<boolean | null>(null);
   const [heroImageOpenIdx, setHeroImageOpenIdx] = useState<number | null>(null);
+
+  // DnD sensors untuk hero slide reorder — harus di level komponen (Rules of Hooks)
+  const heroSensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+  const heroSlideId = (idx: number) => `hero-slide-${idx}`;
   // Optional hero fields are only relevant to a subset of variants.
   // When the selected variant is unknown, keep everything visible (safe fallback).
   const showIfVariant = (variants: string[]) =>
@@ -1146,12 +1153,6 @@ export default function SectionForms({
             const minImages = heroStyle ? (minMap[heroStyle] ?? 1) : 1;
             const showDistinctBadge = distinctCount < minImages;
 
-            // DnD sensors (hero slide reorder)
-            const heroSensors = useSensors(
-              useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-              useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
-            );
-            const heroSlideId = (idx: number) => `hero-slide-${idx}`;
             const handleHeroSlideDragEnd = (e: DragEndEvent) => {
               const { active, over } = e;
               if (!over || active.id === over.id || !updateField) return;
