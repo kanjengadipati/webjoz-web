@@ -103,7 +103,7 @@ export default function TypographyPairingPicker({
               }}
               className="text-sidebar-muted-foreground"
             >
-              Teks deskripsi bisnis Anda...
+              {t("dashboard.sitesEditor.sampleBusinessDesc")}
             </p>
           </div>
         </button>
@@ -159,7 +159,7 @@ export default function TypographyPairingPicker({
                   }}
                   className="text-sidebar-muted-foreground"
                 >
-                  Teks deskripsi bisnis Anda...
+                  {t("dashboard.sitesEditor.sampleBusinessDesc")}
                 </p>
               </div>
             </button>

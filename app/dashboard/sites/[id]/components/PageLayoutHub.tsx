@@ -17,7 +17,8 @@ import {
   Sliders,
 } from "lucide-react";
 import SectionVariantVisualPicker from "./SectionVariantVisualPicker";
-import { SECTION_META } from "../editor-utils";
+import { SECTION_META, getSectionLabel } from "../editor-utils";
+import { useI18n } from "@/lib/i18n/context";
 
 interface PageLayoutHubProps {
   content: any;
@@ -25,7 +26,7 @@ interface PageLayoutHubProps {
   updateSectionVariant: (section: string, value: string) => void;
   getEnabledVariants: (section: string, variants: string[]) => string[];
   onSelectSection?: (section: string) => void;
-  t: any;
+  t?: any;
 }
 
 export default function PageLayoutHub({
@@ -34,8 +35,10 @@ export default function PageLayoutHub({
   updateSectionVariant,
   getEnabledVariants,
   onSelectSection,
-  t,
+  t: tProp,
 }: PageLayoutHubProps) {
+  const { t: i18nT, locale } = useI18n();
+  const t = tProp || i18nT;
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
   // Determine sections present in current site content
@@ -100,7 +103,7 @@ export default function PageLayoutHub({
                 <div className="flex items-center gap-2 min-w-0">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
                   <span className="text-[12px] font-bold text-sidebar-foreground truncate">
-                    {SECTION_META[secKey]?.label || secKey}
+                    {getSectionLabel(secKey, locale) || SECTION_META[secKey]?.label || secKey}
                   </span>
                 </div>
 

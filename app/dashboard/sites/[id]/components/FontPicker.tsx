@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronDown } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 
 export const GOOGLE_FONTS_WHITELIST = [
   "Inter", "Roboto", "Open Sans", "Montserrat", "Lato",
@@ -25,9 +26,12 @@ export default function FontPicker({
   value,
   onChange,
   isSelected = false,
-  placeholder = "Pilih Google Font lainnya...",
-  badgeLabel = "Google Font",
+  placeholder,
+  badgeLabel,
 }: FontPickerProps) {
+  const { t } = useI18n();
+  const effectivePlaceholder = placeholder ?? t("dashboard.sitesEditor.moreGoogleFontsPlaceholder");
+  const effectiveBadgeLabel = badgeLabel ?? t("dashboard.sitesEditor.googleFontBadge");
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -39,7 +43,7 @@ export default function FontPicker({
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const displayLabel = isSelected ? value : placeholder;
+  const displayLabel = isSelected ? value : effectivePlaceholder;
 
   return (
     <div ref={ref} className="relative">
@@ -70,7 +74,7 @@ export default function FontPicker({
         <div className="flex items-center gap-1.5 shrink-0 ml-2">
           {isSelected && (
             <span className="text-[10px] text-primary/80 font-normal">
-              {badgeLabel}
+              {effectiveBadgeLabel}
             </span>
           )}
           <ChevronDown className={`w-3.5 h-3.5 text-sidebar-subtle-foreground transition-transform ${open ? "rotate-180" : ""}`} />

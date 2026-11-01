@@ -100,13 +100,13 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
     const validExts = [".woff2", ".woff", ".ttf", ".otf"];
     const ext = "." + file.name.split(".").pop()?.toLowerCase();
     if (!validExts.includes(ext)) {
-      setUploadError(locale === "id" ? "Format file harus .woff2, .woff, .ttf, atau .otf" : "File must be .woff2, .woff, .ttf, or .otf");
+      setUploadError(t("dashboard.sitesEditor.fontInvalidFormatError"));
       return;
     }
 
     // Maksimal 3MB
     if (file.size > 3 * 1024 * 1024) {
-      setUploadError(locale === "id" ? "Ukuran file font maksimal 3 MB" : "Font file size must be under 3 MB");
+      setUploadError(t("dashboard.sitesEditor.fontFileSizeError"));
       return;
     }
 
@@ -133,14 +133,12 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
       }
 
       setUploadSuccess(
-        locale === "id"
-          ? `Font "${cleanFontName}" berhasil diterapkan!`
-          : `Font "${cleanFontName}" successfully applied!`
+        t("dashboard.sitesEditor.customFontAppliedSuccess", undefined, { name: cleanFontName })
       );
     };
 
     reader.onerror = () => {
-      setUploadError(locale === "id" ? "Gagal membaca file font" : "Failed to read font file");
+      setUploadError(t("dashboard.sitesEditor.fontReadError"));
     };
 
     reader.readAsDataURL(file);
@@ -149,11 +147,7 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
   // Handler Terapkan Font via URL
   const handleApplyUrlFont = () => {
     if (!urlFontFamily.trim() || !urlFontHref.trim()) {
-      setUploadError(
-        locale === "id"
-          ? "Nama font dan URL font wajib diisi"
-          : "Font name and URL are required"
-      );
+      setUploadError(t("dashboard.sitesEditor.fontNameAndUrlRequired"));
       return;
     }
 
@@ -172,9 +166,7 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
     }
 
     setUploadSuccess(
-      locale === "id"
-        ? `Font "${fontName}" dari URL berhasil diterapkan!`
-        : `Font "${fontName}" from URL successfully applied!`
+      t("dashboard.sitesEditor.customFontUrlAppliedSuccess", undefined, { name: fontName })
     );
   };
 
@@ -194,15 +186,13 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
       <div className="flex items-start justify-between">
         <div>
           <span className="text-[10px] font-bold uppercase tracking-wider text-sidebar-subtle-foreground block mb-0.5">
-            {locale === "id" ? "PENGATURAN IDENTITAS" : "WEBSITE SETTINGS"}
+            {t("dashboard.sitesEditor.brandIdentitySettings")}
           </span>
           <h3 className="text-sm font-bold text-sidebar-foreground">
-            {locale === "id" ? "Gaya Brand (Brand style)" : "Brand style"}
+            {t("dashboard.sitesEditor.brandStyle")}
           </h3>
           <p className="text-[11px] text-sidebar-muted-foreground mt-0.5">
-            {locale === "id"
-              ? "Jaga konsistensi font & warna di seluruh halaman"
-              : "Keep your website consistent across every page"}
+            {t("dashboard.sitesEditor.brandStyleSubtitle")}
           </p>
         </div>
         <div className="p-1.5 rounded-lg bg-sidebar-muted text-sidebar-foreground/80 border border-border/50">
@@ -214,17 +204,17 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <label className="text-[11px] font-semibold text-sidebar-foreground block">
-            {locale === "id" ? "Font Judul (Heading font)" : "Heading font"}
+            {t("dashboard.sitesEditor.headingFontLabel")}
           </label>
           {currentHeadingUrl && (
             <span className="inline-flex items-center gap-1 text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-md font-medium">
               <Sparkles className="w-2.5 h-2.5" />
-              Custom Font
+              {t("dashboard.sitesEditor.customFontBadge")}
               <button
                 type="button"
                 onClick={() => handleResetCustomFont("heading")}
                 className="hover:text-red-500 ml-0.5 cursor-pointer"
-                title={locale === "id" ? "Reset ke font bawaan" : "Reset to default"}
+                title={t("dashboard.sitesEditor.resetDefaultFont")}
               >
                 <Trash2 className="w-2.5 h-2.5" />
               </button>
@@ -274,13 +264,13 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
               <div className="flex items-center gap-1.5 shrink-0 ml-2">
                 <span className="inline-flex items-center gap-1 text-[10px] bg-primary/20 text-primary px-1.5 py-0.5 rounded-md font-medium">
                   <Sparkles className="w-2.5 h-2.5" />
-                  Custom Font
+                  {t("dashboard.sitesEditor.customFontBadge")}
                 </span>
                 <button
                   type="button"
                   onClick={() => handleResetCustomFont("heading")}
                   className="hover:text-red-500 text-sidebar-subtle-foreground cursor-pointer p-0.5"
-                  title={locale === "id" ? "Reset ke font bawaan" : "Reset to default"}
+                  title={t("dashboard.sitesEditor.resetDefaultFont")}
                 >
                   <Trash2 className="w-3 h-3" />
                 </button>
@@ -294,8 +284,8 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
               <FontPicker
                 value={currentHeading}
                 isSelected={isHeadingCustom}
-                placeholder={locale === "id" ? "Pilih Google Font lainnya..." : "Choose more Google fonts..."}
-                badgeLabel="Google Font"
+                placeholder={t("dashboard.sitesEditor.moreGoogleFontsPlaceholder")}
+                badgeLabel={t("dashboard.sitesEditor.googleFontBadge")}
                 onChange={(val) => handleSelectHeading(val)}
               />
             </div>
@@ -307,17 +297,17 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <label className="text-[11px] font-semibold text-sidebar-foreground block">
-            {locale === "id" ? "Font Teks Isi (Body font)" : "Body font"}
+            {t("dashboard.sitesEditor.bodyFontLabel")}
           </label>
           {currentBodyUrl && (
             <span className="inline-flex items-center gap-1 text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-md font-medium">
               <Sparkles className="w-2.5 h-2.5" />
-              Custom Font
+              {t("dashboard.sitesEditor.customFontBadge")}
               <button
                 type="button"
                 onClick={() => handleResetCustomFont("body")}
                 className="hover:text-red-500 ml-0.5 cursor-pointer"
-                title={locale === "id" ? "Reset ke font bawaan" : "Reset to default"}
+                title={t("dashboard.sitesEditor.resetDefaultFont")}
               >
                 <Trash2 className="w-2.5 h-2.5" />
               </button>
@@ -367,13 +357,13 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
               <div className="flex items-center gap-1.5 shrink-0 ml-2">
                 <span className="inline-flex items-center gap-1 text-[10px] bg-primary/20 text-primary px-1.5 py-0.5 rounded-md font-medium">
                   <Sparkles className="w-2.5 h-2.5" />
-                  Custom Font
+                  {t("dashboard.sitesEditor.customFontBadge")}
                 </span>
                 <button
                   type="button"
                   onClick={() => handleResetCustomFont("body")}
                   className="hover:text-red-500 text-sidebar-subtle-foreground cursor-pointer p-0.5"
-                  title={locale === "id" ? "Reset ke font bawaan" : "Reset to default"}
+                  title={t("dashboard.sitesEditor.resetDefaultFont")}
                 >
                   <Trash2 className="w-3 h-3" />
                 </button>
@@ -387,8 +377,8 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
               <FontPicker
                 value={currentBody}
                 isSelected={isBodyCustom}
-                placeholder={locale === "id" ? "Pilih Google Font lainnya..." : "Choose more Google fonts..."}
-                badgeLabel="Google Font"
+                placeholder={t("dashboard.sitesEditor.moreGoogleFontsPlaceholder")}
+                badgeLabel={t("dashboard.sitesEditor.googleFontBadge")}
                 onChange={(val) => handleSelectBody(val)}
               />
             </div>
@@ -405,7 +395,7 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
         >
           <span className="flex items-center gap-1.5">
             <Upload className="w-3.5 h-3.5" />
-            {locale === "id" ? "Upload font sendiri atau pakai URL font" : "Upload font or use font URL"}
+            {t("dashboard.sitesEditor.customFontDrawerButton")}
           </span>
           <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showCustomFontPanel ? "rotate-180" : ""}`} />
         </button>
@@ -415,7 +405,7 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
             {/* Target Font: Heading vs Body */}
             <div>
               <label className="text-[10px] font-semibold text-sidebar-muted-foreground uppercase tracking-wide block mb-1">
-                {locale === "id" ? "Terapkan Ke:" : "Apply To:"}
+                {t("dashboard.sitesEditor.applyFontTo")}
               </label>
               <div className="grid grid-cols-2 gap-1.5 p-0.5 rounded-lg border border-border bg-sidebar-muted/50 text-xs">
                 <button
@@ -425,7 +415,7 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
                     fontTarget === "heading" ? "bg-sidebar text-foreground shadow-2xs font-bold" : "text-sidebar-muted-foreground"
                   }`}
                 >
-                  {locale === "id" ? "Font Judul (Heading)" : "Heading Font"}
+                  {t("dashboard.sitesEditor.fontTargetHeading")}
                 </button>
                 <button
                   type="button"
@@ -434,7 +424,7 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
                     fontTarget === "body" ? "bg-sidebar text-foreground shadow-2xs font-bold" : "text-sidebar-muted-foreground"
                   }`}
                 >
-                  {locale === "id" ? "Font Teks (Body)" : "Body Font"}
+                  {t("dashboard.sitesEditor.fontTargetBody")}
                 </button>
               </div>
             </div>
@@ -451,7 +441,7 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
                 }`}
               >
                 <Upload className="w-3 h-3 inline mr-1" />
-                {locale === "id" ? "Upload File (.woff2/.ttf)" : "Upload File"}
+                {t("dashboard.sitesEditor.uploadFontTab")}
               </button>
               <button
                 type="button"
@@ -463,7 +453,7 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
                 }`}
               >
                 <Link2 className="w-3 h-3 inline mr-1" />
-                {locale === "id" ? "Input URL Font" : "Font URL"}
+                {t("dashboard.sitesEditor.urlFontTab")}
               </button>
             </div>
 
@@ -484,10 +474,10 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
                 >
                   <Upload className="w-5 h-5 text-sidebar-muted-foreground" />
                   <span className="text-xs font-semibold text-sidebar-foreground">
-                    {locale === "id" ? "Pilih file font dari komputer" : "Select font file from computer"}
+                    {t("dashboard.sitesEditor.selectFontFileComputer")}
                   </span>
                   <span className="text-[10px] text-sidebar-subtle-foreground">
-                    Format: .woff2 (rekomendasi), .ttf, .otf (Maks. 3 MB)
+                    {t("dashboard.sitesEditor.fontFileFormatHint")}
                   </span>
                 </button>
               </div>
@@ -498,11 +488,11 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
               <div className="space-y-2 text-xs">
                 <div>
                   <label className="text-[10px] font-semibold text-sidebar-muted-foreground block mb-0.5">
-                    {locale === "id" ? "Nama Font Family:" : "Font Family Name:"}
+                    {t("dashboard.sitesEditor.fontFamilyNameLabel")}
                   </label>
                   <input
                     type="text"
-                    placeholder="mis. Clash Display / Helvetica"
+                    placeholder={t("dashboard.sitesEditor.fontFamilyNamePlaceholder")}
                     value={urlFontFamily}
                     onChange={(e) => setUrlFontFamily(e.target.value)}
                     className="w-full px-2.5 py-1.5 rounded-lg border border-border bg-sidebar-input text-sidebar-foreground text-xs focus:outline-hidden focus:border-primary"
@@ -511,11 +501,11 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
 
                 <div>
                   <label className="text-[10px] font-semibold text-sidebar-muted-foreground block mb-0.5">
-                    {locale === "id" ? "URL Font (Stylesheet CSS / Woff2):" : "Font URL (CSS / Woff2):"}
+                    {t("dashboard.sitesEditor.fontUrlLabel")}
                   </label>
                   <input
                     type="url"
-                    placeholder="https://api.fontshare.com/v2/css?f[]=... atau .woff2"
+                    placeholder={t("dashboard.sitesEditor.fontUrlPlaceholder")}
                     value={urlFontHref}
                     onChange={(e) => setUrlFontHref(e.target.value)}
                     className="w-full px-2.5 py-1.5 rounded-lg border border-border bg-sidebar-input text-sidebar-foreground text-xs focus:outline-hidden focus:border-primary font-mono text-[11px]"
@@ -530,7 +520,7 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
                   className="w-full mt-1 text-xs"
                 >
                   <Link2 className="w-3.5 h-3.5 mr-1" />
-                  {locale === "id" ? "Terapkan Font URL" : "Apply Font URL"}
+                  {t("dashboard.sitesEditor.applyFontUrlButton")}
                 </Button>
               </div>
             )}
@@ -556,7 +546,7 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <label className="text-[11px] font-semibold text-sidebar-foreground block">
-            {locale === "id" ? "Warna Aksen Brand (Accent color)" : "Brand accent color"}
+            {t("dashboard.sitesEditor.brandAccentLabel")}
           </label>
           <span className="text-[10px] font-mono text-sidebar-subtle-foreground uppercase">{currentAccent}</span>
         </div>
@@ -593,7 +583,7 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
                   : "border-border hover:border-primary/50 text-sidebar-muted-foreground hover:text-sidebar-foreground"
               }`}
               style={isAccentCustom ? { backgroundColor: currentAccent } : {}}
-              title={locale === "id" ? "Pilih warna kustom..." : "Pick custom color..."}
+              title={t("dashboard.sitesEditor.pickCustomColorTitle")}
             >
               {isAccentCustom ? (
                 <Check className="w-3.5 h-3.5 text-white drop-shadow-xs stroke-[3]" />
@@ -616,7 +606,7 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
       <div className="pt-2">
         <div className="p-3.5 rounded-xl border border-border/80 bg-sidebar space-y-3">
           <span className="text-[9px] font-bold uppercase tracking-wider text-sidebar-subtle-foreground block">
-            {locale === "id" ? "PRATINJAU IDENTITAS" : "PREVIEW"}
+            {t("dashboard.sitesEditor.brandPreviewTitle")}
           </span>
 
           <div className="space-y-1">
@@ -627,7 +617,7 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
               }}
               className="text-sm font-bold leading-tight"
             >
-              {locale === "id" ? "Bisnis Anda, identitas Anda." : "Your business, your identity."}
+              {t("dashboard.sitesEditor.brandPreviewSampleHeadline")}
             </h4>
             <p
               style={{ fontFamily: `'${currentBody}', sans-serif` }}
@@ -645,14 +635,12 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
             }}
             className="w-full py-2 px-3 rounded-lg text-white font-semibold text-xs flex items-center justify-center gap-1.5 shadow-xs cursor-default pointer-events-none"
           >
-            <span>{locale === "id" ? "Hubungi Kami" : "Contact us"}</span>
+            <span>{t("dashboard.sitesEditor.brandPreviewContactButton")}</span>
             <ChevronDown className="w-3.5 h-3.5 opacity-80" />
           </button>
         </div>
         <p className="text-[10px] text-sidebar-subtle-foreground/80 mt-2 text-center italic">
-          {locale === "id"
-            ? "Font & warna ini terkunci otomatis di semua section & halaman."
-            : "These brand styles stay locked across all sections & pages."}
+          {t("dashboard.sitesEditor.brandStylesLockedHint")}
         </p>
       </div>
     </div>
