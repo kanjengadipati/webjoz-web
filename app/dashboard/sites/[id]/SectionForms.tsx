@@ -534,7 +534,8 @@ function LinkTypeInput({
 }
 
 // ─── HeroSlideRow — sortable drag row untuk sidebar carousel ─────────────────
-function HeroSlideRow({ id, locale, children }: { id: string; locale: string; children: React.ReactNode }) {
+function HeroSlideRow({ id, children }: { id: string; children: React.ReactNode }) {
+  const { t } = useI18n();
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({ id });
   return (
     <div
@@ -547,7 +548,7 @@ function HeroSlideRow({ id, locale, children }: { id: string; locale: string; ch
         ref={setActivatorNodeRef}
         {...attributes}
         {...listeners}
-        aria-label={locale === "en" ? "Drag to reorder" : "Seret untuk mengurutkan"}
+        aria-label={t("dashboard.sitesEditor.dragSection")}
         className="mt-3 p-1.5 -m-1.5 cursor-grab active:cursor-grabbing touch-none shrink-0 text-sidebar-subtle-foreground hover:text-sidebar-foreground transition-colors"
       >
         <GripVertical className="h-3.5 w-3.5" />
@@ -1125,7 +1126,7 @@ export default function SectionForms({
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span className="flex items-center gap-1">
                 {heroStyle && HERO_IMAGES_ARRAY_VARIANTS.includes(heroStyle)
-                  ? (locale === "en" ? "Main Image (slide 1)" : "Gambar Utama (slide 1)")
+                  ? (t("dashboard.sitesEditor.heroCarouselMainSlide"))
                   : (locale === "en" ? "Hero Image" : "Gambar Hero")} {needsAttention("hero.image_url") && <span className="text-amber-300">⚠️</span>}
               </span>
               <AiImageButton businessType={bType} onSelect={(url) => {
@@ -1177,9 +1178,9 @@ export default function SectionForms({
                 className="flex w-full items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground"
               >
                 <span className="flex items-center gap-1.5">
-                  {locale === "en" ? "Carousel Images" : "Gambar Carousel"}
+                  {t("dashboard.sitesEditor.heroCarouselImages")}
                   <span className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-sidebar-muted text-sidebar-muted-foreground text-[10px] font-medium">
-                    {filledCount} {locale === "en" ? "images" : "gambar"}
+                    {filledCount} {t("dashboard.sitesEditor.heroCarouselImagesCount")}
                   </span>
                   {showDistinctBadge && (
                     <span className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-500 text-[10px] font-semibold">
@@ -1212,9 +1213,9 @@ export default function SectionForms({
                             : `#${idx + 1}`;
                           const rowSub = creditName
                             ? (locale === "en" ? `Photo by ${creditName}` : `Foto oleh ${creditName}`)
-                            : (hasImage ? "" : (locale === "en" ? "No image" : "Belum ada"));
+                            : (hasImage ? "" : (t("dashboard.sitesEditor.heroCarouselNoImage")));
                           return (
-                            <HeroSlideRow key={heroSlideId(idx)} id={heroSlideId(idx)} locale={locale ?? "id"}>
+                            <HeroSlideRow key={heroSlideId(idx)} id={heroSlideId(idx)}>
                               <div className={`flex-1 rounded-xl border transition-colors ${isExpanded ? "border-primary/40 bg-primary/5" : "border-border bg-background"}`}>
                                 {/* Row header */}
                                 <div className="flex items-center gap-2 px-3 py-2.5">
@@ -1234,7 +1235,7 @@ export default function SectionForms({
                                       {rowLabel}
                                       {isHidden && (
                                         <span className="ml-1.5 text-[9px] font-normal normal-case text-sidebar-subtle-foreground">
-                                          {locale === "en" ? "Hidden" : "Disembunyikan"}
+                                          {t("dashboard.sitesEditor.hidden")}
                                         </span>
                                       )}
                                     </span>
@@ -1260,7 +1261,7 @@ export default function SectionForms({
                                       if (!hasImage) return;
                                       writeHeroPatch(updateField, toggleHeroSlideHidden(hero, idx));
                                     }}
-                                    title={isHidden ? (locale === "en" ? "Show slide" : "Tampilkan slide") : (locale === "en" ? "Hide slide" : "Sembunyikan slide")}
+                                    title={isHidden ? (t("dashboard.sitesEditor.heroCarouselShowSlide")) : (t("dashboard.sitesEditor.heroCarouselHideSlide"))}
                                     className="h-7 w-7 flex items-center justify-center rounded-md text-sidebar-muted-foreground hover:bg-sidebar-muted transition-colors shrink-0"
                                   >
                                     {isHidden ? <EyeOff className="h-3.5 w-3.5 text-sidebar-subtle-foreground" /> : <Eye className="h-3.5 w-3.5" />}
@@ -1274,8 +1275,8 @@ export default function SectionForms({
                                         writeHeroPatch(updateField, moveHeroSlide(hero, idx, idx - 1));
                                         setHeroImageOpenIdx((o) => remapOpenIdx(o, idx, idx - 1));
                                       }}
-                                      title={locale === "en" ? "Move up" : "Pindah ke atas"}
-                                      aria-label={locale === "en" ? "Move up" : "Pindah ke atas"}
+                                      title={t("dashboard.sitesEditor.moveUp")}
+                                      aria-label={t("dashboard.sitesEditor.moveUp")}
                                       className="h-6 w-6 flex items-center justify-center rounded text-sidebar-subtle-foreground hover:text-sidebar-foreground hover:bg-sidebar-muted disabled:opacity-20 transition-colors"
                                     >
                                       <ChevronUp className="h-3 w-3" />
@@ -1287,8 +1288,8 @@ export default function SectionForms({
                                         writeHeroPatch(updateField, moveHeroSlide(hero, idx, idx + 1));
                                         setHeroImageOpenIdx((o) => remapOpenIdx(o, idx, idx + 1));
                                       }}
-                                      title={locale === "en" ? "Move down" : "Pindah ke bawah"}
-                                      aria-label={locale === "en" ? "Move down" : "Pindah ke bawah"}
+                                      title={t("dashboard.sitesEditor.moveDown")}
+                                      aria-label={t("dashboard.sitesEditor.moveDown")}
                                       className="h-6 w-6 flex items-center justify-center rounded text-sidebar-subtle-foreground hover:text-sidebar-foreground hover:bg-sidebar-muted disabled:opacity-20 transition-colors"
                                     >
                                       <ChevronDown className="h-3 w-3" />
@@ -1312,7 +1313,7 @@ export default function SectionForms({
                                       if (heroImageOpenIdx === idx) setHeroImageOpenIdx(null);
                                       else if (heroImageOpenIdx !== null && heroImageOpenIdx > idx) setHeroImageOpenIdx(heroImageOpenIdx - 1);
                                     }}
-                                    title={locale === "en" ? "Remove image" : "Hapus gambar"}
+                                    title={t("dashboard.sitesEditor.heroCarouselRemove")}
                                     className="h-7 w-7 flex items-center justify-center rounded-md text-red-400 hover:bg-red-500/10 disabled:opacity-30 transition-colors shrink-0"
                                   >
                                     <Trash2 className="h-3.5 w-3.5" />
@@ -1365,7 +1366,7 @@ export default function SectionForms({
                     className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-border px-3 py-2.5 text-[11px] font-semibold text-sidebar-muted-foreground hover:bg-sidebar-muted disabled:opacity-40 transition-colors"
                   >
                     <Plus className="h-3.5 w-3.5" />
-                    {locale === "en" ? "+ Add image" : "+ Tambah gambar"}
+                    {"+ " + t("dashboard.sitesEditor.heroAddImage").replace("+ ", "")}
                   </button>
                 </>
               ) : null}
@@ -1398,7 +1399,7 @@ export default function SectionForms({
           {showIfVariant(HERO_EYEBROW_VARIANTS) && (
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>Eyebrow / Label Badge <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
+              <span>{t("dashboard.sitesEditor.heroEyebrow")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></span>
               {renderFieldActions("hero", "eyebrow")}
             </label>
             <input
@@ -1409,19 +1410,19 @@ export default function SectionForms({
               placeholder={t("dashboard.sitesEditor.phEyebrowAvailable")}
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
-            <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Label kecil di atas headline (dipakai oleh beberapa template).</p>
+            <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">{t("dashboard.sitesEditor.heroEyebrowHint")}</p>
           </div>
           )}
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span className="flex items-center gap-1">
-                Headline {needsAttention("hero.headline") && <span className="text-amber-300">⚠️</span>}
+                {t("dashboard.sitesEditor.heroHeadline")} {needsAttention("hero.headline") && <span className="text-amber-300">⚠️</span>}
               </span>
               {renderFieldActions("hero", "headline", (
                 <AiFieldButton
                   loading={aiLoadingField === "hero.headline"}
-                  onGenerate={() => handleAiText("hero", "headline", "Buat headline yang kuat dan memikat, max 10 kata", "Headline")}
-                  title="AI: generate headline"
+                  onGenerate={() => handleAiText("hero", "headline", t("dashboard.sitesEditor.aiHeroHeadlinePrompt"), t("dashboard.sitesEditor.aiHeroHeadlineLabel"))}
+                  title={t("dashboard.sitesEditor.aiHeroHeadlineBtn")}
                   onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
                 />
               ))}
@@ -1438,13 +1439,13 @@ export default function SectionForms({
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span className="flex items-center gap-1">
-                Subheadline {needsAttention("hero.subheadline") && <span className="text-amber-300">⚠️</span>}
+                {t("dashboard.sitesEditor.heroSubheadline")} {needsAttention("hero.subheadline") && <span className="text-amber-300">⚠️</span>}
               </span>
               {renderFieldActions("hero", "subheadline", (
                 <AiFieldButton
                   loading={aiLoadingField === "hero.subheadline"}
-                  onGenerate={() => handleAiText("hero", "subheadline", "Buat subheadline yang jelas menyampaikan value proposition, max 25 kata", "Subheadline")}
-                  title="AI: generate subheadline"
+                  onGenerate={() => handleAiText("hero", "subheadline", t("dashboard.sitesEditor.aiHeroSubheadlinePrompt"), t("dashboard.sitesEditor.aiHeroSubheadlineLabel"))}
+                  title={t("dashboard.sitesEditor.aiHeroSubheadlineBtn")}
                   onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
                 />
               ))}
@@ -1460,7 +1461,7 @@ export default function SectionForms({
           </div>
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>Teks Tombol CTA {needsAttention("hero.cta_text") && <span className="text-amber-300">⚠️</span>}</span>
+              <span>{t("dashboard.sitesEditor.heroCtaText")} {needsAttention("hero.cta_text") && <span className="text-amber-300">⚠️</span>}</span>
               {renderFieldActions("hero", "cta_text")}
             </label>
             <input
@@ -1484,7 +1485,7 @@ export default function SectionForms({
             needsAttention={needsAttention("hero.cta_url")}
             fieldClass={fieldClass}
             path="hero.cta_url"
-            label={locale === "en" ? "CTA Button Link" : "Link Tombol CTA"}
+            label={t("dashboard.sitesEditor.heroCtaLink")}
             defaultWaNumber={content.contact?.phone}
             suggestedHash={content.catalog ? "#catalog" : content.menu ? "#menu" : "#contact"}
             isEN={locale === "en"}
@@ -2030,8 +2031,8 @@ export default function SectionForms({
               </span>
               <AiFieldButton
                 loading={aiLoadingField === "cta.headline"}
-                onGenerate={() => handleAiText("cta", "headline", "Buat headline CTA yang kuat, action-oriented, dan menutup keraguan pembeli", "Headline CTA")}
-                title="AI: generate headline"
+                onGenerate={() => handleAiText("cta", "headline", t("dashboard.sitesEditor.aiCtaHeadlinePrompt"), t("dashboard.sitesEditor.aiCtaHeadlineLabel"))}
+                title={t("dashboard.sitesEditor.aiCtaHeadlineBtn")}
                 onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
               />
             </label>
@@ -2101,7 +2102,7 @@ export default function SectionForms({
             needsAttention={needsAttention("cta.button_url")}
             fieldClass={fieldClass}
             path="cta.button_url"
-            label={locale === "en" ? "Button Link" : "Link Tombol"}
+            label={t("dashboard.sitesEditor.ctaButtonLink")}
             defaultWaNumber={content.contact?.phone}
             suggestedHash={content.catalog ? "#catalog" : content.menu ? "#menu" : "#contact"}
             isEN={locale === "en"}
@@ -3904,18 +3905,18 @@ export default function SectionForms({
       {activeTab === "floating" && (
         <div className="space-y-4">
           <div className="rounded-lg border border-primary/20 bg-primary/10 px-3 py-2.5 text-[12px] leading-relaxed text-primary">
-            <p className="font-semibold text-primary">💬 Tombol Aksi Mengambang</p>
-            <p className="mt-1 text-primary/80">Tombol yang selalu terlihat di pojok kanan bawah halaman website.</p>
+            <p className="font-semibold text-primary">💬 {t("dashboard.sitesEditor.floatingSectionBanner")}</p>
+            <p className="mt-1 text-primary/80">{t("dashboard.sitesEditor.floatingSectionBannerDesc")}</p>
           </div>
           <div className="space-y-2">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-sidebar-subtle-foreground">Tipe Tombol</label>
+            <label className="text-[10px] font-bold uppercase tracking-wider text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.floatingButtonType")}</label>
             <div className="grid grid-cols-2 gap-2">
               {([
-                { value: "none",          label: "Tidak Ada",     icon: "🚫", desc: "Tidak tampil tombol" },
-                { value: "whatsapp",      label: "WhatsApp",      icon: "💬", desc: "Tombol WA sederhana" },
-                { value: "whatsapp_pill", label: "WhatsApp Pill", icon: "🟢", desc: "Tab kanan membesar saat hover" },
-                { value: "chat_bubble",   label: "Chat Bubble",   icon: "✨", desc: "Widget chat interaktif" },
-                { value: "contact_link",  label: "Link Kontak",   icon: "📋", desc: "Scroll ke section Kontak" },
+                { value: "none",          labelKey: "floatingNone",          icon: "🚫", descKey: "floatingNoneDesc" },
+                { value: "whatsapp",      labelKey: "floatingWhatsApp",      icon: "💬", descKey: "floatingWhatsAppDesc" },
+                { value: "whatsapp_pill", labelKey: "floatingWhatsAppPill",  icon: "🟢", descKey: "floatingWhatsAppPillDesc" },
+                { value: "chat_bubble",   labelKey: "floatingChatBubble",    icon: "✨", descKey: "floatingChatBubbleDesc" },
+                { value: "contact_link",  labelKey: "floatingContactLink",   icon: "📋", descKey: "floatingContactLinkDesc" },
               ] as const).map((opt) => {
                 const current = designToken?.layout?.floating_button ?? "whatsapp";
                 const isActive = current === opt.value;
@@ -3929,8 +3930,8 @@ export default function SectionForms({
                     className={`relative p-3 rounded-xl border text-left transition-all cursor-pointer ${isActive ? "border-primary bg-primary/15 ring-1 ring-primary" : "border-border bg-muted/40 hover:border-border hover:bg-muted/70"} ${isProGated ? "opacity-60" : ""}`}
                   >
                     <span className="text-lg block mb-1">{opt.icon}</span>
-                    <p className="text-[11px] font-bold text-sidebar-foreground leading-tight">{opt.label}</p>
-                    <p className="text-[10px] text-sidebar-subtle-foreground mt-0.5 leading-tight">{opt.desc}</p>
+                    <p className="text-[11px] font-bold text-sidebar-foreground leading-tight">{t(`dashboard.sitesEditor.${opt.labelKey}`)}</p>
+                    <p className="text-[10px] text-sidebar-subtle-foreground mt-0.5 leading-tight">{t(`dashboard.sitesEditor.${opt.descKey}`)}</p>
                     {opt.value === "chat_bubble" && <span className="absolute top-1.5 right-1.5 text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">PRO</span>}
                     {isActive && <span className="absolute bottom-1.5 right-1.5 w-2 h-2 rounded-full bg-primary" />}
                   </button>
@@ -3938,13 +3939,13 @@ export default function SectionForms({
               })}
             </div>
             {!isPremium && (
-              <p className="text-[10px] text-amber-400/80 leading-relaxed">✨ Chat Bubble tersedia untuk plan <strong className="text-amber-400">Pro</strong>.</p>
+              <p className="text-[10px] text-amber-400/80 leading-relaxed">✨ {t("dashboard.sitesEditor.floatingProHint")}</p>
             )}
           </div>
           {(designToken?.layout?.floating_button === "whatsapp" || designToken?.layout?.floating_button === "whatsapp_pill" || designToken?.layout?.floating_button === "chat_bubble" || !designToken?.layout?.floating_button) && (
             <div className="space-y-2 pt-2 border-t border-border">
               <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-                Nomor WhatsApp <span className="text-red-400">*</span>
+                {t("dashboard.sitesEditor.floatingWhatsAppNumber")} <span className="text-red-400">*</span>
               </label>
               <input type="text" inputMode="tel" value={content?.contact?.phone || ""}
                 onChange={(e) => {
@@ -3960,16 +3961,16 @@ export default function SectionForms({
                 placeholder={t("dashboard.sitesEditor.phFloatingWaNumber")}
                 className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
               />
-              {!content?.contact?.phone && <p className="text-[10px] text-red-400/80 mt-1">Nomor WA wajib diisi agar tombol berfungsi.</p>}
-              <p className="text-[10px] text-sidebar-subtle-foreground">Nomor ini juga dipakai di tombol WA lain di seluruh halaman.</p>
+              {!content?.contact?.phone && <p className="text-[10px] text-red-400/80 mt-1">{t("dashboard.sitesEditor.floatingWhatsAppNumberRequired")}</p>}
+              <p className="text-[10px] text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.floatingWhatsAppNumberHint")}</p>
             </div>
           )}
           {designToken?.layout?.floating_button !== "none" && (
             <div className="rounded-lg border border-border bg-muted/40 p-3 text-[11px] text-sidebar-muted-foreground leading-relaxed">
-              {(designToken?.layout?.floating_button === "whatsapp" || !designToken?.layout?.floating_button) && "Tombol hijau WhatsApp tampil di pojok kanan bawah. Klik langsung membuka WA."}
-              {designToken?.layout?.floating_button === "whatsapp_pill" && "Tab WhatsApp di sisi kanan layar. Menyusut rapi saat diam, membesar saat kursor mendekat atau disentuh."}
-              {designToken?.layout?.floating_button === "chat_bubble" && (isPremium ? "Widget chat WA interaktif. Pengunjung bisa ketik pesan sebelum diarahkan ke WA." : "Aktifkan plan Pro untuk Chat Bubble.")}
-              {designToken?.layout?.floating_button === "contact_link" && "Tombol scroll ke section Kontak. Tidak membutuhkan nomor WA."}
+              {(designToken?.layout?.floating_button === "whatsapp" || !designToken?.layout?.floating_button) && t("dashboard.sitesEditor.floatingWhatsAppDescLong")}
+              {designToken?.layout?.floating_button === "whatsapp_pill" && t("dashboard.sitesEditor.floatingWhatsAppPillDescLong")}
+              {designToken?.layout?.floating_button === "chat_bubble" && (isPremium ? t("dashboard.sitesEditor.floatingChatBubbleDescLong") : t("dashboard.sitesEditor.floatingChatBubbleProRequired"))}
+              {designToken?.layout?.floating_button === "contact_link" && t("dashboard.sitesEditor.floatingContactLinkDescLong")}
             </div>
           )}
         </div>
@@ -3986,9 +3987,7 @@ export default function SectionForms({
               </p>
             </div>
             <p className="mt-1 text-sidebar-muted-foreground text-[11px] leading-relaxed">
-              {locale === "en"
-                ? "Splash animation that appears briefly when visitors open the site. Text and logo automatically use your business identity, but can be customized below."
-                : "Animasi loading singkat saat pengunjung pertama kali membuka website. Secara otomatis menggunakan nama & logo bisnis Anda, namun dapat Anda kustomisasi di bawah."}
+              {t("dashboard.sitesEditor.preloaderSectionBannerDesc")}
             </p>
           </div>
 
@@ -3996,10 +3995,10 @@ export default function SectionForms({
           <div className="flex items-center justify-between p-3 rounded-xl border border-border bg-sidebar-muted/40">
             <div>
               <p className="text-[11px] font-bold text-sidebar-foreground">
-                {locale === "en" ? "Test Loading Animation" : "Uji Preview Animasi"}
+                {t("dashboard.sitesEditor.preloaderTestTitle")}
               </p>
               <p className="text-[10px] text-sidebar-subtle-foreground mt-0.5">
-                {locale === "en" ? "See how it looks when visitors load your site" : "Lihat tampilan animasi persis seperti pengunjung"}
+                {t("dashboard.sitesEditor.preloaderTestDesc")}
               </p>
             </div>
             <button
@@ -4008,58 +4007,54 @@ export default function SectionForms({
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-[11px] font-semibold hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-sm"
             >
               <Eye className="w-3.5 h-3.5" />
-              <span>{locale === "en" ? "Preview" : "Uji Animasi"}</span>
+              <span>{t("dashboard.sitesEditor.preloaderTestBtn")}</span>
             </button>
           </div>
 
           {/* 1. Custom Text / Brand Override */}
           <div className="space-y-1.5">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              {locale === "en" ? "Custom Brand Text" : "Teks Brand / Judul"}
+              {t("dashboard.sitesEditor.preloaderBrandText")}
             </label>
             <input
               type="text"
               value={content?.preloader?.brand_name || ""}
               onChange={(e) => updateField("preloader", "brand_name", e.target.value)}
-              placeholder={`Otomatis: "${content?.header?.brand_name || "Nama Brand"}"`}
+              placeholder={`${locale === "en" ? "Auto" : "Otomatis"}: "${content?.header?.brand_name || (locale === "en" ? "Brand Name" : "Nama Brand")}"`}
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
             <p className="text-[10px] text-sidebar-subtle-foreground">
-              {locale === "en"
-                ? "Leave empty to use business name from Header."
-                : "Kosongkan jika ingin memakai nama brand dari Header."}
+              {t("dashboard.sitesEditor.preloaderBrandHint")}
             </p>
           </div>
 
           {/* 2. Custom Tagline / Message */}
           <div className="space-y-1.5">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              {locale === "en" ? "Custom Tagline / Subtitle" : "Tagline / Pesan Singkat"}
+              {t("dashboard.sitesEditor.preloaderTagline")}
             </label>
             <input
               type="text"
               value={content?.preloader?.tagline || ""}
               onChange={(e) => updateField("preloader", "tagline", e.target.value)}
-              placeholder={`Otomatis: "${content?.header?.tagline || "Tagline Bisnis"}"`}
+              placeholder={`${locale === "en" ? "Auto" : "Otomatis"}: "${content?.header?.tagline || (locale === "en" ? "Business Tagline" : "Tagline Bisnis")}"`}
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
             <p className="text-[10px] text-sidebar-subtle-foreground">
-              {locale === "en"
-                ? "Leave empty to use business tagline from Header."
-                : "Kosongkan jika ingin memakai tagline dari Header."}
+              {t("dashboard.sitesEditor.preloaderTaglineHint")}
             </p>
           </div>
 
           {/* 3. Icon / Logo Selection */}
           <div className="space-y-2 pt-2 border-t border-border">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              {locale === "en" ? "Icon & Logo Display" : "Tampilan Icon & Logo"}
+              {t("dashboard.sitesEditor.preloaderIconLogo")}
             </label>
 
             {/* Icon Picker */}
             <div className="space-y-1">
               <span className="text-[10px] font-medium text-sidebar-subtle-foreground">
-                {locale === "en" ? "Choose Lucide Icon (Optional):" : "Pilih Icon Lucide (Opsional):"}
+                {t("dashboard.sitesEditor.preloaderChooseIcon")}
               </span>
               <div className="flex items-center gap-2">
                 <div className="flex-1">
