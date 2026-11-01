@@ -28,8 +28,9 @@ export default function HeroImageCarousel({
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: HeroVariantProps) {
-  // Resolve slides array: prioritize hero.images, then fallback to hero.image_url
-  const slideList = getHeroSlides(h);
+  // Resolve slides array: prioritize hero.images, then fallback to hero.image_url.
+  // In editor mode show hidden slides (dimmed) so they can be edited/restored.
+  const slideList = getHeroSlides(h, { includeHidden: Boolean(isEditorMode) });
   const slides: string[] = slideList.map((s) => s.src);
 
   const slideCount = slides.length;
@@ -86,7 +87,8 @@ export default function HeroImageCarousel({
     if (slides.length >= 8) return;
     const fallbackImage = slides[0] ?? "";
     const fallbackCredit = slideList[0]?.credit ?? null;
-    writeHeroPatch(onUpdateField as any, addHeroSlide(h, fallbackImage, fallbackCredit));
+    if (!onUpdateField) return;
+    writeHeroPatch(onUpdateField, addHeroSlide(h, fallbackImage, fallbackCredit));
     setCurrentIndex(slides.length);
   };
 
@@ -95,7 +97,8 @@ export default function HeroImageCarousel({
     if (slides.length <= 1) return;
     const slide = slideList[safeIndex];
     if (!slide) return;
-    writeHeroPatch(onUpdateField as any, removeHeroSlide(h, slide.index));
+    if (!onUpdateField) return;
+    writeHeroPatch(onUpdateField, removeHeroSlide(h, slide.index));
     setCurrentIndex((prev) => (prev >= slides.length - 1 ? slides.length - 2 : prev));
   };
 
@@ -154,6 +157,7 @@ export default function HeroImageCarousel({
                   objectFit: "cover",
                   objectPosition: "center",
                   display: "block",
+                  opacity: slideList[safeIndex]?.hidden ? 0.45 : undefined,
                 }}
                 collapseSheetForInlineEdit={collapseSheetForInlineEdit}
               />
@@ -490,15 +494,11 @@ export default function HeroImageCarousel({
       </div>
 
       {/* Photo credit for active image */}
-      {(() => {
-        const idx = slideList[safeIndex]?.index ?? 0;
-        const caption = h.image_captions?.[idx];
-        return caption ? (
-          <p className="absolute bottom-12 left-4 z-20 max-w-[60%] text-sm font-medium text-white drop-shadow">
-            {caption}
-          </p>
-        ) : null;
-      })()}
+      {slideList[safeIndex]?.caption ? (
+        <p className="absolute bottom-12 left-4 z-20 max-w-[60%] text-sm font-medium text-white drop-shadow">
+          {slideList[safeIndex].caption}
+        </p>
+      ) : null}
       <PhotoCredit credit={slideList[safeIndex]?.credit} src={slideList[safeIndex]?.src} />
 
     </section>

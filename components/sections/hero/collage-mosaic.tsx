@@ -28,7 +28,8 @@ export default function HeroCollageMosaic({
   };
 
   // Slot 0 selalu image_url (konsisten dengan carousel-filmstrip: 0 → "image_url", n → `images.${n}`)
-  const list = getHeroSlides(h);
+  // Editor: sertakan slide tersembunyi (pudar) agar bisa diedit/dikembalikan.
+  const list = getHeroSlides(h, { includeHidden: Boolean(isEditorMode) });
   const rawLen = Array.isArray(h.images) ? h.images.length : 0;
   const idxFor = (i: number) => list[i]?.index ?? Math.max(rawLen, i);
   const tiles = [0, 1, 2]
@@ -78,7 +79,6 @@ export default function HeroCollageMosaic({
               href={h.cta_url}
               label={h.cta_text}
               fieldKey="cta_text"
-              icon={<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>}
               className="inline-flex items-center gap-2 mt-8 px-7 py-3.5 font-semibold"
               style={{
                 background: "var(--dt-primary)",
@@ -112,6 +112,7 @@ export default function HeroCollageMosaic({
                 minHeight: i === 0 && tiles.length >= 3 ? "100%" : undefined,
                 position: "relative",
                 background: fallbackBg,
+                opacity: isEditorMode && list[i]?.hidden ? 0.45 : undefined,
               }}
             >
               <InlineImage

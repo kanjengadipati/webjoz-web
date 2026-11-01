@@ -23,9 +23,9 @@ import {
   SortableContext,
   useSortable,
   verticalListSortingStrategy,
-  arrayMove,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { reorderCategories, reorderItems, ensureCatId, ensureItemId } from "@/lib/catalog-reorder";
 
 // ─── nanoid (inline, tiny — avoids extra dep) ────────────────────────────────────────────
 const NANOID_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -34,34 +34,6 @@ export function nanoid(size = 10): string {
   const bytes = crypto.getRandomValues(new Uint8Array(size));
   for (let i = 0; i < size; i++) id += NANOID_CHARS[bytes[i] % NANOID_CHARS.length];
   return id;
-}
-
-/**
- * Ensure item has a STABLE id and sort_order. Ids must be deterministic,
- * NOT random — because this runs on every render.
- * A random nanoid regenerated each render makes the React `key` change,
- * which remounts the SortableItemRow and drops the controlled input's focus
- * after every keystroke (cursor jumps / can't type). Deterministic ids stay
- * constant across renders so the row is never remounted. Items that already
- * carry a persisted id (e.g. freshly added via addItem) are left untouched.
- */
-export function ensureItemId(item: any, idx: number): any {
-  if (item.id) {
-    return { ...item, sort_order: item.sort_order ?? idx };
-  }
-  // Index-only id (NOT name-based): stays constant while the user types the
-  // name, so the row never remounts mid-keystroke. It only changes when the
-  // item is drag-reordered, which is an explicit action — not during typing.
-  return { ...item, id: `item-${idx}`, sort_order: item.sort_order ?? idx };
-}
-
-/** Ensure category has id and sort_order (see ensureItemId for determinism rationale) */
-export function ensureCatId(cat: any, idx: number): any {
-  const items = (cat.items ?? []).map((it: any, i: number) => ensureItemId(it, i));
-  if (cat.id) {
-    return { ...cat, sort_order: cat.sort_order ?? idx, items };
-  }
-  return { ...cat, id: `cat-${idx}`, sort_order: cat.sort_order ?? idx, items };
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -346,29 +318,24 @@ export function MenuCatalogForm({
   /** Drag end for items inside a category */
   const handleItemDragEnd = useCallback((catIdx: number, event: DragEndEvent) => {
     const { active, over } = event;
-    if (!over || active.id === over.id) return;
-    const next = [...categories];
-    const items = next[catIdx].items ?? [];
-    const oldIdx = items.findIndex((i: any) => i.id === active.id);
-    const newIdx = items.findIndex((i: any) => i.id === over.id);
-    if (oldIdx < 0 || newIdx < 0) return;
-    const reordered = arrayMove(items, oldIdx, newIdx).map((it: any, i: number) => ({ ...it, sort_order: i }));
-    next[catIdx] = { ...next[catIdx], items: reordered };
+    if (!over) return;
+    const next = reorderItems(categories, catIdx, String(active.id), String(over.id));
+    if (!next) return;
     updateCategories(next);
   }, [categories, updateCategories]);
 
   /** Drag end for categories */
   const handleCatDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
-    if (!over || active.id === over.id) return;
-    const oldIdx = categories.findIndex((c: any) => c.id === active.id);
-    const newIdx = categories.findIndex((c: any) => c.id === over.id);
-    if (oldIdx < 0 || newIdx < 0) return;
-    const reordered = arrayMove(categories, oldIdx, newIdx).map((c: any, i: number) => ({ ...c, sort_order: i }));
-    updateCategories(reordered);
+    if (!over) return;
+    const r = reorderCategories(categories, String(active.id), String(over.id));
+    if (!r) return;
+    updateCategories(r.next);
     setExpandedCat((prev) => {
       if (prev === null) return null;
-      if (prev === oldIdx) return newIdx;
+      if (prev === r.oldIdx) return r.newIdx;
+      if (r.oldIdx < r.newIdx && prev > r.oldIdx && prev <= r.newIdx) return prev - 1;
+      if (r.oldIdx > r.newIdx && prev >= r.newIdx && prev < r.oldIdx) return prev + 1;
       return prev;
     });
   }, [categories, updateCategories]);

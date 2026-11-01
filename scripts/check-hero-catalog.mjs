@@ -4,9 +4,9 @@ const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), "utf8");
 const meta = read("components/sections/hero/meta.ts");
 const picker = read("app/dashboard/sites/[id]/components/SectionVariantVisualPicker.tsx");
 
-/** Snapshot kini berformat [{name, imageNeed, minImages}]; ekstrak nama saja untuk pengecekan set. */
+/** Snapshot berformat [{name, imageNeed, minImages}] (format lama string array tidak didukung). */
 const snapshotRaw = JSON.parse(read("components/sections/hero/hero-styles.snapshot.json"));
-const snapshot = snapshotRaw.map((e) => (typeof e === "string" ? e : e.name));
+const snapshot = snapshotRaw.map((e) => e.name);
 
 // Registrasi komponen di index.tsx dijaga oleh tsc (Record<HeroStyle, ...>), jadi tidak dicek di sini.
 const values = [...meta.matchAll(/\{\s*value:\s*"([^"]+)"/g)].map((m) => m[1]);
@@ -23,7 +23,7 @@ const valSet = new Set(values);
 const snapSet = new Set(snapshot);
 for (const v of valSet) {
   if (!snapSet.has(v))
-    errors.push(`hero-styles.snapshot.json: varian "${v}" ada di meta.ts tapi tidak di snapshot — salin snapshot terbaru dari API testdata/hero_styles.json`);
+    errors.push(`hero-styles.snapshot.json: varian "${v}" ada di meta.ts tapi tidak di snapshot — jalankan: go test ./internal/ai -run TestHeroStylesSnapshot -update-hero-snapshot, lalu salin ke web/components/sections/hero/hero-styles.snapshot.json`);
 }
 for (const v of snapSet) {
   if (!valSet.has(v))
@@ -35,11 +35,21 @@ const metaImageNeed = {};
 for (const m of meta.matchAll(/\{\s*value:\s*"([^"]+)"[^}]*imageNeed:\s*"([^"]+)"/g)) {
   metaImageNeed[m[1]] = m[2];
 }
+// Validasi minImages: web snapshot harus cocok dengan meta.ts
+// Regex ini membaca setiap baris object literal hero variant { value: "...", ..., minImages: N }
+const metaMinImages = {};
+for (const m of meta.matchAll(/\{\s*value:\s*"([^"]+)"[^}]*minImages:\s*(\d+)[^}]*\}/gs)) {
+  metaMinImages[m[1]] = Number(m[2]);
+}
+
 for (const entry of snapshotRaw) {
-  if (typeof entry === "string") continue; // format lama, lewati
   const metaNeed = metaImageNeed[entry.name];
-  if (metaNeed && metaNeed !== entry.imageNeed) {
+  if (metaNeed !== undefined && metaNeed !== entry.imageNeed) {
     errors.push(`imageNeed mismatch for "${entry.name}": meta.ts="${metaNeed}", snapshot="${entry.imageNeed}"`);
+  }
+  const metaMin = metaMinImages[entry.name];
+  if (metaMin !== undefined && metaMin !== entry.minImages) {
+    errors.push(`minImages mismatch for "${entry.name}": meta.ts=${metaMin}, snapshot=${entry.minImages}`);
   }
 }
 
