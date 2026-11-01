@@ -2716,6 +2716,14 @@ export interface Translations {
       heroCarouselImages: string;
       heroCarouselImagesCount: string;
       heroAddImage: string;
+      heroCarouselMainSlide: string;
+      heroCarouselPrimary: string;
+      heroCarouselNoImage: string;
+      heroCarouselShowSlide: string;
+      heroCarouselHideSlide: string;
+      heroCarouselRemove: string;
+      heroCtaLink: string;
+      ctaButtonLink: string;
       heroVideoUrl: string;
       heroEyebrow: string;
       heroEyebrowHint: string;
@@ -6116,6 +6124,14 @@ export const translations: Record<Locale, Translations> = {
         heroCarouselImages: "Gambar Carousel",
         heroCarouselImagesCount: "gambar",
         heroAddImage: "+ Tambah gambar",
+        heroCarouselMainSlide: "Gambar Utama (slide 1)",
+        heroCarouselPrimary: "utama",
+        heroCarouselNoImage: "Belum ada",
+        heroCarouselShowSlide: "Tampilkan slide",
+        heroCarouselHideSlide: "Sembunyikan slide",
+        heroCarouselRemove: "Hapus gambar",
+        heroCtaLink: "Link Tombol CTA",
+        ctaButtonLink: "Link Tombol",
         heroVideoUrl: "URL Video Hero",
         heroEyebrow: "Eyebrow / Label Badge",
         heroEyebrowHint: "Label kecil di atas headline (dipakai oleh beberapa template).",
@@ -6508,7 +6524,6 @@ export const translations: Record<Locale, Translations> = {
         galleryLayoutMasonryDesc: "Tinggi bervariasi",
         galleryLayoutCarouselDesc: "Slide bergilir",
         galleryCarouselSettingsLabel: "Pengaturan Carousel",
-        galleryItem: "Foto",
         // Floating button descriptions
         floatingWhatsAppDescLong: "Tombol hijau WhatsApp tampil di pojok kanan bawah. Klik langsung membuka WA.",
         floatingWhatsAppPillDescLong: "Tab WhatsApp di sisi kanan layar. Menyusut rapi saat diam, membesar saat kursor mendekat atau disentuh.",
@@ -9569,6 +9584,14 @@ export const translations: Record<Locale, Translations> = {
         heroCarouselImages: "Carousel Images",
         heroCarouselImagesCount: "images",
         heroAddImage: "+ Add image",
+        heroCarouselMainSlide: "Main Image (slide 1)",
+        heroCarouselPrimary: "primary",
+        heroCarouselNoImage: "No image",
+        heroCarouselShowSlide: "Show slide",
+        heroCarouselHideSlide: "Hide slide",
+        heroCarouselRemove: "Remove image",
+        heroCtaLink: "CTA Button Link",
+        ctaButtonLink: "Button Link",
         heroVideoUrl: "Hero Video URL",
         heroEyebrow: "Eyebrow / Badge Label",
         heroEyebrowHint: "Small label above the headline (used by some templates).",
@@ -9961,7 +9984,6 @@ export const translations: Record<Locale, Translations> = {
         galleryLayoutMasonryDesc: "Variable heights",
         galleryLayoutCarouselDesc: "Auto-sliding",
         galleryCarouselSettingsLabel: "Carousel Settings",
-        galleryItem: "Photo",
         // Floating button descriptions
         floatingWhatsAppDescLong: "Green WhatsApp button in the bottom-right corner. Click opens WA directly.",
         floatingWhatsAppPillDescLong: "WhatsApp tab on the right side of the screen. Collapses when idle, expands on hover or touch.",
