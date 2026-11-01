@@ -2,6 +2,7 @@ import {
   Layout, User, Award, HelpCircle, Mail, BookOpen, Globe, UtensilsCrossed, ShoppingBag, Star, Camera, MessageCircle, TrendingUp, Handshake, CreditCard, Briefcase, Sparkles, Loader2
 } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
+import { AUTO_HIDEABLE_SECTIONS, isSectionEmpty } from "@/lib/section-status";
 
 export const stripRegeneratedMarkers = (value: any): any => {
   if (typeof value === "string") {
@@ -309,22 +310,6 @@ export const isDesignTokenEqual = (a: any, b: any) => {
 export const getAutoHiddenSections = (
   content: any,
   existingHidden: string[] = [],
-): string[] => {
-  const result: string[] = [];
-
-  const OPTIONAL = ["faq", "testimonials", "gallery", "works", "menu", "catalog", "blog"] as const;
-
-  const isEmpty = (key: string): boolean => {
-    if (key === "menu" || key === "catalog") return !(content?.[key]?.categories?.length);
-    if (key === "blog") return !(content?.[key]?.posts?.length);
-    return !(content?.[key]?.items?.length);
-  };
-
-  for (const key of OPTIONAL) {
-    if (existingHidden.includes(key)) continue; // already there, skip
-    if (isEmpty(key)) result.push(key);
-  }
-
-  return result;
-};
+): string[] =>
+  AUTO_HIDEABLE_SECTIONS.filter((key) => !existingHidden.includes(key) && isSectionEmpty(content, key));
 
