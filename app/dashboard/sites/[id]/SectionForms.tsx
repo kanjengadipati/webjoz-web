@@ -8,7 +8,7 @@ import LocationPicker from "@/components/location-picker";
 import LocationMapPreview from "@/components/location-map-preview";
 import { GoogleSnippetPreview } from "@/components/google-snippet-preview";
 import { isPlaceholderValue, getAiSuggestions } from "./editor-utils";
-import { getHeroStyle, getHeroImageNeed } from "@/components/sections/hero/meta";
+import { getHeroStyle, getHeroImageNeed, getHeroMinImages } from "@/components/sections/hero/meta";
 import { setHeroSlide, removeHeroSlide, addHeroSlide, countDistinctHeroImages, writeHeroPatch, setPrimaryHeroImage, setHeroCaption, toggleHeroSlideHidden, moveHeroSlide } from "@/components/sections/hero/images";
 import { DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
@@ -548,7 +548,7 @@ function HeroSlideRow({ id, locale, children }: { id: string; locale: string; ch
         {...attributes}
         {...listeners}
         aria-label={locale === "en" ? "Drag to reorder" : "Seret untuk mengurutkan"}
-        className="mt-3 cursor-grab active:cursor-grabbing touch-none shrink-0 text-sidebar-subtle-foreground hover:text-sidebar-foreground transition-colors"
+        className="mt-3 p-1.5 -m-1.5 cursor-grab active:cursor-grabbing touch-none shrink-0 text-sidebar-subtle-foreground hover:text-sidebar-foreground transition-colors"
       >
         <GripVertical className="h-3.5 w-3.5" />
       </button>
@@ -681,6 +681,15 @@ export default function SectionForms({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
   const heroSlideId = (idx: number) => `hero-slide-${idx}`;
+
+  /** Kalkulasi heroImageOpenIdx baru setelah slide dipindah dari `from` ke `to`. */
+  const remapOpenIdx = (o: number | null, from: number, to: number): number | null => {
+    if (o === null) return o;
+    if (o === from) return to;
+    if (from < to && o > from && o <= to) return o - 1;
+    if (from > to && o >= to && o < from) return o + 1;
+    return o;
+  };
   // Optional hero fields are only relevant to a subset of variants.
   // When the selected variant is unknown, keep everything visible (safe fallback).
   const showIfVariant = (variants: string[]) =>
@@ -1148,9 +1157,8 @@ export default function SectionForms({
               : hero.image_url ? [hero.image_url] : [];
             const filledCount = rows.filter(Boolean).length;
             const distinctCount = countDistinctHeroImages(hero);
-            // Minimum untuk varian ini
-            const minMap: Record<string, number> = { "collage-mosaic": 3, "image-carousel": 2, "carousel-split": 2, "carousel-filmstrip": 3 };
-            const minImages = heroStyle ? (minMap[heroStyle] ?? 1) : 1;
+            // Minimum untuk varian ini — dari meta.ts (dijaga check:hero agar sync dengan API)
+            const minImages = getHeroMinImages(heroStyle) || 1;
             const showDistinctBadge = distinctCount < minImages;
 
             const handleHeroSlideDragEnd = (e: DragEndEvent) => {
@@ -1160,13 +1168,7 @@ export default function SectionForms({
               const to = rows.findIndex((_, i) => heroSlideId(i) === over.id);
               if (from < 0 || to < 0) return;
               writeHeroPatch(updateField, moveHeroSlide(hero, from, to));
-              setHeroImageOpenIdx((o) => {
-                if (o === null) return o;
-                if (o === from) return to;
-                if (from < to && o > from && o <= to) return o - 1;
-                if (from > to && o >= to && o < from) return o + 1;
-                return o;
-              });
+              setHeroImageOpenIdx((o) => remapOpenIdx(o, from, to));
             };
 
             return (
@@ -1270,18 +1272,26 @@ export default function SectionForms({
                                     <button
                                       type="button"
                                       disabled={idx === 0}
-                                      onClick={() => writeHeroPatch(updateField, moveHeroSlide(hero, idx, idx - 1))}
+                                      onClick={() => {
+                                        writeHeroPatch(updateField, moveHeroSlide(hero, idx, idx - 1));
+                                        setHeroImageOpenIdx((o) => remapOpenIdx(o, idx, idx - 1));
+                                      }}
                                       title={locale === "en" ? "Move up" : "Pindah ke atas"}
-                                      className="h-3.5 w-5 flex items-center justify-center rounded text-sidebar-subtle-foreground hover:text-sidebar-foreground hover:bg-sidebar-muted disabled:opacity-20 transition-colors"
+                                      aria-label={locale === "en" ? "Move up" : "Pindah ke atas"}
+                                      className="h-6 w-6 flex items-center justify-center rounded text-sidebar-subtle-foreground hover:text-sidebar-foreground hover:bg-sidebar-muted disabled:opacity-20 transition-colors"
                                     >
                                       <ChevronUp className="h-3 w-3" />
                                     </button>
                                     <button
                                       type="button"
                                       disabled={idx === rows.length - 1}
-                                      onClick={() => writeHeroPatch(updateField, moveHeroSlide(hero, idx, idx + 1))}
+                                      onClick={() => {
+                                        writeHeroPatch(updateField, moveHeroSlide(hero, idx, idx + 1));
+                                        setHeroImageOpenIdx((o) => remapOpenIdx(o, idx, idx + 1));
+                                      }}
                                       title={locale === "en" ? "Move down" : "Pindah ke bawah"}
-                                      className="h-3.5 w-5 flex items-center justify-center rounded text-sidebar-subtle-foreground hover:text-sidebar-foreground hover:bg-sidebar-muted disabled:opacity-20 transition-colors"
+                                      aria-label={locale === "en" ? "Move down" : "Pindah ke bawah"}
+                                      className="h-6 w-6 flex items-center justify-center rounded text-sidebar-subtle-foreground hover:text-sidebar-foreground hover:bg-sidebar-muted disabled:opacity-20 transition-colors"
                                     >
                                       <ChevronDown className="h-3 w-3" />
                                     </button>
