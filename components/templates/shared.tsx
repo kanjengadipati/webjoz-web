@@ -4619,7 +4619,7 @@ export function InlineText({
       } ${isShowingPlaceholder ? "opacity-50 italic" : ""} ${className}`}
       style={{
         ...style,
-        ...(!currentDisplay ? { minWidth: "1.5rem", minHeight: "1.25em", display: style?.display || (multiline ? "block" : "inline-block") } : {}),
+        ...(!currentDisplay && !!placeholder ? { minWidth: "1.5rem", minHeight: "1.25em", display: style?.display || (multiline ? "block" : "inline-block") } : {}),
       }}
       title={t("dashboard.sitesEditor.inlineClickToEdit")}
     >
