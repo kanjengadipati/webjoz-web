@@ -115,7 +115,8 @@ export default function CompactColorPicker({ palette, onChange }: Props) {
         <button
           type="button"
           onClick={handleCopy}
-          title="Salin Kode HEX"
+          title={copied ? t("dashboard.sitesEditor.copiedHex") : t("dashboard.sitesEditor.copyHex")}
+          aria-label={t("dashboard.sitesEditor.copyHex")}
           className="p-1.5 rounded-md hover:bg-sidebar-muted text-sidebar-muted-foreground hover:text-sidebar-foreground transition cursor-pointer"
         >
           {copied ? (

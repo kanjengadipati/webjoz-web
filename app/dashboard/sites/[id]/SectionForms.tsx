@@ -965,7 +965,7 @@ export default function SectionForms({
         <div className="space-y-3">
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>Nama Brand {needsAttention("header.brand_name") && <span className="text-amber-300">⚠️</span>}</span>
+              <span>{t("dashboard.sitesEditor.headerBrandName")} {needsAttention("header.brand_name") && <span className="text-amber-300">⚠️</span>}</span>
               {renderFieldActions("header", "brand_name")}
             </label>
             <input
@@ -974,11 +974,10 @@ export default function SectionForms({
               value={content.header?.brand_name || ""}
               onChange={(e) => updateField("header", "brand_name", e.target.value)}
               className={fieldClass("header.brand_name", SIDEBAR_FIELD_CLASS)}
-
             />
           </div>
           <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-2.5">
-            <span className="text-[12px] font-medium text-sidebar-foreground">Tampilkan Tombol Navigasi</span>
+            <span className="text-[12px] font-medium text-sidebar-foreground">{t("dashboard.sitesEditor.headerShowNavButton")}</span>
             <input
               type="checkbox"
               checked={!(content.header as any)?.nav_cta_hidden}
@@ -991,7 +990,7 @@ export default function SectionForms({
             <>
               <div className="space-y-1">
                 <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-                  <span>Teks Tombol Nav {needsAttention("header.nav_cta_text") && <span className="text-amber-300">⚠️</span>}</span>
+                  <span>{t("dashboard.sitesEditor.headerNavButtonText")} {needsAttention("header.nav_cta_text") && <span className="text-amber-300">⚠️</span>}</span>
                   {renderFieldActions("header", "nav_cta_text")}
                 </label>
                 <input
@@ -999,88 +998,87 @@ export default function SectionForms({
                   type="text"
                   value={content.header?.nav_cta_text || ""}
                   onChange={(e) => updateField("header", "nav_cta_text", e.target.value)}
-                  placeholder="cth. Hubungi Kami"
+                  placeholder={t("dashboard.sitesEditor.phNavCta")}
                   className={fieldClass("header.nav_cta_text", `${SIDEBAR_FIELD_CLASS} text-sidebar-foreground placeholder-sidebar-subtle-foreground`)}
-
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Link ke Section</label>
+                <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.headerNavButtonLink")}</label>
                 <CustomSelect
                   value={(content.header as any)?.nav_cta_href || ""}
                   onChange={(val) => updateField("header", "nav_cta_href", val)}
                   size="sm"
                   triggerClassName="bg-sidebar-input text-sidebar-foreground border-border text-[12px] h-9"
-                  placeholder="— Otomatis dari teks —"
+                  placeholder={t("dashboard.sitesEditor.headerNavButtonLinkAuto")}
                   options={[
-                    { value: "", label: "— Otomatis dari teks —" },
-                    { value: "#hero", label: "Hero (Atas)" },
-                    { value: "#about", label: "Tentang Kami" },
-                    { value: "#benefits", label: "Keunggulan" },
-                    { value: "#catalog", label: "Katalog / Produk" },
-                    { value: "#menu", label: "Menu" },
-                    { value: "#works", label: "Portofolio Proyek" },
-                    { value: "#gallery", label: "Galeri" },
-                    { value: "#testimonials", label: "Testimoni" },
-                    { value: "#faq", label: "FAQ" },
-                    { value: "#contact", label: "Kontak" },
+                    { value: "", label: t("dashboard.sitesEditor.headerNavButtonLinkAuto") },
+                    { value: "#hero", label: t("dashboard.sitesEditor.headerNavLinkHero") },
+                    { value: "#about", label: t("dashboard.sitesEditor.headerNavLinkAbout") },
+                    { value: "#benefits", label: t("dashboard.sitesEditor.headerNavLinkBenefits") },
+                    { value: "#catalog", label: t("dashboard.sitesEditor.headerNavLinkCatalog") },
+                    { value: "#menu", label: t("dashboard.sitesEditor.headerNavLinkMenu") },
+                    { value: "#works", label: t("dashboard.sitesEditor.headerNavLinkWorks") },
+                    { value: "#gallery", label: t("dashboard.sitesEditor.headerNavLinkGallery") },
+                    { value: "#testimonials", label: t("dashboard.sitesEditor.headerNavLinkTestimonials") },
+                    { value: "#faq", label: t("dashboard.sitesEditor.headerNavLinkFaq") },
+                    { value: "#contact", label: t("dashboard.sitesEditor.headerNavLinkContact") },
                   ]}
                 />
                 <p className="text-[10px] text-sidebar-subtle-foreground mt-0.5 leading-snug">
-                  Biarkan kosong untuk mendeteksi section otomatis berdasarkan teks tombol.
+                  {t("dashboard.sitesEditor.headerNavButtonLinkHint")}
                 </p>
               </div>
             </>
           )}
 
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Tagline <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.headerTagline")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.headerTaglineOptional")}</span></label>
             <input
               type="text"
               value={content.header?.tagline || ""}
               onChange={(e) => updateField("header", "tagline", e.target.value)}
-              placeholder="cth. Cita Rasa Nusantara"
+              placeholder={t("dashboard.sitesEditor.phTagline")}
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Logo URL</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.headerLogoUrl")}</label>
             <FileUpload label="" value={content.header?.logo_url || ""} onChange={(val) => updateField("header", "logo_url", val)} placeholder="https://..." maxWidth={400} maxHeight={400} quality={0.85} previewSize="sm" objectFit="contain" />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Logo Versi Terang (opsional)</label>
-            <p className="text-[11px] text-sidebar-subtle-foreground">Dipakai di header transparan saat berada di atas hero gelap. Kosongkan untuk memutihkan logo utama otomatis.</p>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.headerLogoLight")}</label>
+            <p className="text-[11px] text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.headerLogoLightHint")}</p>
             <FileUpload label="" value={content.header?.logo_url_light || ""} onChange={(val) => updateField("header", "logo_url_light", val)} placeholder="https://..." maxWidth={400} maxHeight={400} quality={0.85} previewSize="sm" objectFit="contain" />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Favicon</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.headerFavicon")}</label>
             <FileUpload label="" value={content.seo?.favicon_url || ""} onChange={(val) => updateField("seo", "favicon_url", val)} placeholder="https://..." accept=".ico,.png,.jpg,.jpeg" maxWidth={128} maxHeight={128} quality={0.9} previewSize="icon" objectFit="contain" />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Nama Ikon</label>
-            <input id="field-header.icon" type="text" value={content.header?.icon || ""} onChange={(e) => updateField("header", "icon", e.target.value)} className={SIDEBAR_FIELD_CLASS} placeholder="cth. Utensils" />
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.headerIconName")}</label>
+            <input id="field-header.icon" type="text" value={content.header?.icon || ""} onChange={(e) => updateField("header", "icon", e.target.value)} className={SIDEBAR_FIELD_CLASS} placeholder={t("dashboard.sitesEditor.phIconName")} />
           </div>
 
           {/* Nav Menu Items */}
           <div className="pt-2 space-y-2">
             <div>
-              <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Menu Navigasi</label>
-              <p className="text-[10px] text-sidebar-subtle-foreground mt-0.5">Atur item yang tampil di navbar</p>
+              <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.headerNavMenu")}</label>
+              <p className="text-[10px] text-sidebar-subtle-foreground mt-0.5">{t("dashboard.sitesEditor.headerNavMenuHint")}</p>
             </div>
             <div className="flex flex-wrap gap-1.5">
               {([
-                ["about", "Tentang"],
-                ["benefits", "Keunggulan"],
-                ["menu", "Menu"],
-                ["catalog", "Katalog"],
-                ["works", "Portofolio"],
-                ["gallery", "Galeri"],
-                ["testimonials", "Testimoni"],
-                ["faq", "FAQ"],
-                ["cta", "Promo"],
-                ["contact", "Kontak"],
-                ["blog", "Blog"],
+                ["about", t("dashboard.sitesEditor.headerNavSectionAbout")],
+                ["benefits", t("dashboard.sitesEditor.headerNavSectionBenefits")],
+                ["menu", t("dashboard.sitesEditor.headerNavSectionMenu")],
+                ["catalog", t("dashboard.sitesEditor.headerNavSectionCatalog")],
+                ["works", t("dashboard.sitesEditor.headerNavSectionWorks")],
+                ["gallery", t("dashboard.sitesEditor.headerNavSectionGallery")],
+                ["testimonials", t("dashboard.sitesEditor.headerNavSectionTestimonials")],
+                ["faq", t("dashboard.sitesEditor.headerNavSectionFaq")],
+                ["cta", t("dashboard.sitesEditor.headerNavSectionPromo")],
+                ["contact", t("dashboard.sitesEditor.headerNavSectionContact")],
+                ["blog", t("dashboard.sitesEditor.headerNavSectionBlog")],
               ] as const)
                 .filter(([key]) => {
                   if (key === "menu") return Boolean((content as any)?.menu?.categories?.length);
@@ -1343,7 +1341,7 @@ export default function SectionForms({
                                       onChange={(e) => {
                                         writeHeroPatch(updateField, setHeroCaption(hero, idx, e.target.value));
                                       }}
-                                      placeholder={locale === "en" ? "Caption (optional)" : "Caption (opsional)"}
+                                      placeholder={t("dashboard.sitesEditor.phHeroCaption")}
                                       className={`${SIDEBAR_FIELD_CLASS} text-[11px]`}
                                     />
                                   </div>
@@ -1408,7 +1406,7 @@ export default function SectionForms({
               type="text"
               value={content.hero?.eyebrow || ""}
               onChange={(e) => updateField("hero", "eyebrow", e.target.value)}
-              placeholder="cth. Tersedia Sekarang"
+              placeholder={t("dashboard.sitesEditor.phEyebrowAvailable")}
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
             <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Label kecil di atas headline (dipakai oleh beberapa template).</p>
@@ -1495,7 +1493,7 @@ export default function SectionForms({
           {showIfVariant(HERO_SECONDARY_VARIANTS) && (
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>Teks Tombol CTA Kedua <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
+              <span>{locale === "en" ? "Secondary CTA Button Text" : "Teks Tombol CTA Kedua"} <span className="text-sidebar-subtle-foreground font-normal normal-case">({locale === "en" ? "optional" : "opsional"})</span></span>
               {renderFieldActions("hero", "cta_secondary_text")}
             </label>
             <input
@@ -1503,7 +1501,7 @@ export default function SectionForms({
               type="text"
               value={content.hero?.cta_secondary_text || ""}
               onChange={(e) => updateField("hero", "cta_secondary_text", e.target.value)}
-              placeholder="cth. Pelajari Lebih Lanjut"
+              placeholder={t("dashboard.sitesEditor.phLearnMore")}
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
             <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Tombol kedua di samping tombol utama (dipakai oleh beberapa template).</p>
@@ -1513,7 +1511,7 @@ export default function SectionForms({
           {showIfVariant(HERO_SECONDARY_VARIANTS) && (
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>URL Tombol CTA Kedua <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
+              <span>{locale === "en" ? "Secondary CTA Button URL" : "URL Tombol CTA Kedua"} <span className="text-sidebar-subtle-foreground font-normal normal-case">({locale === "en" ? "optional" : "opsional"})</span></span>
               {renderFieldActions("hero", "cta_secondary_url")}
             </label>
             <input
@@ -1521,7 +1519,7 @@ export default function SectionForms({
               type="text"
               value={content.hero?.cta_secondary_url || ""}
               onChange={(e) => updateField("hero", "cta_secondary_url", e.target.value)}
-              placeholder="cth. #about atau https://..."
+              placeholder={t("dashboard.sitesEditor.phSecondaryCta")}
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
             <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Link tujuan tombol CTA kedua (section anchor, URL, atau WhatsApp).</p>
@@ -1531,7 +1529,7 @@ export default function SectionForms({
           {showIfVariant(HERO_BADGE_VARIANTS) && (
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>Teks Badge Bawah CTA <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
+              <span>{locale === "en" ? "CTA Badge Text" : "Teks Badge Bawah CTA"} <span className="text-sidebar-subtle-foreground font-normal normal-case">({locale === "en" ? "optional" : "opsional"})</span></span>
               {renderFieldActions("hero", "badge_text")}
             </label>
             <input
@@ -1539,7 +1537,7 @@ export default function SectionForms({
               type="text"
               value={content.hero?.badge_text || ""}
               onChange={(e) => updateField("hero", "badge_text", e.target.value)}
-              placeholder="cth. Buka 7 Hari · Jam 07.00–22.00"
+              placeholder={t("dashboard.sitesEditor.phBadgeText")}
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
             <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Teks kecil yang muncul di bawah tombol CTA (jam buka, info singkat, dll).</p>
@@ -1549,7 +1547,7 @@ export default function SectionForms({
           {showIfVariant(HERO_OPENING_HOURS_VARIANTS) && (
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>Jam Buka <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
+              <span>{locale === "en" ? "Opening Hours" : "Jam Buka"} <span className="text-sidebar-subtle-foreground font-normal normal-case">({locale === "en" ? "optional" : "opsional"})</span></span>
               {renderFieldActions("hero", "opening_hours")}
             </label>
             <input
@@ -1557,7 +1555,7 @@ export default function SectionForms({
               type="text"
               value={content.hero?.opening_hours || ""}
               onChange={(e) => updateField("hero", "opening_hours", e.target.value)}
-              placeholder="cth. Buka Setiap Hari 07.00 – 22.00"
+              placeholder={t("dashboard.sitesEditor.phOpeningHours")}
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
           </div>
@@ -1593,7 +1591,7 @@ export default function SectionForms({
       {activeTab === "hero" && (
         <div className="space-y-1 mt-2">
           <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-            Warna Latar Hero
+            {t("dashboard.sitesEditor.heroBgColor")}
           </label>
           <div className="flex items-center gap-2">
             <div className="relative w-8 h-8 rounded-md border border-border overflow-hidden flex-shrink-0">
@@ -1610,10 +1608,10 @@ export default function SectionForms({
               value={content.hero.background_color || ""}
               onChange={(e) => updateField("hero", "background_color", e.target.value)}
               className="flex-1 px-2.5 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-md text-[13px] outline-none focus:border-primary/60"
-              placeholder="Kosongkan untuk pakai warna global"
+              placeholder={t("dashboard.sitesEditor.phHeroBgColor")}
             />
           </div>
-          <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Biarkan kosong untuk menggunakan warna latar global.</p>
+          <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">{t("dashboard.sitesEditor.heroBgColorHint")}</p>
         </div>
       )}
 
@@ -1622,14 +1620,14 @@ export default function SectionForms({
         <div className="space-y-3">
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>Gambar Tentang</span>
+              <span>{t("dashboard.sitesEditor.aboutImage")}</span>
               <AiImageButton businessType={bType} onSelect={(url) => handleAiImage("about", "image_url", url)}
  />
             </label>
             <FileUpload label="" value={content.about.image_url || ""} onChange={(val) => updateField("about", "image_url", val)} placeholder="https://..." maxWidth={1000} maxHeight={1000} quality={0.8} />
           </div>
           <div className="space-y-1">
-            <label className="text-[10px] text-sidebar-subtle-foreground uppercase">Perataan Teks</label>
+            <label className="text-[10px] text-sidebar-subtle-foreground uppercase">{t("dashboard.sitesEditor.commonTextAlign")}</label>
             <div className="flex gap-1">
               {(["left", "center", "right"] as const).map((align) => (
                 <button
@@ -1642,34 +1640,34 @@ export default function SectionForms({
                       : "border-border text-sidebar-muted-foreground hover:border-border"
                   }`}
                 >
-                  {align === "left" ? "Kiri" : align === "center" ? "Tengah" : "Kanan"}
+                  {t(`dashboard.sitesEditor.common${align.charAt(0).toUpperCase() + align.slice(1)}` as any)}
                 </button>
               ))}
             </div>
           </div>
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>Eyebrow <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
+              <span>{t("dashboard.sitesEditor.commonEyebrow")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></span>
               {renderFieldActions("about", "eyebrow")}
             </label>
             <input
               type="text"
               value={content.about?.eyebrow || ""}
               onChange={(e) => updateField("about", "eyebrow", e.target.value)}
-              placeholder="cth. Tentang Kami"
+              placeholder={t("dashboard.sitesEditor.phAboutEyebrow")}
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
           </div>
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span className="flex items-center gap-1">
-                Judul {needsAttention("about.title") && <span className="text-amber-300">⚠️</span>}
+                {t("dashboard.sitesEditor.commonTitle")} {needsAttention("about.title") && <span className="text-amber-300">⚠️</span>}
               </span>
               {renderFieldActions("about", "title", (
                 <AiFieldButton
                   loading={aiLoadingField === "about.title"}
-                  onGenerate={() => handleAiText("about", "title", "Buat judul section tentang yang menarik dan relevan dengan bisnis", "Judul Tentang")}
-                  title="AI: generate judul"
+                  onGenerate={() => handleAiText("about", "title", t("dashboard.sitesEditor.aiAboutTitlePrompt"), t("dashboard.sitesEditor.aiAboutTitleLabel"))}
+                  title={t("dashboard.sitesEditor.aiAboutTitleBtn")}
                   onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
                 />
               ))}
@@ -1680,19 +1678,18 @@ export default function SectionForms({
               value={content.about.title || ""}
               onChange={(e) => updateField("about", "title", e.target.value)}
               className={fieldClass("about.title", SIDEBAR_FIELD_CLASS)}
-
             />
           </div>
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span className="flex items-center gap-1">
-                Deskripsi {needsAttention("about.body") && <span className="text-amber-300">⚠️</span>}
+                {t("dashboard.sitesEditor.commonDescription")} {needsAttention("about.body") && <span className="text-amber-300">⚠️</span>}
               </span>
               {renderFieldActions("about", "body", (
                 <AiFieldButton
                   loading={aiLoadingField === "about.body"}
-                  onGenerate={() => handleAiText("about", "body", "Tulis paragraf tentang bisnis ini yang hangat, spesifik, dan manusiawi. 2-4 kalimat.", "Deskripsi")}
-                  title="AI: generate deskripsi"
+                  onGenerate={() => handleAiText("about", "body", t("dashboard.sitesEditor.aiAboutBodyPrompt"), t("dashboard.sitesEditor.aiAboutBodyLabel"))}
+                  title={t("dashboard.sitesEditor.aiAboutBodyBtn")}
                   onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
                 />
               ))}
@@ -1703,36 +1700,35 @@ export default function SectionForms({
               value={content.about.body || ""}
               onChange={(e) => updateField("about", "body", e.target.value)}
               className={fieldClass("about.body", `${SIDEBAR_FIELD_CLASS} resize-none`)}
-
             />
           </div>
           {/* Highlight Stats */}
           <div className="space-y-2">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground block">Statistik Highlight</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground block">{t("dashboard.sitesEditor.aboutStatHighlight")}</label>
             {[1, 2, 3].map((n) => {
               const statKey = `highlight_stat_${n}` as "highlight_stat_1" | "highlight_stat_2" | "highlight_stat_3";
               const stat = (content.about as any)[statKey] as { value?: string; label?: string } | undefined;
               return (
                 <div key={n} className="border border-border rounded-md p-2 space-y-1.5 bg-muted/30">
-                  <span className="text-[10px] text-sidebar-subtle-foreground uppercase font-bold">Stat {n}</span>
+                  <span className="text-[10px] text-sidebar-subtle-foreground uppercase font-bold">{t("dashboard.sitesEditor.aboutStat")} {n}</span>
                   <div className="flex gap-2">
                     <div className="flex-1 space-y-0.5">
-                      <label className="text-[10px] text-sidebar-subtle-foreground">Nilai</label>
+                      <label className="text-[10px] text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.aboutStatValue")}</label>
                       <input
                         type="text"
                         value={stat?.value || ""}
                         onChange={(e) => updateField("about", statKey, { ...(stat || {}), value: e.target.value })}
-                        placeholder="cth. 500+"
+                        placeholder={t("dashboard.sitesEditor.phStatValue")}
                         className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                       />
                     </div>
                     <div className="flex-1 space-y-0.5">
-                      <label className="text-[10px] text-sidebar-subtle-foreground">Label</label>
+                      <label className="text-[10px] text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.aboutStatLabel")}</label>
                       <input
                         type="text"
                         value={stat?.label || ""}
                         onChange={(e) => updateField("about", statKey, { ...(stat || {}), label: e.target.value })}
-                        placeholder="cth. Pelanggan Puas"
+                        placeholder={t("dashboard.sitesEditor.phStatLabel")}
                         className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                       />
                     </div>
@@ -1742,42 +1738,42 @@ export default function SectionForms({
             })}
           </div>
           {/* Milestones */}
-          <CollapsibleGroup label="Milestones / Timeline" defaultOpen={false}>
+          <CollapsibleGroup label={t("dashboard.sitesEditor.aboutMilestones")} defaultOpen={false}>
             {((content.about?.milestones as any[]) || []).map((m: any, idx: number) => (
               <div key={idx} className="border border-border rounded-md p-2 space-y-1.5 bg-muted/30">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-sidebar-subtle-foreground uppercase font-bold">Milestone {idx + 1}</span>
+                  <span className="text-[10px] text-sidebar-subtle-foreground uppercase font-bold">{t("dashboard.sitesEditor.aboutMilestone")} {idx + 1}</span>
                   <button type="button" onClick={() => {
                     const arr = [...(content.about?.milestones || [])];
                     arr.splice(idx, 1);
                     updateField("about", "milestones", arr);
-                  }} className="text-red-400 hover:text-red-300 text-[11px] cursor-pointer">Hapus</button>
+                  }} className="text-red-400 hover:text-red-300 text-[11px] cursor-pointer">{t("dashboard.sitesEditor.commonRemove")}</button>
                 </div>
-                <input type="text" value={m.year || ""} onChange={(e) => { const arr = [...(content.about?.milestones || [])]; arr[idx] = { ...arr[idx], year: e.target.value }; updateField("about", "milestones", arr); }} placeholder="Tahun (cth. 2020)" className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
-                <input type="text" value={m.title || ""} onChange={(e) => { const arr = [...(content.about?.milestones || [])]; arr[idx] = { ...arr[idx], title: e.target.value }; updateField("about", "milestones", arr); }} placeholder="Judul milestone" className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
-                <textarea rows={1} value={m.description || ""} onChange={(e) => { const arr = [...(content.about?.milestones || [])]; arr[idx] = { ...arr[idx], description: e.target.value }; updateField("about", "milestones", arr); }} placeholder="Deskripsi (opsional)" className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground resize-none" />
+                <input type="text" value={m.year || ""} onChange={(e) => { const arr = [...(content.about?.milestones || [])]; arr[idx] = { ...arr[idx], year: e.target.value }; updateField("about", "milestones", arr); }} placeholder={t("dashboard.sitesEditor.aboutMilestoneYear")} className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
+                <input type="text" value={m.title || ""} onChange={(e) => { const arr = [...(content.about?.milestones || [])]; arr[idx] = { ...arr[idx], title: e.target.value }; updateField("about", "milestones", arr); }} placeholder={t("dashboard.sitesEditor.aboutMilestoneTitle")} className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
+                <textarea rows={1} value={m.description || ""} onChange={(e) => { const arr = [...(content.about?.milestones || [])]; arr[idx] = { ...arr[idx], description: e.target.value }; updateField("about", "milestones", arr); }} placeholder={t("dashboard.sitesEditor.aboutMilestoneDesc")} className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground resize-none" />
               </div>
             ))}
-            <button type="button" onClick={() => updateField("about", "milestones", [...(content.about?.milestones || []), { year: new Date().getFullYear().toString(), title: "Milestone Baru", description: "" }])} className="flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-primary/80 hover:text-primary cursor-pointer"><Plus className="w-3 h-3" /> Tambah Milestone</button>
+            <button type="button" onClick={() => updateField("about", "milestones", [...(content.about?.milestones || []), { year: new Date().getFullYear().toString(), title: "Milestone Baru", description: "" }])} className="flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-primary/80 hover:text-primary cursor-pointer"><Plus className="w-3 h-3" /> {t("dashboard.sitesEditor.aboutAddMilestone")}</button>
           </CollapsibleGroup>
           {/* Team Members */}
-          <CollapsibleGroup label="Anggota Tim" defaultOpen={false}>
+          <CollapsibleGroup label={t("dashboard.sitesEditor.aboutTeamMembers")} defaultOpen={false}>
             {((content.about?.team_members as any[]) || []).map((m: any, idx: number) => (
               <div key={idx} className="border border-border rounded-md p-2 space-y-1.5 bg-muted/30">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-sidebar-subtle-foreground uppercase font-bold">Anggota {idx + 1}</span>
+                  <span className="text-[10px] text-sidebar-subtle-foreground uppercase font-bold">{t("dashboard.sitesEditor.aboutTeamMember")} {idx + 1}</span>
                   <button type="button" onClick={() => {
                     const arr = [...(content.about?.team_members || [])];
                     arr.splice(idx, 1);
                     updateField("about", "team_members", arr);
-                  }} className="text-red-400 hover:text-red-300 text-[11px] cursor-pointer">Hapus</button>
+                  }} className="text-red-400 hover:text-red-300 text-[11px] cursor-pointer">{t("dashboard.sitesEditor.commonRemove")}</button>
                 </div>
-                <input type="text" value={m.name || ""} onChange={(e) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], name: e.target.value }; updateField("about", "team_members", arr); }} placeholder="Nama" className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
-                <input type="text" value={m.role || ""} onChange={(e) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], role: e.target.value }; updateField("about", "team_members", arr); }} placeholder="Jabatan" className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
-                <FileUpload label="Foto" value={m.photo_url || ""} onChange={(val) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], photo_url: val }; updateField("about", "team_members", arr); }} placeholder="https://..." maxWidth={400} maxHeight={400} quality={0.85} previewSize="sm" />
+                <input type="text" value={m.name || ""} onChange={(e) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], name: e.target.value }; updateField("about", "team_members", arr); }} placeholder={t("dashboard.sitesEditor.commonName")} className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
+                <input type="text" value={m.role || ""} onChange={(e) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], role: e.target.value }; updateField("about", "team_members", arr); }} placeholder={t("dashboard.sitesEditor.commonRole")} className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
+                <FileUpload label={t("dashboard.sitesEditor.commonPhoto")} value={m.photo_url || ""} onChange={(val) => { const arr = [...(content.about?.team_members || [])]; arr[idx] = { ...arr[idx], photo_url: val }; updateField("about", "team_members", arr); }} placeholder="https://..." maxWidth={400} maxHeight={400} quality={0.85} previewSize="sm" />
               </div>
             ))}
-            <button type="button" onClick={() => updateField("about", "team_members", [...(content.about?.team_members || []), { name: "Nama Anggota", role: "Jabatan", photo_url: "" }])} className="flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-primary/80 hover:text-primary cursor-pointer"><Plus className="w-3 h-3" /> Tambah Anggota</button>
+            <button type="button" onClick={() => updateField("about", "team_members", [...(content.about?.team_members || []), { name: "Nama Anggota", role: "Jabatan", photo_url: "" }])} className="flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-primary/80 hover:text-primary cursor-pointer"><Plus className="w-3 h-3" /> {t("dashboard.sitesEditor.aboutAddTeamMember")}</button>
           </CollapsibleGroup>
         </div>
       )}
@@ -1786,18 +1782,18 @@ export default function SectionForms({
       {activeTab === "benefits" && (
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Eyebrow <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.benefitsEyebrow")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></label>
             <input
               type="text"
               value={content.benefits?.eyebrow || ""}
               onChange={(e) => updateField("benefits", "eyebrow", e.target.value)}
-              placeholder="cth. Kenapa Pilih Kami"
+              placeholder={t("dashboard.sitesEditor.phWhyChooseUs")}
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
           </div>
           <div className="space-y-1">
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              Judul Section {needsAttention("benefits.title") && <span className="text-amber-300">⚠️</span>}
+              {t("dashboard.sitesEditor.benefitsSectionTitle")} {needsAttention("benefits.title") && <span className="text-amber-300">⚠️</span>}
             </label>
             <input
               id="field-benefits.title"
@@ -1805,21 +1801,20 @@ export default function SectionForms({
               value={content.benefits.title || ""}
               onChange={(e) => updateField("benefits", "title", e.target.value)}
               className={fieldClass("benefits.title", SIDEBAR_FIELD_CLASS)}
-
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Subtitle <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.benefitsSubtitle")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></label>
             <input
               type="text"
               value={content.benefits?.subtitle || ""}
               onChange={(e) => updateField("benefits", "subtitle", e.target.value)}
-              placeholder="cth. Berbagai alasan mengapa pelanggan mempercayai kami"
+              placeholder={t("dashboard.sitesEditor.phBenefitsSubtitle")}
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[10px] text-sidebar-subtle-foreground uppercase">Perataan Teks</label>
+            <label className="text-[10px] text-sidebar-subtle-foreground uppercase">{t("dashboard.sitesEditor.commonTextAlign")}</label>
             <div className="flex gap-1">
               {(["left", "center", "right"] as const).map((align) => (
                 <button
@@ -1832,7 +1827,7 @@ export default function SectionForms({
                       : "border-border text-sidebar-muted-foreground hover:border-border"
                   }`}
                 >
-                  {align === "left" ? "Kiri" : align === "center" ? "Tengah" : "Kanan"}
+                  {t(`dashboard.sitesEditor.common${align.charAt(0).toUpperCase() + align.slice(1)}` as any)}
                 </button>
               ))}
             </div>
@@ -1849,7 +1844,7 @@ export default function SectionForms({
                   }}
                   className="text-red-400 text-[11px]"
                 >
-                  Hapus
+                  {t("dashboard.sitesEditor.commonRemove")}
                 </button>
               </div>
               <input
@@ -1860,7 +1855,7 @@ export default function SectionForms({
                   n[idx].title = e.target.value;
                   updateField("benefits", "items", n);
                 }}
-                placeholder="Judul"
+                placeholder={t("dashboard.sitesEditor.benefitsItemTitle")}
                 className={fieldClass(`benefits.items.${idx}.title`, SIDEBAR_FIELD_CLASS)}
               />
               <textarea
@@ -1871,12 +1866,12 @@ export default function SectionForms({
                   n[idx].description = e.target.value;
                   updateField("benefits", "items", n);
                 }}
-                placeholder="Deskripsi"
+                placeholder={t("dashboard.sitesEditor.benefitsItemDesc")}
                 className={fieldClass(`benefits.items.${idx}.description`, `${SIDEBAR_FIELD_CLASS} resize-none`)}
               />
               {/* Icon + Stat row */}
               <div className="space-y-1.5">
-                <label className="text-[10px] text-sidebar-subtle-foreground uppercase">Icon</label>
+                <label className="text-[10px] text-sidebar-subtle-foreground uppercase">{t("dashboard.sitesEditor.commonIcon")}</label>
                 <IconPicker
                   value={item.icon || ""}
                   onChange={(name) => { const n = [...content.benefits.items]; n[idx].icon = name; updateField("benefits", "items", n); }}
@@ -1884,22 +1879,22 @@ export default function SectionForms({
               </div>
               <div className="flex gap-2">
                 <div className="flex-1 space-y-0.5">
-                  <label className="text-[10px] text-sidebar-subtle-foreground uppercase">Stat</label>
+                  <label className="text-[10px] text-sidebar-subtle-foreground uppercase">{t("dashboard.sitesEditor.commonStat")}</label>
                   <input
                     type="text"
                     value={item.stat || ""}
                     onChange={(e) => { const n = [...content.benefits.items]; n[idx].stat = e.target.value; updateField("benefits", "items", n); }}
-                    placeholder="50+"
+                    placeholder={t("dashboard.sitesEditor.phStatValue")}
                     className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                   />
                 </div>
                 <div className="flex-1 space-y-0.5">
-                  <label className="text-[10px] text-sidebar-subtle-foreground uppercase">Keterangan Stat</label>
+                  <label className="text-[10px] text-sidebar-subtle-foreground uppercase">{t("dashboard.sitesEditor.benefitsStatLabel")}</label>
                   <input
                     type="text"
                     value={item.stat_label || ""}
                     onChange={(e) => { const n = [...content.benefits.items]; n[idx].stat_label = e.target.value; updateField("benefits", "items", n); }}
-                    placeholder="Proyek Selesai"
+                    placeholder={t("dashboard.sitesEditor.phBenefitsStat")}
                     className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                   />
                 </div>
@@ -1914,35 +1909,35 @@ export default function SectionForms({
             }}
             className="w-full text-[12px] py-1.5 border border-border rounded-lg text-sidebar-muted-foreground hover:bg-sidebar-muted flex items-center justify-center gap-1"
           >
-            <Plus className="w-3.5 h-3.5" /> Tambah
+            <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesEditor.benefitsAddItem")}
           </button>
           {/* Comparison table */}
-          <CollapsibleGroup label="Tabel Perbandingan" defaultOpen={false}>
+          <CollapsibleGroup label={t("dashboard.sitesEditor.benefitsComparisonTable")} defaultOpen={false}>
             {(content.benefits?.comparison?.column_a_label !== undefined) || false ? null : null}
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-0.5">
-                <label className="text-[10px] text-sidebar-subtle-foreground uppercase">Label Kolom A (Kami)</label>
-                <input type="text" value={content.benefits?.comparison?.column_a_label || ""} onChange={(e) => updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), column_a_label: e.target.value })} placeholder="cth. Bersama Kami" className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
+                <label className="text-[10px] text-sidebar-subtle-foreground uppercase">{t("dashboard.sitesEditor.benefitsComparisonColA")}</label>
+                <input type="text" value={content.benefits?.comparison?.column_a_label || ""} onChange={(e) => updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), column_a_label: e.target.value })} placeholder={t("dashboard.sitesEditor.phBenefitsColA")} className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
               </div>
               <div className="space-y-0.5">
-                <label className="text-[10px] text-sidebar-subtle-foreground uppercase">Label Kolom B (Lainnya)</label>
-                <input type="text" value={content.benefits?.comparison?.column_b_label || ""} onChange={(e) => updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), column_b_label: e.target.value })} placeholder="cth. Kompetitor" className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
+                <label className="text-[10px] text-sidebar-subtle-foreground uppercase">{t("dashboard.sitesEditor.benefitsComparisonColB")}</label>
+                <input type="text" value={content.benefits?.comparison?.column_b_label || ""} onChange={(e) => updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), column_b_label: e.target.value })} placeholder={t("dashboard.sitesEditor.phBenefitsColB")} className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
               </div>
             </div>
             {((content.benefits?.comparison?.rows as any[]) || []).map((row: any, idx: number) => (
               <div key={idx} className="border border-border rounded-md p-2 space-y-1.5 bg-muted/30">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-sidebar-subtle-foreground uppercase font-bold">Baris {idx + 1}</span>
-                  <button type="button" onClick={() => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr.splice(idx, 1); updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} className="text-red-400 hover:text-red-300 text-[11px] cursor-pointer">Hapus</button>
+                  <span className="text-[10px] text-sidebar-subtle-foreground uppercase font-bold">{t("dashboard.sitesEditor.benefitsComparisonRow")} {idx + 1}</span>
+                  <button type="button" onClick={() => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr.splice(idx, 1); updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} className="text-red-400 hover:text-red-300 text-[11px] cursor-pointer">{t("dashboard.sitesEditor.commonRemove")}</button>
                 </div>
-                <input type="text" value={row.label || ""} onChange={(e) => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr[idx] = { ...arr[idx], label: e.target.value }; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} placeholder="Label (cth. Harga)" className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
+                <input type="text" value={row.label || ""} onChange={(e) => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr[idx] = { ...arr[idx], label: e.target.value }; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} placeholder={t("dashboard.sitesEditor.phComparisonLabel")} className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
                 <div className="grid grid-cols-2 gap-2">
-                  <input type="text" value={row.value_a || ""} onChange={(e) => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr[idx] = { ...arr[idx], value_a: e.target.value }; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} placeholder="Nilai A" className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
-                  <input type="text" value={row.value_b || ""} onChange={(e) => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr[idx] = { ...arr[idx], value_b: e.target.value }; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} placeholder="Nilai B" className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
+                  <input type="text" value={row.value_a || ""} onChange={(e) => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr[idx] = { ...arr[idx], value_a: e.target.value }; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} placeholder={t("dashboard.sitesEditor.phValueA")} className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
+                  <input type="text" value={row.value_b || ""} onChange={(e) => { const arr = [...(content.benefits?.comparison?.rows || [])]; arr[idx] = { ...arr[idx], value_b: e.target.value }; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} placeholder={t("dashboard.sitesEditor.phValueB")} className="w-full px-2 py-1 border border-border rounded text-[11px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground" />
                 </div>
               </div>
             ))}
-            <button type="button" onClick={() => { const arr = [...(content.benefits?.comparison?.rows || []), { label: "", value_a: "✓", value_b: "✗" }]; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} className="flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-primary/80 hover:text-primary cursor-pointer"><Plus className="w-3 h-3" /> Tambah Baris</button>
+            <button type="button" onClick={() => { const arr = [...(content.benefits?.comparison?.rows || []), { label: "", value_a: "✓", value_b: "✗" }]; updateField("benefits", "comparison", { ...(content.benefits?.comparison || {}), rows: arr }); }} className="flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-primary/80 hover:text-primary cursor-pointer"><Plus className="w-3 h-3" /> {t("dashboard.sitesEditor.benefitsAddRow")}</button>
           </CollapsibleGroup>
         </div>
       )}
@@ -1952,7 +1947,7 @@ export default function SectionForms({
         <div className="space-y-3">
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>Judul Section {needsAttention("faq.title") && <span className="text-amber-300">⚠️</span>}</span>
+              <span>{t("dashboard.sitesEditor.faqSectionTitle")} {needsAttention("faq.title") && <span className="text-amber-300">⚠️</span>}</span>
               {renderFieldActions("faq", "title")}
             </label>
             <input
@@ -1960,13 +1955,12 @@ export default function SectionForms({
               value={content.faq.title || ""}
               onChange={(e) => updateField("faq", "title", e.target.value)}
               className={fieldClass("faq.title", SIDEBAR_FIELD_CLASS)}
-
             />
           </div>
           {content.faq.items?.map((item: any, idx: number) => (
             <div key={idx} className="border border-border p-2.5 rounded-lg space-y-2 bg-muted/40">
               <div className="flex justify-between items-center">
-                <span className="text-[10px] uppercase font-bold text-sidebar-muted-foreground">FAQ #{idx + 1}</span>
+                <span className="text-[10px] uppercase font-bold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.faqItem")} #{idx + 1}</span>
                 <button
                   type="button"
                   onClick={() => {
@@ -1975,7 +1969,7 @@ export default function SectionForms({
                   }}
                   className="text-red-400 text-[11px]"
                 >
-                  Hapus
+                  {t("dashboard.sitesEditor.commonRemove")}
                 </button>
               </div>
               <input
@@ -1986,7 +1980,7 @@ export default function SectionForms({
                   n[idx].question = e.target.value;
                   updateField("faq", "items", n);
                 }}
-                placeholder="Pertanyaan"
+                placeholder={t("dashboard.sitesEditor.faqQuestion")}
                 className={fieldClass(`faq.items.${idx}.question`, SIDEBAR_FIELD_CLASS)}
               />
               <textarea
@@ -1997,7 +1991,7 @@ export default function SectionForms({
                   n[idx].answer = e.target.value;
                   updateField("faq", "items", n);
                 }}
-                placeholder="Jawaban"
+                placeholder={t("dashboard.sitesEditor.faqAnswer")}
                 className={fieldClass(`faq.items.${idx}.answer`, `${SIDEBAR_FIELD_CLASS} resize-none`)}
               />
               <input
@@ -2008,7 +2002,7 @@ export default function SectionForms({
                   n[idx] = { ...n[idx], category: e.target.value };
                   updateField("faq", "items", n);
                 }}
-                placeholder="Kategori (opsional, untuk variant sidebar-category)"
+                placeholder={`${t("dashboard.sitesEditor.faqCategory")} ${t("dashboard.sitesEditor.faqCategoryHint")}`}
                 className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
               />
             </div>
@@ -2021,7 +2015,7 @@ export default function SectionForms({
             }}
             className="w-full text-[12px] py-1.5 border border-border rounded-lg text-sidebar-muted-foreground hover:bg-sidebar-muted flex items-center justify-center gap-1"
           >
-            <Plus className="w-3.5 h-3.5" /> Tambah FAQ
+            <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesEditor.faqAddItem")}
           </button>
         </div>
       )}
@@ -2032,7 +2026,7 @@ export default function SectionForms({
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span className="flex items-center gap-1">
-                Headline CTA {needsAttention("cta.headline") && <span className="text-amber-300">⚠️</span>}
+                {t("dashboard.sitesEditor.ctaHeadline")} {needsAttention("cta.headline") && <span className="text-amber-300">⚠️</span>}
               </span>
               <AiFieldButton
                 loading={aiLoadingField === "cta.headline"}
@@ -2047,46 +2041,45 @@ export default function SectionForms({
               value={content.cta.headline || ""}
               onChange={(e) => updateField("cta", "headline", e.target.value)}
               className={fieldClass("cta.headline", SIDEBAR_FIELD_CLASS)}
-
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Eyebrow <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.ctaEyebrow")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></label>
             <input
               type="text"
               value={content.cta?.eyebrow || ""}
               onChange={(e) => updateField("cta", "eyebrow", e.target.value)}
-              placeholder="cth. Mulai Sekarang"
+              placeholder={t("dashboard.sitesEditor.phCtaEyebrow")}
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Subheadline <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.ctaSubheadline")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></label>
             <input
               type="text"
               value={content.cta?.subheadline || ""}
               onChange={(e) => updateField("cta", "subheadline", e.target.value)}
-              placeholder="cth. Dapatkan penawaran spesial sebelum kehabisan!"
+              placeholder={t("dashboard.sitesEditor.phCtaSubheadline")}
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Trust Signal <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.ctaTrustSignal")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></label>
             <input
               type="text"
               value={content.cta?.trust_signal || ""}
               onChange={(e) => updateField("cta", "trust_signal", e.target.value)}
-              placeholder="cth. ✅ Lebih dari 500 pelanggan puas"
+              placeholder={t("dashboard.sitesEditor.phCtaTrustSignal")}
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Gambar CTA <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional, untuk variant split-image)</span></label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.ctaImage")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}, {locale === "en" ? "for split-image variant" : "untuk variant split-image"}</span></label>
             <FileUpload label="" value={content.cta?.image_url || ""} onChange={(val) => updateField("cta", "image_url", val)} placeholder="https://..." maxWidth={800} maxHeight={800} quality={0.85} />
           </div>
           <div className="space-y-1">
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              Teks Tombol {needsAttention("cta.button_text") && <span className="text-amber-300">⚠️</span>}
+              {t("dashboard.sitesEditor.ctaButtonText")} {needsAttention("cta.button_text") && <span className="text-amber-300">⚠️</span>}
             </label>
             <input
               id="field-cta.button_text"
@@ -2094,7 +2087,6 @@ export default function SectionForms({
               value={content.cta.button_text || ""}
               onChange={(e) => updateField("cta", "button_text", e.target.value)}
               className={fieldClass("cta.button_text", SIDEBAR_FIELD_CLASS)}
-
             />
           </div>
           <LinkTypeInput
@@ -2121,12 +2113,12 @@ export default function SectionForms({
       {activeTab === "contact" && (
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Rata Konten</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.contactContentAlign")}</label>
             <div className="grid grid-cols-3 gap-1 rounded-lg border border-border bg-muted/40 p-1">
               {[
-                { value: "left", label: "Kiri" },
-                { value: "center", label: "Tengah" },
-                { value: "right", label: "Kanan" },
+                { value: "left", label: t("dashboard.sitesEditor.commonLeft") },
+                { value: "center", label: t("dashboard.sitesEditor.commonCenter") },
+                { value: "right", label: t("dashboard.sitesEditor.commonRight") },
               ].map((option) => {
                 const active = (content.contact.align || "center") === option.value;
                 return (
@@ -2148,7 +2140,7 @@ export default function SectionForms({
           </div>
           <div className="space-y-1">
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              Judul {needsAttention("contact.title") && <span className="text-amber-300">⚠️</span>}
+              {t("dashboard.sitesEditor.contactTitle")} {needsAttention("contact.title") && <span className="text-amber-300">⚠️</span>}
             </label>
             <input
               id="field-contact.title"
@@ -2156,12 +2148,11 @@ export default function SectionForms({
               value={content.contact.title || ""}
               onChange={(e) => updateField("contact", "title", e.target.value)}
               className={fieldClass("contact.title", SIDEBAR_FIELD_CLASS)}
-
             />
           </div>
           <div className="space-y-1">
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              Alamat <span className="text-sidebar-subtle-foreground normal-case font-normal">(opsional)</span>
+              {t("dashboard.sitesEditor.contactAddress")} <span className="text-sidebar-subtle-foreground normal-case font-normal">{t("dashboard.sitesEditor.commonOptional")}</span>
             </label>
             <input
               id="field-contact.address"
@@ -2169,12 +2160,11 @@ export default function SectionForms({
               value={content.contact.address || ""}
               onChange={(e) => updateField("contact", "address", e.target.value)}
               className={fieldClass("contact.address", SIDEBAR_FIELD_CLASS)}
-
             />
           </div>
           <div className="space-y-1">
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              Nomor WhatsApp <span className="text-sidebar-subtle-foreground normal-case font-normal">(opsional)</span> {needsAttention("contact.phone") && <span className="text-amber-300">⚠️</span>}
+              {t("dashboard.sitesEditor.contactPhone")} <span className="text-sidebar-subtle-foreground normal-case font-normal">{t("dashboard.sitesEditor.commonOptional")}</span> {needsAttention("contact.phone") && <span className="text-amber-300">⚠️</span>}
             </label>
             <input
               id="field-contact.phone"
@@ -2183,15 +2173,12 @@ export default function SectionForms({
               onChange={(e) => {
                 const val = e.target.value;
                 updateField("contact", "phone", val);
-
-                // Keep Hero/CTA buttons in sync if they are currently set as WhatsApp links
                 const digits = val.replace(/\D/g, "");
                 if (digits) {
                   let formattedDigits = digits;
                   if (formattedDigits.startsWith("0")) {
                     formattedDigits = "62" + formattedDigits.slice(1);
                   }
-
                   if (/wa\.me|whatsapp\.com/i.test(content.hero?.cta_url || "")) {
                     updateField("hero", "cta_url", `https://wa.me/${formattedDigits}`);
                   }
@@ -2201,15 +2188,14 @@ export default function SectionForms({
                 }
               }}
               className={fieldClass("contact.phone", SIDEBAR_FIELD_CLASS)}
-
             />
             <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">
-              Jika kosong, pesanan dari keranjang masuk ke <strong className="text-sidebar-muted-foreground">Kotak Masuk Pesan</strong> di dashboard.
+              {t("dashboard.sitesEditor.contactPhoneHint")}
             </p>
           </div>
           <div className="space-y-1">
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              Email <span className="text-sidebar-subtle-foreground normal-case font-normal">(opsional)</span>
+              {t("dashboard.sitesEditor.contactEmail")} <span className="text-sidebar-subtle-foreground normal-case font-normal">{t("dashboard.sitesEditor.commonOptional")}</span>
             </label>
             <input
               id="field-contact.email"
@@ -2217,11 +2203,10 @@ export default function SectionForms({
               value={content.contact.email || ""}
               onChange={(e) => updateField("contact", "email", e.target.value)}
               className={fieldClass("contact.email", SIDEBAR_FIELD_CLASS)}
-
             />
           </div>
           <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-2.5">
-            <span className="text-[12px] font-medium text-sidebar-foreground">Formulir Kontak</span>
+            <span className="text-[12px] font-medium text-sidebar-foreground">{t("dashboard.sitesEditor.contactShowForm")}</span>
             <input
               type="checkbox"
               checked={content.contact.show_lead_form !== false}
@@ -2230,7 +2215,7 @@ export default function SectionForms({
             />
           </div>
           <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-2.5">
-            <span className="text-[12px] font-medium text-sidebar-foreground">Peta Lokasi</span>
+            <span className="text-[12px] font-medium text-sidebar-foreground">{t("dashboard.sitesEditor.contactShowMap")}</span>
             <input
               type="checkbox"
               checked={content.contact.show_map !== false}
@@ -2239,7 +2224,7 @@ export default function SectionForms({
             />
           </div>
           <div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-2.5">
-            <span className="text-[12px] font-medium text-sidebar-foreground">Kartu WhatsApp</span>
+            <span className="text-[12px] font-medium text-sidebar-foreground">{t("dashboard.sitesEditor.contactShowWhatsAppCard")}</span>
             <input
               type="checkbox"
               checked={content.contact.show_whatsapp_card !== false}
@@ -2317,13 +2302,13 @@ export default function SectionForms({
             {/* Form position layout selector */}
             <div className="space-y-1 pt-2">
               <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground">
-                Tata Letak Form Kontak
+                {t("dashboard.sitesEditor.contactFormLayout")}
               </label>
               <div className="flex flex-wrap gap-1">
                 {([
-                  { value: "right", label: "Info kiri, form kanan" },
-                  { value: "left", label: "Form kiri, info kanan" },
-                  { value: "stack", label: "Vertikal (form di bawah)" },
+                  { value: "right", label: t("dashboard.sitesEditor.contactFormLayoutInfoLeft") },
+                  { value: "left", label: t("dashboard.sitesEditor.contactFormLayoutFormLeft") },
+                  { value: "stack", label: t("dashboard.sitesEditor.contactFormLayoutStack") },
                 ] as const).map((opt) => {
                   const active = (content.contact.form_position || "right") === opt.value;
                   return (
@@ -2343,18 +2328,18 @@ export default function SectionForms({
                 })}
               </div>
               <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">
-                "Info kiri, form kanan" cocok untuk hero dengan ruang luas.                 "Vertikal" cocok untuk mobile. Khusus template Natural biasanya default vertikal.
+                {t("dashboard.sitesEditor.contactFormLayoutHint")}
               </p>
             </div>
             {/* Map layout selector */}
             <div className="space-y-1 pt-2">
               <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground">
-                Gaya Tata Letak Peta
+                {t("dashboard.sitesEditor.contactMapLayout")}
               </label>
               <div className="flex flex-wrap gap-1">
                 {([
-                  { value: "inline", label: "Di dalam kolom info" },
-                  { value: "full", label: "Full-width di bawah" },
+                  { value: "inline", label: t("dashboard.sitesEditor.contactMapLayoutInline") },
+                  { value: "full", label: t("dashboard.sitesEditor.contactMapLayoutFull") },
                 ] as const).map((opt) => {
                   const active = (content.contact.map_layout || "inline") === opt.value;
                   return (
@@ -2374,7 +2359,7 @@ export default function SectionForms({
                 })}
               </div>
               <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">
-                "Full-width di bawah" meletakkan peta penuh lebar di bawah kolom info/form.
+                {t("dashboard.sitesEditor.contactMapLayoutHint")}
               </p>
             </div>
             <div className="flex gap-2 mt-1.5">
@@ -2394,7 +2379,7 @@ export default function SectionForms({
                       updateField("contact", "maps_url", res.data.google_maps_url);
                     }
                   } catch {
-                    setResolveError("Gagal meresolve link. Coba salin link embed manual.");
+                    setResolveError(t("dashboard.sitesEditor.contactResolveError"));
                   } finally {
                     setResolvingMaps(false);
                   }
@@ -2407,14 +2392,14 @@ export default function SectionForms({
             </div>
             {content.contact.maps_url && !/\/maps\/embed\?pb=|openstreetmap\.org\/export/.test(content.contact.maps_url) && !/@?(-?\d+\.\d+),(-?\d+\.\d+)/.test(content.contact.maps_url) && (
               <p className="text-[10px] text-amber-400 leading-relaxed">
-                Link ini tidak bisa ditampilkan sebagai peta interaktif. Klik "Pilih Lokasi" atau gunakan link embed Google Maps.
+                {t("dashboard.sitesEditor.contactInvalidMapLink")}
               </p>
             )}
             {resolveError && (
               <p className="text-[10px] text-red-400 leading-relaxed">{resolveError}</p>
             )}
             <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">
-              Klik "Pilih Lokasi" untuk menandai lokasi di peta, atau tempel link embed / share Google Maps.
+              {t("dashboard.sitesEditor.contactMapsLinkHint")}
             </p>
 
             <LocationPicker
@@ -2435,7 +2420,7 @@ export default function SectionForms({
       {activeTab === "footer" && (
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Tagline</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.footerTagline")}</label>
             <input
               id="field-footer.tagline"
               type="text"
@@ -2445,7 +2430,7 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Copyright</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.footerCopyright")}</label>
             <input
               id="field-footer.copyright_text"
               type="text"
@@ -2455,7 +2440,7 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-2">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Media Sosial</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.footerSocialLinks")}</label>
             {(content.footer?.social_links || []).map((link: any, idx: number) => {
               const isCustom = link.platform && !SOCIAL_PLATFORMS[link.platform];
               return (
@@ -2477,7 +2462,7 @@ export default function SectionForms({
                           n[idx] = { ...n[idx], platform: e.target.value };
                           updateField("footer", "social_links", n);
                         }}
-                        placeholder="Nama platform"
+                        placeholder={t("dashboard.sitesEditor.footerSocialPlatformName")}
                         className="w-1/3 px-2 py-1.5 border rounded-md text-[12px] outline-none focus:border-primary/60 bg-transparent"
                       />
                     ) : (
@@ -2499,7 +2484,7 @@ export default function SectionForms({
                         n[idx] = { ...n[idx], url: e.target.value };
                         updateField("footer", "social_links", n);
                       }}
-                      placeholder="URL (e.g. https://instagram.com/...)"
+                      placeholder={t("dashboard.sitesEditor.phSocialUrl")}
                       className="flex-1 px-2 py-1.5 border rounded-md text-[12px] outline-none focus:border-primary/60 bg-transparent"
                     />
                   </div>
@@ -2511,7 +2496,7 @@ export default function SectionForms({
                     }}
                     className="text-red-400 hover:text-red-300 text-xs shrink-0"
                   >
-                    Hapus
+                    {t("dashboard.sitesEditor.commonRemove")}
                   </button>
                 </div>
               );
@@ -2524,7 +2509,7 @@ export default function SectionForms({
               }}
               className="w-full text-center py-1.5 text-[11px] font-semibold text-primary border border-dashed border-border rounded-md hover:border-primary/60 transition-colors"
             >
-              + Tambah Media Sosial
+              {t("dashboard.sitesEditor.footerAddSocialLink")}
             </button>
           </div>
         </div>
@@ -2993,196 +2978,75 @@ export default function SectionForms({
         <div className="space-y-3">
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>Eyebrow <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
+              <span>{t("dashboard.sitesEditor.testimonialsEyebrow")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></span>
               {renderFieldActions("testimonials", "eyebrow")}
             </label>
-            <input
-              type="text"
-              value={content.testimonials?.eyebrow || ""}
-              onChange={(e) => updateField("testimonials", "eyebrow", e.target.value)}
-              placeholder="cth. Testimoni"
-              className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
-            />
+            <input type="text" value={content.testimonials?.eyebrow || ""} onChange={(e) => updateField("testimonials", "eyebrow", e.target.value)} placeholder={t("dashboard.sitesEditor.phTestimonialsEyebrow")} className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`} />
           </div>
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>Judul Section</span>
+              <span>{t("dashboard.sitesEditor.testimonialsSectionTitle")}</span>
               {renderFieldActions("testimonials", "title")}
             </label>
-            <input
-              type="text"
-              value={content.testimonials?.title || ""}
-              onChange={(e) => updateField("testimonials", "title", e.target.value)}
-              placeholder="cth. Cerita dari Pelanggan Kami"
-              className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
-            />
+            <input type="text" value={content.testimonials?.title || ""} onChange={(e) => updateField("testimonials", "title", e.target.value)} placeholder={t("dashboard.sitesEditor.phTestimonialsSectionTitle")} className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`} />
           </div>
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>Subtitle <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
+              <span>{t("dashboard.sitesEditor.testimonialsSubtitle")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></span>
               {renderFieldActions("testimonials", "subtitle")}
             </label>
-            <input
-              type="text"
-              value={content.testimonials?.subtitle || ""}
-              onChange={(e) => updateField("testimonials", "subtitle", e.target.value)}
-              placeholder="cth. Ulasan dari pelanggan setia kami"
-              className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
-            />
+            <input type="text" value={content.testimonials?.subtitle || ""} onChange={(e) => updateField("testimonials", "subtitle", e.target.value)} placeholder={t("dashboard.sitesEditor.phTestimonialsSubtitle")} className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`} />
           </div>
           {(content.testimonials?.items || []).map((item: any, idx: number) => (
             <div key={idx} className="border border-border p-3 rounded-xl space-y-2.5 bg-muted/30">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] uppercase font-bold text-sidebar-subtle-foreground">Testimoni #{idx + 1}</span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const n = content.testimonials.items.filter((_: any, i: number) => i !== idx);
-                    updateField("testimonials", "items", n);
-                  }}
-                  className="text-red-400/70 hover:text-red-400 text-[11px] cursor-pointer"
-                >
-                  Hapus
-                </button>
+                <span className="text-[10px] uppercase font-bold text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.testimonialsItem")} #{idx + 1}</span>
+                <button type="button" onClick={() => { const n = content.testimonials.items.filter((_: any, i: number) => i !== idx); updateField("testimonials", "items", n); }} className="text-red-400/70 hover:text-red-400 text-[11px] cursor-pointer">{t("dashboard.sitesEditor.commonRemove")}</button>
               </div>
-              {/* Quote */}
               <div>
-                <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground block mb-1">Kutipan</label>
-                <textarea
-                  rows={2}
-                  value={item.quote || ""}
-                  onChange={(e) => {
-                    const n = [...content.testimonials.items];
-                    n[idx] = { ...n[idx], quote: e.target.value };
-                    updateField("testimonials", "items", n);
-                  }}
-                  placeholder="Tulis kutipan spesifik dan believable..."
-                  className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground resize-none`}
-                />
+                <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground block mb-1">{t("dashboard.sitesEditor.testimonialsQuote")}</label>
+                <textarea rows={2} value={item.quote || ""} onChange={(e) => { const n = [...content.testimonials.items]; n[idx] = { ...n[idx], quote: e.target.value }; updateField("testimonials", "items", n); }} placeholder={t("dashboard.sitesEditor.phTestimonialsQuote")} className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground resize-none`} />
               </div>
-              {/* Name + Role row */}
               <div className="space-y-2">
                 <div>
-                  <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground block mb-1">Nama</label>
-                  <input
-                    type="text"
-                    value={item.name || ""}
-                    onChange={(e) => {
-                      const n = [...content.testimonials.items];
-                      n[idx] = { ...n[idx], name: e.target.value };
-                      updateField("testimonials", "items", n);
-                    }}
-                    placeholder="cth. Budi Santoso"
-                    className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
-                  />
+                  <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground block mb-1">{t("dashboard.sitesEditor.testimonialsName")}</label>
+                  <input type="text" value={item.name || ""} onChange={(e) => { const n = [...content.testimonials.items]; n[idx] = { ...n[idx], name: e.target.value }; updateField("testimonials", "items", n); }} placeholder={t("dashboard.sitesEditor.phTestimonialsName")} className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`} />
                 </div>
                 <div>
-                  <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground block mb-1">Profesi / Konteks</label>
-                  <input
-                    type="text"
-                    value={item.role || ""}
-                    onChange={(e) => {
-                      const n = [...content.testimonials.items];
-                      n[idx] = { ...n[idx], role: e.target.value };
-                      updateField("testimonials", "items", n);
-                    }}
-                    placeholder="cth. Pelanggan tetap"
-                    className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
-                  />
+                  <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground block mb-1">{t("dashboard.sitesEditor.testimonialsRole")}</label>
+                  <input type="text" value={item.role || ""} onChange={(e) => { const n = [...content.testimonials.items]; n[idx] = { ...n[idx], role: e.target.value }; updateField("testimonials", "items", n); }} placeholder={t("dashboard.sitesEditor.phTestimonialsRole")} className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`} />
                 </div>
               </div>
-              {/* Avatar initials + color row */}
               <div className="grid grid-cols-2 gap-2 items-end">
                 <div>
-                  <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground block mb-1">Inisial Avatar</label>
-                  <input
-                    type="text"
-                    maxLength={2}
-                    value={item.avatar_initials || ""}
-                    onChange={(e) => {
-                      const n = [...content.testimonials.items];
-                      n[idx] = { ...n[idx], avatar_initials: e.target.value.toUpperCase().slice(0, 2) };
-                      updateField("testimonials", "items", n);
-                    }}
-                    placeholder="BS"
-                    className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground uppercase`}
-                  />
+                  <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground block mb-1">{t("dashboard.sitesEditor.testimonialsAvatarInitials")}</label>
+                  <input type="text" maxLength={2} value={item.avatar_initials || ""} onChange={(e) => { const n = [...content.testimonials.items]; n[idx] = { ...n[idx], avatar_initials: e.target.value.toUpperCase().slice(0, 2) }; updateField("testimonials", "items", n); }} placeholder="BS" className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground uppercase`} />
                 </div>
                 <div>
-                  <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground block mb-1">Warna Avatar</label>
+                  <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground block mb-1">{t("dashboard.sitesEditor.testimonialsAvatarColor")}</label>
                   <div className="flex items-center gap-2">
                     <div className="relative w-8 h-8 rounded-md border border-border overflow-hidden flex-shrink-0">
-                      <input
-                        type="color"
-                        value={item.avatar_color || "var(--primary)"}
-                        onChange={(e) => {
-                          const n = [...content.testimonials.items];
-                          n[idx] = { ...n[idx], avatar_color: e.target.value };
-                          updateField("testimonials", "items", n);
-                        }}
-                        className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
-                      />
+                      <input type="color" value={item.avatar_color || "var(--primary)"} onChange={(e) => { const n = [...content.testimonials.items]; n[idx] = { ...n[idx], avatar_color: e.target.value }; updateField("testimonials", "items", n); }} className="absolute inset-0 opacity-0 w-full h-full cursor-pointer" />
                       <div className="w-full h-full" style={{ backgroundColor: item.avatar_color || "var(--primary)" }} />
                     </div>
-                    <input
-                      type="text"
-                      value={item.avatar_color || ""}
-                      onChange={(e) => {
-                        const n = [...content.testimonials.items];
-                        n[idx] = { ...n[idx], avatar_color: e.target.value };
-                        updateField("testimonials", "items", n);
-                      }}
-                      placeholder="var(--primary)"
-                      className="flex-1 px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground placeholder-sidebar-subtle-foreground"
-                    />
+                    <input type="text" value={item.avatar_color || ""} onChange={(e) => { const n = [...content.testimonials.items]; n[idx] = { ...n[idx], avatar_color: e.target.value }; updateField("testimonials", "items", n); }} placeholder="var(--primary)" className="flex-1 px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground placeholder-sidebar-subtle-foreground" />
                   </div>
                 </div>
               </div>
-              {/* Company + Logo URL */}
               <div className="space-y-2">
                 <div>
-                  <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground block mb-1">Perusahaan <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></label>
-                  <input
-                    type="text"
-                    value={item.company || ""}
-                    onChange={(e) => {
-                      const n = [...content.testimonials.items];
-                      n[idx] = { ...n[idx], company: e.target.value };
-                      updateField("testimonials", "items", n);
-                    }}
-                    placeholder="cth. PT Maju Jaya"
-                    className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
-                  />
+                  <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground block mb-1">{t("dashboard.sitesEditor.testimonialsCompany")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></label>
+                  <input type="text" value={item.company || ""} onChange={(e) => { const n = [...content.testimonials.items]; n[idx] = { ...n[idx], company: e.target.value }; updateField("testimonials", "items", n); }} placeholder={t("dashboard.sitesEditor.phTestimonialsCompany")} className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`} />
                 </div>
                 <div>
-                  <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground block mb-1">Logo URL <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional, untuk variant logo-wall)</span></label>
-                  <input
-                    type="text"
-                    value={item.logo_url || ""}
-                    onChange={(e) => {
-                      const n = [...content.testimonials.items];
-                      n[idx] = { ...n[idx], logo_url: e.target.value };
-                      updateField("testimonials", "items", n);
-                    }}
-                    placeholder="https://..."
-                    className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
-                  />
+                  <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground block mb-1">{t("dashboard.sitesEditor.testimonialsLogoUrl")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.testimonialsLogoUrlHint")}</span></label>
+                  <input type="text" value={item.logo_url || ""} onChange={(e) => { const n = [...content.testimonials.items]; n[idx] = { ...n[idx], logo_url: e.target.value }; updateField("testimonials", "items", n); }} placeholder="https://..." className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`} />
                 </div>
               </div>
             </div>
           ))}
-          <button
-            type="button"
-            onClick={() => {
-              const current = content.testimonials?.items || [];
-              updateField("testimonials", "items", [
-                ...current,
-                { quote: "Pelayanan sangat memuaskan, ramah, dan hasilnya melebihi ekspektasi!", name: "Nama Pelanggan", role: "Pelanggan", avatar_initials: "NP", avatar_color: "var(--primary)", company: "", logo_url: "" }
-              ]);
-            }}
-            className="w-full text-[12px] py-2 border border-dashed border-border rounded-xl text-sidebar-subtle-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-          >
-            <Plus className="w-3.5 h-3.5" /> Tambah Testimoni
+          <button type="button" onClick={() => { const current = content.testimonials?.items || []; updateField("testimonials", "items", [...current, { quote: "Pelayanan sangat memuaskan, ramah, dan hasilnya melebihi ekspektasi!", name: "Nama Pelanggan", role: "Pelanggan", avatar_initials: "NP", avatar_color: "var(--primary)", company: "", logo_url: "" }]); }} className="w-full text-[12px] py-2 border border-dashed border-border rounded-xl text-sidebar-subtle-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground flex items-center justify-center gap-1.5 cursor-pointer transition-colors">
+            <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesEditor.testimonialsAddItem")}
           </button>
         </div>
       )}
@@ -3225,14 +3089,12 @@ export default function SectionForms({
       {activeTab === "gallery" && (
         <div className="space-y-4">
           <div className="rounded-xl border border-primary/20 bg-primary/10 px-3 py-2.5 text-[12px] leading-relaxed text-primary mb-1">
-            <p className="font-semibold text-primary">📸 Section Galeri Foto</p>
-            <p className="mt-1 text-primary/80">
-              Tambahkan foto-foto untuk galeri. Atur tata letak, caption, dan teks alternatif.
-            </p>
+            <p className="font-semibold text-primary">📸 {t("dashboard.sitesEditor.gallerySectionBanner")}</p>
+            <p className="mt-1 text-primary/80">{t("dashboard.sitesEditor.gallerySectionBannerDesc2")}</p>
           </div>
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>Judul Galeri {needsAttention("gallery.title") && <span className="text-amber-300">⚠️</span>}</span>
+              <span>{t("dashboard.sitesEditor.galleryTitle")} {needsAttention("gallery.title") && <span className="text-amber-300">⚠️</span>}</span>
               {renderFieldActions("gallery", "title")}
             </label>
             <input
@@ -3240,12 +3102,12 @@ export default function SectionForms({
               type="text" value={content.gallery?.title || ""}
               onChange={(e) => updateField("gallery", "title", e.target.value)}
               className={fieldClass("gallery.title", SIDEBAR_FIELD_CLASS)}
-              placeholder="Galeri Kami"
+              placeholder={t("dashboard.sitesEditor.phGalleryTitle")}
             />
           </div>
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>Eyebrow</span>
+              <span>{t("dashboard.sitesEditor.galleryEyebrow")}</span>
               {renderFieldActions("gallery", "eyebrow")}
             </label>
             <input
@@ -3253,18 +3115,18 @@ export default function SectionForms({
               type="text" value={content.gallery?.eyebrow || ""}
               onChange={(e) => updateField("gallery", "eyebrow", e.target.value)}
               className={SIDEBAR_FIELD_CLASS}
-              placeholder="DOKUMENTASI"
+              placeholder={t("dashboard.sitesEditor.phGalleryEyebrow")}
             />
           </div>
 
           {/* Layout Picker */}
           <div className="space-y-1.5">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Tata Letak</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.galleryLayout")}</label>
             <div className="grid grid-cols-3 gap-2">
               {([
-                { value: "grid", label: "Grid", desc: "Kotak seragam" },
-                { value: "masonry", label: "Masonry", desc: "Tinggi bervariasi" },
-                { value: "carousel", label: "Carousel", desc: "Slide bergilir" },
+                { value: "grid",     label: t("dashboard.sitesEditor.galleryLayoutGrid"),     desc: t("dashboard.sitesEditor.galleryLayoutGridDesc") },
+                { value: "masonry",  label: t("dashboard.sitesEditor.galleryLayoutMasonry"),  desc: t("dashboard.sitesEditor.galleryLayoutMasonryDesc") },
+                { value: "carousel", label: t("dashboard.sitesEditor.galleryLayoutCarousel"), desc: t("dashboard.sitesEditor.galleryLayoutCarouselDesc") },
               ] as const).map((opt) => (
                 <button
                   key={opt.value}
@@ -3286,9 +3148,9 @@ export default function SectionForms({
           {/* Carousel config (only when carousel selected) */}
           {(content.gallery?.layout || "grid") === "carousel" && (
             <div className="space-y-3 p-3 rounded-xl border border-border/50 bg-muted/30">
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-sidebar-subtle-foreground">Pengaturan Carousel</span>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.galleryCarouselSettingsLabel")}</span>
               <div className="space-y-1">
-                <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Kecepatan Putar (ms)</label>
+                <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.galleryAutoplaySpeed")}</label>
                 <input
                   type="number" min={1000} max={15000} step={500}
                   value={content.gallery?.autoplay_speed ?? 4000}
@@ -3303,7 +3165,7 @@ export default function SectionForms({
                   onChange={(e) => updateField("gallery", "show_dots", e.target.checked)}
                   className="rounded border-border"
                 />
-                <span className="text-[11px] font-medium text-sidebar-muted-foreground">Tampilkan indikator titik</span>
+                <span className="text-[11px] font-medium text-sidebar-muted-foreground">{t("dashboard.sitesEditor.galleryShowDots")}</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
@@ -3312,7 +3174,7 @@ export default function SectionForms({
                   onChange={(e) => updateField("gallery", "show_arrows", e.target.checked)}
                   className="rounded border-border"
                 />
-                <span className="text-[11px] font-medium text-sidebar-muted-foreground">Tampilkan tombol navigasi</span>
+                <span className="text-[11px] font-medium text-sidebar-muted-foreground">{t("dashboard.sitesEditor.galleryShowArrows")}</span>
               </label>
             </div>
           )}
@@ -3320,7 +3182,7 @@ export default function SectionForms({
           {/* Gallery Items */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-sidebar-subtle-foreground">Foto ({content.gallery?.items?.length || 0})</span>
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.galleryItems")} ({content.gallery?.items?.length || 0})</span>
               <button
                 type="button"
                 onClick={() => {
@@ -3329,13 +3191,13 @@ export default function SectionForms({
                 }}
                 className="text-[12px] py-1.5 px-3 border border-dashed border-border rounded-xl text-sidebar-subtle-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground flex items-center gap-1.5 cursor-pointer transition-colors"
               >
-                <Plus className="w-3.5 h-3.5" /> Tambah Foto
+                <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesEditor.galleryAddItem")}
               </button>
             </div>
             {(content.gallery?.items || []).map((item: any, idx: number) => (
               <div key={idx} className="mb-3 p-4 rounded-xl border border-border/50 bg-muted/30 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] text-sidebar-subtle-foreground font-medium">Foto #{idx + 1}</span>
+                  <span className="text-[11px] text-sidebar-subtle-foreground font-medium">{t("dashboard.sitesEditor.galleryItem")} #{idx + 1}</span>
                   <button
                     type="button"
                     onClick={() => {
@@ -3348,7 +3210,7 @@ export default function SectionForms({
                   </button>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">URL Gambar</label>
+                  <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.commonImageUrl")}</label>
                   <div className="flex gap-2">
                     <input
                       id={`field-gallery.items.${idx}.image_url`}
@@ -3369,7 +3231,7 @@ export default function SectionForms({
                   )}
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Caption</label>
+                  <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.commonCaption")}</label>
                   <input
                     type="text" value={item.caption || ""}
                     onChange={(e) => {
@@ -3378,11 +3240,11 @@ export default function SectionForms({
                       updateField("gallery", "items", next);
                     }}
                     className={SIDEBAR_FIELD_CLASS}
-                    placeholder="Suasana nyaman di dalam"
+                    placeholder={t("dashboard.sitesEditor.phGalleryCaption")}
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Teks Alt</label>
+                  <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.commonAltText")}</label>
                   <input
                     type="text" value={item.alt_text || ""}
                     onChange={(e) => {
@@ -3391,7 +3253,7 @@ export default function SectionForms({
                       updateField("gallery", "items", next);
                     }}
                     className={SIDEBAR_FIELD_CLASS}
-                    placeholder="Deskripsi singkat gambar"
+                    placeholder={t("dashboard.sitesEditor.phGalleryAltText")}
                   />
                 </div>
               </div>
@@ -3402,7 +3264,7 @@ export default function SectionForms({
                 onClick={() => updateField("gallery", "items", [{ image_url: "", caption: "", alt_text: "" }])}
                 className="w-full text-[12px] py-2 border border-dashed border-border rounded-xl text-sidebar-subtle-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
               >
-                <Plus className="w-3.5 h-3.5" /> Tambah Foto Pertama
+                <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesEditor.galleryAddFirst")}
               </button>
             )}
           </div>
@@ -3413,243 +3275,101 @@ export default function SectionForms({
       {activeTab === "works" && (
         <div className="space-y-4">
           <div className="rounded-xl border border-primary/20 bg-primary/10 px-3 py-2.5 text-[12px] leading-relaxed text-primary mb-1">
-            <p className="font-semibold text-primary">💼 Section Portofolio Proyek</p>
-            <p className="mt-1 text-primary/80">
-              Tampilkan proyek atau karya terbaik. Setiap proyek bisa dilengkapi kategori, tahun, klien, deskripsi, dan link proyek untuk meningkatkan kredibilitas.
-            </p>
+            <p className="font-semibold text-primary">💼 {t("dashboard.sitesEditor.worksSectionBanner")}</p>
+            <p className="mt-1 text-primary/80">{t("dashboard.sitesEditor.worksSectionBannerDesc")}</p>
           </div>
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>Judul Portofolio {needsAttention("works.title") && <span className="text-amber-300">⚠️</span>}</span>
+              <span>{t("dashboard.sitesEditor.worksTitle")} {needsAttention("works.title") && <span className="text-amber-300">⚠️</span>}</span>
               {renderFieldActions("works", "title")}
             </label>
-            <input
-              id="field-works.title"
-              type="text" value={content.works?.title || ""}
-              onChange={(e) => updateField("works", "title", e.target.value)}
-              className={fieldClass("works.title", SIDEBAR_FIELD_CLASS)}
-              placeholder="Proyek Kami"
-            />
+            <input id="field-works.title" type="text" value={content.works?.title || ""} onChange={(e) => updateField("works", "title", e.target.value)} className={fieldClass("works.title", SIDEBAR_FIELD_CLASS)} placeholder={t("dashboard.sitesEditor.phWorksTitle")} />
           </div>
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>Eyebrow</span>
+              <span>{t("dashboard.sitesEditor.worksEyebrow")}</span>
               {renderFieldActions("works", "eyebrow")}
             </label>
-            <input
-              id="field-works.eyebrow"
-              type="text" value={content.works?.eyebrow || ""}
-              onChange={(e) => updateField("works", "eyebrow", e.target.value)}
-              className={SIDEBAR_FIELD_CLASS}
-              placeholder="PORTFOLIO"
-            />
+            <input id="field-works.eyebrow" type="text" value={content.works?.eyebrow || ""} onChange={(e) => updateField("works", "eyebrow", e.target.value)} className={SIDEBAR_FIELD_CLASS} placeholder="PORTFOLIO" />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Deskripsi Ringkas</label>
-            <textarea
-              rows={2}
-              value={content.works?.subtitle || ""}
-              onChange={(e) => updateField("works", "subtitle", e.target.value)}
-              className={`${SIDEBAR_FIELD_CLASS} resize-none`}
-              placeholder="Beberapa proyek terbaik yang pernah kami kerjakan."
-            />
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.worksSubtitle")}</label>
+            <textarea rows={2} value={content.works?.subtitle || ""} onChange={(e) => updateField("works", "subtitle", e.target.value)} className={`${SIDEBAR_FIELD_CLASS} resize-none`} placeholder={t("dashboard.sitesEditor.phWorksSubtitle")} />
           </div>
-
-          {/* Layout Picker */}
           <div className="space-y-1.5">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Tata Letak</label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.worksLayout")}</label>
             <div className="grid grid-cols-2 gap-2">
               {([
-                { value: "grid", label: "Grid", desc: "Kotak seragam" },
-                { value: "masonry", label: "Masonry", desc: "Tinggi bervariasi" },
-                { value: "featured-grid", label: "Grid Unggulan", desc: "Proyek pertama besar" },
-                { value: "showcase-featured", label: "Showcase", desc: "Hero horizontal + grid" },
+                { value: "grid", label: t("dashboard.sitesEditor.worksLayoutGrid"), desc: locale === "en" ? "Uniform boxes" : "Kotak seragam" },
+                { value: "masonry", label: t("dashboard.sitesEditor.worksLayoutMasonry"), desc: locale === "en" ? "Variable height" : "Tinggi bervariasi" },
+                { value: "featured-grid", label: t("dashboard.sitesEditor.worksLayoutFeaturedGrid"), desc: locale === "en" ? "First project larger" : "Proyek pertama besar" },
+                { value: "showcase-featured", label: t("dashboard.sitesEditor.worksLayoutShowcase"), desc: locale === "en" ? "Horizontal hero + grid" : "Hero horizontal + grid" },
               ] as const).map((opt) => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => updateField("works", "layout", opt.value)}
-                  className={`p-2 rounded-lg border text-center transition-all cursor-pointer ${
-                    (content.works?.layout || "grid") === opt.value
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-border text-sidebar-muted-foreground hover:border-border"
-                  }`}
-                >
+                <button key={opt.value} type="button" onClick={() => updateField("works", "layout", opt.value)} className={`p-2 rounded-lg border text-center transition-all cursor-pointer ${ (content.works?.layout || "grid") === opt.value ? "border-primary bg-primary/10 text-primary" : "border-border text-sidebar-muted-foreground hover:border-border" }`}>
                   <div className="text-[11px] font-semibold">{opt.label}</div>
                   <div className="text-[9px] opacity-60">{opt.desc}</div>
                 </button>
               ))}
             </div>
           </div>
-
-          {/* Works Items */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-sidebar-subtle-foreground">Proyek ({content.works?.items?.length || 0})</span>
-              <button
-                type="button"
-                onClick={() => {
-                  const existingWorks = content.works?.items || [];
-                  const next = [...existingWorks, { title: `Proyek ${existingWorks.length + 1}`, category: "", year: new Date().getFullYear().toString(), client: "", description: "Deskripsi proyek ini", image_url: "", project_url: "", alt_text: "" }];
-                  updateField("works", "items", next);
-                }}
-                className="text-[12px] py-1.5 px-3 border border-dashed border-border rounded-xl text-sidebar-subtle-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground flex items-center gap-1.5 cursor-pointer transition-colors"
-              >
-                <Plus className="w-3.5 h-3.5" /> Tambah Proyek
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.worksItems")} ({content.works?.items?.length || 0})</span>
+              <button type="button" onClick={() => { const existingWorks = content.works?.items || []; const next = [...existingWorks, { title: `Proyek ${existingWorks.length + 1}`, category: "", year: new Date().getFullYear().toString(), client: "", description: "Deskripsi proyek ini", image_url: "", project_url: "", alt_text: "" }]; updateField("works", "items", next); }} className="text-[12px] py-1.5 px-3 border border-dashed border-border rounded-xl text-sidebar-subtle-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground flex items-center gap-1.5 cursor-pointer transition-colors">
+                <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesEditor.worksAddItem")}
               </button>
             </div>
             {(content.works?.items || []).map((item: any, idx: number) => (
               <div key={idx} className="mb-3 p-4 rounded-xl border border-border/50 bg-muted/30 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] text-sidebar-subtle-foreground font-medium">Proyek #{idx + 1}</span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const next = (content.works?.items || []).filter((_: any, i: number) => i !== idx);
-                      updateField("works", "items", next);
-                    }}
-                    className="text-red-400 hover:text-red-300 transition-colors p-1"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
+                  <span className="text-[11px] text-sidebar-subtle-foreground font-medium">{t("dashboard.sitesEditor.worksItem")} #{idx + 1}</span>
+                  <button type="button" onClick={() => { const next = (content.works?.items || []).filter((_: any, i: number) => i !== idx); updateField("works", "items", next); }} className="text-red-400 hover:text-red-300 transition-colors p-1"><Trash2 className="w-3.5 h-3.5" /></button>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Judul Proyek</label>
-                  <input
-                    type="text" value={item.title || ""}
-                    onChange={(e) => {
-                      const next = [...(content.works?.items || [])];
-                      next[idx] = { ...next[idx], title: e.target.value };
-                      updateField("works", "items", next);
-                    }}
-                    className={SIDEBAR_FIELD_CLASS}
-                    placeholder="cth. Rebranding Toko Kopi Ketan"
-                  />
+                  <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.worksItemTitle")}</label>
+                  <input type="text" value={item.title || ""} onChange={(e) => { const next = [...(content.works?.items || [])]; next[idx] = { ...next[idx], title: e.target.value }; updateField("works", "items", next); }} className={SIDEBAR_FIELD_CLASS} placeholder={t("dashboard.sitesEditor.phWorksItemTitle")} />
                 </div>
                 <div className="space-y-2">
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Kategori</label>
-                    <input
-                      list="works-category-suggestions"
-                      value={item.category || ""}
-                      onChange={(e) => {
-                        const next = [...(content.works?.items || [])];
-                        next[idx] = { ...next[idx], category: e.target.value };
-                        updateField("works", "items", next);
-                      }}
-                      className={SIDEBAR_FIELD_CLASS}
-                      placeholder="Branding"
-                    />
-                    <datalist id="works-category-suggestions">
-                      <option value="Branding" />
-                      <option value="Photography" />
-                      <option value="Design" />
-                      <option value="Video" />
-                      <option value="Consulting" />
-                      <option value="Portfolio" />
-                      <option value="Freelance" />
-                      <option value="Agency" />
-                      <option value="Studio" />
-                    </datalist>
+                    <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.commonCategory")}</label>
+                    <input list="works-category-suggestions" value={item.category || ""} onChange={(e) => { const next = [...(content.works?.items || [])]; next[idx] = { ...next[idx], category: e.target.value }; updateField("works", "items", next); }} className={SIDEBAR_FIELD_CLASS} placeholder="Branding" />
+                    <datalist id="works-category-suggestions"><option value="Branding" /><option value="Photography" /><option value="Design" /><option value="Video" /><option value="Consulting" /><option value="Portfolio" /><option value="Freelance" /><option value="Agency" /><option value="Studio" /></datalist>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Tahun</label>
-                    <input
-                      type="text" value={item.year || ""}
-                      onChange={(e) => {
-                        const next = [...(content.works?.items || [])];
-                        next[idx] = { ...next[idx], year: e.target.value };
-                        updateField("works", "items", next);
-                      }}
-                      className={SIDEBAR_FIELD_CLASS}
-                      placeholder="2025"
-                    />
+                    <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.commonYear")}</label>
+                    <input type="text" value={item.year || ""} onChange={(e) => { const next = [...(content.works?.items || [])]; next[idx] = { ...next[idx], year: e.target.value }; updateField("works", "items", next); }} className={SIDEBAR_FIELD_CLASS} placeholder="2025" />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Klien</label>
-                    <input
-                      type="text" value={item.client || ""}
-                      onChange={(e) => {
-                        const next = [...(content.works?.items || [])];
-                        next[idx] = { ...next[idx], client: e.target.value };
-                        updateField("works", "items", next);
-                      }}
-                      className={SIDEBAR_FIELD_CLASS}
-                      placeholder="cth. Kedai Kopi Nusantara"
-                    />
+                    <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.commonClientLabel")}</label>
+                    <input type="text" value={item.client || ""} onChange={(e) => { const next = [...(content.works?.items || [])]; next[idx] = { ...next[idx], client: e.target.value }; updateField("works", "items", next); }} className={SIDEBAR_FIELD_CLASS} placeholder={t("dashboard.sitesEditor.phWorksClient")} />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Link Proyek</label>
-                    <input
-                      type="text" value={item.project_url || ""}
-                      onChange={(e) => {
-                        const next = [...(content.works?.items || [])];
-                        next[idx] = { ...next[idx], project_url: e.target.value };
-                        updateField("works", "items", next);
-                      }}
-                      className={`${SIDEBAR_FIELD_CLASS} font-mono`}
-                      placeholder="https://..."
-                    />
+                    <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.commonProjectLink")}</label>
+                    <input type="text" value={item.project_url || ""} onChange={(e) => { const next = [...(content.works?.items || [])]; next[idx] = { ...next[idx], project_url: e.target.value }; updateField("works", "items", next); }} className={`${SIDEBAR_FIELD_CLASS} font-mono`} placeholder="https://..." />
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Deskripsi</label>
-                  <textarea
-                    rows={2}
-                    value={item.description || ""}
-                    onChange={(e) => {
-                      const next = [...(content.works?.items || [])];
-                      next[idx] = { ...next[idx], description: e.target.value };
-                      updateField("works", "items", next);
-                    }}
-                    className={`${SIDEBAR_FIELD_CLASS} resize-none`}
-                    placeholder="Ceritakan ruang lingkup dan hasil proyek ini..."
-                  />
+                  <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.worksDescription")}</label>
+                  <textarea rows={2} value={item.description || ""} onChange={(e) => { const next = [...(content.works?.items || [])]; next[idx] = { ...next[idx], description: e.target.value }; updateField("works", "items", next); }} className={`${SIDEBAR_FIELD_CLASS} resize-none`} placeholder={t("dashboard.sitesEditor.phWorksDescription")} />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">URL Gambar</label>
+                  <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.commonImageUrl")}</label>
                   <div className="flex gap-2">
-                    <input
-                      type="text" value={item.image_url || ""}
-                      onChange={(e) => {
-                        const next = [...(content.works?.items || [])];
-                        next[idx] = { ...next[idx], image_url: e.target.value };
-                        updateField("works", "items", next);
-                      }}
-                      className="flex-1 px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent font-mono"
-                      placeholder="https://images.unsplash.com/..."
-                    />
+                    <input type="text" value={item.image_url || ""} onChange={(e) => { const next = [...(content.works?.items || [])]; next[idx] = { ...next[idx], image_url: e.target.value }; updateField("works", "items", next); }} className="flex-1 px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent font-mono" placeholder="https://images.unsplash.com/..." />
                   </div>
-                  {item.image_url && (
-                    <div className="mt-2 w-20 h-20 rounded-lg overflow-hidden border border-border">
-                      <img src={item.image_url} alt="" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                    </div>
-                  )}
+                  {item.image_url && (<div className="mt-2 w-20 h-20 rounded-lg overflow-hidden border border-border"><img src={item.image_url} alt="" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} /></div>)}
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Teks Alt</label>
-                  <input
-                    type="text" value={item.alt_text || ""}
-                    onChange={(e) => {
-                      const next = [...(content.works?.items || [])];
-                      next[idx] = { ...next[idx], alt_text: e.target.value };
-                      updateField("works", "items", next);
-                    }}
-                    className={SIDEBAR_FIELD_CLASS}
-                    placeholder="Deskripsi singkat gambar proyek"
-                  />
+                  <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.commonAltText")}</label>
+                  <input type="text" value={item.alt_text || ""} onChange={(e) => { const next = [...(content.works?.items || [])]; next[idx] = { ...next[idx], alt_text: e.target.value }; updateField("works", "items", next); }} className={SIDEBAR_FIELD_CLASS} placeholder={t("dashboard.sitesEditor.phWorksAltText")} />
                 </div>
               </div>
             ))}
             {(!content.works?.items || content.works.items.length === 0) && (
-              <button
-                type="button"
-                onClick={() => updateField("works", "items", [{ title: "", category: "", year: "", client: "", description: "", image_url: "", project_url: "", alt_text: "" }])}
-                className="w-full text-[12px] py-2 border border-dashed border-border rounded-xl text-sidebar-subtle-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-              >
-                <Plus className="w-3.5 h-3.5" /> Tambah Proyek Pertama
+              <button type="button" onClick={() => updateField("works", "items", [{ title: "", category: "", year: "", client: "", description: "", image_url: "", project_url: "", alt_text: "" }])} className="w-full text-[12px] py-2 border border-dashed border-border rounded-xl text-sidebar-subtle-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground flex items-center justify-center gap-1.5 cursor-pointer transition-colors">
+                <Plus className="w-3.5 h-3.5" /> {t("dashboard.sitesEditor.worksAddFirst")}
               </button>
             )}
           </div>
@@ -3707,7 +3427,7 @@ export default function SectionForms({
                 type="text"
                 value={content.stats?.eyebrow || ""}
                 onChange={(e) => updateField("stats", "eyebrow", e.target.value)}
-                placeholder="cth. DALAM ANGKA"
+                placeholder={t("dashboard.sitesEditor.phStatsEyebrow")}
                 className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
               />
             </div>
@@ -3717,7 +3437,7 @@ export default function SectionForms({
                 type="text"
                 value={content.stats?.title || ""}
                 onChange={(e) => updateField("stats", "title", e.target.value)}
-                placeholder="cth. Pencapaian yang Berbicara"
+                placeholder={t("dashboard.sitesEditor.phStatsSectionTitle")}
                 className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
               />
             </div>
@@ -3727,7 +3447,7 @@ export default function SectionForms({
                 type="text"
                 value={content.stats?.subtitle || ""}
                 onChange={(e) => updateField("stats", "subtitle", e.target.value)}
-                placeholder="cth. Hasil nyata dari dedikasi dan kerja keras kami"
+                placeholder={t("dashboard.sitesEditor.phStatsSubtitle")}
                 className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
               />
             </div>
@@ -3774,7 +3494,7 @@ export default function SectionForms({
                         items[idx] = { ...items[idx], value: e.target.value };
                         updateField("stats", "items", items);
                       }}
-                      placeholder="cth. 1.2M atau 98%"
+                      placeholder={t("dashboard.sitesEditor.phStatsValue")}
                       className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                     />
                   </div>
@@ -3788,7 +3508,7 @@ export default function SectionForms({
                         items[idx] = { ...items[idx], label: e.target.value };
                         updateField("stats", "items", items);
                       }}
-                      placeholder="cth. Subscribers"
+                      placeholder={t("dashboard.sitesEditor.phStatsLabel")}
                       className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                     />
                   </div>
@@ -3815,7 +3535,7 @@ export default function SectionForms({
                         items[idx] = { ...items[idx], description: e.target.value };
                         updateField("stats", "items", items);
                       }}
-                      placeholder="cth. Aktif di 3 platform"
+                      placeholder={t("dashboard.sitesEditor.phStatsDescription")}
                       className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                     />
                   </div>
@@ -3843,7 +3563,7 @@ export default function SectionForms({
                 type="text"
                 value={content.partners?.eyebrow || ""}
                 onChange={(e) => updateField("partners", "eyebrow", e.target.value)}
-                placeholder="cth. DIPERCAYA OLEH"
+                placeholder={t("dashboard.sitesEditor.phPartnersEyebrow")}
                 className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
               />
             </div>
@@ -3853,7 +3573,7 @@ export default function SectionForms({
                 type="text"
                 value={content.partners?.title || ""}
                 onChange={(e) => updateField("partners", "title", e.target.value)}
-                placeholder="cth. Brand yang Telah Berkolaborasi"
+                placeholder={t("dashboard.sitesEditor.phPartnersSectionTitle")}
                 className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
               />
             </div>
@@ -3863,7 +3583,7 @@ export default function SectionForms({
                 type="text"
                 value={content.partners?.subtitle || ""}
                 onChange={(e) => updateField("partners", "subtitle", e.target.value)}
-                placeholder="cth. Lebih dari 50+ brand telah mempercayai karya kami"
+                placeholder={t("dashboard.sitesEditor.phPartnersSubtitle")}
                 className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
               />
             </div>
@@ -3910,7 +3630,7 @@ export default function SectionForms({
                         items[idx] = { ...items[idx], name: e.target.value };
                         updateField("partners", "items", items);
                       }}
-                      placeholder="cth. Tokopedia"
+                      placeholder={t("dashboard.sitesEditor.phPartnersBrandName")}
                       className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                     />
                   </div>
@@ -3924,7 +3644,7 @@ export default function SectionForms({
                         items[idx] = { ...items[idx], category: e.target.value };
                         updateField("partners", "items", items);
                       }}
-                      placeholder="cth. E-Commerce"
+                      placeholder={t("dashboard.sitesEditor.phPartnersCategory")}
                       className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                     />
                   </div>
@@ -3966,7 +3686,7 @@ export default function SectionForms({
                 type="text"
                 value={content.pricing?.eyebrow || ""}
                 onChange={(e) => updateField("pricing", "eyebrow", e.target.value)}
-                placeholder="cth. RATE CARD / PILIHAN PAKET"
+                placeholder={t("dashboard.sitesEditor.phPricingEyebrow")}
                 className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
               />
             </div>
@@ -3976,7 +3696,7 @@ export default function SectionForms({
                 type="text"
                 value={content.pricing?.title || ""}
                 onChange={(e) => updateField("pricing", "title", e.target.value)}
-                placeholder="cth. Paket Kolaborasi & Jasa"
+                placeholder={t("dashboard.sitesEditor.phPricingSectionTitle")}
                 className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
               />
             </div>
@@ -3986,7 +3706,7 @@ export default function SectionForms({
                 type="text"
                 value={content.pricing?.subtitle || ""}
                 onChange={(e) => updateField("pricing", "subtitle", e.target.value)}
-                placeholder="cth. Pilih paket yang paling sesuai dengan kebutuhan kampanye Anda"
+                placeholder={t("dashboard.sitesEditor.phPricingSubtitle")}
                 className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
               />
             </div>
@@ -4047,7 +3767,7 @@ export default function SectionForms({
                         plans[idx] = { ...plans[idx], name: e.target.value };
                         updateField("pricing", "plans", plans);
                       }}
-                      placeholder="cth. Basic / Pro"
+                      placeholder={t("dashboard.sitesEditor.phPricingPlanName")}
                       className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                     />
                   </div>
@@ -4061,7 +3781,7 @@ export default function SectionForms({
                         plans[idx] = { ...plans[idx], badge: e.target.value || null };
                         updateField("pricing", "plans", plans);
                       }}
-                      placeholder="cth. Paling Populer"
+                      placeholder={t("dashboard.sitesEditor.phPricingBadge")}
                       className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                     />
                   </div>
@@ -4078,7 +3798,7 @@ export default function SectionForms({
                         plans[idx] = { ...plans[idx], price: e.target.value };
                         updateField("pricing", "plans", plans);
                       }}
-                      placeholder="cth. Rp 2.500.000"
+                      placeholder={t("dashboard.sitesEditor.phPricingPrice")}
                       className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground font-semibold text-primary"
                     />
                   </div>
@@ -4092,7 +3812,7 @@ export default function SectionForms({
                         plans[idx] = { ...plans[idx], period: e.target.value };
                         updateField("pricing", "plans", plans);
                       }}
-                      placeholder="cth. /bulan atau /video"
+                      placeholder={t("dashboard.sitesEditor.phPricingPeriod")}
                       className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                     />
                   </div>
@@ -4108,7 +3828,7 @@ export default function SectionForms({
                       plans[idx] = { ...plans[idx], description: e.target.value };
                       updateField("pricing", "plans", plans);
                     }}
-                    placeholder="cth. Cocok untuk kampanye brand skala menengah"
+                    placeholder={t("dashboard.sitesEditor.phPricingDesc")}
                     className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                   />
                 </div>
@@ -4141,7 +3861,7 @@ export default function SectionForms({
                         plans[idx] = { ...plans[idx], cta_text: e.target.value };
                         updateField("pricing", "plans", plans);
                       }}
-                      placeholder="cth. Pilih Paket"
+                      placeholder={t("dashboard.sitesEditor.phPricingCtaText")}
                       className="w-full px-2 py-1 border border-border rounded text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground"
                     />
                   </div>
@@ -4237,7 +3957,7 @@ export default function SectionForms({
                     if (/wa\.me|whatsapp\.com/i.test(content?.cta?.button_url || "")) updateField("cta", "button_url", `https://wa.me/${fmt}`);
                   }
                 }}
-                placeholder="cth. 628123456789 atau 08123456789"
+                placeholder={t("dashboard.sitesEditor.phFloatingWaNumber")}
                 className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
               />
               {!content?.contact?.phone && <p className="text-[10px] text-red-400/80 mt-1">Nomor WA wajib diisi agar tombol berfungsi.</p>}
@@ -4530,12 +4250,12 @@ export default function SectionForms({
   );
 }
 
-const HERO_ACCESSORY_TYPES: ReadonlyArray<{ value: string; label: string }> = [
-  { value: "price", label: "Harga (toko online/produk)" },
-  { value: "availability", label: "Ketersediaan (jasa/service)" },
-  { value: "skill_tags", label: "Keahlian (portfolio/kreator)" },
-  { value: "rating", label: "Rating (undangan/acara)" },
-  { value: "menu_highlight", label: "Menu Unggulan (kuliner)" },
+const HERO_ACCESSORY_TYPES: ReadonlyArray<{ value: string; labelKey: string; label: string }> = [
+  { value: "price",          labelKey: "heroAccessoryPrice",         label: "Harga (toko online/produk)" },
+  { value: "availability",   labelKey: "heroAccessoryAvailability",  label: "Ketersediaan (jasa/service)" },
+  { value: "skill_tags",     labelKey: "heroAccessorySkillTags",     label: "Keahlian (portfolio/kreator)" },
+  { value: "rating",         labelKey: "heroAccessoryRating",        label: "Rating (undangan/acara)" },
+  { value: "menu_highlight", labelKey: "heroAccessoryMenuHighlight", label: "Menu Unggulan (kuliner)" },
 ];
 
 function HeroStatsEditor({
@@ -4545,6 +4265,7 @@ function HeroStatsEditor({
   stats?: Array<{ value: string; label: string }> | null;
   onChange: (stats: Array<{ value: string; label: string }>) => void;
 }) {
+  const { t } = useI18n();
   const items = Array.isArray(stats) ? stats : [];
   const inputClass = `${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`;
   const setItem = (i: number, patch: { value?: string; label?: string }) =>
@@ -4554,11 +4275,11 @@ function HeroStatsEditor({
   return (
     <div className="space-y-2 rounded-lg border border-border/60 p-2.5 bg-sidebar-muted/50">
       <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-        <span>Statistik Hero <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
+        <span>{t("dashboard.sitesEditor.heroStatHighlight")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></span>
       </label>
-      <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Baris angka (mis. 12 / Projects) di varian Editorial Split, Personal Billboard, Portrait Showcase, dan Chronology Badge. Kosong = baris disembunyikan.</p>
+      <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">{t("dashboard.sitesEditor.heroStatHighlightHint")}</p>
       {items.length === 0 && (
-        <p className="text-[10px] text-sidebar-subtle-foreground italic">Belum ada statistik. Tambahkan nilai dan label, lalu row akan tampil di hero.</p>
+        <p className="text-[10px] text-sidebar-subtle-foreground italic">{t("dashboard.sitesEditor.heroStatHighlightEmpty")}</p>
       )}
       {items.map((s, i) => (
         <div key={i} className="flex gap-1.5 items-center">
@@ -4566,24 +4287,24 @@ function HeroStatsEditor({
             type="text"
             value={s.value || ""}
             onChange={(e) => setItem(i, { value: e.target.value })}
-            placeholder="cth. 12"
-            aria-label={`Nilai statistik ${i + 1}`}
+            placeholder={t("dashboard.sitesEditor.phHeroStatValue")}
+            aria-label={`${t("dashboard.sitesEditor.commonValue")} ${i + 1}`}
             className={`${inputClass} w-1/3`}
           />
           <input
             type="text"
             value={s.label || ""}
             onChange={(e) => setItem(i, { label: e.target.value })}
-            placeholder="cth. Projects"
-            aria-label={`Label statistik ${i + 1}`}
+            placeholder={t("dashboard.sitesEditor.phHeroStatLabel")}
+            aria-label={`${t("dashboard.sitesEditor.commonLabel")} ${i + 1}`}
             className={`${inputClass} flex-1`}
           />
           <button
             type="button"
             onClick={() => removeItem(i)}
             className="px-2 py-1.5 rounded-md text-sidebar-subtle-foreground hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
-            title="Hapus statistik"
-            aria-label={`Hapus statistik ${i + 1}`}
+            title={t("dashboard.sitesEditor.commonRemove")}
+            aria-label={`${t("dashboard.sitesEditor.commonRemove")} ${i + 1}`}
           >
             ✕
           </button>
@@ -4595,7 +4316,7 @@ function HeroStatsEditor({
         disabled={items.length >= 4}
         className="w-full px-2 py-1.5 rounded-md text-xs font-semibold border border-dashed border-border text-sidebar-muted-foreground hover:text-sidebar-foreground hover:border-primary/50 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
       >
-        + Tambah Statistik
+        + {t("dashboard.sitesEditor.heroStatAddItem")}
       </button>
     </div>
   );
@@ -4608,6 +4329,7 @@ function HeroAccessoryEditor({
   accessory: { type?: string; label?: string; value?: string; tags?: string[] } | null;
   onChange: (acc: { type?: string; label?: string; value?: string; tags?: string[] } | null) => void;
 }) {
+  const { t } = useI18n();
   const acc = accessory && accessory.type ? accessory : null;
   const tagsString = acc && Array.isArray(acc.tags) ? acc.tags.join(", ") : "";
   const set = (patch: Record<string, unknown>) => onChange({ type: acc?.type ?? "", ...acc, ...patch });
@@ -4618,41 +4340,41 @@ function HeroAccessoryEditor({
     <div className="space-y-2 rounded-lg border border-border/60 p-2.5 bg-sidebar-muted/50">
       <div className="space-y-1">
         <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-          <span>Info Bisnis di Hero <span className="text-sidebar-subtle-foreground font-normal normal-case">(opsional)</span></span>
+          <span>{t("dashboard.sitesEditor.heroAccessoryLabel")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></span>
         </label>
         <CustomSelect
           value={acc?.type || ""}
           onChange={(val) => onChange(val ? { type: val } : null)}
           size="sm"
           triggerClassName="bg-sidebar-input text-sidebar-foreground border-border text-[12px] h-9"
-          placeholder="— Tidak Ada —"
+          placeholder={t("dashboard.sitesEditor.phAccessoryNone")}
           options={[
-            { value: "", label: "— Tidak Ada —" },
-            ...HERO_ACCESSORY_TYPES.map((o) => ({ value: o.value, label: o.label })),
+            { value: "", label: t("dashboard.sitesEditor.phAccessoryNone") },
+            ...HERO_ACCESSORY_TYPES.map((o) => ({ value: o.value, label: t(`dashboard.sitesEditor.${o.labelKey}`) })),
           ]}
         />
-        <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Blok kecil di hero sesuai jenis usaha (harga, ketersediaan, atau keahlian).</p>
+        <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">{t("dashboard.sitesEditor.heroAccessoryHint")}</p>
       </div>
       {hasText && (
         <>
           <div className="space-y-1">
-            <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground">Label</label>
-            <input type="text" value={acc?.label || ""} onChange={(e) => set({ label: e.target.value })} placeholder={acc?.type === "price" ? "cth. Mulai dari" : "cth. Tersedia untuk"} className={inputClass} />
+            <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.commonLabel")}</label>
+            <input type="text" value={acc?.label || ""} onChange={(e) => set({ label: e.target.value })} placeholder={acc?.type === "price" ? t("dashboard.sitesEditor.phAccessoryLabel") : t("dashboard.sitesEditor.phAccessoryLabelAvailFor")} className={inputClass} />
           </div>
           <div className="space-y-1">
-            <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground">Nilai</label>
-            <input type="text" value={acc?.value || ""} onChange={(e) => set({ value: e.target.value })} placeholder={acc?.type === "price" ? "cth. Rp 99.000" : "cth. Pemesanan & konsultasi"} className={inputClass} />
+            <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.commonValue")}</label>
+            <input type="text" value={acc?.value || ""} onChange={(e) => set({ value: e.target.value })} placeholder={acc?.type === "price" ? t("dashboard.sitesEditor.phAccessoryValue") : t("dashboard.sitesEditor.phAccessoryValueConsultation")} className={inputClass} />
           </div>
         </>
       )}
       {hasTags && (
         <div className="space-y-1">
-          <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground">Daftar (dipisah koma)</label>
+          <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.heroAccessoryTagsLabel")}</label>
           <input
             type="text"
             value={tagsString}
             onChange={(e) => set({ tags: e.target.value.split(",").map((s) => s.trim()).filter(Boolean) })}
-            placeholder="cth. Fotografi, Video, Branding"
+            placeholder={t("dashboard.sitesEditor.phAccessorySkills")}
             className={inputClass}
           />
         </div>

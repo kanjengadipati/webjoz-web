@@ -1557,7 +1557,8 @@ export default function SiteEditorPage() {
                 type="button"
                 onClick={() => setDesktopSidebarOpen(false)}
                 className="flex h-7 w-7 items-center justify-center rounded-lg text-sidebar-muted-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground transition-colors cursor-pointer"
-                title="Tutup Panel Editor"
+                title={t("dashboard.sitesEditor.closeEditorPanel")}
+                aria-label={t("dashboard.sitesEditor.closeEditorPanel")}
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
@@ -2033,7 +2034,7 @@ export default function SiteEditorPage() {
                                   ? "bg-primary/10 text-primary border border-primary/40"
                                   : "bg-sidebar-input text-sidebar-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-muted/60 border border-border"
                               }`}
-                              title={isExplicit ? `${mKey} (Terkunci)` : isAutoCurrent ? `${mKey} (Aktif dari Mood)` : mKey}
+                              title={isExplicit ? `${mKey} (${locale === "en" ? "Locked" : "Terkunci"})` : isAutoCurrent ? `${mKey} (${locale === "en" ? "Active from Mood" : "Aktif dari Mood"})` : mKey}
                             >
                               <FeatureMarkerIcon style={mKey} className="w-3.5 h-3.5" />
                             </button>
@@ -2217,7 +2218,7 @@ export default function SiteEditorPage() {
                       type="button"
                       onClick={() => setUsageMeterCollapsed((prev) => !prev)}
                       className="w-full px-3.5 py-2 flex items-center justify-between gap-2 text-left hover:bg-sidebar-muted transition-colors cursor-pointer select-none group"
-                      title={usageMeterCollapsed ? "Buka rincian AI Usage" : "Tutup rincian AI Usage"}
+                      title={usageMeterCollapsed ? t("dashboard.sitesEditor.openAiUsageDetails") : t("dashboard.sitesEditor.closeAiUsageDetails")}
                     >
                       <div className="flex items-center gap-1.5 min-w-0">
                         <SparkleGenAI className="h-3 w-3 text-primary shrink-0" />
@@ -2310,7 +2311,7 @@ export default function SiteEditorPage() {
         <div
           onClick={() => setDesktopSidebarOpen(!desktopSidebarOpen)}
           className="w-9 h-full flex flex-col items-center justify-between py-2.5 bg-sidebar border-r border-border/80 shadow-[4px_0_16px_rgba(0,0,0,0.3)] cursor-pointer select-none transition-colors hover:bg-sidebar-muted flex-shrink-0"
-          title={desktopSidebarOpen ? "Tutup Panel Editor" : "Buka Panel Editor"}
+          title={desktopSidebarOpen ? t("dashboard.sitesEditor.closeEditorPanel") : t("dashboard.sitesEditor.openEditorPanel")}
         >
           {/* Quality score badge (Top) */}
           {quality.issues.length > 0 ? (

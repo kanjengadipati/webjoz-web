@@ -35,12 +35,20 @@ interface Props {
   locale?: string;
 }
 
-const STYLE_SUGGESTIONS = [
+const STYLE_SUGGESTIONS_ID = [
   { label: "Minimalis Bersih", prompt: "desain minimalis modern dengan aksen netral elegan" },
   { label: "Vintage Hangat", prompt: "tema vintage hangat bernuansa kayu dan kopi" },
   { label: "Mewah & Eksklusif", prompt: "gaya mewah premium dengan aksen elegan dan kontras tajam" },
   { label: "Segar & Alami", prompt: "tema segar alami bernuansa hijau botani dan bersih" },
   { label: "Modern & Canggih", prompt: "gaya teknologi modern dengan tampilan dinamis dan sleek" },
+];
+
+const STYLE_SUGGESTIONS_EN = [
+  { label: "Clean Minimalist", prompt: "modern minimalist design with elegant neutral accents" },
+  { label: "Warm Vintage", prompt: "warm vintage theme with coffee and wood undertones" },
+  { label: "Luxury & Exclusive", prompt: "premium luxury style with elegant accents and sharp contrast" },
+  { label: "Fresh & Natural", prompt: "fresh natural theme with botanical greens and clean whites" },
+  { label: "Modern & Tech", prompt: "cutting-edge technology style with sleek dynamic layout" },
 ];
 
 export default function SiteStyleSelector({
@@ -411,7 +419,7 @@ export default function SiteStyleSelector({
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !pendingDiff) void handleAiRegenerateDesign();
                 }}
-                placeholder="cth: tema kopi vintage hangat..."
+                placeholder={t("dashboard.sitesEditor.aiDesignPromptExample")}
                 className="w-full px-2.5 py-1.5 border border-border bg-sidebar-input text-sidebar-foreground rounded-lg text-[11px] outline-none focus:border-primary/60 placeholder:text-sidebar-subtle-foreground"
                 disabled={aiLoading || !!pendingDiff}
                 autoFocus
@@ -419,9 +427,9 @@ export default function SiteStyleSelector({
 
               {/* Quick Suggestion Chips */}
               <div className="space-y-1">
-                <span className="text-[9px] text-sidebar-subtle-foreground font-medium">Ide Gaya:</span>
+                <span className="text-[9px] text-sidebar-subtle-foreground font-medium">{t("dashboard.sitesEditor.styleIdeaTitle")}</span>
                 <div className="flex flex-wrap gap-1">
-                  {STYLE_SUGGESTIONS.map((item) => (
+                  {(locale === "en" ? STYLE_SUGGESTIONS_EN : STYLE_SUGGESTIONS_ID).map((item) => (
                     <button
                       key={item.label}
                       type="button"

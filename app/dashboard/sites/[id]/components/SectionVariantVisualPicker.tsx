@@ -1171,7 +1171,7 @@ export default function SectionVariantVisualPicker({
   t,
 }: SectionVariantVisualPickerProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [selectedGroup, setSelectedGroup] = useState<string>("Semua");
+  const [selectedGroup, setSelectedGroup] = useState<string>("all");
   const activeCardRef = useRef<HTMLButtonElement | null>(null);
 
   const allVars = SECTION_VARIANT_OPTIONS[sectionKey] || [];
@@ -1192,7 +1192,7 @@ export default function SectionVariantVisualPicker({
   }, [enabledOpts]);
 
   const filteredOptions = useMemo(() => {
-    if (selectedGroup === "Semua") return enabledOpts;
+    if (selectedGroup === "all" || selectedGroup === "Semua") return enabledOpts;
     return enabledOpts.filter((opt) => opt.group === selectedGroup);
   }, [enabledOpts, selectedGroup]);
 
@@ -1218,7 +1218,7 @@ export default function SectionVariantVisualPicker({
     if (currentOpt?.group) {
       setSelectedGroup(currentOpt.group);
     } else {
-      setSelectedGroup("Semua");
+      setSelectedGroup("all");
     }
     // Scroll after a short paint delay so the grid has rendered
     const id = setTimeout(() => {
@@ -1288,9 +1288,9 @@ export default function SectionVariantVisualPicker({
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
               <button
                 type="button"
-                onClick={() => setSelectedGroup("Semua")}
+                onClick={() => setSelectedGroup("all")}
                 className={`px-2 py-0.5 rounded-full text-[10px] font-medium transition whitespace-nowrap cursor-pointer ${
-                  selectedGroup === "Semua"
+                  selectedGroup === "all" || selectedGroup === "Semua"
                     ? "bg-sky-500 text-slate-950 font-bold shadow-xs"
                     : "bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-700/80 border border-slate-700/50"
                 }`}
@@ -1367,7 +1367,7 @@ export default function SectionVariantVisualPicker({
                   {/* Description */}
                   {opt.description && (
                     <p className="text-[10px] text-slate-400 line-clamp-2 leading-relaxed">
-                      {opt.description}
+                      {t && opt.descriptionKey ? (() => { const tr = t(`dashboard.sitesEditor.${opt.descriptionKey}`); return tr && !tr.startsWith("dashboard.") ? tr : opt.description; })() : opt.description}
                     </p>
                   )}
                 </button>

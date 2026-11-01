@@ -20,13 +20,17 @@ interface Props {
   onRestoreAi?: () => void;
 }
 
-function MiniPalettePreview({ palette }: { palette: Record<string, string | undefined> }) {
+function MiniPalettePreview({ palette, t }: { palette: Record<string, string | undefined>; t?: any }) {
   const bg = palette.background || "#FAF7F2";
   const text = palette.text || "#2C2C2A";
   const primary = palette.primary || "#4F46E5";
   const surface = palette.surface || "#FFFFFF";
   const accent = palette.accent || "#7C3AED";
   const primaryTextColor = isColorDark(primary) ? "#ffffff" : "#0f172a";
+
+  const previewLabel = t ? t("dashboard.sitesEditor.previewAa") : "Aa Preview";
+  const accentLabel = t ? t("dashboard.sitesEditor.paletteAccent") : "Aksen";
+  const buttonLabel = t ? t("dashboard.sitesEditor.sampleButton") : "Tombol";
 
   return (
     <div
@@ -38,12 +42,12 @@ function MiniPalettePreview({ palette }: { palette: Record<string, string | unde
           className="text-[9px] font-bold tracking-tight truncate max-w-[65px] leading-none"
           style={{ color: text }}
         >
-          Aa Preview
+          {previewLabel}
         </span>
         <span
           className="w-2 h-2 rounded-full shrink-0 shadow-2xs"
           style={{ backgroundColor: accent }}
-          title={`Aksen: ${accent}`}
+          title={`${accentLabel}: ${accent}`}
         />
       </div>
       <div className="flex items-center gap-1.5">
@@ -54,7 +58,7 @@ function MiniPalettePreview({ palette }: { palette: Record<string, string | unde
             color: primaryTextColor,
           }}
         >
-          Tombol
+          {buttonLabel}
         </div>
         <div
           className="h-3 flex-1 rounded px-1 flex items-center border border-border/30 shadow-2xs min-w-0"
@@ -132,7 +136,7 @@ export default function ColorPatternPicker({
           </p>
 
           {/* Contextual mini preview */}
-          <MiniPalettePreview palette={aiPalette} />
+          <MiniPalettePreview palette={aiPalette} t={t} />
 
           <div className="flex gap-1.5 mb-1.5">
             {PALETTE_KEYS.map((key) => (
@@ -182,7 +186,7 @@ export default function ColorPatternPicker({
                 </div>
 
                 {/* Contextual mini preview */}
-                <MiniPalettePreview palette={pattern.palette} />
+                <MiniPalettePreview palette={pattern.palette} t={t} />
 
                 {/* Larger Swatches */}
                 <div className="flex gap-1 mb-1.5">

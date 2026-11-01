@@ -140,7 +140,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           <div className="absolute inset-1 rounded-full border-3 border-transparent border-t-primary animate-spin" />
         </div>
         <div className="text-center">
-          <p className="text-xs font-semibold tracking-[0.2em] uppercase text-primary/85 animate-pulse">
+          <p className="text-xs font-semibold tracking-[0.2em] uppercase text-primary/85 animate-pulse" suppressHydrationWarning>
             {t("dashboard.authenticating")}
           </p>
         </div>

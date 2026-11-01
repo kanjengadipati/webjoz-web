@@ -36,6 +36,9 @@ function interpolate(text: string, params?: Record<string, string>): string {
 }
 
 export function I18nProvider({ children, defaultLocale = "id", forcedLocale }: { children: React.ReactNode; defaultLocale?: Locale; forcedLocale?: Locale }) {
+  // Must match SSR exactly on first render to avoid hydration mismatch.
+  // defaultLocale is derived server-side from the webjoz_locale cookie via RootLayout,
+  // so it already reflects the user's saved preference when the cookie is present.
   const [locale, setLocaleState] = useState<Locale>(forcedLocale ?? defaultLocale);
 
   useEffect(() => {
@@ -44,26 +47,28 @@ export function I18nProvider({ children, defaultLocale = "id", forcedLocale }: {
       document.documentElement.lang = forcedLocale === "id" ? "id" : "en";
       return;
     }
+    // After hydration: read cookie first (set by proxy.ts or setLocale),
+    // then fall back to localStorage. This ensures the client always reflects
+    // the user's saved preference even when SSR defaultLocale was stale.
     try {
       const match = document.cookie.match(
         new RegExp("(?:^|; )" + LOCALE_STORAGE_KEY + "=([^;]*)")
       );
       const cookieLocale = match && (match[1] === "id" || match[1] === "en") ? (match[1] as Locale) : null;
-      const saved = localStorage.getItem(LOCALE_STORAGE_KEY) as Locale | null;
-
-      const active = cookieLocale || (saved === "id" || saved === "en" ? saved : null);
+      const lsLocale = localStorage.getItem(LOCALE_STORAGE_KEY) as Locale | null;
+      const active = cookieLocale ?? (lsLocale === "id" || lsLocale === "en" ? lsLocale : null);
+      const resolved = active ?? defaultLocale;
+      setLocaleState(resolved);
+      document.documentElement.lang = resolved === "id" ? "id" : "en";
+      // Keep cookie and localStorage in sync
       if (active) {
-        setLocaleState(active);
-        document.documentElement.lang = active === "id" ? "id" : "en";
-        try {
-          localStorage.setItem(LOCALE_STORAGE_KEY, active);
-          document.cookie = `${LOCALE_STORAGE_KEY}=${active}; path=/; max-age=31536000; SameSite=Lax`;
-        } catch {}
+        try { localStorage.setItem(LOCALE_STORAGE_KEY, active); } catch {}
+        document.cookie = `${LOCALE_STORAGE_KEY}=${active}; path=/; max-age=31536000; SameSite=Lax`;
       }
     } catch {
-      /* ignore */
+      document.documentElement.lang = defaultLocale === "id" ? "id" : "en";
     }
-  }, [forcedLocale]);
+  }, [forcedLocale, defaultLocale]);
 
   const setLocale = useCallback((next: Locale) => {
     setLocaleState(next);

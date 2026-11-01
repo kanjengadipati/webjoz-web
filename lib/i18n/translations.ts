@@ -618,6 +618,7 @@ export interface Translations {
       congratsTitle: string;
       congratsHeading: string;
       congratsBody: string;
+      congratsClose: string;
       openWebsite: string;
       copyLinkTitle: string;
       checkTip: string;
@@ -1960,6 +1961,7 @@ export interface Translations {
       emptyDesc: string;
     };
     sitesKatalog: {
+      loading: string;
       loadFailed: string;
       saveFailed: string;
       saving: string;
@@ -2187,6 +2189,52 @@ export interface Translations {
       aiPromptLabelPrefix: string;
     };
     sitesEditor: {
+      closeEditorPanel: string;
+      openEditorPanel: string;
+      openAiUsageDetails: string;
+      closeAiUsageDetails: string;
+      copyHex: string;
+      copiedHex: string;
+      previewAa: string;
+      paletteAccent: string;
+      sampleButton: string;
+      sampleBusinessDesc: string;
+      brandIdentitySettings: string;
+      brandStyle: string;
+      brandStyleSubtitle: string;
+      headingFontLabel: string;
+      bodyFontLabel: string;
+      brandAccentLabel: string;
+      resetDefaultFont: string;
+      customFontBadge: string;
+      moreGoogleFontsPlaceholder: string;
+      googleFontBadge: string;
+      customFontDrawerButton: string;
+      applyFontTo: string;
+      fontTargetHeading: string;
+      fontTargetBody: string;
+      uploadFontTab: string;
+      urlFontTab: string;
+      selectFontFileComputer: string;
+      fontFileFormatHint: string;
+      fontFamilyNameLabel: string;
+      fontFamilyNamePlaceholder: string;
+      fontUrlLabel: string;
+      fontUrlPlaceholder: string;
+      applyFontUrlButton: string;
+      customFontAppliedSuccess: string;
+      customFontUrlAppliedSuccess: string;
+      fontNameAndUrlRequired: string;
+      fontInvalidFormatError: string;
+      fontFileSizeError: string;
+      fontReadError: string;
+      brandPreviewTitle: string;
+      brandPreviewSampleHeadline: string;
+      brandPreviewContactButton: string;
+      brandStylesLockedHint: string;
+      pickCustomColorTitle: string;
+      styleIdeaTitle: string;
+      aiDesignPromptExample: string;
       authenticating: string;
       loading: string;
       loadFailed: string;
@@ -2578,6 +2626,515 @@ export interface Translations {
       seoReviewsCount: string;
       seoBusinessOpenStatus: string;
       seoBusinessClosedStatus: string;
+      // Header section form
+      headerBrandName: string;
+      headerShowNavButton: string;
+      headerNavButtonText: string;
+      headerNavButtonLink: string;
+      headerNavButtonLinkAuto: string;
+      headerNavButtonLinkHint: string;
+      headerTagline: string;
+      headerTaglineOptional: string;
+      headerLogoUrl: string;
+      headerLogoLight: string;
+      headerLogoLightHint: string;
+      headerFavicon: string;
+      headerIconName: string;
+      headerNavMenu: string;
+      headerNavMenuHint: string;
+      headerNavLinkHero: string;
+      headerNavLinkAbout: string;
+      headerNavLinkBenefits: string;
+      headerNavLinkCatalog: string;
+      headerNavLinkMenu: string;
+      headerNavLinkWorks: string;
+      headerNavLinkGallery: string;
+      headerNavLinkTestimonials: string;
+      headerNavLinkFaq: string;
+      headerNavLinkContact: string;
+      headerNavSectionAbout: string;
+      headerNavSectionBenefits: string;
+      headerNavSectionMenu: string;
+      headerNavSectionCatalog: string;
+      headerNavSectionWorks: string;
+      headerNavSectionGallery: string;
+      headerNavSectionTestimonials: string;
+      headerNavSectionFaq: string;
+      headerNavSectionPromo: string;
+      headerNavSectionContact: string;
+      headerNavSectionBlog: string;
+      // Common labels reused across sections
+      commonOptional: string;
+      commonRemove: string;
+      commonAdd: string;
+      commonLeft: string;
+      commonCenter: string;
+      commonRight: string;
+      commonTextAlign: string;
+      commonEyebrow: string;
+      commonTitle: string;
+      commonSubtitle: string;
+      commonDescription: string;
+      commonSectionTitle: string;
+      commonValue: string;
+      commonLabel: string;
+      commonName: string;
+      commonRole: string;
+      commonPhoto: string;
+      commonIcon: string;
+      commonStat: string;
+      commonStatLabel: string;
+      commonLayout: string;
+      commonYear: string;
+      commonCategory: string;
+      commonImageUrl: string;
+      commonAltText: string;
+      commonCaption: string;
+      commonClientLabel: string;
+      commonProjectLink: string;
+      // About section
+      aboutImage: string;
+      aboutStatHighlight: string;
+      aboutStat: string;
+      aboutStatValue: string;
+      aboutStatLabel: string;
+      aboutMilestones: string;
+      aboutMilestone: string;
+      aboutMilestoneYear: string;
+      aboutMilestoneTitle: string;
+      aboutMilestoneDesc: string;
+      aboutAddMilestone: string;
+      aboutTeamMembers: string;
+      aboutTeamMember: string;
+      aboutAddTeamMember: string;
+      // Hero section
+      heroHeadline: string;
+      heroSubheadline: string;
+      heroCtaText: string;
+      heroBgColor: string;
+      heroBgColorHint: string;
+      heroCarouselImages: string;
+      heroCarouselImagesCount: string;
+      heroAddImage: string;
+      heroVideoUrl: string;
+      heroEyebrow: string;
+      heroEyebrowHint: string;
+      heroSecondaryCtaText: string;
+      heroSecondaryCtaHint: string;
+      heroSecondaryCtaUrl: string;
+      heroSecondaryCtaUrlHint: string;
+      heroBadgeText: string;
+      heroBadgeTextHint: string;
+      heroOpeningHours: string;
+      // Benefits section
+      benefitsEyebrow: string;
+      benefitsSectionTitle: string;
+      benefitsSubtitle: string;
+      benefitsItemTitle: string;
+      benefitsItemDesc: string;
+      benefitsAddItem: string;
+      benefitsComparisonTable: string;
+      benefitsComparisonColA: string;
+      benefitsComparisonColB: string;
+      benefitsComparisonRow: string;
+      benefitsAddRow: string;
+      benefitsStatLabel: string;
+      // FAQ section
+      faqSectionTitle: string;
+      faqItem: string;
+      faqQuestion: string;
+      faqAnswer: string;
+      faqCategory: string;
+      faqCategoryHint: string;
+      faqAddItem: string;
+      // CTA section
+      ctaHeadline: string;
+      ctaEyebrow: string;
+      ctaSubheadline: string;
+      ctaTrustSignal: string;
+      ctaImage: string;
+      ctaButtonText: string;
+      // Contact section
+      contactContentAlign: string;
+      contactTitle: string;
+      contactAddress: string;
+      contactPhone: string;
+      contactPhoneHint: string;
+      contactEmail: string;
+      contactShowForm: string;
+      contactShowMap: string;
+      contactShowWhatsAppCard: string;
+      contactFormLayout: string;
+      contactFormLayoutInfoLeft: string;
+      contactFormLayoutFormLeft: string;
+      contactFormLayoutStack: string;
+      contactFormLayoutHint: string;
+      contactMapLayout: string;
+      contactMapLayoutInline: string;
+      contactMapLayoutFull: string;
+      contactMapLayoutHint: string;
+      contactMapsLink: string;
+      contactMapsLinkHint: string;
+      contactInvalidMapLink: string;
+      contactMapClickHint: string;
+      contactResolveError: string;
+      // Footer section
+      footerTagline: string;
+      footerCopyright: string;
+      footerSocialLinks: string;
+      footerSocialPlatformName: string;
+      footerAddSocialLink: string;
+      // Testimonials section
+      testimonialsEyebrow: string;
+      testimonialsSectionTitle: string;
+      testimonialsSubtitle: string;
+      testimonialsItem: string;
+      testimonialsQuote: string;
+      testimonialsName: string;
+      testimonialsRole: string;
+      testimonialsAvatarInitials: string;
+      testimonialsAvatarColor: string;
+      testimonialsCompany: string;
+      testimonialsLogoUrl: string;
+      testimonialsLogoUrlHint: string;
+      testimonialsAddItem: string;
+      // Works/Portfolio section
+      worksSectionBanner: string;
+      worksSectionBannerDesc: string;
+      worksTitle: string;
+      worksEyebrow: string;
+      worksSubtitle: string;
+      worksLayout: string;
+      worksLayoutGrid: string;
+      worksLayoutMasonry: string;
+      worksLayoutFeaturedGrid: string;
+      worksLayoutShowcase: string;
+      worksItems: string;
+      worksItem: string;
+      worksItemTitle: string;
+      worksAddItem: string;
+      worksAddFirst: string;
+      worksDescription: string;
+      // Gallery section
+      gallerySectionBanner: string;
+      gallerySectionBannerDesc: string;
+      galleryTitle: string;
+      galleryEyebrow: string;
+      galleryLayout: string;
+      galleryLayoutGrid: string;
+      galleryLayoutMasonry: string;
+      galleryLayoutCarousel: string;
+      galleryCarouselSettings: string;
+      galleryAutoplaySpeed: string;
+      galleryShowDots: string;
+      galleryShowArrows: string;
+      galleryItems: string;
+      galleryItem: string;
+      galleryAddItem: string;
+      galleryAddFirst: string;
+      // Stats section
+      statsEyebrow: string;
+      statsSectionTitle: string;
+      statsSubtitle: string;
+      statsMetrics: string;
+      statsMetric: string;
+      statsAddMetric: string;
+      statsValue: string;
+      statsDescription: string;
+      // Partners section
+      partnersSectionBanner: string;
+      partnersSectionBannerDesc: string;
+      partnersEyebrow: string;
+      partnersSectionTitle: string;
+      partnersSubtitle: string;
+      partnersList: string;
+      partnersItem: string;
+      partnersAddItem: string;
+      partnersBrandName: string;
+      partnersCategory: string;
+      partnersWebsite: string;
+      // Pricing section
+      pricingSectionBanner: string;
+      pricingSectionBannerDesc: string;
+      pricingEyebrow: string;
+      pricingSectionTitle: string;
+      pricingSubtitle: string;
+      pricingPlans: string;
+      pricingPlan: string;
+      pricingAddPlan: string;
+      pricingPlanName: string;
+      pricingPlanBadge: string;
+      pricingPlanPrice: string;
+      pricingPlanPeriod: string;
+      pricingPlanDesc: string;
+      pricingPlanFeatures: string;
+      pricingCtaText: string;
+      pricingCtaUrl: string;
+      pricingIsFeatured: string;
+      // Floating button section
+      floatingSectionBanner: string;
+      floatingSectionBannerDesc: string;
+      floatingButtonType: string;
+      floatingNone: string;
+      floatingNoneDesc: string;
+      floatingWhatsApp: string;
+      floatingWhatsAppDesc: string;
+      floatingWhatsAppPill: string;
+      floatingWhatsAppPillDesc: string;
+      floatingChatBubble: string;
+      floatingChatBubbleDesc: string;
+      floatingContactLink: string;
+      floatingContactLinkDesc: string;
+      floatingWhatsAppNumber: string;
+      floatingWhatsAppNumberHint: string;
+      floatingWhatsAppNumberRequired: string;
+      floatingProHint: string;
+      // Preloader section
+      preloaderSectionBanner: string;
+      preloaderSectionBannerDesc: string;
+      preloaderTestBtn: string;
+      preloaderTestDesc: string;
+      preloaderTestTitle: string;
+      preloaderBrandText: string;
+      preloaderBrandHint: string;
+      preloaderTagline: string;
+      preloaderTaglineHint: string;
+      preloaderIconLogo: string;
+      preloaderChooseIcon: string;
+      // Variant labels & descriptions — hero-effect
+      variantHeroEffectModernGrid: string; variantHeroEffectModernGridDesc: string;
+      variantHeroEffectGlass: string;      variantHeroEffectGlassDesc: string;
+      variantHeroEffectNeoBrut: string;    variantHeroEffectNeoBrutDesc: string;
+      variantHeroEffectScanlines: string;  variantHeroEffectScanlinesDesc: string;
+      variantHeroEffectStarfield: string;  variantHeroEffectStarfieldDesc: string;
+      variantHeroEffectRetroPaper: string; variantHeroEffectRetroPaperDesc: string;
+      // about
+      variantAboutClassic: string;    variantAboutClassicDesc: string;
+      variantAboutSplitImage: string; variantAboutSplitImageDesc: string;
+      variantAboutStatHeavy: string;  variantAboutStatHeavyDesc: string;
+      variantAboutTimeline: string;   variantAboutTimelineDesc: string;
+      variantAboutTeamGrid: string;   variantAboutTeamGridDesc: string;
+      // benefits
+      variantBenefitsGrid: string;             variantBenefitsGridDesc: string;
+      variantBenefitsFeaturedGrid: string;     variantBenefitsFeaturedGridDesc: string;
+      variantBenefitsIconRow: string;          variantBenefitsIconRowDesc: string;
+      variantBenefitsStatGrid: string;         variantBenefitsStatGridDesc: string;
+      variantBenefitsChecklist: string;        variantBenefitsChecklistDesc: string;
+      variantBenefitsComparisonTable: string;  variantBenefitsComparisonTableDesc: string;
+      variantBenefitsBentoGrid: string;        variantBenefitsBentoGridDesc: string;
+      variantBenefitsTrustBar: string;         variantBenefitsTrustBarDesc: string;
+      variantBenefitsHowItWorks: string;       variantBenefitsHowItWorksDesc: string;
+      // testimonials
+      variantTestimonialsCarousel: string;           variantTestimonialsCarouselDesc: string;
+      variantTestimonialsCompact: string;            variantTestimonialsCompactDesc: string;
+      variantTestimonialsGrid: string;               variantTestimonialsGridDesc: string;
+      variantTestimonialsLogoWall: string;           variantTestimonialsLogoWallDesc: string;
+      variantTestimonialsFeaturedSpotlight: string;  variantTestimonialsFeaturedSpotlightDesc: string;
+      variantTestimonialsGoogleReviews: string;      variantTestimonialsGoogleReviewsDesc: string;
+      variantTestimonialsVideoWallDesc: string;
+      // cta
+      variantCtaBanner: string;         variantCtaBannerDesc: string;
+      variantCtaCard: string;           variantCtaCardDesc: string;
+      variantCtaCentered: string;       variantCtaCenteredDesc: string;
+      variantCtaSplitImage: string;     variantCtaSplitImageDesc: string;
+      variantCtaInlineLeadForm: string; variantCtaInlineLeadFormDesc: string;
+      // faq
+      variantFaqAccordion: string;        variantFaqAccordionDesc: string;
+      variantFaqSimple: string;           variantFaqSimpleDesc: string;
+      variantFaqColumns: string;          variantFaqColumnsDesc: string;
+      variantFaqSidebarCategory: string;  variantFaqSidebarCategoryDesc: string;
+      variantFaqTwoColumnGrid: string;    variantFaqTwoColumnGridDesc: string;
+      variantFaqChatBubble: string;       variantFaqChatBubbleDesc: string;
+      // gallery
+      variantGalleryGrid: string;          variantGalleryGridDesc: string;
+      variantGalleryMasonry: string;       variantGalleryMasonryDesc: string;
+      variantGalleryCarousel: string;      variantGalleryCarouselDesc: string;
+      variantGalleryLightboxStory: string; variantGalleryLightboxStoryDesc: string;
+      variantGalleryBeforeAfter: string;   variantGalleryBeforeAfterDesc: string;
+      variantGalleryVideoGridDesc: string;
+      // works
+      variantWorksGrid: string;             variantWorksGridDesc: string;
+      variantWorksMasonry: string;          variantWorksMasonryDesc: string;
+      variantWorksFeaturedGrid: string;     variantWorksFeaturedGridDesc: string;
+      variantWorksShowcaseFeatured: string; variantWorksShowcaseFeaturedDesc: string;
+      // stats
+      variantStatsCounterRow: string;          variantStatsCounterRowDesc: string;
+      variantStatsCardGrid: string;            variantStatsCardGridDesc: string;
+      variantStatsMinimalSplit: string;        variantStatsMinimalSplitDesc: string;
+      variantStatsBigNumberSpotlight: string;  variantStatsBigNumberSpotlightDesc: string;
+      // partners
+      variantPartnersLogoWall: string;           variantPartnersLogoWallDesc: string;
+      variantPartnersMarquee: string;            variantPartnersMarqueeDesc: string;
+      variantPartnersPillGrid: string;           variantPartnersPillGridDesc: string;
+      variantPartnersFeaturedCollabGrid: string; variantPartnersFeaturedCollabGridDesc: string;
+      // pricing
+      variantPricingCards: string;               variantPricingCardsDesc: string;
+      variantPricingHorizontalRows: string;      variantPricingHorizontalRowsDesc: string;
+      variantPricingComparisonTable: string;     variantPricingComparisonTableDesc: string;
+      variantPricingSingleTierHighlight: string; variantPricingSingleTierHighlightDesc: string;
+      // menu
+      variantMenuGrid: string;                   variantMenuGridDesc: string;
+      variantMenuCompact: string;                variantMenuCompactDesc: string;
+      variantMenuCards: string;                  variantMenuCardsDesc: string;
+      variantMenuTextList: string;               variantMenuTextListDesc: string;
+      variantMenuCompactList: string;            variantMenuCompactListDesc: string;
+      variantMenuTabsByCategory: string;         variantMenuTabsByCategoryDesc: string;
+      variantMenuAccordionByCategory: string;    variantMenuAccordionByCategoryDesc: string;
+      variantMenuBentoPhotoGrid: string;         variantMenuBentoPhotoGridDesc: string;
+      variantMenuVisualShowcaseHero: string;     variantMenuVisualShowcaseHeroDesc: string;
+      variantMenuSidebarScrollspyPhoto: string;  variantMenuSidebarScrollspyPhotoDesc: string;
+      variantMenuCarouselDesc: string;
+      variantMenuMasonryDesc: string;
+      // catalog
+      variantCatalogGrid: string;                variantCatalogGridDesc: string;
+      variantCatalogCompact: string;             variantCatalogCompactDesc: string;
+      variantCatalogCards: string;               variantCatalogCardsDesc: string;
+      variantCatalogGridDense: string;           variantCatalogGridDenseDesc: string;
+      variantCatalogShowcaseFeatured: string;    variantCatalogShowcaseFeaturedDesc: string;
+      variantCatalogTabsByCategory: string;      variantCatalogTabsByCategoryDesc: string;
+      variantCatalogEditorialGrid: string;       variantCatalogEditorialGridDesc: string;
+      variantCatalogMasonryFlow: string;         variantCatalogMasonryFlowDesc: string;
+      variantCatalogInstagramGrid: string;       variantCatalogInstagramGridDesc: string;
+      variantCatalogSplitHero: string;           variantCatalogSplitHeroDesc: string;
+      variantCatalogNeoBrutalist: string;        variantCatalogNeoBrutalistDesc: string;
+      variantCatalogHorizontalCarousel: string;  variantCatalogHorizontalCarouselDesc: string;
+      variantCatalogProductTableDesc: string;
+      variantCatalogSpotlightDesc: string;
+      // contact
+      variantContactClassicSplit: string;    variantContactClassicSplitDesc: string;
+      variantContactWhatsAppDirect: string;  variantContactWhatsAppDirectDesc: string;
+      variantContactBentoGrid: string;       variantContactBentoGridDesc: string;
+      variantContactOverlayMap: string;      variantContactOverlayMapDesc: string;
+      variantContactDarkSplit: string;       variantContactDarkSplitDesc: string;
+      variantContactMinimalCentered: string; variantContactMinimalCenteredDesc: string;
+      // header
+      variantHeaderLeftLogoInlineNav: string;  variantHeaderLeftLogoInlineNavDesc: string;
+      variantHeaderCenteredLogo: string;       variantHeaderCenteredLogoDesc: string;
+      variantHeaderTransparentOverlay: string; variantHeaderTransparentOverlayDesc: string;
+      variantHeaderLogoWithCtaButton: string;  variantHeaderLogoWithCtaButtonDesc: string;
+      variantHeaderStackedLogoTagline: string; variantHeaderStackedLogoTaglineDesc: string;
+      // footer
+      variantFooterMinimalBand: string;       variantFooterMinimalBandDesc: string;
+      variantFooterColumnsWithNav: string;    variantFooterColumnsWithNavDesc: string;
+      variantFooterColumnsWithSocial: string; variantFooterColumnsWithSocialDesc: string;
+      variantFooterDarkContrastBand: string;  variantFooterDarkContrastBandDesc: string;
+      variantFooterLocationAndHours: string;  variantFooterLocationAndHoursDesc: string;
+      // blog
+      variantBlogGrid: string;    variantBlogGridDesc: string;
+      variantBlogList: string;    variantBlogListDesc: string;
+      variantBlogFeatured: string;variantBlogFeaturedDesc: string;
+      variantBlogMinimal: string; variantBlogMinimalDesc: string;
+      // preloader
+      variantPreloaderNone: string;           variantPreloaderNoneDesc: string;
+      variantPreloaderTopBar: string;         variantPreloaderTopBarDesc: string;
+      variantPreloaderMinimalFade: string;    variantPreloaderMinimalFadeDesc: string;
+      variantPreloaderMinimalSpinner: string; variantPreloaderMinimalSpinnerDesc: string;
+      variantPreloaderMinimalCounter: string; variantPreloaderMinimalCounterDesc: string;
+      variantPreloaderPulseLogo: string;      variantPreloaderPulseLogoDesc: string;
+      variantPreloaderOrbitRing: string;      variantPreloaderOrbitRingDesc: string;
+      variantPreloaderProgressLine: string;   variantPreloaderProgressLineDesc: string;
+      variantPreloaderShimmerReveal: string;  variantPreloaderShimmerRevealDesc: string;
+      variantPreloaderStaggerDots: string;    variantPreloaderStaggerDotsDesc: string;
+      phNavCta: string;
+      phTagline: string;
+      phIconName: string;
+      phEyebrowAvailable: string;
+      phLearnMore: string;
+      phSecondaryCta: string;
+      phBadgeText: string;
+      phOpeningHours: string;
+      phAboutEyebrow: string;
+      phStatValue: string;
+      phStatLabel: string;
+      phBenefitsStat: string;
+      phWhyChooseUs: string;
+      phBenefitsSubtitle: string;
+      phBenefitsColA: string;
+      phBenefitsColB: string;
+      phComparisonLabel: string;
+      phValueA: string;
+      phValueB: string;
+      phCtaEyebrow: string;
+      phCtaSubheadline: string;
+      phCtaTrustSignal: string;
+      phSocialUrl: string;
+      phGalleryTitle: string;
+      phGalleryEyebrow: string;
+      phGalleryCaption: string;
+      phGalleryAltText: string;
+      phStatsEyebrow: string;
+      phStatsSectionTitle: string;
+      phStatsSubtitle: string;
+      phStatsValue: string;
+      phStatsLabel: string;
+      phStatsDescription: string;
+      phPartnersEyebrow: string;
+      phPartnersSectionTitle: string;
+      phPartnersSubtitle: string;
+      phPartnersBrandName: string;
+      phPartnersCategory: string;
+      phPricingEyebrow: string;
+      phPricingSectionTitle: string;
+      phPricingSubtitle: string;
+      phPricingPlanName: string;
+      phPricingBadge: string;
+      phPricingPrice: string;
+      phPricingPeriod: string;
+      phPricingDesc: string;
+      phPricingFeatures: string;
+      phPricingCtaText: string;
+      phFloatingWaNumber: string;
+      phHeroStatValue: string;
+      phHeroStatLabel: string;
+      phAccessoryNone: string;
+      phAccessoryLabel: string;
+      phAccessoryLabelAvailFor: string;
+      phAccessoryValue: string;
+      phAccessoryValueConsultation: string;
+      phAccessorySkills: string;
+      phHeroBgColor: string;
+      phHeroCaption: string;
+      phTestimonialsEyebrow: string;
+      phTestimonialsSectionTitle: string;
+      phTestimonialsSubtitle: string;
+      phTestimonialsQuote: string;
+      phTestimonialsName: string;
+      phTestimonialsRole: string;
+      phTestimonialsCompany: string;
+      phWorksTitle: string;
+      phWorksSubtitle: string;
+      phWorksItemTitle: string;
+      phWorksClient: string;
+      phWorksDescription: string;
+      phWorksAltText: string;
+      aboutTeamName: string;
+      aboutTeamRole: string;
+      aboutTeamPhoto: string;
+      aboutRemove: string;
+      // HeroStats & HeroAccessory
+      heroStatHighlight: string;
+      heroStatHighlightHint: string;
+      heroStatHighlightEmpty: string;
+      heroStatAddItem: string;
+      heroAccessoryLabel: string;
+      heroAccessoryHint: string;
+      heroAccessoryTagsLabel: string;
+      heroAccessoryPrice: string;
+      heroAccessoryAvailability: string;
+      heroAccessorySkillTags: string;
+      heroAccessoryRating: string;
+      heroAccessoryMenuHighlight: string;
+      aiAboutTitlePrompt: string; aiAboutTitleLabel: string; aiAboutTitleBtn: string;
+      aiAboutBodyPrompt: string;  aiAboutBodyLabel: string;  aiAboutBodyBtn: string;
+      aiHeroHeadlinePrompt: string; aiHeroHeadlineLabel: string; aiHeroHeadlineBtn: string;
+      aiHeroSubheadlinePrompt: string; aiHeroSubheadlineLabel: string; aiHeroSubheadlineBtn: string;
+      aiCtaHeadlinePrompt: string; aiCtaHeadlineLabel: string; aiCtaHeadlineBtn: string;
+      gallerySectionBannerDesc2: string;
+      galleryLayoutGridDesc: string; galleryLayoutMasonryDesc: string; galleryLayoutCarouselDesc: string;
+      galleryCarouselSettingsLabel: string;
+      floatingWhatsAppDescLong: string; floatingWhatsAppPillDescLong: string;
+      floatingChatBubbleDescLong: string; floatingChatBubbleProRequired: string;
+      floatingContactLinkDescLong: string;
     };
     wizard: {
       initialMessage: string;
@@ -3456,6 +4013,7 @@ export const translations: Record<Locale, Translations> = {
         congratsTitle: "Website Anda Telah Live",
         congratsHeading: "Website Anda Resmi Mengudara!",
         congratsBody: "Selamat! Halaman web {name} Anda sekarang aktif dan dapat diakses dari mana saja di seluruh dunia.",
+        congratsClose: "Tutup",
         openWebsite: "Buka Website",
         copyLinkTitle: "Salin Link",
         checkTip: "💡 Ingin mengecek? Klik link di atas untuk membuka website live Anda di tab baru.",
@@ -4803,6 +5361,7 @@ export const translations: Record<Locale, Translations> = {
         emptyDesc: "Belum ada testimoni. Klik Tambah Manual untuk menambahkan testimonial pertama.",
       },
       sitesKatalog: {
+        loading: "Memuat katalog...",
         loadFailed: "Gagal memuat katalog",
         saveFailed: "Gagal menyimpan katalog",
         saving: "Menyimpan...",
@@ -5030,6 +5589,52 @@ export const translations: Record<Locale, Translations> = {
         aiPromptLabelPrefix: "Buat deskripsi untuk",
       },
       sitesEditor: {
+        closeEditorPanel: "Tutup Panel Editor",
+        openEditorPanel: "Buka Panel Editor",
+        openAiUsageDetails: "Buka rincian AI Usage",
+        closeAiUsageDetails: "Tutup rincian AI Usage",
+        copyHex: "Salin Kode HEX",
+        copiedHex: "Tersalin!",
+        previewAa: "Aa Preview",
+        paletteAccent: "Aksen",
+        sampleButton: "Tombol",
+        sampleBusinessDesc: "Teks deskripsi bisnis Anda...",
+        brandIdentitySettings: "PENGATURAN IDENTITAS",
+        brandStyle: "Gaya Brand (Brand style)",
+        brandStyleSubtitle: "Jaga konsistensi font & warna di seluruh halaman",
+        headingFontLabel: "Font Judul (Heading font)",
+        bodyFontLabel: "Font Teks Isi (Body font)",
+        brandAccentLabel: "Warna Aksen Brand (Accent color)",
+        resetDefaultFont: "Reset ke font bawaan",
+        customFontBadge: "Custom Font",
+        moreGoogleFontsPlaceholder: "Pilih Google Font lainnya...",
+        googleFontBadge: "Google Font",
+        customFontDrawerButton: "Upload font sendiri atau pakai URL font",
+        applyFontTo: "Terapkan Ke:",
+        fontTargetHeading: "Font Judul (Heading)",
+        fontTargetBody: "Font Teks (Body)",
+        uploadFontTab: "Upload File (.woff2/.ttf)",
+        urlFontTab: "Input URL Font",
+        selectFontFileComputer: "Pilih file font dari komputer",
+        fontFileFormatHint: "Format: .woff2 (rekomendasi), .ttf, .otf (Maks. 3 MB)",
+        fontFamilyNameLabel: "Nama Font Family:",
+        fontFamilyNamePlaceholder: "mis. Clash Display / Helvetica",
+        fontUrlLabel: "URL Font (Stylesheet CSS / Woff2):",
+        fontUrlPlaceholder: "https://api.fontshare.com/v2/css?f[]=... atau .woff2",
+        applyFontUrlButton: "Terapkan Font URL",
+        customFontAppliedSuccess: "Font \"{name}\" berhasil diterapkan!",
+        customFontUrlAppliedSuccess: "Font \"{name}\" dari URL berhasil diterapkan!",
+        fontNameAndUrlRequired: "Nama font dan URL font wajib diisi",
+        fontInvalidFormatError: "Format file harus .woff2, .woff, .ttf, atau .otf",
+        fontFileSizeError: "Ukuran file font maksimal 3 MB",
+        fontReadError: "Gagal membaca file font",
+        brandPreviewTitle: "PRATINJAU IDENTITAS",
+        brandPreviewSampleHeadline: "Bisnis Anda, identitas Anda.",
+        brandPreviewContactButton: "Hubungi Kami",
+        brandStylesLockedHint: "Font & warna ini terkunci otomatis di semua section & halaman.",
+        pickCustomColorTitle: "Pilih warna kustom...",
+        styleIdeaTitle: "Ide Gaya:",
+        aiDesignPromptExample: "cth: tema kopi vintage hangat...",
         authenticating: "Mengautentikasi...",
         loading: "Memuat editor...",
         loadFailed: "Gagal memuat situs",
@@ -5421,6 +6026,495 @@ export const translations: Record<Locale, Translations> = {
         seoReviewsCount: "ulasan",
         seoBusinessOpenStatus: "Buka",
         seoBusinessClosedStatus: "Tutup",
+        // Header section form
+        headerBrandName: "Nama Brand",
+        headerShowNavButton: "Tampilkan Tombol Navigasi",
+        headerNavButtonText: "Teks Tombol Nav",
+        headerNavButtonLink: "Link ke Section",
+        headerNavButtonLinkAuto: "— Otomatis dari teks —",
+        headerNavButtonLinkHint: "Biarkan kosong untuk mendeteksi section otomatis berdasarkan teks tombol.",
+        headerTagline: "Tagline",
+        headerTaglineOptional: "(opsional)",
+        headerLogoUrl: "Logo URL",
+        headerLogoLight: "Logo Versi Terang (opsional)",
+        headerLogoLightHint: "Dipakai di header transparan saat berada di atas hero gelap. Kosongkan untuk memutihkan logo utama otomatis.",
+        headerFavicon: "Favicon",
+        headerIconName: "Nama Ikon",
+        headerNavMenu: "Menu Navigasi",
+        headerNavMenuHint: "Atur item yang tampil di navbar",
+        headerNavLinkHero: "Hero (Atas)",
+        headerNavLinkAbout: "Tentang Kami",
+        headerNavLinkBenefits: "Keunggulan",
+        headerNavLinkCatalog: "Katalog / Produk",
+        headerNavLinkMenu: "Menu",
+        headerNavLinkWorks: "Portofolio Proyek",
+        headerNavLinkGallery: "Galeri",
+        headerNavLinkTestimonials: "Testimoni",
+        headerNavLinkFaq: "FAQ",
+        headerNavLinkContact: "Kontak",
+        headerNavSectionAbout: "Tentang",
+        headerNavSectionBenefits: "Keunggulan",
+        headerNavSectionMenu: "Menu",
+        headerNavSectionCatalog: "Katalog",
+        headerNavSectionWorks: "Portofolio",
+        headerNavSectionGallery: "Galeri",
+        headerNavSectionTestimonials: "Testimoni",
+        headerNavSectionFaq: "FAQ",
+        headerNavSectionPromo: "Promo",
+        headerNavSectionContact: "Kontak",
+        headerNavSectionBlog: "Blog",
+        // Common
+        commonOptional: "(opsional)",
+        commonRemove: "Hapus",
+        commonAdd: "Tambah",
+        commonLeft: "Kiri",
+        commonCenter: "Tengah",
+        commonRight: "Kanan",
+        commonTextAlign: "Perataan Teks",
+        commonEyebrow: "Eyebrow",
+        commonTitle: "Judul",
+        commonSubtitle: "Subtitle",
+        commonDescription: "Deskripsi",
+        commonSectionTitle: "Judul Section",
+        commonValue: "Nilai",
+        commonLabel: "Label",
+        commonName: "Nama",
+        commonRole: "Jabatan",
+        commonPhoto: "Foto",
+        commonIcon: "Ikon",
+        commonStat: "Stat",
+        commonStatLabel: "Keterangan Stat",
+        commonLayout: "Tata Letak",
+        commonYear: "Tahun",
+        commonCategory: "Kategori",
+        commonImageUrl: "URL Gambar",
+        commonAltText: "Teks Alt",
+        commonCaption: "Caption",
+        commonClientLabel: "Klien",
+        commonProjectLink: "Link Proyek",
+        // About
+        aboutImage: "Gambar Tentang",
+        aboutStatHighlight: "Statistik Highlight",
+        aboutStat: "Stat",
+        aboutStatValue: "Nilai",
+        aboutStatLabel: "Label",
+        aboutMilestones: "Milestones / Timeline",
+        aboutMilestone: "Milestone",
+        aboutMilestoneYear: "Tahun (cth. 2020)",
+        aboutMilestoneTitle: "Judul milestone",
+        aboutMilestoneDesc: "Deskripsi (opsional)",
+        aboutAddMilestone: "Tambah Milestone",
+        aboutTeamMembers: "Anggota Tim",
+        aboutTeamMember: "Anggota",
+        aboutAddTeamMember: "Tambah Anggota",
+        // Hero
+        heroHeadline: "Headline",
+        heroSubheadline: "Subheadline",
+        heroCtaText: "Teks Tombol CTA",
+        heroBgColor: "Warna Latar Hero",
+        heroBgColorHint: "Biarkan kosong untuk menggunakan warna latar global.",
+        heroCarouselImages: "Gambar Carousel",
+        heroCarouselImagesCount: "gambar",
+        heroAddImage: "+ Tambah gambar",
+        heroVideoUrl: "URL Video Hero",
+        heroEyebrow: "Eyebrow / Label Badge",
+        heroEyebrowHint: "Label kecil di atas headline (dipakai oleh beberapa template).",
+        heroSecondaryCtaText: "Teks Tombol CTA Kedua",
+        heroSecondaryCtaHint: "Tombol kedua di samping tombol utama (dipakai oleh beberapa template).",
+        heroSecondaryCtaUrl: "URL Tombol CTA Kedua",
+        heroSecondaryCtaUrlHint: "Link tujuan tombol CTA kedua (section anchor, URL, atau WhatsApp).",
+        heroBadgeText: "Teks Badge Bawah CTA",
+        heroBadgeTextHint: "Teks kecil yang muncul di bawah tombol CTA (jam buka, info singkat, dll).",
+        heroOpeningHours: "Jam Buka",
+        // Benefits
+        benefitsEyebrow: "Eyebrow",
+        benefitsSectionTitle: "Judul Section",
+        benefitsSubtitle: "Subtitle",
+        benefitsItemTitle: "Judul",
+        benefitsItemDesc: "Deskripsi",
+        benefitsAddItem: "Tambah",
+        benefitsComparisonTable: "Tabel Perbandingan",
+        benefitsComparisonColA: "Label Kolom A (Kami)",
+        benefitsComparisonColB: "Label Kolom B (Lainnya)",
+        benefitsComparisonRow: "Baris",
+        benefitsAddRow: "Tambah Baris",
+        benefitsStatLabel: "Keterangan Stat",
+        // FAQ
+        faqSectionTitle: "Judul Section",
+        faqItem: "FAQ",
+        faqQuestion: "Pertanyaan",
+        faqAnswer: "Jawaban",
+        faqCategory: "Kategori",
+        faqCategoryHint: "(opsional, untuk variant sidebar-category)",
+        faqAddItem: "Tambah FAQ",
+        // CTA
+        ctaHeadline: "Headline CTA",
+        ctaEyebrow: "Eyebrow",
+        ctaSubheadline: "Subheadline",
+        ctaTrustSignal: "Trust Signal",
+        ctaImage: "Gambar CTA",
+        ctaButtonText: "Teks Tombol",
+        // Contact
+        contactContentAlign: "Rata Konten",
+        contactTitle: "Judul",
+        contactAddress: "Alamat",
+        contactPhone: "Nomor WhatsApp",
+        contactPhoneHint: "Jika kosong, pesanan dari keranjang masuk ke Kotak Masuk Pesan di dashboard.",
+        contactEmail: "Email",
+        contactShowForm: "Formulir Kontak",
+        contactShowMap: "Peta Lokasi",
+        contactShowWhatsAppCard: "Kartu WhatsApp",
+        contactFormLayout: "Tata Letak Form Kontak",
+        contactFormLayoutInfoLeft: "Info kiri, form kanan",
+        contactFormLayoutFormLeft: "Form kiri, info kanan",
+        contactFormLayoutStack: "Vertikal (form di bawah)",
+        contactFormLayoutHint: "\"Info kiri, form kanan\" cocok untuk hero dengan ruang luas. \"Vertikal\" cocok untuk mobile.",
+        contactMapLayout: "Gaya Tata Letak Peta",
+        contactMapLayoutInline: "Di dalam kolom info",
+        contactMapLayoutFull: "Full-width di bawah",
+        contactMapLayoutHint: "\"Full-width di bawah\" meletakkan peta penuh lebar di bawah kolom info/form.",
+        contactMapsLink: "Link Google Maps",
+        contactMapsLinkHint: "Klik \"Pilih Lokasi\" untuk menandai lokasi di peta, atau tempel link embed / share Google Maps.",
+        contactInvalidMapLink: "Link ini tidak bisa ditampilkan sebagai peta interaktif. Klik \"Pilih Lokasi\" atau gunakan link embed Google Maps.",
+        contactMapClickHint: "Klik \"Pilih Lokasi\" untuk menandai lokasi di peta, atau tempel link embed / share Google Maps.",
+        contactResolveError: "Gagal meresolve link. Coba salin link embed manual.",
+        // Footer
+        footerTagline: "Tagline",
+        footerCopyright: "Copyright",
+        footerSocialLinks: "Media Sosial",
+        footerSocialPlatformName: "Nama platform",
+        footerAddSocialLink: "+ Tambah Media Sosial",
+        // Testimonials
+        testimonialsEyebrow: "Eyebrow",
+        testimonialsSectionTitle: "Judul Section",
+        testimonialsSubtitle: "Subtitle",
+        testimonialsItem: "Testimoni",
+        testimonialsQuote: "Kutipan",
+        testimonialsName: "Nama",
+        testimonialsRole: "Profesi / Konteks",
+        testimonialsAvatarInitials: "Inisial Avatar",
+        testimonialsAvatarColor: "Warna Avatar",
+        testimonialsCompany: "Perusahaan",
+        testimonialsLogoUrl: "Logo URL",
+        testimonialsLogoUrlHint: "(opsional, untuk variant logo-wall)",
+        testimonialsAddItem: "Tambah Testimoni",
+        // Works
+        worksSectionBanner: "Section Portofolio Proyek",
+        worksSectionBannerDesc: "Tampilkan proyek atau karya terbaik. Setiap proyek bisa dilengkapi kategori, tahun, klien, deskripsi, dan link proyek untuk meningkatkan kredibilitas.",
+        worksTitle: "Judul Portofolio",
+        worksEyebrow: "Eyebrow",
+        worksSubtitle: "Deskripsi Ringkas",
+        worksLayout: "Tata Letak",
+        worksLayoutGrid: "Grid",
+        worksLayoutMasonry: "Masonry",
+        worksLayoutFeaturedGrid: "Grid Unggulan",
+        worksLayoutShowcase: "Showcase",
+        worksItems: "Proyek",
+        worksItem: "Proyek",
+        worksItemTitle: "Judul Proyek",
+        worksAddItem: "Tambah Proyek",
+        worksAddFirst: "Tambah Proyek Pertama",
+        worksDescription: "Deskripsi",
+        // Gallery
+        gallerySectionBanner: "Section Galeri Foto",
+        gallerySectionBannerDesc: "Tambahkan foto-foto untuk galeri. Atur tata letak, caption, dan teks alternatif.",
+        galleryTitle: "Judul Galeri",
+        galleryEyebrow: "Eyebrow",
+        galleryLayout: "Tata Letak",
+        galleryLayoutGrid: "Grid",
+        galleryLayoutMasonry: "Masonry",
+        galleryLayoutCarousel: "Carousel",
+        galleryCarouselSettings: "Pengaturan Carousel",
+        galleryAutoplaySpeed: "Kecepatan Putar (ms)",
+        galleryShowDots: "Tampilkan indikator titik",
+        galleryShowArrows: "Tampilkan tombol navigasi",
+        galleryItems: "Foto",
+        galleryItem: "Foto",
+        galleryAddItem: "Tambah Foto",
+        galleryAddFirst: "Tambah Foto Pertama",
+        // Stats
+        statsEyebrow: "Eyebrow (Label Atas)",
+        statsSectionTitle: "Judul Section",
+        statsSubtitle: "Subjudul (Opsional)",
+        statsMetrics: "Daftar Angka / Metrik",
+        statsMetric: "Metrik",
+        statsAddMetric: "Tambah Metrik",
+        statsValue: "Angka / Value",
+        statsDescription: "Keterangan (Opsional)",
+        // Partners
+        partnersSectionBanner: "Section Mitra & Klien",
+        partnersSectionBannerDesc: "Tampilkan logo atau nama brand yang pernah bekerja sama, klien utama, atau media yang meliput.",
+        partnersEyebrow: "Eyebrow",
+        partnersSectionTitle: "Judul Section",
+        partnersSubtitle: "Subjudul (Opsional)",
+        partnersList: "Daftar Mitra / Brand",
+        partnersItem: "Mitra",
+        partnersAddItem: "Tambah Mitra",
+        partnersBrandName: "Nama Brand / Mitra",
+        partnersCategory: "Kategori / Industri",
+        partnersWebsite: "Tautan Website (Opsional)",
+        // Pricing
+        pricingSectionBanner: "Section Paket Harga & Rate Card",
+        pricingSectionBannerDesc: "Atur paket layanan, rate card kolaborasi, atau tier langganan dengan perbandingan fitur yang jelas.",
+        pricingEyebrow: "Eyebrow",
+        pricingSectionTitle: "Judul Section",
+        pricingSubtitle: "Subjudul (Opsional)",
+        pricingPlans: "Daftar Paket",
+        pricingPlan: "Paket",
+        pricingAddPlan: "Tambah Paket",
+        pricingPlanName: "Nama Paket",
+        pricingPlanBadge: "Badge (cth. Terpopuler)",
+        pricingPlanPrice: "Harga",
+        pricingPlanPeriod: "Periode / Satuan",
+        pricingPlanDesc: "Deskripsi Singkat",
+        pricingPlanFeatures: "Daftar Fitur / Fasilitas (1 baris per fitur)",
+        pricingCtaText: "Teks Tombol CTA",
+        pricingCtaUrl: "URL Tombol CTA",
+        pricingIsFeatured: "Tandai sebagai paket unggulan (Highlight / Featured)",
+        // Floating
+        floatingSectionBanner: "Tombol Aksi Mengambang",
+        floatingSectionBannerDesc: "Tombol yang selalu terlihat di pojok kanan bawah halaman website.",
+        floatingButtonType: "Tipe Tombol",
+        floatingNone: "Tidak Ada",
+        floatingNoneDesc: "Tidak tampil tombol",
+        floatingWhatsApp: "WhatsApp",
+        floatingWhatsAppDesc: "Tombol WA sederhana",
+        floatingWhatsAppPill: "WhatsApp Pill",
+        floatingWhatsAppPillDesc: "Tab kanan membesar saat hover",
+        floatingChatBubble: "Chat Bubble",
+        floatingChatBubbleDesc: "Widget chat interaktif",
+        floatingContactLink: "Link Kontak",
+        floatingContactLinkDesc: "Scroll ke section Kontak",
+        floatingWhatsAppNumber: "Nomor WhatsApp",
+        floatingWhatsAppNumberHint: "Nomor ini juga dipakai di tombol WA lain di seluruh halaman.",
+        floatingWhatsAppNumberRequired: "Nomor WA wajib diisi agar tombol berfungsi.",
+        floatingProHint: "Chat Bubble tersedia untuk plan Pro.",
+        // Preloader
+        preloaderSectionBanner: "Pengaturan Preloader Halaman",
+        preloaderSectionBannerDesc: "Animasi loading singkat saat pengunjung pertama kali membuka website. Secara otomatis menggunakan nama & logo bisnis Anda, namun dapat Anda kustomisasi di bawah.",
+        preloaderTestBtn: "Uji Animasi",
+        preloaderTestDesc: "Lihat tampilan animasi persis seperti pengunjung",
+        preloaderTestTitle: "Uji Preview Animasi",
+        preloaderBrandText: "Teks Brand / Judul",
+        preloaderBrandHint: "Kosongkan jika ingin memakai nama brand dari Header.",
+        preloaderTagline: "Tagline / Pesan Singkat",
+        preloaderTaglineHint: "Kosongkan jika ingin memakai tagline dari Header.",
+        preloaderIconLogo: "Tampilan Icon & Logo",
+        preloaderChooseIcon: "Pilih Icon Lucide (Opsional):",
+        // Variant labels & descriptions — hero-effect
+        variantHeroEffectModernGrid: "Grid Modern",         variantHeroEffectModernGridDesc: "Grid modular halus pada latar hero untuk kesan modern dan terstruktur.",
+        variantHeroEffectGlass: "Kaca (Glassmorphism)",     variantHeroEffectGlassDesc: "Panel transparan dengan blur kaca dan tepi halus berkilau.",
+        variantHeroEffectNeoBrut: "Neo-Brutalis",           variantHeroEffectNeoBrutDesc: "Garis tebal, bayangan tajam, dan blok warna berani khas brutalisme.",
+        variantHeroEffectScanlines: "Garis Scan",           variantHeroEffectScanlinesDesc: "Tekstur garis horizontal tipis ala layar retro CRT / terminal.",
+        variantHeroEffectStarfield: "Luar Angkasa",         variantHeroEffectStarfieldDesc: "Titik bintang berkelap-kelip di latar gelap yang dramatis.",
+        variantHeroEffectRetroPaper: "Kertas Retro",        variantHeroEffectRetroPaperDesc: "Tekstur kertas usang dan butiran hangat bergaya vintage.",
+        // about
+        variantAboutClassic: "Klasik",       variantAboutClassicDesc: "Teks di kiri, konten bersih tanpa gambar besar.",
+        variantAboutSplitImage: "Split + Gambar", variantAboutSplitImageDesc: "Teks di kiri, gambar besar di kanan.",
+        variantAboutStatHeavy: "Statistik",  variantAboutStatHeavyDesc: "Tampilkan angka highlight dan statistik bisnis.",
+        variantAboutTimeline: "Timeline",    variantAboutTimelineDesc: "Kronologi perjalanan bisnis (membutuhkan milestones).",
+        variantAboutTeamGrid: "Grid Tim",    variantAboutTeamGridDesc: "Grid anggota tim (membutuhkan team_members).",
+        // benefits
+        variantBenefitsGrid: "Grid",                       variantBenefitsGridDesc: "Kartu ikon tersusun grid rapi.",
+        variantBenefitsFeaturedGrid: "Grid Highlight",     variantBenefitsFeaturedGridDesc: "Kartu pertama berukuran besar sebagai sorotan utama, sisanya dalam grid rapi.",
+        variantBenefitsIconRow: "Baris Ikon Horizontal",   variantBenefitsIconRowDesc: "Ikon lingkaran besar terpusat berjajar horizontal dengan garis pemisah.",
+        variantBenefitsStatGrid: "Grid Statistik",         variantBenefitsStatGridDesc: "Grid dengan angka/statistik di tiap item.",
+        variantBenefitsChecklist: "Checklist",             variantBenefitsChecklistDesc: "List centang vertikal, sederhana dan langsung.",
+        variantBenefitsComparisonTable: "Tabel Perbandingan", variantBenefitsComparisonTableDesc: "Perbandingan A vs B dalam tabel (membutuhkan comparison).",
+        variantBenefitsBentoGrid: "Bento Grid",            variantBenefitsBentoGridDesc: "Grid asimetris ala bento box — kartu berukuran bervariasi, visual dinamis.",
+        variantBenefitsTrustBar: "Trust Bar",              variantBenefitsTrustBarDesc: "Strip horizontal penjamin kepercayaan belanja: keaslian produk, pengiriman cepat, bayar di tempat, dan garansi retur.",
+        variantBenefitsHowItWorks: "Cara Kerja",           variantBenefitsHowItWorksDesc: "Langkah proses berurutan dengan angka bertahap.",
+        // testimonials
+        variantTestimonialsCarousel: "Carousel",                   variantTestimonialsCarouselDesc: "Slide otomatis, satu testimoni per tampilan.",
+        variantTestimonialsCompact: "Ringkas",                     variantTestimonialsCompactDesc: "Avatar kecil + kutipan singkat dalam satu baris.",
+        variantTestimonialsGrid: "Grid",                           variantTestimonialsGridDesc: "Semua testimoni tampil sekaligus dalam grid.",
+        variantTestimonialsLogoWall: "Logo Klien",                 variantTestimonialsLogoWallDesc: "Logo perusahaan klien (membutuhkan logo_url).",
+        variantTestimonialsFeaturedSpotlight: "Sorotan",           variantTestimonialsFeaturedSpotlightDesc: "Satu testimoni utama ditonjolkan.",
+        variantTestimonialsGoogleReviews: "Google Reviews",        variantTestimonialsGoogleReviewsDesc: "Kartu gaya Google: foto profil, bintang, badge Google.",
+        variantTestimonialsVideoWallDesc: "Grid testimoni bergaya UGC dengan thumbnail video dan pemutar ringan.",
+        // cta
+        variantCtaBanner: "Banner",               variantCtaBannerDesc: "Strip warna penuh lebar, teks + tombol.",
+        variantCtaCard: "Kartu",                  variantCtaCardDesc: "Kotak terpusat dengan shadow dan border.",
+        variantCtaCentered: "Tengah",             variantCtaCenteredDesc: "Teks dan tombol rata tengah tanpa background.",
+        variantCtaSplitImage: "Split + Gambar",   variantCtaSplitImageDesc: "Teks di kiri, gambar di kanan (membutuhkan image_url).",
+        variantCtaInlineLeadForm: "Form Inquiry Inline", variantCtaInlineLeadFormDesc: "Teks di kiri, form nama/email/telepon di kanan untuk tangkap lead.",
+        // faq
+        variantFaqAccordion: "Akordion",              variantFaqAccordionDesc: "Expand/collapse per item, hemat ruang.",
+        variantFaqSimple: "Sederhana",                variantFaqSimpleDesc: "Semua Q&A tampil terbuka tanpa interaksi.",
+        variantFaqColumns: "Kolom",                   variantFaqColumnsDesc: "2 kolom Q&A berdampingan.",
+        variantFaqSidebarCategory: "Kategori Sidebar",variantFaqSidebarCategoryDesc: "Filter Q&A per kategori (membutuhkan category).",
+        variantFaqTwoColumnGrid: "Grid 2 Kolom",      variantFaqTwoColumnGridDesc: "Q&A dalam kartu grid 2 kolom, semua terbuka.",
+        variantFaqChatBubble: "Gaya Chat",            variantFaqChatBubbleDesc: "Q&A seperti percakapan chat — pertanyaan di kanan, jawaban di kiri.",
+        // gallery
+        variantGalleryGrid: "Grid",                     variantGalleryGridDesc: "Foto dalam kotak seragam tersusun rapi.",
+        variantGalleryMasonry: "Masonry",               variantGalleryMasonryDesc: "Tinggi foto bervariasi seperti Pinterest.",
+        variantGalleryCarousel: "Carousel",             variantGalleryCarouselDesc: "Foto slide bergilir otomatis.",
+        variantGalleryLightboxStory: "Story Lightbox",  variantGalleryLightboxStoryDesc: "Grid foto yang membuka fullscreen dengan narasi besar dan navigasi cerita.",
+        variantGalleryBeforeAfter: "Before & After Slider", variantGalleryBeforeAfterDesc: "Komparasi gambar sebelum/sesudah dengan slider drag.",
+        variantGalleryVideoGridDesc: "Grid seragam dengan poster dan tombol putar untuk item video.",
+        // works
+        variantWorksGrid: "Grid",                      variantWorksGridDesc: "Kartu proyek seragam dalam grid rapi.",
+        variantWorksMasonry: "Masonry",                variantWorksMasonryDesc: "Tinggi kartu bervariasi seperti Pinterest.",
+        variantWorksFeaturedGrid: "Grid Unggulan",     variantWorksFeaturedGridDesc: "Proyek pertama besar sebagai sorotan, sisanya grid rapi.",
+        variantWorksShowcaseFeatured: "Showcase Unggulan", variantWorksShowcaseFeaturedDesc: "Proyek utama horizontal besar, sisanya grid 2 kolom.",
+        // stats
+        variantStatsCounterRow: "Baris Metrik",            variantStatsCounterRowDesc: "Baris metrik horizontal dengan pembatas rapi dan angka besar.",
+        variantStatsCardGrid: "Grid Kartu",                variantStatsCardGridDesc: "Kartu statistik melayang dengan ikon dan efek glow aksen.",
+        variantStatsMinimalSplit: "Split Minimalis",        variantStatsMinimalSplitDesc: "Judul narasi di sisi kiri, matriks 2x2 angka di sisi kanan.",
+        variantStatsBigNumberSpotlight: "Sorotan Angka Besar", variantStatsBigNumberSpotlightDesc: "Satu metrik utama berukuran raksasa dengan sorotan aksen dan sub-metrik pendukung.",
+        // partners
+        variantPartnersLogoWall: "Grid Logo / Brand",          variantPartnersLogoWallDesc: "Grid logo/brand mitra dengan efek grayscale dan hover berwarna.",
+        variantPartnersMarquee: "Ticker Berjalan",             variantPartnersMarqueeDesc: "Banner logo/nama brand berjalan otomatis tanpa henti.",
+        variantPartnersPillGrid: "Grid Pill Interaktif",       variantPartnersPillGridDesc: "Koleksi badge/pill brand modern dengan inisial dan tag kategori.",
+        variantPartnersFeaturedCollabGrid: "Kolaborasi Unggulan", variantPartnersFeaturedCollabGridDesc: "Grid mitra/klien dengan kartu sorotan kolaborasi utama dan ringkasan peran.",
+        // pricing
+        variantPricingCards: "Kartu Paket",                      variantPricingCardsDesc: "Kartu 3 tier klasik dengan penanda paket terpopuler dan tombol aksi.",
+        variantPricingHorizontalRows: "Baris Horizontal",        variantPricingHorizontalRowsDesc: "Daftar paket horizontal dengan fitur di kiri dan harga/tombol di kanan.",
+        variantPricingComparisonTable: "Tabel Perbandingan",     variantPricingComparisonTableDesc: "Tabel perbandingan fitur lengkap antar paket layanan.",
+        variantPricingSingleTierHighlight: "Satu Paket Sorotan", variantPricingSingleTierHighlightDesc: "Satu kartu besar menonjol — cocok bisnis dengan satu penawaran utama.",
+        // menu
+        variantMenuGrid: "Grid",                        variantMenuGridDesc: "Kartu produk dalam grid dengan foto.",
+        variantMenuCompact: "Ringkas",                  variantMenuCompactDesc: "List kompak nama + harga tanpa foto besar.",
+        variantMenuCards: "Kartu",                      variantMenuCardsDesc: "Kartu besar dengan foto dan deskripsi.",
+        variantMenuTextList: "Teks List",               variantMenuTextListDesc: "Daftar teks minimalis, tanpa gambar.",
+        variantMenuCompactList: "List Ringkas",         variantMenuCompactListDesc: "Baris kompak dengan thumbnail kecil.",
+        variantMenuTabsByCategory: "Tab Kategori",      variantMenuTabsByCategoryDesc: "Tab per kategori menu di atas.",
+        variantMenuAccordionByCategory: "Akordion Kategori", variantMenuAccordionByCategoryDesc: "Tiap kategori bisa di-expand.",
+        variantMenuBentoPhotoGrid: "Bento Foto Grid",   variantMenuBentoPhotoGridDesc: "Grid bento gaya foto besar, kaya visual.",
+        variantMenuVisualShowcaseHero: "Hero Visual",   variantMenuVisualShowcaseHeroDesc: "Hero besar dengan katalog visual di bawahnya.",
+        variantMenuSidebarScrollspyPhoto: "Sidebar Scrollspy", variantMenuSidebarScrollspyPhotoDesc: "Navigasi kategori sticky + konten foto di sisi kanan.",
+        variantMenuCarouselDesc: "Kartu menu besar yang bisa di-swipe horizontal per kategori.",
+        variantMenuMasonryDesc: "Layout Pinterest dengan tinggi kartu menu bervariasi.",
+        // catalog
+        variantCatalogGrid: "Grid",                      variantCatalogGridDesc: "Kartu produk standar dalam grid.",
+        variantCatalogCompact: "Ringkas",                variantCatalogCompactDesc: "List kompak nama + harga.",
+        variantCatalogCards: "Kartu",                    variantCatalogCardsDesc: "Kartu besar dengan foto dan badge.",
+        variantCatalogGridDense: "Grid Padat",           variantCatalogGridDenseDesc: "Grid lebih rapat, lebih banyak produk per baris.",
+        variantCatalogShowcaseFeatured: "Showcase Unggulan", variantCatalogShowcaseFeaturedDesc: "Produk berbadge ditampilkan lebih besar.",
+        variantCatalogTabsByCategory: "Tab Kategori",    variantCatalogTabsByCategoryDesc: "Tab per kategori produk.",
+        variantCatalogEditorialGrid: "Grid Editorial",   variantCatalogEditorialGridDesc: "Grid asimetris gaya majalah, ukuran kartu bervariasi.",
+        variantCatalogMasonryFlow: "Aliran Masonry",     variantCatalogMasonryFlowDesc: "Layout Pinterest dengan tinggi kartu bervariasi.",
+        variantCatalogInstagramGrid: "Grid Instagram",   variantCatalogInstagramGridDesc: "Kotak seragam seperti galeri Instagram.",
+        variantCatalogSplitHero: "Split Hero",           variantCatalogSplitHeroDesc: "Split screen: hero besar kiri, list scroll kanan.",
+        variantCatalogNeoBrutalist: "Matrix Brutalis",   variantCatalogNeoBrutalistDesc: "Grid brutal dengan border tebal dan posisi miring.",
+        variantCatalogHorizontalCarousel: "Carousel Horizontal", variantCatalogHorizontalCarouselDesc: "Card besar yang bisa di-swipe horizontal.",
+        variantCatalogProductTableDesc: "Tabel produk/spec-sheet dengan kolom harga, stok, dan aksi.",
+        variantCatalogSpotlightDesc: "Satu produk utama full-bleed dengan produk lain dalam grid.",
+        // contact
+        variantContactClassicSplit: "Klasik Split",    variantContactClassicSplitDesc: "Form pesan di kiri, info kontak & peta di kanan.",
+        variantContactWhatsAppDirect: "WhatsApp Instan", variantContactWhatsAppDirectDesc: "Fokus tombol aksi WhatsApp cepat + preview pesan & badge online.",
+        variantContactBentoGrid: "Bento Grid",         variantContactBentoGridDesc: "Kartu modular tersusun rapi gaya bento box modern.",
+        variantContactOverlayMap: "Overlay Peta",      variantContactOverlayMapDesc: "Peta interaktif penuh dengan kartu kontak melayang.",
+        variantContactDarkSplit: "Dark Split",         variantContactDarkSplitDesc: "Tema gelap premium kontras tinggi dengan aksen bercahaya.",
+        variantContactMinimalCentered: "Minimal Tengah", variantContactMinimalCenteredDesc: "Kartu kontak ringkas terpusat tanpa peta.",
+        // header
+        variantHeaderLeftLogoInlineNav: "Logo Kiri + Nav Inline",    variantHeaderLeftLogoInlineNavDesc: "Logo di kiri, navigasi sejajar di kanan, CTA tombol.",
+        variantHeaderCenteredLogo: "Logo Tengah",                    variantHeaderCenteredLogoDesc: "Logo di tengah, navigasi di bawahnya, CTA tombol.",
+        variantHeaderTransparentOverlay: "Transparan (Hero Overlay)", variantHeaderTransparentOverlayDesc: "Menimpa hero (teks putih), mengecil dan menjadi kaca buram setelah scroll.",
+        variantHeaderLogoWithCtaButton: "Logo + CTA Tombol",         variantHeaderLogoWithCtaButtonDesc: "Logo kiri, nav tengah, tombol CTA warna solid di kanan.",
+        variantHeaderStackedLogoTagline: "Logo + Tagline Tumpuk",    variantHeaderStackedLogoTaglineDesc: "Logo dan tagline vertikal di tengah, nav tipis di bawah.",
+        // footer
+        variantFooterMinimalBand: "Band Minimal",           variantFooterMinimalBandDesc: "Brand + tagline + copyright dalam satu baris gelap bersih.",
+        variantFooterColumnsWithNav: "Kolom + Navigasi Cepat", variantFooterColumnsWithNavDesc: "Multi-kolom dengan tautan navigasi landing page & tombol Kembali ke Atas.",
+        variantFooterColumnsWithSocial: "Kolom + Media Sosial", variantFooterColumnsWithSocialDesc: "Multi-kolom dengan tautan akun media sosial bisnis.",
+        variantFooterDarkContrastBand: "Band Gelap Kontras", variantFooterDarkContrastBandDesc: "Footer gelap solid dengan aksen warna primary, kontras kuat.",
+        variantFooterLocationAndHours: "Lokasi & Jam",      variantFooterLocationAndHoursDesc: "Brand + alamat peta + jam operasional dalam grid bersih.",
+        // blog
+        variantBlogGrid: "Grid",      variantBlogGridDesc: "Kartu dalam 3 kolom rapi.",
+        variantBlogList: "List",      variantBlogListDesc: "Horizontal dengan gambar di kiri, teks di kanan.",
+        variantBlogFeatured: "Unggulan", variantBlogFeaturedDesc: "Satu postingan besar hero + grid kecil di bawah.",
+        variantBlogMinimal: "Minimal",variantBlogMinimalDesc: "Daftar judul dan tanggal tanpa gambar.",
+        // preloader
+        variantPreloaderNone: "Tanpa Preloader",            variantPreloaderNoneDesc: "Halaman langsung tampil seketika tanpa jeda loading.",
+        variantPreloaderTopBar: "Garis Atas (Top Progress)",variantPreloaderTopBarDesc: "Garis tipis di bibir atas layar tanpa menutupi konten.",
+        variantPreloaderMinimalFade: "Fade Tipografi",      variantPreloaderMinimalFadeDesc: "Nama brand tipografis halus di tengah layar tanpa ornamen tambahan.",
+        variantPreloaderMinimalSpinner: "Monoline Ring",    variantPreloaderMinimalSpinnerDesc: "Cincin putar satu garis super tipis dan bersih di tengah layar.",
+        variantPreloaderMinimalCounter: "Counter Angka",    variantPreloaderMinimalCounterDesc: "Persentase angka monospace minimalis yang menghitung cepat.",
+        variantPreloaderPulseLogo: "Logo Berdenyut (Pulse)",variantPreloaderPulseLogoDesc: "Logo brand berdenyut halus di tengah layar.",
+        variantPreloaderOrbitRing: "Cincin Orbit",          variantPreloaderOrbitRingDesc: "Cincin berputar mengelilingi inisial logo brand.",
+        variantPreloaderProgressLine: "Bar Progres Ramping",variantPreloaderProgressLineDesc: "Logo dengan bar progres horizontal di bawahnya.",
+        variantPreloaderShimmerReveal: "Shimmer Kilau",     variantPreloaderShimmerRevealDesc: "Efek kilau gradien cahaya menyapu teks brand.",
+        variantPreloaderStaggerDots: "Titik Gelombang",     variantPreloaderStaggerDotsDesc: "Tiga titik bergelombang halus di bawah brand.",
+        // About extras
+        aboutTeamName: "Nama", aboutTeamRole: "Jabatan", aboutTeamPhoto: "Foto", aboutRemove: "Hapus",
+        // Placeholder strings
+        phNavCta: "cth. Hubungi Kami", phTagline: "cth. Cita Rasa Nusantara", phIconName: "cth. Utensils",
+        phEyebrowAvailable: "cth. Tersedia Sekarang", phLearnMore: "cth. Pelajari Lebih Lanjut",
+        phSecondaryCta: "cth. #about atau https://...", phBadgeText: "cth. Buka 7 Hari · Jam 07.00–22.00",
+        phOpeningHours: "cth. Buka Setiap Hari 07.00 – 22.00", phAboutEyebrow: "cth. Tentang Kami",
+        phStatValue: "cth. 500+", phStatLabel: "cth. Pelanggan Puas", phBenefitsStat: "Proyek Selesai",
+        phWhyChooseUs: "cth. Kenapa Pilih Kami", phBenefitsSubtitle: "cth. Berbagai alasan mengapa pelanggan mempercayai kami",
+        phBenefitsColA: "cth. Bersama Kami", phBenefitsColB: "cth. Kompetitor",
+        phComparisonLabel: "Label (cth. Harga)", phValueA: "Nilai A", phValueB: "Nilai B",
+        phCtaEyebrow: "cth. Mulai Sekarang", phCtaSubheadline: "cth. Dapatkan penawaran spesial sebelum kehabisan!",
+        phCtaTrustSignal: "cth. ✅ Lebih dari 500 pelanggan puas",
+        phSocialUrl: "URL (cth. https://instagram.com/...)",
+        phGalleryTitle: "Galeri Kami", phGalleryEyebrow: "DOKUMENTASI",
+        phGalleryCaption: "Suasana nyaman di dalam", phGalleryAltText: "Deskripsi singkat gambar",
+        phStatsEyebrow: "cth. DALAM ANGKA", phStatsSectionTitle: "cth. Pencapaian yang Berbicara",
+        phStatsSubtitle: "cth. Hasil nyata dari dedikasi dan kerja keras kami",
+        phStatsValue: "cth. 1.2M atau 98%", phStatsLabel: "cth. Subscribers", phStatsDescription: "cth. Aktif di 3 platform",
+        phPartnersEyebrow: "cth. DIPERCAYA OLEH", phPartnersSectionTitle: "cth. Brand yang Telah Berkolaborasi",
+        phPartnersSubtitle: "cth. Lebih dari 50+ brand telah mempercayai karya kami",
+        phPartnersBrandName: "cth. Tokopedia", phPartnersCategory: "cth. E-Commerce",
+        phPricingEyebrow: "cth. RATE CARD / PILIHAN PAKET", phPricingSectionTitle: "cth. Paket Kolaborasi & Jasa",
+        phPricingSubtitle: "cth. Pilih paket yang paling sesuai dengan kebutuhan kampanye Anda",
+        phPricingPlanName: "cth. Basic / Pro", phPricingBadge: "cth. Paling Populer",
+        phPricingPrice: "cth. Rp 2.500.000", phPricingPeriod: "cth. /bulan atau /video",
+        phPricingDesc: "cth. Cocok untuk kampanye brand skala menengah",
+        phPricingFeatures: "1 Video TikTok/Reels\nTermasuk Hak Cipta 3 Bulan\n2x Revisi Video",
+        phPricingCtaText: "cth. Pilih Paket",
+        phFloatingWaNumber: "cth. 628123456789 atau 08123456789",
+        phHeroStatValue: "cth. 12", phHeroStatLabel: "cth. Projects",
+        phAccessoryNone: "— Tidak Ada —", phAccessoryLabel: "cth. Mulai dari", phAccessoryLabelAvailFor: "cth. Tersedia untuk",
+        phAccessoryValue: "cth. Rp 99.000", phAccessoryValueConsultation: "cth. Pemesanan & konsultasi",
+        phAccessorySkills: "cth. Fotografi, Video, Branding",
+        phHeroBgColor: "Kosongkan untuk pakai warna global", phHeroCaption: "Caption (opsional)",
+        phTestimonialsEyebrow: "cth. Testimoni", phTestimonialsSectionTitle: "cth. Cerita dari Pelanggan Kami",
+        phTestimonialsSubtitle: "cth. Ulasan dari pelanggan setia kami",
+        phTestimonialsQuote: "Tulis kutipan spesifik dan believable...",
+        phTestimonialsName: "cth. Budi Santoso", phTestimonialsRole: "cth. Pelanggan tetap",
+        phTestimonialsCompany: "cth. PT Maju Jaya",
+        phWorksTitle: "Proyek Kami", phWorksSubtitle: "Beberapa proyek terbaik yang pernah kami kerjakan.",
+        phWorksItemTitle: "cth. Rebranding Toko Kopi Ketan", phWorksClient: "cth. Kedai Kopi Nusantara",
+        phWorksDescription: "Ceritakan ruang lingkup dan hasil proyek ini...", phWorksAltText: "Deskripsi singkat gambar proyek",
+        // HeroStats & HeroAccessory
+        heroStatHighlight: "Statistik Hero",
+        heroStatHighlightHint: "Baris angka (mis. 12 / Projects) di varian Editorial Split, Personal Billboard, Portrait Showcase, dan Chronology Badge. Kosong = baris disembunyikan.",
+        heroStatHighlightEmpty: "Belum ada statistik. Tambahkan nilai dan label, lalu row akan tampil di hero.",
+        heroStatAddItem: "Tambah Statistik",
+        heroAccessoryLabel: "Info Bisnis di Hero",
+        heroAccessoryHint: "Blok kecil di hero sesuai jenis usaha (harga, ketersediaan, atau keahlian).",
+        heroAccessoryTagsLabel: "Daftar (dipisah koma)",
+        heroAccessoryPrice: "Harga (toko online/produk)",
+        heroAccessoryAvailability: "Ketersediaan (jasa/service)",
+        heroAccessorySkillTags: "Keahlian (portfolio/kreator)",
+        heroAccessoryRating: "Rating (undangan/acara)",
+        heroAccessoryMenuHighlight: "Menu Unggulan (kuliner)",
+        // AI prompt strings
+        aiAboutTitlePrompt: "Buat judul section tentang yang menarik dan relevan dengan bisnis",
+        aiAboutTitleLabel: "Judul Tentang", aiAboutTitleBtn: "AI: generate judul",
+        aiAboutBodyPrompt: "Tulis paragraf tentang bisnis ini yang hangat, spesifik, dan manusiawi. 2-4 kalimat.",
+        aiAboutBodyLabel: "Deskripsi", aiAboutBodyBtn: "AI: generate deskripsi",
+        aiHeroHeadlinePrompt: "Buat headline yang kuat dan memikat, max 10 kata",
+        aiHeroHeadlineLabel: "Headline", aiHeroHeadlineBtn: "AI: generate headline",
+        aiHeroSubheadlinePrompt: "Buat subheadline yang jelas menyampaikan value proposition, max 25 kata",
+        aiHeroSubheadlineLabel: "Subheadline", aiHeroSubheadlineBtn: "AI: generate subheadline",
+        aiCtaHeadlinePrompt: "Buat headline CTA yang kuat, action-oriented, dan menutup keraguan pembeli",
+        aiCtaHeadlineLabel: "Headline CTA", aiCtaHeadlineBtn: "AI: generate headline",
+        // Gallery
+        gallerySectionBannerDesc2: "Tambahkan foto-foto untuk galeri. Atur tata letak, caption, dan teks alternatif.",
+        galleryLayoutGridDesc: "Kotak seragam",
+        galleryLayoutMasonryDesc: "Tinggi bervariasi",
+        galleryLayoutCarouselDesc: "Slide bergilir",
+        galleryCarouselSettingsLabel: "Pengaturan Carousel",
+        galleryItem: "Foto",
+        // Floating button descriptions
+        floatingWhatsAppDescLong: "Tombol hijau WhatsApp tampil di pojok kanan bawah. Klik langsung membuka WA.",
+        floatingWhatsAppPillDescLong: "Tab WhatsApp di sisi kanan layar. Menyusut rapi saat diam, membesar saat kursor mendekat atau disentuh.",
+        floatingChatBubbleDescLong: "Widget chat WA interaktif. Pengunjung bisa ketik pesan sebelum diarahkan ke WA.",
+        floatingChatBubbleProRequired: "Aktifkan plan Pro untuk Chat Bubble.",
+        floatingContactLinkDescLong: "Tombol scroll ke section Kontak. Tidak membutuhkan nomor WA.",
       },
       wizard: {
         initialMessage: "Halo! Saya Joz-AI, asisten AI yang akan membantu Anda membuat website. Mari kita mulai: apa nama bisnis atau brand Anda?",
@@ -6372,6 +7466,7 @@ export const translations: Record<Locale, Translations> = {
         congratsTitle: "Your Website Is Live",
         congratsHeading: "Your Website Is Officially Live!",
         congratsBody: "Congratulations! Your web page {name} is now active and accessible from anywhere in the world.",
+        congratsClose: "Close",
         openWebsite: "Open Website",
         copyLinkTitle: "Copy Link",
         checkTip: "💡 Want to check? Click the link above to open your live website in a new tab.",
@@ -7719,6 +8814,7 @@ export const translations: Record<Locale, Translations> = {
         emptyDesc: "No testimonials yet. Click Add Manually to add your first.",
       },
       sitesKatalog: {
+        loading: "Loading catalog...",
         loadFailed: "Failed to load catalog",
         saveFailed: "Failed to save catalog",
         saving: "Saving...",
@@ -7946,6 +9042,52 @@ export const translations: Record<Locale, Translations> = {
         aiPromptLabelPrefix: "Make description for",
       },
       sitesEditor: {
+        closeEditorPanel: "Close Editor Panel",
+        openEditorPanel: "Open Editor Panel",
+        openAiUsageDetails: "Open AI Usage details",
+        closeAiUsageDetails: "Close AI Usage details",
+        copyHex: "Copy HEX code",
+        copiedHex: "Copied!",
+        previewAa: "Aa Preview",
+        paletteAccent: "Accent",
+        sampleButton: "Button",
+        sampleBusinessDesc: "Your business description text...",
+        brandIdentitySettings: "BRAND IDENTITY",
+        brandStyle: "Brand style",
+        brandStyleSubtitle: "Keep your typography & color consistent across all pages",
+        headingFontLabel: "Heading font",
+        bodyFontLabel: "Body font",
+        brandAccentLabel: "Brand accent color",
+        resetDefaultFont: "Reset to default font",
+        customFontBadge: "Custom Font",
+        moreGoogleFontsPlaceholder: "Choose more Google fonts...",
+        googleFontBadge: "Google Font",
+        customFontDrawerButton: "Upload font or use font URL",
+        applyFontTo: "Apply To:",
+        fontTargetHeading: "Heading Font",
+        fontTargetBody: "Body Font",
+        uploadFontTab: "Upload File (.woff2/.ttf)",
+        urlFontTab: "Font URL",
+        selectFontFileComputer: "Select font file from computer",
+        fontFileFormatHint: "Format: .woff2 (recommended), .ttf, .otf (Max 3 MB)",
+        fontFamilyNameLabel: "Font Family Name:",
+        fontFamilyNamePlaceholder: "e.g. Clash Display / Helvetica",
+        fontUrlLabel: "Font URL (CSS stylesheet / Woff2):",
+        fontUrlPlaceholder: "https://api.fontshare.com/v2/css?f[]=... or .woff2",
+        applyFontUrlButton: "Apply Font URL",
+        customFontAppliedSuccess: "Font \"{name}\" applied successfully!",
+        customFontUrlAppliedSuccess: "Font \"{name}\" from URL applied successfully!",
+        fontNameAndUrlRequired: "Font name and URL are required",
+        fontInvalidFormatError: "File must be .woff2, .woff, .ttf, or .otf",
+        fontFileSizeError: "Font file size must be under 3 MB",
+        fontReadError: "Failed to read font file",
+        brandPreviewTitle: "PREVIEW IDENTITY",
+        brandPreviewSampleHeadline: "Your business, your identity.",
+        brandPreviewContactButton: "Contact Us",
+        brandStylesLockedHint: "These brand styles stay locked across all sections & pages.",
+        pickCustomColorTitle: "Pick custom color...",
+        styleIdeaTitle: "Style Ideas:",
+        aiDesignPromptExample: "e.g. warm vintage coffee shop theme...",
         authenticating: "Authenticating...",
         loading: "Loading editor...",
         loadFailed: "Failed to load site",
@@ -8337,6 +9479,495 @@ export const translations: Record<Locale, Translations> = {
         seoReviewsCount: "reviews",
         seoBusinessOpenStatus: "Open",
         seoBusinessClosedStatus: "Closed",
+        // Header section form
+        headerBrandName: "Brand Name",
+        headerShowNavButton: "Show Navigation Button",
+        headerNavButtonText: "Nav Button Text",
+        headerNavButtonLink: "Link to Section",
+        headerNavButtonLinkAuto: "— Auto from button text —",
+        headerNavButtonLinkHint: "Leave empty to auto-detect the section based on button text.",
+        headerTagline: "Tagline",
+        headerTaglineOptional: "(optional)",
+        headerLogoUrl: "Logo URL",
+        headerLogoLight: "Light Version Logo (optional)",
+        headerLogoLightHint: "Used in transparent header over dark hero. Leave empty to auto-whiten the main logo.",
+        headerFavicon: "Favicon",
+        headerIconName: "Icon Name",
+        headerNavMenu: "Navigation Menu",
+        headerNavMenuHint: "Manage items shown in the navbar",
+        headerNavLinkHero: "Hero (Top)",
+        headerNavLinkAbout: "About Us",
+        headerNavLinkBenefits: "Benefits",
+        headerNavLinkCatalog: "Catalog / Products",
+        headerNavLinkMenu: "Menu",
+        headerNavLinkWorks: "Portfolio",
+        headerNavLinkGallery: "Gallery",
+        headerNavLinkTestimonials: "Testimonials",
+        headerNavLinkFaq: "FAQ",
+        headerNavLinkContact: "Contact",
+        headerNavSectionAbout: "About",
+        headerNavSectionBenefits: "Benefits",
+        headerNavSectionMenu: "Menu",
+        headerNavSectionCatalog: "Catalog",
+        headerNavSectionWorks: "Portfolio",
+        headerNavSectionGallery: "Gallery",
+        headerNavSectionTestimonials: "Testimonials",
+        headerNavSectionFaq: "FAQ",
+        headerNavSectionPromo: "Promo",
+        headerNavSectionContact: "Contact",
+        headerNavSectionBlog: "Blog",
+        // Common
+        commonOptional: "(optional)",
+        commonRemove: "Remove",
+        commonAdd: "Add",
+        commonLeft: "Left",
+        commonCenter: "Center",
+        commonRight: "Right",
+        commonTextAlign: "Text Alignment",
+        commonEyebrow: "Eyebrow",
+        commonTitle: "Title",
+        commonSubtitle: "Subtitle",
+        commonDescription: "Description",
+        commonSectionTitle: "Section Title",
+        commonValue: "Value",
+        commonLabel: "Label",
+        commonName: "Name",
+        commonRole: "Role / Title",
+        commonPhoto: "Photo",
+        commonIcon: "Icon",
+        commonStat: "Stat",
+        commonStatLabel: "Stat Label",
+        commonLayout: "Layout",
+        commonYear: "Year",
+        commonCategory: "Category",
+        commonImageUrl: "Image URL",
+        commonAltText: "Alt Text",
+        commonCaption: "Caption",
+        commonClientLabel: "Client",
+        commonProjectLink: "Project Link",
+        // About
+        aboutImage: "About Image",
+        aboutStatHighlight: "Highlight Statistics",
+        aboutStat: "Stat",
+        aboutStatValue: "Value",
+        aboutStatLabel: "Label",
+        aboutMilestones: "Milestones / Timeline",
+        aboutMilestone: "Milestone",
+        aboutMilestoneYear: "Year (e.g. 2020)",
+        aboutMilestoneTitle: "Milestone title",
+        aboutMilestoneDesc: "Description (optional)",
+        aboutAddMilestone: "Add Milestone",
+        aboutTeamMembers: "Team Members",
+        aboutTeamMember: "Member",
+        aboutAddTeamMember: "Add Member",
+        // Hero
+        heroHeadline: "Headline",
+        heroSubheadline: "Subheadline",
+        heroCtaText: "CTA Button Text",
+        heroBgColor: "Hero Background Color",
+        heroBgColorHint: "Leave empty to use the global background color.",
+        heroCarouselImages: "Carousel Images",
+        heroCarouselImagesCount: "images",
+        heroAddImage: "+ Add image",
+        heroVideoUrl: "Hero Video URL",
+        heroEyebrow: "Eyebrow / Badge Label",
+        heroEyebrowHint: "Small label above the headline (used by some templates).",
+        heroSecondaryCtaText: "Secondary CTA Button Text",
+        heroSecondaryCtaHint: "Second button alongside the primary button (used by some templates).",
+        heroSecondaryCtaUrl: "Secondary CTA Button URL",
+        heroSecondaryCtaUrlHint: "Destination for the secondary CTA (section anchor, URL, or WhatsApp).",
+        heroBadgeText: "Badge Text Below CTA",
+        heroBadgeTextHint: "Small text below the CTA button (opening hours, quick info, etc.).",
+        heroOpeningHours: "Opening Hours",
+        // Benefits
+        benefitsEyebrow: "Eyebrow",
+        benefitsSectionTitle: "Section Title",
+        benefitsSubtitle: "Subtitle",
+        benefitsItemTitle: "Title",
+        benefitsItemDesc: "Description",
+        benefitsAddItem: "Add",
+        benefitsComparisonTable: "Comparison Table",
+        benefitsComparisonColA: "Column A Label (Us)",
+        benefitsComparisonColB: "Column B Label (Others)",
+        benefitsComparisonRow: "Row",
+        benefitsAddRow: "Add Row",
+        benefitsStatLabel: "Stat Label",
+        // FAQ
+        faqSectionTitle: "Section Title",
+        faqItem: "FAQ",
+        faqQuestion: "Question",
+        faqAnswer: "Answer",
+        faqCategory: "Category",
+        faqCategoryHint: "(optional, for sidebar-category variant)",
+        faqAddItem: "Add FAQ",
+        // CTA
+        ctaHeadline: "CTA Headline",
+        ctaEyebrow: "Eyebrow",
+        ctaSubheadline: "Subheadline",
+        ctaTrustSignal: "Trust Signal",
+        ctaImage: "CTA Image",
+        ctaButtonText: "Button Text",
+        // Contact
+        contactContentAlign: "Content Alignment",
+        contactTitle: "Title",
+        contactAddress: "Address",
+        contactPhone: "WhatsApp Number",
+        contactPhoneHint: "If empty, orders from cart go to the Message Inbox on the dashboard.",
+        contactEmail: "Email",
+        contactShowForm: "Contact Form",
+        contactShowMap: "Location Map",
+        contactShowWhatsAppCard: "WhatsApp Card",
+        contactFormLayout: "Contact Form Layout",
+        contactFormLayoutInfoLeft: "Info left, form right",
+        contactFormLayoutFormLeft: "Form left, info right",
+        contactFormLayoutStack: "Vertical (form below)",
+        contactFormLayoutHint: "\"Info left, form right\" works best for wide layouts. \"Vertical\" is great for mobile.",
+        contactMapLayout: "Map Layout Style",
+        contactMapLayoutInline: "Inline with info column",
+        contactMapLayoutFull: "Full-width below",
+        contactMapLayoutHint: "\"Full-width below\" places the map spanning the full width below the info/form columns.",
+        contactMapsLink: "Google Maps Link",
+        contactMapsLinkHint: "Click \"Pick Location\" to pin a location on the map, or paste a Google Maps embed / share link.",
+        contactInvalidMapLink: "This link cannot be displayed as an interactive map. Click \"Pick Location\" or use a Google Maps embed link.",
+        contactMapClickHint: "Click \"Pick Location\" to pin a location on the map, or paste a Google Maps embed / share link.",
+        contactResolveError: "Failed to resolve link. Try copying the embed link manually.",
+        // Footer
+        footerTagline: "Tagline",
+        footerCopyright: "Copyright",
+        footerSocialLinks: "Social Media",
+        footerSocialPlatformName: "Platform name",
+        footerAddSocialLink: "+ Add Social Media",
+        // Testimonials
+        testimonialsEyebrow: "Eyebrow",
+        testimonialsSectionTitle: "Section Title",
+        testimonialsSubtitle: "Subtitle",
+        testimonialsItem: "Testimonial",
+        testimonialsQuote: "Quote",
+        testimonialsName: "Name",
+        testimonialsRole: "Role / Context",
+        testimonialsAvatarInitials: "Avatar Initials",
+        testimonialsAvatarColor: "Avatar Color",
+        testimonialsCompany: "Company",
+        testimonialsLogoUrl: "Logo URL",
+        testimonialsLogoUrlHint: "(optional, for logo-wall variant)",
+        testimonialsAddItem: "Add Testimonial",
+        // Works
+        worksSectionBanner: "Portfolio Section",
+        worksSectionBannerDesc: "Showcase your best projects. Each project can include a category, year, client, description, and project link to boost credibility.",
+        worksTitle: "Portfolio Title",
+        worksEyebrow: "Eyebrow",
+        worksSubtitle: "Brief Description",
+        worksLayout: "Layout",
+        worksLayoutGrid: "Grid",
+        worksLayoutMasonry: "Masonry",
+        worksLayoutFeaturedGrid: "Featured Grid",
+        worksLayoutShowcase: "Showcase",
+        worksItems: "Projects",
+        worksItem: "Project",
+        worksItemTitle: "Project Title",
+        worksAddItem: "Add Project",
+        worksAddFirst: "Add First Project",
+        worksDescription: "Description",
+        // Gallery
+        gallerySectionBanner: "Photo Gallery Section",
+        gallerySectionBannerDesc: "Add photos to the gallery. Customize layout, captions, and alt text.",
+        galleryTitle: "Gallery Title",
+        galleryEyebrow: "Eyebrow",
+        galleryLayout: "Layout",
+        galleryLayoutGrid: "Grid",
+        galleryLayoutMasonry: "Masonry",
+        galleryLayoutCarousel: "Carousel",
+        galleryCarouselSettings: "Carousel Settings",
+        galleryAutoplaySpeed: "Autoplay Speed (ms)",
+        galleryShowDots: "Show dot indicators",
+        galleryShowArrows: "Show navigation arrows",
+        galleryItems: "Photos",
+        galleryItem: "Photo",
+        galleryAddItem: "Add Photo",
+        galleryAddFirst: "Add First Photo",
+        // Stats
+        statsEyebrow: "Eyebrow (Top Label)",
+        statsSectionTitle: "Section Title",
+        statsSubtitle: "Subtitle (Optional)",
+        statsMetrics: "Metrics List",
+        statsMetric: "Metric",
+        statsAddMetric: "Add Metric",
+        statsValue: "Number / Value",
+        statsDescription: "Note (Optional)",
+        // Partners
+        partnersSectionBanner: "Partners & Clients Section",
+        partnersSectionBannerDesc: "Show logos or names of brands you've worked with, key clients, or media coverage.",
+        partnersEyebrow: "Eyebrow",
+        partnersSectionTitle: "Section Title",
+        partnersSubtitle: "Subtitle (Optional)",
+        partnersList: "Partners / Brands List",
+        partnersItem: "Partner",
+        partnersAddItem: "Add Partner",
+        partnersBrandName: "Brand / Partner Name",
+        partnersCategory: "Category / Industry",
+        partnersWebsite: "Website Link (Optional)",
+        // Pricing
+        pricingSectionBanner: "Pricing & Rate Card Section",
+        pricingSectionBannerDesc: "Set up service packages, collaboration rate cards, or subscription tiers with clear feature comparisons.",
+        pricingEyebrow: "Eyebrow",
+        pricingSectionTitle: "Section Title",
+        pricingSubtitle: "Subtitle (Optional)",
+        pricingPlans: "Plans List",
+        pricingPlan: "Plan",
+        pricingAddPlan: "Add Plan",
+        pricingPlanName: "Plan Name",
+        pricingPlanBadge: "Badge (e.g. Most Popular)",
+        pricingPlanPrice: "Price",
+        pricingPlanPeriod: "Period / Unit",
+        pricingPlanDesc: "Short Description",
+        pricingPlanFeatures: "Features / Inclusions (one per line)",
+        pricingCtaText: "CTA Button Text",
+        pricingCtaUrl: "CTA Button URL",
+        pricingIsFeatured: "Mark as featured plan (Highlight / Featured)",
+        // Floating
+        floatingSectionBanner: "Floating Action Button",
+        floatingSectionBannerDesc: "Button that stays visible in the bottom-right corner of the website.",
+        floatingButtonType: "Button Type",
+        floatingNone: "None",
+        floatingNoneDesc: "No button shown",
+        floatingWhatsApp: "WhatsApp",
+        floatingWhatsAppDesc: "Simple WA button",
+        floatingWhatsAppPill: "WhatsApp Pill",
+        floatingWhatsAppPillDesc: "Right tab expands on hover",
+        floatingChatBubble: "Chat Bubble",
+        floatingChatBubbleDesc: "Interactive chat widget",
+        floatingContactLink: "Contact Link",
+        floatingContactLinkDesc: "Scroll to Contact section",
+        floatingWhatsAppNumber: "WhatsApp Number",
+        floatingWhatsAppNumberHint: "This number is also used in all other WA buttons across the page.",
+        floatingWhatsAppNumberRequired: "WA number is required for the button to work.",
+        floatingProHint: "Chat Bubble is available on the Pro plan.",
+        // Preloader
+        preloaderSectionBanner: "Page Preloader Settings",
+        preloaderSectionBannerDesc: "Splash animation that appears briefly when visitors open the site. Automatically uses your business name & logo, but can be customized below.",
+        preloaderTestBtn: "Preview",
+        preloaderTestDesc: "See how it looks when visitors load your site",
+        preloaderTestTitle: "Test Loading Animation",
+        preloaderBrandText: "Custom Brand Text",
+        preloaderBrandHint: "Leave empty to use business name from Header.",
+        preloaderTagline: "Custom Tagline / Subtitle",
+        preloaderTaglineHint: "Leave empty to use business tagline from Header.",
+        preloaderIconLogo: "Icon & Logo Display",
+        preloaderChooseIcon: "Choose Lucide Icon (Optional):",
+        // Variant labels & descriptions — hero-effect
+        variantHeroEffectModernGrid: "Modern Grid",        variantHeroEffectModernGridDesc: "Subtle modular grid on the hero background for a modern, structured look.",
+        variantHeroEffectGlass: "Glass (Glassmorphism)",   variantHeroEffectGlassDesc: "Transparent panel with glass blur and soft glowing edges.",
+        variantHeroEffectNeoBrut: "Neo-Brutalist",         variantHeroEffectNeoBrutDesc: "Bold borders, sharp shadows, and vivid color blocks in brutalist style.",
+        variantHeroEffectScanlines: "Scanlines",           variantHeroEffectScanlinesDesc: "Thin horizontal line texture inspired by retro CRT / terminal screens.",
+        variantHeroEffectStarfield: "Starfield",           variantHeroEffectStarfieldDesc: "Twinkling star dots on a dramatic dark background.",
+        variantHeroEffectRetroPaper: "Retro Paper",        variantHeroEffectRetroPaperDesc: "Aged paper texture and warm grain in a vintage style.",
+        // about
+        variantAboutClassic: "Classic",       variantAboutClassicDesc: "Text on the left, clean layout with no large image.",
+        variantAboutSplitImage: "Split + Image", variantAboutSplitImageDesc: "Text on the left, large image on the right.",
+        variantAboutStatHeavy: "Statistics",  variantAboutStatHeavyDesc: "Show highlight numbers and business statistics.",
+        variantAboutTimeline: "Timeline",     variantAboutTimelineDesc: "Business journey timeline (requires milestones).",
+        variantAboutTeamGrid: "Team Grid",    variantAboutTeamGridDesc: "Grid of team members (requires team_members).",
+        // benefits
+        variantBenefitsGrid: "Grid",                         variantBenefitsGridDesc: "Icon cards arranged in a neat grid.",
+        variantBenefitsFeaturedGrid: "Highlight Grid",       variantBenefitsFeaturedGridDesc: "First card is large as the main spotlight, the rest in a neat grid.",
+        variantBenefitsIconRow: "Horizontal Icon Row",       variantBenefitsIconRowDesc: "Large centered circular icons lined horizontally with dividers.",
+        variantBenefitsStatGrid: "Statistics Grid",          variantBenefitsStatGridDesc: "Grid with numbers/statistics on each item.",
+        variantBenefitsChecklist: "Checklist",               variantBenefitsChecklistDesc: "Vertical checkmark list, simple and direct.",
+        variantBenefitsComparisonTable: "Comparison Table",  variantBenefitsComparisonTableDesc: "A vs B comparison in a table (requires comparison).",
+        variantBenefitsBentoGrid: "Bento Grid",              variantBenefitsBentoGridDesc: "Asymmetric bento-box grid — cards of varying sizes, dynamic visual.",
+        variantBenefitsTrustBar: "Trust Bar",                variantBenefitsTrustBarDesc: "Horizontal trust strip for e-commerce: authenticity, fast shipping, pay on delivery, return guarantee.",
+        variantBenefitsHowItWorks: "How It Works",           variantBenefitsHowItWorksDesc: "Sequential process steps with numbered progression.",
+        // testimonials
+        variantTestimonialsCarousel: "Carousel",                   variantTestimonialsCarouselDesc: "Auto-sliding, one testimonial per view.",
+        variantTestimonialsCompact: "Compact",                     variantTestimonialsCompactDesc: "Small avatar + short quote in a single row.",
+        variantTestimonialsGrid: "Grid",                           variantTestimonialsGridDesc: "All testimonials displayed at once in a grid.",
+        variantTestimonialsLogoWall: "Client Logos",               variantTestimonialsLogoWallDesc: "Client company logos (requires logo_url).",
+        variantTestimonialsFeaturedSpotlight: "Spotlight",         variantTestimonialsFeaturedSpotlightDesc: "One main testimonial highlighted.",
+        variantTestimonialsGoogleReviews: "Google Reviews",        variantTestimonialsGoogleReviewsDesc: "Google-style cards: profile photo, stars, Google badge.",
+        variantTestimonialsVideoWallDesc: "UGC-style testimonial grid with video thumbnails and a lightweight player.",
+        // cta
+        variantCtaBanner: "Banner",              variantCtaBannerDesc: "Full-width color strip with text + button.",
+        variantCtaCard: "Card",                  variantCtaCardDesc: "Centered box with shadow and border.",
+        variantCtaCentered: "Centered",          variantCtaCenteredDesc: "Text and button centered with no background.",
+        variantCtaSplitImage: "Split + Image",   variantCtaSplitImageDesc: "Text on the left, image on the right (requires image_url).",
+        variantCtaInlineLeadForm: "Inline Lead Form", variantCtaInlineLeadFormDesc: "Text on the left, name/email/phone form on the right to capture leads.",
+        // faq
+        variantFaqAccordion: "Accordion",           variantFaqAccordionDesc: "Expand/collapse per item, saves space.",
+        variantFaqSimple: "Simple",                 variantFaqSimpleDesc: "All Q&As displayed open with no interaction.",
+        variantFaqColumns: "Columns",               variantFaqColumnsDesc: "2 Q&A columns side by side.",
+        variantFaqSidebarCategory: "Sidebar Category", variantFaqSidebarCategoryDesc: "Filter Q&As by category (requires category).",
+        variantFaqTwoColumnGrid: "2-Column Grid",   variantFaqTwoColumnGridDesc: "Q&As in a 2-column card grid, all open.",
+        variantFaqChatBubble: "Chat Style",         variantFaqChatBubbleDesc: "Q&A styled like a chat conversation — questions on the right, answers on the left.",
+        // gallery
+        variantGalleryGrid: "Grid",                    variantGalleryGridDesc: "Photos in uniform boxes arranged neatly.",
+        variantGalleryMasonry: "Masonry",              variantGalleryMasonryDesc: "Variable photo heights like Pinterest.",
+        variantGalleryCarousel: "Carousel",            variantGalleryCarouselDesc: "Auto-sliding photo carousel.",
+        variantGalleryLightboxStory: "Story Lightbox", variantGalleryLightboxStoryDesc: "Photo grid that opens fullscreen with large narrative and story navigation.",
+        variantGalleryBeforeAfter: "Before & After Slider", variantGalleryBeforeAfterDesc: "Before/after image comparison with a drag slider.",
+        variantGalleryVideoGridDesc: "Uniform grid with poster and play button for video items.",
+        // works
+        variantWorksGrid: "Grid",                    variantWorksGridDesc: "Uniform project cards in a neat grid.",
+        variantWorksMasonry: "Masonry",              variantWorksMasonryDesc: "Variable card heights like Pinterest.",
+        variantWorksFeaturedGrid: "Featured Grid",   variantWorksFeaturedGridDesc: "First project large as the spotlight, the rest in a neat grid.",
+        variantWorksShowcaseFeatured: "Showcase",    variantWorksShowcaseFeaturedDesc: "Main project horizontal hero, the rest in a 2-column grid.",
+        // stats
+        variantStatsCounterRow: "Metric Row",              variantStatsCounterRowDesc: "Horizontal metric row with neat dividers and large numbers.",
+        variantStatsCardGrid: "Card Grid",                 variantStatsCardGridDesc: "Floating stat cards with icons and accent glow effect.",
+        variantStatsMinimalSplit: "Minimal Split",          variantStatsMinimalSplitDesc: "Narrative title on the left, 2x2 number matrix on the right.",
+        variantStatsBigNumberSpotlight: "Big Number Spotlight", variantStatsBigNumberSpotlightDesc: "One giant main metric with accent spotlight and supporting sub-metrics.",
+        // partners
+        variantPartnersLogoWall: "Logo / Brand Grid",       variantPartnersLogoWallDesc: "Partner logo/brand grid with grayscale effect and colored hover.",
+        variantPartnersMarquee: "Marquee Ticker",           variantPartnersMarqueeDesc: "Auto-scrolling infinite banner of logos/brand names.",
+        variantPartnersPillGrid: "Interactive Pill Grid",   variantPartnersPillGridDesc: "Modern badge/pill collection with initials and category tags.",
+        variantPartnersFeaturedCollabGrid: "Featured Collab Grid", variantPartnersFeaturedCollabGridDesc: "Partner/client grid with a main collab spotlight card and role summary.",
+        // pricing
+        variantPricingCards: "Pricing Cards",                   variantPricingCardsDesc: "Classic 3-tier cards with most popular marker and action buttons.",
+        variantPricingHorizontalRows: "Horizontal Rows",        variantPricingHorizontalRowsDesc: "Horizontal plan list with features on the left and price/button on the right.",
+        variantPricingComparisonTable: "Comparison Table",      variantPricingComparisonTableDesc: "Full feature comparison table across service tiers.",
+        variantPricingSingleTierHighlight: "Single Tier Highlight", variantPricingSingleTierHighlightDesc: "One large prominent card — great for businesses with a single main offer.",
+        // menu
+        variantMenuGrid: "Grid",                      variantMenuGridDesc: "Product cards in a grid with photos.",
+        variantMenuCompact: "Compact",                variantMenuCompactDesc: "Compact list of names + prices without large photos.",
+        variantMenuCards: "Cards",                    variantMenuCardsDesc: "Large cards with photo and description.",
+        variantMenuTextList: "Text List",             variantMenuTextListDesc: "Minimalist text list, no images.",
+        variantMenuCompactList: "Compact List",       variantMenuCompactListDesc: "Compact rows with small thumbnails.",
+        variantMenuTabsByCategory: "Category Tabs",   variantMenuTabsByCategoryDesc: "Category tabs at the top.",
+        variantMenuAccordionByCategory: "Category Accordion", variantMenuAccordionByCategoryDesc: "Each category can be expanded.",
+        variantMenuBentoPhotoGrid: "Bento Photo Grid",variantMenuBentoPhotoGridDesc: "Bento-style large photo grid, visually rich.",
+        variantMenuVisualShowcaseHero: "Visual Hero",  variantMenuVisualShowcaseHeroDesc: "Large hero with visual catalog below.",
+        variantMenuSidebarScrollspyPhoto: "Sidebar Scrollspy", variantMenuSidebarScrollspyPhotoDesc: "Sticky category navigation + photo content on the right side.",
+        variantMenuCarouselDesc: "Large menu cards swipeable horizontally per category.",
+        variantMenuMasonryDesc: "Pinterest-style layout with variable menu card heights.",
+        // catalog
+        variantCatalogGrid: "Grid",                       variantCatalogGridDesc: "Standard product cards in a grid.",
+        variantCatalogCompact: "Compact",                 variantCatalogCompactDesc: "Compact list of names + prices.",
+        variantCatalogCards: "Cards",                     variantCatalogCardsDesc: "Large cards with photo and badge.",
+        variantCatalogGridDense: "Dense Grid",            variantCatalogGridDenseDesc: "Tighter grid, more products per row.",
+        variantCatalogShowcaseFeatured: "Showcase Featured", variantCatalogShowcaseFeaturedDesc: "Badged products displayed larger.",
+        variantCatalogTabsByCategory: "Category Tabs",    variantCatalogTabsByCategoryDesc: "Category tabs for products.",
+        variantCatalogEditorialGrid: "Editorial Grid",    variantCatalogEditorialGridDesc: "Asymmetric magazine-style grid with varying card sizes.",
+        variantCatalogMasonryFlow: "Masonry Flow",        variantCatalogMasonryFlowDesc: "Pinterest layout with variable card heights.",
+        variantCatalogInstagramGrid: "Instagram Grid",    variantCatalogInstagramGridDesc: "Uniform squares like an Instagram gallery.",
+        variantCatalogSplitHero: "Split Hero",            variantCatalogSplitHeroDesc: "Split screen: large hero left, scrollable list right.",
+        variantCatalogNeoBrutalist: "Neo-Brutalist Matrix", variantCatalogNeoBrutalistDesc: "Brutal grid with thick borders and angled positioning.",
+        variantCatalogHorizontalCarousel: "Horizontal Carousel", variantCatalogHorizontalCarouselDesc: "Large cards swipeable horizontally.",
+        variantCatalogProductTableDesc: "Product/spec-sheet table with price, stock, and action columns.",
+        variantCatalogSpotlightDesc: "One main product full-bleed with other products in a grid.",
+        // contact
+        variantContactClassicSplit: "Classic Split",    variantContactClassicSplitDesc: "Message form on the left, contact info & map on the right.",
+        variantContactWhatsAppDirect: "WhatsApp Direct", variantContactWhatsAppDirectDesc: "Focused WhatsApp quick-action button + message preview & online badge.",
+        variantContactBentoGrid: "Bento Grid",          variantContactBentoGridDesc: "Modular cards arranged neatly in a modern bento box style.",
+        variantContactOverlayMap: "Map Overlay",        variantContactOverlayMapDesc: "Full interactive map with a floating contact card.",
+        variantContactDarkSplit: "Dark Split",          variantContactDarkSplitDesc: "High-contrast premium dark theme with glowing accent.",
+        variantContactMinimalCentered: "Minimal Centered", variantContactMinimalCenteredDesc: "Compact centered contact card without a map.",
+        // header
+        variantHeaderLeftLogoInlineNav: "Logo Left + Inline Nav",    variantHeaderLeftLogoInlineNavDesc: "Logo on the left, inline navigation on the right, CTA button.",
+        variantHeaderCenteredLogo: "Centered Logo",                  variantHeaderCenteredLogoDesc: "Logo centered, navigation below it, CTA button.",
+        variantHeaderTransparentOverlay: "Transparent (Hero Overlay)", variantHeaderTransparentOverlayDesc: "Overlaps the hero (white text), shrinks and becomes frosted glass after scroll.",
+        variantHeaderLogoWithCtaButton: "Logo + CTA Button",         variantHeaderLogoWithCtaButtonDesc: "Logo on left, nav centered, solid-color CTA button on the right.",
+        variantHeaderStackedLogoTagline: "Logo + Tagline Stacked",   variantHeaderStackedLogoTaglineDesc: "Logo and tagline stacked vertically in the center, thin nav below.",
+        // footer
+        variantFooterMinimalBand: "Minimal Band",              variantFooterMinimalBandDesc: "Brand + tagline + copyright in a single clean dark row.",
+        variantFooterColumnsWithNav: "Columns + Quick Nav",    variantFooterColumnsWithNavDesc: "Multi-column with landing page navigation links & Back to Top button.",
+        variantFooterColumnsWithSocial: "Columns + Social",    variantFooterColumnsWithSocialDesc: "Multi-column with social media account links.",
+        variantFooterDarkContrastBand: "Dark Contrast Band",   variantFooterDarkContrastBandDesc: "Solid dark footer with primary color accent, strong contrast.",
+        variantFooterLocationAndHours: "Location & Hours",     variantFooterLocationAndHoursDesc: "Brand + map address + operating hours in a clean grid.",
+        // blog
+        variantBlogGrid: "Grid",       variantBlogGridDesc: "Cards in a 3-column neat layout.",
+        variantBlogList: "List",       variantBlogListDesc: "Horizontal with image on left, text on right.",
+        variantBlogFeatured: "Featured", variantBlogFeaturedDesc: "One large hero post + small grid below.",
+        variantBlogMinimal: "Minimal", variantBlogMinimalDesc: "Titles and dates list without images.",
+        // preloader
+        variantPreloaderNone: "No Preloader",              variantPreloaderNoneDesc: "Page appears instantly without a loading delay.",
+        variantPreloaderTopBar: "Top Progress Bar",        variantPreloaderTopBarDesc: "Thin line at the top of the screen without covering content (like Linear / YouTube).",
+        variantPreloaderMinimalFade: "Typography Fade",    variantPreloaderMinimalFadeDesc: "Subtle typographic brand name in the center of the screen with no extra ornaments.",
+        variantPreloaderMinimalSpinner: "Monoline Ring",   variantPreloaderMinimalSpinnerDesc: "Ultra-thin single-line spinning ring clean in the center of the screen.",
+        variantPreloaderMinimalCounter: "Number Counter",  variantPreloaderMinimalCounterDesc: "Minimal monospace percentage counting up quickly.",
+        variantPreloaderPulseLogo: "Pulsing Logo",         variantPreloaderPulseLogoDesc: "Brand logo gently pulsing in the center of the screen.",
+        variantPreloaderOrbitRing: "Orbit Ring",           variantPreloaderOrbitRingDesc: "Ring spinning around brand logo initials.",
+        variantPreloaderProgressLine: "Slim Progress Bar", variantPreloaderProgressLineDesc: "Logo with a horizontal progress bar below it.",
+        variantPreloaderShimmerReveal: "Shimmer Reveal",   variantPreloaderShimmerRevealDesc: "Gradient light shimmer effect sweeping across the brand text.",
+        variantPreloaderStaggerDots: "Wave Dots",          variantPreloaderStaggerDotsDesc: "Three dots gently waving below the brand name.",
+        // About extras
+        aboutTeamName: "Name", aboutTeamRole: "Role / Title", aboutTeamPhoto: "Photo", aboutRemove: "Remove",
+        // Placeholder strings
+        phNavCta: "e.g. Contact Us", phTagline: "e.g. Authentic Indonesian Cuisine", phIconName: "e.g. Utensils",
+        phEyebrowAvailable: "e.g. Available Now", phLearnMore: "e.g. Learn More",
+        phSecondaryCta: "e.g. #about or https://...", phBadgeText: "e.g. Open 7 Days · 07:00–22:00",
+        phOpeningHours: "e.g. Open Every Day 07:00 – 22:00", phAboutEyebrow: "e.g. About Us",
+        phStatValue: "e.g. 500+", phStatLabel: "e.g. Happy Customers", phBenefitsStat: "Completed Projects",
+        phWhyChooseUs: "e.g. Why Choose Us", phBenefitsSubtitle: "e.g. Reasons customers trust us",
+        phBenefitsColA: "e.g. With Us", phBenefitsColB: "e.g. Competitor",
+        phComparisonLabel: "Label (e.g. Price)", phValueA: "Value A", phValueB: "Value B",
+        phCtaEyebrow: "e.g. Start Now", phCtaSubheadline: "e.g. Get a special offer before it's gone!",
+        phCtaTrustSignal: "e.g. ✅ Trusted by 500+ customers",
+        phSocialUrl: "URL (e.g. https://instagram.com/...)",
+        phGalleryTitle: "Our Gallery", phGalleryEyebrow: "DOCUMENTATION",
+        phGalleryCaption: "Cozy atmosphere inside", phGalleryAltText: "Brief image description",
+        phStatsEyebrow: "e.g. BY THE NUMBERS", phStatsSectionTitle: "e.g. Achievements That Speak",
+        phStatsSubtitle: "e.g. Real results from our dedication and hard work",
+        phStatsValue: "e.g. 1.2M or 98%", phStatsLabel: "e.g. Subscribers", phStatsDescription: "e.g. Active on 3 platforms",
+        phPartnersEyebrow: "e.g. TRUSTED BY", phPartnersSectionTitle: "e.g. Brands We've Collaborated With",
+        phPartnersSubtitle: "e.g. Over 50+ brands have trusted our work",
+        phPartnersBrandName: "e.g. Tokopedia", phPartnersCategory: "e.g. E-Commerce",
+        phPricingEyebrow: "e.g. RATE CARD / PACKAGES", phPricingSectionTitle: "e.g. Collaboration & Service Packages",
+        phPricingSubtitle: "e.g. Choose the package that best fits your campaign needs",
+        phPricingPlanName: "e.g. Basic / Pro", phPricingBadge: "e.g. Most Popular",
+        phPricingPrice: "e.g. $250", phPricingPeriod: "e.g. /month or /video",
+        phPricingDesc: "e.g. Great for mid-scale brand campaigns",
+        phPricingFeatures: "1 TikTok/Reels Video\nIncludes 3-Month Copyright\n2x Video Revisions",
+        phPricingCtaText: "e.g. Choose Plan",
+        phFloatingWaNumber: "e.g. 628123456789 or 08123456789",
+        phHeroStatValue: "e.g. 12", phHeroStatLabel: "e.g. Projects",
+        phAccessoryNone: "— None —", phAccessoryLabel: "e.g. Starting from", phAccessoryLabelAvailFor: "e.g. Available for",
+        phAccessoryValue: "e.g. $9.99", phAccessoryValueConsultation: "e.g. Booking & consultation",
+        phAccessorySkills: "e.g. Photography, Video, Branding",
+        phHeroBgColor: "Leave empty to use global color", phHeroCaption: "Caption (optional)",
+        phTestimonialsEyebrow: "e.g. Testimonials", phTestimonialsSectionTitle: "e.g. Stories from Our Customers",
+        phTestimonialsSubtitle: "e.g. Reviews from our loyal customers",
+        phTestimonialsQuote: "Write a specific, believable quote...",
+        phTestimonialsName: "e.g. John Smith", phTestimonialsRole: "e.g. Regular customer",
+        phTestimonialsCompany: "e.g. Acme Corp",
+        phWorksTitle: "Our Projects", phWorksSubtitle: "Some of the best projects we've worked on.",
+        phWorksItemTitle: "e.g. Coffee Brand Redesign", phWorksClient: "e.g. Nusantara Coffee",
+        phWorksDescription: "Describe the scope and results of this project...", phWorksAltText: "Brief description of project image",
+        // HeroStats & HeroAccessory
+        heroStatHighlight: "Hero Statistics",
+        heroStatHighlightHint: "Number row (e.g. 12 / Projects) for Editorial Split, Personal Billboard, Portrait Showcase, and Chronology Badge variants. Empty = row is hidden.",
+        heroStatHighlightEmpty: "No statistics yet. Add a value and label, then the row will appear in the hero.",
+        heroStatAddItem: "Add Statistic",
+        heroAccessoryLabel: "Hero Business Info",
+        heroAccessoryHint: "Small block in the hero tailored to your business type (price, availability, or skills).",
+        heroAccessoryTagsLabel: "List (comma-separated)",
+        heroAccessoryPrice: "Price (online store/product)",
+        heroAccessoryAvailability: "Availability (service/freelance)",
+        heroAccessorySkillTags: "Skills (portfolio/creator)",
+        heroAccessoryRating: "Rating (event/invitation)",
+        heroAccessoryMenuHighlight: "Featured Menu (culinary)",
+        // AI prompt strings
+        aiAboutTitlePrompt: "Write an engaging, business-relevant title for the About section",
+        aiAboutTitleLabel: "About Title", aiAboutTitleBtn: "AI: generate title",
+        aiAboutBodyPrompt: "Write a warm, specific, and human paragraph about this business. 2–4 sentences.",
+        aiAboutBodyLabel: "Description", aiAboutBodyBtn: "AI: generate description",
+        aiHeroHeadlinePrompt: "Write a strong and compelling headline, max 10 words",
+        aiHeroHeadlineLabel: "Headline", aiHeroHeadlineBtn: "AI: generate headline",
+        aiHeroSubheadlinePrompt: "Write a clear subheadline that communicates the value proposition, max 25 words",
+        aiHeroSubheadlineLabel: "Subheadline", aiHeroSubheadlineBtn: "AI: generate subheadline",
+        aiCtaHeadlinePrompt: "Write a strong, action-oriented CTA headline that closes buyer hesitation",
+        aiCtaHeadlineLabel: "CTA Headline", aiCtaHeadlineBtn: "AI: generate headline",
+        // Gallery
+        gallerySectionBannerDesc2: "Add photos to the gallery. Customize layout, captions, and alt text.",
+        galleryLayoutGridDesc: "Uniform boxes",
+        galleryLayoutMasonryDesc: "Variable heights",
+        galleryLayoutCarouselDesc: "Auto-sliding",
+        galleryCarouselSettingsLabel: "Carousel Settings",
+        galleryItem: "Photo",
+        // Floating button descriptions
+        floatingWhatsAppDescLong: "Green WhatsApp button in the bottom-right corner. Click opens WA directly.",
+        floatingWhatsAppPillDescLong: "WhatsApp tab on the right side of the screen. Collapses when idle, expands on hover or touch.",
+        floatingChatBubbleDescLong: "Interactive WA chat widget. Visitors can type a message before being redirected to WA.",
+        floatingChatBubbleProRequired: "Enable the Pro plan for Chat Bubble.",
+        floatingContactLinkDescLong: "Button that scrolls to the Contact section. No WA number required.",
       },
       wizard: {
         initialMessage: "Hi! I'm Joz-AI, an AI assistant who will help you create a website. Let's get started: what's the name of your business or brand?",
