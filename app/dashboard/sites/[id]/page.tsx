@@ -674,17 +674,18 @@ export default function SiteEditorPage() {
     };
 
     const handleScroll = () => {
-      if (frame) return;
-      frame = requestAnimationFrame(syncActiveSection);
-      // Jika ini scroll dari programmatic, perpanjang lock; clear setelah 150ms idle
+      // Perpanjang lock jika programmatic scroll masih berjalan
       if (programmaticScrollRef.current) {
         clearTimeout(programmaticScrollTimerRef.current ?? undefined);
         programmaticScrollTimerRef.current = setTimeout(() => {
           programmaticScrollRef.current = false;
-          // Jalankan satu kali sync setelah scroll benar-benar berhenti
-          syncActiveSection();
+          // Setelah scroll selesai, biarkan activeTab tetap seperti yang user klik.
+          // Tidak perlu syncActiveSection di sini — user sudah memilih section yang tepat.
         }, 150);
+        return; // jangan schedule syncActiveSection selama lock aktif
       }
+      if (frame) return;
+      frame = requestAnimationFrame(syncActiveSection);
     };
 
     containerEl.addEventListener("scroll", handleScroll, { passive: true });
