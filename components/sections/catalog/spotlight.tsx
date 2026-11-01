@@ -116,6 +116,7 @@ export default function CatalogSpotlight({ catalog, design_token, onUpdateField,
               section="catalog"
               fieldKey={"categories." + heroCatIdx + ".name"}
               value={heroCat?.name ?? ""}
+              placeholder={isEN ? "Category name" : "Nama kategori"}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -130,6 +131,7 @@ export default function CatalogSpotlight({ catalog, design_token, onUpdateField,
               section="catalog"
               fieldKey={heroPath + ".name"}
               value={heroItem.name ?? ""}
+              placeholder={isEN ? "Product name" : "Nama produk"}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
