@@ -25,7 +25,7 @@ export default function HeroCarouselSplit({
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: HeroVariantProps) {
-  const slideList = getHeroSlides(h);
+  const slideList = getHeroSlides(h, { includeHidden: Boolean(isEditorMode) });
   const slides: string[] = slideList.map((s) => s.src);
 
   const slideCount = slides.length;
@@ -80,7 +80,8 @@ export default function HeroCarouselSplit({
     if (slides.length >= 8) return;
     const fallbackImage = slides[0] ?? "";
     const fallbackCredit = slideList[0]?.credit ?? null;
-    writeHeroPatch(onUpdateField as any, addHeroSlide(h, fallbackImage, fallbackCredit));
+    if (!onUpdateField) return;
+    writeHeroPatch(onUpdateField, addHeroSlide(h, fallbackImage, fallbackCredit));
     setDirection(1);
     setCurrentIndex(slides.length);
   };
@@ -90,7 +91,8 @@ export default function HeroCarouselSplit({
     if (slides.length <= 1) return;
     const slide = slideList[safeIndex];
     if (!slide) return;
-    writeHeroPatch(onUpdateField as any, removeHeroSlide(h, slide.index));
+    if (!onUpdateField) return;
+    writeHeroPatch(onUpdateField, removeHeroSlide(h, slide.index));
     setCurrentIndex((prev) => (prev >= slides.length - 1 ? slides.length - 2 : prev));
   };
 
@@ -384,15 +386,16 @@ export default function HeroCarouselSplit({
               />
 
               {/* Caption for active slide */}
-              {(() => {
-                const idx = slideList[safeIndex]?.index ?? 0;
-                const caption = h.image_captions?.[idx];
-                return caption ? (
-                  <p className="absolute bottom-4 left-4 z-20 max-w-[70%] text-sm font-medium text-white drop-shadow">
-                    {caption}
-                  </p>
-                ) : null;
-              })()}
+              {slideList[safeIndex]?.caption ? (
+                <p className="absolute bottom-4 left-4 z-20 max-w-[70%] text-sm font-medium text-white drop-shadow">
+                  {slideList[safeIndex].caption}
+                </p>
+              ) : null}
+
+              {/* Hidden slide indicator in editor */}
+              {isEditorMode && slideList[safeIndex]?.hidden && (
+                <div className="absolute inset-0 z-10 pointer-events-none" style={{ opacity: 0.45, background: "rgba(0,0,0,0.3)" }} />
+              )}
 
               {/* Gradient edge shading for visual depth */}
               <div

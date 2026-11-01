@@ -31,7 +31,7 @@ export default function HeroCarouselFilmstrip({
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: HeroVariantProps) {
-  const slideList = getHeroSlides(h);
+  const slideList = getHeroSlides(h, { includeHidden: Boolean(isEditorMode) });
   const slides: string[] = slideList.map((s) => s.src);
   const [isPaused, setIsPaused] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -54,7 +54,8 @@ export default function HeroCarouselFilmstrip({
     if (slides.length >= 8) return;
     const fallbackImage = slides[0] ?? "";
     const fallbackCredit = slideList[0]?.credit ?? null;
-    writeHeroPatch(onUpdateField as any, addHeroSlide(h, fallbackImage, fallbackCredit));
+    if (!onUpdateField) return;
+    writeHeroPatch(onUpdateField, addHeroSlide(h, fallbackImage, fallbackCredit));
   };
 
   const handleDeleteSlide = (idx: number, e: React.MouseEvent) => {
@@ -62,11 +63,13 @@ export default function HeroCarouselFilmstrip({
     if (slides.length <= 1) return;
     const slide = slideList[idx];
     if (!slide) return;
-    writeHeroPatch(onUpdateField as any, removeHeroSlide(h, slide.index));
+    if (!onUpdateField) return;
+    writeHeroPatch(onUpdateField, removeHeroSlide(h, slide.index));
   };
 
   // Duplicate slides array for seamless infinite marquee loop
-  const displayCards = slides.length > 0 ? (slides.length < 5 ? [...slides, ...slides, ...slides] : [...slides, ...slides]) : [];
+  const hasSlides = slides.length > 0;
+  const displayCards = hasSlides ? (slides.length < 5 ? [...slides, ...slides, ...slides] : [...slides, ...slides]) : [];
 
   return (
     <section
@@ -259,6 +262,7 @@ export default function HeroCarouselFilmstrip({
       </div>
 
       {/* ── Bottom Block: Continuous Drifting Filmstrip Marquee ─────── */}
+      {(hasSlides || isEditorMode) && (
       <div
         className="relative z-10 w-full mt-10 overflow-hidden"
         onMouseEnter={() => setIsPaused(true)}
@@ -336,14 +340,16 @@ export default function HeroCarouselFilmstrip({
                 />
 
                 {/* Caption for this slide */}
-                {(() => {
-                  const caption = h.image_captions?.[slide?.index ?? 0];
-                  return caption ? (
-                    <p className="absolute bottom-10 left-3 right-3 z-20 text-xs font-medium text-white drop-shadow line-clamp-2">
-                      {caption}
-                    </p>
-                  ) : null;
-                })()}
+                {slide?.caption ? (
+                  <p className="absolute bottom-10 left-3 right-3 z-20 text-xs font-medium text-white drop-shadow line-clamp-2">
+                    {slide.caption}
+                  </p>
+                ) : null}
+
+                {/* Hidden slide indicator in editor */}
+                {isEditorMode && slide?.hidden && (
+                  <div className="absolute inset-0 z-10 pointer-events-none" style={{ opacity: 0.45, background: "rgba(0,0,0,0.35)" }} />
+                )}
 
                 {/* Card Number Tag removed */}
 
@@ -377,6 +383,35 @@ export default function HeroCarouselFilmstrip({
           </div>
         )}
       </div>
+      )}
+
+      {/* Empty state: editor only — one placeholder card to add first image */}
+      {!hasSlides && isEditorMode && (
+        <div className="relative z-10 w-full mt-10 flex justify-center px-6">
+          <div
+            className="relative overflow-hidden shadow-lg"
+            style={{
+              width: "clamp(240px, 22vw, 340px)",
+              height: "clamp(300px, 32vh, 420px)",
+              borderRadius: "var(--dt-radius-lg)",
+              border: "2px dashed color-mix(in srgb, var(--dt-primary) 40%, transparent)",
+              background: "color-mix(in srgb, var(--dt-primary) 6%, var(--dt-surface))",
+            }}
+          >
+            <InlineImage
+              section="hero"
+              fieldKey="images.0"
+              src=""
+              alt="Add first filmstrip slide"
+              onUpdateField={(_, __, val) => commitHeroSlide(onUpdateField, h, 0, val)}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              className="w-full h-full"
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Slide Photo Credit */}
       <div className="relative z-10 px-6 sm:px-12 flex justify-between items-center text-xs opacity-75 mt-4">
