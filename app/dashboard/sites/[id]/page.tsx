@@ -163,6 +163,7 @@ export default function SiteEditorPage() {
   const [editorTab, setEditorTab] = useState<"content" | "design">("content");
   const [aiPanelOpen, setAiPanelOpen] = useState(false);
   const [draggingSection, setDraggingSection] = useState<string | null>(null);
+  const [dragOverSection, setDragOverSection] = useState<string | null>(null);
   const [device, setDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const [sheetExpanded, setSheetExpanded] = useState(false);
   const [sheetCollapsed, setSheetCollapsed] = useState(true);
@@ -589,10 +590,16 @@ export default function SiteEditorPage() {
     return () => document.removeEventListener("pointerdown", handlePointerDown);
   }, [sectionDropdownOpen]);
 
+  // Cooldown ref: setelah user klik section, tahan scrollspy selama 1.2 detik
+  // agar animasi scroll selesai sebelum scrollspy boleh override activeTab.
+  const scrollspyFrozenUntilRef = useRef<number>(0);
+
   const selectSection = useCallback((section: string, scrollToPreview = true) => {
     shouldScrollToActiveRef.current = scrollToPreview;
     activeTabRef.current = section;
     setActiveTab(section);
+    // Bekukan scrollspy selama animasi scroll preview berlangsung
+    if (scrollToPreview) scrollspyFrozenUntilRef.current = Date.now() + 1200;
   }, []);
 
   // Scroll preview to active section
@@ -624,6 +631,8 @@ export default function SiteEditorPage() {
     let frame = 0;
     const syncActiveSection = () => {
       frame = 0;
+      // Jangan override activeTab jika user baru saja klik section (cooldown)
+      if (Date.now() < scrollspyFrozenUntilRef.current) return;
       const containerRect = containerEl.getBoundingClientRect();
       let nextSection = activeTabRef.current;
       let bestTop = Number.NEGATIVE_INFINITY;
@@ -1639,20 +1648,29 @@ export default function SiteEditorPage() {
                       if (!draggingSection || !BODY_SECTION_KEYS.includes(key) || pendingDiff) return;
                       event.preventDefault();
                       event.dataTransfer.dropEffect = "move";
+                      if (key !== draggingSection) setDragOverSection(key);
+                    }}
+                    onDragLeave={() => {
+                      setDragOverSection(null);
                     }}
                     onDrop={(event) => {
                       event.preventDefault();
                       const source = event.dataTransfer.getData("text/plain") || draggingSection;
                       if (source) handleReorderSection(source, key);
                       setDraggingSection(null);
+                      setDragOverSection(null);
                     }}
-                    onDragEnd={() => setDraggingSection(null)}
-                    onClick={() => { if (!pendingDiff) selectSection(key, true); }}
+                    onDragEnd={() => { setDraggingSection(null); setDragOverSection(null); }}
+                    onClick={() => { if (!pendingDiff && !draggingSection) selectSection(key, true); }}
                     className={`group flex items-center gap-1.5 px-2.5 py-1 cursor-pointer transition-colors ${activeTab === key
                       ? "bg-primary/15 text-primary"
-                      : hiddenSections.includes(key)
-                        ? "opacity-40 hover:opacity-60"
-                        : "hover:bg-sidebar-muted"
+                      : dragOverSection === key
+                        ? "bg-primary/20 ring-1 ring-primary/40"
+                        : draggingSection === key
+                          ? "opacity-40"
+                          : hiddenSections.includes(key)
+                            ? "opacity-40 hover:opacity-60"
+                            : "hover:bg-sidebar-muted"
                       }`}
                   >
                     <GripVertical className={`h-2.5 w-2.5 shrink-0 ${BODY_SECTION_KEYS.includes(key) ? "text-sidebar-muted-foreground group-hover:text-sidebar-foreground" : "text-sidebar-foreground"}`} />
