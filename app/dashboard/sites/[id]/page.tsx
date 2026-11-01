@@ -20,6 +20,8 @@ import { getTemplate, TEMPLATE_REGISTRY } from "@/lib/template-registry";
 import { getTemplateDefaultDesignToken } from "@/lib/template-defaults";
 import { setEditorSiteId, getFeatureMarker, FeatureMarkerIcon } from "@/components/templates/shared";
 import { SectionShortcutContext, type SectionShortcutHandler } from "@/components/templates/editor";
+import { SectionReorderProvider } from "@/components/templates/section-reorder";
+import { moveSection } from "@/lib/section-order";
 import {
   stripRegeneratedMarkers,
   BODY_SECTION_KEYS,
@@ -938,15 +940,12 @@ export default function SiteEditorPage() {
   };
 
   const handleReorderSection = (source: string, target: string) => {
-    if (source === target || !BODY_SECTION_KEYS.includes(source) || !BODY_SECTION_KEYS.includes(target)) return;
+    if (pendingDiff) return;
+    if (!BODY_SECTION_KEYS.includes(source) || !BODY_SECTION_KEYS.includes(target)) return;
+    const currentOrder = getOrderedSections(designToken, content, getHiddenSections()).filter((key) => BODY_SECTION_KEYS.includes(key) && !(designToken?.layout?.hidden_sections ?? []).includes(key));
+    const nextOrder = moveSection(currentOrder, source, target);
+    if (!nextOrder) return;
     pushGlobalUndo({ force: true });
-    const currentOrder = getOrderedSections(designToken, content, getHiddenSections()).filter((key) => BODY_SECTION_KEYS.includes(key));
-    const nextOrder = [...currentOrder];
-    const from = nextOrder.indexOf(source);
-    const to = nextOrder.indexOf(target);
-    if (from < 0 || to < 0) return;
-    nextOrder.splice(from, 1);
-    nextOrder.splice(to, 0, source);
     setDesignToken({
       ...(designToken || {}),
       layout: {
@@ -1429,6 +1428,7 @@ export default function SiteEditorPage() {
   }
 
   const orderedSectionKeys = getOrderedSections(designToken, content, getHiddenSections());
+  const previewBodyOrder = orderedSectionKeys.filter((k) => BODY_SECTION_KEYS.includes(k) && !(designToken?.layout?.hidden_sections ?? []).includes(k));
   const SECTIONS = orderedSectionKeys
     .filter((key) => {
       // Only show menu/catalog tabs when content actually has them
@@ -2713,7 +2713,13 @@ export default function SiteEditorPage() {
             )}
 
             <SectionShortcutContext.Provider value={editContactShortcut}>
-              {device === "mobile" ? (
+              <SectionReorderProvider
+                enabled={!pendingDiff}
+                order={previewBodyOrder}
+                getLabel={(k) => getSectionLabel(k, locale)}
+                onMove={handleReorderSection}
+              >
+                {device === "mobile" ? (
               /* Mobile: centered with some margin */
               <div className="relative mx-auto my-6 h-[760px] w-[375px] flex-shrink-0 rounded-[40px] border-[12px] border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800 transition-all duration-300">
                 {/* Speaker/Notch */}
@@ -2812,6 +2818,7 @@ export default function SiteEditorPage() {
                 />
               </div>
             )}
+            </SectionReorderProvider>
             </SectionShortcutContext.Provider>
           </div>
 

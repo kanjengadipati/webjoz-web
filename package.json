@@ -17,7 +17,8 @@
     "test:e2e:report": "npx playwright show-report",
     "test:e2e:codegen": "npx playwright codegen http://localhost:3000",
     "test:hero-images": "node --test scripts/hero-images.test.mjs",
-    "test:catalog-reorder": "node --test scripts/catalog-reorder.test.mjs"
+    "test:catalog-reorder": "node --test scripts/catalog-reorder.test.mjs",
+    "test:section-order": "node --test scripts/section-order.test.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

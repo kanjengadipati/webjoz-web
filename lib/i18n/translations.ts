@@ -2198,6 +2198,10 @@ export interface Translations {
       styleLabel: string;
       layoutLabel: string;
       sectionOrder: string;
+      moveSection: string;
+      dragSection: string;
+      moveUp: string;
+      moveDown: string;
       sectionSpacing: string;
       cornerRadius: string;
       cornerSharp: string;
@@ -5030,6 +5034,10 @@ export const translations: Record<Locale, Translations> = {
         styleLabel: "Gaya Situs",
         layoutLabel: "Tata Letak",
         sectionOrder: "Urutan section",
+        moveSection: "Pindahkan",
+        dragSection: "Seret untuk mengurutkan",
+        moveUp: "Naikkan section",
+        moveDown: "Turunkan section",
         sectionSpacing: "Jarak Seksi (Spacing)",
         cornerRadius: "Sudut Border (Radius)",
         cornerSharp: "Tajam (0px)",
@@ -7935,6 +7943,10 @@ export const translations: Record<Locale, Translations> = {
         styleLabel: "Site Style",
         layoutLabel: "Layout",
         sectionOrder: "Section order",
+        moveSection: "Move",
+        dragSection: "Drag to reorder",
+        moveUp: "Move section up",
+        moveDown: "Move section down",
         sectionSpacing: "Section Spacing",
         cornerRadius: "Corner Radius",
         cornerSharp: "Sharp (0px)",
