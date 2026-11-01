@@ -698,9 +698,13 @@ export default function SiteEditorPage() {
     syncActiveSection();
     return () => {
       if (frame) cancelAnimationFrame(frame);
-      clearTimeout(programmaticScrollTimerRef.current ?? undefined);
+      containerEl.removeEventListener("scroll", handleScroll);
     };
   }, [device, pendingDiff]);
+
+  // Cleanup programmaticScrollTimer hanya saat unmount — jangan di effect
+  // scrollspy yang bisa re-run saat pendingDiff berubah (akan membunuh lock yang aktif)
+  useEffect(() => () => clearTimeout(programmaticScrollTimerRef.current ?? undefined), []);
 
   // Open sidebar editor when requested (e.g. from SEO preview banner)
   useEffect(() => {
@@ -948,7 +952,7 @@ export default function SiteEditorPage() {
   const handleReorderSection = (source: string, target: string) => {
     if (pendingDiff) return;
     if (!BODY_SECTION_KEYS.includes(source) || !BODY_SECTION_KEYS.includes(target)) return;
-    const currentOrder = getOrderedSections(designToken, content, getHiddenSections()).filter((key) => BODY_SECTION_KEYS.includes(key) && !(designToken?.layout?.hidden_sections ?? []).includes(key));
+    const currentOrder = getOrderedSections(designToken, content, getHiddenSections()).filter((key) => BODY_SECTION_KEYS.includes(key));
     const nextOrder = moveSection(currentOrder, source, target);
     if (!nextOrder) return;
     pushGlobalUndo({ force: true });
@@ -1669,9 +1673,6 @@ export default function SiteEditorPage() {
                       event.preventDefault();
                       event.dataTransfer.dropEffect = "move";
                       if (key !== draggingSection) setDragOverSection(key);
-                    }}
-                    onDragLeave={() => {
-                      setDragOverSection(null);
                     }}
                     onDrop={(event) => {
                       event.preventDefault();
