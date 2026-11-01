@@ -21,6 +21,7 @@ import { getTemplateDefaultDesignToken } from "@/lib/template-defaults";
 import { setEditorSiteId, getFeatureMarker, FeatureMarkerIcon } from "@/components/templates/shared";
 import { SectionShortcutContext, type SectionShortcutHandler } from "@/components/templates/editor";
 import { SectionReorderProvider } from "@/components/templates/section-reorder";
+import { SectionVisibilityProvider } from "@/components/templates/section-visibility";
 import { moveSection } from "@/lib/section-order";
 import {
   stripRegeneratedMarkers,
@@ -982,6 +983,8 @@ export default function SiteEditorPage() {
   const toggleSectionVisibility = (key: string) => {
     // header, footer, seo cannot be hidden
     if (["header", "footer", "seo"].includes(key)) return;
+    if (pendingDiff) return;
+    pushGlobalUndo({ force: true });
     const current: string[] = designToken?.layout?.hidden_sections ?? [];
     const next = current.includes(key)
       ? current.filter((k) => k !== key)
@@ -1438,7 +1441,7 @@ export default function SiteEditorPage() {
   }
 
   const orderedSectionKeys = getOrderedSections(designToken, content, getHiddenSections());
-  const previewBodyOrder = orderedSectionKeys.filter((k) => BODY_SECTION_KEYS.includes(k) && !(designToken?.layout?.hidden_sections ?? []).includes(k));
+  const previewBodyOrder = orderedSectionKeys.filter((k) => BODY_SECTION_KEYS.includes(k));
   const SECTIONS = orderedSectionKeys
     .filter((key) => {
       // Only show menu/catalog tabs when content actually has them
@@ -2720,6 +2723,12 @@ export default function SiteEditorPage() {
             )}
 
             <SectionShortcutContext.Provider value={editContactShortcut}>
+              <SectionVisibilityProvider
+                enabled={!pendingDiff}
+                hideable={BODY_SECTION_KEYS}
+                hidden={hiddenSections}
+                onToggle={toggleSectionVisibility}
+              >
               <SectionReorderProvider
                 enabled={!pendingDiff}
                 order={previewBodyOrder}
@@ -2826,6 +2835,7 @@ export default function SiteEditorPage() {
               </div>
             )}
             </SectionReorderProvider>
+            </SectionVisibilityProvider>
             </SectionShortcutContext.Provider>
           </div>
 

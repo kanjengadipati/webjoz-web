@@ -8,7 +8,7 @@ import {
 } from "./shared";
 import { BlogPostsSection } from "./blog-section";
 
-import { buildCssVars, loadGoogleFont, filterEmptySections, getSectionVariant } from "./helpers";
+import { buildCssVars, loadGoogleFont, filterEmptySections, getSectionVariant, withoutHidden } from "./helpers";
 import type { TemplateProps, DesignToken, ContentSection } from "./types";
 import { SiteLoadingScreen, resolvePreloaderConfig } from "webjoz-ui";
 
@@ -454,13 +454,13 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
         {preloaderVisual && <SiteLoadingScreen visual={preloaderVisual} />}
         {(() => {
           const renderedSections = resolvedSections
-            .filter((sec) => !(dt?.layout?.hidden_sections ?? []).includes(sec.type))
+            .filter((sec) => isEditorMode || !(dt?.layout?.hidden_sections ?? []).includes(sec.type))
             .filter((sec) => !arrivedSections || arrivedSections.includes(sec.type));
           const renderedSectionOrder = renderedSections.map((sec) => sec.type);
           return (
             <>
               <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} currentVariant={getVariantFor("header")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
-                <HeaderSection header={header} design_token={dt} sectionOrder={renderedSectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "header"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                <HeaderSection header={header} design_token={dt} sectionOrder={withoutHidden(renderedSectionOrder, dt)} hiddenSections={dt?.layout?.hidden_sections} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "header"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
               </MemoPreviewSectionWrapper>
 
               {renderedSections.map((sec) => {

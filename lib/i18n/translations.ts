@@ -2331,6 +2331,7 @@ export interface Translations {
       showSection: string;
       hideSection: string;
       hidden: string;
+      hiddenOnSite: string;
       showPageSections: string;
       expandEditArea: string;
       variantOptions: string;
@@ -5167,6 +5168,7 @@ export const translations: Record<Locale, Translations> = {
         showSection: "Tampilkan section",
         hideSection: "Sembunyikan section",
         hidden: "Tersembunyi",
+        hiddenOnSite: "Disembunyikan, tidak tampil di situs",
         showPageSections: "Tampilkan Bagian Halaman",
         expandEditArea: "Perluas area edit",
         variantOptions: "Variasi Tampilan",
@@ -8076,6 +8078,7 @@ export const translations: Record<Locale, Translations> = {
         showSection: "Show section",
         hideSection: "Hide section",
         hidden: "Hidden",
+        hiddenOnSite: "Hidden, not shown on your site",
         showPageSections: "Show page sections",
         expandEditArea: "Expand edit area",
         variantOptions: "Layout Variants",

@@ -21,7 +21,7 @@ import GallerySection from "../sections/gallery";
 import WorksSection from "../sections/works";
 import HeroSection from "../sections/hero";
 import { BlogPostsSection } from "./blog-section";
-import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections, getSectionVariant, computePrimaryFg } from "./helpers";
+import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections, getSectionVariant, computePrimaryFg, withoutHidden } from "./helpers";
 import PhotoCredit from "../sections/PhotoCredit";
 import type { TemplateProps } from "./types";
 
@@ -331,12 +331,12 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
       {/* Header */}
       {(() => {
         const renderedSectionOrder = filterEmptySections(sectionOrder, content, isEditorMode)
-          .filter((key) => !(dt?.layout?.hidden_sections ?? []).includes(key))
+          .filter((key) => isEditorMode || !(dt?.layout?.hidden_sections ?? []).includes(key))
           .filter((key) => !arrivedSections || arrivedSections.includes(key));
         return (
           <>
             <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} currentVariant={getSectionVariant(dt, "header")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
-              <HeaderSection header={header} design_token={dt} sectionOrder={renderedSectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "header"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+              <HeaderSection header={header} design_token={dt} sectionOrder={withoutHidden(renderedSectionOrder, dt)} hiddenSections={dt?.layout?.hidden_sections} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "header"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             </MemoPreviewSectionWrapper>
 
             {renderedSectionOrder.map((key) => <div key={key} className="animate-slide-up">{sectionNodes[key] ?? null}</div>)}
