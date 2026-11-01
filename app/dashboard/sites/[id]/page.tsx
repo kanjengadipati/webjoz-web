@@ -605,6 +605,11 @@ export default function SiteEditorPage() {
       // Bekukan scrollspy sampai scroll benar-benar berhenti
       programmaticScrollRef.current = true;
       clearTimeout(programmaticScrollTimerRef.current ?? undefined);
+      // Fallback: kalau tidak ada scroll event (misal target sudah visible),
+      // reset flag setelah 500ms agar scrollspy tidak frozen selamanya
+      programmaticScrollTimerRef.current = setTimeout(() => {
+        programmaticScrollRef.current = false;
+      }, 500);
     }
   }, []);
 
