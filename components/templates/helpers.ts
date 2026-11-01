@@ -450,3 +450,12 @@ export function filterEmptySections(sectionOrder: string[], content: any, isEdit
   });
 }
 
+
+/** Urutan section tanpa yang disembunyikan (design_token.layout.hidden_sections). Dipakai untuk menu nav header. */
+export function withoutHidden(
+  order: string[],
+  dt: { layout?: { hidden_sections?: string[] } } | null | undefined,
+): string[] {
+  const hidden = dt?.layout?.hidden_sections ?? [];
+  return order.filter((k) => !hidden.includes(k));
+}

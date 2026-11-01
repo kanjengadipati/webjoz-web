@@ -8,7 +8,7 @@ import {
   CartProvider, CartFab, WAFloatingButton, BackToTop,
   SeoEditorPreview, ctaHref, InlineText,
 } from "./shared";
-import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections, getSectionVariant, computePrimaryFg } from "./helpers";
+import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections, getSectionVariant, computePrimaryFg, withoutHidden } from "./helpers";
 import HeaderSection from "../sections/header";
 import FooterSection from "../sections/footer";
 import GallerySection from "../sections/gallery";
@@ -245,12 +245,12 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
     <div style={{ ...cssVars, background: bg, color: "var(--dt-text)", fontFamily: "var(--dt-body-font)", minHeight: "100vh", overflowX: "hidden", containerType: "inline-size" }}>
       {(() => {
         const renderedSectionOrder = filterEmptySections(sectionOrder, content, isEditorMode)
-          .filter(k => !(dt?.layout?.hidden_sections ?? []).includes(k))
+          .filter(k => isEditorMode || !(dt?.layout?.hidden_sections ?? []).includes(k))
           .filter(k => !arrivedSections || arrivedSections.includes(k));
         return (
           <>
             <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} currentVariant={getSectionVariant(dt, "header")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
-              <HeaderSection header={header} design_token={dt} sectionOrder={renderedSectionOrder} hiddenSections={dt?.layout?.hidden_sections} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "header"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+              <HeaderSection header={header} design_token={dt} sectionOrder={withoutHidden(renderedSectionOrder, dt)} hiddenSections={dt?.layout?.hidden_sections} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "header"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             </MemoPreviewSectionWrapper>
 
             {renderedSectionOrder.map((k) => {

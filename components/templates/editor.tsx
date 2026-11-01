@@ -6,6 +6,7 @@ import { SECTION_VARIANT_OPTIONS } from "@/components/sections/variant-registry"
 import { ChevronDown, Check, LayoutGrid, Pencil } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { useSectionDrop, SectionDragControls } from "./section-reorder";
+import { useSectionVisibility, SectionVisibilityButton, HiddenSectionNotice } from "./section-visibility";
 
 // ---------------------------------------------------------------------------
 // Shared mini SVG wireframe previews (canvas inline gallery)
@@ -603,6 +604,7 @@ export const PreviewSectionWrapper: React.FC<{
     const editSectionShortcut = useContext(SectionShortcutContext);
     const canEditSection = section === "contact" && Boolean(editSectionShortcut);
     const { setNodeRef: setDropRef, canReorder, isSource, indicator } = useSectionDrop(section);
+    const { hideable: canHide, isHidden } = useSectionVisibility(section);
 
     useEffect(() => {
       if (!isGalleryOpen) return;
@@ -659,6 +661,8 @@ export const PreviewSectionWrapper: React.FC<{
           onSelectSection?.(section);
         }}
         className={`group relative transition-all duration-150 scroll-mt-20 ${isSource ? "opacity-60" : ""} ${
+          isHidden ? "[&>*:not([data-section-ui])]:opacity-40 [&>*:not([data-section-ui])]:grayscale [&>*:not([data-section-ui])]:pointer-events-none" : ""
+        } ${
           isGalleryOpen ? "z-[80]" : section === "header" ? (isSelected ? "z-40" : "z-30") : (isSelected ? "z-20" : "z-10")
         } ${isSelected
           ? "outline outline-2 outline-primary/60 outline-offset-[-2px]"
@@ -668,6 +672,7 @@ export const PreviewSectionWrapper: React.FC<{
         {/* Section label + variant — fused button group */}
         <div
           ref={panelRef}
+          data-section-ui
           className={`absolute ${
             section === "hero" && hasHeaderOverlay
               ? "top-24 left-2.5"
@@ -679,6 +684,7 @@ export const PreviewSectionWrapper: React.FC<{
           {/* Relative wrapper lives OUTSIDE the pill so the gallery panel is not clipped */}
           <div className="relative">
             <div className={`h-[22px] sm:h-[26px] inline-flex items-center bg-slate-950/90 backdrop-blur-md border shadow-sm rounded-full transition-all duration-150 ${isGalleryOpen ? "border-sky-400/80 ring-1 ring-sky-400/30 shadow-[0_0_10px_rgba(56,189,248,0.2)]" : "border-white/15"}`}>
+              {canHide && <SectionVisibilityButton section={section} />}
               {canReorder && <SectionDragControls section={section} />}
               {/* Label segment */}
               <span className={`${hasVariants ? "hidden sm:inline-flex" : "inline-flex"} items-center h-full px-2 sm:px-2.5 text-[8px] sm:text-[8.5px] font-bold tracking-[0.1em] text-slate-400 uppercase select-none`}>
@@ -860,7 +866,9 @@ export const PreviewSectionWrapper: React.FC<{
         </div>{/* end outer absolute container */}
 
         {/* Section Action (Top Right) — Regen */}
+        {!isHidden && (
         <button
+          data-section-ui
           type="button"
           onClick={(e) => {
             e.stopPropagation();
@@ -875,10 +883,18 @@ export const PreviewSectionWrapper: React.FC<{
           <SparkleGenAI className="w-3 h-3 shrink-0" />
           Regen
         </button>
+        )}
         {indicator && (
           <div
             aria-hidden
+            data-section-ui
             className={`pointer-events-none absolute left-0 right-0 z-[75] h-1 bg-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.8)] ${indicator === "before" ? "top-0" : "bottom-0"}`}
+          />
+        )}
+        {isHidden && (
+          <HiddenSectionNotice
+            section={section}
+            className={section === "hero" && hasHeaderOverlay ? "top-24" : "top-10"}
           />
         )}
         {children}
