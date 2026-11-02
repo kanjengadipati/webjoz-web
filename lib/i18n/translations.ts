@@ -1176,6 +1176,7 @@ export interface Translations {
       tableModel: string;
       tableBaseUrl: string;
       tableApiKey: string;
+      tableAccountEmail: string;
       tableDailyLimit: string;
       tableStatus: string;
       tableActions: string;
@@ -1194,6 +1195,7 @@ export interface Translations {
       formApiKeyPlaceholder: string;
       formDailyLimit: string;
       formDailyLimitHint: string;
+      formAccountEmail: string;
       formEnabled: string;
       saveConfig: string;
       cancel: string;
@@ -4646,6 +4648,7 @@ export const translations: Record<Locale, Translations> = {
         tableModel: "Model",
         tableBaseUrl: "Base URL",
         tableApiKey: "API Key",
+        tableAccountEmail: "Email Akun",
         tableDailyLimit: "Batas Harian",
         tableStatus: "Status",
         tableActions: "Aksi",
@@ -4664,6 +4667,7 @@ export const translations: Record<Locale, Translations> = {
         formApiKeyPlaceholder: "Masukkan API key baru (kosongkan jika tidak diubah)",
         formDailyLimit: "Batas Request Harian",
         formDailyLimitHint: "0 = tanpa batas tambahan",
+        formAccountEmail: "Email Akun",
         formEnabled: "Aktifkan Tier Ini",
         saveConfig: "Simpan Konfigurasi",
         cancel: "Batal",
@@ -8168,6 +8172,7 @@ export const translations: Record<Locale, Translations> = {
         tableModel: "Model",
         tableBaseUrl: "Base URL",
         tableApiKey: "API Key",
+        tableAccountEmail: "Account Email",
         tableDailyLimit: "Daily Limit",
         tableStatus: "Status",
         tableActions: "Actions",
@@ -8186,6 +8191,7 @@ export const translations: Record<Locale, Translations> = {
         formApiKeyPlaceholder: "Enter new API key (leave empty to keep existing)",
         formDailyLimit: "Daily Request Limit",
         formDailyLimitHint: "0 = no custom limit",
+        formAccountEmail: "Account Email",
         formEnabled: "Enable This Tier",
         saveConfig: "Save Configuration",
         cancel: "Cancel",
