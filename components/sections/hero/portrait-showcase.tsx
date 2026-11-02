@@ -1,11 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import type { HeroVariantProps } from "./types";
-import PhotoCredit from "../PhotoCredit";
-import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
-import { safeHref, isExternalHref } from "@/lib/safe-url";
+import { InlineText, HeroAccessory } from "../../templates/shared";
+import { HeroCta, HeroImage } from "./primitives";
 import { heroStrings } from "./hero-strings";
 
 /**
@@ -67,11 +66,14 @@ export default function HeroPortraitShowcase({
       >
         {(h.image_url || isEditorMode) ? (
           <>
-            <InlineImage
+            <HeroImage
               section="hero"
               fieldKey="image_url"
               src={h.image_url}
               alt={h.headline}
+              credit={h.image_credit}
+              language={language}
+              creditPosition={{ position: "absolute", bottom: 8, left: 12, zIndex: 20 }}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -85,19 +87,6 @@ export default function HeroPortraitShowcase({
               }}
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             />
-            <div style={{ position: "absolute", bottom: 8, left: 12, zIndex: 20 }}>
-              <PhotoCredit
-                credit={h.image_credit}
-              src={h.image_url}
-                language={language}
-                section="hero"
-                fieldKey="image_credit.name"
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={isSelected}
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              />
-            </div>
             {/* Availability overlay badge on the photo */}
             <span
               style={{
@@ -262,10 +251,11 @@ export default function HeroPortraitShowcase({
           transition={{ duration: 0.4, delay: 0.3 }}
           style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}
         >
-          <a
-            href={safeHref(h.cta_url, "#contact")}
-            target={isExternalHref(h.cta_url) ? "_blank" : undefined}
-            rel={isExternalHref(h.cta_url) ? "noopener noreferrer" : undefined}
+          <HeroCta
+            href={h.cta_url}
+            label={h.cta_text}
+            fieldKey="cta_text"
+            iconSize={15}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -279,24 +269,18 @@ export default function HeroPortraitShowcase({
               letterSpacing: "0.05em",
               borderRadius: "var(--dt-radius)",
             }}
-          >
-            <InlineText
-              section="hero"
-              fieldKey="cta_text"
-              value={h.cta_text}
-              onUpdateField={onUpdateField}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              as="span"
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
-            /> <ArrowRight style={{ width: 15, height: 15 }} />
-          </a>
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
           {hasSecondary && (
-            <a
-              href={safeHref(h.cta_secondary_url, "#contact")}
-              target={isExternalHref(h.cta_secondary_url) ? "_blank" : undefined}
-              rel={isExternalHref(h.cta_secondary_url) ? "noopener noreferrer" : undefined}
+            <HeroCta
+              href={h.cta_secondary_url}
+              label={h.cta_secondary_text ?? ""}
+              fieldKey="cta_secondary_text"
+              icon={<ArrowUpRight style={{ width: 14, height: 14 }} />}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -306,20 +290,12 @@ export default function HeroPortraitShowcase({
                 fontWeight: 600,
                 fontSize: "0.85rem",
               }}
-            >
-              <InlineText
-                section="hero"
-                fieldKey="cta_secondary_text"
-                value={h.cta_secondary_text ?? ""}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={isSelected}
-                as="span"
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                onEditingStateChange={onEditingStateChange}
-              />
-              <ArrowUpRight style={{ width: 14, height: 14 }} />
-            </a>
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
           )}
         </motion.div>
 

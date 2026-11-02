@@ -2,8 +2,7 @@
 import React from "react";
 import type { HeroVariantProps } from "./types";
 import { HeroContent } from "./shared";
-import PhotoCredit from "../PhotoCredit";
-import { InlineImage } from "../../templates/shared";
+import { HeroImage } from "./primitives";
 
 export default function HeroSplit({ hero, language, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }: HeroVariantProps) {
   const hasImage = Boolean(hero.image_url) || Boolean(isEditorMode);
@@ -34,33 +33,21 @@ export default function HeroSplit({ hero, language, onUpdateField, isEditorMode,
           style={{ minHeight: "45vh", border: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)" }}
         >
           {hasImage ? (
-            <>
-              <InlineImage
-                section="hero"
-                fieldKey="image_url"
-                src={hero.image_url}
-                alt={hero.headline}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={isSelected}
-                className="w-full h-full"
-                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              />
-              <div style={{ position: "absolute", bottom: 12, right: 12, zIndex: 20 }}>
-                <PhotoCredit
-                  credit={hero.image_credit}
+            <HeroImage
+              section="hero"
+              fieldKey="image_url"
               src={hero.image_url}
-                  language={language}
-                  section="hero"
-                  fieldKey="image_credit.name"
-                  onUpdateField={onUpdateField}
-                  isEditorMode={isEditorMode}
-                  isSelected={isSelected}
-                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                />
-              </div>
-            </>
+              alt={hero.headline}
+              credit={hero.image_credit}
+              language={language}
+              creditPosition={{ position: "absolute", bottom: 12, right: 12, zIndex: 20 }}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              className="w-full h-full"
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            />
           ) : (
             <div
               style={{

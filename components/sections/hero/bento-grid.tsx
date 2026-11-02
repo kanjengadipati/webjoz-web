@@ -11,7 +11,9 @@ import type { HeroVariantProps } from "./types";
  * Stats: generalized from about.highlight_stat_* if available.
  */
 import { InlineText, HeroAccessory } from "../../templates/shared";
-import { HeroCta, HeroImage, HERO_HEADING_SIZE } from "./primitives";export default function HeroBentoGrid({
+import { HeroCta, HeroImage, HERO_HEADING_SIZE } from "./primitives";
+
+export default function HeroBentoGrid({
   hero: h,
   language,
   design_token,

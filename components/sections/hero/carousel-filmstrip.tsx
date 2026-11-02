@@ -2,13 +2,12 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "motion/react";
-import { ArrowRight, Plus, Trash2, Sparkles, Pause, Play } from "lucide-react";
+import { Plus, Trash2, Sparkles, Pause, Play } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
-import { HERO_HEADING_SIZE } from "./primitives";
+import { HERO_HEADING_SIZE, HeroCta } from "./primitives";
 import PhotoCreditList from "../PhotoCreditList";
 import { getHeroSlides, commitHeroSlide, addHeroSlide, removeHeroSlide, writeHeroPatch } from "./images";
-import { safeHref, isExternalHref } from "@/lib/safe-url";
 
 /**
  * HeroCarouselFilmstrip — Cinematic horizontal drifting filmstrip marquee.
@@ -196,10 +195,11 @@ export default function HeroCarouselFilmstrip({
           transition={{ duration: 0.45, delay: 0.2 }}
           className="flex flex-wrap items-center justify-center gap-3 pt-2"
         >
-          <a
-            href={safeHref(h.cta_url, "#contact")}
-            target={isExternalHref(h.cta_url) ? "_blank" : undefined}
-            rel={isExternalHref(h.cta_url) ? "noopener noreferrer" : undefined}
+          <HeroCta
+            href={h.cta_url}
+            label={h.cta_text || defaultCta}
+            fieldKey="cta_text"
+            iconSize={16}
             className="inline-flex items-center gap-2 px-6 py-3.5 text-sm sm:text-base font-bold shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
             style={{
               background: "var(--dt-primary)",
@@ -207,26 +207,19 @@ export default function HeroCarouselFilmstrip({
               borderRadius: "var(--dt-radius)",
               textDecoration: "none",
             }}
-          >
-            <InlineText
-              section="hero"
-              fieldKey="cta_text"
-              value={h.cta_text || defaultCta}
-              onUpdateField={onUpdateField}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              as="span"
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
-            />
-            <ArrowRight style={{ width: 16, height: 16 }} />
-          </a>
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
 
           {hasSecondary && (
-            <a
-              href={safeHref(h.cta_secondary_url, "#about")}
-              target={isExternalHref(h.cta_secondary_url) ? "_blank" : undefined}
-              rel={isExternalHref(h.cta_secondary_url) ? "noopener noreferrer" : undefined}
+            <HeroCta
+              href={h.cta_secondary_url}
+              label={h.cta_secondary_text ?? ""}
+              fieldKey="cta_secondary_text"
+              icon={null}
               className="inline-flex items-center gap-2 px-5 py-3 text-sm sm:text-base font-medium transition-colors"
               style={{
                 color: "var(--dt-text)",
@@ -235,19 +228,12 @@ export default function HeroCarouselFilmstrip({
                 borderRadius: "var(--dt-radius)",
                 textDecoration: "none",
               }}
-            >
-              <InlineText
-                section="hero"
-                fieldKey="cta_secondary_text"
-                value={h.cta_secondary_text ?? ""}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={isSelected}
-                as="span"
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                onEditingStateChange={onEditingStateChange}
-              />
-            </a>
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
           )}
         </motion.div>
 

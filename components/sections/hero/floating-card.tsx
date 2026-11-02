@@ -1,11 +1,10 @@
 "use client";
 import React from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowRight } from "lucide-react";
+
 import type { HeroVariantProps } from "./types";
-import PhotoCredit from "../PhotoCredit";
-import { InlineText, InlineImage } from "../../templates/shared";
-import { safeHref, isExternalHref } from "@/lib/safe-url";
+import { InlineText } from "../../templates/shared";
+import { HeroCta, HeroImage } from "./primitives";
 
 /**
  * Floating Card — foto besar, kartu teks "melayang" menimpa foto.
@@ -22,8 +21,6 @@ export default function HeroFloatingCard({
 }: HeroVariantProps) {
   const isEN = language === "en";
   const reduce = useReducedMotion();
-  const ctaHref = safeHref(h.cta_url);
-  const ext = isExternalHref(h.cta_url);
   const common = { section: "hero" as const, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit };
 
   return (
@@ -37,25 +34,16 @@ export default function HeroFloatingCard({
           className="relative h-[46vh] lg:absolute lg:inset-0 lg:h-auto"
           style={{ background: "color-mix(in srgb, var(--dt-primary) 10%, var(--dt-surface, var(--dt-bg)))" }}
         >
-          <InlineImage
+          <HeroImage
             {...common}
             fieldKey="image_url"
             src={h.image_url}
             alt={h.headline || (isEN ? "Hero image" : "Gambar hero")}
-            isBackground
-            className="h-full w-full object-cover"
-          />
-          <PhotoCredit
             credit={h.image_credit}
-              src={h.image_url}
             language={language}
-            section="hero"
-            fieldKey="image_credit.name"
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={isSelected}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            className="absolute bottom-3 right-4 z-20"
+            isBackground
+            creditPosition={{ position: "absolute", bottom: 12, right: 16, zIndex: 20 }}
+            className="h-full w-full object-cover"
           />
         </div>
 
@@ -107,19 +95,23 @@ export default function HeroFloatingCard({
             style={{ marginTop: "1rem", color: "var(--dt-text-muted)", lineHeight: 1.6 }}
           />
           {(h.cta_text || isEditorMode) && (
-            <a
-              href={ctaHref}
-              {...(ext ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+            <HeroCta
+              href={h.cta_url}
+              label={h.cta_text}
+              fieldKey="cta_text"
+              iconSize={18}
               className="inline-flex items-center gap-2 mt-6 px-6 py-3 font-semibold"
               style={{
                 background: "var(--dt-primary)",
                 color: "var(--dt-on-primary, #fff)",
                 borderRadius: "var(--dt-radius, 12px)",
               }}
-            >
-              <InlineText {...common} fieldKey="cta_text" value={h.cta_text} />
-              <ArrowRight size={18} aria-hidden />
-            </a>
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
           )}
         </motion.div>
       </div>

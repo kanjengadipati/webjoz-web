@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ArrowRight, ChevronLeft, ChevronRight, Plus, Trash2, Clock, Pause, Play, Sparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Trash2, Clock, Pause, Play, Sparkles } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
 import PhotoCredit from "../PhotoCredit";
 import { getHeroSlides, commitHeroSlide, addHeroSlide, removeHeroSlide, writeHeroPatch } from "./images";
-import { safeHref, isExternalHref } from "@/lib/safe-url";
+import { HeroCta } from "./primitives";
 
 /**
  * HeroCarouselSplit — Modern 2-column hero with stable content on the left
@@ -183,6 +183,7 @@ export default function HeroCarouselSplit({
               fontFamily: "var(--dt-heading-font)",
               fontWeight: "var(--dt-heading-weight)" as any,
               fontStyle: "var(--dt-heading-style)" as any,
+              // Ukuran heading disengaja lebih padat untuk kolom split; tidak mengikuti HERO_HEADING_SIZE.
               fontSize: "clamp(2.25rem, 4.5vw, var(--dt-hero-size, 3.75rem))",
               lineHeight: 1.12,
               color: "var(--dt-text)",
@@ -245,10 +246,11 @@ export default function HeroCarouselSplit({
           transition={{ duration: 0.45, delay: 0.2 }}
           className="flex flex-wrap items-center gap-3 pt-2"
         >
-          <a
-            href={safeHref(h.cta_url, "#contact")}
-            target={isExternalHref(h.cta_url) ? "_blank" : undefined}
-            rel={isExternalHref(h.cta_url) ? "noopener noreferrer" : undefined}
+          <HeroCta
+            href={h.cta_url}
+            label={h.cta_text || defaultCta}
+            fieldKey="cta_text"
+            iconSize={16}
             className="inline-flex items-center gap-2 px-6 py-3.5 text-sm sm:text-base font-bold shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
             style={{
               background: "var(--dt-primary)",
@@ -256,26 +258,19 @@ export default function HeroCarouselSplit({
               borderRadius: "var(--dt-radius)",
               textDecoration: "none",
             }}
-          >
-            <InlineText
-              section="hero"
-              fieldKey="cta_text"
-              value={h.cta_text || defaultCta}
-              onUpdateField={onUpdateField}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              as="span"
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
-            />
-            <ArrowRight style={{ width: 16, height: 16 }} />
-          </a>
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
 
           {hasSecondary && (
-            <a
-              href={safeHref(h.cta_secondary_url, "#about")}
-              target={isExternalHref(h.cta_secondary_url) ? "_blank" : undefined}
-              rel={isExternalHref(h.cta_secondary_url) ? "noopener noreferrer" : undefined}
+            <HeroCta
+              href={h.cta_secondary_url}
+              label={h.cta_secondary_text ?? ""}
+              fieldKey="cta_secondary_text"
+              icon={null}
               className="inline-flex items-center gap-2 px-5 py-3 text-sm sm:text-base font-medium transition-colors"
               style={{
                 color: "var(--dt-text)",
@@ -284,19 +279,12 @@ export default function HeroCarouselSplit({
                 borderRadius: "var(--dt-radius)",
                 textDecoration: "none",
               }}
-            >
-              <InlineText
-                section="hero"
-                fieldKey="cta_secondary_text"
-                value={h.cta_secondary_text ?? ""}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={isSelected}
-                as="span"
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                onEditingStateChange={onEditingStateChange}
-              />
-            </a>
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
           )}
         </motion.div>
 

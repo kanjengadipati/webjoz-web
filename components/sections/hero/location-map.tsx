@@ -1,11 +1,11 @@
 "use client";
 import React from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowRight, Clock, Mail, MapPin, Navigation, Phone } from "lucide-react";
+import { Clock, Mail, MapPin, Navigation, Phone } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import { InlineText } from "../../templates/shared";
 import InlineMapPicker from "../contact/inline-map-picker";
-import { safeHref, isExternalHref } from "@/lib/safe-url";
+import { HeroCta } from "./primitives";
 
 /**
  * Location Map — split hero with a live map driven by the contact section.
@@ -25,8 +25,6 @@ export default function HeroLocationMap({
 }: HeroVariantProps) {
   const isEN = language === "en";
   const reduce = useReducedMotion();
-  const ctaHref = safeHref(h.cta_url);
-  const ext = isExternalHref(h.cta_url);
   const defaultCta = isEN ? "Contact Us" : "Hubungi Kami";
   const common = {
     section: "hero" as const,
@@ -39,12 +37,6 @@ export default function HeroLocationMap({
   const showMap = c?.show_map !== false;
   const hasLocation = Boolean(c?.maps_url?.trim()) || Boolean(c?.address?.trim());
   const canRenderMap = Boolean(showMap && (c?.maps_url?.trim() || isEditorMode));
-  const mapsHref = c?.maps_url?.trim()
-    ? safeHref(c.maps_url, "#contact")
-    : c?.address?.trim()
-      ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.address)}`
-      : "#contact";
-  const mapsExt = isExternalHref(mapsHref);
 
   const handlePickLocation = onUpdateField
     ? (url: string, tileStyle: string) => {
@@ -148,35 +140,41 @@ export default function HeroLocationMap({
 
           <div className="mt-7 flex flex-wrap items-center gap-3">
             {(h.cta_text || isEditorMode) && (
-              <a
-                href={ctaHref}
-                {...(ext ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              <HeroCta
+                href={h.cta_url}
+                label={h.cta_text || defaultCta}
+                fieldKey="cta_text"
+                iconSize={16}
+                iconClassName="transition-transform group-hover:translate-x-1"
                 className="group inline-flex items-center gap-2 px-6 py-3.5 text-sm font-bold no-underline transition-transform hover:scale-[1.02]"
                 style={{
                   background: "var(--dt-primary)",
                   color: "var(--dt-on-primary, #FFFFFF)",
                   borderRadius: "var(--dt-radius, 12px)",
                 }}
-              >
-                <InlineText {...common} fieldKey="cta_text" value={h.cta_text || defaultCta} as="span" />
-                <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden />
-              </a>
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
             )}
 
             {hasLocation && (
-              <a
-                href={mapsHref}
-                {...(mapsExt ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              <HeroCta
+                href={c?.maps_url?.trim() || (c?.address?.trim() ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.address)}` : "#contact")}
+                label={isEN ? "Get directions" : "Rute ke lokasi"}
+                icon={<Navigation className="size-4" aria-hidden />}
                 className="inline-flex items-center gap-2 px-4 py-3 text-sm font-semibold no-underline"
                 style={{
                   color: "var(--dt-text)",
                   border: "1px solid color-mix(in srgb, var(--dt-text) 18%, transparent)",
                   borderRadius: "var(--dt-radius, 12px)",
                 }}
-              >
-                <Navigation className="size-4" aria-hidden />
-                {isEN ? "Get directions" : "Rute ke lokasi"}
-              </a>
+                onUpdateField={undefined}
+                isEditorMode={false}
+                isSelected={isSelected}
+              />
             )}
           </div>
         </div>

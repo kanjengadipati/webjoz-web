@@ -44,13 +44,13 @@ for (const m of meta.matchAll(/\{\s*value:\s*"([^"]+)"[^}]*minImages:\s*(\d+)[^}
 
 for (const entry of snapshotRaw) {
   const metaNeed = metaImageNeed[entry.name];
-  if (metaNeed !== undefined && metaNeed !== entry.imageNeed) {
-    errors.push(`imageNeed mismatch for "${entry.name}": meta.ts="${metaNeed}", snapshot="${entry.imageNeed}"`);
-  }
+  if (metaNeed === undefined) errors.push(`meta.ts: imageNeed untuk "${entry.name}" tidak terbaca (format berubah?)`);
+  else if (metaNeed !== entry.imageNeed)
+    errors.push(`imageNeed "${entry.name}": meta.ts="${metaNeed}", snapshot="${entry.imageNeed}"`);
   const metaMin = metaMinImages[entry.name];
-  if (metaMin !== undefined && metaMin !== entry.minImages) {
-    errors.push(`minImages mismatch for "${entry.name}": meta.ts=${metaMin}, snapshot=${entry.minImages}`);
-  }
+  if (metaMin === undefined) errors.push(`meta.ts: minImages untuk "${entry.name}" tidak terbaca`);
+  else if (metaMin !== entry.minImages)
+    errors.push(`minImages "${entry.name}": meta.ts=${metaMin}, snapshot=${entry.minImages}`);
 }
 
 if (errors.length) { console.error(errors.join("\n")); process.exit(1); }

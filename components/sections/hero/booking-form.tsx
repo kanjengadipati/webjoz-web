@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from "motion/react";
 import { Check, Clock, Phone, Send, Sparkles } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import { InlineText } from "../../templates/shared";
-import { safeHref, isExternalHref } from "@/lib/safe-url";
+import { HeroCta } from "./primitives";
 
 /**
  * Booking Form — split hero with an inline booking / lead form.
@@ -180,14 +180,19 @@ export default function HeroBookingForm({
           </div>
 
           {hasSecondary && (
-            <a
-              href={safeHref(h.cta_secondary_url, "#contact")}
-              {...(isExternalHref(h.cta_secondary_url) ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+            <HeroCta
+              href={h.cta_secondary_url}
+              label={h.cta_secondary_text}
+              fieldKey="cta_secondary_text"
+              icon={null}
               className="mt-6 inline-flex items-center gap-2 text-sm font-semibold underline-offset-4 hover:underline"
               style={{ color: "var(--dt-primary)" }}
-            >
-              <InlineText {...common} fieldKey="cta_secondary_text" value={h.cta_secondary_text} as="span" />
-            </a>
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
           )}
         </div>
 
@@ -339,18 +344,23 @@ export default function HeroBookingForm({
               </button>
             </form>
           ) : (
-            <a
-              href={safeHref(h.cta_url, "#contact")}
-              {...(isExternalHref(h.cta_url) ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+            <HeroCta
+              href={h.cta_url}
+              label={h.cta_text || defaultCta}
+              fieldKey="cta_text"
+              icon={null}
               className="flex w-full items-center justify-center gap-2 py-3 text-sm font-bold no-underline"
               style={{
                 background: "var(--dt-primary)",
                 color: "var(--dt-on-primary, #FFFFFF)",
                 borderRadius: "calc(var(--dt-radius, 12px) * 0.9)",
               }}
-            >
-              <InlineText {...common} fieldKey="cta_text" value={h.cta_text || defaultCta} as="span" />
-            </a>
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
           )}
         </motion.div>
       </div>

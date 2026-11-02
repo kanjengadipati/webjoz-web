@@ -70,6 +70,8 @@ export interface HeroCtaProps extends InlineEditProps, Omit<React.AnchorHTMLAttr
   icon?: React.ReactNode | null;
   /** ukuran ikon ArrowRight default. Default: 14. */
   iconSize?: number;
+  /** Class untuk ikon ArrowRight bawaan (mis. animasi hover). */
+  iconClassName?: string;
 }
 
 /**
@@ -96,6 +98,7 @@ export function HeroCta({
   style,
   icon,
   iconSize = 14,
+  iconClassName,
   onUpdateField,
   isEditorMode,
   isSelected,
@@ -106,7 +109,9 @@ export function HeroCta({
   const safe = safeHref(href, "#contact");
   const external = isExternalHref(safe);
   // icon === null artinya tidak ada ikon; icon === undefined artinya default ArrowRight
-  const iconNode = icon === null ? null : icon ?? <ArrowRight style={{ width: iconSize, height: iconSize, flexShrink: 0 }} />;
+  const iconNode = icon === null ? null : icon ?? (
+    <ArrowRight className={iconClassName} style={{ width: iconSize, height: iconSize, flexShrink: 0 }} />
+  );
 
   return (
     <a
