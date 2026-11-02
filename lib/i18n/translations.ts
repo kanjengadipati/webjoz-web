@@ -2743,6 +2743,15 @@ export interface Translations {
       heroCarouselImages: string;
       heroCarouselImagesCount: string;
       heroAddImage: string;
+      seoGscSaveSuccess: string;
+      seoGscSaveFailed: string;
+      colorMoodLocked: string;
+      colorMoodActive: string;
+      preloaderClearIcon: string;
+      unsplashRandomPhoto: string;
+      usageLabelGen: string;
+      usageLabelSection: string;
+      usageLabelDesign: string;
       panelEditor: string;
       guideBtn: string;
       openGuideTitle: string;
@@ -6204,6 +6213,15 @@ export const translations: Record<Locale, Translations> = {
         heroCarouselImages: "Gambar Carousel",
         heroCarouselImagesCount: "gambar",
         heroAddImage: "+ Tambah gambar",
+        seoGscSaveSuccess: "Kode GSC berhasil disimpan",
+        seoGscSaveFailed: "Gagal menyimpan kode GSC",
+        colorMoodLocked: "Terkunci",
+        colorMoodActive: "Aktif dari Mood",
+        preloaderClearIcon: "Hapus icon",
+        unsplashRandomPhoto: "Pilih foto acak dari Unsplash",
+        usageLabelGen: "Gen",
+        usageLabelSection: "Section",
+        usageLabelDesign: "Desain",
         panelEditor: "Panel Editor",
         guideBtn: "Panduan",
         openGuideTitle: "Buka Panduan Editor",
@@ -9717,6 +9735,15 @@ export const translations: Record<Locale, Translations> = {
         heroCarouselImages: "Carousel Images",
         heroCarouselImagesCount: "images",
         heroAddImage: "+ Add image",
+        seoGscSaveSuccess: "GSC code saved successfully",
+        seoGscSaveFailed: "Failed to save GSC code",
+        colorMoodLocked: "Locked",
+        colorMoodActive: "Active from Mood",
+        preloaderClearIcon: "Remove icon",
+        unsplashRandomPhoto: "Pick a random photo from Unsplash",
+        usageLabelGen: "Gen",
+        usageLabelSection: "Section",
+        usageLabelDesign: "Design",
         panelEditor: "Editor Panel",
         guideBtn: "Guide",
         openGuideTitle: "Open Editor Guide",

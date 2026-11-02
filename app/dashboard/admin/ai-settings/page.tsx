@@ -110,6 +110,7 @@ interface AIRuntimeConfig {
   model: string;
   base_url: string;
   api_key_hint: string;
+  account_email: string;
   is_enabled: boolean;
   daily_requests_limit: number;
   created_at: string;
@@ -201,6 +202,7 @@ function emptyForm() {
     model: "",
     base_url: "",
     api_key: "",
+    account_email: "",
     is_enabled: true,
     daily_requests_limit: 0,
   };
@@ -315,6 +317,7 @@ export default function AdminAiSettingsPage() {
         model: cfg.model,
         base_url: cfg.base_url,
         api_key: "",
+        account_email: cfg.account_email || "",
         is_enabled: cfg.is_enabled,
         daily_requests_limit: cfg.daily_requests_limit,
       });
@@ -338,6 +341,7 @@ export default function AdminAiSettingsPage() {
         model: p.model,
         base_url: p.base_url || "",
         api_key: "",
+        account_email: "",
         is_enabled: true,
         daily_requests_limit: p.daily_requests_limit || 0,
       });
@@ -361,7 +365,10 @@ export default function AdminAiSettingsPage() {
     try {
       await request("/admin/ai/settings", {
         method: "PUT",
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          account_email: formData.account_email || "",
+        }),
         headers: { "Content-Type": "application/json" },
       }, token);
       await fetchConfigs();
@@ -874,6 +881,16 @@ export default function AdminAiSettingsPage() {
                       onChange={(e) => setFormData((f) => ({ ...f, daily_requests_limit: parseInt(e.target.value) || 0 }))}
                     />
                   </div>
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formAccountEmail")}</label>
+                    <input
+                      className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50"
+                      type="email"
+                      placeholder="contoh@gmail.com"
+                      value={formData.account_email}
+                      onChange={(e) => setFormData((f) => ({ ...f, account_email: e.target.value }))}
+                    />
+                  </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <label className="flex items-center gap-2 cursor-pointer select-none text-sm text-foreground">
@@ -943,6 +960,10 @@ export default function AdminAiSettingsPage() {
                         <div>
                           <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.tableApiKey")}</p>
                           <p className="text-xs font-mono text-muted-foreground">{cfg.api_key_hint || "—"}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.tableAccountEmail")}</p>
+                          <p className="text-xs text-muted-foreground">{cfg.account_email || "—"}</p>
                         </div>
                         <div>
                           <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.tableDailyLimit")}</p>
