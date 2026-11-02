@@ -165,6 +165,8 @@ export default function HeroLocationMap({
                 href={c?.maps_url?.trim() || (c?.address?.trim() ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.address)}` : "#contact")}
                 label={isEN ? "Get directions" : "Rute ke lokasi"}
                 icon={<Navigation className="size-4" aria-hidden />}
+                iconPosition="start"
+                editable={false}
                 className="inline-flex items-center gap-2 px-4 py-3 text-sm font-semibold no-underline"
                 style={{
                   color: "var(--dt-text)",
