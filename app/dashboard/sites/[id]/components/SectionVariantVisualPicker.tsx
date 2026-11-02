@@ -1271,8 +1271,8 @@ export default function SectionVariantVisualPicker({
         <div className="flex items-center gap-1 shrink-0">
           <span className="text-[10px] font-semibold text-slate-300 group-hover:text-white transition-colors">
             {isExpanded
-              ? (t("dashboard.sitesEditor.closeGallery") || "Tutup")
-              : `${t("dashboard.sitesEditor.pickVariant") || "Pilih Varian"} (${enabledOpts.length})`}
+              ? t("dashboard.sitesEditor.closeGallery")
+              : `${t("dashboard.sitesEditor.pickVariant")} (${enabledOpts.length})`}
           </span>
           <ChevronDown
             className={`w-3.5 h-3.5 text-slate-300 group-hover:text-white transition-all duration-200 ${isExpanded ? "rotate-180 text-sky-400" : ""}`}
@@ -1295,7 +1295,7 @@ export default function SectionVariantVisualPicker({
                     : "bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-700/80 border border-slate-700/50"
                 }`}
               >
-                {t("dashboard.sitesEditor.allVariants") || "Semua"} ({enabledOpts.length})
+                {t("dashboard.sitesEditor.allVariants")} ({enabledOpts.length})
               </button>
               {groups.map((grp) => {
                 const count = enabledOpts.filter((o) => o.group === grp).length;
@@ -1376,13 +1376,13 @@ export default function SectionVariantVisualPicker({
           </div>
 
           <div className="flex items-center justify-between text-[10px] text-slate-400 px-1 pt-1 border-t border-slate-800">
-            <span>{t("dashboard.sitesEditor.variantPreviewHint") || "Klik varian untuk pratinjau langsung di kanvas."}</span>
+            <span>{t("dashboard.sitesEditor.variantPreviewHint")}</span>
             <button
               type="button"
               onClick={() => setIsExpanded(false)}
               className="text-[10px] text-sky-400 hover:text-sky-300 hover:underline font-bold px-1.5 py-0.5 rounded cursor-pointer"
             >
-              {t("dashboard.sitesEditor.done") || "Selesai"}
+              {t("dashboard.sitesEditor.done")}
             </button>
           </div>
         </div>

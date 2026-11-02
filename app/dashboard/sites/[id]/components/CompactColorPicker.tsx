@@ -37,10 +37,10 @@ export default function CompactColorPicker({ palette, onChange }: Props) {
     <div className="space-y-2.5">
       <div className="flex items-center justify-between">
         <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-          {t("dashboard.sitesEditor.manualFineTune") || "Fine-tune Manual"}
+          {t("dashboard.sitesEditor.manualFineTune")}
         </label>
         <span className="text-[10px] text-sidebar-subtle-foreground">
-          5 {t("dashboard.sitesEditor.colorPalette") || "Warna"}
+          5 {t("dashboard.sitesEditor.colorPalette")}
         </span>
       </div>
 

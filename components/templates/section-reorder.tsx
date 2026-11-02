@@ -69,7 +69,7 @@ export function SectionReorderProvider({
               {activeKey ? (
                 <div className="pointer-events-none inline-flex items-center gap-1.5 rounded-full border border-sky-400/70 bg-slate-950/95 px-3 py-1.5 text-[11px] font-bold text-sky-200 shadow-xl">
                   <GripVertical className="h-3 w-3" />
-                  {(t("dashboard.sitesEditor.moveSection") || "Pindahkan")}: {getLabel(activeKey)}
+                  {t("dashboard.sitesEditor.moveSection")}: {getLabel(activeKey)}
                 </div>
               ) : null}
             </DragOverlay>,
@@ -110,8 +110,8 @@ export function SectionDragControls({ section }: { section: string }) {
         {...attributes}
         {...listeners}
         onClick={stop}
-        aria-label={t("dashboard.sitesEditor.dragSection") || "Seret untuk mengurutkan"}
-        title={t("dashboard.sitesEditor.dragSection") || "Seret untuk mengurutkan"}
+        aria-label={t("dashboard.sitesEditor.dragSection")}
+        title={t("dashboard.sitesEditor.dragSection")}
         className={`${btn} cursor-grab active:cursor-grabbing touch-none pl-2`}
       >
         <GripVertical className="h-3 w-3" />
@@ -120,7 +120,7 @@ export function SectionDragControls({ section }: { section: string }) {
         type="button"
         disabled={idx <= 0}
         onClick={(e) => { stop(e); ctx.move(section, ctx.order[idx - 1]); }}
-        aria-label={t("dashboard.sitesEditor.moveUp") || "Naikkan section"}
+        aria-label={t("dashboard.sitesEditor.moveUp")}
         className={btn}
       >
         <ChevronUp className="h-3 w-3" />
@@ -129,7 +129,7 @@ export function SectionDragControls({ section }: { section: string }) {
         type="button"
         disabled={idx >= ctx.order.length - 1}
         onClick={(e) => { stop(e); ctx.move(section, ctx.order[idx + 1]); }}
-        aria-label={t("dashboard.sitesEditor.moveDown") || "Turunkan section"}
+        aria-label={t("dashboard.sitesEditor.moveDown")}
         className={btn}
       >
         <ChevronDown className="h-3 w-3" />

@@ -378,7 +378,7 @@ export function MenuCatalogForm({
               type="text"
               value={data?.title ?? ""}
               onChange={(e) => updateField(sectionKey, "title", e.target.value)}
-              placeholder={`cth. ${sectionTitle}`}
+              placeholder={t("dashboard.sitesKatalog.phSectionTitle", undefined, { sectionTitle })}
               className={MCF_INPUT_BASE}
             />
           </div>
@@ -395,7 +395,7 @@ export function MenuCatalogForm({
                 type="text"
                 value={data?.eyebrow ?? ""}
                 onChange={(e) => updateField(sectionKey, "eyebrow", e.target.value)}
-                placeholder={`cth. Pilihan ${sectionTitle}`}
+                placeholder={t("dashboard.sitesKatalog.phSectionEyebrow", undefined, { sectionTitle })}
                 className={MCF_INPUT_BASE}
               />
             </div>
@@ -412,7 +412,7 @@ export function MenuCatalogForm({
                   type="text"
                   value={data?.subtitle ?? ""}
                   onChange={(e) => updateField(sectionKey, "subtitle", e.target.value)}
-                  placeholder="cth. Nikmati berbagai pilihan menu terbaik kami"
+                  placeholder={t("dashboard.sitesKatalog.phSectionSubtitle")}
                   className={MCF_INPUT_BASE}
                 />
               </div>
@@ -431,7 +431,7 @@ export function MenuCatalogForm({
                 type="text"
                 value={data?.subtitle ?? ""}
                 onChange={(e) => updateField(sectionKey, "subtitle", e.target.value)}
-                placeholder="cth. Nikmati berbagai pilihan menu terbaik kami"
+                placeholder={t("dashboard.sitesKatalog.phSectionSubtitle")}
                 className={MCF_INPUT_BASE}
               />
             </div>
@@ -585,7 +585,7 @@ function SortableCategoryRow({
         <div className={`space-y-4 ${isPageMode ? "p-5" : "p-3.5"}`}>
           {items.length === 0 && (
             <div className="rounded-2xl border border-dashed border-border/80 bg-muted/20 p-5 text-center text-xs text-muted-foreground">
-              {t("dashboard.sitesKatalog.emptyItemsDesc", `Belum ada ${itemLabel}. Klik tombol di bawah untuk menambah.`)}
+              {t("dashboard.sitesKatalog.emptyItemsDesc", undefined, { itemLabel })}
             </div>
           )}
 
@@ -626,7 +626,7 @@ function SortableCategoryRow({
             onClick={() => addItem(catIdx)}
             className="w-full text-xs font-bold py-3 border border-dashed border-primary/30 rounded-2xl text-primary bg-primary/5 hover:bg-primary/10 hover:border-primary/50 flex items-center justify-center gap-1.5 cursor-pointer transition-all shadow-2xs"
           >
-            <Plus className="w-4 h-4" /> {t("dashboard.sitesKatalog.addItem", `Tambah ${itemLabel}`)}
+            <Plus className="w-4 h-4" /> {t("dashboard.sitesKatalog.addItem", undefined, { itemLabel })}
           </button>
         </div>
       )}
@@ -753,13 +753,13 @@ function SortableItemRow({
           <div className={isPageMode && hasPrice ? "grid gap-3 sm:grid-cols-[2fr_1.4fr_1.1fr]" : "space-y-3"}>
             <div className="space-y-1">
               <label className={MCF_INPUT_LABEL}>
-                {t("dashboard.sitesKatalog.itemName", `Nama ${itemLabel}`)}
+                {t("dashboard.sitesKatalog.itemName", undefined, { itemLabel })}
               </label>
               <input
                 type="text"
                 value={item.name ?? ""}
                 onChange={(e) => updateItem(catIdx, itemIdx, "name", e.target.value)}
-                placeholder={`cth. ${itemLabel === "menu" ? "Nasi Goreng Spesial" : "Paket Layanan Pro"}`}
+                placeholder={sectionKey === "menu" ? t("dashboard.sitesKatalog.itemNameExampleMenu") : t("dashboard.sitesKatalog.itemNameExampleService")}
                 className={MCF_INPUT_BASE}
               />
             </div>
@@ -1137,7 +1137,7 @@ function SortableItemRow({
               value={item.description ?? ""}
               rows={3}
               onChange={(e) => updateItem(catIdx, itemIdx, "description", e.target.value)}
-              placeholder={t("dashboard.sitesKatalog.descriptionPlaceholder", `Jelaskan keunggulan dan spesifikasi ${itemLabel} ini...`)}
+              placeholder={t("dashboard.sitesKatalog.descriptionPlaceholder", undefined, { itemLabel })}
               className="w-full px-3.5 py-2.5 border border-border/80 focus:border-primary/60 rounded-b-xl text-[13px] outline-none focus:ring-2 focus:ring-primary/20 bg-background text-foreground placeholder:text-muted-foreground/60 transition-all resize-y shadow-2xs"
             />
           </div>

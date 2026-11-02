@@ -716,7 +716,7 @@ export const PreviewSectionWrapper: React.FC<{
                     }`}
                   >
                     <span className="max-w-[85px] sm:max-w-[150px] truncate leading-none">
-                      {activeOpt?.label || t("dashboard.sitesEditor.variantLabel") || "Varian"}
+                      {activeOpt?.label || t("dashboard.sitesEditor.variantLabel")}
                     </span>
                     <ChevronDown className={`w-2.5 h-2.5 shrink-0 transition-transform duration-200 ${isGalleryOpen ? "rotate-180 text-sky-400" : "text-slate-400"}`} />
                   </button>
@@ -742,7 +742,7 @@ export const PreviewSectionWrapper: React.FC<{
                   >
                     <Pencil className="w-2.5 h-2.5 shrink-0" />
                     <span className="hidden sm:inline leading-none">
-                      {t("dashboard.sitesEditor.editShortcut") || "Edit"}
+                      {t("dashboard.sitesEditor.editShortcut")}
                     </span>
                   </button>
                 </>
@@ -770,11 +770,11 @@ export const PreviewSectionWrapper: React.FC<{
                           <div className="flex items-center gap-1.5">
                             <LayoutGrid className="w-3 h-3 text-sky-400" />
                             <span className="text-[10px] font-bold text-slate-100 uppercase tracking-wider">
-                              {t("dashboard.sitesEditor.variantLabel") || "Variasi"} {label}
+                              {t("dashboard.sitesEditor.variantLabel")} {label}
                             </span>
                           </div>
                           <span className="text-[9px] text-sky-400 font-bold">
-                            {variants.length} {t("dashboard.sitesEditor.optionsCount") || "opsi"}
+                            {variants.length} {t("dashboard.sitesEditor.optionsCount")}
                           </span>
                         </div>
 
@@ -790,7 +790,7 @@ export const PreviewSectionWrapper: React.FC<{
                                   : "bg-white/10 text-slate-300 hover:text-white hover:bg-white/20 font-medium"
                               }`}
                             >
-                              {t("dashboard.sitesEditor.allVariants") || "Semua"}
+                              {t("dashboard.sitesEditor.allVariants")}
                             </button>
                             {groups.map((grp) => (
                               <button
@@ -849,14 +849,14 @@ export const PreviewSectionWrapper: React.FC<{
                         {/* Footer hint */}
                         <div className="flex items-center justify-between pt-1.5 border-t border-white/10">
                           <span className="text-[9px] text-slate-400">
-                            {t("dashboard.sitesEditor.variantPreviewHint") || "Klik untuk pratinjau langsung."}
+                            {t("dashboard.sitesEditor.variantPreviewHint")}
                           </span>
                           <button
                             type="button"
                             onClick={() => setIsGalleryOpen(false)}
                             className="text-[10px] text-sky-400 hover:text-sky-300 hover:underline font-bold px-1.5 py-0.5 rounded cursor-pointer"
                           >
-                            {t("dashboard.sitesEditor.done") || "Selesai"}
+                            {t("dashboard.sitesEditor.done")}
                           </button>
                         </div>
                       </div>
