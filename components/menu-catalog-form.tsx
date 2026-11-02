@@ -104,6 +104,7 @@ export function AiPromptModal({
   label, imageUrl, suggestions = [], onConfirm, onCancel,
 }: AiPromptModalProps) {
   const [input, setInput] = useState("");
+  const { t } = useI18n();
   return (
     <div
       className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
@@ -120,10 +121,10 @@ export function AiPromptModal({
           </div>
           <div>
             <h3 className="text-sm sm:text-base font-bold text-foreground leading-tight">
-              Instruksi AI — {label}
+              {t("dashboard.sitesEditor.fieldAiTitle", "AI Instructions — {label}", { label })}
             </h3>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Tambahkan instruksi khusus atau langsung klik Generate.
+              {t("dashboard.sitesEditor.fieldAiDesc")}
             </p>
           </div>
         </div>
@@ -136,7 +137,7 @@ export function AiPromptModal({
             if (e.key === "Enter")  { onConfirm(input.trim()); }
             if (e.key === "Escape") { onCancel(); }
           }}
-          placeholder='cth. "buat lebih kasual dan ramah"'
+          placeholder={t("dashboard.sitesEditor.fieldAiPlaceholder")}
           className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-xl text-[13px] outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 placeholder:text-muted-foreground/60 transition-all shadow-2xs"
         />
 
@@ -144,11 +145,11 @@ export function AiPromptModal({
         {imageUrl && (
           <button
             type="button"
-            onClick={() => setInput("Tulis deskripsi berdasarkan foto produk ini")}
+            onClick={() => setInput(t("dashboard.sitesEditor.fieldAiImagePrompt"))}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-xl border border-primary/30 bg-primary/10 text-xs font-semibold text-primary hover:bg-primary/20 transition-colors cursor-pointer text-left"
           >
             <span className="text-base leading-none">📸</span>
-            <span>Tulis deskripsi dari foto produk</span>
+            <span>{t("dashboard.sitesEditor.fieldAiImageChip")}</span>
             <span className="ml-auto shrink-0 w-10 h-6 rounded overflow-hidden border border-border">
               <img src={imageUrl} alt="" className="w-full h-full object-cover" />
             </span>
@@ -174,12 +175,12 @@ export function AiPromptModal({
           <button type="button" onClick={onCancel}
             className="flex-1 h-10 rounded-xl border border-border text-xs font-semibold text-muted-foreground hover:bg-muted hover:text-foreground transition-all cursor-pointer"
           >
-            Batal
+            {t("dashboard.sitesKatalog.cancel")}
           </button>
           <button type="button" onClick={() => onConfirm(input.trim())}
             className="flex-1 h-10 rounded-xl bg-primary text-primary-foreground text-xs font-bold hover:brightness-110 transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
           >
-            <SparkleGenAI className="h-4 w-4" /> Generate
+            <SparkleGenAI className="h-4 w-4" /> {t("dashboard.sitesKatalog.generate")}
           </button>
         </div>
       </div>
@@ -958,7 +959,7 @@ function SortableItemRow({
           {showAdvanced && sectionKey === "menu" && (
             <div className="space-y-1.5">
               <label className={MCF_INPUT_LABEL}>
-                Tags Menu <span className="font-normal normal-case text-muted-foreground/60">(misal: Pedas, Vegetarian, Signature)</span>
+                {t("dashboard.sitesKatalog.labelTagsMenu", "Tags Menu")} <span className="font-normal normal-case text-muted-foreground/60">({t("dashboard.sitesKatalog.tagsMenuHint", "misal: Pedas, Vegetarian, Signature")})</span>
               </label>
               <div className="flex flex-wrap gap-1.5 min-h-[38px] p-2 rounded-xl bg-muted/20 border border-border/60">
                 {tags.map((tag: string, ti: number) => (

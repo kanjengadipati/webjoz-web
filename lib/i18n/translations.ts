@@ -2114,6 +2114,24 @@ export interface Translations {
       advancedSettings: string;
       quickView: string;
       previewItem: string;
+      categoryNamePlaceholder: string;
+      emptyItemsDesc: string;
+      addItem: string;
+      itemName: string;
+      display: string;
+      promoPrice: string;
+      clearPromo: string;
+      promoPriceDisplay: string;
+      promoPriceDisplayPlaceholder: string;
+      promoPriceAmount: string;
+      promoPriceAmountPlaceholder: string;
+      discountLabel: string;
+      discountLabelPlaceholder: string;
+      capacityHelp: string;
+      description: string;
+      descriptionPlaceholder: string;
+      labelTagsMenu: string;
+      tagsMenuHint: string;
     };
     sitesBlog: {
       title: string;
@@ -2721,6 +2739,21 @@ export interface Translations {
       openGuideTitle: string;
       heroCarouselMainSlide: string;
       heroCarouselPrimary: string;
+      heroImageLabel: string;
+      heroSlidesHint: string;
+      heroPhotoBy: string;
+      heroSlotSet: string;
+      heroSlotEmpty: string;
+      heroVideoUrlLabel: string;
+      heroVideoUrlHint: string;
+      heroCtaSecondaryText: string;
+      heroCtaSecondaryUrl: string;
+      heroCtaSecondaryHint: string;
+      heroCtaSecondaryUrlHint: string;
+      preloaderBrandAuto: string;
+      preloaderBrandFallback: string;
+      preloaderTaglineAuto: string;
+      preloaderTaglineFallback: string;
       heroCarouselNoImage: string;
       heroCarouselShowSlide: string;
       heroCarouselHideSlide: string;
@@ -2817,9 +2850,13 @@ export interface Translations {
       worksSubtitle: string;
       worksLayout: string;
       worksLayoutGrid: string;
+      worksLayoutGridDesc: string;
       worksLayoutMasonry: string;
+      worksLayoutMasonryDesc: string;
       worksLayoutFeaturedGrid: string;
+      worksLayoutFeaturedGridDesc: string;
       worksLayoutShowcase: string;
+      worksLayoutShowcaseDesc: string;
       worksItems: string;
       worksItem: string;
       worksItemTitle: string;
@@ -2903,6 +2940,10 @@ export interface Translations {
       // Preloader section
       preloaderSectionBanner: string;
       preloaderSectionBannerDesc: string;
+      preloaderOrUploadLogo: string;
+      preloaderLogoHint: string;
+      preloaderDurationLabel: string;
+      ctaImageSplitVariant: string;
       preloaderTestBtn: string;
       preloaderTestDesc: string;
       preloaderTestTitle: string;
@@ -5525,6 +5566,24 @@ export const translations: Record<Locale, Translations> = {
         advancedSettings: "Pengaturan lanjutan",
         quickView: "Lihat Detail",
         previewItem: "Pratinjau",
+        categoryNamePlaceholder: "Nama kategori",
+        emptyItemsDesc: "Belum ada {itemLabel}. Klik tombol di bawah untuk menambah.",
+        addItem: "Tambah {itemLabel}",
+        itemName: "Nama {itemLabel}",
+        display: "tampilan",
+        promoPrice: "Harga Promo",
+        clearPromo: "Hapus Promo",
+        promoPriceDisplay: "Harga Promo Tampil",
+        promoPriceDisplayPlaceholder: "cth. Rp 19.000",
+        promoPriceAmount: "Nominal Promo",
+        promoPriceAmountPlaceholder: "cth. 19000",
+        discountLabel: "Label Diskon",
+        discountLabelPlaceholder: "cth. Diskon 20%",
+        capacityHelp: "opsional — jml tamu / unit",
+        description: "Deskripsi",
+        descriptionPlaceholder: "Jelaskan keunggulan dan spesifikasi {itemLabel} ini...",
+        labelTagsMenu: "Tags Menu",
+        tagsMenuHint: "misal: Pedas, Vegetarian, Signature",
       },
       sitesBlog: {
         title: "Blog Postingan",
@@ -6132,6 +6191,21 @@ export const translations: Record<Locale, Translations> = {
         openGuideTitle: "Buka Panduan Editor",
         heroCarouselMainSlide: "Gambar Utama (slide 1)",
         heroCarouselPrimary: "utama",
+        heroImageLabel: "Gambar Hero",
+        heroSlidesHint: "Slide #1 adalah gambar utama. Slot kosong tidak tampil di situs.",
+        heroPhotoBy: "Foto oleh {name}",
+        heroSlotSet: "Ada",
+        heroSlotEmpty: "Kosong",
+        heroVideoUrlLabel: "URL Video Hero",
+        heroVideoUrlHint: "URL langsung video (.mp4 / .webm) untuk varian \u201CVideo Latar\u201D. Jika kosong atau tidak valid, hero memakai gambar di atas sebagai poster.",
+        heroCtaSecondaryText: "Teks Tombol CTA Kedua",
+        heroCtaSecondaryUrl: "URL Tombol CTA Kedua",
+        heroCtaSecondaryHint: "Tombol kedua di samping tombol utama (dipakai oleh beberapa template).",
+        heroCtaSecondaryUrlHint: "Link tujuan tombol CTA kedua (section anchor, URL, atau WhatsApp).",
+        preloaderBrandAuto: "Otomatis: \"{value}\"",
+        preloaderBrandFallback: "Nama Brand",
+        preloaderTaglineAuto: "Otomatis: \"{value}\"",
+        preloaderTaglineFallback: "Tagline Bisnis",
         heroCarouselNoImage: "Belum ada",
         heroCarouselShowSlide: "Tampilkan slide",
         heroCarouselHideSlide: "Sembunyikan slide",
@@ -6228,9 +6302,13 @@ export const translations: Record<Locale, Translations> = {
         worksSubtitle: "Deskripsi Ringkas",
         worksLayout: "Tata Letak",
         worksLayoutGrid: "Grid",
+        worksLayoutGridDesc: "Kotak seragam",
         worksLayoutMasonry: "Masonry",
+        worksLayoutMasonryDesc: "Tinggi bervariasi",
         worksLayoutFeaturedGrid: "Grid Unggulan",
+        worksLayoutFeaturedGridDesc: "Proyek pertama besar",
         worksLayoutShowcase: "Showcase",
+        worksLayoutShowcaseDesc: "Hero horizontal + grid",
         worksItems: "Proyek",
         worksItem: "Proyek",
         worksItemTitle: "Judul Proyek",
@@ -6314,6 +6392,10 @@ export const translations: Record<Locale, Translations> = {
         // Preloader
         preloaderSectionBanner: "Pengaturan Preloader Halaman",
         preloaderSectionBannerDesc: "Animasi loading singkat saat pengunjung pertama kali membuka website. Secara otomatis menggunakan nama & logo bisnis Anda, namun dapat Anda kustomisasi di bawah.",
+        preloaderOrUploadLogo: "Atau Upload Logo Gambar Khusus:",
+        preloaderLogoHint: "Jika kosong, otomatis memakai logo header atau monogram brand.",
+        preloaderDurationLabel: "Durasi Tampil",
+        ctaImageSplitVariant: "untuk variant split-image",
         preloaderTestBtn: "Uji Animasi",
         preloaderTestDesc: "Lihat tampilan animasi persis seperti pengunjung",
         preloaderTestTitle: "Uji Preview Animasi",
@@ -8988,6 +9070,24 @@ export const translations: Record<Locale, Translations> = {
         advancedSettings: "Advanced settings",
         quickView: "Quick View",
         previewItem: "Preview",
+        categoryNamePlaceholder: "Category name",
+        emptyItemsDesc: "No {itemLabel} yet. Click the button below to add one.",
+        addItem: "Add {itemLabel}",
+        itemName: "{itemLabel} name",
+        display: "display",
+        promoPrice: "Promo Price",
+        clearPromo: "Remove Promo",
+        promoPriceDisplay: "Promo Price Label",
+        promoPriceDisplayPlaceholder: "e.g. $1.90",
+        promoPriceAmount: "Promo Amount",
+        promoPriceAmountPlaceholder: "e.g. 19000",
+        discountLabel: "Discount Label",
+        discountLabelPlaceholder: "e.g. 20% off",
+        capacityHelp: "optional — guests / units",
+        description: "Description",
+        descriptionPlaceholder: "Describe the strengths and specifications of this {itemLabel}...",
+        labelTagsMenu: "Menu Tags",
+        tagsMenuHint: "e.g. Spicy, Vegetarian, Signature",
       },
       sitesBlog: {
         title: "Blog Posts",
@@ -9595,6 +9695,21 @@ export const translations: Record<Locale, Translations> = {
         openGuideTitle: "Open Editor Guide",
         heroCarouselMainSlide: "Main Image (slide 1)",
         heroCarouselPrimary: "primary",
+        heroImageLabel: "Hero Image",
+        heroSlidesHint: "Slide #1 is the primary image. Empty slots are not shown on the site.",
+        heroPhotoBy: "Photo by {name}",
+        heroSlotSet: "Set",
+        heroSlotEmpty: "Empty",
+        heroVideoUrlLabel: "Hero Video URL",
+        heroVideoUrlHint: "Direct video URL (.mp4 / .webm) for the \u201CVideo Background\u201D variant. If empty or invalid, the hero falls back to the image above as poster.",
+        heroCtaSecondaryText: "Secondary CTA Button Text",
+        heroCtaSecondaryUrl: "Secondary CTA Button URL",
+        heroCtaSecondaryHint: "Second button next to the primary one (used by some templates).",
+        heroCtaSecondaryUrlHint: "Destination for the secondary CTA (section anchor, URL, or WhatsApp).",
+        preloaderBrandAuto: "Auto: \"{value}\"",
+        preloaderBrandFallback: "Brand Name",
+        preloaderTaglineAuto: "Auto: \"{value}\"",
+        preloaderTaglineFallback: "Business Tagline",
         heroCarouselNoImage: "No image",
         heroCarouselShowSlide: "Show slide",
         heroCarouselHideSlide: "Hide slide",
@@ -9691,9 +9806,13 @@ export const translations: Record<Locale, Translations> = {
         worksSubtitle: "Brief Description",
         worksLayout: "Layout",
         worksLayoutGrid: "Grid",
+        worksLayoutGridDesc: "Uniform boxes",
         worksLayoutMasonry: "Masonry",
+        worksLayoutMasonryDesc: "Variable height",
         worksLayoutFeaturedGrid: "Featured Grid",
+        worksLayoutFeaturedGridDesc: "First project larger",
         worksLayoutShowcase: "Showcase",
+        worksLayoutShowcaseDesc: "Horizontal hero + grid",
         worksItems: "Projects",
         worksItem: "Project",
         worksItemTitle: "Project Title",
@@ -9777,6 +9896,10 @@ export const translations: Record<Locale, Translations> = {
         // Preloader
         preloaderSectionBanner: "Page Preloader Settings",
         preloaderSectionBannerDesc: "Splash animation that appears briefly when visitors open the site. Automatically uses your business name & logo, but can be customized below.",
+        preloaderOrUploadLogo: "Or Upload Specific Preloader Logo:",
+        preloaderLogoHint: "If empty, uses header logo or monogram icon.",
+        preloaderDurationLabel: "Display Duration",
+        ctaImageSplitVariant: "for split-image variant",
         preloaderTestBtn: "Preview",
         preloaderTestDesc: "See how it looks when visitors load your site",
         preloaderTestTitle: "Test Loading Animation",

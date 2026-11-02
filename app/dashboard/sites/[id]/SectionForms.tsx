@@ -1127,7 +1127,7 @@ export default function SectionForms({
               <span className="flex items-center gap-1">
                 {heroStyle && HERO_IMAGES_ARRAY_VARIANTS.includes(heroStyle)
                   ? (t("dashboard.sitesEditor.heroCarouselMainSlide"))
-                  : (locale === "en" ? "Hero Image" : "Gambar Hero")} {needsAttention("hero.image_url") && <span className="text-amber-300">⚠️</span>}
+                  : t("dashboard.sitesEditor.heroImageLabel")} {needsAttention("hero.image_url") && <span className="text-amber-300">⚠️</span>}
               </span>
               <AiImageButton businessType={bType} onSelect={(url) => {
                 const p = setPrimaryHeroImage(content.hero ?? {}, url);
@@ -1196,9 +1196,7 @@ export default function SectionForms({
               {heroImagesOpen ? (
                 <>
                   <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">
-                    {locale === "en"
-                      ? "Slide #1 is the primary image. Empty slots are not shown on the site."
-                      : "Slide #1 adalah gambar utama. Slot kosong tidak tampil di situs."}
+                    {t("dashboard.sitesEditor.heroSlidesHint")}
                   </p>
                   <DndContext sensors={heroSensors} collisionDetection={closestCenter} onDragEnd={handleHeroSlideDragEnd}>
                     <SortableContext items={rows.map((_, i) => heroSlideId(i))} strategy={verticalListSortingStrategy}>
@@ -1209,10 +1207,10 @@ export default function SectionForms({
                           const hasImage = !!url;
                           const creditName = Array.isArray(hero.image_credits) ? (hero.image_credits[idx] as any)?.name : null;
                           const rowLabel = idx === 0
-                            ? (locale === "en" ? `#1 · primary` : `#1 · utama`)
+                            ? `#1 · ${t("dashboard.sitesEditor.heroCarouselPrimary")}`
                             : `#${idx + 1}`;
                           const rowSub = creditName
-                            ? (locale === "en" ? `Photo by ${creditName}` : `Foto oleh ${creditName}`)
+                            ? t("dashboard.sitesEditor.heroPhotoBy", undefined, { name: creditName })
                             : (hasImage ? "" : (t("dashboard.sitesEditor.heroCarouselNoImage")));
                           return (
                             <HeroSlideRow key={heroSlideId(idx)} id={heroSlideId(idx)}>
@@ -1250,8 +1248,8 @@ export default function SectionForms({
                                       : "bg-amber-500/10 text-amber-500 border border-amber-500/20"
                                   }`}>
                                     {hasImage
-                                      ? <><Check className="h-2.5 w-2.5" />{locale === "en" ? "Set" : "Ada"}</>
-                                      : <><X className="h-2.5 w-2.5" />{locale === "en" ? "Empty" : "Kosong"}</>
+                                      ? <><Check className="h-2.5 w-2.5" />{t("dashboard.sitesEditor.heroSlotSet")}</>
+                                      : <><X className="h-2.5 w-2.5" />{t("dashboard.sitesEditor.heroSlotEmpty")}</>
                                     }
                                   </span>
                                   {/* Eye toggle */}
@@ -1366,7 +1364,7 @@ export default function SectionForms({
                     className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-border px-3 py-2.5 text-[11px] font-semibold text-sidebar-muted-foreground hover:bg-sidebar-muted disabled:opacity-40 transition-colors"
                   >
                     <Plus className="h-3.5 w-3.5" />
-                    {"+ " + t("dashboard.sitesEditor.heroAddImage").replace("+ ", "")}
+                    {t("dashboard.sitesEditor.heroAddImage")}
                   </button>
                 </>
               ) : null}
@@ -1377,7 +1375,7 @@ export default function SectionForms({
           {heroIsVideo && (
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>{locale === "en" ? "Hero Video URL" : "URL Video Hero"} <span className="text-sidebar-subtle-foreground font-normal normal-case">({locale === "en" ? "optional" : "opsional"})</span></span>
+              <span>{t("dashboard.sitesEditor.heroVideoUrlLabel")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></span>
               {renderFieldActions("hero", "video_url")}
             </label>
             <input
@@ -1389,9 +1387,7 @@ export default function SectionForms({
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
             <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">
-              {locale === "en"
-                ? "Direct video URL (.mp4 / .webm) for the \u201CVideo Background\u201D variant. If empty or invalid, the hero falls back to the image above as poster."
-                : "URL langsung video (.mp4 / .webm) untuk varian \u201CVideo Latar\u201D. Jika kosong atau tidak valid, hero memakai gambar di atas sebagai poster."}
+              {t("dashboard.sitesEditor.heroVideoUrlHint")}
             </p>
           </div>
           )}
@@ -1494,7 +1490,7 @@ export default function SectionForms({
           {showIfVariant(HERO_SECONDARY_VARIANTS) && (
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>{locale === "en" ? "Secondary CTA Button Text" : "Teks Tombol CTA Kedua"} <span className="text-sidebar-subtle-foreground font-normal normal-case">({locale === "en" ? "optional" : "opsional"})</span></span>
+              <span>{t("dashboard.sitesEditor.heroCtaSecondaryText")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></span>
               {renderFieldActions("hero", "cta_secondary_text")}
             </label>
             <input
@@ -1505,14 +1501,14 @@ export default function SectionForms({
               placeholder={t("dashboard.sitesEditor.phLearnMore")}
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
-            <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Tombol kedua di samping tombol utama (dipakai oleh beberapa template).</p>
+            <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">{t("dashboard.sitesEditor.heroCtaSecondaryHint")}</p>
           </div>
           )}
           {/* Secondary CTA URL */}
           {showIfVariant(HERO_SECONDARY_VARIANTS) && (
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>{locale === "en" ? "Secondary CTA Button URL" : "URL Tombol CTA Kedua"} <span className="text-sidebar-subtle-foreground font-normal normal-case">({locale === "en" ? "optional" : "opsional"})</span></span>
+              <span>{t("dashboard.sitesEditor.heroCtaSecondaryUrl")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></span>
               {renderFieldActions("hero", "cta_secondary_url")}
             </label>
             <input
@@ -1523,14 +1519,14 @@ export default function SectionForms({
               placeholder={t("dashboard.sitesEditor.phSecondaryCta")}
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
-            <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Link tujuan tombol CTA kedua (section anchor, URL, atau WhatsApp).</p>
+            <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">{t("dashboard.sitesEditor.heroCtaSecondaryUrlHint")}</p>
           </div>
           )}
           {/* Badge text (opsional, dipakai oleh beberapa varian) */}
           {showIfVariant(HERO_BADGE_VARIANTS) && (
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>{locale === "en" ? "CTA Badge Text" : "Teks Badge Bawah CTA"} <span className="text-sidebar-subtle-foreground font-normal normal-case">({locale === "en" ? "optional" : "opsional"})</span></span>
+              <span>{t("dashboard.sitesEditor.heroBadgeText")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></span>
               {renderFieldActions("hero", "badge_text")}
             </label>
             <input
@@ -1548,7 +1544,7 @@ export default function SectionForms({
           {showIfVariant(HERO_OPENING_HOURS_VARIANTS) && (
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>{locale === "en" ? "Opening Hours" : "Jam Buka"} <span className="text-sidebar-subtle-foreground font-normal normal-case">({locale === "en" ? "optional" : "opsional"})</span></span>
+              <span>{t("dashboard.sitesEditor.heroOpeningHours")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></span>
               {renderFieldActions("hero", "opening_hours")}
             </label>
             <input
@@ -2075,7 +2071,7 @@ export default function SectionForms({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.ctaImage")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}, {locale === "en" ? "for split-image variant" : "untuk variant split-image"}</span></label>
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.ctaImage")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}, {t("dashboard.sitesEditor.ctaImageSplitVariant")}</span></label>
             <FileUpload label="" value={content.cta?.image_url || ""} onChange={(val) => updateField("cta", "image_url", val)} placeholder="https://..." maxWidth={800} maxHeight={800} quality={0.85} />
           </div>
           <div className="space-y-1">
@@ -3301,10 +3297,10 @@ export default function SectionForms({
             <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.worksLayout")}</label>
             <div className="grid grid-cols-2 gap-2">
               {([
-                { value: "grid", label: t("dashboard.sitesEditor.worksLayoutGrid"), desc: locale === "en" ? "Uniform boxes" : "Kotak seragam" },
-                { value: "masonry", label: t("dashboard.sitesEditor.worksLayoutMasonry"), desc: locale === "en" ? "Variable height" : "Tinggi bervariasi" },
-                { value: "featured-grid", label: t("dashboard.sitesEditor.worksLayoutFeaturedGrid"), desc: locale === "en" ? "First project larger" : "Proyek pertama besar" },
-                { value: "showcase-featured", label: t("dashboard.sitesEditor.worksLayoutShowcase"), desc: locale === "en" ? "Horizontal hero + grid" : "Hero horizontal + grid" },
+                { value: "grid", label: t("dashboard.sitesEditor.worksLayoutGrid"), desc: t("dashboard.sitesEditor.worksLayoutGridDesc") },
+                { value: "masonry", label: t("dashboard.sitesEditor.worksLayoutMasonry"), desc: t("dashboard.sitesEditor.worksLayoutMasonryDesc") },
+                { value: "featured-grid", label: t("dashboard.sitesEditor.worksLayoutFeaturedGrid"), desc: t("dashboard.sitesEditor.worksLayoutFeaturedGridDesc") },
+                { value: "showcase-featured", label: t("dashboard.sitesEditor.worksLayoutShowcase"), desc: t("dashboard.sitesEditor.worksLayoutShowcaseDesc") },
               ] as const).map((opt) => (
                 <button key={opt.value} type="button" onClick={() => updateField("works", "layout", opt.value)} className={`p-2 rounded-lg border text-center transition-all cursor-pointer ${ (content.works?.layout || "grid") === opt.value ? "border-primary bg-primary/10 text-primary" : "border-border text-sidebar-muted-foreground hover:border-border" }`}>
                   <div className="text-[11px] font-semibold">{opt.label}</div>
@@ -3983,7 +3979,7 @@ export default function SectionForms({
             <div className="flex items-center gap-2">
               <Loader2 className="w-4 h-4 animate-spin text-primary" />
               <p className="font-bold text-primary">
-                {locale === "en" ? "Page Preloader Settings" : "Pengaturan Preloader Halaman"}
+                {t("dashboard.sitesEditor.preloaderSectionBanner")}
               </p>
             </div>
             <p className="mt-1 text-sidebar-muted-foreground text-[11px] leading-relaxed">
@@ -4020,7 +4016,7 @@ export default function SectionForms({
               type="text"
               value={content?.preloader?.brand_name || ""}
               onChange={(e) => updateField("preloader", "brand_name", e.target.value)}
-              placeholder={`${locale === "en" ? "Auto" : "Otomatis"}: "${content?.header?.brand_name || (locale === "en" ? "Brand Name" : "Nama Brand")}"`}
+              placeholder={t("dashboard.sitesEditor.preloaderBrandAuto", undefined, { value: content?.header?.brand_name || t("dashboard.sitesEditor.preloaderBrandFallback") })}
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
             <p className="text-[10px] text-sidebar-subtle-foreground">
@@ -4037,7 +4033,7 @@ export default function SectionForms({
               type="text"
               value={content?.preloader?.tagline || ""}
               onChange={(e) => updateField("preloader", "tagline", e.target.value)}
-              placeholder={`${locale === "en" ? "Auto" : "Otomatis"}: "${content?.header?.tagline || (locale === "en" ? "Business Tagline" : "Tagline Bisnis")}"`}
+              placeholder={t("dashboard.sitesEditor.preloaderTaglineAuto", undefined, { value: content?.header?.tagline || t("dashboard.sitesEditor.preloaderTaglineFallback") })}
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
             <p className="text-[10px] text-sidebar-subtle-foreground">
@@ -4079,7 +4075,7 @@ export default function SectionForms({
             {/* Custom Logo Image Upload */}
             <div className="space-y-1 pt-1">
               <span className="text-[10px] font-medium text-sidebar-subtle-foreground">
-                {locale === "en" ? "Or Upload Specific Preloader Logo:" : "Atau Upload Logo Gambar Khusus:"}
+                {t("dashboard.sitesEditor.preloaderOrUploadLogo")}
               </span>
               <FileUpload
                 label=""
@@ -4091,9 +4087,7 @@ export default function SectionForms({
                 quality={0.9}
               />
               <p className="text-[10px] text-sidebar-subtle-foreground">
-                {locale === "en"
-                  ? "If empty, uses header logo or monogram icon."
-                  : "Jika kosong, otomatis memakai logo header atau monogram brand."}
+                {t("dashboard.sitesEditor.preloaderLogoHint")}
               </p>
             </div>
           </div>
@@ -4101,7 +4095,7 @@ export default function SectionForms({
           {/* 4. Display Duration */}
           <div className="space-y-2 pt-2 border-t border-border">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              {locale === "en" ? "Display Duration" : "Durasi Tampil"}
+              {t("dashboard.sitesEditor.preloaderDurationLabel")}
             </label>
             <div className="grid grid-cols-3 gap-2">
               {[
