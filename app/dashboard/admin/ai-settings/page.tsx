@@ -233,6 +233,7 @@ export default function AdminAiSettingsPage() {
   const [editingTier, setEditingTier] = useState<string | null>(null);
   const [formData, setFormData] = useState(emptyForm());
   const [showKey, setShowKey] = useState(false);
+  const [apiKeyHint, setApiKeyHint] = useState("");
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [saveError, setSaveError] = useState("");
@@ -322,9 +323,11 @@ export default function AdminAiSettingsPage() {
         daily_requests_limit: cfg.daily_requests_limit,
       });
       setEditingTier(cfg.tier);
+      setApiKeyHint(cfg.api_key_hint || "");
     } else {
       setFormData(emptyForm());
       setEditingTier("__new__");
+      setApiKeyHint("");
     }
     setShowKey(false);
     setSaveError("");
@@ -355,6 +358,7 @@ export default function AdminAiSettingsPage() {
   function cancelEdit() {
     setEditingTier(null);
     setFormData(emptyForm());
+    setApiKeyHint("");
     setSaveError("");
   }
 
@@ -856,11 +860,23 @@ export default function AdminAiSettingsPage() {
                     <div className="relative">
                       <input
                         className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 pr-10 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
-                        type={showKey ? "text" : "password"}
-                        placeholder={editingTier !== "__new__" ? "••••••• (unchanged)" : "sk-..."}
+                        type={showKey && formData.api_key ? "text" : "password"}
+                        placeholder={
+                          editingTier !== "__new__"
+                            ? showKey && !formData.api_key && apiKeyHint
+                              ? apiKeyHint          // show masked hint like sk-...****xyz
+                              : "••••••• (unchanged)"
+                            : "sk-..."
+                        }
                         value={formData.api_key}
                         onChange={(e) => setFormData((f) => ({ ...f, api_key: e.target.value }))}
                       />
+                      {/* Show hint text inline when revealed and no new key typed */}
+                      {showKey && !formData.api_key && apiKeyHint && (
+                        <span className="absolute inset-y-0 left-3 flex items-center text-sm font-mono text-muted-foreground pointer-events-none select-none">
+                          {apiKeyHint}
+                        </span>
+                      )}
                       <button
                         type="button"
                         className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-7 h-7 rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
