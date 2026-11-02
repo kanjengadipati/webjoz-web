@@ -2034,7 +2034,7 @@ export default function SiteEditorPage() {
                                   ? "bg-primary/10 text-primary border border-primary/40"
                                   : "bg-sidebar-input text-sidebar-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-muted/60 border border-border"
                               }`}
-                              title={isExplicit ? `${mKey} (${locale === "en" ? "Locked" : "Terkunci"})` : isAutoCurrent ? `${mKey} (${locale === "en" ? "Active from Mood" : "Aktif dari Mood"})` : mKey}
+                              title={isExplicit ? `${mKey} (${t("dashboard.sitesEditor.colorMoodLocked")})` : isAutoCurrent ? `${mKey} (${t("dashboard.sitesEditor.colorMoodActive")})` : mKey}
                             >
                               <FeatureMarkerIcon style={mKey} className="w-3.5 h-3.5" />
                             </button>
@@ -3390,9 +3390,9 @@ export default function SiteEditorPage() {
                   <span className="text-[9px] font-medium text-muted-foreground shrink-0">{t("dashboard.sitesEditor.aiUsage")}</span>
                   <div className="flex flex-1 items-center gap-3">
                     {[
-                      { label: "Gen", count: tenantUsage.usage.generate_count ?? 0, max: tenantUsage.max_ai_generates, color: "bg-primary" },
-                      { label: "Section", count: tenantUsage.usage.section_regen_count ?? 0, max: tenantUsage.max_section_regens ?? 0, color: "bg-primary" },
-                      { label: "Design", count: tenantUsage.usage.design_regen_count ?? 0, max: tenantUsage.max_design_regens ?? 0, color: "bg-primary" },
+                      { label: t("dashboard.sitesEditor.usageLabelGen"), count: tenantUsage.usage.generate_count ?? 0, max: tenantUsage.max_ai_generates, color: "bg-primary" },
+                      { label: t("dashboard.sitesEditor.usageLabelSection"), count: tenantUsage.usage.section_regen_count ?? 0, max: tenantUsage.max_section_regens ?? 0, color: "bg-primary" },
+                      { label: t("dashboard.sitesEditor.usageLabelDesign"), count: tenantUsage.usage.design_regen_count ?? 0, max: tenantUsage.max_design_regens ?? 0, color: "bg-primary" },
                     ].map(({ label, count, max, color }) => (
                       <div key={label} className="flex-1 flex items-center gap-1.5 min-w-0">
                         <span className="text-[9px] text-sidebar-subtle-foreground shrink-0">{label}</span>

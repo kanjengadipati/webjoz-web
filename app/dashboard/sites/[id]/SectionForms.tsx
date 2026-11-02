@@ -3059,8 +3059,8 @@ export default function SectionForms({
           </div>
           <MenuCatalogForm
             sectionKey="menu"
-            sectionTitle="Menu"
-            itemLabel="item menu"
+            sectionTitle={t("dashboard.sitesKatalog.sectionTitleMenu")}
+            itemLabel={t("dashboard.sitesKatalog.itemLabelMenu")}
             hasPrice
             hasBadge={false}
             data={content.menu}
@@ -3384,8 +3384,8 @@ export default function SectionForms({
           </div>
           <MenuCatalogForm
             sectionKey="catalog"
-            sectionTitle="Katalog Produk"
-            itemLabel="produk"
+            sectionTitle={t("dashboard.sitesKatalog.sectionTitleCatalog")}
+            itemLabel={t("dashboard.sitesKatalog.itemLabelCatalog")}
             hasPrice
             hasBadge
             data={content.catalog}
