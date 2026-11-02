@@ -287,6 +287,7 @@ interface AiImageButtonProps {
 }
 
 function AiImageButton({ businessType, onSelect }: AiImageButtonProps) {
+  const { t } = useI18n();
   const pool = getUnsplashPool(businessType);
   const handleClick = () => {
     const randomUrl = pool[Math.floor(Math.random() * pool.length)];
@@ -296,7 +297,7 @@ function AiImageButton({ businessType, onSelect }: AiImageButtonProps) {
     <button
       type="button"
       onClick={handleClick}
-      title="Pilih foto acak dari Unsplash"
+      title={t("dashboard.sitesEditor.unsplashRandomPhoto")}
       className="flex items-center gap-1 px-2 h-7 rounded-md bg-sidebar-muted text-sidebar-foreground hover:bg-sidebar-border hover:text-sidebar-foreground text-[10px] font-semibold transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-slate-400 border border-border"
     >
       <RefreshCw className="w-3 h-3" />
@@ -651,10 +652,10 @@ export default function SectionForms({
         body: JSON.stringify({ tracking_codes: { ...existingCodes, gsc_verification: gscInput.trim() } }),
       }, String(token));
       setGscSaved(true);
-      pushToast?.("Kode GSC berhasil disimpan", "success");
+      pushToast?.(t("dashboard.sitesEditor.seoGscSaveSuccess"), "success");
       setTimeout(() => setGscSaved(false), 3000);
     } catch (err: any) {
-      pushToast?.(err.message || "Gagal menyimpan kode GSC", "error");
+      pushToast?.(err.message || t("dashboard.sitesEditor.seoGscSaveFailed"), "error");
     } finally {
       setGscSaving(false);
     }
@@ -4064,7 +4065,7 @@ export default function SectionForms({
                     type="button"
                     onClick={() => updateField("preloader", "icon", "")}
                     className="p-1.5 text-xs text-red-400 hover:bg-red-400/10 rounded transition cursor-pointer"
-                    title="Hapus icon khusus"
+                    title={t("dashboard.sitesEditor.preloaderClearIcon")}
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
