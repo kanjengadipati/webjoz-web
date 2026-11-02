@@ -6,6 +6,7 @@ import type { HeroVariantProps } from "./types";
 import { InlineText } from "../../templates/shared";
 import InlineMapPicker from "../contact/inline-map-picker";
 import { HeroCta } from "./primitives";
+import { heroStrings } from "./hero-strings";
 
 /**
  * Location Map — split hero with a live map driven by the contact section.
@@ -24,6 +25,7 @@ export default function HeroLocationMap({
   onEditingStateChange,
 }: HeroVariantProps) {
   const isEN = language === "en";
+  const s = heroStrings(language);
   const reduce = useReducedMotion();
   const defaultCta = isEN ? "Contact Us" : "Hubungi Kami";
   const common = {
@@ -46,10 +48,10 @@ export default function HeroLocationMap({
     : undefined;
 
   const infoItems = [
-    { key: "address", icon: MapPin, value: c?.address, placeholder: isEN ? "Add address..." : "Tambah alamat..." },
-    { key: "phone", icon: Phone, value: c?.phone, placeholder: isEN ? "Add phone or WhatsApp..." : "Tambah telepon / WA..." },
-    { key: "email", icon: Mail, value: c?.email, placeholder: isEN ? "Add email address..." : "Tambah alamat email..." },
-    { key: "opening_hours", icon: Clock, value: c?.opening_hours, placeholder: isEN ? "Add opening hours..." : "Tambah jam buka..." },
+    { key: "address", icon: MapPin, value: c?.address, placeholder: s.addAddress },
+    { key: "phone", icon: Phone, value: c?.phone, placeholder: s.addPhoneWa },
+    { key: "email", icon: Mail, value: c?.email, placeholder: s.addEmail },
+    { key: "opening_hours", icon: Clock, value: c?.opening_hours, placeholder: s.addOpeningHours },
   ];
 
   return (
@@ -73,7 +75,7 @@ export default function HeroLocationMap({
               }}
             >
               <MapPin className="size-3.5" aria-hidden />
-              <InlineText {...common} fieldKey="eyebrow" value={h.eyebrow} placeholder={isEN ? "Short label" : "Label singkat"} as="span" />
+              <InlineText {...common} fieldKey="eyebrow" value={h.eyebrow} placeholder={s.shortLabel} as="span" />
             </motion.div>
           )}
 
@@ -163,7 +165,7 @@ export default function HeroLocationMap({
             {hasLocation && (
               <HeroCta
                 href={c?.maps_url?.trim() || (c?.address?.trim() ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.address)}` : "#contact")}
-                label={isEN ? "Get directions" : "Rute ke lokasi"}
+                label={s.getDirections}
                 icon={<Navigation className="size-4" aria-hidden />}
                 iconPosition="start"
                 editable={false}
@@ -227,7 +229,7 @@ export default function HeroLocationMap({
                     section="contact"
                     fieldKey="address"
                     value={c?.address || ""}
-                    placeholder={isEN ? "Add address..." : "Tambah alamat..."}
+                    placeholder={s.addAddress}
                     onUpdateField={onUpdateField}
                     isEditorMode={isEditorMode}
                     isSelected={isSelected}
@@ -254,13 +256,13 @@ export default function HeroLocationMap({
             >
               <span className="mb-0.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.12em]" style={{ color: "var(--dt-primary)" }}>
                 <MapPin className="size-3" aria-hidden />
-                {isEN ? "Our location" : "Lokasi kami"}
+                {s.ourLocation}
               </span>
               <InlineText
                 section="contact"
                 fieldKey="address"
                 value={c?.address || ""}
-                placeholder={isEN ? "Add address..." : "Tambah alamat..."}
+                placeholder={s.addAddress}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}

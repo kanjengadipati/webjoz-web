@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "motion/react";
 import type { HeroVariantProps } from "./types";
 import { InlineText } from "../../templates/shared";
 import { HeroCta, HeroImage } from "./primitives";
+import { heroStrings } from "./hero-strings";
 
 /**
  * Floating Card — foto besar, kartu teks "melayang" menimpa foto.
@@ -19,7 +20,7 @@ export default function HeroFloatingCard({
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: HeroVariantProps) {
-  const isEN = language === "en";
+  const s = heroStrings(language);
   const reduce = useReducedMotion();
   const common = { section: "hero" as const, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit };
 
@@ -38,7 +39,7 @@ export default function HeroFloatingCard({
             {...common}
             fieldKey="image_url"
             src={h.image_url}
-            alt={h.headline || (isEN ? "Hero image" : "Gambar hero")}
+            alt={h.headline || s.heroImageAlt}
             credit={h.image_credit}
             language={language}
             isBackground
@@ -65,7 +66,7 @@ export default function HeroFloatingCard({
               {...common}
               fieldKey="eyebrow"
               value={h.eyebrow}
-              placeholder={isEN ? "Short label" : "Label singkat"}
+              placeholder={s.shortLabel}
               style={{
                 display: "block",
                 fontSize: "0.75rem",

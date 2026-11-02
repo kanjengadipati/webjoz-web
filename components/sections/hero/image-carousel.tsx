@@ -9,6 +9,7 @@ import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
 import { HERO_HEADING_SIZE, HeroCta } from "./primitives";
 import PhotoCredit from "../PhotoCredit";
 import { getHeroSlides, commitHeroSlide, addHeroSlide, removeHeroSlide, writeHeroPatch } from "./images";
+import { heroStrings } from "./hero-strings";
 
 /**
  * HeroImageCarousel — Cinematic hero section with multi-image slideshow.
@@ -102,6 +103,7 @@ export default function HeroImageCarousel({
   };
 
   const isEN = language === "en";
+  const s = heroStrings(language);
   const hasSecondary = Boolean(h.cta_secondary_text?.trim() && h.cta_secondary_url?.trim());
   const defaultCta = isEN ? "Get Started" : "Mulai Sekarang";
   const activeImage = slides[safeIndex] || h.image_url || "";
@@ -399,9 +401,7 @@ export default function HeroImageCarousel({
         {isEditorMode && (
           <div className="flex items-center gap-2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20 text-xs text-white">
             <span>
-              {isEN
-                ? `Slide ${safeIndex + 1} of ${slideCount}`
-                : `Slide ${safeIndex + 1} dari ${slideCount}`}
+              {s.slideCounter(safeIndex + 1, slideCount)}
             </span>
             {slideCount < 8 && (
               <button
@@ -432,8 +432,8 @@ export default function HeroImageCarousel({
             <button
               type="button"
               onClick={() => setIsPaused((prev) => !prev)}
-              aria-label={isPaused ? (isEN ? "Resume autoplay" : "Lanjutkan putar otomatis") : (isEN ? "Pause autoplay" : "Jeda putar otomatis")}
-              title={isPaused ? (isEN ? "Resume autoplay" : "Lanjutkan putar otomatis") : (isEN ? "Pause autoplay" : "Jeda putar otomatis")}
+              aria-label={isPaused ? s.resumeAutoplay : s.pauseAutoplay}
+              title={isPaused ? s.resumeAutoplay : s.pauseAutoplay}
               className="text-white/60 hover:text-white transition-colors mr-1 cursor-pointer"
             >
               {isPaused ? <Play className="size-3" /> : <Pause className="size-3" />}
@@ -443,7 +443,7 @@ export default function HeroImageCarousel({
                 key={idx}
                 type="button"
                 onClick={(e) => handleSelectSlide(idx, e)}
-                aria-label={isEN ? `Go to slide ${idx + 1}` : `Menuju slide ${idx + 1}`}
+                aria-label={s.goToSlide(idx + 1)}
                 className={`transition-all duration-300 rounded-full ${
                   idx === safeIndex
                     ? "w-7 h-2 bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]"
@@ -460,8 +460,8 @@ export default function HeroImageCarousel({
             <button
               type="button"
               onClick={handlePrev}
-              aria-label={isEN ? "Previous slide" : "Slide sebelumnya"}
-              title={isEN ? "Previous slide" : "Slide sebelumnya"}
+              aria-label={s.prevSlide}
+              title={s.prevSlide}
               className="p-2.5 rounded-full bg-black/40 hover:bg-black/70 text-white backdrop-blur-md border border-white/15 transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
             >
               <ChevronLeft className="size-5" />
@@ -469,8 +469,8 @@ export default function HeroImageCarousel({
             <button
               type="button"
               onClick={handleNext}
-              aria-label={isEN ? "Next slide" : "Slide berikutnya"}
-              title={isEN ? "Next slide" : "Slide berikutnya"}
+              aria-label={s.nextSlide}
+              title={s.nextSlide}
               className="p-2.5 rounded-full bg-black/40 hover:bg-black/70 text-white backdrop-blur-md border border-white/15 transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
             >
               <ChevronRight className="size-5" />

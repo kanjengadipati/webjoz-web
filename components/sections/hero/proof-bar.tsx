@@ -4,6 +4,7 @@ import type { HeroVariantProps } from "./types";
 import PhotoCredit from "../PhotoCredit";
 import { InlineText, InlineImage } from "../../templates/shared";
 import { HeroCta } from "./primitives";
+import { heroStrings } from "./hero-strings";
 
 /**
  * Proof Bar — headline tegas + baris angka pencapaian dan jam buka.
@@ -18,7 +19,7 @@ export default function HeroProofBar({
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: HeroVariantProps) {
-  const isEN = language === "en";
+  const hs = heroStrings(language);
   const common = {
     section: "hero" as const,
     onUpdateField,
@@ -64,7 +65,7 @@ export default function HeroProofBar({
                 {...common}
                 fieldKey="eyebrow"
                 value={h.eyebrow}
-                placeholder={isEN ? "Short label" : "Label singkat"}
+                placeholder={hs.shortLabel}
                 style={{
                   display: "block",
                   fontSize: "0.75rem",
@@ -139,7 +140,7 @@ export default function HeroProofBar({
                 {...common}
                 fieldKey="image_url"
                 src={h.image_url}
-                alt={h.headline || (isEN ? "Hero image" : "Gambar hero")}
+                alt={h.headline || hs.heroImageAlt}
                 className="h-full w-full object-cover"
               />
               <PhotoCredit
@@ -178,7 +179,7 @@ export default function HeroProofBar({
                     {...common}
                     fieldKey={`stats.${i}.value`}
                     value={s.value}
-                    placeholder={isEN ? "Value" : "Nilai"}
+                    placeholder={hs.valuePlaceholder}
                     as="span"
                   />
                 </dd>
@@ -187,7 +188,7 @@ export default function HeroProofBar({
                     {...common}
                     fieldKey={`stats.${i}.label`}
                     value={s.label}
-                    placeholder={isEN ? "Label" : "Label"}
+                    placeholder="Label"
                     as="span"
                   />
                 </dt>
@@ -202,7 +203,7 @@ export default function HeroProofBar({
             fieldKey="opening_hours"
             value={h.opening_hours}
             as="p"
-            placeholder={isEN ? "Opening hours" : "Jam buka"}
+            placeholder={hs.openingHours}
             style={{ marginTop: "1.5rem", fontSize: "0.9rem", color: "var(--dt-text-muted)" }}
           />
         )}
