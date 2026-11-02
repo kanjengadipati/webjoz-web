@@ -40,6 +40,7 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { toPng } from "html-to-image";
+import { request } from "@/lib/api/client";
 import { CartProvider } from "@/components/cart";
 import { buildCssVars, loadGoogleFont } from "@/components/templates/helpers";
 import type { DesignToken } from "@/components/templates/types";
@@ -219,23 +220,20 @@ export default function SectionShowcasePage() {
           skipFonts: false,
         });
 
-        // 2. POST to backend
-        const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "";
-        const res = await fetch(`${apiBase}/admin/ai/critique-section-variant`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
+        // 2. POST to backend via standard client
+        const res = await request<VariantCritiqueResult>(
+          "/admin/ai/critique-section-variant",
+          {
+            method: "POST",
+            body: JSON.stringify({ section: sectionKey, variant: variantValue, image: dataUrl }),
           },
-          body: JSON.stringify({ section: sectionKey, variant: variantValue, image: dataUrl }),
-        });
+          authToken,
+          true,
+          0,
+          90_000 // 90s timeout for vision AI
+        );
 
-        if (!res.ok) {
-          const errText = await res.text();
-          throw new Error(errText || `HTTP ${res.status}`);
-        }
-
-        const result: VariantCritiqueResult = await res.json();
+        const result: VariantCritiqueResult = res.data;
 
         // 3. Update local state
         setVariantCritiques((prev) => ({
