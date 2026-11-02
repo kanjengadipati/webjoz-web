@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { usePermissions } from "@/hooks/use-permissions";
 import { useAuthToken } from "@/lib/auth-store";
 import { useToast } from "@/components/toast-provider";
@@ -33,7 +33,13 @@ import {
   PanelLeftClose,
   X,
   ArrowUp,
+  Loader2,
+  TrendingUp,
+  Star,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
+import { toPng } from "html-to-image";
 import { CartProvider } from "@/components/cart";
 import { buildCssVars, loadGoogleFont } from "@/components/templates/helpers";
 import type { DesignToken } from "@/components/templates/types";
@@ -48,6 +54,7 @@ import {
   updateCache,
   loadConfig,
   type DesignAssetsConfig,
+  type VariantCritiqueResult,
 } from "@/lib/design-assets-config";
 
 // Section Components
@@ -135,6 +142,9 @@ export default function SectionShowcasePage() {
   // Hidden variants state from platform config
   const [hiddenVariants, setHiddenVariants] = useState<Record<string, string[]>>({});
   const [loadingConfig, setLoadingConfig] = useState<boolean>(true);
+  // Critique state
+  const [variantCritiques, setVariantCritiques] = useState<Record<string, Record<string, VariantCritiqueResult>>>({});
+  const [critiquingVariant, setCritiquingVariant] = useState<string | null>(null); // "section:variant"
 
   // Load config on mount
   useEffect(() => {
@@ -143,6 +153,7 @@ export default function SectionShowcasePage() {
     loadDesignAssetsConfig(authToken)
       .then((cfg) => {
         setHiddenVariants(cfg.hidden_variants ?? {});
+        setVariantCritiques(cfg.variant_critiques ?? {});
       })
       .finally(() => setLoadingConfig(false));
   }, [isSuperAdmin, authToken]);
@@ -191,6 +202,76 @@ export default function SectionShowcasePage() {
     [authToken, pushToast]
   );
 
+  // Critique variant handler — captures DOM, sends to backend, updates state
+  const handleCritiqueVariant = useCallback(
+    async (sectionKey: string, variantValue: string, previewEl: HTMLElement) => {
+      const critiqueKey = `${sectionKey}:${variantValue}`;
+      if (!authToken) {
+        pushToast("Token tidak tersedia. Harap login ulang.", "error");
+        return;
+      }
+      setCritiquingVariant(critiqueKey);
+      try {
+        // 1. Capture preview as PNG data URI
+        const dataUrl = await toPng(previewEl, {
+          quality: 0.85,
+          pixelRatio: 1.5,
+          skipFonts: false,
+        });
+
+        // 2. POST to backend
+        const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "";
+        const res = await fetch(`${apiBase}/admin/ai/critique-section-variant`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify({ section: sectionKey, variant: variantValue, image: dataUrl }),
+        });
+
+        if (!res.ok) {
+          const errText = await res.text();
+          throw new Error(errText || `HTTP ${res.status}`);
+        }
+
+        const result: VariantCritiqueResult = await res.json();
+
+        // 3. Update local state
+        setVariantCritiques((prev) => ({
+          ...prev,
+          [sectionKey]: {
+            ...(prev[sectionKey] ?? {}),
+            [variantValue]: result,
+          },
+        }));
+
+        // 4. Sync cache
+        const cfg = loadConfig();
+        updateCache({
+          ...cfg,
+          variant_critiques: {
+            ...(cfg.variant_critiques ?? {}),
+            [sectionKey]: {
+              ...((cfg.variant_critiques ?? {})[sectionKey] ?? {}),
+              [variantValue]: result,
+            },
+          },
+        });
+
+        pushToast(
+          `✨ Critique selesai! Skor: ${result.score}/100 · Tier ${result.tier}`,
+          "success"
+        );
+      } catch (err: any) {
+        pushToast(`Gagal critique varian: ${err?.message ?? "Unknown error"}`, "error");
+      } finally {
+        setCritiquingVariant(null);
+      }
+    },
+    [authToken, pushToast]
+  );
+
   // Active preset token
   const activePreset = useMemo(() => {
     return SHOWCASE_PRESETS.find((p) => p.id === activePresetId) ?? SHOWCASE_PRESETS[0];
@@ -232,6 +313,23 @@ export default function SectionShowcasePage() {
     return allSectionOptions.filter((v) => currentSectionHiddenSet.has(v.value)).length;
   }, [allSectionOptions, currentSectionHiddenSet]);
   const activeCountForCurrentSec = totalSectionVariants - hiddenCountForCurrentSec;
+
+  // Aesthetic critique stats for current section
+  const sectionCritiqueStats = useMemo(() => {
+    const critiques = variantCritiques[selectedSection] ?? {};
+    const values = Object.values(critiques);
+    if (values.length === 0) return null;
+    const avg = Math.round(values.reduce((acc, c) => acc + c.score, 0) / values.length);
+    const tierCounts = values.reduce<Record<string, number>>((acc, c) => {
+      acc[c.tier] = (acc[c.tier] ?? 0) + 1;
+      return acc;
+    }, {});
+    return {
+      totalCritiqued: values.length,
+      averageScore: avg,
+      tierCounts,
+    };
+  }, [variantCritiques, selectedSection]);
 
   // Filtered variants for current section
   const availableVariants = useMemo(() => {
@@ -539,6 +637,49 @@ export default function SectionShowcasePage() {
             </div>
           </div>
 
+          {/* AI Aesthetic Critique Summary */}
+          {sectionCritiqueStats && (
+            <div className="bg-card border border-border/80 rounded-xl p-3 shadow-xs text-xs space-y-2 animate-in fade-in">
+              <div className="font-semibold text-foreground flex items-center justify-between">
+                <span className="flex items-center gap-1.5">
+                  <Sparkles className="size-3 text-purple-500" />
+                  <span>Aesthetic Score</span>
+                </span>
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400 font-bold border border-purple-500/20">
+                  {sectionCritiqueStats.totalCritiqued}/{totalSectionVariants} Dinilai
+                </span>
+              </div>
+              <div className="flex items-baseline justify-between pt-1">
+                <div>
+                  <span className="text-2xl font-black">{sectionCritiqueStats.averageScore}</span>
+                  <span className="text-[10px] text-muted-foreground ml-1">/100 Rerata</span>
+                </div>
+                <div className="flex items-center gap-1 text-[10px] font-bold font-mono">
+                  {sectionCritiqueStats.tierCounts["S"] && (
+                    <span className="px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20" title={`${sectionCritiqueStats.tierCounts["S"]} varian Tier S`}>
+                      S:{sectionCritiqueStats.tierCounts["S"]}
+                    </span>
+                  )}
+                  {sectionCritiqueStats.tierCounts["A"] && (
+                    <span className="px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/20" title={`${sectionCritiqueStats.tierCounts["A"]} varian Tier A`}>
+                      A:{sectionCritiqueStats.tierCounts["A"]}
+                    </span>
+                  )}
+                  {sectionCritiqueStats.tierCounts["B"] && (
+                    <span className="px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20" title={`${sectionCritiqueStats.tierCounts["B"]} varian Tier B`}>
+                      B:{sectionCritiqueStats.tierCounts["B"]}
+                    </span>
+                  )}
+                  {sectionCritiqueStats.tierCounts["C"] && (
+                    <span className="px-1.5 py-0.5 rounded bg-destructive/15 text-destructive border border-destructive/20" title={`${sectionCritiqueStats.tierCounts["C"]} varian Tier C`}>
+                      C:{sectionCritiqueStats.tierCounts["C"]}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Preset info card */}
           <div className="bg-card border border-border/80 rounded-xl p-3 shadow-xs text-xs space-y-2">
             <div className="font-semibold text-foreground flex items-center justify-between">
@@ -589,6 +730,11 @@ export default function SectionShowcasePage() {
                 {hiddenCountForCurrentSec > 0 && (
                   <span className="text-xs px-2 py-0.5 rounded-md bg-destructive/10 text-destructive border border-destructive/20 font-semibold flex items-center gap-1">
                     <EyeOff className="size-3" /> {hiddenCountForCurrentSec} tersembunyi
+                  </span>
+                )}
+                {sectionCritiqueStats && (
+                  <span className="text-xs px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 font-semibold flex items-center gap-1 shadow-2xs">
+                    <Sparkles className="size-3" /> Rerata: {sectionCritiqueStats.averageScore}/100
                   </span>
                 )}
                 {/* Full Screen Section button */}
@@ -709,6 +855,9 @@ export default function SectionShowcasePage() {
                         setDisplayMode("single");
                       }}
                       onFullScreen={() => handleOpenFullscreenSection(selectedSection, v.value)}
+                      critiqueData={variantCritiques[selectedSection]?.[v.value]}
+                      isCritiquing={critiquingVariant === `${selectedSection}:${v.value}`}
+                      onCritique={(el) => handleCritiqueVariant(selectedSection, v.value, el)}
                     />
                   );
                 })}
@@ -755,6 +904,9 @@ export default function SectionShowcasePage() {
                     onToggleHide={() => handleToggleVariantVisibility(selectedSection, selectedVariant)}
                     isSingleFocus={true}
                     onFullScreen={() => handleOpenFullscreenSection(selectedSection, selectedVariant)}
+                    critiqueData={variantCritiques[selectedSection]?.[selectedVariant]}
+                    isCritiquing={critiquingVariant === `${selectedSection}:${selectedVariant}`}
+                    onCritique={(el) => handleCritiqueVariant(selectedSection, selectedVariant, el)}
                   />
                 )}
               </div>
@@ -1001,6 +1153,9 @@ interface VariantPreviewCardProps {
   onFocusSingle?: () => void;
   onFullScreen?: () => void;
   isSingleFocus?: boolean;
+  critiqueData?: VariantCritiqueResult;
+  isCritiquing?: boolean;
+  onCritique?: (el: HTMLElement) => void;
 }
 
 function VariantPreviewCard({
@@ -1018,7 +1173,13 @@ function VariantPreviewCard({
   onFocusSingle,
   onFullScreen,
   isSingleFocus,
+  critiqueData,
+  isCritiquing = false,
+  onCritique,
 }: VariantPreviewCardProps) {
+  const previewCardRef = useRef<HTMLDivElement>(null);
+  const [showCritiqueModal, setShowCritiqueModal] = useState<boolean>(false);
+
   // Scoped design token for this specific variant
   const sectionDesignToken = useMemo<DesignToken>(() => {
     return {
@@ -1093,6 +1254,27 @@ function VariantPreviewCard({
                   <Eye className="size-3" /> Aktif
                 </span>
               )}
+
+              {/* Aesthetic Score Badge (if critique exists) */}
+              {critiqueData && (
+                <button
+                  type="button"
+                  onClick={() => setShowCritiqueModal(true)}
+                  className={`px-2 py-0.5 rounded-full border text-[10px] font-bold flex items-center gap-1 shadow-2xs transition-all hover:scale-105 cursor-pointer ${
+                    critiqueData.tier === "S"
+                      ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/25"
+                      : critiqueData.tier === "A"
+                      ? "bg-blue-500/15 text-blue-700 dark:text-blue-300 border-blue-500/30 hover:bg-blue-500/25"
+                      : critiqueData.tier === "B"
+                      ? "bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30 hover:bg-amber-500/25"
+                      : "bg-destructive/15 text-destructive border-destructive/30 hover:bg-destructive/25"
+                  }`}
+                  title="Klik untuk melihat evaluasi detail AI Vision"
+                >
+                  <Sparkles className="size-2.5 text-current" />
+                  <span>{critiqueData.score}/100 · Tier {critiqueData.tier}</span>
+                </button>
+              )}
             </div>
             {variant.description && (
               <p className="text-xs text-muted-foreground mt-0.5">{variant.description}</p>
@@ -1102,6 +1284,43 @@ function VariantPreviewCard({
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2">
+          {/* AI Vision Critique Button */}
+          {onCritique && (
+            <button
+              type="button"
+              disabled={isCritiquing}
+              onClick={() => {
+                if (previewCardRef.current) {
+                  onCritique(previewCardRef.current);
+                }
+              }}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold rounded-lg border transition-all shadow-2xs ${
+                isCritiquing
+                  ? "bg-muted text-muted-foreground border-border/60 cursor-not-allowed opacity-80"
+                  : critiqueData
+                  ? "bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-pink-500/10 hover:from-purple-500/20 hover:to-pink-500/20 text-purple-600 dark:text-purple-400 border-purple-500/30"
+                  : "bg-primary/10 hover:bg-primary/20 text-primary border-primary/25"
+              }`}
+              title={
+                critiqueData
+                  ? "Evaluasi ulang varian ini dengan AI Vision"
+                  : "Evaluasi kualitas estetika varian ini dengan AI Vision (Gemini 2.5 Flash)"
+              }
+            >
+              {isCritiquing ? (
+                <>
+                  <Loader2 className="size-3 animate-spin text-primary" />
+                  <span>Menilai...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="size-3" />
+                  <span>{critiqueData ? "Nilai Ulang" : "AI Critique"}</span>
+                </>
+              )}
+            </button>
+          )}
+
           {/* Show / Hide Toggle Button */}
           <button
             type="button"
@@ -1201,6 +1420,7 @@ function VariantPreviewCard({
       <div className={`p-4 sm:p-6 overflow-x-auto ${isHidden ? "opacity-75 grayscale-[25%]" : ""}`}>
         <div className={viewportClass}>
           <div
+            ref={previewCardRef}
             style={{
               ...cssVars,
               backgroundColor: "var(--dt-bg, #ffffff)",
@@ -1224,6 +1444,239 @@ function VariantPreviewCard({
           </div>
         </div>
       </div>
+
+      {/* Critique Detail Modal */}
+      {showCritiqueModal && critiqueData && (
+        <div className="fixed inset-0 z-[250] bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150">
+          <div className="bg-card text-card-foreground border border-border/80 rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden max-h-[90vh] flex flex-col animate-in zoom-in-95 duration-150">
+            {/* Modal Header */}
+            <div className="px-6 py-4 border-b border-border/80 flex items-center justify-between bg-muted/30">
+              <div className="flex items-center gap-3">
+                <div className="size-10 rounded-xl bg-gradient-to-br from-purple-500/20 via-primary/10 to-transparent border border-purple-500/30 flex items-center justify-center">
+                  <Sparkles className="size-5 text-purple-600 dark:text-purple-400" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-bold text-base">{variant.label}</h3>
+                    <code className="text-[10px] font-mono bg-muted px-1.5 py-0.5 rounded text-muted-foreground">
+                      {variant.value}
+                    </code>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Section: <span className="capitalize font-medium text-foreground">{sectionKey}</span> · AI Vision Aesthetic Critique
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowCritiqueModal(false)}
+                className="size-8 rounded-lg hover:bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-all"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="px-6 py-5 overflow-y-auto space-y-5 flex-1">
+              {/* Overall Score Banner */}
+              <div
+                className={`p-4 rounded-xl border flex items-center justify-between ${
+                  critiqueData.tier === "S"
+                    ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-800 dark:text-emerald-300"
+                    : critiqueData.tier === "A"
+                    ? "bg-blue-500/10 border-blue-500/30 text-blue-800 dark:text-blue-300"
+                    : critiqueData.tier === "B"
+                    ? "bg-amber-500/10 border-amber-500/30 text-amber-800 dark:text-amber-300"
+                    : "bg-destructive/10 border-destructive/30 text-destructive"
+                }`}
+              >
+                <div>
+                  <div className="text-xs uppercase font-bold tracking-wider opacity-80">Skor Keseluruhan</div>
+                  <div className="text-3xl font-extrabold flex items-baseline gap-2 mt-0.5">
+                    <span>{critiqueData.score}</span>
+                    <span className="text-sm font-medium opacity-70">/ 100</span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span
+                    className={`inline-block px-3 py-1 rounded-lg text-sm font-black uppercase tracking-wider ${
+                      critiqueData.tier === "S"
+                        ? "bg-emerald-500/20 border border-emerald-500/40"
+                        : critiqueData.tier === "A"
+                        ? "bg-blue-500/20 border border-blue-500/40"
+                        : critiqueData.tier === "B"
+                        ? "bg-amber-500/20 border border-amber-500/40"
+                        : "bg-destructive/20 border border-destructive/40"
+                    }`}
+                  >
+                    Tier {critiqueData.tier}
+                  </span>
+                  <div className="text-[11px] opacity-75 mt-1">
+                    {critiqueData.tier === "S"
+                      ? "World-Class Quality"
+                      : critiqueData.tier === "A"
+                      ? "Great Production Ready"
+                      : critiqueData.tier === "B"
+                      ? "Acceptable / Needs Polish"
+                      : "Needs Rework"}
+                  </div>
+                </div>
+              </div>
+
+              {/* Rubric Breakdown Grid */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                  Rubrik Evaluasi (4 Dimensi × 25 Poin)
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Hierarchy */}
+                  <div className="p-3 rounded-xl bg-muted/40 border border-border/60 space-y-1.5">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-semibold text-foreground">Visual Hierarchy</span>
+                      <span className="font-mono font-bold">{critiqueData.hierarchy} / 25</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-muted overflow-hidden">
+                      <div
+                        className="h-full bg-primary rounded-full transition-all duration-500"
+                        style={{ width: `${Math.min(100, (critiqueData.hierarchy / 25) * 100)}%` }}
+                      />
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">Alur baca, focal point & kejelasan CTA</p>
+                  </div>
+
+                  {/* Typography */}
+                  <div className="p-3 rounded-xl bg-muted/40 border border-border/60 space-y-1.5">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-semibold text-foreground">Typography & Contrast</span>
+                      <span className="font-mono font-bold">{critiqueData.typography} / 25</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-muted overflow-hidden">
+                      <div
+                        className="h-full bg-blue-500 rounded-full transition-all duration-500"
+                        style={{ width: `${Math.min(100, (critiqueData.typography / 25) * 100)}%` }}
+                      />
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">Legibility font, skala heading & kontras teks</p>
+                  </div>
+
+                  {/* Whitespace */}
+                  <div className="p-3 rounded-xl bg-muted/40 border border-border/60 space-y-1.5">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-semibold text-foreground">Whitespace & Balance</span>
+                      <span className="font-mono font-bold">{critiqueData.whitespace} / 25</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-muted overflow-hidden">
+                      <div
+                        className="h-full bg-emerald-500 rounded-full transition-all duration-500"
+                        style={{ width: `${Math.min(100, (critiqueData.whitespace / 25) * 100)}%` }}
+                      />
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">Kerapian padding, ruang nafas & ritme visual</p>
+                  </div>
+
+                  {/* Polish */}
+                  <div className="p-3 rounded-xl bg-muted/40 border border-border/60 space-y-1.5">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-semibold text-foreground">Modern Polish 2026</span>
+                      <span className="font-mono font-bold">{critiqueData.polish} / 25</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-muted overflow-hidden">
+                      <div
+                        className="h-full bg-purple-500 rounded-full transition-all duration-500"
+                        style={{ width: `${Math.min(100, (critiqueData.polish / 25) * 100)}%` }}
+                      />
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">Estetika modern, micro-details & profesionalitas</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Verdict */}
+              {critiqueData.verdict && (
+                <div className="space-y-1.5">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    AI Verdict
+                  </h4>
+                  <div className="p-3.5 rounded-xl bg-muted/30 border border-border/60 text-xs text-foreground leading-relaxed italic">
+                    "{critiqueData.verdict}"
+                  </div>
+                </div>
+              )}
+
+              {/* Strengths & Improvements */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Strengths */}
+                {critiqueData.strengths && critiqueData.strengths.length > 0 && (
+                  <div className="space-y-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                      <Check className="size-3.5" /> Kelebihan Desain
+                    </h4>
+                    <ul className="space-y-1.5 text-xs text-muted-foreground">
+                      {critiqueData.strengths.map((str, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <span className="size-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
+                          <span>{str}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Improvements */}
+                {critiqueData.improvements && critiqueData.improvements.length > 0 && (
+                  <div className="space-y-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                      <TrendingUp className="size-3.5" /> Saran Peningkatan
+                    </h4>
+                    <ul className="space-y-1.5 text-xs text-muted-foreground">
+                      {critiqueData.improvements.map((imp, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <span className="size-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0" />
+                          <span>{imp}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+              {/* Timestamp */}
+              {critiqueData.critiqued_at && (
+                <div className="text-[11px] text-muted-foreground text-right pt-2 border-t border-border/60">
+                  Dievaluasi pada: {new Date(critiqueData.critiqued_at).toLocaleString("id-ID")}
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-6 py-3 border-t border-border/80 flex items-center justify-between bg-muted/20">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowCritiqueModal(false);
+                  if (previewCardRef.current && onCritique) {
+                    onCritique(previewCardRef.current);
+                  }
+                }}
+                disabled={isCritiquing}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-primary/10 hover:bg-primary/20 text-primary border border-primary/25 transition-all"
+              >
+                <Sparkles className="size-3.5" />
+                <span>Nilai Ulang Sekarang</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowCritiqueModal(false)}
+                className="px-4 py-1.5 text-xs font-semibold rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-all shadow-xs"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

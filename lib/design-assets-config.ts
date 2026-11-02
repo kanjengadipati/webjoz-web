@@ -70,6 +70,19 @@ export interface IndustryPreset {
   is_custom?: boolean;
 }
 
+export interface VariantCritiqueResult {
+  score: number;
+  tier: "S" | "A" | "B" | "C";
+  hierarchy: number;
+  typography: number;
+  whitespace: number;
+  polish: number;
+  verdict: string;
+  strengths: string[];
+  improvements: string[];
+  critiqued_at: string;
+}
+
 export interface DesignAssetsConfig {
   hidden_pairings: string[];
   hidden_patterns: string[];
@@ -83,6 +96,8 @@ export interface DesignAssetsConfig {
   custom_pairings: TypographyPairing[];
   custom_patterns: ColorPattern[];
   custom_presets: IndustryPreset[];
+  /** AI Vision aesthetic critiques per section and variant */
+  variant_critiques?: Record<string, Record<string, VariantCritiqueResult>>;
 }
 
 // ─── Built-in data (loaded from backend) ──────────────────────────────────────
@@ -160,6 +175,7 @@ const DEFAULT_CONFIG: DesignAssetsConfig = {
   custom_pairings: [],
   custom_patterns: [],
   custom_presets: [],
+  variant_critiques: {},
 };
 
 let _cache: DesignAssetsConfig = { ...DEFAULT_CONFIG };
