@@ -344,7 +344,6 @@ interface LinkTypeInputProps {
   label: string;
   defaultWaNumber?: string;
   suggestedHash?: string;
-  isEN?: boolean;
 }
 
 function LinkTypeInput({
@@ -356,8 +355,9 @@ function LinkTypeInput({
   label,
   defaultWaNumber,
   suggestedHash,
-  isEN = false,
 }: LinkTypeInputProps) {
+  const { t, locale } = useI18n();
+  const isEN = locale === "en";
   const isWa = /wa\.me|whatsapp\.com|whatsapp:\/\//i.test(urlValue);
   const [linkType, setLinkType] = React.useState<"whatsapp" | "custom">(isWa ? "whatsapp" : "custom");
 
@@ -1485,7 +1485,6 @@ export default function SectionForms({
             label={t("dashboard.sitesEditor.heroCtaLink")}
             defaultWaNumber={content.contact?.phone}
             suggestedHash={content.catalog ? "#catalog" : content.menu ? "#menu" : "#contact"}
-            isEN={locale === "en"}
           />
           {/* Secondary CTA (opsional, dipakai oleh beberapa varian) */}
           {showIfVariant(HERO_SECONDARY_VARIANTS) && (
@@ -2102,7 +2101,6 @@ export default function SectionForms({
             label={t("dashboard.sitesEditor.ctaButtonLink")}
             defaultWaNumber={content.contact?.phone}
             suggestedHash={content.catalog ? "#catalog" : content.menu ? "#menu" : "#contact"}
-            isEN={locale === "en"}
           />
         </div>
       )}
