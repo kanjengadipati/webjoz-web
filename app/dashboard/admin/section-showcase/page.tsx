@@ -1281,6 +1281,8 @@ function VariantPreviewCard({
       className={`bg-card rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all border ${
         isHidden
           ? "border-destructive/40 bg-card/60 ring-1 ring-destructive/20"
+          : critiqueData?.tier === "C"
+          ? "border-destructive/30 ring-1 ring-destructive/15"
           : "border-border/90"
       }`}
     >
@@ -1368,6 +1370,23 @@ function VariantPreviewCard({
                   }
                 >
                   {critiqueData.scored_by === "vision_ai" ? "🤖 AI" : "🌱 Seed"}
+                </span>
+              )}
+              {/* Tier C / B warning badge */}
+              {critiqueData && !isHidden && (critiqueData.tier === "C" || critiqueData.tier === "B") && (
+                <span
+                  className={`px-1.5 py-0.5 rounded-full border text-[9px] font-bold flex items-center gap-0.5 ${
+                    critiqueData.tier === "C"
+                      ? "bg-destructive/10 text-destructive border-destructive/30"
+                      : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30"
+                  }`}
+                  title={
+                    critiqueData.tier === "C"
+                      ? "Skor buruk — pertimbangkan untuk disembunyikan"
+                      : "Skor cukup — bisa ditingkatkan"
+                  }
+                >
+                  {critiqueData.tier === "C" ? "⚠️ Perlu Perbaikan" : "💡 Bisa Ditingkatkan"}
                 </span>
               )}
             </div>
@@ -1719,16 +1738,37 @@ function VariantPreviewCard({
                   </div>
                 )}
 
-                {/* Improvements */}
+                {/* Improvements — more prominent for Tier B/C */}
                 {critiqueData.improvements && critiqueData.improvements.length > 0 && (
-                  <div className="space-y-2">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
-                      <TrendingUp className="size-3.5" /> Saran Peningkatan
+                  <div
+                    className={`space-y-2 rounded-xl p-3 border ${
+                      critiqueData.tier === "C"
+                        ? "bg-destructive/5 border-destructive/20"
+                        : critiqueData.tier === "B"
+                        ? "bg-amber-500/5 border-amber-500/20"
+                        : "bg-transparent border-transparent p-0"
+                    }`}
+                  >
+                    <h4
+                      className={`text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${
+                        critiqueData.tier === "C"
+                          ? "text-destructive"
+                          : "text-amber-600 dark:text-amber-400"
+                      }`}
+                    >
+                      <TrendingUp className="size-3.5" />
+                      {critiqueData.tier === "C"
+                        ? "⚠️ Harus Diperbaiki"
+                        : "Saran Peningkatan"}
                     </h4>
                     <ul className="space-y-1.5 text-xs text-muted-foreground">
                       {critiqueData.improvements.map((imp, i) => (
                         <li key={i} className="flex items-start gap-2">
-                          <span className="size-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0" />
+                          <span
+                            className={`size-1.5 rounded-full mt-1.5 shrink-0 ${
+                              critiqueData.tier === "C" ? "bg-destructive" : "bg-amber-500"
+                            }`}
+                          />
                           <span>{imp}</span>
                         </li>
                       ))}
@@ -1763,20 +1803,46 @@ function VariantPreviewCard({
 
             {/* Modal Footer */}
             <div className="px-6 py-3 border-t border-border/80 flex items-center justify-between bg-muted/20">
-              <button
-                type="button"
-                onClick={() => {
-                  setShowCritiqueModal(false);
-                  if (previewCardRef.current && onCritique) {
-                    onCritique(previewCardRef.current);
-                  }
-                }}
-                disabled={isCritiquing}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-primary/10 hover:bg-primary/20 text-primary border border-primary/25 transition-all"
-              >
-                <Sparkles className="size-3.5" />
-                <span>Nilai Ulang Sekarang</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowCritiqueModal(false);
+                    if (previewCardRef.current && onCritique) {
+                      onCritique(previewCardRef.current);
+                    }
+                  }}
+                  disabled={isCritiquing}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-primary/10 hover:bg-primary/20 text-primary border border-primary/25 transition-all"
+                >
+                  <Sparkles className="size-3.5" />
+                  <span>Nilai Ulang Sekarang</span>
+                </button>
+
+                {/* Quick-hide for Tier B / C only, when variant is currently visible */}
+                {(critiqueData.tier === "C" || critiqueData.tier === "B") && !isHidden && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowCritiqueModal(false);
+                      onToggleHide();
+                    }}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all ${
+                      critiqueData.tier === "C"
+                        ? "bg-destructive/10 hover:bg-destructive/20 text-destructive border-destructive/30"
+                        : "bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30"
+                    }`}
+                    title={
+                      critiqueData.tier === "C"
+                        ? "Sembunyikan varian ini dari produksi (skor terlalu rendah)"
+                        : "Sembunyikan varian ini sementara"
+                    }
+                  >
+                    <EyeOff className="size-3.5" />
+                    <span>Sembunyikan Varian</span>
+                  </button>
+                )}
+              </div>
 
               <button
                 type="button"
