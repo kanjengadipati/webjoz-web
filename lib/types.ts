@@ -104,6 +104,8 @@ export type User = {
   is_verified: boolean;
   phone_verified?: boolean;
   email_verified?: boolean;
+  created_at?: string;
+  last_login_at?: string;
 };
 
 export enum SectionState {
