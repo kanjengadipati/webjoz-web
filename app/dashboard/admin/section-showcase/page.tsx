@@ -39,7 +39,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
-import { toPng } from "html-to-image";
+import { toJpeg } from "html-to-image";
 import { request } from "@/lib/api/client";
 import { CartProvider } from "@/components/cart";
 import { buildCssVars, loadGoogleFont } from "@/components/templates/helpers";
@@ -213,10 +213,11 @@ export default function SectionShowcasePage() {
       }
       setCritiquingVariant(critiqueKey);
       try {
-        // 1. Capture preview as PNG data URI
-        const dataUrl = await toPng(previewEl, {
-          quality: 0.85,
-          pixelRatio: 1.5,
+        // 1. Capture preview as compressed JPEG data URI
+        const dataUrl = await toJpeg(previewEl, {
+          quality: 0.8,
+          pixelRatio: 1.0,
+          backgroundColor: "#ffffff",
           skipFonts: false,
         });
 
