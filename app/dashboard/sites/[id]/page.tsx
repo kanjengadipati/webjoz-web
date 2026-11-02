@@ -2349,7 +2349,7 @@ export default function SiteEditorPage() {
                 className="text-[9px] font-extrabold uppercase tracking-widest text-sidebar-subtle-foreground group-hover:text-sidebar-foreground transition-colors select-none mt-4"
                 style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
               >
-                Panel Editor
+                {t("dashboard.sitesEditor.panelEditor")}
               </span>
             )}
           </div>
@@ -2567,10 +2567,10 @@ export default function SiteEditorPage() {
                 type="button"
                 onClick={openGuide}
                 className="flex h-7 items-center gap-1.5 rounded-md border border-border/60 bg-muted/40 px-2.5 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer active:scale-95"
-                title="Buka Panduan Editor"
+                title={t("dashboard.sitesEditor.openGuideTitle")}
               >
                 <HelpCircle className="w-3.5 h-3.5" />
-                <span>Panduan</span>
+                <span>{t("dashboard.sitesEditor.guideBtn")}</span>
               </button>
 
               {/* Quality score */}
@@ -2962,7 +2962,7 @@ export default function SiteEditorPage() {
                 <div className="w-9 h-1 rounded-full bg-sidebar-foreground/20" />
                 {sheetCollapsed && (
                   <span className="ml-2 text-[10px] font-extrabold uppercase tracking-widest text-sidebar-muted-foreground select-none">
-                    Panel Editor
+                    {t("dashboard.sitesEditor.panelEditor")}
                   </span>
                 )}
               </div>

@@ -2716,6 +2716,9 @@ export interface Translations {
       heroCarouselImages: string;
       heroCarouselImagesCount: string;
       heroAddImage: string;
+      panelEditor: string;
+      guideBtn: string;
+      openGuideTitle: string;
       heroCarouselMainSlide: string;
       heroCarouselPrimary: string;
       heroCarouselNoImage: string;
@@ -6124,6 +6127,9 @@ export const translations: Record<Locale, Translations> = {
         heroCarouselImages: "Gambar Carousel",
         heroCarouselImagesCount: "gambar",
         heroAddImage: "+ Tambah gambar",
+        panelEditor: "Panel Editor",
+        guideBtn: "Panduan",
+        openGuideTitle: "Buka Panduan Editor",
         heroCarouselMainSlide: "Gambar Utama (slide 1)",
         heroCarouselPrimary: "utama",
         heroCarouselNoImage: "Belum ada",
@@ -9584,6 +9590,9 @@ export const translations: Record<Locale, Translations> = {
         heroCarouselImages: "Carousel Images",
         heroCarouselImagesCount: "images",
         heroAddImage: "+ Add image",
+        panelEditor: "Editor Panel",
+        guideBtn: "Guide",
+        openGuideTitle: "Open Editor Guide",
         heroCarouselMainSlide: "Main Image (slide 1)",
         heroCarouselPrimary: "primary",
         heroCarouselNoImage: "No image",

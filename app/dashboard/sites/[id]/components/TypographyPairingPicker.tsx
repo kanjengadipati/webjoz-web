@@ -30,7 +30,8 @@ export default function TypographyPairingPicker({
   onFieldChange,
   onRestoreAi,
 }: Props) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const isEN = locale === "en";
   const [showManual, setShowManual] = useState(false);
   const pairings = getEnabledTypographyPairings();
 
@@ -135,7 +136,7 @@ export default function TypographyPairingPicker({
               {t("dashboard.sitesEditor.activeBadge")}
             </span>
               )}
-              <p className={`text-[10px] font-bold text-sidebar-foreground mb-1 truncate ${isActive ? "pr-16" : ""}`}>{pairing.name}</p>
+              <p className={`text-[10px] font-bold text-sidebar-foreground mb-1 truncate ${isActive ? "pr-16" : ""}`}>{isEN ? (pairing.nameEn || pairing.name) : pairing.name}</p>
               <div className="space-y-0.5 pointer-events-none">
                 <p
                   style={{

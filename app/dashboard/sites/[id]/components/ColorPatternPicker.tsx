@@ -81,7 +81,8 @@ export default function ColorPatternPicker({
   onApply,
   onRestoreAi,
 }: Props) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const isEN = locale === "en";
   const currentPalette = designToken?.palette || {};
   const patterns = getEnabledColorPatterns();
   const aiPalette = aiDesignToken?.palette || currentPalette;
@@ -176,7 +177,7 @@ export default function ColorPatternPicker({
             >
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <p className="text-[10px] font-bold text-sidebar-foreground truncate">{pattern.name}</p>
+                  <p className="text-[10px] font-bold text-sidebar-foreground truncate">{isEN ? (pattern.nameEn || pattern.name) : pattern.name}</p>
                   {isActive && (
                     <span className="inline-flex items-center gap-0.5 rounded-full bg-primary px-1.5 py-0.5 text-[8px] font-black text-primary-foreground shrink-0">
                       <Check className="h-2 w-2 stroke-[3]" />
@@ -202,7 +203,7 @@ export default function ColorPatternPicker({
               </div>
 
               <p className="text-[9px] text-sidebar-subtle-foreground leading-tight line-clamp-2">
-                {pattern.description}
+                {isEN ? (pattern.descriptionEn || pattern.description) : pattern.description}
               </p>
             </button>
           );
