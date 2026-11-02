@@ -128,6 +128,7 @@ export default function HeroNeoBrutalist({
               style={{
                 fontFamily: "var(--dt-heading-font)",
                 fontWeight: 900,
+                // Ukuran heading brutals disengaja; tidak mengikuti HERO_HEADING_SIZE.
                 fontSize: "clamp(2.5rem, 5.5vw, var(--dt-hero-size, 4.5rem))",
                 lineHeight: 1.0,
                 color: "var(--dt-text)",

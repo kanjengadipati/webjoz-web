@@ -197,6 +197,7 @@ export default function HeroSplitEditorial({
               fontFamily: "var(--dt-heading-font)",
               fontWeight: "var(--dt-heading-weight)" as any,
               fontStyle: "var(--dt-heading-style)" as any,
+              // Ukuran heading editorial split disengaja; tidak mengikuti HERO_HEADING_SIZE.
               fontSize: "clamp(2.5rem, 5vw, var(--dt-hero-size, 4.5rem))",
               lineHeight: 1.05,
               color: "var(--dt-text)",

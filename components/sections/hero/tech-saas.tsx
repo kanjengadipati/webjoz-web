@@ -1,7 +1,7 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ArrowRight, Zap, Shield, BarChart2, Eye, EyeOff } from "lucide-react";
+import { Zap, Shield, BarChart2, Eye, EyeOff } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 
 const TABS = ["analytics", "deploy", "monitor"] as const;
@@ -26,7 +26,7 @@ const TAB_LABELS: Record<Tab, { id: string; en: string }> = {
  */
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
 import { HERO_HEADING_SIZE } from "./primitives";
-import { safeHref, isExternalHref } from "@/lib/safe-url";
+import { HeroCta } from "./primitives";
 
 export default function HeroTechSaaS({
   hero: h,
@@ -224,10 +224,11 @@ export default function HeroTechSaaS({
           transition={isInlineEditing ? { duration: 0 } : { duration: 0.4, delay: 0.3 }}
           style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", justifyContent: "center" }}
         >
-          <a
-            href={safeHref(h.cta_url, "#contact")}
-            target={isExternalHref(h.cta_url) ? "_blank" : undefined}
-            rel={isExternalHref(h.cta_url) ? "noopener noreferrer" : undefined}
+          <HeroCta
+            href={h.cta_url}
+            label={h.cta_text}
+            fieldKey="cta_text"
+            iconSize={16}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -240,24 +241,18 @@ export default function HeroTechSaaS({
               fontWeight: 700,
               fontSize: "0.875rem",
             }}
-          >
-            <InlineText
-              section="hero"
-              fieldKey="cta_text"
-              value={h.cta_text}
-              onUpdateField={onUpdateField}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              as="span"
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={handleEditingStateChange}
-            /> <ArrowRight style={{ width: 16, height: 16 }} />
-          </a>
+          />
           {hasSecondary && (
-            <a
-              href={safeHref(h.cta_secondary_url, "#contact")}
-              target={isExternalHref(h.cta_secondary_url) ? "_blank" : undefined}
-              rel={isExternalHref(h.cta_secondary_url) ? "noopener noreferrer" : undefined}
+            <HeroCta
+              href={h.cta_secondary_url}
+              label={h.cta_secondary_text ?? ""}
+              fieldKey="cta_secondary_text"
+              icon={null}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -270,19 +265,12 @@ export default function HeroTechSaaS({
                 fontWeight: 600,
                 fontSize: "0.875rem",
               }}
-            >
-              <InlineText
-                section="hero"
-                fieldKey="cta_secondary_text"
-                value={h.cta_secondary_text ?? ""}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={isSelected}
-                as="span"
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={handleEditingStateChange}
-              />
-            </a>
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={handleEditingStateChange}
+            />
           )}
         </motion.div>
 

@@ -1,12 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowRight, Clock, Play } from "lucide-react";
+import { Clock, Play } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import PhotoCredit from "../PhotoCredit";
 import { InlineText, InlineImage } from "../../templates/shared";
-import { HERO_HEADING_SIZE } from "./primitives";
-import { safeHref, isExternalHref } from "@/lib/safe-url";
+import { HERO_HEADING_SIZE, HeroCta } from "./primitives";
 
 /**
  * Video Background — fullscreen looping video (mp4/webm) with the hero image
@@ -20,6 +19,7 @@ export default function HeroVideoBg({
   isEditorMode,
   isSelected,
   collapseSheetForInlineEdit,
+  onEditingStateChange,
 }: HeroVariantProps) {
   const isEN = language === "en";
   const reduce = useReducedMotion();
@@ -27,8 +27,6 @@ export default function HeroVideoBg({
   const rawVideo = typeof h.video_url === "string" ? h.video_url.trim() : "";
   const videoUrl = /^https?:\/\//i.test(rawVideo) ? rawVideo : null;
   const useVideo = Boolean(videoUrl) && !reduce && !videoFailed;
-  const ctaHref = safeHref(h.cta_url);
-  const ext = isExternalHref(h.cta_url);
   const hasSecondary = Boolean(h.cta_secondary_text?.trim() && h.cta_secondary_url?.trim());
   const defaultCta = isEN ? "Get Started" : "Mulai Sekarang";
   const common = {
@@ -223,9 +221,12 @@ export default function HeroVideoBg({
 
         <div className="flex flex-wrap items-center gap-3 pt-2">
           {(h.cta_text || isEditorMode) && (
-            <a
-              href={ctaHref}
-              {...(ext ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+            <HeroCta
+              href={h.cta_url}
+              label={h.cta_text || defaultCta}
+              fieldKey="cta_text"
+              iconSize={18}
+              iconClassName="transition-transform duration-300 group-hover:translate-x-1"
               className="group inline-flex items-center gap-2 px-6 py-3.5 text-sm md:text-base font-bold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
               style={{
                 background: "#FFFFFF",
@@ -234,16 +235,20 @@ export default function HeroVideoBg({
                 boxShadow: "0 12px 30px -4px rgba(0,0,0,0.45)",
                 textDecoration: "none",
               }}
-            >
-              <InlineText {...common} fieldKey="cta_text" value={h.cta_text || defaultCta} as="span" />
-              <ArrowRight className="size-4.5 transition-transform duration-300 group-hover:translate-x-1" aria-hidden />
-            </a>
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
           )}
 
           {hasSecondary && (
-            <a
-              href={safeHref(h.cta_secondary_url, "#contact")}
-              {...(isExternalHref(h.cta_secondary_url) ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+            <HeroCta
+              href={h.cta_secondary_url}
+              label={h.cta_secondary_text}
+              fieldKey="cta_secondary_text"
+              icon={null}
               className="inline-flex items-center gap-2 px-6 py-3.5 text-sm md:text-base font-semibold backdrop-blur-md transition-colors hover:bg-white/15"
               style={{
                 background: "rgba(255,255,255,0.08)",
@@ -252,9 +257,12 @@ export default function HeroVideoBg({
                 borderRadius: "var(--dt-radius, 12px)",
                 textDecoration: "none",
               }}
-            >
-              <InlineText {...common} fieldKey="cta_secondary_text" value={h.cta_secondary_text} as="span" />
-            </a>
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
           )}
         </div>
       </div>

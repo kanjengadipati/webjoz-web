@@ -1,10 +1,9 @@
 "use client";
 import React from "react";
-import { ArrowRight } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import PhotoCredit from "../PhotoCredit";
 import { InlineText, InlineImage } from "../../templates/shared";
-import { safeHref, isExternalHref } from "@/lib/safe-url";
+import { HeroCta } from "./primitives";
 
 /**
  * Proof Bar — headline tegas + baris angka pencapaian dan jam buka.
@@ -27,9 +26,6 @@ export default function HeroProofBar({
     isSelected,
     collapseSheetForInlineEdit,
   };
-  const ctaHref = safeHref(h.cta_url);
-  const ext = isExternalHref(h.cta_url);
-
   // Parsing identik dengan personal-billboard: stats → fallback badge_text "v|l,v|l".
   const rawStats = h.badge_text?.includes("|")
     ? h.badge_text.split(",").map((s) => {
@@ -109,19 +105,23 @@ export default function HeroProofBar({
               }}
             />
             {(h.cta_text || isEditorMode) && (
-              <a
-                href={ctaHref}
-                {...(ext ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              <HeroCta
+                href={h.cta_url}
+                label={h.cta_text}
+                fieldKey="cta_text"
+                iconSize={18}
                 className="inline-flex items-center gap-2 mt-8 px-7 py-3.5 font-semibold"
                 style={{
                   background: "var(--dt-primary)",
                   color: "var(--dt-on-primary, #fff)",
                   borderRadius: "var(--dt-radius, 12px)",
                 }}
-              >
-                <InlineText {...common} fieldKey="cta_text" value={h.cta_text} />
-                <ArrowRight size={18} aria-hidden />
-              </a>
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
             )}
           </div>
 
