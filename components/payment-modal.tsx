@@ -65,7 +65,7 @@ const PaymentModal = ({ snapToken, clientKey, onClose, onPaymentSuccess }: Payme
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="bg-background border border-border rounded-2xl p-6 w-full max-w-md mx-4">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold">{t("dashboard.domains.paymentTitle") || "Pembayaran"}</h3>
+          <h3 className="text-lg font-semibold">{t("dashboard.domains.paymentTitle")}</h3>
           <button
             onClick={onClose}
             className="p-1 rounded-lg hover:bg-muted transition-colors cursor-pointer"
@@ -81,7 +81,7 @@ const PaymentModal = ({ snapToken, clientKey, onClose, onPaymentSuccess }: Payme
               onClick={handleManualCheck}
               className="px-4 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors cursor-pointer"
             >
-              {t("dashboard.domains.paymentManualCheck") || "Cek Status Pembayaran"}
+              {t("dashboard.domains.paymentManualCheck")}
             </button>
           </div>
         ) : (
@@ -92,15 +92,15 @@ const PaymentModal = ({ snapToken, clientKey, onClose, onPaymentSuccess }: Payme
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
             </div>
-            <p className="text-sm text-muted-foreground">{t("dashboard.domains.paymentLoading") || "Membuka gateway pembayaran..."}</p>
+            <p className="text-sm text-muted-foreground">{t("dashboard.domains.paymentLoading")}</p>
             <p className="text-xs text-muted-foreground mt-2 mb-3">
-              {t("dashboard.domains.paymentInstruction") || "Jika tidak terbuka otomatis, klik di bawah ini"}
+              {t("dashboard.domains.paymentInstruction")}
             </p>
             <button
               onClick={handleManualCheck}
               className="px-4 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors cursor-pointer"
             >
-              {t("dashboard.domains.paymentOpenGateway") || "Buka Gateway Pembayaran"}
+              {t("dashboard.domains.paymentOpenGateway")}
             </button>
           </div>
         )}

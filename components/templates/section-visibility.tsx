@@ -55,8 +55,8 @@ export function SectionVisibilityButton({ section }: { section: string }) {
   const { isHidden, toggle } = useSectionVisibility(section);
   const { t } = useI18n();
   const label = isHidden
-    ? (t("dashboard.sitesEditor.showSection") || "Tampilkan section")
-    : (t("dashboard.sitesEditor.hideSection") || "Sembunyikan section");
+    ? t("dashboard.sitesEditor.showSection")
+    : t("dashboard.sitesEditor.hideSection");
   return (
     <>
       <button
@@ -89,12 +89,12 @@ export function HiddenSectionNotice({
   const isEmpty = status === "hidden-empty";
 
   const text = isEmpty
-    ? (t("dashboard.sitesEditor.hiddenEmpty") || "Kosong, belum ada konten")
-    : (t("dashboard.sitesEditor.hiddenOnSite") || "Disembunyikan, tidak tampil di situs");
+    ? t("dashboard.sitesEditor.hiddenEmpty")
+    : t("dashboard.sitesEditor.hiddenOnSite");
 
   const action = isEmpty
-    ? (t("dashboard.sitesEditor.showAndFill") || "Tampilkan dan isi")
-    : (t("dashboard.sitesEditor.show") || "Tampilkan");
+    ? t("dashboard.sitesEditor.showAndFill")
+    : t("dashboard.sitesEditor.show");
 
   return (
     <div
@@ -114,7 +114,7 @@ export function HiddenSectionNotice({
       </div>
       {isEmpty && (
         <p className="text-[9px] font-normal text-rose-300/70 max-w-[260px] text-center leading-snug">
-          {t("dashboard.sitesEditor.hiddenEmptyHint") || "Disembunyikan lagi saat dimuat ulang bila masih kosong"}
+          {t("dashboard.sitesEditor.hiddenEmptyHint")}
         </p>
       )}
     </div>

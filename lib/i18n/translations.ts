@@ -1693,6 +1693,7 @@ export interface Translations {
       accessDeniedDesc: string;
       pageTitle: string;
       pageDesc: string;
+      pageDescShort: string;
       cardTotal: string;
       cardTotalDesc: string;
       cardCommission: string;
@@ -2120,6 +2121,8 @@ export interface Translations {
       emptyItemsDesc: string;
       addItem: string;
       itemName: string;
+      itemNameExampleMenu: string;
+      itemNameExampleService: string;
       display: string;
       promoPrice: string;
       clearPromo: string;
@@ -2134,6 +2137,9 @@ export interface Translations {
       descriptionPlaceholder: string;
       labelTagsMenu: string;
       tagsMenuHint: string;
+      phSectionTitle: string;
+      phSectionEyebrow: string;
+      phSectionSubtitle: string;
     };
     sitesBlog: {
       title: string;
@@ -5165,6 +5171,7 @@ export const translations: Record<Locale, Translations> = {
         accessDeniedDesc: "Anda belum memiliki akses ke halaman komisi & bonus. Hubungi admin untuk mengaktifkan akses sales.",
         pageTitle: "Pendapatan Saya",
         pageDesc: "Komisi bertingkat Tier 1 {t1}% ({months} bulan pertama) → Tier 2 {t2}%, plus bonus onboarding & milestone.",
+        pageDescShort: "Komisi bertingkat plus bonus onboarding & milestone.",
         cardTotal: "Total Pendapatan",
         cardTotalDesc: "Komisi + Bonus terakumulasi",
         cardCommission: "Komisi Recurring",
@@ -5592,6 +5599,8 @@ export const translations: Record<Locale, Translations> = {
         emptyItemsDesc: "Belum ada {itemLabel}. Klik tombol di bawah untuk menambah.",
         addItem: "Tambah {itemLabel}",
         itemName: "Nama {itemLabel}",
+        itemNameExampleMenu: "cth. Nasi Goreng Spesial",
+        itemNameExampleService: "cth. Paket Layanan Pro",
         display: "tampilan",
         promoPrice: "Harga Promo",
         clearPromo: "Hapus Promo",
@@ -5606,6 +5615,9 @@ export const translations: Record<Locale, Translations> = {
         descriptionPlaceholder: "Jelaskan keunggulan dan spesifikasi {itemLabel} ini...",
         labelTagsMenu: "Tags Menu",
         tagsMenuHint: "misal: Pedas, Vegetarian, Signature",
+        phSectionTitle: "cth. {sectionTitle}",
+        phSectionEyebrow: "cth. Pilihan {sectionTitle}",
+        phSectionSubtitle: "cth. Nikmati berbagai pilihan menu terbaik kami",
       },
       sitesBlog: {
         title: "Blog Postingan",
@@ -8689,6 +8701,7 @@ export const translations: Record<Locale, Translations> = {
         accessDeniedDesc: "You don't have access to the commissions & bonuses page yet. Contact an admin to enable sales access.",
         pageTitle: "My Earnings",
         pageDesc: "Tiered commission Tier 1 {t1}% (first {months} months) → Tier 2 {t2}%, plus onboarding & milestone bonuses.",
+        pageDescShort: "Tiered commissions plus onboarding & milestone bonuses.",
         cardTotal: "Total Earnings",
         cardTotalDesc: "Accumulated Commission + Bonuses",
         cardCommission: "Recurring Commission",
@@ -9116,6 +9129,8 @@ export const translations: Record<Locale, Translations> = {
         emptyItemsDesc: "No {itemLabel} yet. Click the button below to add one.",
         addItem: "Add {itemLabel}",
         itemName: "{itemLabel} name",
+        itemNameExampleMenu: "e.g. Special Fried Rice",
+        itemNameExampleService: "e.g. Pro Service Package",
         display: "display",
         promoPrice: "Promo Price",
         clearPromo: "Remove Promo",
@@ -9130,6 +9145,9 @@ export const translations: Record<Locale, Translations> = {
         descriptionPlaceholder: "Describe the strengths and specifications of this {itemLabel}...",
         labelTagsMenu: "Menu Tags",
         tagsMenuHint: "e.g. Spicy, Vegetarian, Signature",
+        phSectionTitle: "e.g. {sectionTitle}",
+        phSectionEyebrow: "e.g. Best {sectionTitle}",
+        phSectionSubtitle: "e.g. Enjoy our best selection of options",
       },
       sitesBlog: {
         title: "Blog Posts",

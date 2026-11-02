@@ -1624,7 +1624,7 @@ export default function SiteEditorPage() {
               <div
                 onClick={() => setSectionNavCollapsed((v) => !v)}
                 className="group px-2.5 py-1.5 flex items-center justify-between cursor-pointer hover:bg-sidebar-muted transition-colors select-none"
-                title={sectionNavCollapsed ? (t("dashboard.sitesEditor.showPageSections") || "Tampilkan Bagian Halaman") : (t("dashboard.sitesEditor.expandEditArea") || "Perluas Area Edit")}
+                title={sectionNavCollapsed ? t("dashboard.sitesEditor.showPageSections") : t("dashboard.sitesEditor.expandEditArea")}
               >
                 <div className="flex items-center gap-1.5">
                   <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-sidebar-muted-foreground group-hover:text-sidebar-foreground">{t("dashboard.sitesEditor.pageSections")}</p>
@@ -1634,7 +1634,7 @@ export default function SiteEditorPage() {
                 </div>
                 <div className="flex items-center gap-1 text-sidebar-muted-foreground hover:text-sidebar-foreground">
                   <span className="text-[8px] font-medium tracking-wide">
-                    {sectionNavCollapsed ? (t("dashboard.sitesEditor.show") || "Tampilkan") : (t("dashboard.sitesEditor.hide") || "Ciutkan")}
+                    {sectionNavCollapsed ? t("dashboard.sitesEditor.show") : t("dashboard.sitesEditor.hide")}
                   </span>
                   <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${sectionNavCollapsed ? "" : "rotate-180"}`} />
                 </div>
@@ -1758,7 +1758,7 @@ export default function SiteEditorPage() {
                                 type="button"
                                 onClick={(e) => { e.stopPropagation(); addSectionToPlan(key); }}
                                 onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); addSectionToPlan(key); } }}
-                                title={t("dashboard.sitesEditor.addToPage") || "Tambahkan ke halaman"}
+                                title={t("dashboard.sitesEditor.addToPage")}
                                 className="p-0.5 rounded transition-colors cursor-pointer shrink-0 text-sky-400 hover:text-sky-300"
                               >
                                 <Plus className="w-2.5 h-2.5" />
@@ -2079,12 +2079,12 @@ export default function SiteEditorPage() {
                           <button
                             type="button"
                             onClick={() => addSectionToPlan(activeTab)}
-                            title={t("dashboard.sitesEditor.addToPage") || "Tambahkan ke halaman"}
+                            title={t("dashboard.sitesEditor.addToPage")}
                             className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold transition-all hover:bg-sidebar-muted cursor-pointer"
                             style={{ color: "#38bdf8" }}
                           >
                             <Plus className="w-3 h-3" />
-                            {t("dashboard.sitesEditor.addToPage") || "Tambahkan"}
+                            {t("dashboard.sitesEditor.addToPage")}
                           </button>
                         );
                       }
@@ -2097,7 +2097,7 @@ export default function SiteEditorPage() {
                           style={{ color: isHiddenActive ? "#f87171" : "#94a3b8" }}
                         >
                           {isHiddenActive
-                            ? <><EyeOff className="w-3 h-3" /> {activeStatus === "hidden-empty" ? (t("dashboard.sitesEditor.statusEmpty") || "Kosong") : t("dashboard.sitesEditor.hidden")}</>
+                            ? <><EyeOff className="w-3 h-3" /> {activeStatus === "hidden-empty" ? t("dashboard.sitesEditor.statusEmpty") : t("dashboard.sitesEditor.hidden")}</>
                             : <><Eye className="w-3 h-3" /> {t("dashboard.sitesEditor.hide")}</>
                           }
                         </button>
@@ -3074,7 +3074,7 @@ export default function SiteEditorPage() {
                               style={{ color: "#38bdf8" }}
                             >
                               <Plus className="w-3 h-3" />
-                              {t("dashboard.sitesEditor.addToPage") || "Tambahkan"}
+                              {t("dashboard.sitesEditor.addToPage")}
                             </button>
                           );
                         }
@@ -3086,7 +3086,7 @@ export default function SiteEditorPage() {
                             style={{ color: isHiddenActive ? "#f87171" : "#94a3b8" }}
                           >
                             {isHiddenActive
-                              ? <><EyeOff className="w-3 h-3" /> {activeStatus === "hidden-empty" ? (t("dashboard.sitesEditor.statusEmpty") || "Kosong") : t("dashboard.sitesEditor.hidden")}</>
+                              ? <><EyeOff className="w-3 h-3" /> {activeStatus === "hidden-empty" ? t("dashboard.sitesEditor.statusEmpty") : t("dashboard.sitesEditor.hidden")}</>
                               : <><Eye className="w-3 h-3" /> {t("dashboard.sitesEditor.hide")}</>
                             }
                           </button>

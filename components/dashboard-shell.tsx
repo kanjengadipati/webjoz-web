@@ -683,7 +683,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                       {pathname === "/dashboard/settings" && t("dashboard.subSettings")}
                       {pathname === "/dashboard/admin/templates" && t("dashboard.adminTemplates.subtitle")}
                       {pathname === "/dashboard/sales" && t("dashboard.sales.pageDesc")}
-                      {pathname === "/dashboard/sales/commissions" && t("dashboard.salesCommissions.pageDesc")}
+                      {pathname === "/dashboard/sales/commissions" && t("dashboard.salesCommissions.pageDescShort")}
                     </p>
                   )}
                 </div>
