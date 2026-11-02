@@ -81,6 +81,8 @@ export interface VariantCritiqueResult {
   strengths: string[];
   improvements: string[];
   critiqued_at: string;
+  /** "vision_ai" = scored by Vision AI in real-time; "seed" = baseline seed data */
+  scored_by?: "vision_ai" | "seed";
 }
 
 export interface DesignAssetsConfig {

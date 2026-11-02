@@ -1353,6 +1353,23 @@ function VariantPreviewCard({
                   <span>{critiqueData.score}/100 · Tier {critiqueData.tier}</span>
                 </button>
               )}
+              {/* Source badge: Vision AI vs Seed */}
+              {critiqueData && (
+                <span
+                  className={`px-1.5 py-0.5 rounded-full border text-[9px] font-semibold flex items-center gap-0.5 ${
+                    critiqueData.scored_by === "vision_ai"
+                      ? "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/25"
+                      : "bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/25"
+                  }`}
+                  title={
+                    critiqueData.scored_by === "vision_ai"
+                      ? "Dinilai oleh Vision AI secara real-time"
+                      : "Nilai dari data seed baseline"
+                  }
+                >
+                  {critiqueData.scored_by === "vision_ai" ? "🤖 AI" : "🌱 Seed"}
+                </span>
+              )}
             </div>
             {variant.description && (
               <p className="text-xs text-muted-foreground mt-0.5">{variant.description}</p>
@@ -1720,10 +1737,26 @@ function VariantPreviewCard({
                 )}
               </div>
 
-              {/* Timestamp */}
+              {/* Timestamp + Source */}
               {critiqueData.critiqued_at && (
-                <div className="text-[11px] text-muted-foreground text-right pt-2 border-t border-border/60">
-                  Dievaluasi pada: {new Date(critiqueData.critiqued_at).toLocaleString("id-ID")}
+                <div className="flex items-center justify-between pt-2 border-t border-border/60">
+                  <span
+                    className={`px-2 py-0.5 rounded-full border text-[10px] font-semibold flex items-center gap-1 ${
+                      critiqueData.scored_by === "vision_ai"
+                        ? "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/25"
+                        : "bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/25"
+                    }`}
+                    title={
+                      critiqueData.scored_by === "vision_ai"
+                        ? "Dinilai oleh Vision AI secara real-time"
+                        : "Nilai dari data seed baseline"
+                    }
+                  >
+                    {critiqueData.scored_by === "vision_ai" ? "🤖 Vision AI" : "🌱 Seed Baseline"}
+                  </span>
+                  <div className="text-[11px] text-muted-foreground">
+                    Dievaluasi pada: {new Date(critiqueData.critiqued_at).toLocaleString("id-ID")}
+                  </div>
                 </div>
               )}
             </div>
