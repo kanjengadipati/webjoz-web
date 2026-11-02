@@ -855,7 +855,7 @@ export default function AdminAiSettingsPage() {
                     </label>
                     <div className="relative">
                       <input
-                        className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 pr-8 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
+                        className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 pr-10 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
                         type={showKey ? "text" : "password"}
                         placeholder={editingTier !== "__new__" ? "••••••• (unchanged)" : "sk-..."}
                         value={formData.api_key}
@@ -863,8 +863,10 @@ export default function AdminAiSettingsPage() {
                       />
                       <button
                         type="button"
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-7 h-7 rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
                         onClick={() => setShowKey((v) => !v)}
+                        tabIndex={0}
+                        aria-label={showKey ? "Hide API key" : "Show API key"}
                       >
                         {showKey ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
                       </button>
