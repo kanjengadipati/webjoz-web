@@ -272,6 +272,20 @@ export default function SectionShowcasePage() {
     [authToken, pushToast]
   );
 
+  const [batchCritiquing, setBatchCritiquing] = useState<boolean>(false);
+  const [batchProgressText, setBatchProgressText] = useState<string>("");
+
+  const handleExportCritiquesJSON = useCallback(() => {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(variantCritiques, null, 2));
+    const downloadAnchor = document.createElement("a");
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", "variant_critiques_seed.json");
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+    pushToast("File variant_critiques_seed.json berhasil diunduh!", "success");
+  }, [variantCritiques, pushToast]);
+
   // Active preset token
   const activePreset = useMemo(() => {
     return SHOWCASE_PRESETS.find((p) => p.id === activePresetId) ?? SHOWCASE_PRESETS[0];
@@ -347,6 +361,37 @@ export default function SectionShowcasePage() {
       );
     });
   }, [allSectionOptions, currentSectionHiddenSet, statusFilter, searchQuery]);
+
+  const handleBatchCritiqueSection = useCallback(async () => {
+    if (batchCritiquing) return;
+    if (availableVariants.length === 0) {
+      pushToast("Tidak ada varian untuk dinilai.", "info");
+      return;
+    }
+
+    setBatchCritiquing(true);
+    let successCount = 0;
+
+    for (let i = 0; i < availableVariants.length; i++) {
+      const v = availableVariants[i];
+      setBatchProgressText(`${i + 1}/${availableVariants.length}`);
+      const el = document.getElementById(`preview-card-${selectedSection}-${v.value}`);
+      if (el) {
+        try {
+          await handleCritiqueVariant(selectedSection, v.value, el);
+          successCount++;
+        } catch {
+          // continue with next variant
+        }
+      }
+      // Brief delay to prevent burst
+      await new Promise((r) => setTimeout(r, 600));
+    }
+
+    setBatchCritiquing(false);
+    setBatchProgressText("");
+    pushToast(`Batch evaluasi selesai! Berhasil menilai ${successCount}/${availableVariants.length} varian.`, "success");
+  }, [batchCritiquing, availableVariants, selectedSection, handleCritiqueVariant, pushToast]);
 
   // Set default selected variant when switching section
   useEffect(() => {
@@ -745,7 +790,41 @@ export default function SectionShowcasePage() {
                   title="Buka semua varian dalam full screen (scroll)"
                 >
                   <Expand className="size-3" />
-                  <span>Full Screen Section</span>
+                  <span>Full Screen</span>
+                </button>
+
+                {/* Batch Critique All Variants */}
+                {displayMode === "all" && (
+                  <button
+                    type="button"
+                    disabled={batchCritiquing}
+                    onClick={handleBatchCritiqueSection}
+                    className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-lg bg-gradient-to-r from-purple-500/15 via-indigo-500/15 to-pink-500/15 hover:from-purple-500/25 hover:to-pink-500/25 text-purple-700 dark:text-purple-300 border border-purple-500/30 transition-all shadow-2xs cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
+                    title="Nilai semua varian aktif di section ini secara berurutan dengan AI Vision"
+                  >
+                    {batchCritiquing ? (
+                      <>
+                        <Loader2 className="size-3 animate-spin text-purple-600 dark:text-purple-400" />
+                        <span>Menilai {batchProgressText}...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="size-3 text-purple-600 dark:text-purple-400" />
+                        <span>Nilai Semua ({availableVariants.length})</span>
+                      </>
+                    )}
+                  </button>
+                )}
+
+                {/* Export Baseline JSON */}
+                <button
+                  type="button"
+                  onClick={handleExportCritiquesJSON}
+                  className="flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-lg bg-muted/60 hover:bg-muted text-muted-foreground hover:text-foreground border border-border/60 transition-all shadow-2xs cursor-pointer"
+                  title="Unduh data baseline evaluasi varian sebagai file JSON"
+                >
+                  <Copy className="size-3" />
+                  <span>Export JSON</span>
                 </button>
               </div>
               <p className="text-xs text-muted-foreground">
@@ -1421,6 +1500,7 @@ function VariantPreviewCard({
         <div className={viewportClass}>
           <div
             ref={previewCardRef}
+            id={`preview-card-${sectionKey}-${variant.value}`}
             style={{
               ...cssVars,
               backgroundColor: "var(--dt-bg, #ffffff)",
