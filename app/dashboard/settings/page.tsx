@@ -565,7 +565,7 @@ function DevicesTab() {
 function UsersTab() {
   const token = useAuthToken();
   const { pushToast } = useToast();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [users, setUsers] = useState<User[]>([]);
   const [search, setSearch] = useState("");
   const [role, setRole] = useState("");
@@ -662,6 +662,17 @@ function UsersTab() {
                     <div>
                       <div className="text-lg font-semibold">{user.name}</div>
                       <div className="mt-1 text-sm text-muted-foreground">{user.email}</div>
+                      {user.created_at && (
+                        <div className="mt-1 text-xs text-muted-foreground/70">
+                          {new Date(user.created_at).toLocaleDateString(locale === "id" ? "id-ID" : "en-US", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </div>
+                      )}
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="flex gap-2 mr-2">
