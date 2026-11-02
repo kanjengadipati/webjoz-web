@@ -6,6 +6,7 @@ import type { HeroVariantProps } from "./types";
 import PhotoCredit from "../PhotoCredit";
 import { InlineText, InlineImage } from "../../templates/shared";
 import { HERO_HEADING_SIZE, HeroCta } from "./primitives";
+import { heroStrings } from "./hero-strings";
 
 /**
  * Video Background — fullscreen looping video (mp4/webm) with the hero image
@@ -22,6 +23,7 @@ export default function HeroVideoBg({
   onEditingStateChange,
 }: HeroVariantProps) {
   const isEN = language === "en";
+  const s = heroStrings(language);
   const reduce = useReducedMotion();
   const [videoFailed, setVideoFailed] = useState(false);
   const rawVideo = typeof h.video_url === "string" ? h.video_url.trim() : "";
@@ -56,7 +58,7 @@ export default function HeroVideoBg({
           {...common}
           fieldKey="image_url"
           src={h.image_url}
-          alt={h.headline || (isEN ? "Hero background" : "Latar hero")}
+          alt={h.headline || s.heroBackgroundAlt}
           isBackground
           className="h-full w-full"
           style={{
@@ -148,7 +150,7 @@ export default function HeroVideoBg({
               {...common}
               fieldKey="eyebrow"
               value={h.eyebrow}
-              placeholder={isEN ? "Short label" : "Label singkat"}
+              placeholder={s.shortLabel}
               as="span"
             />
           </motion.div>
@@ -213,7 +215,7 @@ export default function HeroVideoBg({
               {...common}
               fieldKey="opening_hours"
               value={h.opening_hours}
-              placeholder={isEN ? "Set opening hours..." : "Atur jam operasional..."}
+              placeholder={s.setOpeningHours}
               as="span"
             />
           </div>

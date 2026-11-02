@@ -27,7 +27,6 @@ export default function HeroWorkPreviewStrip({
 }: HeroVariantProps) {
   const [activeTile, setActiveTile] = useState<number | null>(null);
   const hasSecondary = Boolean(h.cta_secondary_text?.trim() && h.cta_secondary_url?.trim());
-  const isEN = language === "en";
   const s = heroStrings(language);
 
   const rawStats = h.badge_text?.includes("|")

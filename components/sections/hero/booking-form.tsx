@@ -5,6 +5,7 @@ import { Check, Clock, Phone, Send, Sparkles } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import { InlineText } from "../../templates/shared";
 import { HeroCta } from "./primitives";
+import { heroStrings } from "./hero-strings";
 
 /**
  * Booking Form — split hero with an inline booking / lead form.
@@ -25,6 +26,7 @@ export default function HeroBookingForm({
   onEditingStateChange,
 }: HeroVariantProps) {
   const isEN = language === "en";
+  const s = heroStrings(language);
   const reduce = useReducedMotion();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -95,7 +97,7 @@ export default function HeroBookingForm({
               }}
             >
               <Sparkles className="size-3.5" aria-hidden />
-              <InlineText {...common} fieldKey="eyebrow" value={h.eyebrow} placeholder={isEN ? "Short label" : "Label singkat"} as="span" />
+              <InlineText {...common} fieldKey="eyebrow" value={h.eyebrow} placeholder={s.shortLabel} as="span" />
             </motion.div>
           )}
 
@@ -145,7 +147,7 @@ export default function HeroBookingForm({
                   section="contact"
                   fieldKey="phone"
                   value={c?.phone || ""}
-                  placeholder={isEN ? "Add phone or WhatsApp..." : "Tambah telepon / WA..."}
+                  placeholder={s.addPhoneWa}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -167,7 +169,7 @@ export default function HeroBookingForm({
                   section="contact"
                   fieldKey="opening_hours"
                   value={c?.opening_hours || ""}
-                  placeholder={isEN ? "Add opening hours..." : "Tambah jam buka..."}
+                  placeholder={s.addOpeningHours}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -238,12 +240,10 @@ export default function HeroBookingForm({
                 <Check className="size-6" aria-hidden />
               </div>
               <p className="text-base font-bold" style={{ color: "var(--dt-text)" }}>
-                {isEN ? "Booking received!" : "Pesanan diterima!"}
+                {s.bookingReceived}
               </p>
               <p className="mt-1 text-sm" style={{ color: "var(--dt-text-muted)" }}>
-                {isEN
-                  ? "Thank you. Our team will confirm your booking shortly."
-                  : "Terima kasih. Tim kami akan segera mengonfirmasi pesanan Anda."}
+                {s.bookingThanks}
               </p>
             </div>
           ) : canSubmit ? (
@@ -259,7 +259,7 @@ export default function HeroBookingForm({
 
               <div>
                 <label className={labelClass} style={labelStyle} htmlFor="hero-booking-name">
-                  {isEN ? "Full Name" : "Nama Lengkap"}
+                  {s.fullName}
                 </label>
                 <input
                   id="hero-booking-name"
@@ -267,7 +267,7 @@ export default function HeroBookingForm({
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder={isEN ? "e.g. John Smith" : "cth. Budi Santoso"}
+                  placeholder={s.fullNamePlaceholder}
                   style={inputStyle}
                 />
               </div>
@@ -275,7 +275,7 @@ export default function HeroBookingForm({
               <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
                 <div>
                   <label className={labelClass} style={labelStyle} htmlFor="hero-booking-phone">
-                    {isEN ? "WhatsApp Number" : "Nomor WA"}
+                    {s.whatsappNumber}
                   </label>
                   <input
                     id="hero-booking-phone"
@@ -283,7 +283,7 @@ export default function HeroBookingForm({
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder={isEN ? "+62 812..." : "cth. 08123456789"}
+                    placeholder={s.whatsappPlaceholder}
                     style={inputStyle}
                   />
                 </div>
@@ -297,7 +297,7 @@ export default function HeroBookingForm({
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder={isEN ? "john@email.com" : "budi@email.com"}
+                    placeholder={s.emailPlaceholder}
                     style={inputStyle}
                   />
                 </div>
@@ -305,14 +305,14 @@ export default function HeroBookingForm({
 
               <div>
                 <label className={labelClass} style={labelStyle} htmlFor="hero-booking-message">
-                  {isEN ? "What do you need?" : "Kebutuhan Anda"}
+                  {s.needLabel}
                 </label>
                 <textarea
                   id="hero-booking-message"
                   rows={3}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  placeholder={isEN ? "Preferred date, service, or question..." : "Tanggal, layanan, atau pertanyaan..."}
+                  placeholder={s.needPlaceholder}
                   style={{ ...inputStyle, resize: "none" }}
                 />
               </div>
@@ -328,7 +328,7 @@ export default function HeroBookingForm({
                 }}
               >
                 {leadSubmitting ? (
-                  <span>{isEN ? "Sending..." : "Mengirim..."}</span>
+                  <span>{s.sending}</span>
                 ) : (
                   <>
                     <InlineText

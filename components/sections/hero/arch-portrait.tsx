@@ -5,6 +5,7 @@ import type { HeroVariantProps } from "./types";
 import PhotoCredit from "../PhotoCredit";
 import { InlineText, InlineImage } from "../../templates/shared";
 import { HeroCta } from "./primitives";
+import { heroStrings } from "./hero-strings";
 
 /** Arch Portrait — foto berbingkai lengkung + stempel badge. ImageNeed: Required (1). */
 export default function HeroArchPortrait({
@@ -16,7 +17,7 @@ export default function HeroArchPortrait({
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: HeroVariantProps) {
-  const isEN = language === "en";
+  const s = heroStrings(language);
   const reduce = useReducedMotion();
   const common = {
     section: "hero" as const,
@@ -43,7 +44,7 @@ export default function HeroArchPortrait({
               {...common}
               fieldKey="eyebrow"
               value={h.eyebrow}
-              placeholder={isEN ? "Short label" : "Label singkat"}
+              placeholder={s.shortLabel}
               style={{
                 display: "block",
                 fontSize: "0.75rem",
@@ -124,7 +125,7 @@ export default function HeroArchPortrait({
               {...common}
               fieldKey="image_url"
               src={h.image_url}
-              alt={h.headline || (isEN ? "Hero image" : "Gambar hero")}
+              alt={h.headline || s.heroImageAlt}
               className="h-full w-full object-cover"
             />
           </div>
@@ -144,7 +145,7 @@ export default function HeroArchPortrait({
               {...common}
               fieldKey="badge_text"
               value={badgeIsStats ? "" : h.badge_text}
-              placeholder={isEN ? "Badge" : "Badge"}
+              placeholder="Badge"
               className="absolute -left-3 bottom-10 px-4 py-2 text-sm font-semibold"
               style={{
                 background: "var(--dt-primary)",

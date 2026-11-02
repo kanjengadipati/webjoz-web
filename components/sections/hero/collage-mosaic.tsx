@@ -6,6 +6,7 @@ import PhotoCreditList from "../PhotoCreditList";
 import { InlineText, InlineImage } from "../../templates/shared";
 import { getHeroSlides, commitHeroSlide } from "./images";
 import { HeroCta } from "./primitives";
+import { heroStrings } from "./hero-strings";
 
 /** Collage Mosaic — 3 foto asimetris. ImageNeed: Required, MinImages: 3. */
 export default function HeroCollageMosaic({
@@ -17,7 +18,7 @@ export default function HeroCollageMosaic({
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: HeroVariantProps) {
-  const isEN = language === "en";
+  const s = heroStrings(language);
   const reduce = useReducedMotion();
   const common = {
     section: "hero" as const,
@@ -119,7 +120,7 @@ export default function HeroCollageMosaic({
                 {...common}
                 fieldKey={`images.${t.index}`}
                 src={src}
-                alt={`${h.headline || (isEN ? "Hero" : "Hero")} ${i + 1}`}
+                alt={`${h.headline || "Hero"} ${i + 1}`}
                 onUpdateField={(_, __, val) => commitHeroSlide(onUpdateField, h, t.index, val)}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
