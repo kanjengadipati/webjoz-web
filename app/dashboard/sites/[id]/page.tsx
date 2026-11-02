@@ -63,16 +63,16 @@ import {
 import { SECTION_VARIANT_OPTIONS, HERO_STYLE_OPTIONS } from "@/components/sections/variant-registry";
 import { tenantHost } from "@/lib/site-config";
 
-const FEATURE_MARKER_OPTIONS = [
-  { value: "auto", label: "⚡ Otomatis (Sesuai Mood)" },
-  { value: "check", label: "✓ Centang (Klasik)" },
-  { value: "dot", label: "• Titik (Minimalis)" },
-  { value: "sparkle", label: "✦ Sparkle (Eksklusif)" },
-  { value: "plus", label: "+ Plus (Paket/Bundling)" },
-  { value: "shield", label: "🛡 Tameng (Terverifikasi)" },
-  { value: "diamond", label: "◆ Diamond (Mewah)" },
-  { value: "arrow", label: "› Panah (Modern)" },
-  { value: "leaf", label: "🍃 Daun (Alami / Organik)" },
+const FEATURE_MARKER_OPTIONS = (t: (k: string) => string) => [
+  { value: "auto",    label: `⚡ ${t("dashboard.sitesEditor.featureMarkerAuto")}` },
+  { value: "check",   label: `✓ ${t("dashboard.sitesEditor.featureMarkerCheck")}` },
+  { value: "dot",     label: `• ${t("dashboard.sitesEditor.featureMarkerDot")}` },
+  { value: "sparkle", label: `✦ ${t("dashboard.sitesEditor.featureMarkerSparkle")}` },
+  { value: "plus",    label: `+ ${t("dashboard.sitesEditor.featureMarkerPlus")}` },
+  { value: "shield",  label: `🛡 ${t("dashboard.sitesEditor.featureMarkerShield")}` },
+  { value: "diamond", label: `◆ ${t("dashboard.sitesEditor.featureMarkerDiamond")}` },
+  { value: "arrow",   label: `› ${t("dashboard.sitesEditor.featureMarkerArrow")}` },
+  { value: "leaf",    label: `🍃 ${t("dashboard.sitesEditor.featureMarkerLeaf")}` },
 ];
 
 import TypographyPairingPicker from "./components/TypographyPairingPicker";
@@ -2016,7 +2016,7 @@ export default function SiteEditorPage() {
                         onChange={(val) => updateDesignTokenField("layout", "feature_marker", val === "auto" ? "" : val)}
                         size="sm"
                         triggerClassName="bg-sidebar-input text-sidebar-foreground border-border text-[12px] h-9"
-                        options={FEATURE_MARKER_OPTIONS}
+                        options={FEATURE_MARKER_OPTIONS(t)}
                       />
                       <div className="flex items-center gap-1 flex-wrap pt-0.5">
                         {(["check", "dot", "sparkle", "plus", "shield", "diamond", "arrow", "leaf"] as const).map((mKey) => {
@@ -3360,7 +3360,7 @@ export default function SiteEditorPage() {
                         onChange={(val) => updateDesignTokenField("layout", "feature_marker", val === "auto" ? "" : val)}
                         size="sm"
                         triggerClassName="bg-sidebar-input text-sidebar-foreground border-border text-[11px] h-8"
-                        options={FEATURE_MARKER_OPTIONS}
+                        options={FEATURE_MARKER_OPTIONS(t)}
                       />
                     </div>
                     {isDynamic && (

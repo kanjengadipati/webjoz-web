@@ -2274,6 +2274,15 @@ export interface Translations {
       cornerSoft: string;
       cornerRounded: string;
       featureMarker: string;
+      featureMarkerAuto: string;
+      featureMarkerCheck: string;
+      featureMarkerDot: string;
+      featureMarkerSparkle: string;
+      featureMarkerPlus: string;
+      featureMarkerShield: string;
+      featureMarkerDiamond: string;
+      featureMarkerArrow: string;
+      featureMarkerLeaf: string;
       heroStyle: string;
       heroCentered: string;
       heroSplit: string;
@@ -5726,6 +5735,15 @@ export const translations: Record<Locale, Translations> = {
         cornerSoft: "Lembut (8px)",
         cornerRounded: "Bulat (20px)",
         featureMarker: "Ikon Checklist Produk",
+        featureMarkerAuto: "Otomatis (Sesuai Mood)",
+        featureMarkerCheck: "Centang (Klasik)",
+        featureMarkerDot: "Titik (Minimalis)",
+        featureMarkerSparkle: "Sparkle (Eksklusif)",
+        featureMarkerPlus: "Plus (Paket/Bundling)",
+        featureMarkerShield: "Tameng (Terverifikasi)",
+        featureMarkerDiamond: "Diamond (Mewah)",
+        featureMarkerArrow: "Panah (Modern)",
+        featureMarkerLeaf: "Daun (Alami / Organik)",
         heroStyle: "Gaya Hero",
         heroCentered: "Hero: Centered",
         heroSplit: "Hero: Split Screen",
@@ -9230,6 +9248,15 @@ export const translations: Record<Locale, Translations> = {
         cornerSoft: "Soft (8px)",
         cornerRounded: "Rounded (20px)",
         featureMarker: "Product Checklist Icon",
+        featureMarkerAuto: "Auto (Per Mood)",
+        featureMarkerCheck: "Checkmark (Classic)",
+        featureMarkerDot: "Dot (Minimal)",
+        featureMarkerSparkle: "Sparkle (Exclusive)",
+        featureMarkerPlus: "Plus (Bundle/Package)",
+        featureMarkerShield: "Shield (Verified)",
+        featureMarkerDiamond: "Diamond (Luxury)",
+        featureMarkerArrow: "Arrow (Modern)",
+        featureMarkerLeaf: "Leaf (Natural / Organic)",
         heroStyle: "Hero Style",
         heroCentered: "Hero: Centered",
         heroSplit: "Hero: Split Screen",
