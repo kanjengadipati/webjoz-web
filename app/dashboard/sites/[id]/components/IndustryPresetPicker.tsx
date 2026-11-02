@@ -28,7 +28,8 @@ export default function IndustryPresetPicker({
   onApply,
   onRestoreAi,
 }: Props) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const isEN = locale === "en";
   const currentHeading = designToken?.typography?.heading_font || "";
   const currentBody = designToken?.typography?.body_font || "";
   const currentPalette = designToken?.palette || {};
@@ -164,7 +165,7 @@ export default function IndustryPresetPicker({
                 )}
                 <div className={`flex items-center gap-1.5 mb-1.5 ${isActive ? "pr-16" : ""}`}>
                 <span className="text-sm">{preset.icon}</span>
-                <p className="text-[10px] font-bold text-sidebar-foreground truncate">{preset.name}</p>
+                <p className="text-[10px] font-bold text-sidebar-foreground truncate">{isEN ? (preset.nameEn || preset.name) : preset.name}</p>
               </div>
               {pattern && (
                 <div className="flex gap-1 mb-1.5">
@@ -206,7 +207,7 @@ export default function IndustryPresetPicker({
                 </div>
               )}
               <p className="text-[9px] text-sidebar-subtle-foreground leading-tight line-clamp-2 mt-1">
-                {preset.description}
+                {isEN ? (preset.descriptionEn || preset.description) : preset.description}
               </p>
             </button>
           );

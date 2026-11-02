@@ -24,7 +24,9 @@ import { request } from "@/lib/api/client";
 export interface TypographyPairing {
   id: string;
   name: string;
+  nameEn?: string;
   description: string;
+  descriptionEn?: string;
   heading_font: string;
   body_font: string;
   heading_weight: string;
@@ -42,7 +44,9 @@ export interface TypographyPairing {
 export interface ColorPattern {
   id: string;
   name: string;
+  nameEn?: string;
   description: string;
+  descriptionEn?: string;
   palette: {
     primary: string;
     accent: string;
@@ -57,7 +61,9 @@ export interface ColorPattern {
 export interface IndustryPreset {
   id: string;
   name: string;
+  nameEn?: string;
   description: string;
+  descriptionEn?: string;
   icon: string;
   pairing_id: string;
   pattern_id: string;
@@ -92,31 +98,31 @@ interface BuiltinAssetsResponse {
 
 // Emergency fallback — minimal set used only when both API and localStorage are empty.
 const EMERGENCY_FONT_PAIRINGS: TypographyPairing[] = [
-  { id: "neo-clean",        name: "Neo Clean",         description: "Jernih dan modern",    heading_font: "Inter",          body_font: "Inter",       heading_weight: "700", heading_size_hero: "3rem" },
-  { id: "organic-warm",     name: "Organik Hangat",    description: "Alami dan ramah",      heading_font: "Lora",           body_font: "Work Sans",   heading_weight: "600", heading_size_hero: "3rem" },
-  { id: "bold-display",     name: "Bold Display",      description: "Tegas dan berenergi",  heading_font: "Montserrat",     body_font: "Open Sans",   heading_weight: "800", heading_size_hero: "3.5rem" },
-  { id: "tech-forward",     name: "Tech Modern",       description: "Geometris digital",    heading_font: "Space Grotesk",  body_font: "Inter",       heading_weight: "700", heading_size_hero: "3rem" },
+  { id: "neo-clean",        name: "Neo Clean",         nameEn: "Neo Clean",          description: "Jernih dan modern",    descriptionEn: "Clean and modern",        heading_font: "Inter",          body_font: "Inter",       heading_weight: "700", heading_size_hero: "3rem" },
+  { id: "organic-warm",     name: "Organik Hangat",    nameEn: "Organic Warm",       description: "Alami dan ramah",      descriptionEn: "Natural and friendly",    heading_font: "Lora",           body_font: "Work Sans",   heading_weight: "600", heading_size_hero: "3rem" },
+  { id: "bold-display",     name: "Bold Display",      nameEn: "Bold Display",       description: "Tegas dan berenergi",  descriptionEn: "Bold and energetic",      heading_font: "Montserrat",     body_font: "Open Sans",   heading_weight: "800", heading_size_hero: "3.5rem" },
+  { id: "tech-forward",     name: "Tech Modern",       nameEn: "Tech Modern",        description: "Geometris digital",    descriptionEn: "Digital geometric",       heading_font: "Space Grotesk",  body_font: "Inter",       heading_weight: "700", heading_size_hero: "3rem" },
   // Additional pairings required by INDUSTRY_PRESETS (kafe, salon, otomotif, klinik, properti, pendidikan)
-  { id: "fraunces-organic", name: "Fraunces Organic",  description: "Serif hangat kafe",    heading_font: "Fraunces",       body_font: "Work Sans",   heading_weight: "600", heading_size_hero: "3rem" },
-  { id: "luxury-serif",     name: "Luxury Serif",      description: "Anggun dan eksklusif", heading_font: "Playfair Display", body_font: "Lato",      heading_weight: "700", heading_size_hero: "3rem" },
-  { id: "urban-street",     name: "Urban Street",      description: "Gelap bertenaga",      heading_font: "Barlow Condensed", body_font: "Barlow",    heading_weight: "800", heading_size_hero: "3.5rem", heading_transform: "uppercase" },
-  { id: "friendly-round",   name: "Friendly Round",    description: "Bersih dan ramah",     heading_font: "Nunito",         body_font: "Nunito",      heading_weight: "700", heading_size_hero: "3rem" },
-  { id: "sora-industrial",  name: "Sora Industrial",   description: "Industrial solid",     heading_font: "Sora",           body_font: "Inter",       heading_weight: "700", heading_size_hero: "3rem" },
-  { id: "jakarta-pro",      name: "Jakarta Pro",       description: "Elegan modern",        heading_font: "Plus Jakarta Sans", body_font: "Plus Jakarta Sans", heading_weight: "700", heading_size_hero: "3rem" },
+  { id: "fraunces-organic", name: "Fraunces Organic",  nameEn: "Fraunces Organic",   description: "Serif hangat kafe",    descriptionEn: "Warm café serif",         heading_font: "Fraunces",       body_font: "Work Sans",   heading_weight: "600", heading_size_hero: "3rem" },
+  { id: "luxury-serif",     name: "Luxury Serif",      nameEn: "Luxury Serif",       description: "Anggun dan eksklusif", descriptionEn: "Elegant and exclusive",   heading_font: "Playfair Display", body_font: "Lato",      heading_weight: "700", heading_size_hero: "3rem" },
+  { id: "urban-street",     name: "Urban Street",      nameEn: "Urban Street",       description: "Gelap bertenaga",      descriptionEn: "Dark and powerful",       heading_font: "Barlow Condensed", body_font: "Barlow",    heading_weight: "800", heading_size_hero: "3.5rem", heading_transform: "uppercase" },
+  { id: "friendly-round",   name: "Friendly Round",    nameEn: "Friendly Round",     description: "Bersih dan ramah",     descriptionEn: "Clean and friendly",      heading_font: "Nunito",         body_font: "Nunito",      heading_weight: "700", heading_size_hero: "3rem" },
+  { id: "sora-industrial",  name: "Sora Industrial",   nameEn: "Sora Industrial",    description: "Industrial solid",     descriptionEn: "Solid industrial",        heading_font: "Sora",           body_font: "Inter",       heading_weight: "700", heading_size_hero: "3rem" },
+  { id: "jakarta-pro",      name: "Jakarta Pro",       nameEn: "Jakarta Pro",        description: "Elegan modern",        descriptionEn: "Modern elegant",          heading_font: "Plus Jakarta Sans", body_font: "Plus Jakarta Sans", heading_weight: "700", heading_size_hero: "3rem" },
 ];
 
 const EMERGENCY_COLOR_PATTERNS: ColorPattern[] = [
-  { id: "profesional",  name: "Profesional",   description: "Biru elegan",      palette: { primary: "#4F46E5", accent: "#7C3AED", background: "#F8FAFC", surface: "#FFFFFF", text: "#0F172A" }, theme_mode: "light" },
-  { id: "hangat",       name: "Hangat",         description: "Cokelat hangat",   palette: { primary: "#78350F", accent: "#B45309", background: "#FAF7F2", surface: "#FFFFFF", text: "#2C2620" }, theme_mode: "light" },
-  { id: "malam",        name: "Malam Gelap",    description: "Gelap elegan",     palette: { primary: "#C9A84C", accent: "#A07830", background: "#0D0D0B", surface: "#1A1A17", text: "#F5F0E8" }, theme_mode: "dark" },
-  { id: "segar",        name: "Segar Alami",    description: "Hijau alami",      palette: { primary: "#2D6A4F", accent: "#40916C", background: "#F0FDF4", surface: "#FFFFFF", text: "#1B2E20" }, theme_mode: "light" },
+  { id: "profesional",  name: "Profesional",   nameEn: "Professional",    description: "Biru elegan",      descriptionEn: "Elegant blue",       palette: { primary: "#4F46E5", accent: "#7C3AED", background: "#F8FAFC", surface: "#FFFFFF", text: "#0F172A" }, theme_mode: "light" },
+  { id: "hangat",       name: "Hangat",         nameEn: "Warm",            description: "Cokelat hangat",   descriptionEn: "Warm brown",          palette: { primary: "#78350F", accent: "#B45309", background: "#FAF7F2", surface: "#FFFFFF", text: "#2C2620" }, theme_mode: "light" },
+  { id: "malam",        name: "Malam Gelap",    nameEn: "Dark Night",      description: "Gelap elegan",     descriptionEn: "Elegant dark",        palette: { primary: "#C9A84C", accent: "#A07830", background: "#0D0D0B", surface: "#1A1A17", text: "#F5F0E8" }, theme_mode: "dark" },
+  { id: "segar",        name: "Segar Alami",    nameEn: "Fresh Natural",   description: "Hijau alami",      descriptionEn: "Natural green",       palette: { primary: "#2D6A4F", accent: "#40916C", background: "#F0FDF4", surface: "#FFFFFF", text: "#1B2E20" }, theme_mode: "light" },
   // Additional patterns required by INDUSTRY_PRESETS
-  { id: "mentari",      name: "Mentari",        description: "Krem hangat kafe", palette: { primary: "#92400E", accent: "#D97706", background: "#FFFBF0", surface: "#FFFFFF", text: "#1C1917" }, theme_mode: "light" },
-  { id: "mawar",        name: "Mawar",          description: "Fashion vibrant",  palette: { primary: "#9D174D", accent: "#DB2777", background: "#FFF1F5", surface: "#FFFFFF", text: "#1E1017" }, theme_mode: "light" },
-  { id: "laut",         name: "Laut",           description: "Biru bersih",      palette: { primary: "#1D4ED8", accent: "#3B82F6", background: "#F0F7FF", surface: "#FFFFFF", text: "#0F172A" }, theme_mode: "light" },
-  { id: "lembayung",    name: "Lembayung",      description: "Ungu anggun",      palette: { primary: "#7C3AED", accent: "#A78BFA", background: "#FAF5FF", surface: "#FFFFFF", text: "#1E1035" }, theme_mode: "light" },
-  { id: "modern-gelap", name: "Modern Gelap",   description: "Otomotif gelap",   palette: { primary: "#F59E0B", accent: "#EF4444", background: "#0A0A0A", surface: "#1C1C1C", text: "#F5F5F5" }, theme_mode: "dark" },
-  { id: "tenang-abu",   name: "Tenang Abu",     description: "Properti netral",  palette: { primary: "#374151", accent: "#6B7280", background: "#F9FAFB", surface: "#FFFFFF", text: "#111827" }, theme_mode: "light" },
+  { id: "mentari",      name: "Mentari",        nameEn: "Sunny",           description: "Krem hangat kafe", descriptionEn: "Warm café cream",     palette: { primary: "#92400E", accent: "#D97706", background: "#FFFBF0", surface: "#FFFFFF", text: "#1C1917" }, theme_mode: "light" },
+  { id: "mawar",        name: "Mawar",          nameEn: "Rose",            description: "Fashion vibrant",  descriptionEn: "Vibrant fashion",     palette: { primary: "#9D174D", accent: "#DB2777", background: "#FFF1F5", surface: "#FFFFFF", text: "#1E1017" }, theme_mode: "light" },
+  { id: "laut",         name: "Laut",           nameEn: "Ocean",           description: "Biru bersih",      descriptionEn: "Clean blue",          palette: { primary: "#1D4ED8", accent: "#3B82F6", background: "#F0F7FF", surface: "#FFFFFF", text: "#0F172A" }, theme_mode: "light" },
+  { id: "lembayung",    name: "Lembayung",      nameEn: "Lavender",        description: "Ungu anggun",      descriptionEn: "Elegant purple",      palette: { primary: "#7C3AED", accent: "#A78BFA", background: "#FAF5FF", surface: "#FFFFFF", text: "#1E1035" }, theme_mode: "light" },
+  { id: "modern-gelap", name: "Modern Gelap",   nameEn: "Modern Dark",     description: "Otomotif gelap",   descriptionEn: "Dark automotive",     palette: { primary: "#F59E0B", accent: "#EF4444", background: "#0A0A0A", surface: "#1C1C1C", text: "#F5F5F5" }, theme_mode: "dark" },
+  { id: "tenang-abu",   name: "Tenang Abu",     nameEn: "Calm Gray",       description: "Properti netral",  descriptionEn: "Neutral property",    palette: { primary: "#374151", accent: "#6B7280", background: "#F9FAFB", surface: "#FFFFFF", text: "#111827" }, theme_mode: "light" },
 ];
 
 // In-memory builtin cache (populated by loadBuiltinAssets)
@@ -125,16 +131,16 @@ let _builtinPatterns: ColorPattern[] = [];
 let _builtinLoaded = false;
 
 export const INDUSTRY_PRESETS: IndustryPreset[] = [
-  { id: "resto", name: "Restoran", description: "Hangat alami untuk restoran, bakery & catering", icon: "🍜", pairing_id: "organic-warm", pattern_id: "hangat" },
-  { id: "kafe", name: "Kafe Modern", description: "Serif hangat untuk kafe, coffee shop & minuman", icon: "☕", pairing_id: "fraunces-organic", pattern_id: "mentari" },
-  { id: "fashion", name: "Fashion", description: "Berani dan stylish untuk fashion & apparel", icon: "👗", pairing_id: "bold-display", pattern_id: "mawar" },
-  { id: "toko-online", name: "Toko Online", description: "Modern dan bersih untuk toko online & elektronik", icon: "📱", pairing_id: "tech-forward", pattern_id: "laut" },
-  { id: "jasa", name: "Jasa Profesional", description: "Korporat elegan untuk konsultan & fotografer", icon: "💼", pairing_id: "neo-clean", pattern_id: "profesional" },
-  { id: "salon", name: "Salon & Kecantikan", description: "Anggun kreatif untuk salon, barbershop & beauty", icon: "💄", pairing_id: "luxury-serif", pattern_id: "lembayung" },
-  { id: "otomotif", name: "Otomotif", description: "Gelap bertenaga untuk bengkel & otomotif", icon: "🔧", pairing_id: "urban-street", pattern_id: "modern-gelap" },
-  { id: "klinik", name: "Klinik", description: "Bersih dan ramah untuk klinik & kesehatan", icon: "🏥", pairing_id: "friendly-round", pattern_id: "segar" },
-  { id: "properti", name: "Properti", description: "Industrial solid untuk properti & konstruksi", icon: "🏢", pairing_id: "sora-industrial", pattern_id: "tenang-abu" },
-  { id: "pendidikan", name: "Pendidikan", description: "Elegan modern untuk kursus & pendidikan", icon: "📚", pairing_id: "jakarta-pro", pattern_id: "laut" },
+  { id: "resto",       name: "Restoran",          nameEn: "Restaurant",        description: "Hangat alami untuk restoran, bakery & catering",        descriptionEn: "Warm natural for restaurant, bakery & catering",      icon: "🍜", pairing_id: "organic-warm",     pattern_id: "hangat" },
+  { id: "kafe",        name: "Kafe Modern",        nameEn: "Modern Café",       description: "Serif hangat untuk kafe, coffee shop & minuman",         descriptionEn: "Warm serif for café, coffee shop & beverages",        icon: "☕", pairing_id: "fraunces-organic", pattern_id: "mentari" },
+  { id: "fashion",     name: "Fashion",            nameEn: "Fashion",           description: "Berani dan stylish untuk fashion & apparel",             descriptionEn: "Bold and stylish for fashion & apparel",              icon: "👗", pairing_id: "bold-display",     pattern_id: "mawar" },
+  { id: "toko-online", name: "Toko Online",        nameEn: "Online Store",      description: "Modern dan bersih untuk toko online & elektronik",       descriptionEn: "Modern and clean for online store & electronics",     icon: "📱", pairing_id: "tech-forward",     pattern_id: "laut" },
+  { id: "jasa",        name: "Jasa Profesional",   nameEn: "Professional Services", description: "Korporat elegan untuk konsultan & fotografer",       descriptionEn: "Corporate elegant for consultants & photographers",   icon: "💼", pairing_id: "neo-clean",        pattern_id: "profesional" },
+  { id: "salon",       name: "Salon & Kecantikan", nameEn: "Salon & Beauty",    description: "Anggun kreatif untuk salon, barbershop & beauty",        descriptionEn: "Creative elegant for salon, barbershop & beauty",     icon: "💄", pairing_id: "luxury-serif",     pattern_id: "lembayung" },
+  { id: "otomotif",    name: "Otomotif",           nameEn: "Automotive",        description: "Gelap bertenaga untuk bengkel & otomotif",               descriptionEn: "Dark and powerful for workshop & automotive",          icon: "🔧", pairing_id: "urban-street",     pattern_id: "modern-gelap" },
+  { id: "klinik",      name: "Klinik",             nameEn: "Clinic",            description: "Bersih dan ramah untuk klinik & kesehatan",              descriptionEn: "Clean and friendly for clinic & healthcare",           icon: "🏥", pairing_id: "friendly-round",   pattern_id: "segar" },
+  { id: "properti",    name: "Properti",           nameEn: "Property",          description: "Industrial solid untuk properti & konstruksi",            descriptionEn: "Solid industrial for property & construction",         icon: "🏢", pairing_id: "sora-industrial",  pattern_id: "tenang-abu" },
+  { id: "pendidikan",  name: "Pendidikan",         nameEn: "Education",         description: "Elegan modern untuk kursus & pendidikan",                descriptionEn: "Modern elegant for courses & education",               icon: "📚", pairing_id: "jakarta-pro",      pattern_id: "laut" },
 ];
 
 export const REQUIRED_SECTIONS_DEFAULT = ["hero", "contact"];
