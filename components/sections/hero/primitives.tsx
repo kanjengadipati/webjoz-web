@@ -72,6 +72,10 @@ export interface HeroCtaProps extends InlineEditProps, Omit<React.AnchorHTMLAttr
   iconSize?: number;
   /** Class untuk ikon ArrowRight bawaan (mis. animasi hover). */
   iconClassName?: string;
+  /** Posisi ikon terhadap teks: "start" (kiri) atau "end" (kanan). Default: "end". */
+  iconPosition?: "start" | "end";
+  /** Apakah label bisa diedit inline. Bila false, render <span> biasa tanpa InlineText. Default: true. */
+  editable?: boolean;
 }
 
 /**
@@ -99,6 +103,8 @@ export function HeroCta({
   icon,
   iconSize = 14,
   iconClassName,
+  iconPosition = "end",
+  editable = true,
   onUpdateField,
   isEditorMode,
   isSelected,
@@ -113,6 +119,22 @@ export function HeroCta({
     <ArrowRight className={iconClassName} style={{ width: iconSize, height: iconSize, flexShrink: 0 }} />
   );
 
+  const labelNode = editable ? (
+    <InlineText
+      section={section}
+      fieldKey={fieldKey}
+      value={label}
+      onUpdateField={onUpdateField}
+      isEditorMode={isEditorMode}
+      isSelected={isSelected}
+      as="span"
+      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+      onEditingStateChange={onEditingStateChange}
+    />
+  ) : (
+    <span>{label}</span>
+  );
+
   return (
     <a
       href={safe}
@@ -121,18 +143,9 @@ export function HeroCta({
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       {...anchorProps}
     >
-      <InlineText
-        section={section}
-        fieldKey={fieldKey}
-        value={label}
-        onUpdateField={onUpdateField}
-        isEditorMode={isEditorMode}
-        isSelected={isSelected}
-        as="span"
-        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-        onEditingStateChange={onEditingStateChange}
-      />
-      {iconNode}
+      {iconPosition === "start" && iconNode}
+      {labelNode}
+      {iconPosition !== "start" && iconNode}
     </a>
   );
 }
