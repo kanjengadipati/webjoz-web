@@ -209,7 +209,8 @@ export default function SectionShowcasePage() {
       sectionKey: string,
       variantValue: string,
       previewEl: HTMLElement,
-      silent: boolean = false
+      silent: boolean = false,
+      options?: { method?: "upload" | "screenshot" }
     ): Promise<{ ok: boolean; score?: number; rateLimited?: boolean; error?: string }> => {
       const critiqueKey = `${sectionKey}:${variantValue}`;
       if (!authToken) {
@@ -218,25 +219,31 @@ export default function SectionShowcasePage() {
       }
       setCritiquingVariant(critiqueKey);
       try {
-        // 1. Capture preview as compressed JPEG data URI
-        const dataUrl = await toJpeg(previewEl, {
-          quality: 0.6,
-          pixelRatio: 0.75,
-          backgroundColor: "#ffffff",
-          skipFonts: true,
-        });
+        let body: any;
+        if (options?.method === "screenshot" && sectionKey === "hero") {
+          body = { section: sectionKey, variant: variantValue, method: "screenshot" };
+        } else {
+          // 1. Capture preview as compressed JPEG data URI
+          const dataUrl = await toJpeg(previewEl, {
+            quality: 0.6,
+            pixelRatio: 0.75,
+            backgroundColor: "#ffffff",
+            skipFonts: true,
+          });
+          body = { section: sectionKey, variant: variantValue, image: dataUrl, method: "upload" };
+        }
 
         // 2. POST to backend via standard client
         const res = await request<VariantCritiqueResult>(
           "/admin/ai/critique-section-variant",
           {
             method: "POST",
-            body: JSON.stringify({ section: sectionKey, variant: variantValue, image: dataUrl }),
+            body: JSON.stringify(body),
           },
           authToken,
           true,
           0,
-          90_000 // 90s timeout for vision AI
+          120_000 // 120s timeout for screenshot+vision
         );
 
         const result: VariantCritiqueResult = res.data;
@@ -286,6 +293,88 @@ export default function SectionShowcasePage() {
           pushToast(`Gagal critique varian: ${errMsg}`, "error");
         }
         return { ok: false, error: errMsg, rateLimited: isRateLimit };
+      } finally {
+        setCritiquingVariant(null);
+      }
+    },
+    [authToken, pushToast]
+  );
+
+  const [heroBackfilling, setHeroBackfilling] = useState<boolean>(false);
+  const handleHeroBackfill = useCallback(async () => {
+    if (heroBackfilling || !authToken) return;
+    setHeroBackfilling(true);
+    try {
+      const res = await request<any>(
+        "/admin/ai/section-variants/hero/backfill?limit=50",
+        { method: "POST" },
+        authToken,
+        true,
+        0,
+        300_000
+      );
+      const data = res.data || res;
+      // reload critiques
+      loadDesignAssetsConfig(authToken)
+        .then((cfg) => {
+          setVariantCritiques(cfg.variant_critiques ?? {});
+          updateCache(cfg);
+        })
+        .catch(() => {});
+      const msg = `Hero backfill selesai: ${data.critiqued || 0} dinilai, ${data.skipped || 0} dilewati, ${data.failed || 0} gagal${data.stopped ? " (dihentikan rate-limit)" : ""}`;
+      pushToast(msg, data.failed ? "error" : "success");
+    } catch (err: any) {
+      pushToast(`Gagal backfill hero: ${err?.message || "Unknown error"}`, "error");
+    } finally {
+      setHeroBackfilling(false);
+    }
+  }, [heroBackfilling, authToken, pushToast]);
+
+  const handleCritiqueVariantServer = useCallback(
+    async (sectionKey: string, variantValue: string) => {
+      if (!authToken) {
+        pushToast("Token tidak tersedia. Harap login ulang.", "error");
+        return;
+      }
+      const critiqueKey = `${sectionKey}:${variantValue}`;
+      setCritiquingVariant(critiqueKey);
+      try {
+        const res = await request<VariantCritiqueResult>(
+          "/admin/ai/critique-section-variant",
+          {
+            method: "POST",
+            body: JSON.stringify({ section: sectionKey, variant: variantValue, method: "screenshot" }),
+          },
+          authToken,
+          true,
+          0,
+          120_000
+        );
+        const result: VariantCritiqueResult = res.data;
+        if (!result || typeof result.score !== "number" || result.score <= 0) {
+          throw new Error(result?.verdict || "Hasil critique tidak valid (skor 0)");
+        }
+        setVariantCritiques((prev) => ({
+          ...prev,
+          [sectionKey]: {
+            ...(prev[sectionKey] ?? {}),
+            [variantValue]: result,
+          },
+        }));
+        const cfg = loadConfig();
+        updateCache({
+          ...cfg,
+          variant_critiques: {
+            ...(cfg.variant_critiques ?? {}),
+            [sectionKey]: {
+              ...((cfg.variant_critiques ?? {})[sectionKey] ?? {}),
+              [variantValue]: result,
+            },
+          },
+        });
+        pushToast(`✨ Critique server selesai! Skor: ${result.score}/100 · Tier ${result.tier}`, "success");
+      } catch (err: any) {
+        pushToast(`Gagal critique server: ${err?.message || "Unknown error"}`, "error");
       } finally {
         setCritiquingVariant(null);
       }
@@ -871,7 +960,7 @@ export default function SectionShowcasePage() {
                       disabled={batchCritiquing}
                       onClick={handleBatchCritiqueSection}
                       className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-lg bg-gradient-to-r from-purple-500/15 via-indigo-500/15 to-pink-500/15 hover:from-purple-500/25 hover:to-pink-500/25 text-purple-700 dark:text-purple-300 border border-purple-500/30 transition-all shadow-2xs cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
-                      title="Nilai semua varian aktif di section ini secara berurutan dengan AI Vision"
+                      title="Nilai semua varian aktif di section ini secara berurutan dengan AI Vision (client screenshot)"
                     >
                       {batchCritiquing ? (
                         <>
@@ -885,6 +974,27 @@ export default function SectionShowcasePage() {
                         </>
                       )}
                     </button>
+                    {selectedSection === "hero" && (
+                      <button
+                        type="button"
+                        disabled={heroBackfilling || batchCritiquing}
+                        onClick={handleHeroBackfill}
+                        className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-lg bg-gradient-to-r from-cyan-500/15 via-blue-500/15 to-indigo-500/15 hover:from-cyan-500/25 hover:to-indigo-500/25 text-cyan-700 dark:text-cyan-300 border border-cyan-500/30 transition-all shadow-2xs cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
+                        title="Server-side via screenshot publik /sp/section/hero/[variant] (mirip Template Gallery). Konsisten untuk backfill massal."
+                      >
+                        {heroBackfilling ? (
+                          <>
+                            <Loader2 className="size-3 animate-spin text-cyan-600 dark:text-cyan-400" />
+                            <span>Backfill Server...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="size-3 text-cyan-600 dark:text-cyan-400" />
+                            <span>Nilai Semua Otomatis (Server)</span>
+                          </>
+                        )}
+                      </button>
+                    )}
                     {batchCritiquing && (
                       <button
                         type="button"
@@ -1021,6 +1131,7 @@ export default function SectionShowcasePage() {
                       critiqueData={variantCritiques[selectedSection]?.[v.value]}
                       isCritiquing={critiquingVariant === `${selectedSection}:${v.value}`}
                       onCritique={(el) => handleCritiqueVariant(selectedSection, v.value, el)}
+                      onCritiqueServer={selectedSection === "hero" ? () => handleCritiqueVariantServer(selectedSection, v.value) : undefined}
                     />
                   );
                 })}
@@ -1070,6 +1181,7 @@ export default function SectionShowcasePage() {
                     critiqueData={variantCritiques[selectedSection]?.[selectedVariant]}
                     isCritiquing={critiquingVariant === `${selectedSection}:${selectedVariant}`}
                     onCritique={(el) => handleCritiqueVariant(selectedSection, selectedVariant, el)}
+                    onCritiqueServer={selectedSection === "hero" ? () => handleCritiqueVariantServer(selectedSection, selectedVariant) : undefined}
                   />
                 )}
               </div>
@@ -1319,6 +1431,7 @@ interface VariantPreviewCardProps {
   critiqueData?: VariantCritiqueResult;
   isCritiquing?: boolean;
   onCritique?: (el: HTMLElement) => void;
+  onCritiqueServer?: () => void;
 }
 
 function VariantPreviewCard({
@@ -1339,6 +1452,7 @@ function VariantPreviewCard({
   critiqueData,
   isCritiquing = false,
   onCritique,
+  onCritiqueServer,
 }: VariantPreviewCardProps) {
   const previewCardRef = useRef<HTMLDivElement>(null);
   const [showCritiqueModal, setShowCritiqueModal] = useState<boolean>(false);
@@ -1492,40 +1606,75 @@ function VariantPreviewCard({
         {/* Action Buttons */}
         <div className="flex items-center gap-2">
           {/* AI Vision Critique Button */}
-          {onCritique && (
-            <button
-              type="button"
-              disabled={isCritiquing}
-              onClick={() => {
-                if (previewCardRef.current) {
-                  onCritique(previewCardRef.current);
-                }
-              }}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold rounded-lg border transition-all shadow-2xs ${
-                isCritiquing
-                  ? "bg-muted text-muted-foreground border-border/60 cursor-not-allowed opacity-80"
-                  : critiqueData
-                  ? "bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-pink-500/10 hover:from-purple-500/20 hover:to-pink-500/20 text-purple-600 dark:text-purple-400 border-purple-500/30"
-                  : "bg-primary/10 hover:bg-primary/20 text-primary border-primary/25"
-              }`}
-              title={
-                critiqueData
-                  ? "Evaluasi ulang varian ini dengan AI Vision"
-                  : "Evaluasi kualitas estetika varian ini dengan AI Vision (Gemini 2.5 Flash)"
-              }
-            >
-              {isCritiquing ? (
-                <>
-                  <Loader2 className="size-3 animate-spin text-primary" />
-                  <span>Menilai...</span>
-                </>
-              ) : (
-                <>
-                  <Sparkles className="size-3" />
-                  <span>{critiqueData ? "Nilai Ulang" : "AI Critique"}</span>
-                </>
+          {(onCritique || (sectionKey === "hero" && onCritiqueServer)) && (
+            <div className="flex items-center gap-1">
+              {onCritique && (
+                <button
+                  type="button"
+                  disabled={isCritiquing}
+                  onClick={() => {
+                    if (previewCardRef.current) {
+                      onCritique(previewCardRef.current);
+                    }
+                  }}
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold rounded-lg border transition-all shadow-2xs ${
+                    isCritiquing
+                      ? "bg-muted text-muted-foreground border-border/60 cursor-not-allowed opacity-80"
+                      : critiqueData
+                      ? "bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-pink-500/10 hover:from-purple-500/20 hover:to-pink-500/20 text-purple-600 dark:text-purple-400 border-purple-500/30"
+                      : "bg-primary/10 hover:bg-primary/20 text-primary border-primary/25"
+                  }`}
+                  title={
+                    critiqueData
+                      ? "Evaluasi ulang varian ini dengan AI Vision (screenshot DOM)"
+                      : "Evaluasi kualitas estetika varian ini dengan AI Vision (screenshot DOM)"
+                  }
+                >
+                  {isCritiquing ? (
+                    <>
+                      <Loader2 className="size-3 animate-spin text-primary" />
+                      <span>Menilai...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="size-3" />
+                      <span>{critiqueData ? "Nilai Ulang (DOM)" : "AI Critique (DOM)"}</span>
+                    </>
+                  )}
+                </button>
               )}
-            </button>
+              {sectionKey === "hero" && onCritiqueServer && (
+                <button
+                  type="button"
+                  disabled={isCritiquing}
+                  onClick={onCritiqueServer}
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold rounded-lg border transition-all shadow-2xs ${
+                    isCritiquing
+                      ? "bg-muted text-muted-foreground border-border/60 cursor-not-allowed opacity-80"
+                      : critiqueData
+                      ? "bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-indigo-500/10 hover:from-cyan-500/20 hover:to-indigo-500/20 text-cyan-600 dark:text-cyan-400 border-cyan-500/30"
+                      : "bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 border-cyan-500/25"
+                  }`}
+                  title={
+                    critiqueData
+                      ? "Evaluasi ulang via screenshot publik /sp/section/hero/[variant] (server)"
+                      : "Evaluasi via screenshot publik /sp/section/hero/[variant] (server)"
+                  }
+                >
+                  {isCritiquing ? (
+                    <>
+                      <Loader2 className="size-3 animate-spin text-cyan-500" />
+                      <span>Server...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="size-3" />
+                      <span>{critiqueData ? "Nilai Ulang (Server)" : "AI Critique (Server)"}</span>
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
           )}
 
           {/* Show / Hide Toggle Button */}
