@@ -120,8 +120,8 @@ interface AIRuntimeConfig {
 
 // ─── Utilities ─────────────────────────────────────────────────────────────────
 
-function formatNumber(value?: number) {
-  return (value ?? 0).toLocaleString("id-ID");
+function formatNumber(value?: number, locale?: string) {
+  return (value ?? 0).toLocaleString(locale === "en" ? "en-US" : "id-ID");
 }
 
 function slotKeyOf(provider: string, baseUrl: string, model: string) {
@@ -214,7 +214,7 @@ function emptyForm() {
 export default function AdminAiSettingsPage() {
   const token = useAuthToken();
   const { role } = usePermissions();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   // Tab state
   const [activeTab, setActiveTab] = useState<"status" | "config">("status");
@@ -597,8 +597,8 @@ export default function AdminAiSettingsPage() {
                         rlTone = rateLimitTone(rl);
                         quotaPct = rateLimitUsedPct(rl);
                         effectiveWindow = rl.window === "day" ? t("dashboard.adminAiStatus.ratePerDay") : rl.window === "minute" ? t("dashboard.adminAiStatus.ratePerMinute") : "";
-                        effectiveLimit = rl.limit_tokens != null ? `${formatNumber(rl.limit_tokens)} ${t("dashboard.adminAiStatus.colTokens")}` : rl.limit_requests != null ? `${formatNumber(rl.limit_requests)} ${t("dashboard.adminAiStatus.colRequests")}` : rl.quota_value || null;
-                        effectiveRemaining = rl.remaining_tokens != null ? `${formatNumber(rl.remaining_tokens)} ${t("dashboard.adminAiStatus.colTokens")}` : rl.remaining_requests != null ? `${formatNumber(rl.remaining_requests)} ${t("dashboard.adminAiStatus.colRequests")}` : null;
+                        effectiveLimit = rl.limit_tokens != null ? `${formatNumber(rl.limit_tokens, locale)} ${t("dashboard.adminAiStatus.colTokens")}` : rl.limit_requests != null ? `${formatNumber(rl.limit_requests, locale)} ${t("dashboard.adminAiStatus.colRequests")}` : rl.quota_value || null;
+                        effectiveRemaining = rl.remaining_tokens != null ? `${formatNumber(rl.remaining_tokens, locale)} ${t("dashboard.adminAiStatus.colTokens")}` : rl.remaining_requests != null ? `${formatNumber(rl.remaining_requests, locale)} ${t("dashboard.adminAiStatus.colRequests")}` : null;
                       } else if (backendDailyLimit) {
                         isFreeTier = p.tier_policy === "free_tier" || !p.tier_policy;
                         const requestsUsed = used?.requests ?? 0;
@@ -607,8 +607,8 @@ export default function AdminAiSettingsPage() {
                         quotaPct = Math.min(100, Math.max(0, Math.round((requestsUsed / limitReq) * 100)));
                         rlTone = remReq <= 0 ? "red" : remReq / limitReq > 0.5 ? "green" : "yellow";
                         effectiveWindow = t("dashboard.adminAiStatus.ratePerDay");
-                        effectiveLimit = `${formatNumber(limitReq)} ${t("dashboard.adminAiStatus.colRequests")}`;
-                        effectiveRemaining = `${formatNumber(remReq)} ${t("dashboard.adminAiStatus.colRequests")}`;
+                        effectiveLimit = `${formatNumber(limitReq, locale)} ${t("dashboard.adminAiStatus.colRequests")}`;
+                        effectiveRemaining = `${formatNumber(remReq, locale)} ${t("dashboard.adminAiStatus.colRequests")}`;
                       }
 
                       const rlColor = rateToneClass[rlTone];
@@ -701,8 +701,8 @@ export default function AdminAiSettingsPage() {
                                   </span>
                                   {used ? (
                                     <span className="text-[11px] text-muted-foreground tabular-nums">
-                                      <b className="text-foreground">{formatNumber(used.total_tokens)}</b> {t("dashboard.adminAiStatus.colTokens")} ·{" "}
-                                      <b className="text-foreground">{formatNumber(used.requests)}</b> {t("dashboard.adminAiStatus.colRequests")}
+                                      <b className="text-foreground">{formatNumber(used.total_tokens, locale)}</b> {t("dashboard.adminAiStatus.colTokens")} ·{" "}
+                                      <b className="text-foreground">{formatNumber(used.requests, locale)}</b> {t("dashboard.adminAiStatus.colRequests")}
                                     </span>
                                   ) : (
                                     <span className="text-[11px] text-muted-foreground">{t("dashboard.adminAiStatus.notUsedToday")}</span>
@@ -762,26 +762,26 @@ export default function AdminAiSettingsPage() {
                     <Card className="border-border/40 shadow-sm">
                       <CardContent className="p-4 pt-4 space-y-0.5">
                         <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.usageTotalTokens")}</p>
-                        <p className="text-base font-bold tabular-nums">{formatNumber(usage.totals.tokens_total)}</p>
+                        <p className="text-base font-bold tabular-nums">{formatNumber(usage.totals.tokens_total, locale)}</p>
                       </CardContent>
                     </Card>
                     <Card className="border-border/40 shadow-sm">
                       <CardContent className="p-4 pt-4 space-y-0.5">
                         <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.usageTotalRequests")}</p>
-                        <p className="text-base font-bold tabular-nums">{formatNumber(usage.totals.ai_requests_total)}</p>
+                        <p className="text-base font-bold tabular-nums">{formatNumber(usage.totals.ai_requests_total, locale)}</p>
                       </CardContent>
                     </Card>
                     <Card className="border-border/40 shadow-sm">
                       <CardContent className="p-4 pt-4 space-y-0.5">
                         <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.usageTotalGenerates")}</p>
-                        <p className="text-base font-bold tabular-nums">{formatNumber(usage.totals.generate_count)}</p>
+                        <p className="text-base font-bold tabular-nums">{formatNumber(usage.totals.generate_count, locale)}</p>
                       </CardContent>
                     </Card>
                     <Card className="border-border/40 shadow-sm">
                       <CardContent className="p-4 pt-4 space-y-0.5">
                         <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.usageAvgPerGenerate")}</p>
                         <p className="text-base font-bold tabular-nums">
-                          {usage.totals.generate_count > 0 ? formatNumber(Math.round(usage.totals.tokens_total / usage.totals.generate_count)) : "—"}
+                          {usage.totals.generate_count > 0 ? formatNumber(Math.round(usage.totals.tokens_total / usage.totals.generate_count), locale) : "—"}
                         </p>
                       </CardContent>
                     </Card>
@@ -791,8 +791,8 @@ export default function AdminAiSettingsPage() {
                       <CardContent className="p-5 pt-5">
                         <p className="text-xs font-semibold text-foreground mb-2">{t("dashboard.adminAiStatus.capacityTitle")}</p>
                         <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
-                          <span>{t("dashboard.adminAiStatus.capacityTpm")}: <b className="text-foreground">{formatNumber(usage.capacity.tpm_quota)}</b></span>
-                          <span>{t("dashboard.adminAiStatus.capacityAvgTokens")}: <b className="text-foreground">{formatNumber(Math.round(usage.capacity.avg_tokens_per_web))}</b></span>
+                          <span>{t("dashboard.adminAiStatus.capacityTpm")}: <b className="text-foreground">{formatNumber(usage.capacity.tpm_quota, locale)}</b></span>
+                          <span>{t("dashboard.adminAiStatus.capacityAvgTokens")}: <b className="text-foreground">{formatNumber(Math.round(usage.capacity.avg_tokens_per_web), locale)}</b></span>
                           <span>{t("dashboard.adminAiStatus.capacityWebsMin")}: <b className="text-foreground">{usage.capacity.webs_per_minute.toFixed(2)}</b></span>
                           <span>{t("dashboard.adminAiStatus.capacityWebsHour")}: <b className="text-foreground">{usage.capacity.webs_per_hour.toFixed(1)}</b></span>
                           <span>{t("dashboard.adminAiStatus.capacityWebsDay")}: <b className="text-foreground">{usage.capacity.webs_per_day_approx.toFixed(0)}</b></span>
@@ -1064,7 +1064,7 @@ export default function AdminAiSettingsPage() {
                         </div>
                         <div>
                           <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.tableDailyLimit")}</p>
-                          <p className="text-xs tabular-nums text-foreground">{cfg.daily_requests_limit > 0 ? `${formatNumber(cfg.daily_requests_limit)} ${t("dashboard.adminAiStatus.perDay")}` : t("dashboard.adminAiStatus.rateLimitUnknown")}</p>
+                          <p className="text-xs tabular-nums text-foreground">{cfg.daily_requests_limit > 0 ? `${formatNumber(cfg.daily_requests_limit, locale)} ${t("dashboard.adminAiStatus.perDay")}` : t("dashboard.adminAiStatus.rateLimitUnknown")}</p>
                         </div>
                       </div>
                       <div className="shrink-0 flex items-center gap-1">
