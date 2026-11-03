@@ -1281,7 +1281,7 @@ function VariantPreviewCard({
       className={`bg-card rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all border ${
         isHidden
           ? "border-destructive/40 bg-card/60 ring-1 ring-destructive/20"
-          : critiqueData?.tier === "C"
+          : critiqueData?.tier === "C" && (critiqueData.improvements?.length ?? 0) > 0
           ? "border-destructive/30 ring-1 ring-destructive/15"
           : "border-border/90"
       }`}
@@ -1372,8 +1372,8 @@ function VariantPreviewCard({
                   {critiqueData.scored_by === "vision_ai" ? "🤖 AI" : "🌱 Seed"}
                 </span>
               )}
-              {/* Tier C / B warning badge */}
-              {critiqueData && !isHidden && (critiqueData.tier === "C" || critiqueData.tier === "B") && (
+              {/* Tier C / B warning badge — only show when improvements exist and score > 0 */}
+              {critiqueData && !isHidden && critiqueData.score > 0 && (critiqueData.improvements?.length ?? 0) > 0 && (critiqueData.tier === "C" || critiqueData.tier === "B") && (
                 <span
                   className={`px-1.5 py-0.5 rounded-full border text-[9px] font-bold flex items-center gap-0.5 ${
                     critiqueData.tier === "C"
@@ -1819,8 +1819,8 @@ function VariantPreviewCard({
                   <span>Nilai Ulang Sekarang</span>
                 </button>
 
-                {/* Quick-hide for Tier B / C only, when variant is currently visible */}
-                {(critiqueData.tier === "C" || critiqueData.tier === "B") && !isHidden && (
+                {/* Quick-hide for Tier B / C only, when score > 0 and improvements exist */}
+                {(critiqueData.tier === "C" || critiqueData.tier === "B") && !isHidden && critiqueData.score > 0 && (critiqueData.improvements?.length ?? 0) > 0 && (
                   <button
                     type="button"
                     onClick={() => {
