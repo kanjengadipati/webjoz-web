@@ -27,6 +27,7 @@ interface AiProviderStatus {
   http_status?: number;
   latency_ms?: number;
   error?: string;
+  account_email?: string;
   daily_requests_limit?: number;
   daily_tokens_limit?: number;
   tier_policy?: string;
@@ -619,7 +620,7 @@ export default function AdminAiSettingsPage() {
                                 {p.base_url && <p className="text-[10.5px] text-muted-foreground/70 font-mono truncate">{p.base_url}</p>}
                               </div>
                               <div className="shrink-0 flex items-center gap-2.5">
-                                <div className="text-[11px] font-medium">
+                                <div className="text-[11px] font-medium flex flex-col items-end gap-0.5">
                                   {p.requires_key ? (
                                     <span className={`inline-flex items-center gap-1 ${p.api_key_configured ? "text-green-500" : "text-amber-500"}`}>
                                       <KeyRound className="size-3.5" />
@@ -630,6 +631,9 @@ export default function AdminAiSettingsPage() {
                                       <Zap className="size-3.5" />
                                       {t("dashboard.adminAiStatus.noKeyRequired")}
                                     </span>
+                                  )}
+                                  {p.account_email && (
+                                    <span className="text-[10px] text-muted-foreground/70 font-mono truncate max-w-[140px]">{p.account_email}</span>
                                   )}
                                 </div>
                                 <Button
