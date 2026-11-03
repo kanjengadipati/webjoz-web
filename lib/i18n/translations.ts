@@ -8218,7 +8218,7 @@ export const translations: Record<Locale, Translations> = {
         addOverride: "Add Override",
         editOverride: "Edit Override",
         pola1NoticeTitle: "Pattern 1 — DB Override",
-        pola1NoticeDesc: "Values below override .env configurations at runtime. Tiers without DB records fall back to .env values. API keys are safely masked and only shown as hints.",
+        pola1NoticeDesc: "Values below override .env configurations at runtime. Tiers without DB records fall back to .env values. API keys are encrypted at rest (AES-256-GCM) and only shown as masked hints.",
         tableTier: "Tier",
         tableProvider: "Provider",
         tableModel: "Model",
