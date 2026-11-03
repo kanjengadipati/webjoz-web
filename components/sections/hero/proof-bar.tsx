@@ -6,6 +6,18 @@ import { InlineText, InlineImage } from "../../templates/shared";
 import { HeroCta } from "./primitives";
 import { heroStrings } from "./hero-strings";
 
+const DEFAULT_STATS_ID = [
+  { value: "500+", label: "Klien Puas" },
+  { value: "10+", label: "Tahun Pengalaman" },
+  { value: "98%", label: "Kepuasan Klien" },
+];
+
+const DEFAULT_STATS_EN = [
+  { value: "500+", label: "Happy Clients" },
+  { value: "10+", label: "Years Experience" },
+  { value: "98%", label: "Client Satisfaction" },
+];
+
 /**
  * Proof Bar — headline tegas + baris angka pencapaian dan jam buka.
  * ImageNeed: None. Cocok: jasa profesional, bengkel, klinik, kontraktor.
@@ -36,17 +48,15 @@ export default function HeroProofBar({
     : null;
 
   const statSource = h.stats && h.stats.length > 0 ? h.stats : rawStats;
-  const stats = statSource
-    ? statSource.map((s, i) => ({
-        value: s?.value?.trim() && s.value !== "—" ? s.value : rawStats?.[i]?.value ?? "—",
-        label: s?.label?.trim() ? s.label : rawStats?.[i]?.label ?? "",
-      }))
-    : [];
+  const parsedStats = (statSource ?? [])
+    .map((s, i) => ({
+      value: s?.value?.trim() && s.value !== "—" ? s.value : rawStats?.[i]?.value ?? "",
+      label: s?.label?.trim() ? s.label : rawStats?.[i]?.label ?? "",
+    }))
+    .filter((s) => s.value || s.label);
 
-  const hasStats = rawStats !== null || (Array.isArray(h.stats) && h.stats.length > 0);
-  const showStats = hasStats || Boolean(isEditorMode);
-  // Keep a placeholder row editable in the editor when no stats exist yet.
-  const displayStats = (stats.length > 0 ? stats : isEditorMode ? [{ value: "", label: "" }] : []).slice(0, 4);
+  const defaultStats = language === "en" ? DEFAULT_STATS_EN : DEFAULT_STATS_ID;
+  const displayStats = (parsedStats.length > 0 ? parsedStats : defaultStats).slice(0, 4);
   const hasImage = Boolean(h.image_url) || Boolean(isEditorMode);
 
   return (
@@ -159,43 +169,41 @@ export default function HeroProofBar({
           )}
         </div>
 
-        {showStats && (
-          <dl
-            className="mt-12 grid grid-cols-2 gap-6 border-t pt-8 lg:grid-cols-4"
-            style={{ borderColor: "color-mix(in srgb, var(--dt-text) 14%, transparent)" }}
-          >
-            {displayStats.map((s, i) => (
-              <div key={i}>
-                <dd
-                  style={{
-                    margin: 0,
-                    fontFamily: "var(--dt-heading-font)",
-                    fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
-                    lineHeight: 1.1,
-                    color: "var(--dt-primary)",
-                  }}
-                >
-                  <InlineText
-                    {...common}
-                    fieldKey={`stats.${i}.value`}
-                    value={s.value}
-                    placeholder={hs.valuePlaceholder}
-                    as="span"
-                  />
-                </dd>
-                <dt style={{ marginTop: "0.35rem", color: "var(--dt-text-muted)", fontSize: "0.9rem" }}>
-                  <InlineText
-                    {...common}
-                    fieldKey={`stats.${i}.label`}
-                    value={s.label}
-                    placeholder="Label"
-                    as="span"
-                  />
-                </dt>
-              </div>
-            ))}
-          </dl>
-        )}
+        <dl
+          className="mt-12 grid grid-cols-2 gap-6 border-t pt-8 lg:grid-cols-4"
+          style={{ borderColor: "color-mix(in srgb, var(--dt-text) 14%, transparent)" }}
+        >
+          {displayStats.map((s, i) => (
+            <div key={i}>
+              <dd
+                style={{
+                  margin: 0,
+                  fontFamily: "var(--dt-heading-font)",
+                  fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
+                  lineHeight: 1.1,
+                  color: "var(--dt-primary)",
+                }}
+              >
+                <InlineText
+                  {...common}
+                  fieldKey={`stats.${i}.value`}
+                  value={s.value}
+                  placeholder={hs.valuePlaceholder}
+                  as="span"
+                />
+              </dd>
+              <dt style={{ marginTop: "0.35rem", color: "var(--dt-text-muted)", fontSize: "0.9rem" }}>
+                <InlineText
+                  {...common}
+                  fieldKey={`stats.${i}.label`}
+                  value={s.label}
+                  placeholder={hs.statLabelPlaceholder}
+                  as="span"
+                />
+              </dt>
+            </div>
+          ))}
+        </dl>
 
         {(h.opening_hours || isEditorMode) && (
           <InlineText
