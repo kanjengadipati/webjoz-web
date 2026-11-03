@@ -945,6 +945,9 @@ export default function AdminAiSettingsPage() {
                       value={formData.base_url}
                       onChange={(e) => setFormData((f) => ({ ...f, base_url: e.target.value }))}
                     />
+                    {formData.base_url && !formData.base_url.startsWith("https://") && !formData.base_url.startsWith("http://") && (
+                      <p className="text-[10px] text-amber-500 mt-0.5">Base URL harus diawali https:// atau http://</p>
+                    )}
                   </div>
                   <div className="space-y-1">
                     <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
