@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import { SECTION_VARIANT_OPTIONS } from "@/components/sections/variant-registry";
+import { SECTION_VARIANT_OPTIONS, getVariantLabel, getVariantGroupLabel } from "@/components/sections/variant-registry";
 import { getHeroStyle } from "@/components/sections/hero/meta";
+import { useI18n } from "@/lib/i18n/context";
 import {
   Check,
   ChevronDown,
@@ -1227,17 +1228,11 @@ export default function SectionVariantVisualPicker({
     return () => clearTimeout(id);
   }, [isExpanded]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const { locale } = useI18n();
+
   if (!SECTION_VARIANT_OPTIONS[sectionKey] || enabledOpts.length <= 1) {
     return null;
   }
-
-  const getOptionLabel = (opt: { value: string; label: string; labelKey?: string }) => {
-    if (t && opt.labelKey) {
-      const translated = t(`dashboard.sitesEditor.${opt.labelKey}`);
-      if (translated && !translated.startsWith("dashboard.")) return translated;
-    }
-    return opt.label;
-  };
 
   return (
     <div
@@ -1258,11 +1253,11 @@ export default function SectionVariantVisualPicker({
         <div className="flex items-center gap-2 min-w-0">
           <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0 shadow-[0_0_6px_rgba(52,211,153,0.5)]" />
           <span className="text-[12px] font-bold text-slate-100 truncate">
-            {getOptionLabel(currentOpt)}
+            {getVariantLabel(sectionKey, currentOpt.value, t)}
           </span>
           {currentOpt.group && (
             <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-400/40 shrink-0">
-              {currentOpt.group}
+              {getVariantGroupLabel(currentOpt.group, locale)}
             </span>
           )}
         </div>
@@ -1310,7 +1305,7 @@ export default function SectionVariantVisualPicker({
                         : "bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-700/80 border border-slate-700/50"
                     }`}
                   >
-                    {grp} ({count})
+                    {getVariantGroupLabel(grp, locale)} ({count})
                   </button>
                 );
               })}
@@ -1337,7 +1332,7 @@ export default function SectionVariantVisualPicker({
                   {isActive && (
                     <div className="absolute top-1.5 right-1.5 z-10 flex items-center gap-1 bg-sky-500 text-slate-950 text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-md">
                       <Check className="w-2.5 h-2.5 stroke-[3]" />
-                      <span>Aktif</span>
+                      <span>{locale === "en" ? "Active" : "Aktif"}</span>
                     </div>
                   )}
 
@@ -1353,14 +1348,14 @@ export default function SectionVariantVisualPicker({
                         isActive ? "text-sky-300 font-extrabold" : "text-slate-200 group-hover:text-white"
                       }`}
                     >
-                      {getOptionLabel(opt)}
+                      {getVariantLabel(sectionKey, opt.value, t)}
                     </span>
                   </div>
 
                   {/* Group Tag */}
                   {opt.group && (
                     <span className={`text-[8px] font-semibold uppercase tracking-wider mb-1 ${isActive ? "text-sky-300" : "text-slate-400"}`}>
-                      {opt.group}
+                      {getVariantGroupLabel(opt.group, locale)}
                     </span>
                   )}
 

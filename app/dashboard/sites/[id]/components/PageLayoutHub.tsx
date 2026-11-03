@@ -79,11 +79,7 @@ export default function PageLayoutHub({
               ? (getHeroStyle(designToken) || enabledVars[0].value)
               : designToken?.layout?.section_variants?.[secKey]) || enabledVars[0].value;
 
-          const currentOpt = enabledVars.find((v) => v.value === currentVal);
-          const currentLabel =
-            (t && currentOpt?.labelKey ? t(`dashboard.sitesEditor.${currentOpt.labelKey}`) : "") ||
-            currentOpt?.label ||
-            currentVal;
+          const currentLabel = getVariantLabel(secKey, currentVal, t);
           const isExpanded = activeAccordion === secKey;
 
           return (
