@@ -9,7 +9,7 @@ import {
   KeyRound, Server, Zap, Gauge, Settings2, Plus, Trash2,
   Eye, EyeOff, Save, AlertTriangle,
 } from "lucide-react";
-import { Card, CardContent, Button } from "webjoz-ui";
+import { Card, CardContent, Button, Input, Switch } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -957,15 +957,12 @@ export default function AdminAiSettingsPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <label className="flex items-center gap-2 cursor-pointer select-none text-sm text-foreground">
-                    <input
-                      type="checkbox"
-                      checked={formData.is_enabled}
-                      onChange={(e) => setFormData((f) => ({ ...f, is_enabled: e.target.checked }))}
-                      className="rounded border-border/50"
-                    />
-                    {t("dashboard.adminAiStatus.formEnabled")}
-                  </label>
+                  <Switch
+                    checked={formData.is_enabled}
+                    onCheckedChange={(checked) => setFormData((f) => ({ ...f, is_enabled: checked }))}
+                    size="sm"
+                  />
+                  <span className="text-sm text-foreground">{t("dashboard.adminAiStatus.formEnabled")}</span>
                 </div>
                 {saveError && (
                   <p className="text-xs text-destructive flex items-center gap-1">
