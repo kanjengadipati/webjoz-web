@@ -62,7 +62,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
 
   const sectionNodes: Record<string, React.ReactNode> = {
     hero: (
-      <MemoPreviewSectionWrapper section="hero" label="Hero" activeSection={activeSection} currentVariant={getSectionVariant(dt, "hero")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="hero"  activeSection={activeSection} currentVariant={getSectionVariant(dt, "hero")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
         <MemoSectionContent content={hero} render={(h) => (
           <section className="py-14 px-6 max-w-5xl mx-auto grid md:grid-cols-12 gap-8 items-center" style={h.background_color ? { background: h.background_color } : undefined}>
             <div className="md:col-span-7 space-y-5">
@@ -109,7 +109,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
       </MemoPreviewSectionWrapper>
     ),
     about: (
-      <MemoPreviewSectionWrapper section="about" label="Tentang" activeSection={activeSection} currentVariant={getSectionVariant(dt, "about")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="about"  activeSection={activeSection} currentVariant={getSectionVariant(dt, "about")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
         <MemoSectionContent content={about} render={(a) => (
           <section id="about" className="py-14 px-6 border-y-4 border-black" style={{ background: "#E8F5E9" }}>
             <div className={`max-w-5xl mx-auto ${a.image_url ? "grid md:grid-cols-2 gap-10 items-center" : "max-w-3xl mx-auto"}`}>
@@ -144,33 +144,33 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
       </MemoPreviewSectionWrapper>
     ),
     benefits: (
-      <MemoPreviewSectionWrapper section="benefits" label="Keunggulan" activeSection={activeSection} currentVariant={getSectionVariant(dt, "benefits")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="benefits"  activeSection={activeSection} currentVariant={getSectionVariant(dt, "benefits")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
         <MemoSectionContent content={benefits} render={(b) => (
           <BenefitsSectionInner benefits={b} design_token={dt} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "benefits"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
         )} />
       </MemoPreviewSectionWrapper>
     ),
     testimonials: testimonials ? (
-      <MemoPreviewSectionWrapper section="testimonials" label="Testimoni" activeSection={activeSection} currentVariant={getSectionVariant(dt, "testimonials")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="testimonials"  activeSection={activeSection} currentVariant={getSectionVariant(dt, "testimonials")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
         <TestimonialsSectionInner testimonials={testimonials} design_token={dt} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "testimonials"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
       </MemoPreviewSectionWrapper>
     ) : null,
     menu: menu ? (
-      <MemoPreviewSectionWrapper section="menu" label="Menu" activeSection={activeSection} currentVariant={getSectionVariant(dt, "menu")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="menu"  activeSection={activeSection} currentVariant={getSectionVariant(dt, "menu")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
         <MemoSectionContent content={menu} render={(m) => (
           <MenuSectionInner menu={m} design_token={dt} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "menu"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
         )} />
       </MemoPreviewSectionWrapper>
     ) : null,
     catalog: catalog ? (
-      <MemoPreviewSectionWrapper section="catalog" label="Katalog" activeSection={activeSection} currentVariant={getSectionVariant(dt, "catalog")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="catalog"  activeSection={activeSection} currentVariant={getSectionVariant(dt, "catalog")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
         <MemoSectionContent content={catalog} render={(c) => (
           <CatalogSectionInner catalog={c} design_token={dt} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "catalog"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
         )} />
       </MemoPreviewSectionWrapper>
     ) : null,
     faq: (
-      <MemoPreviewSectionWrapper section="faq" label="FAQ" activeSection={activeSection} currentVariant={getSectionVariant(dt, "faq")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="faq"  activeSection={activeSection} currentVariant={getSectionVariant(dt, "faq")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
         <MemoSectionContent content={faq} render={(f) => (
           <FaqSectionInner
             faq={f}
@@ -186,7 +186,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
       </MemoPreviewSectionWrapper>
     ),
     cta: (
-      <MemoPreviewSectionWrapper section="cta" label="CTA" activeSection={activeSection} currentVariant={getSectionVariant(dt, "cta")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="cta"  activeSection={activeSection} currentVariant={getSectionVariant(dt, "cta")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
         <MemoSectionContent content={cta} render={(c) => (
           <section className="py-16 px-6 border-y-4 border-black text-center" style={{ background: black }}>
             <div className="max-w-2xl mx-auto space-y-6">
@@ -203,7 +203,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
       </MemoPreviewSectionWrapper>
     ),
     contact: (
-      <MemoPreviewSectionWrapper section="contact" label="Kontak" activeSection={activeSection} currentVariant={getSectionVariant(dt, "contact")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="contact"  activeSection={activeSection} currentVariant={getSectionVariant(dt, "contact")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
         <MemoSectionContent content={contact} render={(c) => (
           <ContactSectionInner
             contact={c}
@@ -223,7 +223,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
       </MemoPreviewSectionWrapper>
     ),
     gallery: gallery ? (
-      <MemoPreviewSectionWrapper section="gallery" label="Galeri" activeSection={activeSection} currentVariant={getSectionVariant(dt, "gallery")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="gallery"  activeSection={activeSection} currentVariant={getSectionVariant(dt, "gallery")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ gallery, dt }} render={(data) => {
           const { gallery: g, dt: d } = data;
           return <GallerySection gallery={g} design_token={d} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "gallery"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />;
@@ -231,7 +231,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
       </MemoPreviewSectionWrapper>
     ) : null,
     works: works ? (
-      <MemoPreviewSectionWrapper section="works" label="Portofolio" activeSection={activeSection} currentVariant={getSectionVariant(dt, "works")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="works"  activeSection={activeSection} currentVariant={getSectionVariant(dt, "works")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
         <MemoSectionContent content={{ works, dt }} render={(data) => {
           const { works: w, dt: d } = data;
           return <WorksSection works={w} design_token={d} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "works"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />;
@@ -249,7 +249,7 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
           .filter(k => !arrivedSections || arrivedSections.includes(k));
         return (
           <>
-            <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} currentVariant={getSectionVariant(dt, "header")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+            <MemoPreviewSectionWrapper section="header"  activeSection={activeSection} currentVariant={getSectionVariant(dt, "header")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
               <HeaderSection header={header} design_token={dt} sectionOrder={withoutHidden(renderedSectionOrder, dt)} hiddenSections={dt?.layout?.hidden_sections} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "header"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             </MemoPreviewSectionWrapper>
 
@@ -274,10 +274,10 @@ export const TemplateColorful: React.FC<TemplateProps> = ({
         );
       })()}
 
-      <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} currentVariant={getSectionVariant(dt, "footer")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+      <MemoPreviewSectionWrapper section="footer"  activeSection={activeSection} currentVariant={getSectionVariant(dt, "footer")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
         <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} language={language} contactAddress={contact?.address} contactMapsUrl={contact?.maps_url ?? undefined} contactOpeningHours={contact?.opening_hours} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "footer"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
       </MemoPreviewSectionWrapper>
-      {isEditorMode && <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} currentVariant={getSectionVariant(dt, "seo")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}><MemoSectionContent content={seo} render={(s) => <SeoEditorPreview seo={s} domain={tenantDomain} />} /></MemoPreviewSectionWrapper>}
+      {isEditorMode && <MemoPreviewSectionWrapper section="seo"  activeSection={activeSection} currentVariant={getSectionVariant(dt, "seo")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}><MemoSectionContent content={seo} render={(s) => <SeoEditorPreview seo={s} domain={tenantDomain} />} /></MemoPreviewSectionWrapper>}
       <CartFab colorStyle={{ background: pink, color: ctaText }} />
       <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} onSubmitLead={onSubmitLead} brandName={header?.brand_name} isPremium={isPremium} floatingType={design_token?.layout?.floating_button} language={language} />
       <BackToTop isEditorMode={isEditorMode} />

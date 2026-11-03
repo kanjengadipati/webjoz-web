@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, useMemo, useContext } from "react";
 import { SparkleGenAI } from "@/components/sparkle-icon";
-import { SECTION_VARIANT_OPTIONS } from "@/components/sections/variant-registry";
+import { SECTION_VARIANT_OPTIONS, getVariantLabel, getVariantGroupLabel } from "@/components/sections/variant-registry";
 import { ChevronDown, Check, LayoutGrid, Pencil } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { getSectionLabel } from "@/app/dashboard/sites/[id]/editor-utils";
@@ -598,9 +598,9 @@ export const PreviewSectionWrapper: React.FC<{
   hasHeaderOverlay = false,
 }) => {
     const { t, locale } = useI18n();
-    const displayLabel = label ?? getSectionLabel(section, locale);
+    const displayLabel = getSectionLabel(section, locale) || label || section;
     const [isGalleryOpen, setIsGalleryOpen] = useState(false);
-    const [selectedGroup, setSelectedGroup] = useState<string>("Semua");
+    const [selectedGroup, setSelectedGroup] = useState<string>("ALL");
     const panelRef = useRef<HTMLDivElement>(null);
 
     const editSectionShortcut = useContext(SectionShortcutContext);
@@ -631,7 +631,7 @@ export const PreviewSectionWrapper: React.FC<{
     }, [variants]);
 
     const filteredVariants = useMemo(() => {
-      if (selectedGroup === "Semua") return variants;
+      if (selectedGroup === "ALL") return variants;
       return variants.filter((v) => v.group === selectedGroup);
     }, [variants, selectedGroup]);
 
@@ -690,7 +690,7 @@ export const PreviewSectionWrapper: React.FC<{
               {canReorder && <SectionDragControls section={section} />}
               {/* Label segment */}
               <span className={`${hasVariants ? "hidden sm:inline-flex" : "inline-flex"} items-center h-full px-2 sm:px-2.5 text-[8px] sm:text-[8.5px] font-bold tracking-[0.1em] text-slate-400 uppercase select-none`}>
-                {label}
+                {displayLabel}
               </span>
 
               {hasVariants && (
@@ -711,14 +711,14 @@ export const PreviewSectionWrapper: React.FC<{
                         onSelectSection?.(section);
                       }
                       setIsGalleryOpen((prev) => !prev);
-                      if (!isGalleryOpen) setSelectedGroup("Semua");
+                      if (!isGalleryOpen) setSelectedGroup("ALL");
                     }}
                     className={`h-full inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:pl-2 sm:pr-2.5 ${canEditSection ? "rounded-full sm:rounded-none" : "rounded-full sm:rounded-none sm:rounded-r-full"} text-[9px] sm:text-[9.5px] font-medium cursor-pointer transition-colors outline-none focus:outline-none focus-visible:outline-none select-none ${
                       isGalleryOpen ? "text-sky-300 bg-sky-500/10" : "text-slate-200 hover:text-white hover:bg-white/5"
                     }`}
                   >
                     <span className="max-w-[85px] sm:max-w-[150px] truncate leading-none">
-                      {activeOpt?.label || t("dashboard.sitesEditor.variantLabel")}
+                      {activeOpt ? getVariantLabel(section, activeOpt.value, t) : t("dashboard.sitesEditor.variantLabel")}
                     </span>
                     <ChevronDown className={`w-2.5 h-2.5 shrink-0 transition-transform duration-200 ${isGalleryOpen ? "rotate-180 text-sky-400" : "text-slate-400"}`} />
                   </button>
@@ -772,7 +772,7 @@ export const PreviewSectionWrapper: React.FC<{
                           <div className="flex items-center gap-1.5">
                             <LayoutGrid className="w-3 h-3 text-sky-400" />
                             <span className="text-[10px] font-bold text-slate-100 uppercase tracking-wider">
-                              {t("dashboard.sitesEditor.variantLabel")} {label}
+                              {t("dashboard.sitesEditor.variantLabel")} {displayLabel}
                             </span>
                           </div>
                           <span className="text-[9px] text-sky-400 font-bold">
@@ -785,9 +785,9 @@ export const PreviewSectionWrapper: React.FC<{
                           <div className="flex items-center gap-1 overflow-x-auto pb-0.5">
                             <button
                               type="button"
-                              onClick={() => setSelectedGroup("Semua")}
+                              onClick={() => setSelectedGroup("ALL")}
                               className={`px-2 py-0.5 rounded-full text-[9px] transition whitespace-nowrap cursor-pointer shrink-0 ${
-                                selectedGroup === "Semua"
+                                selectedGroup === "ALL"
                                   ? "bg-sky-500 text-slate-950 font-black shadow-xs"
                                   : "bg-white/10 text-slate-300 hover:text-white hover:bg-white/20 font-medium"
                               }`}
@@ -805,7 +805,7 @@ export const PreviewSectionWrapper: React.FC<{
                                     : "bg-white/10 text-slate-300 hover:text-white hover:bg-white/20 font-medium"
                                 }`}
                               >
-                                {grp}
+                                {getVariantGroupLabel(grp, locale)}
                               </button>
                             ))}
                           </div>
@@ -838,10 +838,12 @@ export const PreviewSectionWrapper: React.FC<{
                                   <VariantWireframeSmall variant={v.value} section={section} />
                                 </div>
                                 <span className={`text-[10px] font-bold line-clamp-1 leading-tight ${isActive ? "text-sky-300 font-extrabold" : "text-slate-200 group-hover/card:text-white"}`}>
-                                  {v.label}
+                                  {getVariantLabel(section, v.value, t)}
                                 </span>
                                 {v.group && (
-                                  <span className={`text-[8px] mt-0.5 leading-none ${isActive ? "text-sky-400/80 font-medium" : "text-slate-400"}`}>{v.group}</span>
+                                  <span className={`text-[8px] mt-0.5 leading-none ${isActive ? "text-sky-400/80 font-medium" : "text-slate-400"}`}>
+                                    {getVariantGroupLabel(v.group, locale)}
+                                  </span>
                                 )}
                               </button>
                             );

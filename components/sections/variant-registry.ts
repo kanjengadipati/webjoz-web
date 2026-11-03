@@ -173,9 +173,37 @@ export function getVariantLabel(section: string, value: string, t?: any): string
   if (!opt) return value;
   if (t && opt.labelKey) {
     const translated = t(`dashboard.sitesEditor.${opt.labelKey}`);
-    if (translated && !translated.startsWith("dashboard.")) return translated;
+    if (translated && !translated.startsWith("dashboard.")) {
+      return translated.replace(/^Hero:\s*/i, "");
+    }
   }
   return opt.label;
+}
+
+const VARIANT_GROUP_LABELS: Record<string, { id: string; en: string }> = {
+  "Branding": { id: "Branding", en: "Branding" },
+  "Dasar": { id: "Dasar", en: "Basic" },
+  "E-Commerce": { id: "E-Commerce", en: "E-Commerce" },
+  "Editorial": { id: "Editorial", en: "Editorial" },
+  "Efek Visual": { id: "Efek Visual", en: "Visual Effects" },
+  "Kategori": { id: "Kategori", en: "Category" },
+  "Konversi & Kontak": { id: "Konversi & Kontak", en: "Conversion & Contact" },
+  "List": { id: "Daftar", en: "List" },
+  "Minimalis": { id: "Minimalis", en: "Minimalist" },
+  "Modern & Tekno": { id: "Modern & Tekno", en: "Modern & Tech" },
+  "Modern": { id: "Modern", en: "Modern" },
+  "Padat": { id: "Padat", en: "Dense" },
+  "Portofolio & Personal": { id: "Portofolio & Personal", en: "Portfolio & Personal" },
+  "Tabel": { id: "Tabel", en: "Table" },
+  "Visual Foto": { id: "Visual Foto", en: "Photo Visual" },
+};
+
+export function getVariantGroupLabel(group: string | undefined, locale?: string): string {
+  if (!group) return "";
+  const isEn = locale?.toLowerCase() === "en";
+  const mapped = VARIANT_GROUP_LABELS[group];
+  if (!mapped) return group;
+  return isEn ? mapped.en : mapped.id;
 }
 
 export function getVariantDescription(section: string, value: string, t?: any): string {

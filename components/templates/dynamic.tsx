@@ -459,7 +459,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           const renderedSectionOrder = renderedSections.map((sec) => sec.type);
           return (
             <>
-              <MemoPreviewSectionWrapper section="header" label="Header" activeSection={activeSection} currentVariant={getVariantFor("header")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+              <MemoPreviewSectionWrapper section="header"  activeSection={activeSection} currentVariant={getVariantFor("header")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
                 <HeaderSection header={header} design_token={dt} sectionOrder={withoutHidden(renderedSectionOrder, dt)} hiddenSections={dt?.layout?.hidden_sections} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "header"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
               </MemoPreviewSectionWrapper>
 
@@ -484,12 +484,12 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           );
         })()}
 
-        <MemoPreviewSectionWrapper section="footer" label="Footer" activeSection={activeSection} currentVariant={getVariantFor("footer")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+        <MemoPreviewSectionWrapper section="footer"  activeSection={activeSection} currentVariant={getVariantFor("footer")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
           <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} language={language} hasBlog={!!(content.blog?.posts?.length)} contactAddress={content.contact?.address} contactMapsUrl={content.contact?.maps_url ?? undefined} contactOpeningHours={content.contact?.opening_hours} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "footer"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
         </MemoPreviewSectionWrapper>
 
         {isEditorMode && (
-          <MemoPreviewSectionWrapper section="seo" label="SEO" activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+          <MemoPreviewSectionWrapper section="seo"  activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
             <MemoSectionContent content={{ seo, dt }} render={(data) => {
               const { seo: s } = data;
               return <SeoEditorPreview seo={s} domain={tenantDomain} />;
