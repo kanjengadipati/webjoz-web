@@ -194,6 +194,30 @@ const statusLabelKey: Record<string, string> = {
   skipped: "dashboard.adminAiStatus.statusSkipped",
 };
 
+// ─── Tier options ─────────────────────────────────────────────────────────────
+
+const CUSTOM_TIER_VALUE = "__custom__";
+
+// tierRank groups tier names so the dropdown lists primary first, then the
+// fallback chain, then each router level in numeric order.
+function tierRank(tier: string): [number, number, string] {
+  if (tier === "primary") return [0, 0, tier];
+  const match = /^(fallback|router-low|router-medium|router-high)\.(\d+)$/.exec(tier);
+  if (match) {
+    const order: Record<string, number> = { fallback: 1, "router-low": 2, "router-medium": 3, "router-high": 4 };
+    return [order[match[1]] ?? 9, parseInt(match[2], 10), tier];
+  }
+  return [9, 0, tier];
+}
+
+function compareTier(a: string, b: string): number {
+  const [ga, na, ta] = tierRank(a);
+  const [gb, nb, tb] = tierRank(b);
+  if (ga !== gb) return ga - gb;
+  if (na !== nb) return na - nb;
+  return ta.localeCompare(tb);
+}
+
 // ─── Empty form state ──────────────────────────────────────────────────────────
 
 function emptyForm() {
@@ -244,6 +268,7 @@ export default function AdminAiSettingsPage() {
   const [deleteConfirmTier, setDeleteConfirmTier] = useState<string | null>(null);
   const [saveError, setSaveError] = useState("");
   const [showOnlyIssues, setShowOnlyIssues] = useState(false);
+  const [customTier, setCustomTier] = useState(false);
 
   const isSuperAdmin = role === "superadmin";
 
@@ -317,6 +342,24 @@ export default function AdminAiSettingsPage() {
     return map;
   }, [usage]);
 
+  // Tier choices for the add-override dialog. Derived from the effective
+  // runtime config (status report), existing DB overrides, plus a baseline set
+  // of slots so a fresh install can still pick common tiers.
+  const tierOptions = useMemo(() => {
+    const set = new Set<string>(["primary"]);
+    for (const p of report?.providers ?? []) {
+      if (p.tier) set.add(p.tier);
+    }
+    for (const c of configs) set.add(c.tier);
+    for (let i = 1; i <= 3; i++) set.add(`fallback.${i}`);
+    for (let i = 1; i <= 8; i++) {
+      set.add(`router-low.${i}`);
+      set.add(`router-medium.${i}`);
+    }
+    for (let i = 1; i <= 12; i++) set.add(`router-high.${i}`);
+    return Array.from(set).sort(compareTier);
+  }, [report, configs]);
+
   // ── Config handlers ───────────────────────────────────────────────────────────
 
   function startEdit(cfg?: AIRuntimeConfig) {
@@ -333,10 +376,12 @@ export default function AdminAiSettingsPage() {
       });
       setEditingTier(cfg.tier);
       setApiKeyHint(cfg.api_key_hint || "");
+      setCustomTier(false);
     } else {
       setFormData(emptyForm());
       setEditingTier("__new__");
       setApiKeyHint("");
+      setCustomTier(false);
     }
     setShowKey(false);
     setSaveError("");
@@ -360,12 +405,14 @@ export default function AdminAiSettingsPage() {
       setEditingTier(p.tier);
       setShowKey(false);
       setSaveError("");
+      setCustomTier(false);
     }
   }
 
   function cancelEdit() {
     setEditingTier(null);
     setFormData(emptyForm());
+    setCustomTier(false);
     setApiKeyHint("");
     setRevealedKey("");
     setTestResult(null);
@@ -434,6 +481,11 @@ export default function AdminAiSettingsPage() {
 
   async function saveConfig() {
     if (!token) return;
+    const tier = formData.tier.trim();
+    if (!tier) {
+      setSaveError(t("dashboard.adminAiStatus.formTierRequired"));
+      return;
+    }
     setSaving(true);
     setSaveError("");
     try {
@@ -441,6 +493,7 @@ export default function AdminAiSettingsPage() {
         method: "PUT",
         body: JSON.stringify({
           ...formData,
+          tier,
           account_email: formData.account_email || "",
         }),
         headers: { "Content-Type": "application/json" },
@@ -1038,13 +1091,47 @@ export default function AdminAiSettingsPage() {
           <div className="grid gap-3">
             <div className="space-y-1">
               <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formTier")}</label>
-              <input
-                className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
-                placeholder={t("dashboard.adminAiStatus.formTierPlaceholder")}
-                value={formData.tier}
-                disabled={editingTier !== "__new__"}
-                onChange={(e) => setFormData((f) => ({ ...f, tier: e.target.value }))}
-              />
+              {editingTier === "__new__" ? (
+                <>
+                  <select
+                    className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
+                    value={customTier ? CUSTOM_TIER_VALUE : formData.tier}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === CUSTOM_TIER_VALUE) {
+                        setCustomTier(true);
+                        return;
+                      }
+                      setCustomTier(false);
+                      setFormData((f) => ({ ...f, tier: value }));
+                    }}
+                  >
+                    <option value="">{t("dashboard.adminAiStatus.formTierSelect")}</option>
+                    {tierOptions.map((tier) => (
+                      <option key={tier} value={tier}>
+                        {tier}
+                        {configs.some((c) => c.tier === tier) ? ` — ${t("dashboard.adminAiStatus.formTierHasOverride")}` : ""}
+                      </option>
+                    ))}
+                    <option value={CUSTOM_TIER_VALUE}>{t("dashboard.adminAiStatus.formTierCustom")}</option>
+                  </select>
+                  {(customTier || (formData.tier !== "" && !tierOptions.includes(formData.tier))) && (
+                    <input
+                      className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
+                      placeholder={t("dashboard.adminAiStatus.formTierPlaceholder")}
+                      value={formData.tier}
+                      onChange={(e) => setFormData((f) => ({ ...f, tier: e.target.value }))}
+                    />
+                  )}
+                  <p className="text-[10px] text-muted-foreground">{t("dashboard.adminAiStatus.formTierHint")}</p>
+                </>
+              ) : (
+                <input
+                  className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm font-mono opacity-70 focus:outline-none"
+                  value={formData.tier}
+                  disabled
+                />
+              )}
             </div>
             <div className="space-y-1">
               <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formProvider")}</label>

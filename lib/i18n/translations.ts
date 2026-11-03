@@ -1193,6 +1193,11 @@ export interface Translations {
       noConfigsDesc: string;
       formTier: string;
       formTierPlaceholder: string;
+      formTierSelect: string;
+      formTierCustom: string;
+      formTierHasOverride: string;
+      formTierHint: string;
+      formTierRequired: string;
       formProvider: string;
       formModel: string;
       formBaseUrl: string;
@@ -4690,6 +4695,11 @@ export const translations: Record<Locale, Translations> = {
         noConfigsDesc: "Semua tier AI saat ini menggunakan konfigurasi default dari file .env. Klik 'Tambah Override' untuk menyesuaikan model atau limit dari dashboard.",
         formTier: "Tier AI",
         formTierPlaceholder: "mis. primary, fast, smart, fallback",
+        formTierSelect: "— pilih tier —",
+        formTierCustom: "Ketik manual…",
+        formTierHasOverride: "sudah punya override",
+        formTierHint: "Pilih slot yang akan di-override (mis. router-high.1). DB menang atas .env; berlaku setelah API restart.",
+        formTierRequired: "Tier wajib dipilih atau diketik.",
         formProvider: "Provider",
         formModel: "Nama Model",
         formBaseUrl: "Base URL (Opsional)",
@@ -8239,6 +8249,11 @@ export const translations: Record<Locale, Translations> = {
         noConfigsDesc: "All AI tiers currently use default settings from the .env file. Click 'Add Override' to customize models or limits from the dashboard.",
         formTier: "AI Tier",
         formTierPlaceholder: "e.g. primary, fast, smart, fallback",
+        formTierSelect: "— select tier —",
+        formTierCustom: "Type manually…",
+        formTierHasOverride: "override exists",
+        formTierHint: "Pick the slot to override (e.g. router-high.1). DB wins over .env; takes effect after the API restarts.",
+        formTierRequired: "Tier is required.",
         formProvider: "Provider",
         formModel: "Model Name",
         formBaseUrl: "Base URL (Optional)",
