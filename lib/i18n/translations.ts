@@ -1178,6 +1178,9 @@ export interface Translations {
       tableApiKey: string;
       tableAccountEmail: string;
       tableDailyLimit: string;
+      envFallback: string;
+      defaultEndpoint: string;
+      perDay: string;
       tableStatus: string;
       tableActions: string;
       active: string;
@@ -1196,7 +1199,10 @@ export interface Translations {
       formDailyLimit: string;
       formDailyLimitHint: string;
       formAccountEmail: string;
+      formAccountEmailHint: string;
       formEnabled: string;
+      revealFullKey: string;
+      revealing: string;
       saveConfig: string;
       cancel: string;
       saving: string;
@@ -4655,13 +4661,16 @@ export const translations: Record<Locale, Translations> = {
         tableBaseUrl: "Base URL",
         tableApiKey: "API Key",
         tableAccountEmail: "Email Akun",
+        dbOverride: "DB Override",
+        envFallback: ".env",
+        defaultEndpoint: "default endpoint",
+        perDay: "/hari",
         tableDailyLimit: "Batas Harian",
         tableStatus: "Status",
         tableActions: "Aksi",
         active: "Aktif",
         disabled: "Nonaktif",
         defaultFallback: ".env",
-        dbOverride: "DB Override",
         noConfigsTitle: "Belum Ada Override Runtime",
         noConfigsDesc: "Semua tier AI saat ini menggunakan konfigurasi default dari file .env. Klik 'Tambah Override' untuk menyesuaikan model atau limit dari dashboard.",
         formTier: "Tier AI",
@@ -4674,7 +4683,10 @@ export const translations: Record<Locale, Translations> = {
         formDailyLimit: "Batas Request Harian",
         formDailyLimitHint: "0 = tanpa batas tambahan",
         formAccountEmail: "Email Akun",
+        formAccountEmailHint: "akun pemilik key (catatan)",
         formEnabled: "Aktifkan Tier Ini",
+        revealFullKey: "Lihat Full Key",
+        revealing: "Membuka...",
         saveConfig: "Simpan Konfigurasi",
         cancel: "Batal",
         saving: "Menyimpan...",
@@ -8185,13 +8197,16 @@ export const translations: Record<Locale, Translations> = {
         tableBaseUrl: "Base URL",
         tableApiKey: "API Key",
         tableAccountEmail: "Account Email",
+        dbOverride: "DB Override",
+        envFallback: ".env",
+        defaultEndpoint: "default endpoint",
+        perDay: "/day",
         tableDailyLimit: "Daily Limit",
         tableStatus: "Status",
         tableActions: "Actions",
         active: "Active",
         disabled: "Disabled",
         defaultFallback: ".env",
-        dbOverride: "DB Override",
         noConfigsTitle: "No Runtime Overrides Yet",
         noConfigsDesc: "All AI tiers currently use default settings from the .env file. Click 'Add Override' to customize models or limits from the dashboard.",
         formTier: "AI Tier",
@@ -8204,7 +8219,10 @@ export const translations: Record<Locale, Translations> = {
         formDailyLimit: "Daily Request Limit",
         formDailyLimitHint: "0 = no custom limit",
         formAccountEmail: "Account Email",
+        formAccountEmailHint: "key owner account (note)",
         formEnabled: "Enable This Tier",
+        revealFullKey: "Reveal Full Key",
+        revealing: "Revealing...",
         saveConfig: "Save Configuration",
         cancel: "Cancel",
         saving: "Saving...",

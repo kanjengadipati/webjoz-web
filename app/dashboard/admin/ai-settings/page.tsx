@@ -269,7 +269,9 @@ export default function AdminAiSettingsPage() {
   useEffect(() => {
     if (activeTab === "status") {
       fetchStatus();
-      const interval = setInterval(() => fetchStatus(true), 15000);
+      const interval = setInterval(() => {
+        if (document.visibilityState === "visible") fetchStatus(true);
+      }, 60000);
       return () => clearInterval(interval);
     }
   }, [fetchStatus, activeTab]);
@@ -630,16 +632,16 @@ export default function AdminAiSettingsPage() {
                                   </span>
                                   {hasDbOverride ? (
                                     <span className="px-1.5 py-0.5 rounded-md bg-primary/10 border border-primary/20 text-[9.5px] font-semibold text-primary">
-                                      DB Override
+                                      {t("dashboard.adminAiStatus.dbOverride")}
                                     </span>
                                   ) : (
                                     <span className="px-1.5 py-0.5 rounded-md bg-muted/60 border border-border/40 text-[9.5px] font-semibold text-muted-foreground">
-                                      .env
+                                      {t("dashboard.adminAiStatus.envFallback")}
                                     </span>
                                   )}
                                 </div>
                                 {p.model && <p className="text-[11px] font-mono text-muted-foreground truncate">{p.model}</p>}
-                                {p.base_url && <p className="text-[10.5px] text-muted-foreground/70 font-mono truncate">{p.base_url}</p>}
+                                <p className="text-[10.5px] text-muted-foreground/70 font-mono truncate">{p.base_url || t("dashboard.adminAiStatus.defaultEndpoint")}</p>
                               </div>
                               <div className="shrink-0 flex items-center gap-2.5">
                                 <div className="text-[11px] font-medium flex flex-col items-end gap-0.5">
@@ -854,12 +856,18 @@ export default function AdminAiSettingsPage() {
                   </div>
                   <div className="space-y-1">
                     <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formProvider")}</label>
-                    <input
+                    <select
                       className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50"
-                      placeholder="e.g. gemini, groq, openrouter"
                       value={formData.provider}
                       onChange={(e) => setFormData((f) => ({ ...f, provider: e.target.value }))}
-                    />
+                    >
+                      <option value="">— pilih provider —</option>
+                      <option value="gemini">gemini</option>
+                      <option value="openai">openai (Groq/OpenRouter)</option>
+                      <option value="anthropic">anthropic</option>
+                      <option value="ollama">ollama</option>
+                      <option value="mock">mock</option>
+                    </select>
                   </div>
                   <div className="space-y-1">
                     <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formModel")}</label>
@@ -913,7 +921,7 @@ export default function AdminAiSettingsPage() {
                       <div className="flex items-center gap-2 mt-1 mb-3">
                         <Button type="button" size="sm" variant="outline" onClick={revealKey} disabled={revealing} className="h-7 px-2.5 text-xs gap-1.5">
                           {revealing ? <Loader2 className="size-3.5 animate-spin" /> : <Eye className="size-3.5" />}
-                          {revealing ? "Revealing..." : "Reveal Full Key"}
+                          {revealing ? t("dashboard.adminAiStatus.revealing") : t("dashboard.adminAiStatus.revealFullKey")}
                         </Button>
                         {revealedKey && (
                           <code className="text-xs font-mono text-foreground bg-muted/50 px-2 py-1 rounded border border-border/40 break-all max-w-[300px]">
@@ -939,7 +947,7 @@ export default function AdminAiSettingsPage() {
                     <input
                       className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50"
                       type="email"
-                      placeholder="contoh@gmail.com"
+                      placeholder={t("dashboard.adminAiStatus.formAccountEmailHint")}
                       value={formData.account_email}
                       onChange={(e) => setFormData((f) => ({ ...f, account_email: e.target.value }))}
                     />
@@ -1020,7 +1028,7 @@ export default function AdminAiSettingsPage() {
                         </div>
                         <div>
                           <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.tableDailyLimit")}</p>
-                          <p className="text-xs tabular-nums text-foreground">{cfg.daily_requests_limit > 0 ? `${formatNumber(cfg.daily_requests_limit)} /hari` : t("dashboard.adminAiStatus.rateLimitUnknown")}</p>
+                          <p className="text-xs tabular-nums text-foreground">{cfg.daily_requests_limit > 0 ? `${formatNumber(cfg.daily_requests_limit)} ${t("dashboard.adminAiStatus.perDay")}` : t("dashboard.adminAiStatus.rateLimitUnknown")}</p>
                         </div>
                       </div>
                       <div className="shrink-0 flex items-center gap-1">
