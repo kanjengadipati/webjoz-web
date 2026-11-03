@@ -205,11 +205,16 @@ export default function SectionShowcasePage() {
 
   // Critique variant handler — captures DOM, sends to backend, updates state
   const handleCritiqueVariant = useCallback(
-    async (sectionKey: string, variantValue: string, previewEl: HTMLElement) => {
+    async (
+      sectionKey: string,
+      variantValue: string,
+      previewEl: HTMLElement,
+      silent: boolean = false
+    ): Promise<{ ok: boolean; score?: number; rateLimited?: boolean; error?: string }> => {
       const critiqueKey = `${sectionKey}:${variantValue}`;
       if (!authToken) {
-        pushToast("Token tidak tersedia. Harap login ulang.", "error");
-        return;
+        if (!silent) pushToast("Token tidak tersedia. Harap login ulang.", "error");
+        return { ok: false, error: "Token tidak tersedia" };
       }
       setCritiquingVariant(critiqueKey);
       try {
@@ -235,6 +240,9 @@ export default function SectionShowcasePage() {
         );
 
         const result: VariantCritiqueResult = res.data;
+        if (!result || typeof result.score !== "number" || result.score <= 0) {
+          throw new Error(result?.verdict || "Hasil critique tidak valid (skor 0)");
+        }
 
         // 3. Update local state
         setVariantCritiques((prev) => ({
@@ -258,12 +266,26 @@ export default function SectionShowcasePage() {
           },
         });
 
-        pushToast(
-          `✨ Critique selesai! Skor: ${result.score}/100 · Tier ${result.tier}`,
-          "success"
-        );
+        if (!silent) {
+          pushToast(
+            `✨ Critique selesai! Skor: ${result.score}/100 · Tier ${result.tier}`,
+            "success"
+          );
+        }
+        return { ok: true, score: result.score };
       } catch (err: any) {
-        pushToast(`Gagal critique varian: ${err?.message ?? "Unknown error"}`, "error");
+        const errMsg = err?.message ?? "Unknown error";
+        const isRateLimit =
+          err?.status === 429 ||
+          errMsg.includes("429") ||
+          errMsg.toLowerCase().includes("terlalu banyak permintaan") ||
+          errMsg.toLowerCase().includes("rate limit") ||
+          errMsg.toLowerCase().includes("quota");
+
+        if (!silent) {
+          pushToast(`Gagal critique varian: ${errMsg}`, "error");
+        }
+        return { ok: false, error: errMsg, rateLimited: isRateLimit };
       } finally {
         setCritiquingVariant(null);
       }
@@ -273,6 +295,7 @@ export default function SectionShowcasePage() {
 
   const [batchCritiquing, setBatchCritiquing] = useState<boolean>(false);
   const [batchProgressText, setBatchProgressText] = useState<string>("");
+  const batchCancelRef = useRef<boolean>(false);
 
   const handleExportCritiquesJSON = useCallback(() => {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(variantCritiques, null, 2));
@@ -369,27 +392,58 @@ export default function SectionShowcasePage() {
     }
 
     setBatchCritiquing(true);
+    batchCancelRef.current = false;
     let successCount = 0;
+    let failCount = 0;
+    let stoppedByRateLimit = false;
 
     for (let i = 0; i < availableVariants.length; i++) {
+      if (batchCancelRef.current) {
+        pushToast(`Batch dibatalkan. Selesai ${successCount}/${availableVariants.length} varian.`, "info");
+        break;
+      }
       const v = availableVariants[i];
       setBatchProgressText(`${i + 1}/${availableVariants.length}`);
       const el = document.getElementById(`preview-card-${selectedSection}-${v.value}`);
-      if (el) {
-        try {
-          await handleCritiqueVariant(selectedSection, v.value, el);
-          successCount++;
-        } catch {
-          // continue with next variant
+      if (!el) {
+        failCount++;
+        continue;
+      }
+
+      const res = await handleCritiqueVariant(selectedSection, v.value, el, true);
+      if (res.ok) {
+        successCount++;
+      } else {
+        failCount++;
+        if (res.rateLimited) {
+          stoppedByRateLimit = true;
+          pushToast(
+            `Batch dihentikan: Terkena rate limit AI (429). Coba lagi beberapa saat lagi. Selesai ${successCount} varian.`,
+            "error"
+          );
+          break;
         }
       }
       // Brief delay to prevent burst
-      await new Promise((r) => setTimeout(r, 600));
+      await new Promise((r) => setTimeout(r, 800));
     }
 
     setBatchCritiquing(false);
     setBatchProgressText("");
-    pushToast(`Batch evaluasi selesai! Berhasil menilai ${successCount}/${availableVariants.length} varian.`, "success");
+
+    if (!batchCancelRef.current && !stoppedByRateLimit) {
+      if (failCount === 0) {
+        pushToast(
+          `Batch evaluasi selesai! Semua ${successCount} varian berhasil dinilai.`,
+          "success"
+        );
+      } else {
+        pushToast(
+          `Batch evaluasi selesai: ${successCount} berhasil, ${failCount} gagal dari ${availableVariants.length} varian.`,
+          failCount > successCount ? "error" : "info"
+        );
+      }
+    }
   }, [batchCritiquing, availableVariants, selectedSection, handleCritiqueVariant, pushToast]);
 
   // Set default selected variant when switching section
@@ -794,25 +848,39 @@ export default function SectionShowcasePage() {
 
                 {/* Batch Critique All Variants */}
                 {displayMode === "all" && (
-                  <button
-                    type="button"
-                    disabled={batchCritiquing}
-                    onClick={handleBatchCritiqueSection}
-                    className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-lg bg-gradient-to-r from-purple-500/15 via-indigo-500/15 to-pink-500/15 hover:from-purple-500/25 hover:to-pink-500/25 text-purple-700 dark:text-purple-300 border border-purple-500/30 transition-all shadow-2xs cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
-                    title="Nilai semua varian aktif di section ini secara berurutan dengan AI Vision"
-                  >
-                    {batchCritiquing ? (
-                      <>
-                        <Loader2 className="size-3 animate-spin text-purple-600 dark:text-purple-400" />
-                        <span>Menilai {batchProgressText}...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="size-3 text-purple-600 dark:text-purple-400" />
-                        <span>Nilai Semua ({availableVariants.length})</span>
-                      </>
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      disabled={batchCritiquing}
+                      onClick={handleBatchCritiqueSection}
+                      className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-lg bg-gradient-to-r from-purple-500/15 via-indigo-500/15 to-pink-500/15 hover:from-purple-500/25 hover:to-pink-500/25 text-purple-700 dark:text-purple-300 border border-purple-500/30 transition-all shadow-2xs cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
+                      title="Nilai semua varian aktif di section ini secara berurutan dengan AI Vision"
+                    >
+                      {batchCritiquing ? (
+                        <>
+                          <Loader2 className="size-3 animate-spin text-purple-600 dark:text-purple-400" />
+                          <span>Menilai {batchProgressText}...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="size-3 text-purple-600 dark:text-purple-400" />
+                          <span>Nilai Semua ({availableVariants.length})</span>
+                        </>
+                      )}
+                    </button>
+                    {batchCritiquing && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          batchCancelRef.current = true;
+                        }}
+                        className="px-2 py-1 text-xs font-semibold rounded-lg bg-destructive/10 text-destructive border border-destructive/30 hover:bg-destructive/20 transition-all cursor-pointer"
+                        title="Batalkan evaluasi batch"
+                      >
+                        Batal
+                      </button>
                     )}
-                  </button>
+                  </div>
                 )}
 
                 {/* Export Baseline JSON */}
