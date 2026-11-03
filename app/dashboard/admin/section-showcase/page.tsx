@@ -215,10 +215,10 @@ export default function SectionShowcasePage() {
       try {
         // 1. Capture preview as compressed JPEG data URI
         const dataUrl = await toJpeg(previewEl, {
-          quality: 0.8,
-          pixelRatio: 1.0,
+          quality: 0.6,
+          pixelRatio: 0.75,
           backgroundColor: "#ffffff",
-          skipFonts: false,
+          skipFonts: true,
         });
 
         // 2. POST to backend via standard client
