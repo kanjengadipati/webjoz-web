@@ -129,7 +129,7 @@ export function NotificationsBell() {
         <div
           role="menu"
           aria-label={t("dashboard.notifications.title")}
-          className="absolute right-0 mt-2 w-96 max-w-[calc(100vw-2rem)] rounded-2xl border border-border/60 bg-card shadow-2xl shadow-slate-900/15 dark:shadow-black/40 overflow-hidden z-50"
+          className="absolute right-0 mt-2 w-96 max-w-[calc(100vw-2rem)] rounded-2xl border border-border/60 bg-popover shadow-2xl shadow-slate-900/15 dark:shadow-black/40 overflow-hidden z-[100]"
         >
           <div className="flex items-center justify-between gap-2 px-4 py-3 border-b border-border/40 bg-muted/20">
             <span className="text-sm font-bold text-foreground">{t("dashboard.notifications.title")}</span>
