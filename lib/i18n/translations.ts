@@ -1120,6 +1120,8 @@ export interface Translations {
       retry: string;
       aiDisabled: string;
       labelEnabled: string;
+      labelHealth: string;
+      healthy: string;
       valueYes: string;
       valueNo: string;
       labelProvider: string;
@@ -4604,6 +4606,8 @@ export const translations: Record<Locale, Translations> = {
         retry: "Coba Lagi",
         aiDisabled: "Modul AI sedang dinonaktifkan di server.",
         labelEnabled: "Status Modul",
+        labelHealth: "Kesehatan",
+        healthy: "sehat",
         valueYes: "Aktif",
         valueNo: "Nonaktif",
         labelProvider: "Provider Utama",
@@ -8140,6 +8144,8 @@ export const translations: Record<Locale, Translations> = {
         retry: "Retry",
         aiDisabled: "The AI module is disabled on the server.",
         labelEnabled: "Module Status",
+        labelHealth: "Health",
+        healthy: "healthy",
         valueYes: "Enabled",
         valueNo: "Disabled",
         labelProvider: "Primary Provider",
