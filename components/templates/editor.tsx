@@ -5,6 +5,7 @@ import { SparkleGenAI } from "@/components/sparkle-icon";
 import { SECTION_VARIANT_OPTIONS } from "@/components/sections/variant-registry";
 import { ChevronDown, Check, LayoutGrid, Pencil } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import { getSectionLabel } from "@/app/dashboard/sites/[id]/editor-utils";
 import { useSectionDrop, SectionDragControls } from "./section-reorder";
 import { useSectionVisibility, SectionVisibilityButton, HiddenSectionNotice } from "./section-visibility";
 
@@ -582,7 +583,7 @@ export const PreviewSectionWrapper: React.FC<{
   onUpdateVariant?: (section: string, variant: string) => void;
   isEditorMode?: boolean;
   children: React.ReactNode;
-  label: string;
+  label?: string;
   hasHeaderOverlay?: boolean;
 }> = ({
   section,
@@ -596,7 +597,8 @@ export const PreviewSectionWrapper: React.FC<{
   label,
   hasHeaderOverlay = false,
 }) => {
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
+    const displayLabel = label ?? getSectionLabel(section, locale);
     const [isGalleryOpen, setIsGalleryOpen] = useState(false);
     const [selectedGroup, setSelectedGroup] = useState<string>("Semua");
     const panelRef = useRef<HTMLDivElement>(null);

@@ -40,6 +40,7 @@ export interface HeroStaticStrings {
   setOpeningHours: string;
   openingHours: string;
   valuePlaceholder: string;
+  statLabelPlaceholder: string;
 
   // ── booking-form ──
   bookingReceived: string;
@@ -78,7 +79,8 @@ const ID: HeroStaticStrings = {
   addOpeningHours: "Tambah jam buka...",
   setOpeningHours: "Atur jam operasional...",
   openingHours: "Jam buka",
-  valuePlaceholder: "Nilai",
+  valuePlaceholder: "500+",
+  statLabelPlaceholder: "Klien Puas",
   bookingReceived: "Pesanan diterima!",
   bookingThanks: "Terima kasih. Tim kami akan segera mengonfirmasi pesanan Anda.",
   fullName: "Nama Lengkap",
@@ -113,7 +115,8 @@ const EN: HeroStaticStrings = {
   addOpeningHours: "Add opening hours...",
   setOpeningHours: "Set opening hours...",
   openingHours: "Opening hours",
-  valuePlaceholder: "Value",
+  valuePlaceholder: "500+",
+  statLabelPlaceholder: "Happy Clients",
   bookingReceived: "Booking received!",
   bookingThanks: "Thank you. Our team will confirm your booking shortly.",
   fullName: "Full Name",
