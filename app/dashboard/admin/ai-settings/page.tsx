@@ -9,7 +9,7 @@ import {
   KeyRound, Server, Zap, Gauge, Settings2, Plus, Trash2,
   Eye, EyeOff, Save, AlertTriangle,
 } from "lucide-react";
-import { Card, CardContent, Button, Switch, Dialog } from "webjoz-ui";
+import { Card, CardContent, Button, Switch, Dialog, CustomSelect, Input, Label, type CustomSelectOption } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -198,6 +198,14 @@ const statusLabelKey: Record<string, string> = {
 
 const CUSTOM_TIER_VALUE = "__custom__";
 
+const PROVIDER_OPTIONS: CustomSelectOption[] = [
+  { value: "gemini", label: "gemini" },
+  { value: "openai", label: "openai (Groq/OpenRouter)" },
+  { value: "anthropic", label: "anthropic" },
+  { value: "ollama", label: "ollama" },
+  { value: "mock", label: "mock" },
+];
+
 // tierRank groups tier names so the dropdown lists primary first, then the
 // fallback chain, then each router level in numeric order.
 function tierRank(tier: string): [number, number, string] {
@@ -359,6 +367,18 @@ export default function AdminAiSettingsPage() {
     for (let i = 1; i <= 12; i++) set.add(`router-high.${i}`);
     return Array.from(set).sort(compareTier);
   }, [report, configs]);
+
+  const tierSelectOptions = useMemo<CustomSelectOption[]>(() => {
+    const withOverride = new Set(configs.map((c) => c.tier));
+    return [
+      ...tierOptions.map((tier) => ({
+        value: tier,
+        label: tier,
+        badge: withOverride.has(tier) ? t("dashboard.adminAiStatus.formTierHasOverride") : undefined,
+      })),
+      { value: CUSTOM_TIER_VALUE, label: t("dashboard.adminAiStatus.formTierCustom") },
+    ];
+  }, [tierOptions, configs, t]);
 
   // ── Config handlers ───────────────────────────────────────────────────────────
 
@@ -574,10 +594,13 @@ export default function AdminAiSettingsPage() {
       {/* Tabs */}
       <div className="flex gap-1 p-1 rounded-lg bg-muted/40 border border-border/40 w-fit">
         {(["status", "config"] as const).map((tab) => (
-          <button
+          <Button
             key={tab}
+            type="button"
+            variant="ghost"
+            size="sm"
             onClick={() => setActiveTab(tab)}
-            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${
+            className={`px-4 text-sm font-medium ${
               activeTab === tab
                 ? "bg-background shadow-sm text-foreground border border-border/40"
                 : "text-muted-foreground hover:text-foreground"
@@ -588,7 +611,7 @@ export default function AdminAiSettingsPage() {
             ) : (
               <span className="flex items-center gap-1.5"><Settings2 className="size-3.5" />{t("dashboard.adminAiStatus.tabConfig")}</span>
             )}
-          </button>
+          </Button>
         ))}
       </div>
 
@@ -670,13 +693,15 @@ export default function AdminAiSettingsPage() {
                   <span className="text-xs font-medium text-muted-foreground">({report.providers.length})</span>
                 </h2>
                 <div className="flex items-center gap-2 mb-3">
-                  <button
+                  <Button
                     type="button"
+                    variant="outline"
+                    size="sm"
                     onClick={() => setShowOnlyIssues((v) => !v)}
-                    className={"px-3 py-1 rounded-md text-xs font-medium border transition-all " + (showOnlyIssues ? "bg-destructive/10 border-destructive/30 text-destructive" : "bg-muted/40 border-border/40 text-muted-foreground hover:text-foreground")}
+                    className={"h-7 px-3 text-xs font-medium " + (showOnlyIssues ? "bg-destructive/10 border-destructive/30 text-destructive" : "bg-muted/40 text-muted-foreground")}
                   >
                     {showOnlyIssues ? t("dashboard.adminAiStatus.filterOnlyIssues") : t("dashboard.adminAiStatus.filterAllProviders")}
-                  </button>
+                  </Button>
                 </div>
                 {report.providers.length === 0 ? (
                   <Card className="border-border/40 shadow-sm">
@@ -1089,15 +1114,13 @@ export default function AdminAiSettingsPage() {
       >
         <div className="space-y-4">
           <div className="grid gap-3">
-            <div className="space-y-1">
-              <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formTier")}</label>
+            <div>
+              <Label className="uppercase tracking-wider text-muted-foreground">{t("dashboard.adminAiStatus.formTier")}</Label>
               {editingTier === "__new__" ? (
                 <>
-                  <select
-                    className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
+                  <CustomSelect
                     value={customTier ? CUSTOM_TIER_VALUE : formData.tier}
-                    onChange={(e) => {
-                      const value = e.target.value;
+                    onChange={(value) => {
                       if (value === CUSTOM_TIER_VALUE) {
                         setCustomTier(true);
                         return;
@@ -1105,62 +1128,45 @@ export default function AdminAiSettingsPage() {
                       setCustomTier(false);
                       setFormData((f) => ({ ...f, tier: value }));
                     }}
-                  >
-                    <option value="">{t("dashboard.adminAiStatus.formTierSelect")}</option>
-                    {tierOptions.map((tier) => (
-                      <option key={tier} value={tier}>
-                        {tier}
-                        {configs.some((c) => c.tier === tier) ? ` — ${t("dashboard.adminAiStatus.formTierHasOverride")}` : ""}
-                      </option>
-                    ))}
-                    <option value={CUSTOM_TIER_VALUE}>{t("dashboard.adminAiStatus.formTierCustom")}</option>
-                  </select>
+                    options={tierSelectOptions}
+                    placeholder={t("dashboard.adminAiStatus.formTierSelect")}
+                  />
                   {(customTier || (formData.tier !== "" && !tierOptions.includes(formData.tier))) && (
-                    <input
-                      className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
+                    <Input
+                      className="font-mono mt-2"
                       placeholder={t("dashboard.adminAiStatus.formTierPlaceholder")}
                       value={formData.tier}
                       onChange={(e) => setFormData((f) => ({ ...f, tier: e.target.value }))}
                     />
                   )}
-                  <p className="text-[10px] text-muted-foreground">{t("dashboard.adminAiStatus.formTierHint")}</p>
+                  <p className="text-[10px] text-muted-foreground mt-1">{t("dashboard.adminAiStatus.formTierHint")}</p>
                 </>
               ) : (
-                <input
-                  className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm font-mono opacity-70 focus:outline-none"
-                  value={formData.tier}
-                  disabled
-                />
+                <Input className="font-mono opacity-70" value={formData.tier} disabled />
               )}
             </div>
-            <div className="space-y-1">
-              <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formProvider")}</label>
-              <select
-                className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50"
+            <div>
+              <Label className="uppercase tracking-wider text-muted-foreground">{t("dashboard.adminAiStatus.formProvider")}</Label>
+              <CustomSelect
                 value={formData.provider}
-                onChange={(e) => setFormData((f) => ({ ...f, provider: e.target.value }))}
-              >
-                <option value="">{t("dashboard.adminAiStatus.formProviderPlaceholder")}</option>
-                <option value="gemini">gemini</option>
-                <option value="openai">openai (Groq/OpenRouter)</option>
-                <option value="anthropic">anthropic</option>
-                <option value="ollama">ollama</option>
-                <option value="mock">mock</option>
-              </select>
+                onChange={(value) => setFormData((f) => ({ ...f, provider: value }))}
+                options={PROVIDER_OPTIONS}
+                placeholder={t("dashboard.adminAiStatus.formProviderPlaceholder")}
+              />
             </div>
-            <div className="space-y-1">
-              <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formModel")}</label>
-              <input
-                className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
+            <div>
+              <Label className="uppercase tracking-wider text-muted-foreground">{t("dashboard.adminAiStatus.formModel")}</Label>
+              <Input
+                className="font-mono"
                 placeholder="e.g. gemini-2.5-flash"
                 value={formData.model}
                 onChange={(e) => setFormData((f) => ({ ...f, model: e.target.value }))}
               />
             </div>
-            <div className="space-y-1">
-              <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formBaseUrl")}</label>
-              <input
-                className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
+            <div>
+              <Label className="uppercase tracking-wider text-muted-foreground">{t("dashboard.adminAiStatus.formBaseUrl")}</Label>
+              <Input
+                className="font-mono"
                 placeholder="https://..."
                 value={formData.base_url}
                 onChange={(e) => setFormData((f) => ({ ...f, base_url: e.target.value }))}
@@ -1169,13 +1175,13 @@ export default function AdminAiSettingsPage() {
                 <p className="text-[10px] text-amber-500 mt-0.5">{t("dashboard.adminAiStatus.baseUrlInvalid")}</p>
               )}
             </div>
-            <div className="space-y-1">
-              <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+            <div>
+              <Label className="uppercase tracking-wider text-muted-foreground">
                 {t("dashboard.adminAiStatus.formApiKey")} {editingTier !== "__new__" && <span className="normal-case font-normal text-muted-foreground">({t("dashboard.adminAiStatus.formApiKeyPlaceholder")})</span>}
-              </label>
+              </Label>
               <div className="relative">
-                <input
-                  className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 pr-10 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
+                <Input
+                  className="pr-10 font-mono"
                   type={showKey ? "text" : "password"}
                   autoComplete="off"
                   autoCorrect="off"
@@ -1189,15 +1195,17 @@ export default function AdminAiSettingsPage() {
                   value={formData.api_key}
                   onChange={(e) => setFormData((f) => ({ ...f, api_key: e.target.value }))}
                 />
-                <button
+                <Button
                   type="button"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-7 h-7 rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+                  size="icon"
+                  variant="ghost"
+                  className="absolute right-0.5 top-1/2 size-9 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   onClick={() => setShowKey((v) => !v)}
                   tabIndex={0}
                   aria-label={showKey ? t("dashboard.adminAiStatus.hideApiKey") : t("dashboard.adminAiStatus.showApiKey")}
                 >
-                  {showKey ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
-                </button>
+                  {showKey ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                </Button>
               </div>
               {editingTier !== "__new__" && (
                 <div className="flex flex-wrap items-center gap-2 mt-1">
@@ -1213,10 +1221,10 @@ export default function AdminAiSettingsPage() {
                 </div>
               )}
             </div>
-            <div className="space-y-1">
-              <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formDailyLimit")}</label>
-              <input
-                className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm tabular-nums focus:outline-none focus:ring-1 focus:ring-primary/50"
+            <div>
+              <Label className="uppercase tracking-wider text-muted-foreground">{t("dashboard.adminAiStatus.formDailyLimit")}</Label>
+              <Input
+                className="tabular-nums"
                 type="number"
                 min={0}
                 placeholder={t("dashboard.adminAiStatus.formDailyLimitHint")}
@@ -1224,10 +1232,9 @@ export default function AdminAiSettingsPage() {
                 onChange={(e) => setFormData((f) => ({ ...f, daily_requests_limit: parseInt(e.target.value) || 0 }))}
               />
             </div>
-            <div className="space-y-1">
-              <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formAccountEmail")}</label>
-              <input
-                className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50"
+            <div>
+              <Label className="uppercase tracking-wider text-muted-foreground">{t("dashboard.adminAiStatus.formAccountEmail")}</Label>
+              <Input
                 type="email"
                 placeholder={t("dashboard.adminAiStatus.formAccountEmailHint")}
                 value={formData.account_email}
