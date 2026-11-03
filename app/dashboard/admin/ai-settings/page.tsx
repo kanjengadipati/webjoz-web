@@ -235,6 +235,8 @@ export default function AdminAiSettingsPage() {
   const [formData, setFormData] = useState(emptyForm());
   const [showKey, setShowKey] = useState(false);
   const [apiKeyHint, setApiKeyHint] = useState("");
+  const [revealedKey, setRevealedKey] = useState("");
+  const [revealing, setRevealing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [saveError, setSaveError] = useState("");
@@ -360,7 +362,27 @@ export default function AdminAiSettingsPage() {
     setEditingTier(null);
     setFormData(emptyForm());
     setApiKeyHint("");
+    setRevealedKey("");
     setSaveError("");
+  }
+
+  async function revealKey() {
+    if (!token || !editingTier || editingTier === "__new__") return;
+    setRevealing(true);
+    try {
+      const res = await request<{ tier: string; api_key: string }>(
+        `/admin/ai/settings/${encodeURIComponent(editingTier)}/reveal-key`,
+        {},
+        token,
+      );
+      setRevealedKey(res.data.api_key);
+      // Auto-hide after 10 seconds
+      setTimeout(() => setRevealedKey(""), 10000);
+    } catch (err: unknown) {
+      setSaveError((err as { message?: string })?.message || "Failed to reveal key");
+    } finally {
+      setRevealing(false);
+    }
   }
 
   async function saveConfig() {
@@ -887,6 +909,19 @@ export default function AdminAiSettingsPage() {
                         {showKey ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
                       </button>
                     </div>
+                    {editingTier !== "__new__" && (
+                      <div className="flex items-center gap-2 mt-1 mb-3">
+                        <Button type="button" size="sm" variant="outline" onClick={revealKey} disabled={revealing} className="h-7 px-2.5 text-xs gap-1.5">
+                          {revealing ? <Loader2 className="size-3.5 animate-spin" /> : <Eye className="size-3.5" />}
+                          {revealing ? "Revealing..." : "Reveal Full Key"}
+                        </Button>
+                        {revealedKey && (
+                          <code className="text-xs font-mono text-foreground bg-muted/50 px-2 py-1 rounded border border-border/40 break-all max-w-[300px]">
+                            {revealedKey}
+                          </code>
+                        )}
+                      </div>
+                    )}
                   </div>
                   <div className="space-y-1">
                     <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formDailyLimit")}</label>
