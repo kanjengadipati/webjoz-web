@@ -350,22 +350,31 @@ export default function SectionShowcasePage() {
   }, [allSectionOptions, currentSectionHiddenSet]);
   const activeCountForCurrentSec = totalSectionVariants - hiddenCountForCurrentSec;
 
-  // Aesthetic critique stats for current section
+  // Aesthetic critique stats for current section.
+  // Only count critiques that still map to a registered variant — the stored
+  // config can contain stale keys from renamed/removed variants, and including
+  // those made the header claim "dinilai" while no card showed a score.
   const sectionCritiqueStats = useMemo(() => {
     const critiques = variantCritiques[selectedSection] ?? {};
-    const values = Object.values(critiques);
-    if (values.length === 0) return null;
-    const avg = Math.round(values.reduce((acc, c) => acc + c.score, 0) / values.length);
+    const values = allSectionOptions
+      .map((v) => critiques[v.value])
+      .filter((c): c is VariantCritiqueResult => Boolean(c) && typeof c.score === "number");
+    const totalCritiqued = values.length;
+    const averageScore =
+      totalCritiqued > 0
+        ? Math.round(values.reduce((acc, c) => acc + c.score, 0) / totalCritiqued)
+        : 0;
     const tierCounts = values.reduce<Record<string, number>>((acc, c) => {
       acc[c.tier] = (acc[c.tier] ?? 0) + 1;
       return acc;
     }, {});
     return {
-      totalCritiqued: values.length,
-      averageScore: avg,
+      totalCritiqued,
+      averageScore,
       tierCounts,
+      unscored: Math.max(0, allSectionOptions.length - totalCritiqued),
     };
-  }, [variantCritiques, selectedSection]);
+  }, [variantCritiques, selectedSection, allSectionOptions]);
 
   // Filtered variants for current section
   const availableVariants = useMemo(() => {
@@ -747,34 +756,42 @@ export default function SectionShowcasePage() {
                   {sectionCritiqueStats.totalCritiqued}/{totalSectionVariants} Dinilai
                 </span>
               </div>
-              <div className="flex items-baseline justify-between pt-1">
-                <div>
-                  <span className="text-2xl font-black">{sectionCritiqueStats.averageScore}</span>
-                  <span className="text-[10px] text-muted-foreground ml-1">/100 Rerata</span>
+              {sectionCritiqueStats.totalCritiqued === 0 ? (
+                <p className="text-[11px] text-muted-foreground pt-1">
+                  Belum ada varian yang dinilai. Klik <strong>Nilai Semua</strong> atau tombol{" "}
+                  <Sparkles className="inline size-3 text-purple-500" /> pada kartu untuk menjalankan
+                  Vision AI.
+                </p>
+              ) : (
+                <div className="flex items-baseline justify-between pt-1">
+                  <div>
+                    <span className="text-2xl font-black">{sectionCritiqueStats.averageScore}</span>
+                    <span className="text-[10px] text-muted-foreground ml-1">/100 Rerata</span>
+                  </div>
+                  <div className="flex items-center gap-1 text-[10px] font-bold font-mono">
+                    {sectionCritiqueStats.tierCounts["S"] && (
+                      <span className="px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20" title={`${sectionCritiqueStats.tierCounts["S"]} varian Tier S`}>
+                        S:{sectionCritiqueStats.tierCounts["S"]}
+                      </span>
+                    )}
+                    {sectionCritiqueStats.tierCounts["A"] && (
+                      <span className="px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/20" title={`${sectionCritiqueStats.tierCounts["A"]} varian Tier A`}>
+                        A:{sectionCritiqueStats.tierCounts["A"]}
+                      </span>
+                    )}
+                    {sectionCritiqueStats.tierCounts["B"] && (
+                      <span className="px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20" title={`${sectionCritiqueStats.tierCounts["B"]} varian Tier B`}>
+                        B:{sectionCritiqueStats.tierCounts["B"]}
+                      </span>
+                    )}
+                    {sectionCritiqueStats.tierCounts["C"] && (
+                      <span className="px-1.5 py-0.5 rounded bg-destructive/15 text-destructive border border-destructive/20" title={`${sectionCritiqueStats.tierCounts["C"]} varian Tier C`}>
+                        C:{sectionCritiqueStats.tierCounts["C"]}
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div className="flex items-center gap-1 text-[10px] font-bold font-mono">
-                  {sectionCritiqueStats.tierCounts["S"] && (
-                    <span className="px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20" title={`${sectionCritiqueStats.tierCounts["S"]} varian Tier S`}>
-                      S:{sectionCritiqueStats.tierCounts["S"]}
-                    </span>
-                  )}
-                  {sectionCritiqueStats.tierCounts["A"] && (
-                    <span className="px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/20" title={`${sectionCritiqueStats.tierCounts["A"]} varian Tier A`}>
-                      A:{sectionCritiqueStats.tierCounts["A"]}
-                    </span>
-                  )}
-                  {sectionCritiqueStats.tierCounts["B"] && (
-                    <span className="px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20" title={`${sectionCritiqueStats.tierCounts["B"]} varian Tier B`}>
-                      B:{sectionCritiqueStats.tierCounts["B"]}
-                    </span>
-                  )}
-                  {sectionCritiqueStats.tierCounts["C"] && (
-                    <span className="px-1.5 py-0.5 rounded bg-destructive/15 text-destructive border border-destructive/20" title={`${sectionCritiqueStats.tierCounts["C"]} varian Tier C`}>
-                      C:{sectionCritiqueStats.tierCounts["C"]}
-                    </span>
-                  )}
-                </div>
-              </div>
+              )}
             </div>
           )}
 
@@ -830,7 +847,7 @@ export default function SectionShowcasePage() {
                     <EyeOff className="size-3" /> {hiddenCountForCurrentSec} tersembunyi
                   </span>
                 )}
-                {sectionCritiqueStats && (
+                {sectionCritiqueStats.totalCritiqued > 0 && (
                   <span className="text-xs px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 font-semibold flex items-center gap-1 shadow-2xs">
                     <Sparkles className="size-3" /> Rerata: {sectionCritiqueStats.averageScore}/100
                   </span>
@@ -1438,6 +1455,14 @@ function VariantPreviewCard({
                   }
                 >
                   {critiqueData.scored_by === "vision_ai" ? "🤖 AI" : "🌱 Seed"}
+                </span>
+              )}
+              {!critiqueData && (
+                <span
+                  className="px-1.5 py-0.5 rounded-full border border-border bg-muted text-muted-foreground text-[9px] font-semibold"
+                  title="Varian ini belum dievaluasi oleh Vision AI"
+                >
+                  Belum dinilai
                 </span>
               )}
               {/* Tier C / B warning badge — only show when improvements exist and score > 0 */}
