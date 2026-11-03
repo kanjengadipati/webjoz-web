@@ -237,6 +237,8 @@ export default function AdminAiSettingsPage() {
   const [apiKeyHint, setApiKeyHint] = useState("");
   const [revealedKey, setRevealedKey] = useState("");
   const [revealing, setRevealing] = useState(false);
+  const [testing, setTesting] = useState(false);
+  const [testResult, setTestResult] = useState<{ status: string; latency_ms?: number; error?: string } | null>(null);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [deleteConfirmTier, setDeleteConfirmTier] = useState<string | null>(null);
@@ -367,7 +369,49 @@ export default function AdminAiSettingsPage() {
     setFormData(emptyForm());
     setApiKeyHint("");
     setRevealedKey("");
+    setTestResult(null);
     setSaveError("");
+  }
+
+  async function testConnection() {
+    if (!token) return;
+    setTesting(true);
+    setTestResult(null);
+    try {
+      let apiKey = formData.api_key;
+      // If editing existing config and no new key typed, reveal the existing key
+      if (!apiKey && editingTier && editingTier !== "__new__") {
+        try {
+          const revealRes = await request<{ tier: string; api_key: string }>(
+            `/admin/ai/settings/${encodeURIComponent(editingTier)}/reveal-key`,
+            { method: "POST" },
+            token,
+          );
+          apiKey = revealRes.data.api_key;
+        } catch {
+          // fall through, test with empty key
+        }
+      }
+      const res = await request<{ status: string; latency_ms?: number; http_status?: number; error?: string }>(
+        "/admin/ai/settings/test-connection",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            provider: formData.provider,
+            model: formData.model,
+            base_url: formData.base_url,
+            api_key: apiKey,
+          }),
+          headers: { "Content-Type": "application/json" },
+        },
+        token,
+      );
+      setTestResult(res.data);
+    } catch (err: unknown) {
+      setTestResult({ status: "error", error: (err as { message?: string })?.message || "Test failed" });
+    } finally {
+      setTesting(false);
+    }
   }
 
   async function revealKey() {
@@ -986,10 +1030,28 @@ export default function AdminAiSettingsPage() {
                     {saving ? <Loader2 className="size-3.5 animate-spin" /> : <Save className="size-3.5" />}
                     {saving ? t("dashboard.adminAiStatus.saving") : t("dashboard.adminAiStatus.saveConfig")}
                   </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={testConnection}
+                    disabled={testing || !formData.provider || !formData.model}
+                    className="gap-1.5"
+                  >
+                    {testing ? <Loader2 className="size-3.5 animate-spin" /> : <Zap className="size-3.5" />}
+                    {testing ? "Testing..." : "Test Connection"}
+                  </Button>
                   <Button size="sm" variant="ghost" onClick={cancelEdit} disabled={saving}>
                     {t("dashboard.adminAiStatus.cancel")}
                   </Button>
                 </div>
+                {testResult && (
+                  <div className={"text-xs flex items-center gap-1.5 mt-1 " + (testResult.status === "ok" ? "text-green-500" : "text-red-500")}>
+                    {testResult.status === "ok" ? <CheckCircle2 className="size-3.5" /> : <XCircle className="size-3.5" />}
+                    {testResult.status === "ok"
+                      ? "Connection OK" + (testResult.latency_ms ? " (" + testResult.latency_ms + " ms)" : "")
+                      : testResult.error || "Connection failed"}
+                  </div>
+                )}
               </CardContent>
             </Card>
           )}
