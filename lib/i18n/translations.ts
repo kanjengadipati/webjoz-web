@@ -1213,6 +1213,17 @@ export interface Translations {
       delete: string;
       pageTitle: string;
       pageSubtitle: string;
+      testConnection: string;
+      testing: string;
+      connectionOk: string;
+      connectionFailed: string;
+      baseUrlInvalid: string;
+      filterOnlyIssues: string;
+      filterAllProviders: string;
+      formProviderPlaceholder: string;
+      apiKeyUnchanged: string;
+      showApiKey: string;
+      hideApiKey: string;
     };
     adminMetrics: {
       noAccess: string;
@@ -4698,6 +4709,17 @@ export const translations: Record<Locale, Translations> = {
         edit: "Edit",
         delete: "Hapus",
         pageTitle: "Pengaturan AI",
+        testConnection: "Tes Koneksi",
+        testing: "Menguji...",
+        connectionOk: "Koneksi OK",
+        connectionFailed: "Koneksi gagal",
+        baseUrlInvalid: "Base URL harus diawali https:// atau http://",
+        filterOnlyIssues: "Hanya bermasalah",
+        filterAllProviders: "Semua provider",
+        formProviderPlaceholder: "— pilih provider —",
+        apiKeyUnchanged: "••••••• (tidak diubah)",
+        showApiKey: "Tampilkan API key",
+        hideApiKey: "Sembunyikan API key",
         pageSubtitle: "Monitor status provider, kuota penggunaan, dan atur parameter runtime AI",
       },
       adminMetrics: {
@@ -8236,6 +8258,17 @@ export const translations: Record<Locale, Translations> = {
         edit: "Edit",
         delete: "Delete",
         pageTitle: "AI Settings",
+        testConnection: "Test Connection",
+        testing: "Testing...",
+        connectionOk: "Connection OK",
+        connectionFailed: "Connection failed",
+        baseUrlInvalid: "Base URL must start with https:// or http://",
+        filterOnlyIssues: "Only issues",
+        filterAllProviders: "All providers",
+        formProviderPlaceholder: "— select provider —",
+        apiKeyUnchanged: "••••••• (unchanged)",
+        showApiKey: "Show API key",
+        hideApiKey: "Hide API key",
         pageSubtitle: "Monitor provider status and configure runtime AI parameters",
       },
       adminMetrics: {

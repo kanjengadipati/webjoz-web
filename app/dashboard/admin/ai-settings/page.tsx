@@ -9,7 +9,7 @@ import {
   KeyRound, Server, Zap, Gauge, Settings2, Plus, Trash2,
   Eye, EyeOff, Save, AlertTriangle,
 } from "lucide-react";
-import { Card, CardContent, Button, Input, Switch } from "webjoz-ui";
+import { Card, CardContent, Button, Switch, Dialog } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -361,7 +361,6 @@ export default function AdminAiSettingsPage() {
       setShowKey(false);
       setSaveError("");
     }
-    setActiveTab("config");
   }
 
   function cancelEdit() {
@@ -506,7 +505,7 @@ export default function AdminAiSettingsPage() {
             {t("dashboard.adminAiStatus.refresh")}
           </Button>
         )}
-        {activeTab === "config" && (
+        {isSuperAdmin && (
           <Button
             variant="outline"
             size="sm"
@@ -623,7 +622,7 @@ export default function AdminAiSettingsPage() {
                     onClick={() => setShowOnlyIssues((v) => !v)}
                     className={"px-3 py-1 rounded-md text-xs font-medium border transition-all " + (showOnlyIssues ? "bg-destructive/10 border-destructive/30 text-destructive" : "bg-muted/40 border-border/40 text-muted-foreground hover:text-foreground")}
                   >
-                    {showOnlyIssues ? "Hanya bermasalah" : "Semua provider"}
+                    {showOnlyIssues ? t("dashboard.adminAiStatus.filterOnlyIssues") : t("dashboard.adminAiStatus.filterAllProviders")}
                   </button>
                 </div>
                 {report.providers.length === 0 ? (
@@ -895,170 +894,6 @@ export default function AdminAiSettingsPage() {
             </CardContent>
           </Card>
 
-          {/* Edit / New form */}
-          {editingTier && (
-            <Card className="border-primary/30 shadow-sm">
-              <CardContent className="p-5 pt-5 space-y-4">
-                <p className="text-sm font-semibold text-foreground">
-                  {editingTier === "__new__" ? t("dashboard.adminAiStatus.addOverride") : `${t("dashboard.adminAiStatus.editOverride")}: ${editingTier}`}
-                </p>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formTier")}</label>
-                    <input
-                      className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
-                      placeholder={t("dashboard.adminAiStatus.formTierPlaceholder")}
-                      value={formData.tier}
-                      disabled={editingTier !== "__new__"}
-                      onChange={(e) => setFormData((f) => ({ ...f, tier: e.target.value }))}
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formProvider")}</label>
-                    <select
-                      className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50"
-                      value={formData.provider}
-                      onChange={(e) => setFormData((f) => ({ ...f, provider: e.target.value }))}
-                    >
-                      <option value="">— pilih provider —</option>
-                      <option value="gemini">gemini</option>
-                      <option value="openai">openai (Groq/OpenRouter)</option>
-                      <option value="anthropic">anthropic</option>
-                      <option value="ollama">ollama</option>
-                      <option value="mock">mock</option>
-                    </select>
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formModel")}</label>
-                    <input
-                      className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
-                      placeholder="e.g. gemini-2.5-flash"
-                      value={formData.model}
-                      onChange={(e) => setFormData((f) => ({ ...f, model: e.target.value }))}
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formBaseUrl")}</label>
-                    <input
-                      className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
-                      placeholder="https://..."
-                      value={formData.base_url}
-                      onChange={(e) => setFormData((f) => ({ ...f, base_url: e.target.value }))}
-                    />
-                    {formData.base_url && !formData.base_url.startsWith("https://") && !formData.base_url.startsWith("http://") && (
-                      <p className="text-[10px] text-amber-500 mt-0.5">Base URL harus diawali https:// atau http://</p>
-                    )}
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
-                      {t("dashboard.adminAiStatus.formApiKey")} {editingTier !== "__new__" && <span className="normal-case font-normal text-muted-foreground">({t("dashboard.adminAiStatus.formApiKeyPlaceholder")})</span>}
-                    </label>
-                    <div className="relative">
-                      <input
-                        className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 pr-10 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
-                        type={showKey ? "text" : "password"}
-                        autoComplete="off"
-                        autoCorrect="off"
-                        autoCapitalize="off"
-                        spellCheck={false}
-                        placeholder={
-                          editingTier !== "__new__"
-                            ? apiKeyHint || "••••••• (unchanged)"
-                            : t("dashboard.adminAiStatus.formApiKeyPlaceholder")
-                        }
-                        value={formData.api_key}
-                        onChange={(e) => setFormData((f) => ({ ...f, api_key: e.target.value }))}
-                      />
-                      <button
-                        type="button"
-                        className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-7 h-7 rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
-                        onClick={() => setShowKey((v) => !v)}
-                        tabIndex={0}
-                        aria-label={showKey ? "Hide API key" : "Show API key"}
-                      >
-                        {showKey ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
-                      </button>
-                    </div>
-                    {editingTier !== "__new__" && (
-                      <div className="flex items-center gap-2 mt-1 mb-3">
-                        <Button type="button" size="sm" variant="outline" onClick={revealKey} disabled={revealing} className="h-7 px-2.5 text-xs gap-1.5">
-                          {revealing ? <Loader2 className="size-3.5 animate-spin" /> : <Eye className="size-3.5" />}
-                          {revealing ? t("dashboard.adminAiStatus.revealing") : t("dashboard.adminAiStatus.revealFullKey")}
-                        </Button>
-                        {revealedKey && (
-                          <code className="text-xs font-mono text-foreground bg-muted/50 px-2 py-1 rounded border border-border/40 break-all max-w-[300px]">
-                            {revealedKey}
-                          </code>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formDailyLimit")}</label>
-                    <input
-                      className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm tabular-nums focus:outline-none focus:ring-1 focus:ring-primary/50"
-                      type="number"
-                      min={0}
-                      placeholder={t("dashboard.adminAiStatus.formDailyLimitHint")}
-                      value={formData.daily_requests_limit}
-                      onChange={(e) => setFormData((f) => ({ ...f, daily_requests_limit: parseInt(e.target.value) || 0 }))}
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formAccountEmail")}</label>
-                    <input
-                      className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50"
-                      type="email"
-                      placeholder={t("dashboard.adminAiStatus.formAccountEmailHint")}
-                      value={formData.account_email}
-                      onChange={(e) => setFormData((f) => ({ ...f, account_email: e.target.value }))}
-                    />
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Switch
-                    checked={formData.is_enabled}
-                    onCheckedChange={(checked) => setFormData((f) => ({ ...f, is_enabled: checked }))}
-                    size="sm"
-                  />
-                  <span className="text-sm text-foreground">{t("dashboard.adminAiStatus.formEnabled")}</span>
-                </div>
-                {saveError && (
-                  <p className="text-xs text-destructive flex items-center gap-1">
-                    <XCircle className="size-3.5" /> {saveError}
-                  </p>
-                )}
-                <div className="flex items-center gap-2 pt-1">
-                  <Button size="sm" onClick={saveConfig} disabled={saving} className="gap-1.5">
-                    {saving ? <Loader2 className="size-3.5 animate-spin" /> : <Save className="size-3.5" />}
-                    {saving ? t("dashboard.adminAiStatus.saving") : t("dashboard.adminAiStatus.saveConfig")}
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={testConnection}
-                    disabled={testing || !formData.provider || !formData.model}
-                    className="gap-1.5"
-                  >
-                    {testing ? <Loader2 className="size-3.5 animate-spin" /> : <Zap className="size-3.5" />}
-                    {testing ? "Testing..." : "Test Connection"}
-                  </Button>
-                  <Button size="sm" variant="ghost" onClick={cancelEdit} disabled={saving}>
-                    {t("dashboard.adminAiStatus.cancel")}
-                  </Button>
-                </div>
-                {testResult && (
-                  <div className={"text-xs flex items-center gap-1.5 mt-1 " + (testResult.status === "ok" ? "text-green-500" : "text-red-500")}>
-                    {testResult.status === "ok" ? <CheckCircle2 className="size-3.5" /> : <XCircle className="size-3.5" />}
-                    {testResult.status === "ok"
-                      ? "Connection OK" + (testResult.latency_ms ? " (" + testResult.latency_ms + " ms)" : "")
-                      : testResult.error || "Connection failed"}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )}
-
           {/* Delete confirmation */}
           {deleteConfirmTier && (
             <Card className="border-destructive/30 bg-destructive/5 shadow-sm">
@@ -1166,6 +1001,176 @@ export default function AdminAiSettingsPage() {
           )}
         </div>
       )}
+      {/* Edit / New override dialog */}
+      <Dialog
+        open={editingTier !== null}
+        onOpenChange={(open) => {
+          if (!open && !saving) cancelEdit();
+        }}
+        title={
+          editingTier === "__new__"
+            ? t("dashboard.adminAiStatus.addOverride")
+            : `${t("dashboard.adminAiStatus.editOverride")}: ${editingTier ?? ""}`
+        }
+        footer={
+          <div className="flex w-full flex-wrap items-center gap-2">
+            <Button size="sm" onClick={saveConfig} disabled={saving} className="gap-1.5">
+              {saving ? <Loader2 className="size-3.5 animate-spin" /> : <Save className="size-3.5" />}
+              {saving ? t("dashboard.adminAiStatus.saving") : t("dashboard.adminAiStatus.saveConfig")}
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={testConnection}
+              disabled={testing || !formData.provider || !formData.model}
+              className="gap-1.5"
+            >
+              {testing ? <Loader2 className="size-3.5 animate-spin" /> : <Zap className="size-3.5" />}
+              {testing ? t("dashboard.adminAiStatus.testing") : t("dashboard.adminAiStatus.testConnection")}
+            </Button>
+            <Button size="sm" variant="ghost" onClick={cancelEdit} disabled={saving}>
+              {t("dashboard.adminAiStatus.cancel")}
+            </Button>
+          </div>
+        }
+      >
+        <div className="space-y-4">
+          <div className="grid gap-3">
+            <div className="space-y-1">
+              <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formTier")}</label>
+              <input
+                className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
+                placeholder={t("dashboard.adminAiStatus.formTierPlaceholder")}
+                value={formData.tier}
+                disabled={editingTier !== "__new__"}
+                onChange={(e) => setFormData((f) => ({ ...f, tier: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formProvider")}</label>
+              <select
+                className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50"
+                value={formData.provider}
+                onChange={(e) => setFormData((f) => ({ ...f, provider: e.target.value }))}
+              >
+                <option value="">{t("dashboard.adminAiStatus.formProviderPlaceholder")}</option>
+                <option value="gemini">gemini</option>
+                <option value="openai">openai (Groq/OpenRouter)</option>
+                <option value="anthropic">anthropic</option>
+                <option value="ollama">ollama</option>
+                <option value="mock">mock</option>
+              </select>
+            </div>
+            <div className="space-y-1">
+              <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formModel")}</label>
+              <input
+                className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
+                placeholder="e.g. gemini-2.5-flash"
+                value={formData.model}
+                onChange={(e) => setFormData((f) => ({ ...f, model: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formBaseUrl")}</label>
+              <input
+                className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
+                placeholder="https://..."
+                value={formData.base_url}
+                onChange={(e) => setFormData((f) => ({ ...f, base_url: e.target.value }))}
+              />
+              {formData.base_url && !formData.base_url.startsWith("https://") && !formData.base_url.startsWith("http://") && (
+                <p className="text-[10px] text-amber-500 mt-0.5">{t("dashboard.adminAiStatus.baseUrlInvalid")}</p>
+              )}
+            </div>
+            <div className="space-y-1">
+              <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                {t("dashboard.adminAiStatus.formApiKey")} {editingTier !== "__new__" && <span className="normal-case font-normal text-muted-foreground">({t("dashboard.adminAiStatus.formApiKeyPlaceholder")})</span>}
+              </label>
+              <div className="relative">
+                <input
+                  className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 pr-10 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
+                  type={showKey ? "text" : "password"}
+                  autoComplete="off"
+                  autoCorrect="off"
+                  autoCapitalize="off"
+                  spellCheck={false}
+                  placeholder={
+                    editingTier !== "__new__"
+                      ? apiKeyHint || t("dashboard.adminAiStatus.apiKeyUnchanged")
+                      : t("dashboard.adminAiStatus.formApiKeyPlaceholder")
+                  }
+                  value={formData.api_key}
+                  onChange={(e) => setFormData((f) => ({ ...f, api_key: e.target.value }))}
+                />
+                <button
+                  type="button"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-7 h-7 rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+                  onClick={() => setShowKey((v) => !v)}
+                  tabIndex={0}
+                  aria-label={showKey ? t("dashboard.adminAiStatus.hideApiKey") : t("dashboard.adminAiStatus.showApiKey")}
+                >
+                  {showKey ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
+                </button>
+              </div>
+              {editingTier !== "__new__" && (
+                <div className="flex flex-wrap items-center gap-2 mt-1">
+                  <Button type="button" size="sm" variant="outline" onClick={revealKey} disabled={revealing} className="h-7 px-2.5 text-xs gap-1.5">
+                    {revealing ? <Loader2 className="size-3.5 animate-spin" /> : <Eye className="size-3.5" />}
+                    {revealing ? t("dashboard.adminAiStatus.revealing") : t("dashboard.adminAiStatus.revealFullKey")}
+                  </Button>
+                  {revealedKey && (
+                    <code className="text-xs font-mono text-foreground bg-muted/50 px-2 py-1 rounded border border-border/40 break-all max-w-full">
+                      {revealedKey}
+                    </code>
+                  )}
+                </div>
+              )}
+            </div>
+            <div className="space-y-1">
+              <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formDailyLimit")}</label>
+              <input
+                className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm tabular-nums focus:outline-none focus:ring-1 focus:ring-primary/50"
+                type="number"
+                min={0}
+                placeholder={t("dashboard.adminAiStatus.formDailyLimitHint")}
+                value={formData.daily_requests_limit}
+                onChange={(e) => setFormData((f) => ({ ...f, daily_requests_limit: parseInt(e.target.value) || 0 }))}
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.formAccountEmail")}</label>
+              <input
+                className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50"
+                type="email"
+                placeholder={t("dashboard.adminAiStatus.formAccountEmailHint")}
+                value={formData.account_email}
+                onChange={(e) => setFormData((f) => ({ ...f, account_email: e.target.value }))}
+              />
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Switch
+              checked={formData.is_enabled}
+              onCheckedChange={(checked) => setFormData((f) => ({ ...f, is_enabled: checked }))}
+              size="sm"
+            />
+            <span className="text-sm text-foreground">{t("dashboard.adminAiStatus.formEnabled")}</span>
+          </div>
+          {saveError && (
+            <p className="text-xs text-destructive flex items-center gap-1">
+              <XCircle className="size-3.5" /> {saveError}
+            </p>
+          )}
+          {testResult && (
+            <div className={"text-xs flex items-center gap-1.5 " + (testResult.status === "ok" ? "text-green-500" : "text-red-500")}>
+              {testResult.status === "ok" ? <CheckCircle2 className="size-3.5" /> : <XCircle className="size-3.5" />}
+              {testResult.status === "ok"
+                ? t("dashboard.adminAiStatus.connectionOk") + (testResult.latency_ms ? ` (${testResult.latency_ms} ms)` : "")
+                : testResult.error || t("dashboard.adminAiStatus.connectionFailed")}
+            </div>
+          )}
+        </div>
+      </Dialog>
     </div>
   );
 }
