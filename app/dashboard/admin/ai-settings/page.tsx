@@ -239,6 +239,7 @@ export default function AdminAiSettingsPage() {
   const [revealing, setRevealing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [deleteConfirmTier, setDeleteConfirmTier] = useState<string | null>(null);
   const [saveError, setSaveError] = useState("");
 
   const isSuperAdmin = role === "superadmin";
@@ -535,9 +536,9 @@ export default function AdminAiSettingsPage() {
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <Card className="border-border/40 shadow-sm">
                   <CardContent className="p-6 pt-6 space-y-1.5">
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.labelEnabled")}</p>
-                    <p className={`text-lg font-bold tracking-tight ${report.enabled ? "text-green-500" : "text-red-500"}`}>
-                      {report.enabled ? t("dashboard.adminAiStatus.valueYes") : t("dashboard.adminAiStatus.valueNo")}
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("dashboard.adminAiStatus.labelHealth")}</p>
+                    <p className={`text-lg font-bold tracking-tight ${allOk ? "text-green-500" : "text-amber-500"}`}>
+                      {report.providers.filter((p) => p.status === "ok").length}/{report.providers.length} {t("dashboard.adminAiStatus.healthy")}
                     </p>
                     {!report.enabled && <p className="text-[11px] text-muted-foreground">{t("dashboard.adminAiStatus.aiDisabled")}</p>}
                   </CardContent>
@@ -626,7 +627,9 @@ export default function AdminAiSettingsPage() {
                                   <span className={`relative flex h-2 w-2 ${tone.dot}`} />
                                   <p className="text-sm font-bold text-foreground truncate">{p.provider || "—"}</p>
                                   <span className="px-1.5 py-0.5 rounded-md bg-background border border-border/50 text-[9.5px] font-semibold tracking-wider text-foreground/70">{p.tier}</span>
-                                  <span className="px-1.5 py-0.5 rounded-md bg-muted/60 border border-border/40 text-[9.5px] font-semibold uppercase tracking-wider text-muted-foreground">{p.kind}</span>
+                                  {p.kind && p.kind.toLowerCase() !== (p.provider || "").toLowerCase() && (
+                                    <span className="px-1.5 py-0.5 rounded-md bg-muted/60 border border-border/40 text-[9.5px] font-semibold uppercase tracking-wider text-muted-foreground">{p.kind}</span>
+                                  )}
                                   <span className={`px-1.5 py-0.5 rounded-md text-[9.5px] font-semibold uppercase tracking-wider ${tone.text} ${tone.bg}`}>
                                     {t(statusLabelKey[p.status] ?? "dashboard.adminAiStatus.statusSkipped")}
                                   </span>
@@ -982,6 +985,39 @@ export default function AdminAiSettingsPage() {
             </Card>
           )}
 
+          {/* Delete confirmation */}
+          {deleteConfirmTier && (
+            <Card className="border-destructive/30 bg-destructive/5 shadow-sm">
+              <CardContent className="p-4 pt-4 flex items-center justify-between gap-3">
+                <p className="text-sm text-destructive">{t("dashboard.adminAiStatus.deleteConfirm")}</p>
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => {
+                      deleteConfig(deleteConfirmTier);
+                      setDeleteConfirmTier(null);
+                    }}
+                    disabled={deleting === deleteConfirmTier}
+                    className="h-7 px-2.5 text-xs gap-1.5"
+                  >
+                    {deleting === deleteConfirmTier ? <Loader2 className="size-3.5 animate-spin" /> : <Trash2 className="size-3.5" />}
+                    {t("dashboard.adminAiStatus.delete")}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setDeleteConfirmTier(null)}
+                    disabled={deleting === deleteConfirmTier}
+                    className="h-7 px-2.5 text-xs"
+                  >
+                    {t("dashboard.adminAiStatus.cancel")}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Config list */}
           {configLoading ? (
             <div className="space-y-2">
@@ -1038,11 +1074,7 @@ export default function AdminAiSettingsPage() {
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => {
-                            if (window.confirm(t("dashboard.adminAiStatus.deleteConfirm"))) {
-                              deleteConfig(cfg.tier);
-                            }
-                          }}
+                          onClick={() => setDeleteConfirmTier(cfg.tier)}
                           disabled={deleting === cfg.tier}
                           className="h-7 px-2 text-destructive hover:text-destructive"
                         >
