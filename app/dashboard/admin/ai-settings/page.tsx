@@ -241,6 +241,7 @@ export default function AdminAiSettingsPage() {
   const [deleting, setDeleting] = useState<string | null>(null);
   const [deleteConfirmTier, setDeleteConfirmTier] = useState<string | null>(null);
   const [saveError, setSaveError] = useState("");
+  const [showOnlyIssues, setShowOnlyIssues] = useState(false);
 
   const isSuperAdmin = role === "superadmin";
 
@@ -572,13 +573,22 @@ export default function AdminAiSettingsPage() {
                   {t("dashboard.adminAiStatus.labelProviders")}
                   <span className="text-xs font-medium text-muted-foreground">({report.providers.length})</span>
                 </h2>
+                <div className="flex items-center gap-2 mb-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowOnlyIssues((v) => !v)}
+                    className={"px-3 py-1 rounded-md text-xs font-medium border transition-all " + (showOnlyIssues ? "bg-destructive/10 border-destructive/30 text-destructive" : "bg-muted/40 border-border/40 text-muted-foreground hover:text-foreground")}
+                  >
+                    {showOnlyIssues ? "Hanya bermasalah" : "Semua provider"}
+                  </button>
+                </div>
                 {report.providers.length === 0 ? (
                   <Card className="border-border/40 shadow-sm">
                     <CardContent className="p-6 pt-6 text-sm text-muted-foreground">{t("dashboard.adminAiStatus.noProviders")}</CardContent>
                   </Card>
                 ) : (
                   <div className="grid gap-3 lg:grid-cols-2">
-                    {report.providers.map((p, i) => {
+                    {report.providers.filter((p) => !showOnlyIssues || p.status !== "ok").map((p, i) => {
                       const tone = statusTone[p.status] ?? statusTone.skipped;
                       const slot = usageBySlot.get(slotKeyOf(p.provider, p.base_url, p.model));
                       const used = slot ?? (p.model ? usageByModel.get(p.model) : undefined);
@@ -742,7 +752,9 @@ export default function AdminAiSettingsPage() {
                                       </span>
                                     )}
                                     {rl?.source === "error_429" && (
-                                      <span className="rounded bg-amber-500/15 px-1 py-0.5 font-semibold text-amber-600 dark:text-amber-400">429</span>
+                                      <span className="rounded bg-amber-500/15 px-1 py-0.5 font-semibold text-amber-600 dark:text-amber-400" title={rl?.captured_at ? "Rate-limited at " + new Date(rl.captured_at).toLocaleTimeString() : "Rate limited"}>
+                                        429
+                                      </span>
                                     )}
                                   </div>
                                 )}
