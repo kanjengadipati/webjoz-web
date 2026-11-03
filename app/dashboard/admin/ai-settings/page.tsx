@@ -865,12 +865,14 @@ export default function AdminAiSettingsPage() {
                       <input
                         className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 pr-10 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
                         type={showKey ? "text" : "password"}
+                        autoComplete="off"
+                        autoCorrect="off"
+                        autoCapitalize="off"
+                        spellCheck={false}
                         placeholder={
                           editingTier !== "__new__"
-                            ? showKey && !formData.api_key && apiKeyHint
-                              ? apiKeyHint          // show masked hint like AIzaSy...7890
-                              : "••••••• (unchanged)"
-                            : "sk-..."
+                            ? apiKeyHint || "••••••• (unchanged)"
+                            : t("dashboard.adminAiStatus.formApiKeyPlaceholder")
                         }
                         value={formData.api_key}
                         onChange={(e) => setFormData((f) => ({ ...f, api_key: e.target.value }))}
