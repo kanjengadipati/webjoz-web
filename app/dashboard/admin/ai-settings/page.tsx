@@ -375,7 +375,7 @@ export default function AdminAiSettingsPage() {
     try {
       const res = await request<{ tier: string; api_key: string }>(
         `/admin/ai/settings/${encodeURIComponent(editingTier)}/reveal-key`,
-        {},
+        { method: "POST" },
         token,
       );
       setRevealedKey(res.data.api_key);
