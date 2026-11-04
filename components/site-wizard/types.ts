@@ -40,6 +40,9 @@ export type InferenceResult = {
   type?: string;
   subType?: string;
   confidence: InferenceConfidence;
+  // v2 fields — present when classify v2 returned archetype/industry_id
+  industryId?: string;
+  industryLabel?: string;
 };
 
 export type PreviewState = "wireframe" | "loading" | "result";
