@@ -88,6 +88,7 @@ import { PENDING_KEY, BUSINESS_TYPES, SUB_TYPES, MOOD_OPTIONS, INITIAL_MESSAGE }
 import { useTaxonomy } from "@/hooks/use-taxonomy";
 import { selectTemplate, formatText, generateSubdomain, generateSlug, getTemplatePool, getDynamicDescriptionPlaceholder } from "./helpers";
 import { sanitizeClassificationPair } from "./taxonomy";
+import { enrichGeneratePayloadV2 } from "./taxonomy-v2";
 import {
   loadWizardSnapshot,
   saveWizardSnapshot,
@@ -806,6 +807,8 @@ export function SiteWizard({
       story: nextDescription || undefined,
       tagline: undefined,
       proof: undefined,
+      // Tahap 4: include v2 fields for BE adaptor logging + v2 pipeline
+      ...enrichGeneratePayloadV2({ business_type: safeBusinessType, business_sub_type: safeBusinessSubType }),
     });
   };
 
