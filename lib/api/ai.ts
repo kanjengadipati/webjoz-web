@@ -14,6 +14,12 @@ export type ProcessBusinessDescriptionResult = {
   type_id?: string;
   sub_type_id?: string;
   confidence?: "high" | "medium" | "low";
+  // v2 fields (Tahap 2 BE backfills these alongside v1)
+  archetype?: string;
+  industry_id?: string;
+  industry_custom?: string;
+  group?: string;
+  alternatives?: string[];
 };
 
 export async function processBusinessDescription(rawText: string, businessName?: string, language?: string) {
@@ -34,5 +40,19 @@ export const refineTranscript = (transcript: string, businessName?: string, lang
   processBusinessDescription(transcript, businessName, language);
 
 // Re-export taxonomy API and types from dedicated module
-export { fetchTaxonomy, fetchTaxonomy as getTaxonomy, resolveTaxonomy } from "./taxonomy";
-export type { TaxonomyResponse, TaxonomyType, TaxonomySubType, ResolvedTaxonomy } from "./taxonomy";
+export {
+  fetchTaxonomy,
+  fetchTaxonomy as getTaxonomy,
+  fetchTaxonomyV2,
+  resolveTaxonomy,
+} from "./taxonomy";
+export type {
+  TaxonomyResponse,
+  TaxonomyType,
+  TaxonomySubType,
+  ResolvedTaxonomy,
+  TaxonomyV2Response,
+  TaxonomyV2Group,
+  TaxonomyV2Industry,
+  TaxonomyV2Archetype,
+} from "./taxonomy";

@@ -1,6 +1,8 @@
 import type { ChatStage, InferenceResult, Message, PreviewData } from "./types";
 
 export const WIZARD_RESUME_KEY = "webjoz_wizard_resume_v1";
+/** v2 persistence key — stores archetype + industry_id alongside v1 fields */
+export const WIZARD_RESUME_KEY_V2 = "webjoz_wizard_resume_v2";
 
 export interface WizardResumeChat {
   chatStage: ChatStage;
@@ -16,6 +18,10 @@ export interface WizardResumeChat {
   awaitingNameConfirm: boolean;
   inferenceResult: InferenceResult | null;
   typeWasInferred: boolean;
+  // v2 fields (Tahap 4)
+  archetype?: string;
+  industryId?: string;
+  industryCustom?: string;
 }
 
 export interface WizardResumePreview {

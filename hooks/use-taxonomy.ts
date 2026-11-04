@@ -172,3 +172,60 @@ export function useTaxonomyFlat(lang: "id" | "en" = "id", region?: string) {
 
   return { flat, loading, error, reload, taxonomy };
 }
+
+// ── v2 taxonomy hook (Tahap 4) ─────────────────────────────────────────────
+
+import { fetchTaxonomyV2, TaxonomyV2Response, TaxonomyV2Industry } from "@/lib/api/taxonomy";
+
+/**
+ * useTaxonomyV2 fetches the v2 catalog grouped by Bidang (sector).
+ * Falls back gracefully to null when the endpoint is unavailable (BE Tahap 1+).
+ */
+export function useTaxonomyV2(lang: "id" | "en" = "id", region?: string) {
+  const [data, setData] = useState<TaxonomyV2Response | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const resp = await fetchTaxonomyV2(lang, region);
+      setData(resp);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load v2 taxonomy");
+      setData(null);
+    } finally {
+      setLoading(false);
+    }
+  }, [lang, region]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  /** Find an industry entry by stable ID. O(n) — use only in non-hot paths. */
+  const getIndustry = useCallback(
+    (industryId: string): TaxonomyV2Industry | undefined => {
+      if (!data) return undefined;
+      for (const group of data.groups) {
+        const found = group.industries.find((i) => i.id === industryId);
+        if (found) return found;
+      }
+      return undefined;
+    },
+    [data]
+  );
+
+  /** Get a human-readable label for an industry_id in the current lang. */
+  const getIndustryLabel = useCallback(
+    (industryId: string): string => {
+      const industry = getIndustry(industryId);
+      if (!industry) return industryId;
+      return lang === "en" ? (industry.label_en || industry.label) : (industry.label_id || industry.label);
+    },
+    [getIndustry, lang]
+  );
+
+  return { data, loading, error, reload: load, getIndustry, getIndustryLabel };
+}
