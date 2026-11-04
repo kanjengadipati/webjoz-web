@@ -8,6 +8,23 @@ const INITIAL_MESSAGE_WORDS = INITIAL_MESSAGE.split(" ");
 import { capitalizeWords, pickVariant, isLikelyGibberish, extractLocationFromDescription, generateDescriptionFromBusinessName } from "./helpers";
 import type { Message, ChatStage, InferenceResult } from "./types";
 import type { WizardResumeChat } from "./wizard-persistence";
+
+/** Map archetype ID to the nearest v1 legacy type for backward compat. */
+function archetypeToLegacyType(arch: string): string {
+  switch (arch) {
+    case "food_venue":           return "Kuliner";
+    case "retail_catalog":       return "Toko";
+    case "booking_service":      return "Layanan & Reservasi";
+    case "portfolio_individual": return "Portofolio";
+    case "professional_firm":    return "Kreatif & Profesional";
+    case "corporate_org":
+    case "lodging":
+    case "institution_org":
+    case "destination":
+    case "software_product":     return "Company Profile";
+    default:                     return "";
+  }
+}
 import { useI18n } from "@/lib/i18n/context";
 import { useToast } from "@/components/toast-provider";
 import { refineTranscript, processBusinessDescription } from "@/lib/api/ai";
@@ -41,6 +58,10 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
   const [businessName, setBusinessName] = useState("");
   const [businessType, setBusinessType] = useState(prefill?.businessType ?? "");
   const [businessSubType, setBusinessSubType] = useState(prefill?.businessSubType ?? "");
+  // v2 taxonomy fields — set from classify response
+  const [archetype, setArchetype] = useState("");
+  const [industryId, setIndustryId] = useState("");
+  const [industryCustom, setIndustryCustom] = useState("");
   const [description, setDescription] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [serviceArea, setServiceArea] = useState("");
@@ -394,6 +415,8 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
   const businessNameRef = useRef(businessName);
   const businessTypeRef = useRef(businessType);
   const businessSubTypeRef = useRef(businessSubType);
+  const archetypeRef = useRef(archetype);
+  const industryIdRef = useRef(industryId);
   const descriptionRef = useRef(description);
   const whatsappRef = useRef(whatsapp);
   const serviceAreaRef = useRef(serviceArea);
@@ -402,6 +425,8 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
   const activeTypingCancellerRef = useRef<(() => void) | null>(null);
 
   useEffect(() => { businessNameRef.current = businessName; }, [businessName]);
+  useEffect(() => { archetypeRef.current = archetype; }, [archetype]);
+  useEffect(() => { industryIdRef.current = industryId; }, [industryId]);
   useEffect(() => { moodRef.current = mood; }, [mood]);
 
   // Cancel any active typing animation on unmount
@@ -888,6 +913,34 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
               confidence: aiRes.data.confidence === "high" && aiValid.subType ? "high" : "medium",
             };
           }
+          // v2: store archetype/industry_id from classify response
+          if (aiRes.data.archetype) {
+            setArchetype(aiRes.data.archetype);
+            archetypeRef.current = aiRes.data.archetype;
+          }
+          if (aiRes.data.industry_id) {
+            setIndustryId(aiRes.data.industry_id);
+            industryIdRef.current = aiRes.data.industry_id;
+          }
+          if (aiRes.data.industry_custom) {
+            setIndustryCustom(aiRes.data.industry_custom);
+          }
+          // v2 high-confidence: if industry_id is known, treat as high confidence
+          // even when v1 sub_type validation fails (new industry not in v1 constants)
+          if (
+            aiRes.data.archetype &&
+            aiRes.data.industry_id &&
+            aiRes.data.confidence === "high"
+          ) {
+            result = {
+              type: aiValid?.type || archetypeToLegacyType(aiRes.data.archetype),
+              subType: aiValid?.subType || "",
+              confidence: "high",
+              // carry v2 ids for STEP 4 routing
+              industryId: aiRes.data.industry_id,
+              industryLabel: aiRes.data.industry_id, // will be replaced by label in STEP 4
+            };
+          }
         }
       } catch (err) {
         console.warn("AI classification failed, showing manual category selection", err);
@@ -901,10 +954,51 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
 
     // =========================================================================
     // STEP 4: ROUTING & AUTO-ADVANCE
-    // If confidence is HIGH: show category chips for 2s, then auto-advance to language.
-    // If TYPE is known but SUBTYPE is broad/unstated: skip 6 categories, show subtype chips directly.
-    // If confidence is LOW: present manual category selection chips.
+    // v2 path: HIGH confidence + known industry_id → skip sub-type picker entirely.
+    //   The industry is already fully resolved; show inference-confirm card and
+    //   auto-advance to language in 2s (user can still change category).
+    // v1 path: HIGH confidence + type+subType → inference-confirm chip.
+    // Type-only: show sub-type chips for the inferred type.
+    // Low/medium: show manual category chips.
     // =========================================================================
+
+    // ── V2: industry_id known + high confidence ────────────────────────────
+    if (result.confidence === "high" && result.industryId) {
+      const confirmedType = result.type?.trim() || "";
+      const confirmedSubType = result.subType?.trim() || "";
+      if (confirmedType) setBusinessType(confirmedType);
+      if (confirmedSubType) setBusinessSubType(confirmedSubType);
+      setTypeWasInferred(true);
+
+      const doInjectLanguage = (subType: string) => {
+        if (subType) setBusinessSubType(subType);
+        setMessages((prev) => [
+          ...prev,
+          { id: `ai-lang-${Date.now()}`, sender: "ai", text: t("dashboard.wizard.selectLanguagePrompt", "Dalam bahasa apa website ini dibuat?") },
+        ]);
+        setChatStage("language");
+        setTimeout(() => {
+          setMessages((prev) => [
+            ...prev,
+            { id: `widget-language-chips-${Date.now()}`, sender: "ai", text: "", widget: "language-chips" as const },
+          ]);
+        }, 400);
+      };
+      inferenceAutoConfirmRef.current = doInjectLanguage;
+      setTimeout(() => {
+        setMessages((prev) => [
+          ...prev,
+          { id: `widget-inference-confirm-${Date.now()}`, sender: "ai", text: "", widget: "inference-confirm" as const },
+        ]);
+        setTimeout(() => {
+          if (inferenceAutoConfirmRef.current) {
+            inferenceAutoConfirmRef.current(confirmedSubType);
+            inferenceAutoConfirmRef.current = null;
+          }
+        }, 2000);
+      }, 300);
+      return;
+    }
     if (result.confidence === "high" && result.type && result.type.trim() && result.subType && result.subType.trim()) {
       const confirmedType = result.type.trim();
       const confirmedSubType = result.subType.trim();
@@ -1108,6 +1202,12 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     const restoredPair = sanitizeClassificationPair(snap.businessType, snap.businessSubType);
     setBusinessType(restoredPair.businessType);
     setBusinessSubType(restoredPair.businessSubType);
+    // v2 fields
+    setArchetype(snap.archetype ?? "");
+    setIndustryId(snap.industryId ?? "");
+    setIndustryCustom(snap.industryCustom ?? "");
+    archetypeRef.current = snap.archetype ?? "";
+    industryIdRef.current = snap.industryId ?? "";
     setDescription(snap.description ?? "");
     setWhatsapp(snap.whatsapp ?? "");
     setServiceArea(snap.serviceArea ?? "");
@@ -1154,6 +1254,9 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setBusinessName(prefill?.businessType ? "" : "");
     setBusinessType(prefill?.businessType ?? "");
     setBusinessSubType(prefill?.businessSubType ?? "");
+    setArchetype("");
+    setIndustryId("");
+    setIndustryCustom("");
     setDescription("");
     setWhatsapp("");
     setServiceArea("");
@@ -1170,6 +1273,8 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     businessNameRef.current = "";
     businessTypeRef.current = prefill?.businessType ?? "";
     businessSubTypeRef.current = prefill?.businessSubType ?? "";
+    archetypeRef.current = "";
+    industryIdRef.current = "";
     descriptionRef.current = "";
     whatsappRef.current = "";
     serviceAreaRef.current = "";
@@ -1200,6 +1305,13 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setBusinessType,
     businessSubType,
     setBusinessSubType,
+    // v2 taxonomy state
+    archetype,
+    setArchetype,
+    industryId,
+    setIndustryId,
+    industryCustom,
+    setIndustryCustom,
     description,
     setDescription,
     whatsapp,
@@ -1239,6 +1351,8 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     businessNameRef,
     businessTypeRef,
     businessSubTypeRef,
+    archetypeRef,
+    industryIdRef,
     descriptionRef,
     whatsappRef,
     serviceAreaRef,

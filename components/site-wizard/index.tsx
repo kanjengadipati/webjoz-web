@@ -87,7 +87,7 @@ import { useToast } from "@/components/toast-provider";
 import { buildFullContent } from "@/lib/build-full-content";
 import { SiteWizardProps, PreviewData } from "./types";
 import { PENDING_KEY, BUSINESS_TYPES, SUB_TYPES, MOOD_OPTIONS, INITIAL_MESSAGE } from "./constants";
-import { useTaxonomy } from "@/hooks/use-taxonomy";
+import { useTaxonomy, useTaxonomyV2 } from "@/hooks/use-taxonomy";
 import { selectTemplate, formatText, generateSubdomain, generateSlug, getTemplatePool, getDynamicDescriptionPlaceholder } from "./helpers";
 import { sanitizeClassificationPair } from "./taxonomy";
 import { enrichGeneratePayloadV2 } from "./taxonomy-v2";
@@ -407,6 +407,8 @@ export function SiteWizard({
 
   const wizardLang = chat.siteLanguage || (locale === "en" ? "en" : "id");
   const { businessTypes: dynamicBusinessTypes, subTypes: dynamicSubTypes } = useTaxonomy(wizardLang);
+  // v2 taxonomy — industries grouped by Bidang, used for sub-type chips
+  const { data: taxonomyV2, getIndustryLabel } = useTaxonomyV2(wizardLang);
 
   const [customSubTypeOpen, setCustomSubTypeOpen] = React.useState(false);
   const [customSubTextInput, setCustomSubTextInput] = React.useState("");
@@ -832,8 +834,16 @@ export function SiteWizard({
       story: nextDescription || undefined,
       tagline: undefined,
       proof: undefined,
-      // Tahap 4: include v2 fields for BE adaptor logging + v2 pipeline
-      ...enrichGeneratePayloadV2({ business_type: safeBusinessType, business_sub_type: safeBusinessSubType }),
+      // v2 fields: prefer direct chat state (archetype/industryId from classify v2),
+      // fall back to derivation from v1 type/subType for old FE compatibility.
+      ...(() => {
+        const arch = chat.archetypeRef.current;
+        const iid = chat.industryIdRef.current;
+        if (arch || iid) {
+          return { archetype: arch || undefined, industry_id: iid || undefined, industry_custom: chat.industryCustom || undefined };
+        }
+        return enrichGeneratePayloadV2({ business_type: safeBusinessType, business_sub_type: safeBusinessSubType });
+      })(),
     });
   };
 
@@ -1041,6 +1051,10 @@ export function SiteWizard({
           awaitingNameConfirm: chat.awaitingNameConfirm,
           inferenceResult: chat.inferenceResult,
           typeWasInferred: chat.typeWasInferred,
+          // v2
+          archetype: chat.archetype || undefined,
+          industryId: chat.industryId || undefined,
+          industryCustom: chat.industryCustom || undefined,
         },
         preview: preview.previewData ? toResumePreview(preview.previewData) : undefined,
       };
@@ -1062,6 +1076,9 @@ export function SiteWizard({
     chat.awaitingNameConfirm,
     chat.inferenceResult,
     chat.typeWasInferred,
+    chat.archetype,
+    chat.industryId,
+    chat.industryCustom,
     preview.previewData,
     resumeSnapshotProgress,
   ]);
@@ -1354,15 +1371,44 @@ export function SiteWizard({
               const isLocked = !!chat.siteLanguage;
               const inferredType = chat.businessType;
               const inferredSubType = chat.businessSubType;
-              const availableSubTypes = inferredType ? (dynamicSubTypes[inferredType] ?? []) : [];
-              // Category label for breadcrumb (e.g. "Toko Online & Retail")
-              const inferredCategoryLabel = dynamicBusinessTypes.find((bt) => bt.value === inferredType)?.label;
+
+              // v2: when industry_id is known, build a single-chip list with the
+              // catalog label so the user sees the resolved industry name.
+              const v2IndustryId = chat.industryId;
+              let availableSubTypes = inferredType ? (dynamicSubTypes[inferredType] ?? []) : [];
+              let v2IndustryChip: { value: string; label: string; emoji?: string } | null = null;
+              if (v2IndustryId && taxonomyV2) {
+                const entry = taxonomyV2.groups
+                  .flatMap((g) => g.industries)
+                  .find((i) => i.id === v2IndustryId);
+                if (entry) {
+                  const lbl = wizardLang === "en" ? (entry.label_en || entry.label) : (entry.label_id || entry.label);
+                  v2IndustryChip = { value: v2IndustryId, label: lbl, emoji: entry.emoji };
+                  // Supplement with catalog industries for same archetype/group so user can switch
+                  const sameGroup = taxonomyV2.groups.find((g) =>
+                    g.industries.some((i) => i.id === v2IndustryId)
+                  );
+                  if (sameGroup) {
+                    availableSubTypes = sameGroup.industries.map((i) => ({
+                      value: i.id,
+                      label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
+                      emoji: i.emoji ?? "🏷️",
+                    }));
+                  }
+                }
+              }
+
+              // Category label for breadcrumb
+              const inferredCategoryLabel = v2IndustryChip
+                ? (taxonomyV2?.groups.find((g) => g.industries.some((i) => i.id === v2IndustryId))?.label)
+                : dynamicBusinessTypes.find((bt) => bt.value === inferredType)?.label;
 
               // Reorder: chip terpilih tampil pertama
-              const orderedSubTypes = inferredSubType
+              const selectedChipValue = v2IndustryId || inferredSubType;
+              const orderedSubTypes = selectedChipValue
                 ? [
-                    ...availableSubTypes.filter((s) => s.value === inferredSubType),
-                    ...availableSubTypes.filter((s) => s.value !== inferredSubType),
+                    ...availableSubTypes.filter((s) => s.value === selectedChipValue),
+                    ...availableSubTypes.filter((s) => s.value !== selectedChipValue),
                   ]
                 : availableSubTypes;
 
@@ -1371,20 +1417,24 @@ export function SiteWizard({
                   key={m.id}
                   isLocked={isLocked}
                   orderedSubTypes={orderedSubTypes}
-                  selectedSubType={inferredSubType}
+                  selectedSubType={chat.industryId || inferredSubType}
                   categoryLabel={inferredCategoryLabel}
-                  onConfirmWithSubType={(subType) => {
-                    // Route through the canonical doInjectLanguage stored in the ref.
-                    // This ensures exactly ONE language prompt is ever appended,
-                    // regardless of how many chips the user taps before confirming.
-                    const doInject = chat.inferenceAutoConfirmRef.current;
-                    chat.inferenceAutoConfirmRef.current = null; // cancel auto-timer
-                    if (doInject) {
-                      doInject(subType);
+                  onConfirmWithSubType={(selectedValue) => {
+                    // v2: if selected value looks like an industry_id (contains "."),
+                    // update industryId state; otherwise treat as v1 sub_type.
+                    if (selectedValue.includes(".")) {
+                      chat.setIndustryId(selectedValue);
+                      chat.industryIdRef.current = selectedValue;
                     } else {
-                      // Fallback: ref already consumed (auto-timer fired) — only
-                      // update subType if language stage not yet started.
-                      chat.setBusinessSubType(subType);
+                      chat.setBusinessSubType(selectedValue);
+                    }
+                    // Route through the canonical doInjectLanguage stored in the ref.
+                    const doInject = chat.inferenceAutoConfirmRef.current;
+                    chat.inferenceAutoConfirmRef.current = null;
+                    if (doInject) {
+                      doInject(selectedValue.includes(".") ? "" : selectedValue);
+                    } else {
+                      if (!selectedValue.includes(".")) chat.setBusinessSubType(selectedValue);
                     }
                   }}
                   onUnlockChips={() => {
@@ -1398,7 +1448,26 @@ export function SiteWizard({
 
             if (m.widget === "subtype-chips") {
               const isLocked = chat.chatStage === "language" || chat.chatStage === "mood" || chat.chatStage === "done";
-              const subTypes = chat.businessType ? (dynamicSubTypes[chat.businessType] ?? []) : [];
+              // v2: when archetype is known, use catalog industries for that archetype
+              // grouped by the same Bidang. Falls back to v1 subTypes.
+              let subTypes: Array<{ value: string; label: string; emoji?: string }> = [];
+              if (chat.archetype && taxonomyV2) {
+                // Find all industries matching this archetype
+                const v2Industries = taxonomyV2.groups
+                  .flatMap((g) => g.industries)
+                  .filter((i) => i.archetype === chat.archetype)
+                  .map((i) => ({
+                    value: i.id,
+                    label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
+                    emoji: i.emoji ?? "🏷️",
+                  }));
+                if (v2Industries.length > 0) {
+                  subTypes = v2Industries;
+                }
+              }
+              if (subTypes.length === 0) {
+                subTypes = chat.businessType ? (dynamicSubTypes[chat.businessType] ?? []) : [];
+              }
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400">
                   {chat.typeWasInferred && (
@@ -1423,22 +1492,48 @@ export function SiteWizard({
                   <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">{t("dashboard.wizard.moreSpecific", "Lebih spesifik:")}</p>
                   <div className="flex flex-wrap gap-1.5">
                     {subTypes.map((st) => {
-                      const isSubSelected = chat.businessSubType === st.value;
+                      const isSubSelected = chat.industryId === st.value || chat.businessSubType === st.value;
                       const SubIcon = SUB_TYPE_ICONS[st.value] ?? Tag;
-                      const labelText = st.label || t(`dashboard.wizard.subtypes.${st.value}`, st.label);
+                      // v2 id contains "."; v1 sub-type does not
+                      const isV2Id = st.value.includes(".");
+                      const labelText = st.label || (isV2Id
+                        ? getIndustryLabel(st.value)
+                        : t(`dashboard.wizard.subtypes.${st.value}`, st.label));
                       return (
                         <button
                           key={st.value}
                           type="button"
                           title={labelText}
-                          onClick={() => !isLocked && handleSelectSubType(st.value)}
+                          onClick={() => {
+                            if (isLocked) return;
+                            if (isV2Id) {
+                              // v2 chip: update industryId + set archetype from taxonomy
+                              chat.setIndustryId(st.value);
+                              chat.industryIdRef.current = st.value;
+                              if (taxonomyV2) {
+                                const entry = taxonomyV2.groups.flatMap(g => g.industries).find(i => i.id === st.value);
+                                if (entry) {
+                                  chat.setArchetype(entry.archetype);
+                                  chat.archetypeRef.current = entry.archetype;
+                                }
+                              }
+                              handleSelectSubType(labelText);
+                            } else {
+                              // v1 chip
+                              chat.setIndustryId("");
+                              chat.industryIdRef.current = "";
+                              handleSelectSubType(st.value);
+                            }
+                          }}
                           disabled={isLocked}
                           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-200 cursor-pointer active:scale-95 max-w-full ${isSubSelected ? "text-white border-primary/60 bg-primary/20" : "text-slate-300 border-white/[0.08] bg-white/[0.04] hover:border-white/20 hover:text-white hover:bg-white/[0.08]"}`}
                         >
-                          <SubIcon className={`w-3 h-3 shrink-0 ${isSubSelected ? "text-primary" : "text-slate-400"}`} />
-                          <span className="text-left">
-                            {labelText}
-                          </span>
+                          {st.emoji ? (
+                            <span className="text-[10px] shrink-0">{st.emoji}</span>
+                          ) : (
+                            <SubIcon className={`w-3 h-3 shrink-0 ${isSubSelected ? "text-primary" : "text-slate-400"}`} />
+                          )}
+                          <span className="text-left">{labelText}</span>
                           {isSubSelected && <span className="text-primary text-[10px] shrink-0">✓</span>}
                         </button>
                       );
