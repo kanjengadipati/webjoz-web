@@ -146,7 +146,7 @@ export default function SectionShowcasePage() {
   const [loadingConfig, setLoadingConfig] = useState<boolean>(true);
   // Critique state
   const [variantCritiques, setVariantCritiques] = useState<Record<string, Record<string, VariantCritiqueResult>>>({});
-  const [critiquingVariant, setCritiquingVariant] = useState<string | null>(null); // "section:variant"
+  const [critiquingVariant, setCritiquingVariant] = useState<{ key: string; method: "dom" | "server" } | null>(null);
 
   // Load config on mount
   useEffect(() => {
@@ -218,7 +218,7 @@ export default function SectionShowcasePage() {
         if (!silent) pushToast("Token tidak tersedia. Harap login ulang.", "error");
         return { ok: false, error: "Token tidak tersedia" };
       }
-      setCritiquingVariant(critiqueKey);
+      setCritiquingVariant({ key: critiqueKey, method: "dom" });
       try {
         let body: any;
         if (options?.method === "screenshot" && sectionKey === "hero") {
@@ -338,7 +338,7 @@ export default function SectionShowcasePage() {
         return;
       }
       const critiqueKey = `${sectionKey}:${variantValue}`;
-      setCritiquingVariant(critiqueKey);
+      setCritiquingVariant({ key: critiqueKey, method: "server" });
       try {
         const res = await request<VariantCritiqueResult>(
           "/admin/ai/critique-section-variant",
@@ -1204,7 +1204,8 @@ export default function SectionShowcasePage() {
                       }}
                       onFullScreen={() => handleOpenFullscreenSection(selectedSection, v.value)}
                       critiqueData={variantCritiques[selectedSection]?.[v.value]}
-                      isCritiquing={critiquingVariant === `${selectedSection}:${v.value}`}
+                      isCritiquing={critiquingVariant?.key === `${selectedSection}:${v.value}`}
+                      critiqueMethod={critiquingVariant?.key === `${selectedSection}:${v.value}` ? critiquingVariant.method : null}
                       onCritique={(el) => handleCritiqueVariant(selectedSection, v.value, el)}
                       onCritiqueServer={selectedSection === "hero" ? () => handleCritiqueVariantServer(selectedSection, v.value) : undefined}
                     />
@@ -1254,7 +1255,8 @@ export default function SectionShowcasePage() {
                     isSingleFocus={true}
                     onFullScreen={() => handleOpenFullscreenSection(selectedSection, selectedVariant)}
                     critiqueData={variantCritiques[selectedSection]?.[selectedVariant]}
-                    isCritiquing={critiquingVariant === `${selectedSection}:${selectedVariant}`}
+                    isCritiquing={critiquingVariant?.key === `${selectedSection}:${selectedVariant}`}
+                    critiqueMethod={critiquingVariant?.key === `${selectedSection}:${selectedVariant}` ? critiquingVariant.method : null}
                     onCritique={(el) => handleCritiqueVariant(selectedSection, selectedVariant, el)}
                     onCritiqueServer={selectedSection === "hero" ? () => handleCritiqueVariantServer(selectedSection, selectedVariant) : undefined}
                   />
@@ -1505,6 +1507,7 @@ interface VariantPreviewCardProps {
   isSingleFocus?: boolean;
   critiqueData?: VariantCritiqueResult;
   isCritiquing?: boolean;
+  critiqueMethod?: "dom" | "server" | null;
   onCritique?: (el: HTMLElement) => void;
   onCritiqueServer?: () => void;
 }
@@ -1526,6 +1529,7 @@ function VariantPreviewCard({
   isSingleFocus,
   critiqueData,
   isCritiquing = false,
+  critiqueMethod = null,
   onCritique,
   onCritiqueServer,
 }: VariantPreviewCardProps) {
@@ -1693,8 +1697,10 @@ function VariantPreviewCard({
                     }
                   }}
                   className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold rounded-lg border transition-all shadow-2xs ${
-                    isCritiquing
+                    critiqueMethod === "dom"
                       ? "bg-muted text-muted-foreground border-border/60 cursor-not-allowed opacity-80"
+                      : isCritiquing
+                      ? "opacity-50 cursor-not-allowed border-border/50"
                       : critiqueData
                       ? "bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-pink-500/10 hover:from-purple-500/20 hover:to-pink-500/20 text-purple-600 dark:text-purple-400 border-purple-500/30"
                       : "bg-primary/10 hover:bg-primary/20 text-primary border-primary/25"
@@ -1705,7 +1711,7 @@ function VariantPreviewCard({
                       : "Evaluasi kualitas estetika varian ini dengan AI Vision (screenshot DOM)"
                   }
                 >
-                  {isCritiquing ? (
+                  {critiqueMethod === "dom" ? (
                     <>
                       <Loader2 className="size-3 animate-spin text-primary" />
                       <span>Menilai...</span>
@@ -1724,8 +1730,10 @@ function VariantPreviewCard({
                   disabled={isCritiquing}
                   onClick={onCritiqueServer}
                   className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold rounded-lg border transition-all shadow-2xs ${
-                    isCritiquing
+                    critiqueMethod === "server"
                       ? "bg-muted text-muted-foreground border-border/60 cursor-not-allowed opacity-80"
+                      : isCritiquing
+                      ? "opacity-50 cursor-not-allowed border-border/50"
                       : critiqueData
                       ? "bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-indigo-500/10 hover:from-cyan-500/20 hover:to-indigo-500/20 text-cyan-600 dark:text-cyan-400 border-cyan-500/30"
                       : "bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 border-cyan-500/25"
@@ -1736,7 +1744,7 @@ function VariantPreviewCard({
                       : "Evaluasi via screenshot publik /sp/section/hero/[variant] (server)"
                   }
                 >
-                  {isCritiquing ? (
+                  {critiqueMethod === "server" ? (
                     <>
                       <Loader2 className="size-3 animate-spin text-cyan-500" />
                       <span>Server...</span>
