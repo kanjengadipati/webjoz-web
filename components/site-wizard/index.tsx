@@ -1450,7 +1450,7 @@ export function SiteWizard({
               const isLocked = chat.chatStage === "language" || chat.chatStage === "mood" || chat.chatStage === "done";
               // v2: when archetype is known, use catalog industries for that archetype
               // grouped by the same Bidang. Falls back to v1 subTypes.
-              let subTypes: Array<{ value: string; label: string; emoji?: string }> = [];
+              let subTypes: Array<{ value: string; label: string; emoji?: string; kind?: "v1" | "v2" }> = [];
               if (chat.archetype && taxonomyV2) {
                 // Find all industries matching this archetype
                 const v2Industries = taxonomyV2.groups
@@ -1458,6 +1458,7 @@ export function SiteWizard({
                   .filter((i) => i.archetype === chat.archetype)
                   .map((i) => ({
                     value: i.id,
+                    kind: "v2" as const,
                     label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
                     emoji: i.emoji ?? "🏷️",
                   }));
@@ -1508,8 +1509,8 @@ export function SiteWizard({
                       .map((st) => {
                       const isSubSelected = chat.industryId === st.value || chat.businessSubType === st.value;
                       const SubIcon = SUB_TYPE_ICONS[st.value] ?? Tag;
-                      // v2 id contains "."; v1 sub-type does not
-                      const isV2Id = st.value.includes(".");
+                      // Prefer the explicit kind field; fall back to the legacy dot heuristic.
+                      const isV2Id = st.kind === "v2" || st.value.includes(".");
                       const labelText = st.label || (isV2Id
                         ? getIndustryLabel(st.value)
                         : t(`dashboard.wizard.subtypes.${st.value}`, st.label));
