@@ -13,19 +13,6 @@ import { persistAuthSession, useStoredEmail, useAuthToken, useAuthReady } from "
 import { FieldErrors, getApiFieldErrors, getFormErrorMessage, hasFieldErrors } from "@/lib/form-errors";
 import { AuthShell } from "@/components/auth-shell";
 import { useI18n } from "@/lib/i18n/context";
-import { loadWizardSnapshot } from "@/components/site-wizard/wizard-persistence";
-
-/** Returns true if there is actionable wizard data worth saving after login. */
-function hasSaveableWizardData(): boolean {
-  if (typeof window === "undefined") return false;
-  // Explicit pending save key — always redirect to /create
-  if (localStorage.getItem("webjoz_pending_wizard_data")) return true;
-  // Upgrade flow key
-  if (localStorage.getItem("webjoz_pending_upgrade_site")) return true;
-  // Resume snapshot — only counts if it reached the preview step
-  const snapshot = loadWizardSnapshot();
-  return !!(snapshot?.businessName && snapshot.preview?.content);
-}
 
 const PASSWORDLESS_FIELDS = ["email", "phone", "otp"] as const;
 type PasswordlessField = (typeof PASSWORDLESS_FIELDS)[number];
@@ -102,12 +89,8 @@ export default function LoginPage() {
     if (target) {
       localStorage.removeItem("webjoz_login_redirect");
       router.replace(target);
-    } else if (hasSaveableWizardData()) {
-      router.replace("/create?action=save");
     } else {
-      // No pending data — clear any stale keys and go to dashboard
       localStorage.removeItem("webjoz_login_redirect");
-      localStorage.removeItem("webjoz_pending_wizard_data");
       router.replace("/dashboard");
     }
   }, [authReady, token, router]);
@@ -122,14 +105,9 @@ export default function LoginPage() {
 
     if (target) {
       localStorage.removeItem("webjoz_login_redirect");
-      // Keep wizard data intact so /create?action=save can read and save the generated site
       window.location.href = target;
-    } else if (hasSaveableWizardData()) {
-      window.location.href = "/create?action=save";
     } else {
-      // No pending wizard data — clear any stale keys and go to dashboard
       localStorage.removeItem("webjoz_login_redirect");
-      localStorage.removeItem("webjoz_pending_wizard_data");
       window.location.href = "/dashboard";
     }
   }
