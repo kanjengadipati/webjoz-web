@@ -2118,10 +2118,19 @@ export function SiteWizard({
 
       {/* ══ RIGHT: Browser Preview ════════════════════════════════════════════ */}
       <div
-        className={`absolute inset-0 z-30 flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-background transition-transform duration-300 ease-out md:relative md:inset-auto md:z-0 md:translate-x-0 ${device.isMobile
-            ? device.mobileScreen === "preview" || device.mobileScreen === "loading" ? "translate-x-0" : "translate-x-full"
-            : device.mobilePreviewOpen ? "translate-x-0" : "translate-x-full"
-          }`}
+        className={`flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-background transition-all duration-300 ease-out ${
+          fullPagePreviewOpen
+            ? "fixed inset-0 z-50 translate-x-0 md:fixed md:inset-0 md:z-50 md:translate-x-0"
+            : `absolute inset-0 z-30 md:relative md:inset-auto md:z-0 md:translate-x-0 ${
+                device.isMobile
+                  ? device.mobileScreen === "preview" || device.mobileScreen === "loading"
+                    ? "translate-x-0"
+                    : "translate-x-full"
+                  : device.mobilePreviewOpen
+                  ? "translate-x-0"
+                  : "translate-x-full"
+              }`
+        }`}
       >
         <div className="h-12 flex items-center px-4 gap-3 shrink-0" style={{ background: "#111318", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
           <div className="flex shrink-0 items-center gap-0.5 rounded-lg border border-white/10 bg-white/[0.06] p-0.5">
@@ -2210,12 +2219,21 @@ export function SiteWizard({
           {preview.previewState === "result" && (
             <button
               type="button"
-              onClick={() => setFullPagePreviewOpen(true)}
-              title={t("dashboard.wizard.btnFullPagePreview", "Preview halaman penuh")}
+              onClick={() => setFullPagePreviewOpen((prev) => !prev)}
+              title={fullPagePreviewOpen ? t("dashboard.wizard.btnExitFullPagePreview", "Tutup Preview Penuh") : t("dashboard.wizard.btnFullPagePreview", "Preview Penuh")}
               className="flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-semibold text-slate-200 border border-white/10 bg-white/[0.06] transition-all hover:bg-white/10 hover:border-white/20 hover:text-white active:scale-95 cursor-pointer"
             >
-              <Maximize2 size={11} />
-              {t("dashboard.wizard.btnFullPagePreview", "Preview Penuh")}
+              {fullPagePreviewOpen ? (
+                <>
+                  <Minimize2 size={11} />
+                  <span>{t("dashboard.wizard.btnExitFullPagePreview", "Tutup Preview Penuh")}</span>
+                </>
+              ) : (
+                <>
+                  <Maximize2 size={11} />
+                  <span>{t("dashboard.wizard.btnFullPagePreview", "Preview Penuh")}</span>
+                </>
+              )}
             </button>
           )}
         </div>
@@ -2354,34 +2372,6 @@ export function SiteWizard({
         businessName={chat.businessName}
         onUpgradeSuccess={handleGoToEditor}
       />
-
-      {fullPagePreviewOpen && (
-        <div className="fixed inset-0 z-[80] flex flex-col bg-[#0d0f14]">
-          <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/10 bg-[#111318] shrink-0">
-            <div className="flex items-center gap-2">
-              <Maximize2 size={14} className="text-slate-300" />
-              <span className="text-sm font-semibold text-white">
-                {t("dashboard.wizard.btnFullPagePreview", "Preview Penuh")}
-              </span>
-            </div>
-            <button
-              type="button"
-              onClick={() => setFullPagePreviewOpen(false)}
-              className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/[0.06] text-slate-300 transition-all hover:bg-white/15 hover:text-white cursor-pointer"
-              title={t("dashboard.wizard.btnExitFullPagePreview", "Tutup Preview Penuh")}
-            >
-              <X size={14} />
-            </button>
-          </div>
-          <div className="flex-1 overflow-hidden">
-            <PreviewCanvas
-              chat={chat}
-              preview={preview}
-              device={{ ...device, previewDevice: "desktop", isMobile: false }}
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 }

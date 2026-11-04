@@ -3369,6 +3369,8 @@ export interface Translations {
       btnConfirmYes: string;
       btnChangeCategory: string;
       btnTryOtherRecommendation: string;
+      btnFullPagePreview: string;
+      btnExitFullPagePreview: string;
       recommendationHintTitle: string;
       recommendationHintDesc: string;
       inferenceHint: string;
@@ -6864,6 +6866,8 @@ export const translations: Record<Locale, Translations> = {
         btnConfirmYes: "Ya, lanjut",
         btnChangeCategory: "Ganti kategori",
         btnTryOtherRecommendation: "Coba rekomendasi lain ({current}/{total})",
+        btnFullPagePreview: "Preview Penuh",
+        btnExitFullPagePreview: "Tutup Preview Penuh",
         recommendationHintTitle: "Ada {count} rekomendasi desain!",
         recommendationHintDesc: "Klik untuk lihat pilihan tampilan lain.",
         inferenceHint: "Klik untuk lanjut, atau pilih kategori lain",
@@ -10527,6 +10531,8 @@ export const translations: Record<Locale, Translations> = {
         btnConfirmYes: "Yes, continue",
         btnChangeCategory: "Change category",
         btnTryOtherRecommendation: "Try other recommendation ({current}/{total})",
+        btnFullPagePreview: "Full Page Preview",
+        btnExitFullPagePreview: "Exit Full Page Preview",
         recommendationHintTitle: "{count} design recommendations available!",
         recommendationHintDesc: "Click to explore alternative layouts.",
         inferenceHint: "Tap to continue, or choose a different category",
