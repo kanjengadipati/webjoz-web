@@ -1491,7 +1491,13 @@ export function SiteWizard({
                   )}
                   <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">{t("dashboard.wizard.moreSpecific", "Lebih spesifik:")}</p>
                   <div className="flex flex-wrap gap-1.5">
-                    {subTypes.map((st) => {
+                    {subTypes
+                      .filter((st) => {
+                        // When locked (user already picked), hide all chips except the selected one
+                        if (!isLocked) return true;
+                        return chat.industryId === st.value || chat.businessSubType === st.value;
+                      })
+                      .map((st) => {
                       const isSubSelected = chat.industryId === st.value || chat.businessSubType === st.value;
                       const SubIcon = SUB_TYPE_ICONS[st.value] ?? Tag;
                       // v2 id contains "."; v1 sub-type does not
