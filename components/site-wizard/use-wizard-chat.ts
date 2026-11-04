@@ -811,6 +811,11 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
         const aiRes = await processBusinessDescription("", currentBizName, locale);
         const d = aiRes?.data;
         if (d && (d.confidence === "high" || d.confidence === "medium")) {
+          // v2: store archetype/industry_id early from skip-path classify
+          if (d.archetype) { setArchetype(d.archetype); archetypeRef.current = d.archetype; }
+          if (d.industry_id) { setIndustryId(d.industry_id); industryIdRef.current = d.industry_id; }
+          if (d.industry_custom) setIndustryCustom(d.industry_custom);
+
           const validHint = validateClassification(d.type, d.sub_type) ?? validateClassification(d.type, "");
           if (validHint?.type) {
             const aiHint = {
@@ -825,6 +830,16 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
             }
             setIsAnalyzingDescription(false);
             processDescriptionSubmission(autoDesc, { type: aiHint.type, subType: aiHint.subType });
+            return;
+          }
+          // v2-only: archetype known but no valid v1 type pair — use archetype routing
+          if (d.archetype) {
+            const legacyType = archetypeToLegacyType(d.archetype);
+            const autoDesc = d.refined_text?.trim() || generateDescriptionFromBusinessName(currentBizName, { type: legacyType, subType: "" }, locale);
+            const detectedLoc = extractLocationFromDescription(currentBizName);
+            if (detectedLoc && !serviceArea) setServiceArea(detectedLoc);
+            setIsAnalyzingDescription(false);
+            processDescriptionSubmission(autoDesc, { type: legacyType, subType: "" });
             return;
           }
         }
@@ -1041,13 +1056,28 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
       return;
     }
 
-    // Type-only inference: Type is recognized, but subtype is broad or unstated.
-    // Directly present subtype chips without pre-selecting a false-positive chip.
+    // Type-only inference: Type is recognized (or archetype known), subtype broad or unstated.
+    // Use v2 catalog chips when archetype is known.
     if (result.type && result.type.trim() && (!result.subType || !result.subType.trim())) {
       const confirmedType = result.type.trim();
       setBusinessType(confirmedType);
       setBusinessSubType("");
       setTypeWasInferred(true);
+      // v2: ensure archetype is set so catalog chips are used
+      const currentArch = archetypeRef.current;
+      if (!currentArch) {
+        // legacy type → archetype mapping (reverse of archetypeToLegacyType)
+        const typeToArch: Record<string, string> = {
+          "Kuliner": "food_venue",
+          "Toko": "retail_catalog",
+          "Layanan & Reservasi": "booking_service",
+          "Portofolio": "portfolio_individual",
+          "Kreatif & Profesional": "professional_firm",
+          "Company Profile": "corporate_org",
+        };
+        const arch = typeToArch[confirmedType];
+        if (arch) { setArchetype(arch); archetypeRef.current = arch; }
+      }
       setChatStage("type");
 
       const categoryKeyMap: Record<string, string> = {
