@@ -11,6 +11,7 @@
     "check:hero": "node scripts/check-hero-catalog.mjs",
     "check:hidden-sections": "node scripts/check-hidden-sections.mjs",
     "check:taxonomy": "node --experimental-strip-types scripts/check-taxonomy.mjs",
+    "check:subtype-map": "node scripts/check-subtype-map.mjs",
     "check:i18n-params": "node scripts/i18n-params-check.mjs",
     "test:e2e": "npx playwright test",
     "test:e2e:ui": "npx playwright test --ui",
