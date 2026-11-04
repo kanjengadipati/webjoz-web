@@ -78,6 +78,7 @@ import FooterSection from "@/components/sections/footer";
 import { BlogPostsSection } from "@/components/templates/blog-section";
 
 import { SHOWCASE_PRESETS, MOCK_SHOWCASE_DATA, ShowcasePreset } from "./mock-data";
+import { Skeleton } from "webjoz-ui";
 
 const SECTION_CONFIG_LIST: { id: string; name: string; icon: string }[] = [
   { id: "hero", name: "Hero", icon: "sparkles" },
@@ -557,6 +558,115 @@ export default function SectionShowcasePage() {
     setCopiedVariant(val);
     setTimeout(() => setCopiedVariant(null), 2000);
   };
+
+  if (loadingConfig) {
+    return (
+      <div className="min-h-screen bg-background text-foreground animate-in fade-in duration-300">
+        {/* Top bar skeleton */}
+        <div className="border-b border-border/80 bg-card/90 px-4 lg:px-8 py-3.5 flex items-center justify-between gap-3">
+          <Skeleton className="h-7 w-44 rounded-xl" />
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-7 w-24 rounded-lg" />
+            <Skeleton className="h-7 w-24 rounded-lg" />
+            <Skeleton className="h-7 w-24 rounded-lg" />
+            <Skeleton className="h-8 w-28 rounded-lg" />
+          </div>
+        </div>
+
+        <div className="lg:flex lg:h-[calc(100vh-57px)] lg:overflow-hidden">
+          {/* Left sidebar skeleton */}
+          <div className="hidden lg:flex flex-col w-56 shrink-0 border-r border-border/60 bg-card/40 p-3 gap-1.5">
+            {Array.from({ length: 9 }).map((_, i) => (
+              <Skeleton key={i} className={`h-9 rounded-xl ${i === 0 ? "bg-primary/15" : ""}`} />
+            ))}
+          </div>
+
+          {/* Main canvas skeleton — mimics a website layout */}
+          <div className="flex-1 overflow-auto p-6 bg-muted/5">
+            <div className="max-w-4xl mx-auto space-y-4">
+
+              {/* Browser chrome bar */}
+              <div className="flex items-center gap-2 px-3 py-2 bg-card rounded-t-xl border border-border/60 border-b-0">
+                <div className="flex gap-1.5">
+                  <Skeleton className="size-3 rounded-full" />
+                  <Skeleton className="size-3 rounded-full" />
+                  <Skeleton className="size-3 rounded-full" />
+                </div>
+                <Skeleton className="flex-1 h-5 rounded-full max-w-xs mx-auto" />
+              </div>
+
+              {/* Website preview skeleton */}
+              <div className="border border-border/60 border-t-0 rounded-b-xl overflow-hidden bg-card">
+
+                {/* Nav bar */}
+                <div className="flex items-center justify-between px-6 py-3.5 border-b border-border/40">
+                  <Skeleton className="h-6 w-28 rounded-lg" />
+                  <div className="flex gap-3 items-center">
+                    <Skeleton className="h-4 w-14 rounded-full" />
+                    <Skeleton className="h-4 w-14 rounded-full" />
+                    <Skeleton className="h-4 w-14 rounded-full" />
+                    <Skeleton className="h-8 w-24 rounded-lg" />
+                  </div>
+                </div>
+
+                {/* Hero section */}
+                <div className="grid grid-cols-2 gap-0 min-h-[220px]">
+                  <div className="flex flex-col justify-center gap-3 px-8 py-8">
+                    <Skeleton className="h-3.5 w-24 rounded-full" />
+                    <Skeleton className="h-6 w-full rounded-lg" />
+                    <Skeleton className="h-6 w-4/5 rounded-lg" />
+                    <Skeleton className="h-4 w-3/4 rounded-full" />
+                    <Skeleton className="h-4 w-2/3 rounded-full" />
+                    <Skeleton className="h-9 w-32 rounded-xl mt-2" />
+                  </div>
+                  <Skeleton className="rounded-none h-full min-h-[220px]" />
+                </div>
+
+                {/* Features/stats row */}
+                <div className="grid grid-cols-4 gap-3 p-5 border-t border-border/40">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="flex flex-col gap-2.5 p-3 rounded-xl bg-muted/20">
+                      <Skeleton className="size-7 rounded-lg" />
+                      <Skeleton className="h-3 w-full rounded-full" />
+                      <Skeleton className="h-3 w-4/5 rounded-full" />
+                      <Skeleton className="h-3 w-3/5 rounded-full" />
+                    </div>
+                  ))}
+                </div>
+
+                {/* CTA / info strip */}
+                <div className="flex items-center justify-between px-8 py-5 border-t border-border/40 bg-muted/10">
+                  <div className="space-y-2 flex-1 max-w-xs">
+                    <Skeleton className="h-4 w-3/4 rounded-full" />
+                    <Skeleton className="h-3 w-full rounded-full" />
+                    <Skeleton className="h-3 w-4/5 rounded-full" />
+                  </div>
+                  <Skeleton className="h-10 w-28 rounded-xl" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right panel skeleton */}
+          <div className="hidden lg:flex flex-col w-72 shrink-0 border-l border-border/60 bg-card/40 p-4 gap-3">
+            <Skeleton className="h-5 w-32 rounded-full" />
+            <div className="space-y-2">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton key={i} className="h-14 w-full rounded-xl" />
+              ))}
+            </div>
+            <Skeleton className="h-px w-full rounded-full mt-1" />
+            <Skeleton className="h-5 w-24 rounded-full" />
+            <div className="space-y-2">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <Skeleton key={i} className="h-10 w-full rounded-xl" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!isSuperAdmin) {
     return (
