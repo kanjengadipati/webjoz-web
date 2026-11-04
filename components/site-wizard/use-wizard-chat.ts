@@ -9,22 +9,7 @@ import { capitalizeWords, pickVariant, isLikelyGibberish, extractLocationFromDes
 import type { Message, ChatStage, InferenceResult } from "./types";
 import type { WizardResumeChat } from "./wizard-persistence";
 
-/** Map archetype ID to the nearest v1 legacy type for backward compat. */
-function archetypeToLegacyType(arch: string): string {
-  switch (arch) {
-    case "food_venue":           return "Kuliner";
-    case "retail_catalog":       return "Toko";
-    case "booking_service":      return "Layanan & Reservasi";
-    case "portfolio_individual": return "Portofolio";
-    case "professional_firm":    return "Kreatif & Profesional";
-    case "corporate_org":
-    case "lodging":
-    case "institution_org":
-    case "destination":
-    case "software_product":     return "Company Profile";
-    default:                     return "";
-  }
-}
+import { archetypeToLegacyType, applyV2Inference, preInferredFromClassify, type PreInferred } from "./inference-v2";
 import { useI18n } from "@/lib/i18n/context";
 import { useToast } from "@/components/toast-provider";
 import { refineTranscript, processBusinessDescription } from "@/lib/api/ai";
@@ -358,7 +343,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     const minDelay = new Promise((resolve) => setTimeout(resolve, 800));
 
     let refinedText = rawTranscript;
-    let inferredResult: { type?: string; subType?: string } | null = null;
+    let inferredResult: PreInferred | null = null;
     const voiceLang = sttLang === "en-US" ? "en" : "id";
     try {
       const [res] = await Promise.all([
@@ -371,10 +356,10 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
         }
         const sttValid = validateClassification(res.data.type, res.data.sub_type) ?? validateClassification(res.data.type, "");
         if (sttValid?.type) {
-          inferredResult = {
-            type: sttValid.type,
-            subType: sttValid.subType || "",
-          };
+          inferredResult = preInferredFromClassify(
+            { type: sttValid.type, subType: sttValid.subType || "" },
+            res.data,
+          );
         }
       }
     } catch (err) {
@@ -796,7 +781,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
 
   const processDescriptionSubmission = async (
     rawVal: string,
-    preInferred?: { type?: string; subType?: string } | null
+    preInferred?: PreInferred | null
   ) => {
     const val = rawVal.trim();
     const isSkip = !val || val.toLowerCase() === DESCRIPTION_SKIP_KEYWORD || val.toLowerCase() === t("dashboard.wizard.descriptionSkipKeyword", "lewat").toLowerCase() || val.toLowerCase() === "skip";
@@ -829,7 +814,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
               setServiceArea(detectedLoc);
             }
             setIsAnalyzingDescription(false);
-            processDescriptionSubmission(autoDesc, { type: aiHint.type, subType: aiHint.subType });
+            processDescriptionSubmission(autoDesc, preInferredFromClassify({ type: aiHint.type, subType: aiHint.subType }, d));
             return;
           }
           // v2-only: archetype known but no valid v1 type pair — use archetype routing
@@ -839,7 +824,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
             const detectedLoc = extractLocationFromDescription(currentBizName);
             if (detectedLoc && !serviceArea) setServiceArea(detectedLoc);
             setIsAnalyzingDescription(false);
-            processDescriptionSubmission(autoDesc, { type: legacyType, subType: "" });
+            processDescriptionSubmission(autoDesc, preInferredFromClassify({ type: legacyType, subType: "" }, d));
             return;
           }
         }
@@ -897,6 +882,17 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
         subType: preValid.subType || "",
         confidence: preValid.subType ? "high" : "medium",
       };
+      // Same v2 rule as the typed-description path (carry industry_id through).
+      if (preInferred?.archetype) {
+        setArchetype(preInferred.archetype);
+        archetypeRef.current = preInferred.archetype;
+      }
+      if (preInferred?.industryId) {
+        setIndustryId(preInferred.industryId);
+        industryIdRef.current = preInferred.industryId;
+      }
+      if (preInferred?.industryCustom) setIndustryCustom(preInferred.industryCustom);
+      result = applyV2Inference(result, preInferred);
     } else {
       setIsAnalyzingDescription(true);
       // 3A. Primary: Call AI Classifier Server (understands context & semantics)
@@ -940,22 +936,13 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
           if (aiRes.data.industry_custom) {
             setIndustryCustom(aiRes.data.industry_custom);
           }
-          // v2 high-confidence: if industry_id is known, treat as high confidence
-          // even when v1 sub_type validation fails (new industry not in v1 constants)
-          if (
-            aiRes.data.archetype &&
-            aiRes.data.industry_id &&
-            aiRes.data.confidence === "high"
-          ) {
-            result = {
-              type: aiValid?.type || archetypeToLegacyType(aiRes.data.archetype),
-              subType: aiValid?.subType || "",
-              confidence: "high",
-              // carry v2 ids for STEP 4 routing
-              industryId: aiRes.data.industry_id,
-              industryLabel: aiRes.data.industry_id, // will be replaced by label in STEP 4
-            };
-          }
+          // v2 high-confidence: industry_id known => resolved industry, even when the
+          // v1 sub_type validation fails (new industries are not in the v1 constants).
+          result = applyV2Inference(result, {
+            archetype: aiRes.data.archetype,
+            industryId: aiRes.data.industry_id,
+            confidence: aiRes.data.confidence,
+          });
         }
       } catch (err) {
         console.warn("AI classification failed, showing manual category selection", err);

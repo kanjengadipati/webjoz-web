@@ -1468,6 +1468,14 @@ export function SiteWizard({
               if (subTypes.length === 0) {
                 subTypes = chat.businessType ? (dynamicSubTypes[chat.businessType] ?? []) : [];
               }
+              // The API's own suggestion (medium confidence) goes first so the user
+              // sees it instead of hunting through the whole archetype list.
+              if (chat.industryId) {
+                subTypes = [
+                  ...subTypes.filter((st) => st.value === chat.industryId),
+                  ...subTypes.filter((st) => st.value !== chat.industryId),
+                ];
+              }
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400">
                   {chat.typeWasInferred && (
