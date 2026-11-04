@@ -76,6 +76,8 @@ import {
   Wrench,
   X,
   Zap,
+  Maximize2,
+  Minimize2,
 } from "lucide-react";
 import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import { AudioWaveform } from "./audio-waveform";
@@ -433,6 +435,29 @@ export function SiteWizard({
 
   // One-time onboarding hint for "Coba rekomendasi lain" button
   const [showRekomendasiHint, setShowRekomendasiHint] = useState(false);
+
+  // Full page preview modal
+  const [fullPagePreviewOpen, setFullPagePreviewOpen] = useState(false);
+
+  useEffect(() => {
+    if (!fullPagePreviewOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setFullPagePreviewOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [fullPagePreviewOpen]);
+
+  useEffect(() => {
+    if (!fullPagePreviewOpen) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setFullPagePreviewOpen(false);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [fullPagePreviewOpen]);
 
   // Inline editing state for chat bubbles (both AI responses and user inputs)
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
@@ -2180,6 +2205,19 @@ export function SiteWizard({
               <span className="ml-auto text-[10px] font-semibold text-slate-200 bg-white/5 border border-white/10 px-1.5 py-0.5 rounded-full w-fit block">Live Preview</span>
             )}
           </div>
+
+          {/* Full Page Preview Button */}
+          {preview.previewState === "result" && (
+            <button
+              type="button"
+              onClick={() => setFullPagePreviewOpen(true)}
+              title={t("dashboard.wizard.btnFullPagePreview", "Preview halaman penuh")}
+              className="flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-semibold text-slate-200 border border-white/10 bg-white/[0.06] transition-all hover:bg-white/10 hover:border-white/20 hover:text-white active:scale-95 cursor-pointer"
+            >
+              <Maximize2 size={11} />
+              {t("dashboard.wizard.btnFullPagePreview", "Preview Penuh")}
+            </button>
+          )}
         </div>
 
         <div className="flex-1 overflow-hidden relative bg-background" ref={previewContainerRef}>
@@ -2316,6 +2354,34 @@ export function SiteWizard({
         businessName={chat.businessName}
         onUpgradeSuccess={handleGoToEditor}
       />
+
+      {fullPagePreviewOpen && (
+        <div className="fixed inset-0 z-[80] flex flex-col bg-[#0d0f14]">
+          <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/10 bg-[#111318] shrink-0">
+            <div className="flex items-center gap-2">
+              <Maximize2 size={14} className="text-slate-300" />
+              <span className="text-sm font-semibold text-white">
+                {t("dashboard.wizard.btnFullPagePreview", "Preview Penuh")}
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setFullPagePreviewOpen(false)}
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/[0.06] text-slate-300 transition-all hover:bg-white/15 hover:text-white cursor-pointer"
+              title={t("dashboard.wizard.btnExitFullPagePreview", "Tutup Preview Penuh")}
+            >
+              <X size={14} />
+            </button>
+          </div>
+          <div className="flex-1 overflow-hidden">
+            <PreviewCanvas
+              chat={chat}
+              preview={preview}
+              device={{ ...device, previewDevice: "desktop", isMobile: false }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
