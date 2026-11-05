@@ -1986,7 +1986,9 @@ export function SiteWizard({
                   )}
                   <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">{t("dashboard.wizard.moreSpecific", "Lebih spesifik:")}</p>
   {showBidangStep && (
-    <div className="flex flex-wrap gap-1.5 mb-3">
+    <>
+      <p className="text-[10px] font-semibold text-slate-400 mb-2 px-0.5">{t("dashboard.wizard.selectSector", "Pilih bidang usaha:")}</p>
+      <div className="grid grid-cols-2 gap-1.5 mb-3">
       {bidangChips.map((bg) => {
         const BidangIcon = BIDANG_ICONS[bg.value] ?? Tag;
         return (
@@ -1994,14 +1996,15 @@ export function SiteWizard({
             key={bg.value}
             type="button"
             onClick={() => setSelectedBidang(bg.value)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border border-white/[0.08] bg-white/[0.04] text-slate-300 hover:border-white/20 hover:text-white hover:bg-white/[0.08] transition-all cursor-pointer"
+            className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-medium border border-slate-600/60 bg-white/[0.06] text-slate-200 hover:border-slate-400/60 hover:text-white hover:bg-white/[0.10] transition-all cursor-pointer"
           >
-            <BidangIcon className="w-3 h-3 shrink-0 text-slate-400" />
-            <span>{bg.label}</span>
+            <BidangIcon className="w-3.5 h-3.5 shrink-0 text-slate-400" />
+            <span className="text-left leading-tight">{bg.label}</span>
           </button>
         );
       })}
     </div>
+    </>
   )}
 
   {effectiveSelectedBidang && !isLocked && needsBidangStep && (() => {
@@ -2356,22 +2359,25 @@ export function SiteWizard({
                     <div ref={chat.subTypeRef} className="animate-in fade-in slide-in-from-bottom-1 duration-300">
                       <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">{t("dashboard.wizard.moreSpecific", "Lebih spesifik:")}</p>
                       {tcShowBidang && (
-                        <div className="flex flex-wrap gap-1.5 mb-3">
-                          {tcBidangChips.map((bg) => {
-                            const BidangIcon = BIDANG_ICONS[bg.value] ?? Tag;
-                            return (
-                              <button
-                                key={bg.value}
-                                type="button"
-                                onClick={() => chat.setSelectedBidang(bg.value)}
-                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border border-white/[0.08] bg-white/[0.04] text-slate-300 hover:border-white/20 hover:text-white hover:bg-white/[0.08] transition-all cursor-pointer"
-                              >
-                                <BidangIcon className="w-3 h-3 shrink-0 text-slate-400" />
-                                <span>{bg.label}</span>
-                              </button>
-                            );
-                          })}
-                        </div>
+                        <>
+                          <p className="text-[10px] font-semibold text-slate-400 mb-2 px-0.5">{t("dashboard.wizard.selectSector", "Pilih bidang usaha:")}</p>
+                          <div className="grid grid-cols-2 gap-1.5 mb-3">
+                            {tcBidangChips.map((bg) => {
+                              const BidangIcon = BIDANG_ICONS[bg.value] ?? Tag;
+                              return (
+                                <button
+                                  key={bg.value}
+                                  type="button"
+                                  onClick={() => chat.setSelectedBidang(bg.value)}
+                                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-medium border border-slate-600/60 bg-white/[0.06] text-slate-200 hover:border-slate-400/60 hover:text-white hover:bg-white/[0.10] transition-all cursor-pointer"
+                                >
+                                  <BidangIcon className="w-3.5 h-3.5 shrink-0 text-slate-400" />
+                                  <span className="text-left leading-tight">{bg.label}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </>
                       )}
                       {tcEffectiveBidang && tcNeedsBidang && (() => {
                         const bg = tcBidangChips.find((b) => b.value === tcEffectiveBidang);
