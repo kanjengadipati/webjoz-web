@@ -232,7 +232,7 @@ export default function CatalogShowcaseFeatured({ catalog, design_token, onUpdat
                           capacity: item.capacity,
                         }}
                         icon={ImageIcon}
-                        layout={design_token?.layout?.card_style ?? "grid"}
+                        layout="grid"
                         styles={{
                           className: "group transition-all duration-300",
                           style: { background: bg, border: `1px solid color-mix(in srgb, ${p} 14%, transparent)`, borderRadius: "14px", overflow: "hidden" },
