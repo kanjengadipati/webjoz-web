@@ -371,7 +371,11 @@ function InferenceConfirmCard({
   const handleContinue = () => {
     if (draftName.trim()) chat.setBusinessName(draftName.trim());
     if (draftArea.trim()) chat.setServiceArea(draftArea.trim());
-    if (draftIndustry && draftIndustry !== chat.industryId) {
+    if (draftIndustry === "__other__") {
+      chat.setIndustryId("");
+      chat.industryIdRef.current = "";
+      // industryCustom already set via input
+    } else if (draftIndustry && draftIndustry !== chat.industryId) {
       if (draftIndustry.includes(".")) {
         chat.setIndustryId(draftIndustry);
         chat.industryIdRef.current = draftIndustry;
@@ -431,7 +435,9 @@ function InferenceConfirmCard({
             value={draftBidang || (taxonomyV2.groups.find((g: any) => g.industries.some((i: any) => i.id === chat.industryId))?.id ?? "")}
             onChange={(val) => {
               setDraftBidang(val);
-              setDraftIndustry("");
+              const group = taxonomyV2?.groups.find((g: any) => g.id === val);
+              const first = group?.industries?.[0]?.id;
+              setDraftIndustry(first || "");
               setEditing(null);
             }}
             options={taxonomyV2.groups.map((g: any) => ({
@@ -448,20 +454,34 @@ function InferenceConfirmCard({
           onEdit={() => setEditing("spec")}
         />
         {editing === "spec" && taxonomyV2 && (
+          <>
           <CustomSelect
-            value={draftIndustry}
+            value={draftIndustry || "__other__"}
             onChange={(val) => { setDraftIndustry(val); setEditing(null); }}
-            options={taxonomyV2.groups
-              .filter((g: any) => !draftBidang || g.id === draftBidang)
-              .flatMap((g: any) => g.industries)
-              .filter((i: any) => !draftBidang && chat.archetype ? i.archetype === chat.archetype : true)
-              .map((i: any) => ({
-                value: i.id,
-                label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
-              }))}
+            options={[
+              ...taxonomyV2.groups
+                .filter((g: any) => !draftBidang || g.id === draftBidang)
+                .flatMap((g: any) => g.industries)
+                .filter((i: any) => !draftBidang && chat.archetype ? i.archetype === chat.archetype : true)
+                .map((i: any) => ({
+                  value: i.id,
+                  label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
+                })),
+              { value: "__other__", label: t("dashboard.wizard.otherIndustry", "Lainnya (ketik spesialisasi)...") },
+            ]}
             size="sm"
             triggerClassName="border-white/10 bg-black/20 text-slate-200"
           />
+          {draftIndustry === "__other__" && (
+            <input
+              autoFocus
+              value={chat.industryCustom || ""}
+              onChange={(e) => chat.setIndustryCustom(e.target.value)}
+              placeholder={t("dashboard.wizard.otherIndustry", "Lainnya (ketik spesialisasi)...")}
+              className="w-full mt-1 px-2 py-1 rounded-lg text-xs bg-white/[0.06] text-white border border-white/10"
+            />
+          )}
+          </>
         )}
         <Row
           label={t("dashboard.wizard.cardLocation", "Lokasi")}
