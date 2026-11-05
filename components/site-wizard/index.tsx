@@ -1223,6 +1223,17 @@ export function SiteWizard({
       generate.didGenerateRef.current = true;
     });
   };
+
+  const handleSelectCustomIndustry = (text: string) => {
+    const clean = text.replace(/<[^>]*>?/gm, "").trim().slice(0, 80); // sama dengan batas server
+    if (!clean) return;
+    chat.setIndustryId("");
+    chat.industryIdRef.current = "";
+    chat.setIndustryCustom(clean);
+    chat.setBusinessSubType(clean);   // label tampil di bubble dan jalur v1 yang tersisa
+    // lanjut ke pemilihan bahasa seperti handleSelectSubType
+  };
+
   const handleSelectMood = (mood: string) => {
     chat.handleSelectMood(mood, (name, type, overrides) => {
       preview.setRegenCount(0);
@@ -1828,6 +1839,16 @@ export function SiteWizard({
 
             if (m.widget === "subtype-chips") {
               const isLocked = chat.chatStage === "language" || chat.chatStage === "mood" || chat.chatStage === "done";
+  const selectedBidang = chat.selectedBidang;
+  const setSelectedBidang = chat.setSelectedBidang;
+  const showBidangStep = !!taxonomyV2 && !selectedBidang && !isLocked;
+  const bidangChips = taxonomyV2
+    ? taxonomyV2.groups.map((g) => ({
+        value: g.id,
+        label: wizardLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label),
+        emoji: g.emoji ?? "🏷️",
+      }))
+    : [];
               // v2: when archetype is known, show all catalog industries for that archetype.
               // Falls back to v1 subTypes.
               let subTypes: Array<{ value: string; label: string; emoji?: string; kind?: "v1" | "v2" }> = [];
