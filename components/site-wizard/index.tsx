@@ -1162,7 +1162,25 @@ export function SiteWizard({
     // Guard taksonomi: hanya pasangan {type, subType} kanonis yang boleh
     // mencapai payload generate — pair stale/tidak-valid jatuh ke type-only.
     const safePair = sanitizeClassificationPair(bType, nextBusinessSubType);
-    const safeBusinessType = safePair.businessType;
+    // v2 fallback: bila businessType kosong tapi archetype diketahui, derive type dari archetype
+    const safeBusinessType = safePair.businessType ||
+      (() => {
+        const arch = chat.archetypeRef.current || chat.archetype;
+        if (!arch) return "";
+        const archToLegacy: Record<string, string> = {
+          "food_venue": "Kuliner",
+          "retail_catalog": "Toko",
+          "booking_service": "Layanan & Reservasi",
+          "portfolio_individual": "Portofolio",
+          "professional_firm": "Kreatif & Profesional",
+          "corporate_org": "Company Profile",
+          "lodging": "Company Profile",
+          "institution_org": "Company Profile",
+          "destination": "Company Profile",
+          "software_product": "Kreatif & Profesional",
+        };
+        return archToLegacy[arch] ?? "";
+      })();
     const safeBusinessSubType = safePair.businessSubType;
     const nextWhatsapp = overrides.whatsapp ?? chat.whatsappRef.current;
     const nextServiceArea = overrides.serviceArea ?? chat.serviceAreaRef.current;
