@@ -369,7 +369,18 @@ function InferenceConfirmCard({
   })();
 
   const handleContinue = () => {
-    if (draftName.trim()) chat.setBusinessName(draftName.trim());
+    const oldName = chat.businessName || "";
+    const newName = draftName.trim();
+    if (newName && newName !== oldName) {
+      chat.setBusinessName(newName);
+      // Keep refined description in sync with the new name (best-effort replace).
+      const cur = chat.descriptionRef?.current || chat.description || "";
+      if (cur && oldName) {
+        const updated = cur.split(oldName).join(newName);
+        chat.descriptionRef.current = updated;
+        chat.setDescription(updated);
+      }
+    }
     if (draftArea.trim()) chat.setServiceArea(draftArea.trim());
     if (draftIndustry === "__other__") {
       chat.setIndustryId("");
