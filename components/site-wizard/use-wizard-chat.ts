@@ -9,7 +9,7 @@ import { capitalizeWords, pickVariant, isLikelyGibberish, extractLocationFromDes
 import type { Message, ChatStage, InferenceResult } from "./types";
 import type { WizardResumeChat } from "./wizard-persistence";
 
-import { routeInference, type InferenceRoute, type ClassifyV2Fields } from "./inference-v2";
+import { routeInference, classifyInference, type InferenceRoute, type ClassifyV2Fields, type PreInferred } from "./inference-v2";
 import { useI18n } from "@/lib/i18n/context";
 import { useToast } from "@/components/toast-provider";
 import { refineTranscript, processBusinessDescription } from "@/lib/api/ai";
@@ -96,15 +96,15 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     }
     if (audioContextRef.current) {
       try {
-        audioContextRef.current.close().catch(() => {});
-      } catch {}
+        audioContextRef.current.close().catch(() => { });
+      } catch { }
       audioContextRef.current = null;
     }
     analyserRef.current = null;
     if (mediaStreamRef.current) {
       try {
         mediaStreamRef.current.getTracks().forEach((track) => track.stop());
-      } catch {}
+      } catch { }
       mediaStreamRef.current = null;
     }
     setIsSpeaking(false);
@@ -117,7 +117,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
       if (recognitionRef.current) {
         try {
           recognitionRef.current.lang = next;
-        } catch {}
+        } catch { }
       }
       return next;
     });
@@ -153,7 +153,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
       if (recognitionRef.current) {
         try {
           recognitionRef.current.abort();
-        } catch {}
+        } catch { }
         recognitionRef.current = null;
       }
       pushToast(
@@ -321,7 +321,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     if (recognitionRef.current) {
       try {
         recognitionRef.current.stop();
-      } catch {}
+      } catch { }
       recognitionRef.current = null;
     }
     setIsRecording(false);
@@ -387,7 +387,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     if (recognitionRef.current) {
       try {
         recognitionRef.current.stop();
-      } catch {}
+      } catch { }
       recognitionRef.current = null;
     }
     recordedTranscriptRef.current = "";
@@ -803,7 +803,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
   ) => {
     const val = rawVal.trim();
     const isSkip = !val || val.toLowerCase() === DESCRIPTION_SKIP_KEYWORD || val.toLowerCase() === t("dashboard.wizard.descriptionSkipKeyword", "lewat").toLowerCase() || val.toLowerCase() === "skip";
-    
+
     // [STEP 1: HANDLING SKIP / EMPTY INPUT]
     // If the user skips, call AI with the business name only to infer category.
     if (isSkip) {
@@ -832,8 +832,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
               setServiceArea(detectedLoc);
             }
             setIsAnalyzingDescription(false);
-            processDescriptionSubmission(autoDesc, // mapped directly);
-processDescriptionSubmission(autoDesc, { archetype: '', industry_id: '', confidence: 'high' });
+            processDescriptionSubmission(autoDesc, { archetype: "", industryId: "", confidence: "high" });
           }
           // v2-only: archetype known but no valid v1 type pair — use archetype routing
           if (d.archetype) {
@@ -842,9 +841,8 @@ processDescriptionSubmission(autoDesc, { archetype: '', industry_id: '', confide
             const detectedLoc = extractLocationFromDescription(currentBizName);
             if (detectedLoc && !serviceArea) setServiceArea(detectedLoc);
             setIsAnalyzingDescription(false);
-            // direct handling - use routeInference instead
-    const aiResult = { archetype: legacyType, industry_id: '', confidence: 'high' };
-    result = classifyInference(result, null, aiResult);
+            // Re-enter processDescriptionSubmission with the inferred archetype pre-populated
+            processDescriptionSubmission(autoDesc, { archetype: legacyType, industryId: "", confidence: "high" });
             return;
           }
         }
@@ -903,8 +901,8 @@ processDescriptionSubmission(autoDesc, { archetype: '', industry_id: '', confide
         confidence: preValid.subType ? "high" : "medium",
       };
       // Inferensi classify — gunakan routeInference, jangan menyimpan archetype/industry_id otomatis
-      const aiResult = preInferred 
-        ? { archetype: preInferred.archetype, industry_id: preInferred.industry_id, confidence: preInferred.confidence }
+      const aiResult = preInferred
+        ? { archetype: preInferred.archetype, industry_id: preInferred.industryId, confidence: preInferred.confidence }
         : null;
       result = classifyInference(result, preInferred, aiResult);
     } else {
@@ -1258,7 +1256,7 @@ processDescriptionSubmission(autoDesc, { archetype: '', industry_id: '', confide
     if (recognitionRef.current) {
       try {
         recognitionRef.current.stop();
-      } catch {}
+      } catch { }
       recognitionRef.current = null;
     }
     setIsRecording(false);
