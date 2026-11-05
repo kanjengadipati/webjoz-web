@@ -549,6 +549,20 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setBusinessSubType("");
     setTypeWasInferred(false);
     setInputValue("");
+    // v2: set archetype so sub-type chips use catalog v2 industries
+    const typeToArch: Record<string, string> = {
+      "Kuliner": "food_venue",
+      "Toko": "retail_catalog",
+      "Layanan & Reservasi": "booking_service",
+      "Portofolio": "portfolio_individual",
+      "Kreatif & Profesional": "professional_firm",
+      "Company Profile": "corporate_org",
+    };
+    const arch = typeToArch[type] ?? "";
+    setArchetype(arch);
+    archetypeRef.current = arch;
+    setIndustryId("");
+    industryIdRef.current = "";
     setTimeout(() => {
       subTypeRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }, 120);
