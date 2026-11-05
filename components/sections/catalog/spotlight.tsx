@@ -309,7 +309,7 @@ export default function CatalogSpotlight({ catalog, design_token, onUpdateField,
                       capacity: item.capacity,
                     }}
                     icon={ImageIcon}
-                    layout={design_token?.layout?.card_style ?? "grid"}
+                    layout="grid"
                     styles={{
                       className: "group transition-all duration-300",
                       style: { background: "var(--dt-surface)", border: "1px solid var(--dt-border)", borderRadius: "var(--dt-radius)", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" },

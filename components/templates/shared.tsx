@@ -2163,7 +2163,7 @@ function MenuCatalogCard({
   // ── Overlay: fullbleed image, text overlaid at bottom — kuliner visual ──
   if (layout === "overlay") {
     return (
-      <div className={`relative group cursor-pointer overflow-hidden ${className || ""}`} style={style} onClick={() => setQuickViewOpen(true)}>
+      <div className={`relative group cursor-pointer overflow-hidden min-h-[280px] sm:min-h-[320px] aspect-[4/5] flex flex-col justify-end ${className || ""}`} style={style} onClick={() => setQuickViewOpen(true)}>
         {isEditorMode && onDelete && (
           <InlineDeleteButton onDelete={onDelete} className="absolute top-2.5 right-2.5 z-40" />
         )}
@@ -2171,10 +2171,10 @@ function MenuCatalogCard({
         {/* Fullbleed image */}
         <div className="absolute inset-0">{imageNode}</div>
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent pointer-events-none" />
         {/* Text overlay content at bottom */}
-        <div className="relative z-10 flex flex-col justify-end h-full p-3" style={contentStyle}>
-          <div className={headerClassName ?? "flex flex-col"} style={headerStyle}>
+        <div className="relative z-10 flex flex-col justify-end p-4 pt-10" style={contentStyle}>
+          <div className={headerClassName ?? "flex flex-col gap-1"} style={headerStyle}>
             <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".name" : ""} value={itemName ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="h4" className={titleClassName} style={{ ...titleStyle, color: titleStyle?.color ?? "#fff" }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             {showPrice && (
               hasPromo ? (
@@ -2188,7 +2188,7 @@ function MenuCatalogCard({
               )
             )}
           </div>
-          <div className="mt-2" onClick={(e) => e.stopPropagation()}>
+          <div className="mt-3" onClick={(e) => e.stopPropagation()}>
             <AddToCartButton
               itemId={itemId}
               itemName={itemName}
