@@ -825,40 +825,93 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
           if (d.industry_id) { setIndustryId(d.industry_id); industryIdRef.current = d.industry_id; }
           if (d.industry_custom) setIndustryCustom(d.industry_custom);
 
+          const refinedText = d.refined_text?.trim() || "";
+          const detectedLoc = extractLocationFromDescription(currentBizName);
+          if (detectedLoc && !serviceArea) setServiceArea(detectedLoc);
+
+          // Bila ada refined_text dari AI, rekursi ke typed path agar STEP 2-4 berjalan normal.
+          // Bila refined_text kosong (nama abstrak), jangan rekursi — langsung kirim ke
+          // processDescriptionSubmission dengan teks non-kosong hasil generate dari nama
+          // HANYA jika ada validHint; kalau tidak ada, jatuh ke fallback picker di bawah.
           const validHint = validateClassification(d.type, d.sub_type) ?? validateClassification(d.type, "");
-          if (validHint?.type) {
-            const refinedText = d.refined_text?.trim() || "";
-            const detectedLoc = extractLocationFromDescription(currentBizName);
-            if (detectedLoc && !serviceArea) {
-              setServiceArea(detectedLoc);
-            }
+
+          if (refinedText) {
+            // Ada teks dari AI — rekursi ke typed path dengan teks itu
             setIsAnalyzingDescription(false);
-            // 2.3: bila refined_text kosong, description kosong — jangan karang dari nama
             processDescriptionSubmission(refinedText, {
-              type: validHint.type,
-              subType: validHint.subType || "",
+              type: validHint?.type,
+              subType: validHint?.subType || "",
               archetype: d.archetype || "",
-              industryId: d.industry_id || "",
-              confidence: d.confidence === "high" ? "high" : "medium",
-              descriptionFromAI: true,
-            });
-            return; // P0-2: satu panggilan, selalu return
-          }
-          // v2-only: archetype known but no valid v1 type pair — use archetype routing
-          if (d.archetype) {
-            // 2.3: bila refined_text kosong, description kosong — jangan karang dari nama
-            const autoDesc = d.refined_text?.trim() || "";
-            const detectedLoc = extractLocationFromDescription(currentBizName);
-            if (detectedLoc && !serviceArea) setServiceArea(detectedLoc);
-            setIsAnalyzingDescription(false);
-            processDescriptionSubmission(autoDesc, {
-              archetype: d.archetype,
               industryId: d.industry_id || "",
               confidence: d.confidence === "high" ? "high" : "medium",
               descriptionFromAI: true,
             });
             return;
           }
+
+          // refined_text kosong (nama abstrak) — jangan rekursi.
+          // Pakai hasil classify langsung: tampilkan inference-confirm atau picker.
+          setIsAnalyzingDescription(false);
+          // description tetap kosong — tidak ada teks untuk dipoles
+          const preInferredHint: PreInferred = {
+            type: validHint?.type,
+            subType: validHint?.subType || "",
+            archetype: d.archetype || "",
+            industryId: d.industry_id || "",
+            confidence: d.confidence === "high" ? "high" : "medium",
+            descriptionFromAI: true,
+          };
+          // Bangun InferenceResult langsung tanpa rekursi
+          let skipResult: InferenceResult = {
+            confidence: d.confidence === "high" ? "high" : "medium",
+            type: validHint?.type,
+            subType: validHint?.subType || "",
+          };
+          skipResult = classifyInference(skipResult, preInferredHint, {
+            archetype: d.archetype,
+            industry_id: d.industry_id,
+            confidence: d.confidence,
+          });
+          setInferenceResult(skipResult);
+
+          if (skipResult.confidence === "high" && (skipResult.industryId || (skipResult.type && skipResult.subType))) {
+            if (skipResult.type) setBusinessType(skipResult.type);
+            if (skipResult.subType) setBusinessSubType(skipResult.subType);
+            setTypeWasInferred(true);
+            inferenceAutoConfirmRef.current = (subType: string) => {
+              if (subType) setBusinessSubType(subType);
+              setMessages((prev) => [
+                ...prev,
+                { id: `ai-lang-${Date.now()}`, sender: "ai", text: t("dashboard.wizard.selectLanguagePrompt", "Dalam bahasa apa website ini dibuat?") },
+              ]);
+              setChatStage("language");
+              setTimeout(() => {
+                setMessages((prev) => [
+                  ...prev,
+                  { id: `widget-language-chips-${Date.now()}`, sender: "ai", text: "", widget: "language-chips" as const },
+                ]);
+              }, 400);
+            };
+            setTimeout(() => {
+              setMessages((prev) => [
+                ...prev,
+                { id: `widget-inference-confirm-${Date.now()}`, sender: "ai", text: "", widget: "inference-confirm-card" as const },
+              ]);
+            }, 300);
+            return;
+          }
+
+          // Tidak cukup yakin — tampilkan picker manual
+          setTimeout(() => {
+            typeMessage(t("dashboard.wizard.descriptionInferenceNone", DESCRIPTION_INFERENCE_NONE), () => {
+              setMessages((prev) => [
+                ...prev,
+                { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
+              ]);
+              setChatStage("type");
+            });
+          }, 500);
+          return;
         }
       } catch (err) {
         console.warn("AI business name inference failed, falling back to manual chips", err);
