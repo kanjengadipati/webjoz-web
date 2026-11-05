@@ -1853,9 +1853,13 @@ export function SiteWizard({
   const selectedBidang = chat.selectedBidang;
   const setSelectedBidang = chat.setSelectedBidang;
 
+  // Gunakan archetypeRef (sinkron) bukan chat.archetype (async state) agar
+  // widget yang dirender di siklus yang sama dengan setArchetype tetap mendapat nilai terbaru.
+  const currentArchetype = chat.archetypeRef.current || chat.archetype;
+
   // Hitung kandidat industri dari archetype (sebelum memutuskan perlu step Bidang atau tidak)
-  const archetypeIndustries = (chat.archetype && taxonomyV2)
-    ? taxonomyV2.groups.flatMap((g) => g.industries).filter((i) => i.archetype === chat.archetype)
+  const archetypeIndustries = (currentArchetype && taxonomyV2)
+    ? taxonomyV2.groups.flatMap((g) => g.industries).filter((i) => i.archetype === currentArchetype)
     : [];
   const v1SubTypes = chat.businessType ? (dynamicSubTypes[chat.businessType] ?? []) : [];
   const totalCandidates = taxonomyV2
@@ -1873,9 +1877,10 @@ export function SiteWizard({
     if (selectedBidang) return selectedBidang;
     if (!needsBidangStep || !taxonomyV2) return null;
     // Pre-select hanya bila ada sinyal jelas: industryId saran AI
-    if (chat.archetype && chat.industryId) {
+    const currentIndustryId = chat.industryIdRef.current || chat.industryId;
+    if (currentArchetype && currentIndustryId) {
       const suggestedGroup = taxonomyV2.groups.find((g) =>
-        g.industries.some((i) => i.id === chat.industryId)
+        g.industries.some((i) => i.id === currentIndustryId)
       );
       if (suggestedGroup) return suggestedGroup.id;
     }
