@@ -1852,7 +1852,46 @@ export function SiteWizard({
               const isLocked = chat.chatStage === "language" || chat.chatStage === "mood" || chat.chatStage === "done";
   const selectedBidang = chat.selectedBidang;
   const setSelectedBidang = chat.setSelectedBidang;
-  const showBidangStep = !!taxonomyV2 && !selectedBidang && !isLocked;
+
+  // Hitung kandidat industri dari archetype (sebelum memutuskan perlu step Bidang atau tidak)
+  const archetypeIndustries = (chat.archetype && taxonomyV2)
+    ? taxonomyV2.groups.flatMap((g) => g.industries).filter((i) => i.archetype === chat.archetype)
+    : [];
+  const v1SubTypes = chat.businessType ? (dynamicSubTypes[chat.businessType] ?? []) : [];
+  const totalCandidates = taxonomyV2
+    ? archetypeIndustries.length || v1SubTypes.length
+    : v1SubTypes.length;
+
+  // Threshold: ≥8 kandidat pakai step Bidang; <8 langsung tampilkan chip
+  const BIDANG_THRESHOLD = 8;
+  const needsBidangStep = !!taxonomyV2 && totalCandidates >= BIDANG_THRESHOLD;
+
+  // Bila archetype diketahui dan belum ada selectedBidang, pre-select Bidang yang
+  // mengandung industri saran AI (industryId) atau grup yang punya industri archetype terbanyak.
+  const effectiveSelectedBidang = React.useMemo(() => {
+    if (selectedBidang) return selectedBidang;
+    if (!needsBidangStep || !taxonomyV2) return null;
+    if (chat.archetype) {
+      // Prioritas 1: grup yang mengandung saran AI
+      if (chat.industryId) {
+        const suggestedGroup = taxonomyV2.groups.find((g) =>
+          g.industries.some((i) => i.id === chat.industryId)
+        );
+        if (suggestedGroup) return suggestedGroup.id;
+      }
+      // Prioritas 2: grup dengan industri archetype terbanyak
+      let bestGroup: string | null = null;
+      let bestCount = 0;
+      for (const g of taxonomyV2.groups) {
+        const count = g.industries.filter((i) => i.archetype === chat.archetype).length;
+        if (count > bestCount) { bestCount = count; bestGroup = g.id; }
+      }
+      return bestGroup;
+    }
+    return null;
+  }, [selectedBidang, needsBidangStep, taxonomyV2, chat.archetype, chat.industryId]);
+
+  const showBidangStep = needsBidangStep && !effectiveSelectedBidang && !isLocked;
   const bidangChips = taxonomyV2
     ? taxonomyV2.groups.map((g) => ({
         value: g.id,
@@ -1863,9 +1902,9 @@ export function SiteWizard({
               // v2: susun subTypes berdasarkan selectedBidang (grup terpilih) atau archetype.
               // P0-1: filter harus berdasarkan grup (selectedBidang = group id), bukan id industri.
               let subTypes: Array<{ value: string; label: string; emoji?: string; kind?: "v1" | "v2" }> = [];
-              if (selectedBidang && taxonomyV2) {
-                // Bidang sudah dipilih — tampilkan semua industri di grup itu, urut rank
-                const group = taxonomyV2.groups.find((g) => g.id === selectedBidang);
+              if (effectiveSelectedBidang && taxonomyV2) {
+                // Bidang terpilih (manual atau pre-select) — tampilkan semua industri di grup itu, urut rank
+                const group = taxonomyV2.groups.find((g) => g.id === effectiveSelectedBidang);
                 if (group) {
                   const sorted = [...group.industries].sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99));
                   subTypes = sorted.map((i) => ({
@@ -1875,20 +1914,14 @@ export function SiteWizard({
                     emoji: i.emoji ?? "🏷️",
                   }));
                 }
-              } else if (chat.archetype && taxonomyV2) {
-                // Belum pilih Bidang tapi archetype diketahui — fallback ke semua industri archetype itu
-                const v2Industries = taxonomyV2.groups
-                  .flatMap((g) => g.industries)
-                  .filter((i) => i.archetype === chat.archetype)
-                  .map((i) => ({
-                    value: i.id,
-                    kind: "v2" as const,
-                    label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
-                    emoji: i.emoji ?? "🏷️",
-                  }));
-                if (v2Industries.length > 0) {
-                  subTypes = v2Industries;
-                }
+              } else if (!needsBidangStep && chat.archetype && taxonomyV2) {
+                // < threshold: langsung tampilkan semua industri archetype ini (semua grup)
+                subTypes = archetypeIndustries.map((i) => ({
+                  value: i.id,
+                  kind: "v2" as const,
+                  label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
+                  emoji: i.emoji ?? "🏷️",
+                }));
               }
               if (subTypes.length === 0) {
                 subTypes = chat.businessType ? (dynamicSubTypes[chat.businessType] ?? []) : [];
@@ -1923,37 +1956,52 @@ export function SiteWizard({
                     </button>
                   )}
                   <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">{t("dashboard.wizard.moreSpecific", "Lebih spesifik:")}</p>
-  {showBidangStep && bidangChips.map((bg) => (
-    <button
-      key={bg.value}
-      type="button"
-      onClick={() => setSelectedBidang(bg.value)}
-      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border border-white/[0.08] bg-white/[0.04] text-slate-300 hover:border-white/20 hover:text-white hover:bg-white/[0.08] transition-all cursor-pointer"
-    >
-      <span>{bg.emoji}</span>
-      <span>{bg.label}</span>
-    </button>
-  ))}
-
-  {selectedBidang && !isLocked && (
-    <button
-      type="button"
-      onClick={() => setSelectedBidang(null)}
-      className="text-[10px] text-slate-500 hover:text-slate-300 underline px-1"
-    >
-      {t("dashboard.wizard.allFields", "← Semua bidang")}
-    </button>
+  {showBidangStep && (
+    <div className="flex flex-wrap gap-1.5 mb-3">
+      {bidangChips.map((bg) => (
+        <button
+          key={bg.value}
+          type="button"
+          onClick={() => setSelectedBidang(bg.value)}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border border-white/[0.08] bg-white/[0.04] text-slate-300 hover:border-white/20 hover:text-white hover:bg-white/[0.08] transition-all cursor-pointer"
+        >
+          <span>{bg.emoji}</span>
+          <span>{bg.label}</span>
+        </button>
+      ))}
+    </div>
   )}
+
+  {effectiveSelectedBidang && !isLocked && needsBidangStep && (() => {
+    const bg = bidangChips.find((b) => b.value === effectiveSelectedBidang);
+    return (
+      <div className="flex items-center gap-2 mb-2 animate-in fade-in duration-200">
+        {bg && (
+          <span className="text-[11px] font-medium text-slate-300">
+            {bg.emoji} {bg.label}
+          </span>
+        )}
+        <button
+          type="button"
+          onClick={() => setSelectedBidang(null)}
+          className="text-[10px] text-slate-500 hover:text-slate-300 underline"
+        >
+          {t("dashboard.wizard.changeBidang", "Bidang lain →")}
+        </button>
+      </div>
+    );
+  })()}
 
   <div className="flex flex-wrap gap-1.5">
                     {subTypes
                       .filter((st) => {
-                        // P0-1: bila selectedBidang terisi, subTypes sudah berisi industri grup itu saja — tampilkan semua.
-                        // Tanpa selectedBidang + taxonomyV2 ada: tampilkan hanya yang relevan (saran AI atau sub-type saat ini).
-                        // Tanpa taxonomyV2: tampilkan semua (fallback v1).
+                        // Bila effectiveSelectedBidang aktif, subTypes sudah berisi industri grup itu saja — tampilkan semua.
+                        // Tanpa Bidang + taxonomyV2 ada: tampilkan hanya yang relevan (saran AI atau sub-type saat ini).
+                        // Tanpa taxonomyV2 atau < threshold: tampilkan semua.
                         if (isLocked) return false;
-                        if (selectedBidang) return true;
+                        if (effectiveSelectedBidang) return true;
                         if (!taxonomyV2) return true;
+                        if (!needsBidangStep) return true; // < threshold: tampilkan semua langsung
                         return chat.industryId === st.value || chat.businessSubType === st.value;
                       })
                       .map((st) => {

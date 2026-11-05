@@ -3387,6 +3387,7 @@ export interface Translations {
       typeSelectedChooseSub: string;
       prefillTypePrompt: string;
       btnContinueType: string;
+      changeBidang: string;
       btnContinue: string;
       btnGenerate: string;
       cardName: string;
@@ -6897,6 +6898,7 @@ export const translations: Record<Locale, Translations> = {
         typeSelectedChooseSub: "✓ Dipilih — pilih jenis di bawah",
         prefillTypePrompt: "Saya sudah memperkirakan kategori website Anda. Lanjutkan jika sesuai, atau ubah dulu:",
         btnContinueType: "Lanjut dengan jenis ini →",
+        changeBidang: "Bidang lain →",
         btnContinue: "Ya, lanjut",
         btnGenerate: "Buat Website Sekarang",
         cardName: "Nama usaha",
@@ -10575,6 +10577,7 @@ export const translations: Record<Locale, Translations> = {
         typeSelectedChooseSub: "✓ Selected — choose type below",
         prefillTypePrompt: "I've estimated your website category. Continue if it's correct, or change it first:",
         btnContinueType: "Continue with this type →",
+        changeBidang: "Other sector →",
         btnContinue: "Yes, continue",
         btnGenerate: "Build My Website Now",
         cardName: "Business name",
