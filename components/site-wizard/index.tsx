@@ -2198,22 +2198,67 @@ export function SiteWizard({
 
             if (m.widget === "type-chips") {
               const isLocked = chat.chatStage === "language" || chat.chatStage === "mood" || chat.chatStage === "done";
-              // v2: when archetype is known, use catalog industries instead of v1 subTypes
+              // Gunakan ref untuk nilai sinkron
+              const tcArchetype = chat.archetypeRef.current || chat.archetype;
+              const tcIndustryId = chat.industryIdRef.current || chat.industryId;
+              // Hitung kandidat untuk threshold
+              const tcArchIndustries = (tcArchetype && taxonomyV2)
+                ? taxonomyV2.groups.flatMap((g) => g.industries).filter((i) => i.archetype === tcArchetype)
+                : [];
+              const tcV1SubTypes = chat.businessType ? (dynamicSubTypes[chat.businessType] ?? []) : [];
+              const tcTotal = taxonomyV2 ? (tcArchIndustries.length || tcV1SubTypes.length) : tcV1SubTypes.length;
+              const tcNeedsBidang = !!taxonomyV2 && tcTotal >= 8;
+              // selectedBidang dari state (diset saat user klik chip Bidang di widget ini)
+              const tcSelectedBidang = chat.selectedBidang;
+              // Pre-select Bidang dari industryId saran AI
+              const tcEffectiveBidang = (() => {
+                if (tcSelectedBidang) return tcSelectedBidang;
+                if (!tcNeedsBidang || !taxonomyV2) return null;
+                if (tcArchetype && tcIndustryId) {
+                  const g = taxonomyV2.groups.find((g) => g.industries.some((i) => i.id === tcIndustryId));
+                  if (g) return g.id;
+                }
+                return null;
+              })();
+              const tcShowBidang = tcNeedsBidang && !tcEffectiveBidang && !isLocked;
+              const tcBidangChips = taxonomyV2
+                ? taxonomyV2.groups.map((g) => ({
+                    value: g.id,
+                    label: wizardLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label),
+                    emoji: g.emoji ?? "🏷️",
+                  }))
+                : [];
+              // Susun subTypes — kosong bila tcShowBidang
               let subTypes: Array<{ value: string; label: string; emoji?: string; kind?: string }> | null = null;
-              if (chat.archetype && taxonomyV2) {
-                const v2Industries = taxonomyV2.groups
-                  .flatMap((g) => g.industries)
-                  .filter((i) => i.archetype === chat.archetype)
-                  .map((i) => ({
+              if (!tcShowBidang) {
+                if (tcEffectiveBidang && taxonomyV2) {
+                  const grp = taxonomyV2.groups.find((g) => g.id === tcEffectiveBidang);
+                  if (grp) {
+                    const sorted = [...grp.industries].sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99));
+                    subTypes = sorted.map((i) => ({
+                      value: i.id,
+                      label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
+                      emoji: i.emoji ?? "🏷️",
+                      kind: "v2" as const,
+                    }));
+                  }
+                } else if (!tcNeedsBidang && tcArchetype && taxonomyV2) {
+                  subTypes = tcArchIndustries.map((i) => ({
                     value: i.id,
                     label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
                     emoji: i.emoji ?? "🏷️",
                     kind: "v2" as const,
                   }));
-                if (v2Industries.length > 0) subTypes = v2Industries;
-              }
-              if (!subTypes) {
-                subTypes = chat.businessType ? (dynamicSubTypes[chat.businessType] ?? null) : null;
+                }
+                if (!subTypes) {
+                  subTypes = chat.businessType ? (dynamicSubTypes[chat.businessType] ?? null) : null;
+                }
+                if (tcIndustryId && subTypes) {
+                  subTypes = [
+                    ...subTypes.filter((s) => s.value === tcIndustryId),
+                    ...subTypes.filter((s) => s.value !== tcIndustryId),
+                  ];
+                }
               }
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2.5">
@@ -2274,11 +2319,41 @@ export function SiteWizard({
                     })}
                   </div>
 
-                  {subTypes && !isLocked && (
+                  {(subTypes || tcShowBidang) && !isLocked && (
                     <div ref={chat.subTypeRef} className="animate-in fade-in slide-in-from-bottom-1 duration-300">
                       <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">{t("dashboard.wizard.moreSpecific", "Lebih spesifik:")}</p>
+                      {tcShowBidang && (
+                        <div className="flex flex-wrap gap-1.5 mb-3">
+                          {tcBidangChips.map((bg) => (
+                            <button
+                              key={bg.value}
+                              type="button"
+                              onClick={() => chat.setSelectedBidang(bg.value)}
+                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border border-white/[0.08] bg-white/[0.04] text-slate-300 hover:border-white/20 hover:text-white hover:bg-white/[0.08] transition-all cursor-pointer"
+                            >
+                              <span>{bg.emoji}</span>
+                              <span>{bg.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      {tcEffectiveBidang && tcNeedsBidang && (() => {
+                        const bg = tcBidangChips.find((b) => b.value === tcEffectiveBidang);
+                        return (
+                          <div className="flex items-center gap-2 mb-2 animate-in fade-in duration-200">
+                            {bg && <span className="text-[11px] font-medium text-slate-300">{bg.emoji} {bg.label}</span>}
+                            <button
+                              type="button"
+                              onClick={() => chat.setSelectedBidang(null)}
+                              className="text-[10px] text-slate-500 hover:text-slate-300 underline"
+                            >
+                              {t("dashboard.wizard.changeBidang", "Bidang lain →")}
+                            </button>
+                          </div>
+                        );
+                      })()}
                       <div className="flex flex-wrap gap-1.5">
-                        {subTypes.map((st) => {
+                        {(subTypes ?? []).map((st) => {
                           const isSubSelected = chat.industryId === st.value || chat.businessSubType === st.value;
                           const isV2Id = st.kind === "v2" || st.value.includes(".");
                           const SubIcon = SUB_TYPE_ICONS[st.value] ?? Tag;
