@@ -417,7 +417,7 @@ function InferenceConfirmCard({
             autoFocus
             value={draftName}
             onChange={(e) => setDraftName(e.target.value)}
-            onBlur={() => setEditing(null)}
+            onBlur={() => { if (draftName.trim()) chat.setBusinessName(draftName.trim()); setEditing(null); }}
             className="w-full px-2 py-1 rounded-lg text-xs bg-white/[0.06] text-white border border-white/10"
           />
         )}
@@ -473,7 +473,7 @@ function InferenceConfirmCard({
             autoFocus
             value={draftArea}
             onChange={(e) => setDraftArea(e.target.value)}
-            onBlur={() => setEditing(null)}
+            onBlur={() => { if (draftArea.trim()) chat.setServiceArea(draftArea.trim()); setEditing(null); }}
             className="w-full px-2 py-1 rounded-lg text-xs bg-white/[0.06] text-white border border-white/10"
           />
         )}
