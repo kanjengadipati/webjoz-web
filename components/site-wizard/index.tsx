@@ -1232,6 +1232,11 @@ export function SiteWizard({
     chat.setIndustryCustom(clean);
     chat.setBusinessSubType(clean);   // label tampil di bubble dan jalur v1 yang tersisa
     // lanjut ke pemilihan bahasa seperti handleSelectSubType
+    chat.setMessages((prev) => [
+      ...prev,
+      { id: Date.now().toString(), sender: "user", text: clean },
+    ]);
+    chat.continueToLanguage();
   };
 
   const handleSelectMood = (mood: string) => {
@@ -1849,10 +1854,23 @@ export function SiteWizard({
         emoji: g.emoji ?? "🏷️",
       }))
     : [];
-              // v2: when archetype is known, show all catalog industries for that archetype.
-              // Falls back to v1 subTypes.
+              // v2: susun subTypes berdasarkan selectedBidang (grup terpilih) atau archetype.
+              // P0-1: filter harus berdasarkan grup (selectedBidang = group id), bukan id industri.
               let subTypes: Array<{ value: string; label: string; emoji?: string; kind?: "v1" | "v2" }> = [];
-              if (chat.archetype && taxonomyV2) {
+              if (selectedBidang && taxonomyV2) {
+                // Bidang sudah dipilih — tampilkan semua industri di grup itu, urut rank
+                const group = taxonomyV2.groups.find((g) => g.id === selectedBidang);
+                if (group) {
+                  const sorted = [...group.industries].sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99));
+                  subTypes = sorted.map((i) => ({
+                    value: i.id,
+                    kind: "v2" as const,
+                    label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
+                    emoji: i.emoji ?? "🏷️",
+                  }));
+                }
+              } else if (chat.archetype && taxonomyV2) {
+                // Belum pilih Bidang tapi archetype diketahui — fallback ke semua industri archetype itu
                 const v2Industries = taxonomyV2.groups
                   .flatMap((g) => g.industries)
                   .filter((i) => i.archetype === chat.archetype)
@@ -1885,6 +1903,7 @@ export function SiteWizard({
                         chat.setTypeWasInferred(false);
                         chat.setBusinessType("");
                         chat.setBusinessSubType("");
+                        chat.setSelectedBidang(null);
                         chat.setMessages((prev) => prev.filter((msg) => msg.id !== m.id));
                         chat.setMessages((prev) => [
                           ...prev,
@@ -1923,11 +1942,13 @@ export function SiteWizard({
   <div className="flex flex-wrap gap-1.5">
                     {subTypes
                       .filter((st) => {
-                        // Tampilkan spesialisasi bila selectedBidang terisi,
-                        // atau bila katalog v2 belum termuat (fallback v1).
-                        const show = selectedBidang || !taxonomyV2;
-                        if (!show && isLocked) return false;
-                        return selectedBidang ? st.value === selectedBidang : chat.industryId === st.value || chat.businessSubType === st.value;
+                        // P0-1: bila selectedBidang terisi, subTypes sudah berisi industri grup itu saja — tampilkan semua.
+                        // Tanpa selectedBidang + taxonomyV2 ada: tampilkan hanya yang relevan (saran AI atau sub-type saat ini).
+                        // Tanpa taxonomyV2: tampilkan semua (fallback v1).
+                        if (isLocked) return false;
+                        if (selectedBidang) return true;
+                        if (!taxonomyV2) return true;
+                        return chat.industryId === st.value || chat.businessSubType === st.value;
                       })
                       .map((st) => {
                       const isSubSelected = chat.industryId === st.value || chat.businessSubType === st.value;

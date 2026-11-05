@@ -583,6 +583,11 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
       { id: Date.now().toString(), sender: "user", text: t(`dashboard.wizard.subtypes.${subType}`, subType) },
     ]);
 
+    continueToLanguage();
+  };
+
+  /** Inject pesan AI + chip bahasa. Dipanggil dari handleSelectSubType dan handleSelectCustomIndustry. */
+  const continueToLanguage = () => {
     setChatStage("language");
     setTimeout(() => {
       typeMessage(t("dashboard.wizard.selectLanguagePrompt", "Dalam bahasa apa website ini dibuat?"), () => {
@@ -832,17 +837,26 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
               setServiceArea(detectedLoc);
             }
             setIsAnalyzingDescription(false);
-            processDescriptionSubmission(autoDesc, { archetype: "", industryId: "", confidence: "high" });
+            processDescriptionSubmission(autoDesc, {
+              type: validHint.type,
+              subType: validHint.subType || "",
+              archetype: d.archetype || "",
+              industryId: d.industry_id || "",
+              confidence: d.confidence === "high" ? "high" : "medium",
+            });
+            return; // P0-2: satu panggilan, selalu return
           }
           // v2-only: archetype known but no valid v1 type pair — use archetype routing
           if (d.archetype) {
-            const legacyType = d.archetype  // mapped directly
-            const autoDesc = d.refined_text?.trim() || generateDescriptionFromBusinessName(currentBizName, { type: legacyType, subType: "" }, locale);
+            const autoDesc = d.refined_text?.trim() || generateDescriptionFromBusinessName(currentBizName, { type: d.archetype, subType: "" }, locale);
             const detectedLoc = extractLocationFromDescription(currentBizName);
             if (detectedLoc && !serviceArea) setServiceArea(detectedLoc);
             setIsAnalyzingDescription(false);
-            // Re-enter processDescriptionSubmission with the inferred archetype pre-populated
-            processDescriptionSubmission(autoDesc, { archetype: legacyType, industryId: "", confidence: "high" });
+            processDescriptionSubmission(autoDesc, {
+              archetype: d.archetype,
+              industryId: d.industry_id || "",
+              confidence: d.confidence === "high" ? "high" : "medium",
+            });
             return;
           }
         }
@@ -1384,6 +1398,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     handleSelectStarter,
     handleSelectType,
     handleSelectSubType,
+    continueToLanguage,
     handleSelectLanguage,
     handleSelectMood,
     handleConfirmInference,
