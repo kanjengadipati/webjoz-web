@@ -1872,21 +1872,14 @@ export function SiteWizard({
   const getEffectiveSelectedBidang = (): string | null => {
     if (selectedBidang) return selectedBidang;
     if (!needsBidangStep || !taxonomyV2) return null;
-    if (chat.archetype) {
-      if (chat.industryId) {
-        const suggestedGroup = taxonomyV2.groups.find((g) =>
-          g.industries.some((i) => i.id === chat.industryId)
-        );
-        if (suggestedGroup) return suggestedGroup.id;
-      }
-      let bestGroup: string | null = null;
-      let bestCount = 0;
-      for (const g of taxonomyV2.groups) {
-        const count = g.industries.filter((i) => i.archetype === chat.archetype).length;
-        if (count > bestCount) { bestCount = count; bestGroup = g.id; }
-      }
-      return bestGroup;
+    // Pre-select hanya bila ada sinyal jelas: industryId saran AI
+    if (chat.archetype && chat.industryId) {
+      const suggestedGroup = taxonomyV2.groups.find((g) =>
+        g.industries.some((i) => i.id === chat.industryId)
+      );
+      if (suggestedGroup) return suggestedGroup.id;
     }
+    // Tanpa industryId: tidak ada sinyal cukup — tampilkan step Bidang penuh
     return null;
   };
   const effectiveSelectedBidang = getEffectiveSelectedBidang();
