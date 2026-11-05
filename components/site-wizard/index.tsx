@@ -323,6 +323,140 @@ function InferenceConfirmWidget({
   );
 }
 
+// ── InferenceConfirmCard ─────────────────────────────────────────────────────
+// Kartu konfirmasi hasil klasifikasi AI: Nama usaha / Bidang / Spesialisasi /
+// Lokasi, semua bisa diedit inline. Tombol "Ya, lanjut" memicu inject bahasa.
+function InferenceConfirmCard({
+  chat,
+  taxonomyV2,
+  wizardLang,
+  onChangeCategory,
+  t,
+}: {
+  chat: any;
+  taxonomyV2: any;
+  wizardLang: string;
+  onChangeCategory: () => void;
+  t: (key: string, fallback?: string) => string;
+}) {
+  const [editing, setEditing] = useState<string | null>(null);
+  const [draftName, setDraftName] = useState(chat.businessName || "");
+  const [draftArea, setDraftArea] = useState(chat.serviceArea || "");
+  const [draftIndustry, setDraftIndustry] = useState(chat.industryId || chat.businessSubType || "");
+
+  const bidangLabel = (() => {
+    if (taxonomyV2 && chat.archetype) {
+      const g = taxonomyV2.groups.find((gr: any) => gr.industries.some((i: any) => i.id === chat.industryId));
+      if (g) return wizardLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label);
+    }
+    return chat.businessType || "-";
+  })();
+
+  const specLabel = (() => {
+    if (taxonomyV2 && chat.industryId) {
+      const ind = taxonomyV2.groups.flatMap((g: any) => g.industries).find((i: any) => i.id === chat.industryId);
+      if (ind) return wizardLang === "en" ? (ind.label_en || ind.label) : (ind.label_id || ind.label);
+    }
+    return chat.businessSubType || "-";
+  })();
+
+  const handleContinue = () => {
+    if (draftName.trim()) chat.setBusinessName(draftName.trim());
+    if (draftArea.trim()) chat.setServiceArea(draftArea.trim());
+    if (draftIndustry && draftIndustry !== chat.industryId) {
+      if (draftIndustry.includes(".")) {
+        chat.setIndustryId(draftIndustry);
+        chat.industryIdRef.current = draftIndustry;
+      } else {
+        chat.setBusinessSubType(draftIndustry);
+      }
+    }
+    const doInject = chat.inferenceAutoConfirmRef.current;
+    chat.inferenceAutoConfirmRef.current = null;
+    if (doInject) doInject(chat.businessSubType || "");
+  };
+
+  const Row = ({ label, value, onEdit }: { label: string; value: string; onEdit: () => void }) => (
+    <div className="flex items-center justify-between gap-2 py-1.5 border-b border-white/[0.06] last:border-0">
+      <span className="text-[11px] text-slate-500 shrink-0">{label}</span>
+      <button
+        type="button"
+        onClick={onEdit}
+        className="text-[11px] text-slate-200 hover:text-white text-right truncate max-w-[60%]"
+      >
+        {value || "—"} ✎
+      </button>
+    </div>
+  );
+
+  return (
+    <div className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-3">
+      <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-3 space-y-1">
+        <Row
+          label={t("dashboard.wizard.cardName", "Nama usaha")}
+          value={editing === "name" ? draftName : (chat.businessName || "-")}
+          onEdit={() => setEditing("name")}
+        />
+        {editing === "name" && (
+          <input
+            autoFocus
+            value={draftName}
+            onChange={(e) => setDraftName(e.target.value)}
+            onBlur={() => setEditing(null)}
+            className="w-full px-2 py-1 rounded-lg text-xs bg-white/[0.06] text-white border border-white/10"
+          />
+        )}
+        <Row
+          label={t("dashboard.wizard.cardBidang", "Bidang")}
+          value={bidangLabel}
+          onEdit={onChangeCategory}
+        />
+        <Row
+          label={t("dashboard.wizard.cardSpec", "Spesialisasi")}
+          value={specLabel}
+          onEdit={() => setEditing("spec")}
+        />
+        {editing === "spec" && taxonomyV2 && (
+          <select
+            value={draftIndustry}
+            onChange={(e) => { setDraftIndustry(e.target.value); setEditing(null); }}
+            className="w-full px-2 py-1 rounded-lg text-xs bg-white/[0.06] text-white border border-white/10"
+          >
+            {taxonomyV2.groups.flatMap((g: any) => g.industries)
+              .filter((i: any) => !chat.archetype || i.archetype === chat.archetype)
+              .map((i: any) => (
+                <option key={i.id} value={i.id}>
+                  {wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label)}
+                </option>
+              ))}
+          </select>
+        )}
+        <Row
+          label={t("dashboard.wizard.cardLocation", "Lokasi")}
+          value={editing === "area" ? draftArea : (chat.serviceArea || "-")}
+          onEdit={() => setEditing("area")}
+        />
+        {editing === "area" && (
+          <input
+            autoFocus
+            value={draftArea}
+            onChange={(e) => setDraftArea(e.target.value)}
+            onBlur={() => setEditing(null)}
+            className="w-full px-2 py-1 rounded-lg text-xs bg-white/[0.06] text-white border border-white/10"
+          />
+        )}
+      </div>
+      <button
+        type="button"
+        onClick={handleContinue}
+        className="w-full py-2 rounded-xl text-xs font-semibold bg-primary text-white hover:bg-primary/90 transition-all cursor-pointer"
+      >
+        {t("dashboard.wizard.btnContinue", "Ya, lanjut")}
+      </button>
+    </div>
+  );
+}
+
 function PreparingWebsiteLoader({ t }: { t: (key: string, fallback: string) => string }) {
   const [progress, setProgress] = useState(18);
   const [stageIndex, setStageIndex] = useState(0);
@@ -1378,6 +1512,30 @@ export function SiteWizard({
               );
             }
 
+            if (m.widget === "inference-confirm-card") {
+              return (
+                <InferenceConfirmCard
+                  key={m.id}
+                  chat={chat}
+                  taxonomyV2={taxonomyV2}
+                  wizardLang={wizardLang}
+                  onChangeCategory={() => {
+                    chat.setTypeWasInferred(false);
+                    chat.setBusinessType("");
+                    chat.setBusinessSubType("");
+                    chat.setIndustryId("");
+                    chat.industryIdRef.current = "";
+                    chat.setMessages((prev) => prev.filter((msg) => msg.id !== m.id));
+                    chat.setMessages((prev) => [
+                      ...prev,
+                      { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
+                    ]);
+                    chat.setChatStage("type");
+                  }}
+                  t={t}
+                />
+              );
+            }
             if (m.widget === "inference-confirm") {
               // Lock setelah user memilih bahasa
               const isLocked = !!chat.siteLanguage;

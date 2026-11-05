@@ -991,7 +991,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
       setTimeout(() => {
         setMessages((prev) => [
           ...prev,
-          { id: `widget-inference-confirm-${Date.now()}`, sender: "ai", text: "", widget: "inference-confirm" as const },
+          { id: `widget-inference-confirm-${Date.now()}`, sender: "ai", text: "", widget: "inference-confirm-card" as const },
         ]);
         // Auto-advance removed: user confirms via "Ya, lanjut" on the card.
       }, 300);
