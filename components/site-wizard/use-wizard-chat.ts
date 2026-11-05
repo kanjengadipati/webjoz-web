@@ -567,6 +567,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     archetypeRef.current = arch;
     setIndustryId("");
     industryIdRef.current = "";
+    setSelectedBidang(null); // reset Bidang saat kategori berubah
     setTimeout(() => {
       subTypeRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }, 120);
