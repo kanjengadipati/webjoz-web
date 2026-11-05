@@ -207,7 +207,20 @@ export default function CatalogShowcaseFeatured({ catalog, design_token, onUpdat
                 const restWithIdx = (cat.items ?? [])
                   .map((it, idx) => ({ item: it, originalIdx: idx }))
                   .filter(({ item }) => !item.badge);
-                return restWithIdx.length > 0 && (
+                const hasRest = restWithIdx.length > 0;
+                const showGrid = hasRest || featuredWithIdx.length === 0;
+
+                if (!showGrid) {
+                  return (
+                    isEditorMode && onAddItem && (
+                      <div style={{ marginTop: "1rem" }}>
+                        <InlineAddTile label={isEN ? "Add Item" : "Tambah Item"} onClick={() => onAddItem(ci)} />
+                      </div>
+                    )
+                  );
+                }
+
+                return (
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "1.25rem" }}>
                     {restWithIdx.map(({ item, originalIdx: itemIdx }) => (
                       <MenuCatalogCard
@@ -255,15 +268,17 @@ export default function CatalogShowcaseFeatured({ catalog, design_token, onUpdat
                         onDelete={isEditorMode && onDeleteItem ? () => onDeleteItem(ci, itemIdx) : undefined}
                       />
                     ))}
+                    {isEditorMode && onAddItem && (
+                      <InlineAddTile
+                        label={isEN ? "Add Item" : "Tambah Item"}
+                        variant="card"
+                        className="rounded-xl min-h-[300px]"
+                        onClick={() => onAddItem(ci)}
+                      />
+                    )}
                   </div>
                 );
               })()}
-
-              {isEditorMode && onAddItem && (
-                <div style={{ marginTop: "1rem" }}>
-                  <InlineAddTile label={isEN ? "Add Item" : "Tambah Item"} onClick={() => onAddItem(ci)} />
-                </div>
-              )}
 
               {/* Edge case: all items have badge — show them in featured grid only, no rest grid needed */}
             </div>
