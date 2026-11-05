@@ -331,18 +331,22 @@ function InferenceConfirmCard({
   taxonomyV2,
   wizardLang,
   onChangeCategory,
+  onGenerate,
   t,
 }: {
   chat: any;
   taxonomyV2: any;
   wizardLang: string;
   onChangeCategory: () => void;
+  onGenerate: (mood: string, lang: "id" | "en") => void;
   t: (key: string, fallback?: string) => string;
 }) {
   const [editing, setEditing] = useState<string | null>(null);
   const [draftName, setDraftName] = useState(chat.businessName || "");
   const [draftArea, setDraftArea] = useState(chat.serviceArea || "");
   const [draftIndustry, setDraftIndustry] = useState(chat.industryId || chat.businessSubType || "");
+  const [selectedMood, setSelectedMood] = useState<string>(chat.mood || "");
+  const [selectedLang, setSelectedLang] = useState<"id" | "en">(chat.siteLanguage || "id");
 
   const bidangLabel = (() => {
     if (taxonomyV2 && chat.archetype) {
@@ -371,9 +375,11 @@ function InferenceConfirmCard({
         chat.setBusinessSubType(draftIndustry);
       }
     }
-    const doInject = chat.inferenceAutoConfirmRef.current;
+    chat.setMood(selectedMood || chat.mood);
+    chat.setSiteLanguage(selectedLang);
+    chat.siteLanguageRef.current = selectedLang;
     chat.inferenceAutoConfirmRef.current = null;
-    if (doInject) doInject(chat.businessSubType || "");
+    onGenerate(selectedMood || chat.mood, selectedLang);
   };
 
   const Row = ({ label, value, onEdit }: { label: string; value: string; onEdit: () => void }) => (
@@ -446,12 +452,52 @@ function InferenceConfirmCard({
           />
         )}
       </div>
+      {/* Mood selector (compact) */}
+      <div className="space-y-1">
+        <div className="text-[10px] text-slate-500">{t("dashboard.wizard.cardMood", "Mood")}</div>
+        <div className="flex flex-wrap gap-1.5">
+          {(MOOD_OPTIONS || []).slice(0, 6).map((mo: any) => (
+            <button
+              key={mo.value}
+              type="button"
+              onClick={() => setSelectedMood(mo.value)}
+              className={`px-2.5 py-1 rounded-lg text-[11px] border transition-all cursor-pointer ${
+                selectedMood === mo.value
+                  ? "border-primary/60 bg-primary/20 text-white"
+                  : "border-white/[0.08] bg-white/[0.04] text-slate-300 hover:text-white"
+              }`}
+            >
+              {mo.emoji} {mo.label}
+            </button>
+          ))}
+        </div>
+      </div>
+      {/* Language selector (compact) */}
+      <div className="space-y-1">
+        <div className="text-[10px] text-slate-500">{t("dashboard.wizard.cardLang", "Bahasa")}</div>
+        <div className="flex gap-2">
+          {(["id", "en"] as const).map((l) => (
+            <button
+              key={l}
+              type="button"
+              onClick={() => setSelectedLang(l)}
+              className={`px-3 py-1 rounded-lg text-[11px] border transition-all cursor-pointer ${
+                selectedLang === l
+                  ? "border-primary/60 bg-primary/20 text-white"
+                  : "border-white/[0.08] bg-white/[0.04] text-slate-300 hover:text-white"
+              }`}
+            >
+              {l === "id" ? "🇮🇩 Indonesia" : "🇬🇧 English"}
+            </button>
+          ))}
+        </div>
+      </div>
       <button
         type="button"
         onClick={handleContinue}
-        className="w-full py-2 rounded-xl text-xs font-semibold bg-primary text-white hover:bg-primary/90 transition-all cursor-pointer"
+        className="w-full py-2.5 rounded-xl text-sm font-bold bg-primary text-white hover:bg-primary/90 transition-all cursor-pointer shadow-lg shadow-primary/20"
       >
-        {t("dashboard.wizard.btnContinue", "Ya, lanjut")}
+        {t("dashboard.wizard.btnGenerate", "🚀 Buat Website Sekarang")}
       </button>
     </div>
   );
@@ -1519,6 +1565,17 @@ export function SiteWizard({
                   chat={chat}
                   taxonomyV2={taxonomyV2}
                   wizardLang={wizardLang}
+                  onGenerate={(mood, lang) => {
+                    preview.setRegenCount(0);
+                    preview.setHasUnsavedEdits(false);
+                    generate.didGenerateRef.current = true;
+                    initialDesignTokenRef.current = null;
+                    chat.setMood(mood);
+                    chat.setSiteLanguage(lang);
+                    chat.siteLanguageRef.current = lang;
+                    chat.setChatStage("done");
+                    void handleGenerate(chat.businessName, chat.businessType, { businessSubType: chat.businessSubType, mood, language: lang });
+                  }}
                   onChangeCategory={() => {
                     chat.setTypeWasInferred(false);
                     chat.setBusinessType("");
