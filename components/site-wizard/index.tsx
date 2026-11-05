@@ -275,7 +275,7 @@ function InferenceConfirmWidget({
         {selectedChip && renderChip(selectedChip, isLocked)}
 
         {/* Other chips — only visible after user taps "Pilih jenis lain" */}
-        {showOthers && visibleOtherChips.map((st) => renderChip(st, false))}
+        {showOthers && visibleOtherChips.map((st) => renderChip(st, isLocked))}
 
         {showOthers && !showAll && hiddenCount > 0 && (
           <button
@@ -345,7 +345,13 @@ function InferenceConfirmCard({
   const [draftName, setDraftName] = useState(chat.businessName || "");
   const [draftArea, setDraftArea] = useState(chat.serviceArea || "");
   const [draftIndustry, setDraftIndustry] = useState(chat.industryId || chat.businessSubType || "");
+  const isLocked = chat.chatStage === "language" || chat.chatStage === "mood" || chat.chatStage === "done";
   const [draftBidang, setDraftBidang] = useState<string>("");
+
+  // Once the wizard moves past the confirmation card, close any open editor.
+  useEffect(() => {
+    if (isLocked) setEditing(null);
+  }, [isLocked]);
 
   const effectiveBidangId = draftBidang || (taxonomyV2 ? (taxonomyV2.groups.find((g: any) => g.industries.some((i: any) => i.id === chat.industryId))?.id ?? "") : "");
   const bidangLabel = (() => {
@@ -435,9 +441,10 @@ function InferenceConfirmCard({
       <button
         type="button"
         onClick={onEdit}
-        className="text-[11px] text-slate-200 hover:text-white text-right truncate max-w-[60%]"
+        disabled={isLocked}
+        className={`text-[11px] text-right truncate max-w-[60%] ${isLocked ? "text-slate-500 cursor-default" : "text-slate-200 hover:text-white cursor-pointer"}`}
       >
-        {value || "—"} ✎
+        {value || "—"} {isLocked ? "" : "✎"}
       </button>
     </div>
   );
@@ -532,13 +539,15 @@ function InferenceConfirmCard({
           />
         )}
       </div>
+      {!isLocked && (
       <button
         type="button"
         onClick={handleContinue}
         className="w-full py-2.5 rounded-xl text-sm font-bold bg-white text-slate-900 hover:bg-slate-100 transition-all cursor-pointer shadow-lg"
       >
-        {t("dashboard.wizard.btnContinue", "Lanjut")}
+        {t("dashboard.wizard.btnContinue", "Ya, lanjut")}
       </button>
+      )}
     </div>
   );
 }
