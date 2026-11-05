@@ -178,20 +178,15 @@ export const SUB_TYPES: Record<string, SubTypeItem[]> = {
     { value: "Jajanan Pasar & Kuliner Tradisional", emoji: "🍘", label: "Jajanan Pasar" },
     { value: "Herbal & Jamu", emoji: "🌿", label: "Herbal & Jamu" },
   ],
-  // Toko — gunakan konstanta bersama agar alias legacy otomatis sinkron
+  // Toko — gunakan konstanta bersama
   "Toko": TOKO_SUB_TYPES,
-  "Toko & UMKM": TOKO_SUB_TYPES,          // alias legacy
-  "Toko Online & Retail": TOKO_SUB_TYPES, // alias legacy
   // Layanan & Reservasi — gunakan konstanta bersama
   "Layanan & Reservasi": LAYANAN_SUB_TYPES,
-  "Jasa & Booking": LAYANAN_SUB_TYPES,    // alias legacy
   // Portofolio — individual / personal brand
   "Portofolio": PORTOFOLIO_PERSONAL_SUB_TYPES,
-  "Portofolio & Kreator": PORTOFOLIO_PERSONAL_SUB_TYPES, // alias legacy
   "Kreatif & Profesional": KREATIF_PRO_SUB_TYPES,
   // Company Profile — gunakan konstanta bersama
   "Company Profile": COMPANY_SUB_TYPES,
-  "Company": COMPANY_SUB_TYPES, // alias legacy
 };
 
 export const TEMPLATE_NAMES: Record<string, string> = {

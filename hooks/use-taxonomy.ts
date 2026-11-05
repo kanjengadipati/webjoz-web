@@ -70,18 +70,6 @@ export function useTaxonomy(lang: "id" | "en" = "id", region?: string) {
         };
       });
     }
-    // Retain legacy type alias keys for backwards compatibility
-    if (result["Toko"]) {
-      result["Toko & UMKM"] = result["Toko"];
-      result["Toko Online & Retail"] = result["Toko"];
-    }
-    if (result["Portofolio"]) {
-      result["Portofolio & Kreator"] = result["Portofolio"];
-    }
-    if (result["Layanan & Reservasi"]) {
-      result["Jasa & Booking"] = result["Layanan & Reservasi"];
-      result["Jasa"] = result["Layanan & Reservasi"];
-    }
     return result;
   }, [taxonomy]);
 
