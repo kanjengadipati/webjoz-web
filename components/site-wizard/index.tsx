@@ -1868,18 +1868,17 @@ export function SiteWizard({
 
   // Bila archetype diketahui dan belum ada selectedBidang, pre-select Bidang yang
   // mengandung industri saran AI (industryId) atau grup yang punya industri archetype terbanyak.
-  const effectiveSelectedBidang = React.useMemo(() => {
+  // (plain function — tidak boleh pakai useMemo di dalam map/render expression)
+  const getEffectiveSelectedBidang = (): string | null => {
     if (selectedBidang) return selectedBidang;
     if (!needsBidangStep || !taxonomyV2) return null;
     if (chat.archetype) {
-      // Prioritas 1: grup yang mengandung saran AI
       if (chat.industryId) {
         const suggestedGroup = taxonomyV2.groups.find((g) =>
           g.industries.some((i) => i.id === chat.industryId)
         );
         if (suggestedGroup) return suggestedGroup.id;
       }
-      // Prioritas 2: grup dengan industri archetype terbanyak
       let bestGroup: string | null = null;
       let bestCount = 0;
       for (const g of taxonomyV2.groups) {
@@ -1889,7 +1888,8 @@ export function SiteWizard({
       return bestGroup;
     }
     return null;
-  }, [selectedBidang, needsBidangStep, taxonomyV2, chat.archetype, chat.industryId]);
+  };
+  const effectiveSelectedBidang = getEffectiveSelectedBidang();
 
   const showBidangStep = needsBidangStep && !effectiveSelectedBidang && !isLocked;
   const bidangChips = taxonomyV2
