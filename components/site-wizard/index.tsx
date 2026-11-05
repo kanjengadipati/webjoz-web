@@ -89,7 +89,7 @@ import { buildFullContent } from "@/lib/build-full-content";
 import { SiteWizardProps, PreviewData } from "./types";
 import { PENDING_KEY, BUSINESS_TYPES, SUB_TYPES, MOOD_OPTIONS, INITIAL_MESSAGE } from "./constants";
 import { useTaxonomy, useTaxonomyV2 } from "@/hooks/use-taxonomy";
-import { selectTemplate, formatText, generateSubdomain, generateSlug, getTemplatePool, getDynamicDescriptionPlaceholder } from "./helpers";
+import { selectTemplate, formatText, generateSubdomain, generateSlug, getTemplatePool, getDynamicDescriptionPlaceholder, generateDescriptionFromBusinessName } from "./helpers";
 import { sanitizeClassificationPair } from "./taxonomy";
 import { enrichGeneratePayloadV2 } from "./taxonomy-v2";
 import {
@@ -395,15 +395,27 @@ function InferenceConfirmCard({
           if (ind) {
             chat.setArchetype(ind.archetype);
             chat.archetypeRef.current = ind.archetype;
+            const newLabel = wizardLang === "en" ? (ind.label_en || ind.label) : (ind.label_id || ind.label);
+            const refreshed = generateDescriptionFromBusinessName(chat.businessName || "", { subType: newLabel }, wizardLang === "en" ? "en" : "id");
+            if (refreshed) {
+              chat.descriptionRef.current = refreshed;
+              chat.setDescription(refreshed);
+            }
           }
         }
       } else {
         chat.setBusinessSubType(draftIndustry);
+        const refreshed = generateDescriptionFromBusinessName(chat.businessName || "", { subType: draftIndustry }, wizardLang === "en" ? "en" : "id");
+        if (refreshed) {
+          chat.descriptionRef.current = refreshed;
+          chat.setDescription(refreshed);
+        }
       }
     }
+    const newSubType = (draftIndustry && draftIndustry !== "__other__" && !draftIndustry.includes(".")) ? draftIndustry : "";
     const doInject = chat.inferenceAutoConfirmRef.current;
     chat.inferenceAutoConfirmRef.current = null;
-    if (doInject) doInject(chat.businessSubType || "");
+    if (doInject) doInject(newSubType);
   };
 
   const Row = ({ label, value, onEdit }: { label: string; value: string; onEdit: () => void }) => (
