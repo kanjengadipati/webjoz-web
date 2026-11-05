@@ -67,6 +67,23 @@ export function routeInference(
   return "pick";
 }
 
+/** Merge v2 fields (archetype, industryId) from aiResult/preInferred into an
+ * InferenceResult. Used by every description-submission entry point so the
+ * merging logic stays in one place. */
+export function classifyInference(
+  result: import("./types").InferenceResult,
+  preInferred: PreInferred | null | undefined,
+  aiResult: { archetype?: string; industry_id?: string; confidence?: string } | null | undefined,
+): import("./types").InferenceResult {
+  const industryId = aiResult?.industry_id || preInferred?.industryId || undefined;
+  const confidence = (aiResult?.confidence || preInferred?.confidence || result.confidence) as import("./types").InferenceConfidence;
+  return {
+    ...result,
+    ...(industryId ? { industryId } : {}),
+    confidence,
+  };
+}
+
 /** Alias untuk kompatibilitas dengan kode lama. */
 export function routeInferenceOld(
   conf: string,
