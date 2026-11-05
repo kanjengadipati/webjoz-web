@@ -1877,11 +1877,36 @@ export function SiteWizard({
                     </button>
                   )}
                   <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">{t("dashboard.wizard.moreSpecific", "Lebih spesifik:")}</p>
-                  <div className="flex flex-wrap gap-1.5">
+  {showBidangStep && bidangChips.map((bg) => (
+    <button
+      key={bg.value}
+      type="button"
+      onClick={() => setSelectedBidang(bg.value)}
+      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border border-white/[0.08] bg-white/[0.04] text-slate-300 hover:border-white/20 hover:text-white hover:bg-white/[0.08] transition-all cursor-pointer"
+    >
+      <span>{bg.emoji}</span>
+      <span>{bg.label}</span>
+    </button>
+  ))}
+
+  {selectedBidang && !isLocked && (
+    <button
+      type="button"
+      onClick={() => setSelectedBidang(null)}
+      className="text-[10px] text-slate-500 hover:text-slate-300 underline px-1"
+    >
+      {t("dashboard.wizard.allFields", "← Semua bidang")}
+    </button>
+  )}
+
+  <div className="flex flex-wrap gap-1.5">
                     {subTypes
                       .filter((st) => {
-                        if (!isLocked) return true;
-                        return chat.industryId === st.value || chat.businessSubType === st.value;
+                        // Tampilkan spesialisasi bila selectedBidang terisi,
+                        // atau bila katalog v2 belum termuat (fallback v1).
+                        const show = selectedBidang || !taxonomyV2;
+                        if (!show && isLocked) return false;
+                        return selectedBidang ? st.value === selectedBidang : chat.industryId === st.value || chat.businessSubType === st.value;
                       })
                       .map((st) => {
                       const isSubSelected = chat.industryId === st.value || chat.businessSubType === st.value;
@@ -1958,9 +1983,9 @@ export function SiteWizard({
                         <button
                           type="button"
                           onClick={() => {
-                            const clean = customSubTextInput.replace(/<[^>]*>?/gm, "").trim().slice(0, 60);
+                            const clean = customSubTextInput.replace(/<[^>]*>?/gm, "").trim().slice(0, 80);
                             if (clean) {
-                              handleSelectSubType(clean);
+                              handleSelectCustomIndustry(clean);
                               setCustomSubTypeOpen(false);
                               setCustomSubTextInput("");
                             }
