@@ -9,7 +9,7 @@ import { capitalizeWords, pickVariant, isLikelyGibberish, extractLocationFromDes
 import type { Message, ChatStage, InferenceResult } from "./types";
 import type { WizardResumeChat } from "./wizard-persistence";
 
-import { archetypeToLegacyType, applyV2Inference, preInferredFromClassify, type PreInferred } from "./inference-v2";
+import { routeInference, type InferenceRoute, type ClassifyV2Fields } from "./inference-v2";
 import { useI18n } from "@/lib/i18n/context";
 import { useToast } from "@/components/toast-provider";
 import { refineTranscript, processBusinessDescription } from "@/lib/api/ai";
@@ -344,7 +344,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     const minDelay = new Promise((resolve) => setTimeout(resolve, 800));
 
     let refinedText = rawTranscript;
-    let inferredResult: PreInferred | null = null;
+    let inferredResult: ClassifyV2Fields | null = null;
     const voiceLang = sttLang === "en-US" ? "en" : "id";
     try {
       const [res] = await Promise.all([
@@ -357,10 +357,13 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
         }
         const sttValid = validateClassification(res.data.type, res.data.sub_type) ?? validateClassification(res.data.type, "");
         if (sttValid?.type) {
-          inferredResult = preInferredFromClassify(
-            { type: sttValid.type, subType: sttValid.subType || "" },
-            res.data,
-          );
+          // Direct mapping from STT validation to ClassifyV2Fields
+          inferredResult = {
+            archetype: res.data.archetype,
+            industry_id: res.data.industry_id,
+            industry_custom: res.data.industry_custom,
+            confidence: res.data.confidence,
+          };
         }
       }
     } catch (err) {
@@ -829,17 +832,19 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
               setServiceArea(detectedLoc);
             }
             setIsAnalyzingDescription(false);
-            processDescriptionSubmission(autoDesc, preInferredFromClassify({ type: aiHint.type, subType: aiHint.subType }, d));
-            return;
+            processDescriptionSubmission(autoDesc, // mapped directly);
+processDescriptionSubmission(autoDesc, { archetype: '', industry_id: '', confidence: 'high' });
           }
           // v2-only: archetype known but no valid v1 type pair — use archetype routing
           if (d.archetype) {
-            const legacyType = archetypeToLegacyType(d.archetype);
+            const legacyType = d.archetype  // mapped directly
             const autoDesc = d.refined_text?.trim() || generateDescriptionFromBusinessName(currentBizName, { type: legacyType, subType: "" }, locale);
             const detectedLoc = extractLocationFromDescription(currentBizName);
             if (detectedLoc && !serviceArea) setServiceArea(detectedLoc);
             setIsAnalyzingDescription(false);
-            processDescriptionSubmission(autoDesc, preInferredFromClassify({ type: legacyType, subType: "" }, d));
+            // direct handling - use routeInference instead
+    const aiResult = { archetype: legacyType, industry_id: '', confidence: 'high' };
+    result = classifyInference(result, null, aiResult);
             return;
           }
         }
@@ -897,17 +902,11 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
         subType: preValid.subType || "",
         confidence: preValid.subType ? "high" : "medium",
       };
-      // Same v2 rule as the typed-description path (carry industry_id through).
-      if (preInferred?.archetype) {
-        setArchetype(preInferred.archetype);
-        archetypeRef.current = preInferred.archetype;
-      }
-      if (preInferred?.industryId) {
-        setIndustryId(preInferred.industryId);
-        industryIdRef.current = preInferred.industryId;
-      }
-      if (preInferred?.industryCustom) setIndustryCustom(preInferred.industryCustom);
-      result = applyV2Inference(result, preInferred);
+      // Inferensi classify — gunakan routeInference, jangan menyimpan archetype/industry_id otomatis
+      const aiResult = preInferred 
+        ? { archetype: preInferred.archetype, industry_id: preInferred.industry_id, confidence: preInferred.confidence }
+        : null;
+      result = classifyInference(result, preInferred, aiResult);
     } else {
       setIsAnalyzingDescription(true);
       // 3A. Primary: Call AI Classifier Server (understands context & semantics)
@@ -951,13 +950,14 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
           if (aiRes.data.industry_custom) {
             setIndustryCustom(aiRes.data.industry_custom);
           }
-          // v2 high-confidence: industry_id known => resolved industry, even when the
-          // v1 sub_type validation fails (new industries are not in the v1 constants).
-          result = applyV2Inference(result, {
+          // Gunakan classifyInference untuk menentukan flow (confirm/suggest/pick)
+          const aiResult = {
             archetype: aiRes.data.archetype,
-            industryId: aiRes.data.industry_id,
+            industry_id: aiRes.data.industry_id,
             confidence: aiRes.data.confidence,
-          });
+            archetypeConflict: false, // will be set by ResolveV2
+          };
+          result = classifyInference(result, null, aiResult);
         }
       } catch (err) {
         console.warn("AI classification failed, showing manual category selection", err);
