@@ -187,6 +187,113 @@ const SUB_TYPE_ICONS: Record<string, React.ElementType> = {
   "Logistik & Ekspedisi":     Truck,
   "Yayasan & Organisasi Nonprofit": HandHeart,
   "Institusi Pendidikan & Pesantren": GraduationCap,
+
+  // ── v2 catalog IDs (stable IDs from catalog.json) ──────────────────────────
+  // Makanan & Minuman
+  "food.restaurant":    UtensilsCrossed,
+  "food.traditional":   CookingPot,
+  "food.street_stall":  Flame,
+  "food.market_snacks": ShoppingBag,
+  "food.herbal":        Leaf,
+  "food.cafe":          Coffee,
+  "food.bakery":        GalleryHorizontal,
+  "food.beverage":      Waves,
+  "food.catering":      Package,
+  "food.home_kitchen":  Box,
+  "food.dessert":       Snowflake,
+  // Fashion & Aksesori
+  "shop.fashion":       Shirt,
+  "shop.muslim_fashion": Shirt,
+  "shop.footwear_bags": ShoppingBag,
+  "service.tailor":     Scissors,
+  // Kecantikan & Perawatan
+  "shop.beauty":        SparkleIcon,
+  "service.mua":        Paintbrush,
+  "service.salon":      Flower2,
+  "service.barbershop": Scissors,
+  "service.spa_massage": Waves,
+  "service.nail_lash":  SparkleIcon,
+  // Kesehatan & Kebugaran
+  "health.clinic":      Stethoscope,
+  "health.dental":      Stethoscope,
+  "health.psychology":  Briefcase,
+  "service.fitness":    Dumbbell,
+  "shop.pharmacy_health": Package,
+  // Rumah & Perbaikan
+  "shop.furniture":     Axe,
+  "service.home_services": Home,
+  "service.laundry":    Shirt,
+  // Otomotif & Transportasi
+  "shop.auto_parts":    Wrench,
+  "service.motorcycle_repair": Wrench,
+  "service.car_repair": Wrench,
+  "service.car_wash":   Car,
+  "service.vehicle_rental": Car,
+  // Elektronik & Gadget
+  "shop.electronics":   Smartphone,
+  "service.device_repair": Smartphone,
+  // Hewan & Pertanian
+  "shop.agri":          Wheat,
+  "shop.pet":           Package,
+  "service.pet_care":   Scissors,
+  "health.veterinary":  Stethoscope,
+  // Pendidikan & Pelatihan
+  "service.course":     GraduationCap,
+  "pro.coach_tutor":    GraduationCap,
+  "inst.school":        Building2,
+  "inst.pesantren":     Building2,
+  // Wisata & Penginapan
+  "service.travel_agent": Bus,
+  "stay.hotel":         Hotel,
+  "stay.villa":         Home,
+  "stay.homestay":      Home,
+  "stay.kost":          Home,
+  "dest.attraction":    Bus,
+  // Acara & Hiburan
+  "service.event_wedding": Calendar,
+  "creator.musician":   Music2,
+  // Kreatif & Media
+  "creator.photographer": Camera,
+  "creator.videographer": Monitor,
+  "creator.designer":   Palette,
+  "creator.illustrator": Paintbrush,
+  "creator.content_creator": Video,
+  "creator.writer":     Pencil,
+  "creator.architect_interior": PencilRuler,
+  // Teknologi & Digital
+  "creator.developer":  Code2,
+  "pro.digital_agency": Zap,
+  "pro.seo":            Search,
+  "tech.saas":          Smartphone,
+  "tech.mobile_app":    Smartphone,
+  // Bisnis, Hukum & Keuangan
+  "pro.consultant":     Briefcase,
+  "pro.speaker_trainer": Mic,
+  "pro.notary":         Scale,
+  "pro.law_firm":       Scale,
+  "pro.accounting_tax": ClipboardCheck,
+  "service.permits_agency": ClipboardCheck,
+  "corp.cooperative":   Landmark,
+  // Properti & Konstruksi
+  "corp.property_developer": Building2,
+  "corp.construction":  HardHat,
+  "pro.real_estate_agent": Home,
+  "shop.building_materials": HardHat,
+  // Perdagangan & Industri
+  "corp.manufacturing": Factory,
+  "corp.logistics":     Truck,
+  "corp.trading_export_import": Package,
+  "service.printing":   Monitor,
+  "shop.grocery":       Store,
+  "shop.general":       ShoppingBag,
+  // Hadiah, Hobi & Anak
+  "shop.handmade":      PencilRuler,
+  "shop.souvenir":      Package,
+  "shop.florist_plants": Flower2,
+  "shop.baby_kids":     Package,
+  // Sosial, Agama & Komunitas
+  "inst.foundation_charity": HandHeart,
+  "inst.religious":     Building2,
 };
 
 // ── InferenceConfirmWidget ───────────────────────────────────────────────────
@@ -1865,11 +1972,7 @@ export function SiteWizard({
                           disabled={isLocked}
                           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-200 cursor-pointer active:scale-95 max-w-full ${isSubSelected ? "text-white border-primary/60 bg-primary/20" : "text-slate-300 border-white/[0.08] bg-white/[0.04] hover:border-white/20 hover:text-white hover:bg-white/[0.08]"}`}
                         >
-                          {st.emoji ? (
-                            <span className="text-[10px] shrink-0">{st.emoji}</span>
-                          ) : (
-                            <SubIcon className={`w-3 h-3 shrink-0 ${isSubSelected ? "text-primary" : "text-slate-400"}`} />
-                          )}
+                          <SubIcon className={`w-3 h-3 shrink-0 ${isSubSelected ? "text-primary" : "text-slate-400"}`} />
                           <span className="text-left">{labelText}</span>
                           {isSubSelected && <span className="text-primary text-[10px] shrink-0">✓</span>}
                         </button>
@@ -2142,11 +2245,7 @@ export function SiteWizard({
                               disabled={isLocked}
                               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-200 cursor-pointer active:scale-95 max-w-full ${isSubSelected ? "text-white border-primary/60 bg-primary/20" : "text-slate-300 border-white/[0.08] bg-white/[0.04] hover:border-white/20 hover:text-white hover:bg-white/[0.08]"}`}
                             >
-                              {(st as any).emoji ? (
-                                <span className="text-[10px] shrink-0">{(st as any).emoji}</span>
-                              ) : (
-                                <SubIcon className={`w-3 h-3 shrink-0 ${isSubSelected ? "text-primary" : "text-slate-400"}`} />
-                              )}
+                              <SubIcon className={`w-3 h-3 shrink-0 ${isSubSelected ? "text-primary" : "text-slate-400"}`} />
                               <span className="text-left">{labelText}</span>
                               {isSubSelected && <span className="text-primary text-[10px] shrink-0">✓</span>}
                             </button>
