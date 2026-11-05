@@ -216,6 +216,7 @@ function InferenceConfirmWidget({
   // Chips start collapsed — only selected chip shown until user taps "Pilih jenis lain"
   const [showOthers, setShowOthers] = useState(false);
   const [showAll, setShowAll] = useState(false);
+  const [pending, setPending] = useState(selectedSubType);
 
   const selectedChip = orderedSubTypes.find((s) => s.value === selectedSubType);
   const otherChips = orderedSubTypes.filter((s) => s.value !== selectedSubType);
@@ -233,7 +234,7 @@ function InferenceConfirmWidget({
   };
 
   const renderChip = (st: { value: string; label: string; emoji: string }, locked: boolean) => {
-    const isSelected = selectedSubType === st.value;
+    const isSelected = pending === st.value;
     const SubIcon = SUB_TYPE_ICONS[st.value] ?? Tag;
     const labelText = t(`dashboard.wizard.subtypes.${st.value}`, st.label);
     return (
@@ -241,7 +242,7 @@ function InferenceConfirmWidget({
         key={st.value}
         type="button"
         title={labelText}
-        onClick={() => { if (!locked) onConfirmWithSubType(st.value); }}
+        onClick={() => { if (!locked) setPending(st.value); }}
         disabled={locked}
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-200 active:scale-95 cursor-pointer max-w-full ${
           isSelected
@@ -310,10 +311,10 @@ function InferenceConfirmWidget({
           </button>
         </div>
       )}
-      {!isLocked && selectedChip && (
+      {!isLocked && pending && (
         <button
           type="button"
-          onClick={() => onConfirmWithSubType(selectedSubType)}
+          onClick={() => onConfirmWithSubType(pending)}
           className="mt-2 w-full py-2 rounded-xl text-xs font-semibold bg-primary text-white hover:bg-primary/90 transition-all cursor-pointer"
         >
           {t("dashboard.wizard.btnContinue", "Ya, lanjut")}
