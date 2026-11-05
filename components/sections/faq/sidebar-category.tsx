@@ -199,6 +199,7 @@ export default function FaqSidebarCategory({
         {isEditorMode && onAddItem && (
           <InlineAddTile
             label={isEN ? "Add question" : "Tambah Pertanyaan"}
+            variant="bar"
             onClick={handleAddItem}
             className="w-full"
             style={{ borderRadius: "var(--dt-radius)", color: "var(--dt-text)" }}

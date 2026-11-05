@@ -128,6 +128,7 @@ export default function FaqChatBubbleStyle({
         {isEditorMode && onAddItem && (
           <InlineAddTile
             label={isEN ? "Add question" : "Tambah Pertanyaan"}
+            variant="bar"
             onClick={onAddItem}
             className="w-full"
             style={{ borderRadius: "1rem", color: "var(--dt-text)" }}
