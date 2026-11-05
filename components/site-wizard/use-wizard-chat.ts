@@ -47,6 +47,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
   const [archetype, setArchetype] = useState("");
   const [industryId, setIndustryId] = useState("");
   const [industryCustom, setIndustryCustom] = useState("");
+  const [selectedBidang, setSelectedBidang] = useState<string | null>(null);
   const [description, setDescription] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [serviceArea, setServiceArea] = useState("");
@@ -992,12 +993,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
           ...prev,
           { id: `widget-inference-confirm-${Date.now()}`, sender: "ai", text: "", widget: "inference-confirm" as const },
         ]);
-        setTimeout(() => {
-          if (inferenceAutoConfirmRef.current) {
-            inferenceAutoConfirmRef.current(confirmedSubType);
-            inferenceAutoConfirmRef.current = null;
-          }
-        }, 2000);
+        // Auto-advance removed: user confirms via "Ya, lanjut" on the card.
       }, 300);
       return;
     }
@@ -1329,6 +1325,8 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setIndustryId,
     industryCustom,
     setIndustryCustom,
+    selectedBidang,
+    setSelectedBidang,
     description,
     setDescription,
     whatsapp,

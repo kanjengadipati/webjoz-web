@@ -310,6 +310,15 @@ function InferenceConfirmWidget({
           </button>
         </div>
       )}
+      {!isLocked && selectedChip && (
+        <button
+          type="button"
+          onClick={() => onConfirmWithSubType(selectedSubType)}
+          className="mt-2 w-full py-2 rounded-xl text-xs font-semibold bg-primary text-white hover:bg-primary/90 transition-all cursor-pointer"
+        >
+          {t("dashboard.wizard.btnContinue", "Ya, lanjut")}
+        </button>
+      )}
     </div>
   );
 }
@@ -493,6 +502,7 @@ export function SiteWizard({
 
   // One-time edu tooltips for "Lengkapi Data" and "Edit & Publikasikan" buttons
   const [showLengkapiHint, setShowLengkapiHint] = useState(false);
+  const [showEditPublishHint, setShowEditPublishHint] = useState(false);
   const actionHintsShownRef = React.useRef(false);
 
   // Client-only clock to avoid hydration mismatch with new Date()
@@ -1164,8 +1174,10 @@ export function SiteWizard({
         // Tunggu sampai success toast selesai (~6 detik) baru tampilkan hint
         setTimeout(() => {
           setShowLengkapiHint(true);
+          setShowEditPublishHint(true);
           setTimeout(() => {
             setShowLengkapiHint(false);
+            setShowEditPublishHint(false);
             try { localStorage.setItem("wiz_action_hints_seen", "1"); } catch { /* noop */ }
           }, 10000);
         }, 6500);
@@ -1451,19 +1463,45 @@ export function SiteWizard({
               // v2: when archetype is known, use catalog industries for that archetype
               // grouped by the same Bidang. Falls back to v1 subTypes.
               let subTypes: Array<{ value: string; label: string; emoji?: string; kind?: "v1" | "v2" }> = [];
-              if (chat.archetype && taxonomyV2) {
-                // Find all industries matching this archetype
-                const v2Industries = taxonomyV2.groups
-                  .flatMap((g) => g.industries)
-                  .filter((i) => i.archetype === chat.archetype)
-                  .map((i) => ({
-                    value: i.id,
-                    kind: "v2" as const,
-                    label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
-                    emoji: i.emoji ?? "🏷️",
-                  }));
-                if (v2Industries.length > 0) {
-                  subTypes = v2Industries;
+              // Bidang-first (Fase 2): when taxonomyV2 is available, prefer a
+              // Bidang (group) picker first, then specializations within it.
+              const selectedBidang = chat.selectedBidang;
+              const setSelectedBidang = chat.setSelectedBidang;
+              let bidangChips: Array<{ value: string; label: string; emoji?: string }> = [];
+              if (taxonomyV2) {
+                bidangChips = taxonomyV2.groups.map((g) => ({
+                  value: g.id,
+                  label: wizardLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label),
+                  emoji: "🏷️",
+                }));
+                if (selectedBidang) {
+                  const group = taxonomyV2.groups.find((g) => g.id === selectedBidang);
+                  if (group) {
+                    const v2Industries = group.industries
+                      .filter((i) => !chat.archetype || i.archetype === chat.archetype)
+                      .map((i) => ({
+                        value: i.id,
+                        kind: "v2" as const,
+                        label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
+                        emoji: i.emoji ?? "🏷️",
+                      }));
+                    if (v2Industries.length > 0) {
+                      subTypes = v2Industries;
+                    }
+                  }
+                } else if (chat.archetype) {
+                  const v2Industries = taxonomyV2.groups
+                    .flatMap((g) => g.industries)
+                    .filter((i) => i.archetype === chat.archetype)
+                    .map((i) => ({
+                      value: i.id,
+                      kind: "v2" as const,
+                      label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
+                      emoji: i.emoji ?? "🏷️",
+                    }));
+                  if (v2Industries.length > 0) {
+                    subTypes = v2Industries;
+                  }
                 }
               }
               if (subTypes.length === 0) {
@@ -1500,7 +1538,30 @@ export function SiteWizard({
                   )}
                   <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">{t("dashboard.wizard.moreSpecific", "Lebih spesifik:")}</p>
                   <div className="flex flex-wrap gap-1.5">
-                    {subTypes
+                    {/* Bidang-first: show Bidang chips when none selected yet */}
+                    {!selectedBidang && bidangChips.length > 0 && !isLocked && bidangChips.map((bg) => (
+                      <button
+                        key={bg.value}
+                        type="button"
+                        onClick={() => setSelectedBidang(bg.value)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border border-white/[0.08] bg-white/[0.04] text-slate-300 hover:border-white/20 hover:text-white hover:bg-white/[0.08] transition-all cursor-pointer"
+                      >
+                        <span>{bg.emoji}</span>
+                        <span>{bg.label}</span>
+                      </button>
+                    ))}
+                    {/* Reset to Bidang list */}
+                    {selectedBidang && !isLocked && (
+                      <button
+                        type="button"
+                        onClick={() => setSelectedBidang(null)}
+                        className="text-[10px] text-slate-500 hover:text-slate-300 underline px-1"
+                      >
+                        ← Semua bidang
+                      </button>
+                    )}
+                    {/* Specialization chips */}
+                    {(selectedBidang || !bidangChips.length) && subTypes
                       .filter((st) => {
                         // When locked (user already picked), hide all chips except the selected one
                         if (!isLocked) return true;
@@ -2417,15 +2478,44 @@ export function SiteWizard({
               </div>
 
               {/* Edit & Publikasikan */}
-              <button
-                type="button"
-                onClick={handleGoToEditor}
-                className="btn-primary flex items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold shadow-[0_14px_35px_rgba(0,0,0,0.25)] transition-all hover:scale-105 active:scale-95"
-              >
-                <Pencil className="h-4 w-4" />
-                {t("dashboard.wizard.btnEditPublish", "Edit & Publikasikan")}
-                <ArrowRight className="h-4 w-4" />
-              </button>
+              <div className="relative">
+                {showEditPublishHint && (
+                  <div className="absolute bottom-full right-0 mb-3 z-50 pointer-events-auto animate-in fade-in slide-in-from-bottom-2 duration-300 w-[240px]">
+                    <div className="relative bg-[#1a1d24] border border-white/10 text-slate-200 rounded-2xl p-3.5 shadow-[0_12px_32px_rgba(0,0,0,0.6)] backdrop-blur-md">
+                      <button
+                        type="button"
+                        onClick={() => setShowEditPublishHint(false)}
+                        className="absolute top-2.5 right-2.5 text-slate-500 hover:text-white transition-colors p-0.5 rounded cursor-pointer"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                      <div className="flex items-start gap-2.5">
+                        <div className="w-6 h-6 rounded-lg bg-white/10 border border-white/15 flex items-center justify-center shrink-0 mt-0.5">
+                          <Pencil className="w-3.5 h-3.5 text-slate-200" />
+                        </div>
+                        <div className="space-y-1 pr-3">
+                          <p className="text-xs font-bold text-slate-100 leading-tight">
+                            {t("dashboard.wizard.editPublishHintTitle", "Bebas atur & sesuaikan!")}
+                          </p>
+                          <p className="text-[11px] text-slate-400 leading-snug">
+                            {t("dashboard.wizard.editPublishHintDesc", "Bisa full edit, ubah tampilan, atau hapus section di Editor.")}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="absolute -bottom-1.5 right-[28px] w-3 h-3 bg-[#1a1d24] border-r border-b border-white/10 transform rotate-45" />
+                    </div>
+                  </div>
+                )}
+                <button
+                  type="button"
+                  onClick={() => { setShowEditPublishHint(false); handleGoToEditor(); }}
+                  className="btn-primary flex items-center gap-2 rounded-full px-5 py-3 text-sm font-extrabold shadow-[0_14px_35px_rgba(0,0,0,0.25)] transition-all hover:scale-105 active:scale-95"
+                >
+                  <Pencil className="h-4 w-4" />
+                  {t("dashboard.wizard.btnEditPublish", "Edit & Publikasikan")}
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
 
             </div>
           )}
@@ -2462,8 +2552,9 @@ export function SiteWizard({
         preview={preview}
         device={device}
         onOpenSheet={() => { setShowLengkapiHint(false); setSheetOpen(true); }}
-        onGoToEditor={handleGoToEditor}
+        onGoToEditor={() => { setShowEditPublishHint(false); handleGoToEditor(); }}
         showLengkapiHint={showLengkapiHint}
+        showEditPublishHint={showEditPublishHint}
       />
 
       <div className="md:hidden">
