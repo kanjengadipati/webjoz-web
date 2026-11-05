@@ -874,7 +874,8 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
           });
           setInferenceResult(skipResult);
 
-          if (skipResult.confidence === "high" && (skipResult.industryId || (skipResult.type && skipResult.subType))) {
+          if (skipResult.confidence === "high" && skipResult.industryId) {
+            // v2 resolved: industryId diketahui — tampilkan inference-confirm card
             if (skipResult.type) setBusinessType(skipResult.type);
             if (skipResult.subType) setBusinessSubType(skipResult.subType);
             setTypeWasInferred(true);
