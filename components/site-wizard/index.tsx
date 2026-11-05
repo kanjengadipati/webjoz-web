@@ -495,9 +495,9 @@ function InferenceConfirmCard({
       <button
         type="button"
         onClick={handleContinue}
-        className="w-full py-2.5 rounded-xl text-sm font-bold bg-primary text-white hover:bg-primary/90 transition-all cursor-pointer shadow-lg shadow-primary/20"
+        className="w-full py-2.5 rounded-xl text-sm font-bold bg-white text-slate-900 hover:bg-slate-100 transition-all cursor-pointer shadow-lg"
       >
-        {t("dashboard.wizard.btnGenerate", "🚀 Buat Website Sekarang")}
+        {t("dashboard.wizard.btnGenerate", "Buat Website Sekarang")}
       </button>
     </div>
   );
