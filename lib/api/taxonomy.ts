@@ -68,6 +68,7 @@ export interface TaxonomyV2Group {
   label: string;
   label_id: string;
   label_en: string;
+  emoji?: string;
   industries: TaxonomyV2Industry[];
 }
 
