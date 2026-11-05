@@ -3362,6 +3362,10 @@ export interface Translations {
       btnEditPublish: string;
       completeContactDataTitle: string;
       completeContactDataDesc: string;
+      editPublishHintTitle: string;
+      editPublishHintDesc: string;
+      mobileEditPublishHintTitle: string;
+      mobileEditPublishHintDesc: string;
       mobileHintTitle: string;
       mobileHintDesc: string;
       tooFastTitle: string;
@@ -6859,6 +6863,10 @@ export const translations: Record<Locale, Translations> = {
         btnEditPublish: "Edit & Publikasikan",
         completeContactDataTitle: "Lengkapi data kontak",
         completeContactDataDesc: "Tambah nomor WA supaya tombol kontak di website aktif.",
+        editPublishHintTitle: "Mau ubah isi website?",
+        editPublishHintDesc: "Tenang, semua teks, gambar, dan bagian website bisa kamu edit, ganti, atau hapus sesuai keinginan.",
+        mobileEditPublishHintTitle: "✏️ Mau ubah isi website?",
+        mobileEditPublishHintDesc: "Bisa edit teks, ganti, atau hapus bagian sesukamu",
         mobileHintTitle: "📋 Tambah nomor WA & area",
         mobileHintDesc: "Supaya tombol kontak aktif",
         tooFastTitle: "Terlalu cepat!",
@@ -10524,6 +10532,10 @@ export const translations: Record<Locale, Translations> = {
         btnEditPublish: "Edit & Publish",
         completeContactDataTitle: "Complete contact info",
         completeContactDataDesc: "Add your WhatsApp number so contact buttons on the website work.",
+        editPublishHintTitle: "Want to customize your site?",
+        editPublishHintDesc: "Don't worry, you can edit text, swap, or delete any section however you like.",
+        mobileEditPublishHintTitle: "✏️ Customize your site",
+        mobileEditPublishHintDesc: "Easily edit, change, or remove any section",
         mobileHintTitle: "📋 Add WhatsApp & service area",
         mobileHintDesc: "To activate contact buttons",
         tooFastTitle: "Too fast!",

@@ -12,6 +12,7 @@ interface MobileActionBarProps {
   onOpenSheet: () => void;
   onGoToEditor: () => void;
   showLengkapiHint?: boolean;
+  showEditPublishHint?: boolean;
 }
 
 export function MobileActionBar({
@@ -20,6 +21,7 @@ export function MobileActionBar({
   onOpenSheet,
   onGoToEditor,
   showLengkapiHint = false,
+  showEditPublishHint = false,
 }: MobileActionBarProps) {
   const { t } = useI18n();
 
@@ -59,6 +61,21 @@ export function MobileActionBar({
 
       {/* Edit & Publikasikan */}
       <div className="relative flex-1">
+        {showEditPublishHint && (
+          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 z-50 pointer-events-none animate-in fade-in slide-in-from-bottom-1 duration-300">
+            <div className="relative bg-[#1a2236] border border-white/20 rounded-xl px-3 py-2 shadow-lg whitespace-nowrap text-center">
+              <p className="text-[11px] font-semibold text-white leading-snug">
+                {t("dashboard.wizard.mobileEditPublishHintTitle", "✏️ Bebas atur & sesuaikan!")}
+              </p>
+              <p className="text-[10px] text-slate-400 mt-0.5 leading-snug">
+                {t("dashboard.wizard.mobileEditPublishHintDesc", "Full edit, ubah, atau hapus section")}
+              </p>
+              <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0"
+                style={{ borderLeft: "6px solid transparent", borderRight: "6px solid transparent", borderTop: "6px solid rgba(255,255,255,0.2)" }}
+              />
+            </div>
+          </div>
+        )}
         <button
           type="button"
           onClick={onGoToEditor}
