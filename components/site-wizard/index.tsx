@@ -10,6 +10,7 @@ import {
   ArrowRight,
   Axe,
   Bot,
+  BookOpen,
   Box,
   Briefcase,
   Building2,
@@ -33,8 +34,12 @@ import {
   Flame,
   Flower2,
   GalleryHorizontal,
+  Gift,
+  Globe,
   GraduationCap,
+  Hammer,
   HandHeart,
+  Heart,
   HelpCircle,
   Home,
   Hotel,
@@ -68,6 +73,8 @@ import {
   Store,
   Tablet,
   Tag,
+  Tractor,
+  TreePine,
   Truck,
   UtensilsCrossed,
   Video,
@@ -294,6 +301,28 @@ const SUB_TYPE_ICONS: Record<string, React.ElementType> = {
   // Sosial, Agama & Komunitas
   "inst.foundation_charity": HandHeart,
   "inst.religious":     Building2,
+};
+
+/** Lucide icon per Bidang (group) untuk chip step Bidang */
+const BIDANG_ICONS: Record<string, React.ElementType> = {
+  food:     UtensilsCrossed,
+  fashion:  Shirt,
+  beauty:   Flower2,
+  health:   Stethoscope,
+  travel:   Globe,
+  biz:      Briefcase,
+  home:     Home,
+  tech:     Cpu,
+  creative: Camera,
+  edu:      GraduationCap,
+  trade:    Factory,
+  elec:     Zap,
+  event:    Music2,
+  gift:     Gift,
+  auto:     Car,
+  prop:     Building2,
+  agri:     Tractor,
+  comm:     Heart,
 };
 
 // ── InferenceConfirmWidget ───────────────────────────────────────────────────
@@ -1958,17 +1987,20 @@ export function SiteWizard({
                   <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">{t("dashboard.wizard.moreSpecific", "Lebih spesifik:")}</p>
   {showBidangStep && (
     <div className="flex flex-wrap gap-1.5 mb-3">
-      {bidangChips.map((bg) => (
-        <button
-          key={bg.value}
-          type="button"
-          onClick={() => setSelectedBidang(bg.value)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border border-white/[0.08] bg-white/[0.04] text-slate-300 hover:border-white/20 hover:text-white hover:bg-white/[0.08] transition-all cursor-pointer"
-        >
-          <span>{bg.emoji}</span>
-          <span>{bg.label}</span>
-        </button>
-      ))}
+      {bidangChips.map((bg) => {
+        const BidangIcon = BIDANG_ICONS[bg.value] ?? Tag;
+        return (
+          <button
+            key={bg.value}
+            type="button"
+            onClick={() => setSelectedBidang(bg.value)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border border-white/[0.08] bg-white/[0.04] text-slate-300 hover:border-white/20 hover:text-white hover:bg-white/[0.08] transition-all cursor-pointer"
+          >
+            <BidangIcon className="w-3 h-3 shrink-0 text-slate-400" />
+            <span>{bg.label}</span>
+          </button>
+        );
+      })}
     </div>
   )}
 
@@ -1977,8 +2009,9 @@ export function SiteWizard({
     return (
       <div className="flex items-center gap-2 mb-2 animate-in fade-in duration-200">
         {bg && (
-          <span className="text-[11px] font-medium text-slate-300">
-            {bg.emoji} {bg.label}
+          <span className="text-[11px] font-medium text-slate-300 flex items-center gap-1">
+            {(() => { const I = BIDANG_ICONS[bg.value] ?? Tag; return <I className="w-3 h-3 text-slate-400" />; })()}
+            {bg.label}
           </span>
         )}
         <button
@@ -2324,24 +2357,27 @@ export function SiteWizard({
                       <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">{t("dashboard.wizard.moreSpecific", "Lebih spesifik:")}</p>
                       {tcShowBidang && (
                         <div className="flex flex-wrap gap-1.5 mb-3">
-                          {tcBidangChips.map((bg) => (
-                            <button
-                              key={bg.value}
-                              type="button"
-                              onClick={() => chat.setSelectedBidang(bg.value)}
-                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border border-white/[0.08] bg-white/[0.04] text-slate-300 hover:border-white/20 hover:text-white hover:bg-white/[0.08] transition-all cursor-pointer"
-                            >
-                              <span>{bg.emoji}</span>
-                              <span>{bg.label}</span>
-                            </button>
-                          ))}
+                          {tcBidangChips.map((bg) => {
+                            const BidangIcon = BIDANG_ICONS[bg.value] ?? Tag;
+                            return (
+                              <button
+                                key={bg.value}
+                                type="button"
+                                onClick={() => chat.setSelectedBidang(bg.value)}
+                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border border-white/[0.08] bg-white/[0.04] text-slate-300 hover:border-white/20 hover:text-white hover:bg-white/[0.08] transition-all cursor-pointer"
+                              >
+                                <BidangIcon className="w-3 h-3 shrink-0 text-slate-400" />
+                                <span>{bg.label}</span>
+                              </button>
+                            );
+                          })}
                         </div>
                       )}
                       {tcEffectiveBidang && tcNeedsBidang && (() => {
                         const bg = tcBidangChips.find((b) => b.value === tcEffectiveBidang);
                         return (
                           <div className="flex items-center gap-2 mb-2 animate-in fade-in duration-200">
-                            {bg && <span className="text-[11px] font-medium text-slate-300">{bg.emoji} {bg.label}</span>}
+                            {bg && <span className="text-[11px] font-medium text-slate-300 flex items-center gap-1">{(() => { const I = BIDANG_ICONS[bg.value] ?? Tag; return <I className="w-3 h-3 text-slate-400" />; })()}{bg.label}</span>}
                             <button
                               type="button"
                               onClick={() => chat.setSelectedBidang(null)}
