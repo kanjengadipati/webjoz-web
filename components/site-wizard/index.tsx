@@ -2031,7 +2031,23 @@ export function SiteWizard({
 
             if (m.widget === "type-chips") {
               const isLocked = chat.chatStage === "language" || chat.chatStage === "mood" || chat.chatStage === "done";
-              const subTypes = chat.businessType ? (dynamicSubTypes[chat.businessType] ?? null) : null;
+              // v2: when archetype is known, use catalog industries instead of v1 subTypes
+              let subTypes: Array<{ value: string; label: string; emoji?: string; kind?: string }> | null = null;
+              if (chat.archetype && taxonomyV2) {
+                const v2Industries = taxonomyV2.groups
+                  .flatMap((g) => g.industries)
+                  .filter((i) => i.archetype === chat.archetype)
+                  .map((i) => ({
+                    value: i.id,
+                    label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
+                    emoji: i.emoji ?? "🏷️",
+                    kind: "v2" as const,
+                  }));
+                if (v2Industries.length > 0) subTypes = v2Industries;
+              }
+              if (!subTypes) {
+                subTypes = chat.businessType ? (dynamicSubTypes[chat.businessType] ?? null) : null;
+              }
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2.5">
                   <div className="flex flex-wrap gap-1.5 mt-1.5">
@@ -2096,22 +2112,42 @@ export function SiteWizard({
                       <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">{t("dashboard.wizard.moreSpecific", "Lebih spesifik:")}</p>
                       <div className="flex flex-wrap gap-1.5">
                         {subTypes.map((st) => {
-                          const isSubSelected = chat.businessSubType === st.value;
+                          const isSubSelected = chat.industryId === st.value || chat.businessSubType === st.value;
+                          const isV2Id = st.kind === "v2" || st.value.includes(".");
                           const SubIcon = SUB_TYPE_ICONS[st.value] ?? Tag;
-                          const labelText = st.label || t(`dashboard.wizard.subtypes.${st.value}`, st.label);
+                          const labelText = st.label || (isV2Id
+                            ? getIndustryLabel(st.value)
+                            : t(`dashboard.wizard.subtypes.${st.value}`, st.label));
                           return (
                             <button
                               key={st.value}
                               type="button"
                               title={labelText}
-                              onClick={() => !isLocked && handleSelectSubType(st.value)}
+                              onClick={() => {
+                                if (isLocked) return;
+                                if (isV2Id) {
+                                  chat.setIndustryId(st.value);
+                                  chat.industryIdRef.current = st.value;
+                                  if (taxonomyV2) {
+                                    const entry = taxonomyV2.groups.flatMap(g => g.industries).find(i => i.id === st.value);
+                                    if (entry) { chat.setArchetype(entry.archetype); chat.archetypeRef.current = entry.archetype; }
+                                  }
+                                  handleSelectSubType(labelText);
+                                } else {
+                                  chat.setIndustryId("");
+                                  chat.industryIdRef.current = "";
+                                  handleSelectSubType(st.value);
+                                }
+                              }}
                               disabled={isLocked}
                               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-200 cursor-pointer active:scale-95 max-w-full ${isSubSelected ? "text-white border-primary/60 bg-primary/20" : "text-slate-300 border-white/[0.08] bg-white/[0.04] hover:border-white/20 hover:text-white hover:bg-white/[0.08]"}`}
                             >
-                              <SubIcon className={`w-3 h-3 shrink-0 ${isSubSelected ? "text-primary" : "text-slate-400"}`} />
-                              <span className="text-left">
-                                {labelText}
-                              </span>
+                              {(st as any).emoji ? (
+                                <span className="text-[10px] shrink-0">{(st as any).emoji}</span>
+                              ) : (
+                                <SubIcon className={`w-3 h-3 shrink-0 ${isSubSelected ? "text-primary" : "text-slate-400"}`} />
+                              )}
+                              <span className="text-left">{labelText}</span>
                               {isSubSelected && <span className="text-primary text-[10px] shrink-0">✓</span>}
                             </button>
                           );
