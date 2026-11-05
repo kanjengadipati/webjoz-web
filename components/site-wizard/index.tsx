@@ -1828,55 +1828,27 @@ export function SiteWizard({
 
             if (m.widget === "subtype-chips") {
               const isLocked = chat.chatStage === "language" || chat.chatStage === "mood" || chat.chatStage === "done";
-              // v2: when archetype is known, use catalog industries for that archetype
-              // grouped by the same Bidang. Falls back to v1 subTypes.
+              // v2: when archetype is known, show all catalog industries for that archetype.
+              // Falls back to v1 subTypes.
               let subTypes: Array<{ value: string; label: string; emoji?: string; kind?: "v1" | "v2" }> = [];
-              // Bidang-first (Fase 2): when taxonomyV2 is available, prefer a
-              // Bidang (group) picker first, then specializations within it.
-              const selectedBidang = chat.selectedBidang;
-              const setSelectedBidang = chat.setSelectedBidang;
-              let bidangChips: Array<{ value: string; label: string; emoji?: string }> = [];
-              if (taxonomyV2) {
-                bidangChips = taxonomyV2.groups.map((g) => ({
-                  value: g.id,
-                  label: wizardLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label),
-                  emoji: "🏷️",
-                }));
-                if (selectedBidang) {
-                  const group = taxonomyV2.groups.find((g) => g.id === selectedBidang);
-                  if (group) {
-                    const v2Industries = group.industries
-                      .filter((i) => !chat.archetype || i.archetype === chat.archetype)
-                      .map((i) => ({
-                        value: i.id,
-                        kind: "v2" as const,
-                        label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
-                        emoji: i.emoji ?? "🏷️",
-                      }));
-                    if (v2Industries.length > 0) {
-                      subTypes = v2Industries;
-                    }
-                  }
-                } else if (chat.archetype) {
-                  const v2Industries = taxonomyV2.groups
-                    .flatMap((g) => g.industries)
-                    .filter((i) => i.archetype === chat.archetype)
-                    .map((i) => ({
-                      value: i.id,
-                      kind: "v2" as const,
-                      label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
-                      emoji: i.emoji ?? "🏷️",
-                    }));
-                  if (v2Industries.length > 0) {
-                    subTypes = v2Industries;
-                  }
+              if (chat.archetype && taxonomyV2) {
+                const v2Industries = taxonomyV2.groups
+                  .flatMap((g) => g.industries)
+                  .filter((i) => i.archetype === chat.archetype)
+                  .map((i) => ({
+                    value: i.id,
+                    kind: "v2" as const,
+                    label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
+                    emoji: i.emoji ?? "🏷️",
+                  }));
+                if (v2Industries.length > 0) {
+                  subTypes = v2Industries;
                 }
               }
               if (subTypes.length === 0) {
                 subTypes = chat.businessType ? (dynamicSubTypes[chat.businessType] ?? []) : [];
               }
-              // The API's own suggestion (medium confidence) goes first so the user
-              // sees it instead of hunting through the whole archetype list.
+              // Bubble API suggestion to top so user sees it first
               if (chat.industryId) {
                 subTypes = [
                   ...subTypes.filter((st) => st.value === chat.industryId),
@@ -1906,39 +1878,14 @@ export function SiteWizard({
                   )}
                   <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">{t("dashboard.wizard.moreSpecific", "Lebih spesifik:")}</p>
                   <div className="flex flex-wrap gap-1.5">
-                    {/* Bidang-first: show Bidang chips when none selected yet */}
-                    {!selectedBidang && bidangChips.length > 0 && !isLocked && bidangChips.map((bg) => (
-                      <button
-                        key={bg.value}
-                        type="button"
-                        onClick={() => setSelectedBidang(bg.value)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border border-white/[0.08] bg-white/[0.04] text-slate-300 hover:border-white/20 hover:text-white hover:bg-white/[0.08] transition-all cursor-pointer"
-                      >
-                        <span>{bg.emoji}</span>
-                        <span>{bg.label}</span>
-                      </button>
-                    ))}
-                    {/* Reset to Bidang list */}
-                    {selectedBidang && !isLocked && (
-                      <button
-                        type="button"
-                        onClick={() => setSelectedBidang(null)}
-                        className="text-[10px] text-slate-500 hover:text-slate-300 underline px-1"
-                      >
-                        ← Semua bidang
-                      </button>
-                    )}
-                    {/* Specialization chips */}
-                    {(selectedBidang || !bidangChips.length) && subTypes
+                    {subTypes
                       .filter((st) => {
-                        // When locked (user already picked), hide all chips except the selected one
                         if (!isLocked) return true;
                         return chat.industryId === st.value || chat.businessSubType === st.value;
                       })
                       .map((st) => {
                       const isSubSelected = chat.industryId === st.value || chat.businessSubType === st.value;
                       const SubIcon = SUB_TYPE_ICONS[st.value] ?? Tag;
-                      // Prefer the explicit kind field; fall back to the legacy dot heuristic.
                       const isV2Id = st.kind === "v2" || st.value.includes(".");
                       const labelText = st.label || (isV2Id
                         ? getIndustryLabel(st.value)
