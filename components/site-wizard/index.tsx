@@ -3,6 +3,7 @@
 
 import React, { useState, useRef, useMemo, useEffect } from "react";
 import Link from "next/link";
+import { CustomSelect } from "webjoz-ui";
 import { useRouter } from "next/navigation";
 import { request } from "@/lib/api/client";
 import {
@@ -426,21 +427,20 @@ function InferenceConfirmCard({
           onEdit={() => setEditing("bidang")}
         />
         {editing === "bidang" && taxonomyV2 && (
-          <select
+          <CustomSelect
             value={draftBidang || (taxonomyV2.groups.find((g: any) => g.industries.some((i: any) => i.id === chat.industryId))?.id ?? "")}
-            onChange={(e) => {
-              setDraftBidang(e.target.value);
+            onChange={(val) => {
+              setDraftBidang(val);
               setDraftIndustry("");
               setEditing(null);
             }}
-            className="w-full px-2 py-1 rounded-lg text-xs bg-white/[0.06] text-white border border-white/10"
-          >
-            {taxonomyV2.groups.map((g: any) => (
-              <option key={g.id} value={g.id}>
-                {wizardLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label)}
-              </option>
-            ))}
-          </select>
+            options={taxonomyV2.groups.map((g: any) => ({
+              value: g.id,
+              label: wizardLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label),
+            }))}
+            size="sm"
+            triggerClassName="border-white/10 bg-black/20 text-slate-200"
+          />
         )}
         <Row
           label={t("dashboard.wizard.cardSpec", "Spesialisasi")}
@@ -448,21 +448,20 @@ function InferenceConfirmCard({
           onEdit={() => setEditing("spec")}
         />
         {editing === "spec" && taxonomyV2 && (
-          <select
+          <CustomSelect
             value={draftIndustry}
-            onChange={(e) => { setDraftIndustry(e.target.value); setEditing(null); }}
-            className="w-full px-2 py-1 rounded-lg text-xs bg-white/[0.06] text-white border border-white/10"
-          >
-            {taxonomyV2.groups
+            onChange={(val) => { setDraftIndustry(val); setEditing(null); }}
+            options={taxonomyV2.groups
               .filter((g: any) => !draftBidang || g.id === draftBidang)
               .flatMap((g: any) => g.industries)
               .filter((i: any) => !draftBidang && chat.archetype ? i.archetype === chat.archetype : true)
-              .map((i: any) => (
-                <option key={i.id} value={i.id}>
-                  {wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label)}
-                </option>
-              ))}
-          </select>
+              .map((i: any) => ({
+                value: i.id,
+                label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
+              }))}
+            size="sm"
+            triggerClassName="border-white/10 bg-black/20 text-slate-200"
+          />
         )}
         <Row
           label={t("dashboard.wizard.cardLocation", "Lokasi")}
