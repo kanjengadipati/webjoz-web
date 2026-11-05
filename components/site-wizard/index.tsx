@@ -1898,38 +1898,40 @@ export function SiteWizard({
       }))
     : [];
               // v2: susun subTypes berdasarkan selectedBidang (grup terpilih) atau archetype.
-              // P0-1: filter harus berdasarkan grup (selectedBidang = group id), bukan id industri.
+              // Bila showBidangStep=true, tidak ada chip spesialisasi yang boleh tampil.
               let subTypes: Array<{ value: string; label: string; emoji?: string; kind?: "v1" | "v2" }> = [];
-              if (effectiveSelectedBidang && taxonomyV2) {
-                // Bidang terpilih (manual atau pre-select) — tampilkan semua industri di grup itu, urut rank
-                const group = taxonomyV2.groups.find((g) => g.id === effectiveSelectedBidang);
-                if (group) {
-                  const sorted = [...group.industries].sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99));
-                  subTypes = sorted.map((i) => ({
+              if (!showBidangStep) {
+                if (effectiveSelectedBidang && taxonomyV2) {
+                  // Bidang terpilih (manual atau pre-select) — tampilkan semua industri di grup itu, urut rank
+                  const group = taxonomyV2.groups.find((g) => g.id === effectiveSelectedBidang);
+                  if (group) {
+                    const sorted = [...group.industries].sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99));
+                    subTypes = sorted.map((i) => ({
+                      value: i.id,
+                      kind: "v2" as const,
+                      label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
+                      emoji: i.emoji ?? "🏷️",
+                    }));
+                  }
+                } else if (!needsBidangStep && currentArchetype && taxonomyV2) {
+                  // < threshold: langsung tampilkan semua industri archetype ini (semua grup)
+                  subTypes = archetypeIndustries.map((i) => ({
                     value: i.id,
                     kind: "v2" as const,
                     label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
                     emoji: i.emoji ?? "🏷️",
                   }));
                 }
-              } else if (!needsBidangStep && chat.archetype && taxonomyV2) {
-                // < threshold: langsung tampilkan semua industri archetype ini (semua grup)
-                subTypes = archetypeIndustries.map((i) => ({
-                  value: i.id,
-                  kind: "v2" as const,
-                  label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
-                  emoji: i.emoji ?? "🏷️",
-                }));
-              }
-              if (subTypes.length === 0) {
-                subTypes = chat.businessType ? (dynamicSubTypes[chat.businessType] ?? []) : [];
-              }
-              // Bubble API suggestion to top so user sees it first
-              if (chat.industryId) {
-                subTypes = [
-                  ...subTypes.filter((st) => st.value === chat.industryId),
-                  ...subTypes.filter((st) => st.value !== chat.industryId),
-                ];
+                if (subTypes.length === 0) {
+                  subTypes = chat.businessType ? (dynamicSubTypes[chat.businessType] ?? []) : [];
+                }
+                // Bubble API suggestion to top so user sees it first
+                if (chat.industryId) {
+                  subTypes = [
+                    ...subTypes.filter((st) => st.value === chat.industryId),
+                    ...subTypes.filter((st) => st.value !== chat.industryId),
+                  ];
+                }
               }
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400">
@@ -1993,14 +1995,10 @@ export function SiteWizard({
   <div className="flex flex-wrap gap-1.5">
                     {subTypes
                       .filter((st) => {
-                        // Bila effectiveSelectedBidang aktif, subTypes sudah berisi industri grup itu saja — tampilkan semua.
-                        // Tanpa Bidang + taxonomyV2 ada: tampilkan hanya yang relevan (saran AI atau sub-type saat ini).
-                        // Tanpa taxonomyV2 atau < threshold: tampilkan semua.
                         if (isLocked) return false;
-                        if (effectiveSelectedBidang) return true;
-                        if (!taxonomyV2) return true;
-                        if (!needsBidangStep) return true; // < threshold: tampilkan semua langsung
-                        return chat.industryId === st.value || chat.businessSubType === st.value;
+                        // subTypes sudah kosong bila showBidangStep=true — filter ini hanya
+                        // untuk kasus terpilih (selectedBidang) vs tampil semua (<threshold/v1)
+                        return true;
                       })
                       .map((st) => {
                       const isSubSelected = chat.industryId === st.value || chat.businessSubType === st.value;
