@@ -99,7 +99,6 @@ import { useTaxonomy, useTaxonomyV2 } from "@/hooks/use-taxonomy";
 import { selectTemplate, formatText, generateSubdomain, generateSlug, getTemplatePool, getDynamicDescriptionPlaceholder, generateDescriptionFromBusinessName } from "./helpers";
 import { sanitizeClassificationPair } from "./taxonomy";
 import { enrichGeneratePayloadV2 } from "./taxonomy-v2";
-import { archetypeToLegacyType } from "./inference-v2";
 import {
   loadWizardSnapshot,
   saveWizardSnapshot,
@@ -1163,10 +1162,9 @@ export function SiteWizard({
     // Guard taksonomi: hanya pasangan {type, subType} kanonis yang boleh
     // mencapai payload generate — pair stale/tidak-valid jatuh ke type-only.
     const safePair = sanitizeClassificationPair(bType, nextBusinessSubType);
-    // v2 fallback: bila businessType kosong tapi archetype diketahui, derive dari archetype.
-    // TODO(v2-cleanup): hapus fallback ini setelah API tidak lagi mewajibkan BusinessType.
-    const safeBusinessType = safePair.businessType ||
-      archetypeToLegacyType(chat.archetypeRef.current || chat.archetype);
+    // Kirim businessType apa adanya — bila kosong, API akan derive dari archetype/industry_id
+    // via NormalizeGenerateSiteRequestV2 di server side.
+    const safeBusinessType = safePair.businessType;
     const safeBusinessSubType = safePair.businessSubType;
     const nextWhatsapp = overrides.whatsapp ?? chat.whatsappRef.current;
     const nextServiceArea = overrides.serviceArea ?? chat.serviceAreaRef.current;
