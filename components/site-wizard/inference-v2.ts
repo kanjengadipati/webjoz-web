@@ -33,6 +33,8 @@ export type PreInferred = {
   industryId?: string;
   industryCustom?: string;
   confidence?: string;
+  /** True bila teks deskripsi berasal dari AI (jalur skip/voice), bukan diketik pengguna. */
+  descriptionFromAI?: boolean;
 };
 
 /** Build a PreInferred from the v1-validated pair plus the API's v2 fields. */

@@ -49,6 +49,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
   const [industryCustom, setIndustryCustom] = useState("");
   const [selectedBidang, setSelectedBidang] = useState<string | null>(null);
   const [description, setDescription] = useState("");
+  const [descriptionSource, setDescriptionSource] = useState<"user" | "ai" | "none">("none");
   const [whatsapp, setWhatsapp] = useState("");
   const [serviceArea, setServiceArea] = useState("");
   const [mood, setMood] = useState("");
@@ -826,29 +827,27 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
 
           const validHint = validateClassification(d.type, d.sub_type) ?? validateClassification(d.type, "");
           if (validHint?.type) {
-            const aiHint = {
-              type: validHint.type,
-              subType: validHint.subType || "",
-              refinedText: d.refined_text?.trim(),
-            };
-            const autoDesc = aiHint.refinedText || generateDescriptionFromBusinessName(currentBizName, aiHint, locale);
+            const refinedText = d.refined_text?.trim() || "";
             const detectedLoc = extractLocationFromDescription(currentBizName);
             if (detectedLoc && !serviceArea) {
               setServiceArea(detectedLoc);
             }
             setIsAnalyzingDescription(false);
-            processDescriptionSubmission(autoDesc, {
+            // 2.3: bila refined_text kosong, description kosong — jangan karang dari nama
+            processDescriptionSubmission(refinedText, {
               type: validHint.type,
               subType: validHint.subType || "",
               archetype: d.archetype || "",
               industryId: d.industry_id || "",
               confidence: d.confidence === "high" ? "high" : "medium",
+              descriptionFromAI: true,
             });
             return; // P0-2: satu panggilan, selalu return
           }
           // v2-only: archetype known but no valid v1 type pair — use archetype routing
           if (d.archetype) {
-            const autoDesc = d.refined_text?.trim() || generateDescriptionFromBusinessName(currentBizName, { type: d.archetype, subType: "" }, locale);
+            // 2.3: bila refined_text kosong, description kosong — jangan karang dari nama
+            const autoDesc = d.refined_text?.trim() || "";
             const detectedLoc = extractLocationFromDescription(currentBizName);
             if (detectedLoc && !serviceArea) setServiceArea(detectedLoc);
             setIsAnalyzingDescription(false);
@@ -856,6 +855,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
               archetype: d.archetype,
               industryId: d.industry_id || "",
               confidence: d.confidence === "high" ? "high" : "medium",
+              descriptionFromAI: true,
             });
             return;
           }
@@ -889,6 +889,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setMessages((prev) => [...prev, { id: userMsgId, sender: "user", text: val }]);
 
     setDescription(val);
+    setDescriptionSource(preInferred?.descriptionFromAI ? "ai" : "user");
 
     if (!serviceArea) {
       const detected = extractLocationFromDescription(val);
@@ -931,6 +932,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
             if (!isMeta) {
               setDescription(refined);
               descriptionRef.current = refined;
+              // descriptionSource tetap "user" — ini hanya poles gaya, bukan teks baru dari AI
               // Directly override the user's message bubble with the refined text (matching voice flow)
               setMessages((prev) =>
                 prev.map((m) => (m.id === userMsgId ? { ...m, text: refined, isRefined: true } : m))
@@ -1242,6 +1244,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     archetypeRef.current = snap.archetype ?? "";
     industryIdRef.current = snap.industryId ?? "";
     setDescription(snap.description ?? "");
+    setDescriptionSource(snap.description ? "user" : "none"); // konservatif: resume dianggap user
     setWhatsapp(snap.whatsapp ?? "");
     setServiceArea(snap.serviceArea ?? "");
     setMood(snap.mood ?? "");
@@ -1291,6 +1294,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setIndustryId("");
     setIndustryCustom("");
     setDescription("");
+    setDescriptionSource("none");
     setWhatsapp("");
     setServiceArea("");
     setMood("");
@@ -1349,6 +1353,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setSelectedBidang,
     description,
     setDescription,
+    descriptionSource,
     whatsapp,
     setWhatsapp,
     serviceArea,

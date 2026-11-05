@@ -525,19 +525,25 @@ function InferenceConfirmCard({
             chat.setArchetype(ind.archetype);
             chat.archetypeRef.current = ind.archetype;
             const newLabel = wizardLang === "en" ? (ind.label_en || ind.label) : (ind.label_id || ind.label);
-            const refreshed = generateDescriptionFromBusinessName(chat.businessName || "", { subType: newLabel }, wizardLang === "en" ? "en" : "id");
-            if (refreshed) {
-              chat.descriptionRef.current = refreshed;
-              chat.setDescription(refreshed);
+            // 2.3: jangan timpa description yang ditulis pengguna
+            if (chat.descriptionSource !== "user") {
+              const refreshed = generateDescriptionFromBusinessName(chat.businessName || "", { subType: newLabel }, wizardLang === "en" ? "en" : "id");
+              if (refreshed) {
+                chat.descriptionRef.current = refreshed;
+                chat.setDescription(refreshed);
+              }
             }
           }
         }
       } else {
         chat.setBusinessSubType(draftIndustry);
-        const refreshed = generateDescriptionFromBusinessName(chat.businessName || "", { subType: draftIndustry }, wizardLang === "en" ? "en" : "id");
-        if (refreshed) {
-          chat.descriptionRef.current = refreshed;
-          chat.setDescription(refreshed);
+        // 2.3: jangan timpa description yang ditulis pengguna
+        if (chat.descriptionSource !== "user") {
+          const refreshed = generateDescriptionFromBusinessName(chat.businessName || "", { subType: draftIndustry }, wizardLang === "en" ? "en" : "id");
+          if (refreshed) {
+            chat.descriptionRef.current = refreshed;
+            chat.setDescription(refreshed);
+          }
         }
       }
     }
