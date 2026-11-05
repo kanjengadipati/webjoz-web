@@ -1028,13 +1028,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
           ...prev,
           { id: `widget-inference-confirm-${Date.now()}`, sender: "ai", text: "", widget: "inference-confirm" as const },
         ]);
-        // Auto-inject language setelah 2s jika user tidak klik chip lain
-        setTimeout(() => {
-          if (inferenceAutoConfirmRef.current) {
-            inferenceAutoConfirmRef.current(confirmedSubType);
-            inferenceAutoConfirmRef.current = null;
-          }
-        }, 2000);
+        // Auto-advance removed: user confirms via "Lanjut" button.
       }, 300);
       return;
     }
