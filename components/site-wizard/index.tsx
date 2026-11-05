@@ -344,8 +344,14 @@ function InferenceConfirmCard({
   const [draftName, setDraftName] = useState(chat.businessName || "");
   const [draftArea, setDraftArea] = useState(chat.serviceArea || "");
   const [draftIndustry, setDraftIndustry] = useState(chat.industryId || chat.businessSubType || "");
+  const [draftBidang, setDraftBidang] = useState<string>("");
 
+  const effectiveBidangId = draftBidang || (taxonomyV2 ? (taxonomyV2.groups.find((g: any) => g.industries.some((i: any) => i.id === chat.industryId))?.id ?? "") : "");
   const bidangLabel = (() => {
+    if (taxonomyV2 && effectiveBidangId) {
+      const g = taxonomyV2.groups.find((gr: any) => gr.id === effectiveBidangId);
+      if (g) return wizardLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label);
+    }
     if (taxonomyV2 && chat.archetype) {
       const g = taxonomyV2.groups.find((gr: any) => gr.industries.some((i: any) => i.id === chat.industryId));
       if (g) return wizardLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label);
@@ -368,6 +374,13 @@ function InferenceConfirmCard({
       if (draftIndustry.includes(".")) {
         chat.setIndustryId(draftIndustry);
         chat.industryIdRef.current = draftIndustry;
+        if (taxonomyV2) {
+          const ind = taxonomyV2.groups.flatMap((g: any) => g.industries).find((i: any) => i.id === draftIndustry);
+          if (ind) {
+            chat.setArchetype(ind.archetype);
+            chat.archetypeRef.current = ind.archetype;
+          }
+        }
       } else {
         chat.setBusinessSubType(draftIndustry);
       }
@@ -410,8 +423,25 @@ function InferenceConfirmCard({
         <Row
           label={t("dashboard.wizard.cardBidang", "Bidang")}
           value={bidangLabel}
-          onEdit={onChangeCategory}
+          onEdit={() => setEditing("bidang")}
         />
+        {editing === "bidang" && taxonomyV2 && (
+          <select
+            value={draftBidang || (taxonomyV2.groups.find((g: any) => g.industries.some((i: any) => i.id === chat.industryId))?.id ?? "")}
+            onChange={(e) => {
+              setDraftBidang(e.target.value);
+              setDraftIndustry("");
+              setEditing(null);
+            }}
+            className="w-full px-2 py-1 rounded-lg text-xs bg-white/[0.06] text-white border border-white/10"
+          >
+            {taxonomyV2.groups.map((g: any) => (
+              <option key={g.id} value={g.id}>
+                {wizardLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label)}
+              </option>
+            ))}
+          </select>
+        )}
         <Row
           label={t("dashboard.wizard.cardSpec", "Spesialisasi")}
           value={specLabel}
@@ -423,8 +453,10 @@ function InferenceConfirmCard({
             onChange={(e) => { setDraftIndustry(e.target.value); setEditing(null); }}
             className="w-full px-2 py-1 rounded-lg text-xs bg-white/[0.06] text-white border border-white/10"
           >
-            {taxonomyV2.groups.flatMap((g: any) => g.industries)
-              .filter((i: any) => !chat.archetype || i.archetype === chat.archetype)
+            {taxonomyV2.groups
+              .filter((g: any) => !draftBidang || g.id === draftBidang)
+              .flatMap((g: any) => g.industries)
+              .filter((i: any) => !draftBidang && chat.archetype ? i.archetype === chat.archetype : true)
               .map((i: any) => (
                 <option key={i.id} value={i.id}>
                   {wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label)}
