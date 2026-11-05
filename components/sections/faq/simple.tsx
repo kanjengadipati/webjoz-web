@@ -107,6 +107,7 @@ export default function FaqSimple({
         {isEditorMode && onAddItem && (
           <InlineAddTile
             label={isEN ? "Add question" : "Tambah Pertanyaan"}
+            variant="bar"
             onClick={onAddItem}
             className="w-full"
             style={{ borderRadius: "var(--dt-radius)", color: "var(--dt-text)" }}
