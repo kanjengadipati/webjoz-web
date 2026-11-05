@@ -99,6 +99,7 @@ import { useTaxonomy, useTaxonomyV2 } from "@/hooks/use-taxonomy";
 import { selectTemplate, formatText, generateSubdomain, generateSlug, getTemplatePool, getDynamicDescriptionPlaceholder, generateDescriptionFromBusinessName } from "./helpers";
 import { sanitizeClassificationPair } from "./taxonomy";
 import { enrichGeneratePayloadV2 } from "./taxonomy-v2";
+import { archetypeToLegacyType } from "./inference-v2";
 import {
   loadWizardSnapshot,
   saveWizardSnapshot,
@@ -1162,25 +1163,10 @@ export function SiteWizard({
     // Guard taksonomi: hanya pasangan {type, subType} kanonis yang boleh
     // mencapai payload generate — pair stale/tidak-valid jatuh ke type-only.
     const safePair = sanitizeClassificationPair(bType, nextBusinessSubType);
-    // v2 fallback: bila businessType kosong tapi archetype diketahui, derive type dari archetype
+    // v2 fallback: bila businessType kosong tapi archetype diketahui, derive dari archetype.
+    // TODO(v2-cleanup): hapus fallback ini setelah API tidak lagi mewajibkan BusinessType.
     const safeBusinessType = safePair.businessType ||
-      (() => {
-        const arch = chat.archetypeRef.current || chat.archetype;
-        if (!arch) return "";
-        const archToLegacy: Record<string, string> = {
-          "food_venue": "Kuliner",
-          "retail_catalog": "Toko",
-          "booking_service": "Layanan & Reservasi",
-          "portfolio_individual": "Portofolio",
-          "professional_firm": "Kreatif & Profesional",
-          "corporate_org": "Company Profile",
-          "lodging": "Company Profile",
-          "institution_org": "Company Profile",
-          "destination": "Company Profile",
-          "software_product": "Kreatif & Profesional",
-        };
-        return archToLegacy[arch] ?? "";
-      })();
+      archetypeToLegacyType(chat.archetypeRef.current || chat.archetype);
     const safeBusinessSubType = safePair.businessSubType;
     const nextWhatsapp = overrides.whatsapp ?? chat.whatsappRef.current;
     const nextServiceArea = overrides.serviceArea ?? chat.serviceAreaRef.current;
