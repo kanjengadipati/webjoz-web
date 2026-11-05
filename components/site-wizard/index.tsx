@@ -381,7 +381,18 @@ function InferenceConfirmCard({
         chat.setDescription(updated);
       }
     }
-    if (draftArea.trim()) chat.setServiceArea(draftArea.trim());
+    const oldArea = chat.serviceArea || "";
+    const newArea = draftArea.trim();
+    if (newArea && newArea !== oldArea) {
+      chat.setServiceArea(newArea);
+      // Keep refined description in sync with the new location (best-effort replace).
+      const cur = chat.descriptionRef?.current || chat.description || "";
+      if (cur && oldArea) {
+        const updated = cur.split(oldArea).join(newArea);
+        chat.descriptionRef.current = updated;
+        chat.setDescription(updated);
+      }
+    }
     if (draftIndustry === "__other__") {
       chat.setIndustryId("");
       chat.industryIdRef.current = "";
