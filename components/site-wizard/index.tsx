@@ -312,11 +312,16 @@ function InferenceConfirmWidget({
           </button>
         </div>
       )}
-      {!isLocked && pending && (
+      {pending && (
         <button
           type="button"
           onClick={() => onConfirmWithSubType(pending)}
-          className="mt-2 w-full py-2 rounded-xl text-xs font-semibold bg-primary text-white hover:bg-primary/90 transition-all cursor-pointer"
+          disabled={isLocked}
+          className={`mt-2 w-full py-2 rounded-xl text-xs font-semibold transition-all ${
+            isLocked
+              ? "bg-white/10 text-slate-500 cursor-not-allowed"
+              : "bg-primary text-white hover:bg-primary/90 cursor-pointer"
+          }`}
         >
           {t("dashboard.wizard.btnContinue", "Ya, lanjut")}
         </button>
@@ -539,15 +544,18 @@ function InferenceConfirmCard({
           />
         )}
       </div>
-      {!isLocked && (
       <button
         type="button"
         onClick={handleContinue}
-        className="w-full py-2.5 rounded-xl text-sm font-bold bg-white text-slate-900 hover:bg-slate-100 transition-all cursor-pointer shadow-lg"
+        disabled={isLocked}
+        className={`w-full py-2.5 rounded-xl text-sm font-bold transition-all ${
+          isLocked
+            ? "bg-white/10 text-slate-500 cursor-not-allowed shadow-none"
+            : "bg-white text-slate-900 hover:bg-slate-100 cursor-pointer shadow-lg"
+        }`}
       >
         {t("dashboard.wizard.btnContinue", "Ya, lanjut")}
       </button>
-      )}
     </div>
   );
 }
