@@ -3388,6 +3388,7 @@ export interface Translations {
       prefillTypePrompt: string;
       btnContinueType: string;
       changeBidang: string;
+      selectSector: string;
       btnContinue: string;
       btnGenerate: string;
       cardName: string;
@@ -6899,6 +6900,7 @@ export const translations: Record<Locale, Translations> = {
         prefillTypePrompt: "Saya sudah memperkirakan kategori website Anda. Lanjutkan jika sesuai, atau ubah dulu:",
         btnContinueType: "Lanjut dengan jenis ini →",
         changeBidang: "Bidang lain →",
+        selectSector: "Pilih bidang usaha:",
         btnContinue: "Ya, lanjut",
         btnGenerate: "Buat Website Sekarang",
         cardName: "Nama usaha",
@@ -10578,6 +10580,7 @@ export const translations: Record<Locale, Translations> = {
         prefillTypePrompt: "I've estimated your website category. Continue if it's correct, or change it first:",
         btnContinueType: "Continue with this type →",
         changeBidang: "Other sector →",
+        selectSector: "Select your sector:",
         btnContinue: "Yes, continue",
         btnGenerate: "Build My Website Now",
         cardName: "Business name",
