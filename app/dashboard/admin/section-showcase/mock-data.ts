@@ -204,7 +204,7 @@ export const MOCK_SHOWCASE_DATA = {
     opening_hours: "Senin–Sabtu, 08.00–17.00",
     video_url: "https://www.w3schools.com/html/mov_bbb.mp4",
     image_url: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&auto=format&fit=crop&q=80",
-    portrait_image_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80",
+    portrait_image_url: "https://res.cloudinary.com/h3kjd7zi/image/upload/giwangan/profile-cutout.png",
     images: [
       "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1600&auto=format&fit=crop&q=80",
       "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=1600&auto=format&fit=crop&q=80",
