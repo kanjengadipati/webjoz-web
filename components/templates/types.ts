@@ -148,6 +148,17 @@ export interface StatItem {
   icon?: string;
 }
 
+export interface SkillItem {
+  label: string;
+  level?: "beginner" | "intermediate" | "expert";
+  icon?: string | null;
+}
+
+export interface SkillGroup {
+  name: string;
+  items: SkillItem[];
+}
+
 export interface PartnerItem {
   name: string;
   logo_url?: string | null;
@@ -249,6 +260,7 @@ export interface DesignToken {
       menu?: "grid" | "compact" | "cards" | "text-list" | "compact-list" | "tabs-by-category" | "accordion-by-category" | "bento-photo-grid" | "visual-showcase-hero" | "sidebar-scrollspy-photo" | "horizontal-swipe-carousel" | "masonry-flow";
       catalog?: "grid" | "compact" | "cards" | "grid-dense" | "showcase-featured" | "tabs-by-category" | "editorial-grid" | "masonry-flow" | "instagram-square-grid" | "split-hero-catalog" | "neo-brutalist-matrix" | "horizontal-swipe-carousel" | "product-table" | "spotlight";
       stats?: "counter-row" | "card-grid" | "minimal-split" | "big-number-spotlight";
+      skills?: "chips" | "grouped-list" | "meter";
       partners?: "logo-wall" | "marquee" | "pill-grid" | "featured-collab-grid";
       pricing?: "cards" | "horizontal-rows" | "comparison-table" | "single-tier-highlight";
       contact?: "classic-split" | "whatsapp-direct" | "minimal-centered" | "overlay-map" | "bento-grid" | "dark-split";
@@ -463,6 +475,12 @@ export interface TemplateProps {
       eyebrow?: string;
       subtitle?: string;
       items: StatItem[];
+    };
+    skills?: {
+      title?: string;
+      eyebrow?: string;
+      subtitle?: string;
+      groups: SkillGroup[];
     };
     partners?: {
       title?: string;

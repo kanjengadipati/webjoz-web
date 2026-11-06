@@ -84,6 +84,11 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "minimal-split",          labelKey: "variantStatsMinimalSplit",        label: "Split Minimalis",      descriptionKey: "variantStatsMinimalSplitDesc",        description: "Judul narasi di sisi kiri, matriks 2x2 angka di sisi kanan." },
     { value: "big-number-spotlight",   labelKey: "variantStatsBigNumberSpotlight",  label: "Sorotan Angka Besar",  descriptionKey: "variantStatsBigNumberSpotlightDesc",  description: "Satu metrik utama berukuran raksasa dengan sorotan aksen dan sub-metrik pendukung." },
   ],
+  skills: [
+    { value: "chips",        labelKey: "variantSkillsChips",        label: "Badge Cloud",       descriptionKey: "variantSkillsChipsDesc",        description: "Kumpulan badge keahlian per kategori, ringkas dan padat." },
+    { value: "grouped-list", labelKey: "variantSkillsGroupedList", label: "List Terkelompok",  descriptionKey: "variantSkillsGroupedListDesc",  description: "Kolom keahlian per grup dengan nama skill dan tingkat kemahiran." },
+    { value: "meter",        labelKey: "variantSkillsMeter",        label: "Bar Kemahiran",     descriptionKey: "variantSkillsMeterDesc",        description: "Bar progress per keahlian dengan tingkat beginner/intermediate/expert." },
+  ],
   partners: [
     { value: "logo-wall",             labelKey: "variantPartnersLogoWall",           label: "Grid Logo / Brand",        descriptionKey: "variantPartnersLogoWallDesc",           description: "Grid logo/brand mitra dengan efek grayscale dan hover berwarna." },
     { value: "marquee",               labelKey: "variantPartnersMarquee",            label: "Ticker Berjalan",          descriptionKey: "variantPartnersMarqueeDesc",            description: "Banner logo/nama brand berjalan otomatis tanpa henti (infinite loop)." },

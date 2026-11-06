@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Award } from "lucide-react";
+import { Award, FileText } from "lucide-react";
 import { DynamicIcon, InlineText, InlineImage } from "../../templates/shared";
 import PhotoCredit from "../PhotoCredit";
 import type { TemplateProps, DesignToken } from "../../templates/types";
@@ -55,6 +55,33 @@ export default function AboutClassic({
           collapseSheetForInlineEdit={collapseSheetForInlineEdit}
           onEditingStateChange={onEditingStateChange}
         />
+        {Boolean(a.cv_url?.trim()) && (
+          <div style={{ marginTop: "0.25rem" }}>
+            <a
+              href={a.cv_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.45rem",
+                padding: "0.6rem 1.25rem",
+                borderRadius: "var(--dt-radius, 0.5rem)",
+                background: "var(--dt-primary)",
+                color: "var(--dt-primary-fg, #ffffff)",
+                fontSize: "0.875rem",
+                fontWeight: 600,
+                textDecoration: "none",
+                transition: "opacity 0.15s ease",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+            >
+              <FileText style={{ width: 15, height: 15 }} />
+              <span>{a.cv_label || "Unduh CV / Resume"}</span>
+            </a>
+          </div>
+        )}
       </div>
       <div style={{ position: "relative" }}>
         <div style={{ position: "absolute", inset: "-1rem", background: `linear-gradient(135deg, color-mix(in srgb, var(--dt-primary) 20%, transparent), color-mix(in srgb, var(--dt-accent) 10%, transparent))`, borderRadius: "var(--dt-radius-lg)", transform: "rotate(-2deg)", opacity: 0.5 }} />

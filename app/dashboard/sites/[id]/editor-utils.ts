@@ -1,5 +1,5 @@
 import { 
-  Layout, User, Award, HelpCircle, Mail, BookOpen, Globe, UtensilsCrossed, ShoppingBag, Star, Camera, MessageCircle, TrendingUp, Handshake, CreditCard, Briefcase, Sparkles, Loader2
+  Layout, User, Award, HelpCircle, Mail, BookOpen, Globe, UtensilsCrossed, ShoppingBag, Star, Camera, MessageCircle, TrendingUp, Handshake, CreditCard, Briefcase, Sparkles, Loader2, Wrench
 } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { AUTO_HIDEABLE_SECTIONS, isSectionEmpty } from "@/lib/section-status";
@@ -19,13 +19,13 @@ export const stripRegeneratedMarkers = (value: any): any => {
   return value;
 };
 
-export const BODY_SECTION_KEYS = ["hero", "about", "benefits", "stats", "testimonials", "menu", "catalog", "gallery", "works", "partners", "pricing", "blog", "cta", "faq", "contact"];
+export const BODY_SECTION_KEYS = ["hero", "about", "benefits", "stats", "skills", "testimonials", "menu", "catalog", "gallery", "works", "partners", "pricing", "blog", "cta", "faq", "contact"];
 export const EDITOR_SECTION_KEYS = ["header", ...BODY_SECTION_KEYS, "footer", "seo", "floating"];
 
 // Sections that are only shown in the sidebar when content actually has that key.
 // "faq" is here because the AI recommendation logic may prune it for certain business types
 // (e.g. coffee shops, restaurants). If the backend didn't generate faq, we don't show the tab.
-export const OPTIONAL_SECTION_KEYS = ["menu", "catalog", "stats", "partners", "pricing", "testimonials", "gallery", "works", "blog", "faq"];
+export const OPTIONAL_SECTION_KEYS = ["menu", "catalog", "stats", "skills", "partners", "pricing", "testimonials", "gallery", "works", "blog", "faq"];
 
 export const SECTION_META: Record<string, { label: string; labelEn: string; icon: any }> = {
   header:       { label: "Header", labelEn: "Header", icon: Layout },
@@ -34,6 +34,7 @@ export const SECTION_META: Record<string, { label: string; labelEn: string; icon
   about:        { label: "Tentang", labelEn: "About", icon: User },
   benefits:     { label: "Keunggulan", labelEn: "Benefits", icon: Award },
   stats:        { label: "Statistik", labelEn: "Stats", icon: TrendingUp },
+  skills:       { label: "Keahlian", labelEn: "Skills", icon: Wrench },
   testimonials: { label: "Testimoni", labelEn: "Testimonials", icon: Star },
   menu:         { label: "Menu", labelEn: "Menu", icon: UtensilsCrossed },
   catalog:      { label: "Katalog", labelEn: "Catalog", icon: ShoppingBag },
@@ -58,6 +59,7 @@ export const AI_SUGGESTIONS: Record<string, string[]> = {
   about:        ["Jadikan cerita bisnis lebih hangat", "Tambahkan detail konkret: tahun, lokasi, bahan", "Buat narasi lebih personal dan manusiawi"],
   benefits:     ["Ubah benefit menjadi hasil nyata", "Tambahkan angka/stat jika memungkinkan", "Buat tiap poin lebih singkat dan tajam"],
   stats:        ["Tonjolkan angka pencapaian tertinggi", "Buat label metrik lebih meyakinkan", "Sesuaikan angka dengan skala bisnis"],
+  skills:       ["Tambahkan teknologi/tools terbaru yang Anda kuasai", "Kelompokkan skill berdasarkan domain (Frontend, Backend, Design)", "Fokuskan pada keahlian inti yang relevan dengan klien"],
   testimonials: ["Buat kutipan lebih spesifik dan believable", "Tambahkan detail nyata di setiap testimoni", "Variasikan profil pemberi testimoni"],
   menu:         ["Buat nama menu lebih menggugah selera", "Tambahkan deskripsi yang membuat lapar", "Perbarui harga semua item menu"],
   catalog:      ["Buat nama produk lebih menarik", "Tambahkan badge Best Seller untuk produk terlaris", "Perbarui harga dan deskripsi produk"],

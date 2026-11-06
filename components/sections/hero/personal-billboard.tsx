@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, FileText } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import PhotoCredit from "../PhotoCredit";
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
@@ -290,6 +290,31 @@ export default function HeroPersonalBillboard({
                 alignItems: "center",
                 gap: "0.3rem",
                 color: "var(--dt-text)",
+                textDecoration: "none",
+                fontWeight: 600,
+                fontSize: "0.85rem",
+              }}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
+          )}
+          {Boolean(h.cv_url?.trim()) && (
+            <HeroCta
+              href={h.cv_url}
+              label={h.cv_label || (language === "en" ? "Download CV" : "Unduh CV")}
+              fieldKey="cv_label"
+              icon={<FileText style={{ width: 14, height: 14 }} />}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.35rem",
+                color: "var(--dt-text)",
+                background: "color-mix(in srgb, var(--dt-text) 8%, transparent)",
+                padding: "0.5rem 1rem",
+                borderRadius: "var(--dt-radius, 0.5rem)",
                 textDecoration: "none",
                 fontWeight: 600,
                 fontSize: "0.85rem",

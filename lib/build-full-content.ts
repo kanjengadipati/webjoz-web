@@ -211,6 +211,7 @@ export function buildFullContent(
     ...(c.gallery ? { gallery: c.gallery } : {}),
     ...(c.works ? { works: c.works } : {}),
     ...(c.stats ? { stats: c.stats } : {}),
+    ...(c.skills ? { skills: c.skills } : {}),
     ...(c.pricing ? { pricing: c.pricing } : {}),
     ...(c.partners ? { partners: c.partners } : {}),
     ...(c.payments ? { payments: c.payments } : {}),

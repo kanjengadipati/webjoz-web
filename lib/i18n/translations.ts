@@ -3119,6 +3119,13 @@ export interface Translations {
       variantStatsMinimalSplitDesc: string;
       variantStatsBigNumberSpotlight: string;
       variantStatsBigNumberSpotlightDesc: string;
+      // skills
+      variantSkillsChips: string;
+      variantSkillsChipsDesc: string;
+      variantSkillsGroupedList: string;
+      variantSkillsGroupedListDesc: string;
+      variantSkillsMeter: string;
+      variantSkillsMeterDesc: string;
       // partners
       variantPartnersLogoWall: string;
       variantPartnersLogoWallDesc: string;
@@ -7110,6 +7117,16 @@ export const translations: Record<Locale, Translations> = {
         variantStatsBigNumberSpotlight: "Sorotan Angka Besar",
         variantStatsBigNumberSpotlightDesc:
           "Satu metrik utama berukuran raksasa dengan sorotan aksen dan sub-metrik pendukung.",
+        // skills
+        variantSkillsChips: "Badge Cloud",
+        variantSkillsChipsDesc:
+          "Kumpulan badge keahlian per kategori, ringkas dan padat.",
+        variantSkillsGroupedList: "List Terkelompok",
+        variantSkillsGroupedListDesc:
+          "Kolom keahlian per grup dengan nama skill dan tingkat kemahiran.",
+        variantSkillsMeter: "Bar Kemahiran",
+        variantSkillsMeterDesc:
+          "Bar progress per keahlian dengan tingkat beginner/intermediate/expert.",
         // partners
         variantPartnersLogoWall: "Grid Logo / Brand",
         variantPartnersLogoWallDesc:
@@ -11350,6 +11367,16 @@ export const translations: Record<Locale, Translations> = {
         variantStatsBigNumberSpotlight: "Big Number Spotlight",
         variantStatsBigNumberSpotlightDesc:
           "One giant main metric with accent spotlight and supporting sub-metrics.",
+        // skills
+        variantSkillsChips: "Badge Cloud",
+        variantSkillsChipsDesc:
+          "Category-grouped skill badge cloud, compact and clean.",
+        variantSkillsGroupedList: "Grouped List",
+        variantSkillsGroupedListDesc:
+          "Multi-column skill groups with proficiency indicators.",
+        variantSkillsMeter: "Proficiency Meter",
+        variantSkillsMeterDesc:
+          "Skill progress bars showing beginner/intermediate/expert levels.",
         // partners
         variantPartnersLogoWall: "Logo / Brand Grid",
         variantPartnersLogoWallDesc:
