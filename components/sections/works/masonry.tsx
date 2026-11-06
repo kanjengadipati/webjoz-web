@@ -3,7 +3,8 @@ import React from "react";
 import { WorksCard, WorksAddTile } from "./shared";
 import type { WorksRackProps } from "./shared";
 
-const COLUMN_PATTERN = [0, 1, 1, 2, 2, 3];
+// Rasio bergilir supaya tinggi kartu bervariasi (efek masonry nyata).
+const ASPECTS = ["4 / 3", "3 / 4", "1 / 1", "4 / 5", "16 / 10", "3 / 4"];
 
 export default function WorksMasonry({
   items,
@@ -19,36 +20,38 @@ export default function WorksMasonry({
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: WorksRackProps) {
-  const columns = [0, 1, 2].map((c) => items.filter((_, i) => COLUMN_PATTERN[i % COLUMN_PATTERN.length] === c));
-
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 items-start">
-      {columns.map((col, ci) => (
-        <div key={ci} className="flex flex-col gap-4 md:gap-6">
-          {col.map((item) => {
-            const idx = items.indexOf(item);
-            return (
-              <WorksCard
-                key={item.title + idx}
-                item={item}
-                idx={idx}
-                total={items.length}
-                radius={radius}
-                isEditorMode={isEditorMode}
-                isSelected={isSelected}
-                isEN={isEN}
-                onUpdateItem={onUpdateItem}
-                onReplaceImage={onReplaceImage}
-                onRemoveItem={onRemoveItem}
-                onMoveItem={onMoveItem}
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                onEditingStateChange={onEditingStateChange}
-              />
-            );
-          })}
-          {isEditorMode && onAddItem && ci === 0 && <WorksAddTile onAdd={onAddItem} collapseSheetForInlineEdit={collapseSheetForInlineEdit} isEN={isEN} style={{ borderRadius: radius }} />}
+    <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 md:gap-6">
+      {items.map((item, idx) => (
+        <div key={idx} className="mb-4 md:mb-6 break-inside-avoid">
+          <WorksCard
+            item={item}
+            idx={idx}
+            total={items.length}
+            radius={radius}
+            aspect={ASPECTS[idx % ASPECTS.length]}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            isEN={isEN}
+            onUpdateItem={onUpdateItem}
+            onReplaceImage={onReplaceImage}
+            onRemoveItem={onRemoveItem}
+            onMoveItem={onMoveItem}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
         </div>
       ))}
+      {isEditorMode && onAddItem && (
+        <div className="mb-4 md:mb-6 break-inside-avoid">
+          <WorksAddTile
+            onAdd={onAddItem}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            isEN={isEN}
+            style={{ borderRadius: radius, aspectRatio: "4 / 3" }}
+          />
+        </div>
+      )}
     </div>
   );
 }

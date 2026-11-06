@@ -5,6 +5,7 @@ import type { WorksItem, DesignToken } from "@/components/templates/types";
 import { InlineText, InlineImage } from "../../templates/shared";
 import { useGalleryUpload } from "../gallery/shared";
 import { SparkleIcon } from "@/components/sparkle-icon";
+import { safeHref, isExternalHref } from "@/lib/safe-url";
 
 export interface WorksVariantProps {
   works: {
@@ -46,6 +47,8 @@ export interface WorksRackProps {
   onAddItem?: (url: string) => void;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  /** Override aspect ratio for masonry varying heights. */
+  itemAspect?: string;
 }
 
 export function WorksSectionHeader({
@@ -589,6 +592,8 @@ export function WorksCard({
   total,
   radius,
   featured,
+  reverse,
+  aspect,
   isEditorMode,
   isSelected,
   isEN,
@@ -604,6 +609,10 @@ export function WorksCard({
   total: number;
   radius: string;
   featured?: boolean;
+  /** Reverse image/text order for showcase-featured alternating layout. */
+  reverse?: boolean;
+  /** Override aspect ratio (e.g. masonry varying heights). */
+  aspect?: string;
   isEditorMode?: boolean;
   isSelected?: boolean;
   isEN?: boolean;
@@ -619,17 +628,22 @@ export function WorksCard({
     [idx, onUpdateItem]
   );
 
-  const metaBits = [item.category, item.year, item.client].filter(Boolean);
   const viewLabel = isEN ? "View Project" : "Lihat Proyek";
+
+  // Safe link validation (P1-2): prevents javascript: / data: execution
+  const href = safeHref(item.project_url, "");
+  const external = isExternalHref(href);
 
   return (
     <article
-      className={`group relative flex flex-col overflow-hidden bg-[var(--dt-surface, #f8fafc)] border border-[var(--dt-border)] shadow-sm hover:shadow-lg transition-all duration-300 ${featured ? "lg:flex-row" : ""}`}
+      className={`group relative flex flex-col overflow-hidden bg-[var(--dt-surface, #f8fafc)] border border-[var(--dt-border)] shadow-sm hover:shadow-lg transition-all duration-300 ${
+        featured ? (reverse ? "lg:flex-row-reverse" : "lg:flex-row") : ""
+      }`}
       style={{ borderRadius: radius }}
     >
       <div
         className={`relative overflow-hidden bg-cover bg-center shrink-0 ${featured ? "w-full lg:w-1/2" : "w-full"}`}
-        style={{ aspectRatio: featured ? "16 / 10" : "4 / 3", background: "var(--dt-surface, #f1f5f9)" }}
+        style={{ aspectRatio: aspect || (featured ? "16 / 10" : "4 / 3"), background: "var(--dt-surface, #f1f5f9)" }}
       >
         {item.image_url ? (
           isEditorMode ? (
@@ -650,14 +664,23 @@ export function WorksCard({
               src={item.image_url}
               alt={item.alt_text || item.title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              onError={(e) => { e.currentTarget.style.display = "none"; }}
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+                const parent = e.currentTarget.parentElement;
+                if (parent) {
+                  const fallback = parent.querySelector(".works-img-fallback") as HTMLElement | null;
+                  if (fallback) fallback.style.display = "flex";
+                }
+              }}
             />
           )
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-slate-300 bg-[var(--dt-primary-soft, #f8fafc)]">
-            <Camera className="w-10 h-10" />
-          </div>
-        )}
+        ) : null}
+        {/* Fallback placeholder shown when image fails to load or no URL */}
+        <div
+          className={`works-img-fallback w-full h-full items-center justify-center text-slate-300 bg-[var(--dt-primary-soft, #f8fafc)] absolute inset-0 ${item.image_url && !isEditorMode ? "hidden" : "flex"}`}
+        >
+          <Camera className="w-10 h-10" />
+        </div>
         {isEditorMode && (
           <WorksTileOverlay
             idx={idx}
@@ -695,6 +718,7 @@ export function WorksCard({
               section="works"
               fieldKey={`items.${idx}.category`}
               value={item.category ?? ""}
+              placeholder={isEN ? "Category (e.g. Branding)..." : "Kategori (mis. Branding)..."}
               onUpdateField={upd("category")}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -718,47 +742,15 @@ export function WorksCard({
             as="span"
           />
         </h3>
-        {isEditorMode && (item.category || true) && (
-          <span className="block text-xs">
-            <InlineText
-              section="works"
-              fieldKey={`items.${idx}.category`}
-              value={item.category || ""}
-              placeholder={isEN ? "Category (e.g. Branding)..." : "Kategori (mis. Branding)..."}
-              onUpdateField={upd("category")}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
-              as="span"
-              className="text-[11px] font-bold uppercase tracking-widest text-[var(--dt-primary)]"
-            />
-          </span>
-        )}
-        {metaBits.length > 1 && !isEditorMode && (
-          <p className="text-xs text-[var(--dt-text-muted)] flex flex-wrap gap-x-2 gap-y-1">
-            {metaBits.map((bit, i) => (
-              <React.Fragment key={i}>
-                <span>{bit}</span>
-                {i < metaBits.length - 1 && <span aria-hidden>•</span>}
-              </React.Fragment>
-            ))}
+        {/* P2-4: Publik hanya tampilkan client (year & category sudah ada di tempat lain) */}
+        {item.client && !isEditorMode && (
+          <p className="text-xs text-[var(--dt-text-muted)]">
+            {isEN ? "Client: " : "Klien: "}{item.client}
           </p>
         )}
+        {/* P2-5: Editor hanya 1 field client (year ada di badge foto, category ada di atas) */}
         {isEditorMode && (
           <p className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-[var(--dt-text-muted)]">
-            <InlineText
-              section="works"
-              fieldKey={`items.${idx}.year`}
-              value={item.year || ""}
-              placeholder={isEN ? "Year..." : "Tahun..."}
-              onUpdateField={upd("year")}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
-              as="span"
-            />
             <InlineText
               section="works"
               fieldKey={`items.${idx}.client`}
@@ -807,15 +799,14 @@ export function WorksCard({
               as="span"
             />
           </span>
-        ) : item.project_url ? (
+        ) : href ? (
           <a
-            href={item.project_url}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={href}
+            {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
             className="inline-flex items-center gap-1.5 text-sm font-semibold w-fit hover:underline"
             style={{ color: "var(--dt-primary)" }}
           >
-            <ExternalLink className="w-4 h-4" />
+            {external && <ExternalLink className="w-4 h-4" />}
             {viewLabel}
           </a>
         ) : null}
