@@ -45,7 +45,7 @@ export default function WorksFeaturedGrid({
             const idx = i + 1;
             return (
               <WorksCard
-                key={item.title + idx}
+                key={idx}
                 item={item}
                 idx={idx}
                 total={items.length}

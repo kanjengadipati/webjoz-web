@@ -60,33 +60,6 @@ export function WorksSectionForm({
         onChange={(val) => updateField("works", "subtitle", val)}
         placeholder={t("dashboard.sitesEditor.phWorksSubtitle")}
       />
-      <div className="space-y-1.5">
-        <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-          {t("dashboard.sitesEditor.worksLayout")}
-        </label>
-        <div className="grid grid-cols-2 gap-2">
-          {([
-            { value: "grid", label: t("dashboard.sitesEditor.worksLayoutGrid"), desc: t("dashboard.sitesEditor.worksLayoutGridDesc") },
-            { value: "masonry", label: t("dashboard.sitesEditor.worksLayoutMasonry"), desc: t("dashboard.sitesEditor.worksLayoutMasonryDesc") },
-            { value: "featured-grid", label: t("dashboard.sitesEditor.worksLayoutFeaturedGrid"), desc: t("dashboard.sitesEditor.worksLayoutFeaturedGridDesc") },
-            { value: "showcase-featured", label: t("dashboard.sitesEditor.worksLayoutShowcase"), desc: t("dashboard.sitesEditor.worksLayoutShowcaseDesc") },
-          ] as const).map((opt) => (
-            <button
-              key={opt.value}
-              type="button"
-              onClick={() => updateField("works", "layout", opt.value)}
-              className={`p-2 rounded-lg border text-center transition-all cursor-pointer ${
-                (content.works?.layout || "grid") === opt.value
-                  ? "border-primary bg-primary/10 text-primary"
-                  : "border-border text-sidebar-muted-foreground hover:border-border"
-              }`}
-            >
-              <div className="text-[11px] font-semibold">{opt.label}</div>
-              <div className="text-[9px] opacity-60">{opt.desc}</div>
-            </button>
-          ))}
-        </div>
-      </div>
       <div>
         <div className="flex items-center justify-between mb-2">
           <span className="text-[11px] font-semibold uppercase tracking-wider text-sidebar-subtle-foreground">

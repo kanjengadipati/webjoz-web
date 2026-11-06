@@ -1037,7 +1037,38 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
 
   // Works / Portfolio variants
   if (section === "works") {
-    if (variant === "featured-grid" || variant === "showcase-featured") {
+    if (variant === "masonry") {
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex gap-1 overflow-hidden">
+          {([["h-8", "h-4"], ["h-5", "h-7"], ["h-6", "h-6"]] as const).map((col, i) => (
+            <div key={i} className="flex-1 flex flex-col gap-1">
+              {col.map((h, j) => (
+                <div key={j} className={`${h} rounded bg-slate-800 border border-border`} />
+              ))}
+            </div>
+          ))}
+        </div>
+      );
+    }
+    if (variant === "showcase-featured") {
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex flex-col gap-1 overflow-hidden">
+          {[false, true].map((rev, i) => (
+            <div
+              key={i}
+              className={`h-[22px] rounded-md bg-primary/20 border border-primary/30 flex items-center px-1.5 gap-1 ${rev ? "flex-row-reverse" : ""}`}
+            >
+              <div className="w-6 h-3.5 rounded bg-primary/30 shrink-0" />
+              <div className="flex-1 space-y-0.5">
+                <div className="w-3/4 h-0.5 rounded-full bg-white/70" />
+                <div className="w-1/2 h-0.5 rounded-full bg-slate-400/50" />
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    }
+    if (variant === "featured-grid") {
       return (
         <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex flex-col gap-1 overflow-hidden">
           <div className="h-5 rounded-md bg-primary/20 border border-primary/30 flex items-center px-1.5 gap-1">
