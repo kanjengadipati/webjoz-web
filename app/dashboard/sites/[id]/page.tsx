@@ -18,7 +18,7 @@ import { Button, Card, Dialog, CustomSelect } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { getTemplate, TEMPLATE_REGISTRY } from "@/lib/template-registry";
 import { getTemplateDefaultDesignToken } from "@/lib/template-defaults";
-import { setEditorSiteId, getFeatureMarker, FeatureMarkerIcon } from "@/components/templates/shared";
+import { setEditorSiteId, getFeatureMarker, FeatureMarkerIcon, setInlineAiRewrite } from "@/components/templates/shared";
 import { SectionShortcutContext, type SectionShortcutHandler } from "@/components/templates/editor";
 import { SectionReorderProvider } from "@/components/templates/section-reorder";
 import { SectionVisibilityProvider } from "@/components/templates/section-visibility";
@@ -1425,6 +1425,69 @@ export default function SiteEditorPage() {
     setEditorSiteId(siteId);
     return () => setEditorSiteId(null);
   }, [siteId]);
+
+  // Register global AI rewrite handler for inline editing in preview
+  React.useEffect(() => {
+    if (!token || !activeTenantId || !siteId) {
+      setInlineAiRewrite(null);
+      return;
+    }
+
+    setInlineAiRewrite(async (section: string, fieldKey: string, currentValue: string) => {
+      try {
+        const currentVariant = designTokenRef.current?.layout?.section_variants?.[section];
+        const res = await request<any>(
+          "/ai/regenerate-section",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              site_id: siteId,
+              section,
+              instructions: `Fokus tulis ulang hanya untuk field "${fieldKey}" agar lebih menarik, alami, dan profesional. Teks saat ini: "${currentValue}". Pertahankan panjang kalimat yang proporsional dan makna bisnisnya. Jaga field lain tetap sama persis.`,
+              tenant_id: activeTenantId,
+              section_variant: currentVariant || "",
+            }),
+          },
+          token
+        );
+
+        if (res.status !== "success") {
+          throw new Error(res.message || t("dashboard.sitesEditor.aiProcessFailed") || "AI gagal menulis ulang teks.");
+        }
+
+        const updated = res.data?.section !== undefined ? res.data.section : res.data;
+        if (!updated) {
+          throw new Error("Tidak ada hasil dari AI.");
+        }
+
+        // Support nested keys, e.g. "items.0.quote" or simple "subtitle"
+        const keys = fieldKey.split(".");
+        let result: any = updated;
+        for (const k of keys) {
+          if (result == null) break;
+          result = result[k];
+        }
+
+        if (typeof result !== "string" || !result.trim()) {
+          throw new Error("Field tidak ditemukan dalam hasil AI.");
+        }
+
+        void refreshTenantUsage();
+        return stripRegeneratedMarkers(result);
+      } catch (err: any) {
+        if (err?.code === "ERR_PLAN_LIMIT" || err?.code === "ERR_USAGE_LIMIT") {
+          setUpgradeContext("ai_regenerate");
+          setUpgradePromptOpen(true);
+          throw new Error(t("dashboard.sitesEditor.upgradeRegenTitle") || "Batas AI tercapai. Silakan upgrade paket.");
+        }
+        throw err;
+      }
+    });
+
+    return () => {
+      setInlineAiRewrite(null);
+    };
+  }, [token, activeTenantId, siteId, refreshTenantUsage, t]);
 
   useEffect(() => {
     const t = setTimeout(checkNavScroll, 60);
