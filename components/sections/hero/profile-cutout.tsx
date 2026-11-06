@@ -27,8 +27,8 @@ export default function HeroProfileCutout({
   const reduce = useReducedMotion();
   const hasSecondary = Boolean(h.cta_secondary_text?.trim() && h.cta_secondary_url?.trim());
 
-  // Bio statement text: prioritizes description, falls back to subheadline
-  const bioText = h.description || h.subheadline || "";
+  // Bio statement text: uses subheadline
+  const bioText = h.subheadline || "";
 
   return (
     <section
@@ -173,7 +173,7 @@ export default function HeroProfileCutout({
           >
             <InlineText
               section="hero"
-              fieldKey="description"
+              fieldKey="subheadline"
               value={bioText}
               placeholder="Tuliskan perkenalan singkat, visi, atau pitch diri Anda di sini..."
               as="p"

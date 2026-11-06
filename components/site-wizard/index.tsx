@@ -470,12 +470,14 @@ function InferenceConfirmCard({
   chat,
   taxonomyV2,
   wizardLang,
+  uiLang,
   onChangeCategory,
   t,
 }: {
   chat: any;
   taxonomyV2: any;
   wizardLang: string;
+  uiLang: string;
   onChangeCategory: () => void;
   t: (key: string, fallback?: string) => string;
 }) {
@@ -495,11 +497,11 @@ function InferenceConfirmCard({
   const bidangLabel = (() => {
     if (taxonomyV2 && effectiveBidangId) {
       const g = taxonomyV2.groups.find((gr: any) => gr.id === effectiveBidangId);
-      if (g) return wizardLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label);
+      if (g) return uiLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label);
     }
     if (taxonomyV2 && chat.archetype) {
       const g = taxonomyV2.groups.find((gr: any) => gr.industries.some((i: any) => i.id === chat.industryId));
-      if (g) return wizardLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label);
+      if (g) return uiLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label);
     }
     return chat.businessType || "-";
   })();
@@ -507,7 +509,7 @@ function InferenceConfirmCard({
   const specLabel = (() => {
     if (taxonomyV2 && chat.industryId) {
       const ind = taxonomyV2.groups.flatMap((g: any) => g.industries).find((i: any) => i.id === chat.industryId);
-      if (ind) return wizardLang === "en" ? (ind.label_en || ind.label) : (ind.label_id || ind.label);
+      if (ind) return uiLang === "en" ? (ind.label_en || ind.label) : (ind.label_id || ind.label);
     }
     return chat.businessSubType || "-";
   })();
@@ -627,7 +629,7 @@ function InferenceConfirmCard({
             }}
             options={taxonomyV2.groups.map((g: any) => ({
               value: g.id,
-              label: wizardLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label),
+              label: uiLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label),
             }))}
             size="sm"
             triggerClassName="border-white/10 bg-black/20 text-slate-200"
@@ -650,7 +652,7 @@ function InferenceConfirmCard({
                 .filter((i: any) => !draftBidang && chat.archetype ? i.archetype === chat.archetype : true)
                 .map((i: any) => ({
                   value: i.id,
-                  label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
+                  label: uiLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
                 })),
               { value: "__other__", label: t("dashboard.wizard.otherIndustry", "Lainnya (ketik spesialisasi)...") },
             ]}
@@ -791,6 +793,7 @@ export function SiteWizard({
   const device = useWizardDevice();
 
   const wizardLang = chat.siteLanguage || (locale === "en" ? "en" : "id");
+  const uiLang = locale === "en" ? "en" : "id";
   const { businessTypes: dynamicBusinessTypes, subTypes: dynamicSubTypes } = useTaxonomy(wizardLang);
   // v2 taxonomy — industries grouped by Bidang, used for sub-type chips
   const { data: taxonomyV2, getIndustryLabel } = useTaxonomyV2(wizardLang);
@@ -1779,6 +1782,7 @@ export function SiteWizard({
                   chat={chat}
                   taxonomyV2={taxonomyV2}
                   wizardLang={wizardLang}
+                  uiLang={uiLang}
                   onChangeCategory={() => {
                     chat.setMessages((prev) => prev.filter((msg) => msg.id !== m.id));
                     chat.showManualPicker();
@@ -1803,7 +1807,7 @@ export function SiteWizard({
                   .flatMap((g) => g.industries)
                   .find((i) => i.id === v2IndustryId);
                 if (entry) {
-                  const lbl = wizardLang === "en" ? (entry.label_en || entry.label) : (entry.label_id || entry.label);
+                  const lbl = uiLang === "en" ? (entry.label_en || entry.label) : (entry.label_id || entry.label);
                   v2IndustryChip = { value: v2IndustryId, label: lbl, emoji: entry.emoji };
                   // Supplement with catalog industries for same archetype/group so user can switch
                   const sameGroup = taxonomyV2.groups.find((g) =>
@@ -1812,7 +1816,7 @@ export function SiteWizard({
                   if (sameGroup) {
                     availableSubTypes = sameGroup.industries.map((i) => ({
                       value: i.id,
-                      label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
+                      label: uiLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
                       emoji: i.emoji ?? "🏷️",
                     }));
                   }
@@ -1913,7 +1917,7 @@ export function SiteWizard({
   const bidangChips = taxonomyV2
     ? taxonomyV2.groups.map((g) => ({
         value: g.id,
-        label: wizardLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label),
+        label: uiLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label),
         emoji: g.emoji ?? "🏷️",
       }))
     : [];
@@ -1929,7 +1933,7 @@ export function SiteWizard({
                     subTypes = sorted.map((i) => ({
                       value: i.id,
                       kind: "v2" as const,
-                      label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
+                      label: uiLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
                       emoji: i.emoji ?? "🏷️",
                     }));
                   }
@@ -1938,7 +1942,7 @@ export function SiteWizard({
                   subTypes = archetypeIndustries.map((i) => ({
                     value: i.id,
                     kind: "v2" as const,
-                    label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
+                    label: uiLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
                     emoji: i.emoji ?? "🏷️",
                   }));
                 }
@@ -1971,7 +1975,7 @@ export function SiteWizard({
                       {t("dashboard.wizard.notThisType", "Bukan ini? Pilih kategori lain")}
                     </button>
                   )}
-                  
+
   {showBidangStep && (
     <>
       <p className="text-[10px] font-semibold text-slate-400 mb-2 px-0.5">{t("dashboard.wizard.selectSector", "Pilih bidang usaha:")}</p>
@@ -2248,7 +2252,7 @@ export function SiteWizard({
               const tcBidangChips = taxonomyV2
                 ? taxonomyV2.groups.map((g) => ({
                     value: g.id,
-                    label: wizardLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label),
+                    label: uiLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label),
                     emoji: g.emoji ?? "🏷️",
                   }))
                 : [];
@@ -2261,7 +2265,7 @@ export function SiteWizard({
                     const sorted = [...grp.industries].sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99));
                     subTypes = sorted.map((i) => ({
                       value: i.id,
-                      label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
+                      label: uiLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
                       emoji: i.emoji ?? "🏷️",
                       kind: "v2" as const,
                     }));
@@ -2269,7 +2273,7 @@ export function SiteWizard({
                 } else if (!tcNeedsBidang && tcArchetype && taxonomyV2) {
                   subTypes = tcArchIndustries.map((i) => ({
                     value: i.id,
-                    label: wizardLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
+                    label: uiLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
                     emoji: i.emoji ?? "🏷️",
                     kind: "v2" as const,
                   }));
@@ -2345,7 +2349,7 @@ export function SiteWizard({
 
                   {(subTypes || tcShowBidang) && !isLocked && (
                     <div ref={chat.subTypeRef} className="animate-in fade-in slide-in-from-bottom-1 duration-300">
-                      
+
                       {tcShowBidang && (
                         <>
                           <p className="text-[10px] font-semibold text-slate-400 mb-2 px-0.5">{t("dashboard.wizard.selectSector", "Pilih bidang usaha:")}</p>

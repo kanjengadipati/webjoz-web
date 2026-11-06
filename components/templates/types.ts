@@ -384,6 +384,7 @@ export interface TemplateProps {
       items: TestimonialItem[];
       variant?: string;
       subtitle?: string;
+      _is_example?: boolean;
     };
     faq: {
       title: string;
