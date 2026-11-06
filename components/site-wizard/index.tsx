@@ -1971,7 +1971,7 @@ export function SiteWizard({
                       {t("dashboard.wizard.notThisType", "Bukan ini? Pilih kategori lain")}
                     </button>
                   )}
-                  <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">{t("dashboard.wizard.moreSpecific", "Lebih spesifik:")}</p>
+                  
   {showBidangStep && (
     <>
       <p className="text-[10px] font-semibold text-slate-400 mb-2 px-0.5">{t("dashboard.wizard.selectSector", "Pilih bidang usaha:")}</p>
@@ -2345,7 +2345,7 @@ export function SiteWizard({
 
                   {(subTypes || tcShowBidang) && !isLocked && (
                     <div ref={chat.subTypeRef} className="animate-in fade-in slide-in-from-bottom-1 duration-300">
-                      <p className="text-[10px] font-semibold text-slate-500 mb-2 px-0.5">{t("dashboard.wizard.moreSpecific", "Lebih spesifik:")}</p>
+                      
                       {tcShowBidang && (
                         <>
                           <p className="text-[10px] font-semibold text-slate-400 mb-2 px-0.5">{t("dashboard.wizard.selectSector", "Pilih bidang usaha:")}</p>

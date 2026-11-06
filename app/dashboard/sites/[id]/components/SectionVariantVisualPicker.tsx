@@ -652,6 +652,24 @@ function VariantWireframe({ section, variant }: { section: string; variant: stri
     );
   }
 
+  if (variant === "profile-cutout") {
+    return (
+      <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex items-end justify-between overflow-hidden relative">
+        <div className="space-y-1 flex-1 pr-1 pb-0.5">
+          <div className="w-2/3 h-1.5 rounded-full bg-white" />
+          <div className="w-1/2 h-1 rounded-full bg-slate-400" />
+          <div className="w-5/6 h-3 rounded bg-primary/70 border border-primary/40 flex items-center px-1">
+            <div className="w-3/4 h-0.5 rounded-full bg-white/80" />
+          </div>
+        </div>
+        <div className="w-8 h-12 rounded-t-full bg-gradient-to-t from-primary/60 to-slate-600 border-t border-x border-primary/50 flex flex-col items-center justify-start pt-1 shrink-0">
+          <div className="w-3 h-3 rounded-full bg-white/70" />
+          <div className="w-5 h-6 rounded-t-lg bg-white/40 mt-0.5" />
+        </div>
+      </div>
+    );
+  }
+
   if (variant === "personal-billboard" || variant === "portrait-showcase") {
     return (
       <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex items-center gap-2 overflow-hidden">

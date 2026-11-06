@@ -17,6 +17,7 @@ import HeroBentoGrid from "./bento-grid";
 import HeroSplitEditorial from "./split-editorial";
 import HeroNaturalOrganic from "./natural-organic";
 import HeroPersonalBillboard from "./personal-billboard";
+import HeroProfileCutout from "./profile-cutout";
 import HeroPortraitShowcase from "./portrait-showcase";
 import HeroWorkPreviewStrip from "./work-preview-strip";
 import HeroChronologyBadge from "./chronology-badge";
@@ -50,8 +51,9 @@ const variants: Record<HeroStyle | "carousel", ComponentType<HeroVariantProps>> 
   "bento-grid": HeroBentoGrid,
   "split-editorial": HeroSplitEditorial,
   "natural-organic": HeroNaturalOrganic,
-  // Portfolio & personal-brand (4)
+  // Portfolio & personal-brand (5)
   "personal-billboard": HeroPersonalBillboard,
+  "profile-cutout": HeroProfileCutout,
   "portrait-showcase": HeroPortraitShowcase,
   "work-preview-strip": HeroWorkPreviewStrip,
   "chronology-badge": HeroChronologyBadge,

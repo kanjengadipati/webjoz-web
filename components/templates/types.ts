@@ -344,6 +344,7 @@ export interface TemplateProps {
       cta_secondary_text?: string;
       cta_secondary_url?: string;
       badge_text?: string;
+      description?: string;
       stats?: Array<{ value: string; label: string }>;
       opening_hours?: string;
       launch_label?: string;

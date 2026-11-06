@@ -2330,6 +2330,7 @@ export interface Translations {
       heroSplitEditorial: string;
       heroNaturalOrganic: string;
       heroPersonalBillboard: string;
+      heroProfileCutout: string;
       heroPortraitShowcase: string;
       heroWorkPreviewStrip: string;
       heroChronologyBadge: string;
@@ -3382,7 +3383,6 @@ export interface Translations {
       inferenceHint: string;
       notThisType: string;
       changeSubType: string;
-      moreSpecific: string;
       otherSubType: string;
       otherSubTypePlaceholder: string;
       chooseMoodHint: string;
@@ -5855,6 +5855,7 @@ export const translations: Record<Locale, Translations> = {
         heroSplitEditorial: "Hero: Editorial Split",
         heroNaturalOrganic: "Hero: Natural Organik",
         heroPersonalBillboard: "Hero: Billboard Personal",
+        heroProfileCutout: "Hero: Profil Cutout",
         heroPortraitShowcase: "Hero: Showcase Potret",
         heroWorkPreviewStrip: "Hero: Strip Karya Unggulan",
         heroChronologyBadge: "Hero: Badge Kronologi",
@@ -6896,7 +6897,6 @@ export const translations: Record<Locale, Translations> = {
         inferenceHint: "Klik untuk lanjut, atau pilih kategori lain",
         notThisType: "Bukan ini? Pilih kategori lain",
         changeSubType: "Pilih jenis lain",
-        moreSpecific: "Lebih spesifik:",
         otherSubType: "Lainnya",
         otherSubTypePlaceholder: "Tulis sub-kategori spesifik...",
         chooseMoodHint: "Pilih mood yang sesuai dengan brand Anda",
@@ -9537,6 +9537,7 @@ export const translations: Record<Locale, Translations> = {
         heroSplitEditorial: "Hero: Editorial Split",
         heroNaturalOrganic: "Hero: Natural Organic",
         heroPersonalBillboard: "Hero: Personal Billboard",
+        heroProfileCutout: "Hero: Profile Cutout",
         heroPortraitShowcase: "Hero: Portrait Showcase",
         heroWorkPreviewStrip: "Hero: Featured Work Strip",
         heroChronologyBadge: "Hero: Chronology Badge",
@@ -10578,7 +10579,6 @@ export const translations: Record<Locale, Translations> = {
         inferenceHint: "Tap to continue, or choose a different category",
         notThisType: "Not this? Choose another category",
         changeSubType: "Choose another type",
-        moreSpecific: "More specific:",
         otherSubType: "Other",
         otherSubTypePlaceholder: "Enter your specific business sub-type...",
         chooseMoodHint: "Choose a mood that fits your brand",
