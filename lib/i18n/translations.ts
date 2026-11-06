@@ -2255,7 +2255,8 @@ export interface Translations {
       testimonialsExampleBanner: string;
       testimonialsCollect: string;
       testimonialsConfirmReal: string;
-      testimonialsConfirmPrompt: string;      headingFontLabel: string;
+      testimonialsConfirmPrompt: string;
+      headingFontLabel: string;
       bodyFontLabel: string;
       brandAccentLabel: string;
       resetDefaultFont: string;
@@ -3008,139 +3009,249 @@ export interface Translations {
       preloaderIconLogo: string;
       preloaderChooseIcon: string;
       // Variant labels & descriptions — hero-effect
-      variantHeroEffectModernGrid: string; variantHeroEffectModernGridDesc: string;
-      variantHeroEffectGlass: string;      variantHeroEffectGlassDesc: string;
-      variantHeroEffectNeoBrut: string;    variantHeroEffectNeoBrutDesc: string;
-      variantHeroEffectScanlines: string;  variantHeroEffectScanlinesDesc: string;
-      variantHeroEffectStarfield: string;  variantHeroEffectStarfieldDesc: string;
-      variantHeroEffectRetroPaper: string; variantHeroEffectRetroPaperDesc: string;
+      variantHeroEffectModernGrid: string;
+      variantHeroEffectModernGridDesc: string;
+      variantHeroEffectGlass: string;
+      variantHeroEffectGlassDesc: string;
+      variantHeroEffectNeoBrut: string;
+      variantHeroEffectNeoBrutDesc: string;
+      variantHeroEffectScanlines: string;
+      variantHeroEffectScanlinesDesc: string;
+      variantHeroEffectStarfield: string;
+      variantHeroEffectStarfieldDesc: string;
+      variantHeroEffectRetroPaper: string;
+      variantHeroEffectRetroPaperDesc: string;
       // about
-      variantAboutClassic: string;    variantAboutClassicDesc: string;
-      variantAboutSplitImage: string; variantAboutSplitImageDesc: string;
-      variantAboutStatHeavy: string;  variantAboutStatHeavyDesc: string;
-      variantAboutTimeline: string;   variantAboutTimelineDesc: string;
-      variantAboutTeamGrid: string;   variantAboutTeamGridDesc: string;
+      variantAboutClassic: string;
+      variantAboutClassicDesc: string;
+      variantAboutSplitImage: string;
+      variantAboutSplitImageDesc: string;
+      variantAboutStatHeavy: string;
+      variantAboutStatHeavyDesc: string;
+      variantAboutTimeline: string;
+      variantAboutTimelineDesc: string;
+      variantAboutTeamGrid: string;
+      variantAboutTeamGridDesc: string;
       // benefits
-      variantBenefitsGrid: string;             variantBenefitsGridDesc: string;
-      variantBenefitsFeaturedGrid: string;     variantBenefitsFeaturedGridDesc: string;
-      variantBenefitsIconRow: string;          variantBenefitsIconRowDesc: string;
-      variantBenefitsStatGrid: string;         variantBenefitsStatGridDesc: string;
-      variantBenefitsChecklist: string;        variantBenefitsChecklistDesc: string;
-      variantBenefitsComparisonTable: string;  variantBenefitsComparisonTableDesc: string;
-      variantBenefitsBentoGrid: string;        variantBenefitsBentoGridDesc: string;
-      variantBenefitsTrustBar: string;         variantBenefitsTrustBarDesc: string;
-      variantBenefitsHowItWorks: string;       variantBenefitsHowItWorksDesc: string;
+      variantBenefitsGrid: string;
+      variantBenefitsGridDesc: string;
+      variantBenefitsFeaturedGrid: string;
+      variantBenefitsFeaturedGridDesc: string;
+      variantBenefitsIconRow: string;
+      variantBenefitsIconRowDesc: string;
+      variantBenefitsStatGrid: string;
+      variantBenefitsStatGridDesc: string;
+      variantBenefitsChecklist: string;
+      variantBenefitsChecklistDesc: string;
+      variantBenefitsComparisonTable: string;
+      variantBenefitsComparisonTableDesc: string;
+      variantBenefitsBentoGrid: string;
+      variantBenefitsBentoGridDesc: string;
+      variantBenefitsTrustBar: string;
+      variantBenefitsTrustBarDesc: string;
+      variantBenefitsHowItWorks: string;
+      variantBenefitsHowItWorksDesc: string;
       // testimonials
-      variantTestimonialsCarousel: string;           variantTestimonialsCarouselDesc: string;
-      variantTestimonialsCompact: string;            variantTestimonialsCompactDesc: string;
-      variantTestimonialsGrid: string;               variantTestimonialsGridDesc: string;
-      variantTestimonialsLogoWall: string;           variantTestimonialsLogoWallDesc: string;
-      variantTestimonialsFeaturedSpotlight: string;  variantTestimonialsFeaturedSpotlightDesc: string;
-      variantTestimonialsGoogleReviews: string;      variantTestimonialsGoogleReviewsDesc: string;
+      variantTestimonialsCarousel: string;
+      variantTestimonialsCarouselDesc: string;
+      variantTestimonialsCompact: string;
+      variantTestimonialsCompactDesc: string;
+      variantTestimonialsGrid: string;
+      variantTestimonialsGridDesc: string;
+      variantTestimonialsLogoWall: string;
+      variantTestimonialsLogoWallDesc: string;
+      variantTestimonialsFeaturedSpotlight: string;
+      variantTestimonialsFeaturedSpotlightDesc: string;
+      variantTestimonialsGoogleReviews: string;
+      variantTestimonialsGoogleReviewsDesc: string;
       variantTestimonialsVideoWallDesc: string;
       // cta
-      variantCtaBanner: string;         variantCtaBannerDesc: string;
-      variantCtaCard: string;           variantCtaCardDesc: string;
-      variantCtaCentered: string;       variantCtaCenteredDesc: string;
-      variantCtaSplitImage: string;     variantCtaSplitImageDesc: string;
-      variantCtaInlineLeadForm: string; variantCtaInlineLeadFormDesc: string;
+      variantCtaBanner: string;
+      variantCtaBannerDesc: string;
+      variantCtaCard: string;
+      variantCtaCardDesc: string;
+      variantCtaCentered: string;
+      variantCtaCenteredDesc: string;
+      variantCtaSplitImage: string;
+      variantCtaSplitImageDesc: string;
+      variantCtaInlineLeadForm: string;
+      variantCtaInlineLeadFormDesc: string;
       // faq
-      variantFaqAccordion: string;        variantFaqAccordionDesc: string;
-      variantFaqSimple: string;           variantFaqSimpleDesc: string;
-      variantFaqColumns: string;          variantFaqColumnsDesc: string;
-      variantFaqSidebarCategory: string;  variantFaqSidebarCategoryDesc: string;
-      variantFaqTwoColumnGrid: string;    variantFaqTwoColumnGridDesc: string;
-      variantFaqChatBubble: string;       variantFaqChatBubbleDesc: string;
+      variantFaqAccordion: string;
+      variantFaqAccordionDesc: string;
+      variantFaqSimple: string;
+      variantFaqSimpleDesc: string;
+      variantFaqColumns: string;
+      variantFaqColumnsDesc: string;
+      variantFaqSidebarCategory: string;
+      variantFaqSidebarCategoryDesc: string;
+      variantFaqTwoColumnGrid: string;
+      variantFaqTwoColumnGridDesc: string;
+      variantFaqChatBubble: string;
+      variantFaqChatBubbleDesc: string;
       // gallery
-      variantGalleryGrid: string;          variantGalleryGridDesc: string;
-      variantGalleryMasonry: string;       variantGalleryMasonryDesc: string;
-      variantGalleryCarousel: string;      variantGalleryCarouselDesc: string;
-      variantGalleryLightboxStory: string; variantGalleryLightboxStoryDesc: string;
-      variantGalleryBeforeAfter: string;   variantGalleryBeforeAfterDesc: string;
+      variantGalleryGrid: string;
+      variantGalleryGridDesc: string;
+      variantGalleryMasonry: string;
+      variantGalleryMasonryDesc: string;
+      variantGalleryCarousel: string;
+      variantGalleryCarouselDesc: string;
+      variantGalleryLightboxStory: string;
+      variantGalleryLightboxStoryDesc: string;
+      variantGalleryBeforeAfter: string;
+      variantGalleryBeforeAfterDesc: string;
       variantGalleryVideoGridDesc: string;
       // works
-      variantWorksGrid: string;             variantWorksGridDesc: string;
-      variantWorksMasonry: string;          variantWorksMasonryDesc: string;
-      variantWorksFeaturedGrid: string;     variantWorksFeaturedGridDesc: string;
-      variantWorksShowcaseFeatured: string; variantWorksShowcaseFeaturedDesc: string;
+      variantWorksGrid: string;
+      variantWorksGridDesc: string;
+      variantWorksMasonry: string;
+      variantWorksMasonryDesc: string;
+      variantWorksFeaturedGrid: string;
+      variantWorksFeaturedGridDesc: string;
+      variantWorksShowcaseFeatured: string;
+      variantWorksShowcaseFeaturedDesc: string;
       // stats
-      variantStatsCounterRow: string;          variantStatsCounterRowDesc: string;
-      variantStatsCardGrid: string;            variantStatsCardGridDesc: string;
-      variantStatsMinimalSplit: string;        variantStatsMinimalSplitDesc: string;
-      variantStatsBigNumberSpotlight: string;  variantStatsBigNumberSpotlightDesc: string;
+      variantStatsCounterRow: string;
+      variantStatsCounterRowDesc: string;
+      variantStatsCardGrid: string;
+      variantStatsCardGridDesc: string;
+      variantStatsMinimalSplit: string;
+      variantStatsMinimalSplitDesc: string;
+      variantStatsBigNumberSpotlight: string;
+      variantStatsBigNumberSpotlightDesc: string;
       // partners
-      variantPartnersLogoWall: string;           variantPartnersLogoWallDesc: string;
-      variantPartnersMarquee: string;            variantPartnersMarqueeDesc: string;
-      variantPartnersPillGrid: string;           variantPartnersPillGridDesc: string;
-      variantPartnersFeaturedCollabGrid: string; variantPartnersFeaturedCollabGridDesc: string;
+      variantPartnersLogoWall: string;
+      variantPartnersLogoWallDesc: string;
+      variantPartnersMarquee: string;
+      variantPartnersMarqueeDesc: string;
+      variantPartnersPillGrid: string;
+      variantPartnersPillGridDesc: string;
+      variantPartnersFeaturedCollabGrid: string;
+      variantPartnersFeaturedCollabGridDesc: string;
       // pricing
-      variantPricingCards: string;               variantPricingCardsDesc: string;
-      variantPricingHorizontalRows: string;      variantPricingHorizontalRowsDesc: string;
-      variantPricingComparisonTable: string;     variantPricingComparisonTableDesc: string;
-      variantPricingSingleTierHighlight: string; variantPricingSingleTierHighlightDesc: string;
+      variantPricingCards: string;
+      variantPricingCardsDesc: string;
+      variantPricingHorizontalRows: string;
+      variantPricingHorizontalRowsDesc: string;
+      variantPricingComparisonTable: string;
+      variantPricingComparisonTableDesc: string;
+      variantPricingSingleTierHighlight: string;
+      variantPricingSingleTierHighlightDesc: string;
       // menu
-      variantMenuGrid: string;                   variantMenuGridDesc: string;
-      variantMenuCompact: string;                variantMenuCompactDesc: string;
-      variantMenuCards: string;                  variantMenuCardsDesc: string;
-      variantMenuTextList: string;               variantMenuTextListDesc: string;
-      variantMenuCompactList: string;            variantMenuCompactListDesc: string;
-      variantMenuTabsByCategory: string;         variantMenuTabsByCategoryDesc: string;
-      variantMenuAccordionByCategory: string;    variantMenuAccordionByCategoryDesc: string;
-      variantMenuBentoPhotoGrid: string;         variantMenuBentoPhotoGridDesc: string;
-      variantMenuVisualShowcaseHero: string;     variantMenuVisualShowcaseHeroDesc: string;
-      variantMenuSidebarScrollspyPhoto: string;  variantMenuSidebarScrollspyPhotoDesc: string;
+      variantMenuGrid: string;
+      variantMenuGridDesc: string;
+      variantMenuCompact: string;
+      variantMenuCompactDesc: string;
+      variantMenuCards: string;
+      variantMenuCardsDesc: string;
+      variantMenuTextList: string;
+      variantMenuTextListDesc: string;
+      variantMenuCompactList: string;
+      variantMenuCompactListDesc: string;
+      variantMenuTabsByCategory: string;
+      variantMenuTabsByCategoryDesc: string;
+      variantMenuAccordionByCategory: string;
+      variantMenuAccordionByCategoryDesc: string;
+      variantMenuBentoPhotoGrid: string;
+      variantMenuBentoPhotoGridDesc: string;
+      variantMenuVisualShowcaseHero: string;
+      variantMenuVisualShowcaseHeroDesc: string;
+      variantMenuSidebarScrollspyPhoto: string;
+      variantMenuSidebarScrollspyPhotoDesc: string;
       variantMenuCarouselDesc: string;
       variantMenuMasonryDesc: string;
       // catalog
-      variantCatalogGrid: string;                variantCatalogGridDesc: string;
-      variantCatalogCompact: string;             variantCatalogCompactDesc: string;
-      variantCatalogCards: string;               variantCatalogCardsDesc: string;
-      variantCatalogGridDense: string;           variantCatalogGridDenseDesc: string;
-      variantCatalogShowcaseFeatured: string;    variantCatalogShowcaseFeaturedDesc: string;
-      variantCatalogTabsByCategory: string;      variantCatalogTabsByCategoryDesc: string;
-      variantCatalogEditorialGrid: string;       variantCatalogEditorialGridDesc: string;
-      variantCatalogMasonryFlow: string;         variantCatalogMasonryFlowDesc: string;
-      variantCatalogInstagramGrid: string;       variantCatalogInstagramGridDesc: string;
-      variantCatalogSplitHero: string;           variantCatalogSplitHeroDesc: string;
-      variantCatalogNeoBrutalist: string;        variantCatalogNeoBrutalistDesc: string;
-      variantCatalogHorizontalCarousel: string;  variantCatalogHorizontalCarouselDesc: string;
+      variantCatalogGrid: string;
+      variantCatalogGridDesc: string;
+      variantCatalogCompact: string;
+      variantCatalogCompactDesc: string;
+      variantCatalogCards: string;
+      variantCatalogCardsDesc: string;
+      variantCatalogGridDense: string;
+      variantCatalogGridDenseDesc: string;
+      variantCatalogShowcaseFeatured: string;
+      variantCatalogShowcaseFeaturedDesc: string;
+      variantCatalogTabsByCategory: string;
+      variantCatalogTabsByCategoryDesc: string;
+      variantCatalogEditorialGrid: string;
+      variantCatalogEditorialGridDesc: string;
+      variantCatalogMasonryFlow: string;
+      variantCatalogMasonryFlowDesc: string;
+      variantCatalogInstagramGrid: string;
+      variantCatalogInstagramGridDesc: string;
+      variantCatalogSplitHero: string;
+      variantCatalogSplitHeroDesc: string;
+      variantCatalogNeoBrutalist: string;
+      variantCatalogNeoBrutalistDesc: string;
+      variantCatalogHorizontalCarousel: string;
+      variantCatalogHorizontalCarouselDesc: string;
       variantCatalogProductTableDesc: string;
       variantCatalogSpotlightDesc: string;
       // contact
-      variantContactClassicSplit: string;    variantContactClassicSplitDesc: string;
-      variantContactWhatsAppDirect: string;  variantContactWhatsAppDirectDesc: string;
-      variantContactBentoGrid: string;       variantContactBentoGridDesc: string;
-      variantContactOverlayMap: string;      variantContactOverlayMapDesc: string;
-      variantContactDarkSplit: string;       variantContactDarkSplitDesc: string;
-      variantContactMinimalCentered: string; variantContactMinimalCenteredDesc: string;
+      variantContactClassicSplit: string;
+      variantContactClassicSplitDesc: string;
+      variantContactWhatsAppDirect: string;
+      variantContactWhatsAppDirectDesc: string;
+      variantContactBentoGrid: string;
+      variantContactBentoGridDesc: string;
+      variantContactOverlayMap: string;
+      variantContactOverlayMapDesc: string;
+      variantContactDarkSplit: string;
+      variantContactDarkSplitDesc: string;
+      variantContactMinimalCentered: string;
+      variantContactMinimalCenteredDesc: string;
       // header
-      variantHeaderLeftLogoInlineNav: string;  variantHeaderLeftLogoInlineNavDesc: string;
-      variantHeaderCenteredLogo: string;       variantHeaderCenteredLogoDesc: string;
-      variantHeaderTransparentOverlay: string; variantHeaderTransparentOverlayDesc: string;
-      variantHeaderLogoWithCtaButton: string;  variantHeaderLogoWithCtaButtonDesc: string;
-      variantHeaderStackedLogoTagline: string; variantHeaderStackedLogoTaglineDesc: string;
+      variantHeaderLeftLogoInlineNav: string;
+      variantHeaderLeftLogoInlineNavDesc: string;
+      variantHeaderCenteredLogo: string;
+      variantHeaderCenteredLogoDesc: string;
+      variantHeaderTransparentOverlay: string;
+      variantHeaderTransparentOverlayDesc: string;
+      variantHeaderLogoWithCtaButton: string;
+      variantHeaderLogoWithCtaButtonDesc: string;
+      variantHeaderStackedLogoTagline: string;
+      variantHeaderStackedLogoTaglineDesc: string;
       // footer
-      variantFooterMinimalBand: string;       variantFooterMinimalBandDesc: string;
-      variantFooterColumnsWithNav: string;    variantFooterColumnsWithNavDesc: string;
-      variantFooterColumnsWithSocial: string; variantFooterColumnsWithSocialDesc: string;
-      variantFooterDarkContrastBand: string;  variantFooterDarkContrastBandDesc: string;
-      variantFooterLocationAndHours: string;  variantFooterLocationAndHoursDesc: string;
+      variantFooterMinimalBand: string;
+      variantFooterMinimalBandDesc: string;
+      variantFooterColumnsWithNav: string;
+      variantFooterColumnsWithNavDesc: string;
+      variantFooterColumnsWithSocial: string;
+      variantFooterColumnsWithSocialDesc: string;
+      variantFooterDarkContrastBand: string;
+      variantFooterDarkContrastBandDesc: string;
+      variantFooterLocationAndHours: string;
+      variantFooterLocationAndHoursDesc: string;
       // blog
-      variantBlogGrid: string;    variantBlogGridDesc: string;
-      variantBlogList: string;    variantBlogListDesc: string;
-      variantBlogFeatured: string;variantBlogFeaturedDesc: string;
-      variantBlogMinimal: string; variantBlogMinimalDesc: string;
+      variantBlogGrid: string;
+      variantBlogGridDesc: string;
+      variantBlogList: string;
+      variantBlogListDesc: string;
+      variantBlogFeatured: string;
+      variantBlogFeaturedDesc: string;
+      variantBlogMinimal: string;
+      variantBlogMinimalDesc: string;
       // preloader
-      variantPreloaderNone: string;           variantPreloaderNoneDesc: string;
-      variantPreloaderTopBar: string;         variantPreloaderTopBarDesc: string;
-      variantPreloaderMinimalFade: string;    variantPreloaderMinimalFadeDesc: string;
-      variantPreloaderMinimalSpinner: string; variantPreloaderMinimalSpinnerDesc: string;
-      variantPreloaderMinimalCounter: string; variantPreloaderMinimalCounterDesc: string;
-      variantPreloaderPulseLogo: string;      variantPreloaderPulseLogoDesc: string;
-      variantPreloaderOrbitRing: string;      variantPreloaderOrbitRingDesc: string;
-      variantPreloaderProgressLine: string;   variantPreloaderProgressLineDesc: string;
-      variantPreloaderShimmerReveal: string;  variantPreloaderShimmerRevealDesc: string;
-      variantPreloaderStaggerDots: string;    variantPreloaderStaggerDotsDesc: string;
+      variantPreloaderNone: string;
+      variantPreloaderNoneDesc: string;
+      variantPreloaderTopBar: string;
+      variantPreloaderTopBarDesc: string;
+      variantPreloaderMinimalFade: string;
+      variantPreloaderMinimalFadeDesc: string;
+      variantPreloaderMinimalSpinner: string;
+      variantPreloaderMinimalSpinnerDesc: string;
+      variantPreloaderMinimalCounter: string;
+      variantPreloaderMinimalCounterDesc: string;
+      variantPreloaderPulseLogo: string;
+      variantPreloaderPulseLogoDesc: string;
+      variantPreloaderOrbitRing: string;
+      variantPreloaderOrbitRingDesc: string;
+      variantPreloaderProgressLine: string;
+      variantPreloaderProgressLineDesc: string;
+      variantPreloaderShimmerReveal: string;
+      variantPreloaderShimmerRevealDesc: string;
+      variantPreloaderStaggerDots: string;
+      variantPreloaderStaggerDotsDesc: string;
       phNavCta: string;
       phTagline: string;
       phIconName: string;
@@ -3230,16 +3341,30 @@ export interface Translations {
       heroAccessorySkillTags: string;
       heroAccessoryRating: string;
       heroAccessoryMenuHighlight: string;
-      aiAboutTitlePrompt: string; aiAboutTitleLabel: string; aiAboutTitleBtn: string;
-      aiAboutBodyPrompt: string;  aiAboutBodyLabel: string;  aiAboutBodyBtn: string;
-      aiHeroHeadlinePrompt: string; aiHeroHeadlineLabel: string; aiHeroHeadlineBtn: string;
-      aiHeroSubheadlinePrompt: string; aiHeroSubheadlineLabel: string; aiHeroSubheadlineBtn: string;
-      aiCtaHeadlinePrompt: string; aiCtaHeadlineLabel: string; aiCtaHeadlineBtn: string;
+      aiAboutTitlePrompt: string;
+      aiAboutTitleLabel: string;
+      aiAboutTitleBtn: string;
+      aiAboutBodyPrompt: string;
+      aiAboutBodyLabel: string;
+      aiAboutBodyBtn: string;
+      aiHeroHeadlinePrompt: string;
+      aiHeroHeadlineLabel: string;
+      aiHeroHeadlineBtn: string;
+      aiHeroSubheadlinePrompt: string;
+      aiHeroSubheadlineLabel: string;
+      aiHeroSubheadlineBtn: string;
+      aiCtaHeadlinePrompt: string;
+      aiCtaHeadlineLabel: string;
+      aiCtaHeadlineBtn: string;
       gallerySectionBannerDesc2: string;
-      galleryLayoutGridDesc: string; galleryLayoutMasonryDesc: string; galleryLayoutCarouselDesc: string;
+      galleryLayoutGridDesc: string;
+      galleryLayoutMasonryDesc: string;
+      galleryLayoutCarouselDesc: string;
       galleryCarouselSettingsLabel: string;
-      floatingWhatsAppDescLong: string; floatingWhatsAppPillDescLong: string;
-      floatingChatBubbleDescLong: string; floatingChatBubbleProRequired: string;
+      floatingWhatsAppDescLong: string;
+      floatingWhatsAppPillDescLong: string;
+      floatingChatBubbleDescLong: string;
+      floatingChatBubbleProRequired: string;
       floatingContactLinkDescLong: string;
     };
     wizard: {
@@ -3518,38 +3643,62 @@ export interface Translations {
 export const translations: Record<Locale, Translations> = {
   id: {
     landing: {
-      heroTitle: 'Generate website <br className="lg:hidden" />instan.<br /><span class="inline-block text-[0.6em] sm:text-[0.68em] lg:text-[0.62em] font-extrabold tracking-tight bg-primary text-primary-foreground dark:bg-white dark:text-black px-3.5 py-1 sm:px-5 sm:py-1.5 rounded-none mt-2 sm:mt-2.5 shadow-lg">Custom tanpa batas.</span>',
-      heroSubtitle: 'Hanya butuh <strong class="text-foreground font-bold">chat singkat</strong>, <strong class="text-foreground font-bold">tanpa coding</strong> —<br />website bisnis Anda <strong class="text-foreground font-bold">langsung live</strong> siap pakai.',
+      heroTitle:
+        'Generate website <br className="lg:hidden" />instan.<br /><span class="inline-block text-[0.6em] sm:text-[0.68em] lg:text-[0.62em] font-extrabold tracking-tight bg-primary text-primary-foreground dark:bg-white dark:text-black px-3.5 py-1 sm:px-5 sm:py-1.5 rounded-none mt-2 sm:mt-2.5 shadow-lg">Custom tanpa batas.</span>',
+      heroSubtitle:
+        'Hanya butuh <strong class="text-foreground font-bold">chat singkat</strong>, <strong class="text-foreground font-bold">tanpa coding</strong> —<br />website bisnis Anda <strong class="text-foreground font-bold">langsung live</strong> siap pakai.',
       heroSubtitleBold: "",
       ctaPrimary: "Buat Website Sekarang",
       ctaFloating: "Buat Website Sekarang",
       tryFree: "100% Gratis",
       chatNotForm: "Chat AI, bukan form",
       activeInMinutes: "Langsung Jadi",
-      howItWorksTitle: 'Dari chat ke website dalam <span class="text-primary">4 langkah mudah</span>',
+      howItWorksTitle:
+        'Dari chat ke website dalam <span class="text-primary">4 langkah mudah</span>',
       howItWorksSubtitle: "CARA KERJANYA",
       howItWorksCta: "Coba Sekarang — Gratis",
       featuresEyebrow: "FITUR UNGGULAN",
-      featuresTitle: 'Lebih dari sekadar <span class="text-primary">website biasa</span>',
+      featuresTitle:
+        'Lebih dari sekadar <span class="text-primary">website biasa</span>',
       featuresTitleAccent: "website biasa",
       dashboardBadge: "Dashboard",
       dashboardTitle: "Pantau & kembangkan bisnis Anda",
-      dashboardDesc: "Dashboard lengkap dengan analytics pengunjung, manajemen leads, dan daftar website dalam satu tempat.",
-      dashboardTags: ["Analytics real-time", "Manajemen leads", "Daftar website"],
+      dashboardDesc:
+        "Dashboard lengkap dengan analytics pengunjung, manajemen leads, dan daftar website dalam satu tempat.",
+      dashboardTags: [
+        "Analytics real-time",
+        "Manajemen leads",
+        "Daftar website",
+      ],
       domainBadge: "Domain & SEO",
       domainTitle: "Domain sendiri & SEO otomatis",
-      domainDesc: "Hubungkan domain custom Anda, SEO title/description, OG tags, JSON-LD, sitemap — semuanya diurus oleh AI.",
-      domainTags: ["Custom domain", "SEO otomatis", "Structured data", "Sitemap"],
+      domainDesc:
+        "Hubungkan domain custom Anda, SEO title/description, OG tags, JSON-LD, sitemap — semuanya diurus oleh AI.",
+      domainTags: [
+        "Custom domain",
+        "SEO otomatis",
+        "Structured data",
+        "Sitemap",
+      ],
       catalogBadge: "Katalog & Menu",
       catalogTitle: "Katalog produk & menu digital",
-      catalogDesc: "Tampilkan produk atau menu lengkap dengan foto, harga, dan deskripsi — pelanggan bisa langsung memesan tanpa aplikasi lain.",
-      catalogTags: ["Katalog produk", "Menu digital", "Pemesanan langsung", "Order WhatsApp"],
+      catalogDesc:
+        "Tampilkan produk atau menu lengkap dengan foto, harga, dan deskripsi — pelanggan bisa langsung memesan tanpa aplikasi lain.",
+      catalogTags: [
+        "Katalog produk",
+        "Menu digital",
+        "Pemesanan langsung",
+        "Order WhatsApp",
+      ],
       templatesEyebrow: "CONTOH HASIL AI",
-      templatesTitle: 'Website yang dihasilkan <span class="text-primary">untuk berbagai bisnis</span>',
+      templatesTitle:
+        'Website yang dihasilkan <span class="text-primary">untuk berbagai bisnis</span>',
       templatesTitleAccent: "untuk berbagai bisnis",
-      templatesDesc: "AI memilih template dan menulis konten secara otomatis. Ini contoh hasil untuk beberapa jenis bisnis.",
+      templatesDesc:
+        "AI memilih template dan menulis konten secara otomatis. Ini contoh hasil untuk beberapa jenis bisnis.",
       whyEyebrow: "KENAPA WEBJOZ",
-      whyTitle: 'Semua yang Anda butuhkan, <span class="text-primary">sudah tersedia</span>',
+      whyTitle:
+        'Semua yang Anda butuhkan, <span class="text-primary">sudah tersedia</span>',
       whyTitleAccent: "sudah tersedia",
       statsLabel1: "Waktu generate",
       statsValue1: "< 5 menit",
@@ -3576,12 +3725,14 @@ export const translations: Record<Locale, Translations> = {
       startFree: "Mulai Gratis",
       choosePlan: "Pilih {plan} ({cycle})",
       ctaBannerTitle: "Siap buat website bisnis Anda?",
-      ctaBannerDesc: "Mulai gratis sekarang. Tidak perlu kartu kredit — cukup chat singkat dengan AI dan website Anda siap.",
+      ctaBannerDesc:
+        "Mulai gratis sekarang. Tidak perlu kartu kredit — cukup chat singkat dengan AI dan website Anda siap.",
       ctaBannerCta: "Mulai Gratis Sekarang",
       ctaBannerWhatsapp: "Konsultasi via WhatsApp",
       ctaBannerHelper: "Butuh custom design atau company profile?",
       ctaBannerContact: "Hubungi tim kami",
-      footerCopyright: "© {year} Webjoz by Giwangan Studio. AI Website Builder untuk Bisnis Indonesia.",
+      footerCopyright:
+        "© {year} Webjoz by Giwangan Studio. AI Website Builder untuk Bisnis Indonesia.",
       footerPrivacy: "Kebijakan Privasi",
       footerTerms: "Syarat & Ketentuan",
       footerRefund: "Kebijakan Refund",
@@ -3592,33 +3743,47 @@ export const translations: Record<Locale, Translations> = {
       footerBlog: "Blog",
       footerHome: "Beranda",
       step1Title: "Kenalkan Bisnis Anda",
-      step1Desc: "Chat dengan AI dan beri tahu nama serta apa bisnis yang Anda jalankan. Semuanya lewat percakapan santai.",
+      step1Desc:
+        "Chat dengan AI dan beri tahu nama serta apa bisnis yang Anda jalankan. Semuanya lewat percakapan santai.",
       step2Title: "Berikan Detail Singkat",
-      step2Desc: "Ceritakan sedikit tentang layanan, area jangkauan, atau apa yang membuat bisnis Anda spesial.",
+      step2Desc:
+        "Ceritakan sedikit tentang layanan, area jangkauan, atau apa yang membuat bisnis Anda spesial.",
       step3Title: "Pilih Kategori & Mood",
-      step3Desc: "Pilih jenis industri dan suasana (mood) desain yang cocok agar AI bisa menyesuaikan tampilan website Anda.",
+      step3Desc:
+        "Pilih jenis industri dan suasana (mood) desain yang cocok agar AI bisa menyesuaikan tampilan website Anda.",
       step4Title: "Generate & Publikasikan",
-      step4Desc: "Website selesai dibuat dalam hitungan detik. Langsung review, edit bagian mana pun, dan publikasikan segera.",
+      step4Desc:
+        "Website selesai dibuat dalam hitungan detik. Langsung review, edit bagian mana pun, dan publikasikan segera.",
       featureChatTitle: "Chat AI, Bukan Form",
-      featureChatDesc: "Tidak perlu isi form panjang. Cukup chat dengan AI, semua konten dan desain dibuat otomatis.",
+      featureChatDesc:
+        "Tidak perlu isi form panjang. Cukup chat dengan AI, semua konten dan desain dibuat otomatis.",
       featureDomainTitle: "Custom Domain",
-      featureDomainDesc: "Hubungkan domain sendiri dengan panduan CNAME. Cocok untuk branding profesional perusahaan Anda.",
+      featureDomainDesc:
+        "Hubungkan domain sendiri dengan panduan CNAME. Cocok untuk branding profesional perusahaan Anda.",
       featureAnalyticsTitle: "Analytics & Leads",
-      featureAnalyticsDesc: "Pantau pengunjung website dan kumpulkan leads langsung dari form kontak — semuanya di satu dashboard.",
+      featureAnalyticsDesc:
+        "Pantau pengunjung website dan kumpulkan leads langsung dari form kontak — semuanya di satu dashboard.",
       featureEditTitle: "Edit Per Section",
-      featureEditDesc: "Tidak puas dengan bagian tertentu? Regenerate per section dengan AI, atau edit manual di editor.",
+      featureEditDesc:
+        "Tidak puas dengan bagian tertentu? Regenerate per section dengan AI, atau edit manual di editor.",
       featureCustomTitle: "Kustomisasi Penuh",
-      featureCustomDesc: "Hero, profil, layanan, testimoni, menu, FAQ, footer, hingga SEO — semua konten bisa diedit dan disesuaikan sendiri kapan saja.",
+      featureCustomDesc:
+        "Hero, profil, layanan, testimoni, menu, FAQ, footer, hingga SEO — semua konten bisa diedit dan disesuaikan sendiri kapan saja.",
       featureWaTitle: "WhatsApp Terintegrasi",
-      featureWaDesc: "Tombol WhatsApp otomatis terpasang di setiap website. Pelanggan bisa langsung chat dalam satu klik.",
+      featureWaDesc:
+        "Tombol WhatsApp otomatis terpasang di setiap website. Pelanggan bisa langsung chat dalam satu klik.",
       featureSeoTitle: "SEO Siap Pakai",
-      featureSeoDesc: "Title, description, OG tags, JSON-LD structured data, dan sitemap — semua sudah diurus oleh AI.",
+      featureSeoDesc:
+        "Title, description, OG tags, JSON-LD structured data, dan sitemap — semua sudah diurus oleh AI.",
       featureSubTitle: "Subdomain Instan",
-      featureSubDesc: "Setiap website langsung aktif di subdomain Webjoz. Tidak perlu setup server atau DNS manual.",
+      featureSubDesc:
+        "Setiap website langsung aktif di subdomain Webjoz. Tidak perlu setup server atau DNS manual.",
       featureCatalogTitle: "Katalog Produk",
-      featureCatalogDesc: "Tampilkan koleksi produk atau layanan Anda dengan katalog yang rapi, profesional, dan menarik.",
+      featureCatalogDesc:
+        "Tampilkan koleksi produk atau layanan Anda dengan katalog yang rapi, profesional, dan menarik.",
       featureMenuTitle: "Menu Jualan",
-      featureMenuDesc: "Mudahkan pelanggan memesan dengan fitur menu interaktif yang siap digunakan untuk bertransaksi.",
+      featureMenuDesc:
+        "Mudahkan pelanggan memesan dengan fitur menu interaktif yang siap digunakan untuk bertransaksi.",
       navHowItWorks: "Cara Kerja",
       navFeatures: "Fitur",
       navPricing: "Harga",
@@ -3648,7 +3813,8 @@ export const translations: Record<Locale, Translations> = {
       mockupSitesManage: "Kelola URL hasil generate (Super Admin)",
       mockupSitesClose: "Tutup Editor",
       mockupSitesTitle: "URL hasil generate website (dengan nama bisnis)",
-      mockupSitesHint: "Setiap baris berisi nama bisnis dan URL hasil generate. Website tampil di panel preview mockup satu per siklus, dan nama bisnisnya tampil di chat mockup. Kosongkan dan simpan untuk kembali ke preview template lokal.",
+      mockupSitesHint:
+        "Setiap baris berisi nama bisnis dan URL hasil generate. Website tampil di panel preview mockup satu per siklus, dan nama bisnisnya tampil di chat mockup. Kosongkan dan simpan untuk kembali ke preview template lokal.",
       mockupSitesAdd: "Tambah URL",
       mockupSitesReset: "Reset Default",
       mockupSitesSave: "Simpan",
@@ -3676,7 +3842,8 @@ export const translations: Record<Locale, Translations> = {
       featureFreeCard: "Tanpa kartu kredit",
       featureChatEasy: "Lebih cepat & mudah",
       featureLiveInstant: "Live dalam hitungan menit",
-      heroReassurance: "Langsung coba tanpa daftar • 100% Gratis • Preview instan",
+      heroReassurance:
+        "Langsung coba tanpa daftar • 100% Gratis • Preview instan",
       bottomNavHome: "Beranda",
       bottomNavFeatures: "Fitur",
       bottomNavCreate: "Buat",
@@ -3685,9 +3852,11 @@ export const translations: Record<Locale, Translations> = {
     },
     auth: {
       loginTitle: "Lanjutkan kelola website bisnis Anda.",
-      loginDesc: "Login untuk mengelola website, edit konten, lihat analytics, dan pantau performa — semua dari satu dashboard.",
+      loginDesc:
+        "Login untuk mengelola website, edit konten, lihat analytics, dan pantau performa — semua dari satu dashboard.",
       loginCardTitle: "Login",
-      loginCardDesc: "Gunakan WhatsApp, email OTP, atau password untuk mengakses dashboard.",
+      loginCardDesc:
+        "Gunakan WhatsApp, email OTP, atau password untuk mengakses dashboard.",
       loginFooterHome: "Beranda",
       loginFooterRegister: "Buat akun",
       loginFooterForgot: "Lupa password",
@@ -3697,15 +3866,18 @@ export const translations: Record<Locale, Translations> = {
       loginStats1Helper: "Cukup chat dengan AI, website langsung jadi.",
       loginStats2Label: "Mobile-First",
       loginStats2Value: "Optimized",
-      loginStats2Helper: "Semua template dioptimalkan untuk tampilan mobile dan siap iklan.",
+      loginStats2Helper:
+        "Semua template dioptimalkan untuk tampilan mobile dan siap iklan.",
       loginCardEyebrow: "Login untuk melanjutkan",
       loginSending: "Mengirim kode...",
-      loginWhatsappHint: "Link atau kode OTP dikirim via WhatsApp. Nomor baru? Akun otomatis dibuat.",
+      loginWhatsappHint:
+        "Link atau kode OTP dikirim via WhatsApp. Nomor baru? Akun otomatis dibuat.",
       loginOrContinueWith: "atau lanjutkan dengan",
       loginOrEmail: "atau masuk dengan email",
       loginEmailLabel: "Alamat email",
       loginEmailPlaceholder: "Alamat email kamu",
-      loginEmailHint: "Link atau kode OTP dikirim via email. Email baru? Akun otomatis dibuat.",
+      loginEmailHint:
+        "Link atau kode OTP dikirim via email. Email baru? Akun otomatis dibuat.",
       loginSendCodeWhatsapp: "Kirim Kode OTP via WhatsApp",
       loginSendCode: "Kirim Kode OTP",
       loginPasswordTitle: "Login dengan password",
@@ -3722,7 +3894,8 @@ export const translations: Record<Locale, Translations> = {
       loginShowPassword: "Tampilkan password",
       loginLoginLoading: "Login",
       loginSubmitPassword: "Login dengan password",
-      loginCodeSentTo: "Kode dikirim via {channel} ke {target}. Berlaku 5 menit.",
+      loginCodeSentTo:
+        "Kode dikirim via {channel} ke {target}. Berlaku 5 menit.",
       loginCodeLabel: "Kode OTP",
       loginTrustDevice: "Percayai perangkat ini",
       loginBack: "Kembali",
@@ -3730,7 +3903,8 @@ export const translations: Record<Locale, Translations> = {
       loginVerifyOtp: "Verifikasi OTP",
       loginResendCountdown: "Kirim ulang ({sec}s)",
       loginResend: "Tidak menerima kode? Kirim ulang",
-      loginLinkSent: "Link masuk telah dikirim. Buka link tersebut di perangkat ini untuk melanjutkan.",
+      loginLinkSent:
+        "Link masuk telah dikirim. Buka link tersebut di perangkat ini untuk melanjutkan.",
       loginOtherOptions: "Opsi lain",
       loginOptionWhatsapp: "WhatsApp",
       loginOptionEmail: "Email OTP",
@@ -3747,12 +3921,14 @@ export const translations: Record<Locale, Translations> = {
       errorOtpInvalidExpired: "Kode OTP tidak valid atau kedaluwarsa",
       loginSuccess: "Berhasil masuk. Selamat datang kembali.",
       toastSessionExpired: "Sesi Kedaluwarsa",
-      toastSessionExpiredDesc: "Sesi Anda telah kedaluwarsa. Silakan masuk kembali untuk melanjutkan.",
+      toastSessionExpiredDesc:
+        "Sesi Anda telah kedaluwarsa. Silakan masuk kembali untuk melanjutkan.",
       toastDismiss: "Tutup",
       errorMagicLinkInvalid: "Link masuk tidak valid atau kedaluwarsa",
       registerBadge: "Webjoz Console",
       registerTitle: "Mulai kelola bisnis Anda dengan mudah.",
-      registerDesc: "Daftar untuk mulai membangun website bisnis yang profesional, cepat, dan siap iklan.",
+      registerDesc:
+        "Daftar untuk mulai membangun website bisnis yang profesional, cepat, dan siap iklan.",
       registerCardEyebrow: "Buat akun baru",
       registerCardTitle: "Registrasi",
       registerCardDesc: "Isi detail di bawah untuk mendaftarkan akun Anda.",
@@ -3767,32 +3943,40 @@ export const translations: Record<Locale, Translations> = {
       errorRegisterFailed: "Gagal mendaftar. Coba lagi.",
       forgotBadge: "Pemulihan Kata Sandi",
       forgotTitle: "Mulai alur reset kata sandi dari frontend dashboard.",
-      forgotDesc: "Masukkan email Anda dan API Go akan menerbitkan token reset serta link email melalui alur forgot-password yang sudah ada.",
+      forgotDesc:
+        "Masukkan email Anda dan API Go akan menerbitkan token reset serta link email melalui alur forgot-password yang sudah ada.",
       forgotCardEyebrow: "Pemulihan",
       forgotCardTitle: "Lupa Kata Sandi",
-      forgotCardDesc: "Masukkan email akun Anda untuk meminta link reset kata sandi.",
+      forgotCardDesc:
+        "Masukkan email akun Anda untuk meminta link reset kata sandi.",
       forgotFooterLogin: "Kembali ke Login",
       forgotFooterRegister: "Buat Akun",
       forgotEmail: "Email",
       forgotEmailPlaceholder: "kamu@email.com",
       forgotSending: "Mengirim link...",
       forgotSubmit: "Kirim Link Reset",
-      forgotSentSuccess: "Link reset terkirim. Periksa email Anda untuk link reset kata sandi.",
+      forgotSentSuccess:
+        "Link reset terkirim. Periksa email Anda untuk link reset kata sandi.",
       forgotSentToast: "Link reset terkirim.",
       errorForgotSend: "Gagal mengirim link reset",
       forgotStat1Label: "Pengiriman",
       forgotStat1Value: "Link Email",
-      forgotStat1Helper: "Backend mengirim link reset ke alamat email yang Anda masukkan.",
+      forgotStat1Helper:
+        "Backend mengirim link reset ke alamat email yang Anda masukkan.",
       forgotStat2Label: "Rute Reset",
       forgotStat2Value: "/reset-password",
-      forgotStat2Helper: "Link yang dikirim membuka halaman reset di dashboard.",
+      forgotStat2Helper:
+        "Link yang dikirim membuka halaman reset di dashboard.",
       resetBadge: "Atur Ulang Kata Sandi",
       resetTitle: "Tetapkan kata sandi baru menggunakan token dari backend.",
-      resetDesc: "Halaman ini memproses token reset dari link email dan mengirimkan kata sandi baru langsung ke API Go.",
+      resetDesc:
+        "Halaman ini memproses token reset dari link email dan mengirimkan kata sandi baru langsung ke API Go.",
       resetCardEyebrow: "Pemulihan",
       resetCardTitle: "Pilih Kata Sandi Baru",
-      resetCardDesc: "Masukkan kata sandi baru Anda untuk menyelesaikan proses reset.",
-      resetCardDescNoToken: "Buka halaman ini dari email reset kata sandi agar token disertakan.",
+      resetCardDesc:
+        "Masukkan kata sandi baru Anda untuk menyelesaikan proses reset.",
+      resetCardDescNoToken:
+        "Buka halaman ini dari email reset kata sandi agar token disertakan.",
       resetFooterLogin: "Kembali ke Login",
       resetFooterRequest: "Minta link reset lagi",
       resetNewPassword: "Kata Sandi Baru",
@@ -3809,10 +3993,12 @@ export const translations: Record<Locale, Translations> = {
       resetStat2Label: "Validasi",
       resetStat2Value: "Prioritas Backend",
       resetStat2Helper: "Token kedaluwarsa atau tidak valid ditolak oleh API.",
-      resetStat1Helper: "Backend mengirim link ke sini dengan parameter kueri `token`.",
+      resetStat1Helper:
+        "Backend mengirim link ke sini dengan parameter kueri `token`.",
       verifyBadge: "Verifikasi Akun",
       verifyTitle: "Memverifikasi alamat email Anda.",
-      verifyDesc: "Halaman ini memverifikasi email Anda menggunakan token di link yang dikirim ke inbox Anda.",
+      verifyDesc:
+        "Halaman ini memverifikasi email Anda menggunakan token di link yang dikirim ke inbox Anda.",
       verifyCardEyebrow: "Verifikasi",
       verifyCardTitle: "Verifikasi Email",
       verifyCardIdle: "Periksa inbox Anda untuk link verifikasi.",
@@ -3824,13 +4010,18 @@ export const translations: Record<Locale, Translations> = {
       verifySuccessTitle: "Berhasil!",
       verifyGoToLogin: "Ke Halaman Login",
       verifyFailedTitle: "Verifikasi Gagal",
-      verifySentTo: "Email verifikasi dikirim ke {email}. Buka link di email tersebut untuk menyelesaikan verifikasi.",
-      verifyNoToken: "Buka halaman ini dari email verifikasi Anda agar token disertakan di URL.",
-      verifyDone: "Email Anda berhasil diverifikasi! Anda sekarang dapat login.",
-      errorVerifyFailed: "Gagal memverifikasi email. Link mungkin kedaluwarsa atau tidak valid.",
+      verifySentTo:
+        "Email verifikasi dikirim ke {email}. Buka link di email tersebut untuk menyelesaikan verifikasi.",
+      verifyNoToken:
+        "Buka halaman ini dari email verifikasi Anda agar token disertakan di URL.",
+      verifyDone:
+        "Email Anda berhasil diverifikasi! Anda sekarang dapat login.",
+      errorVerifyFailed:
+        "Gagal memverifikasi email. Link mungkin kedaluwarsa atau tidak valid.",
       verifyStat1Label: "Sumber Token",
       verifyStat1Value: "Query URL",
-      verifyStat1Helper: "Link email backend menyertakan parameter `token` unik.",
+      verifyStat1Helper:
+        "Link email backend menyertakan parameter `token` unik.",
       verifyStat2Label: "Status",
       verifyStat2Value: "Validasi Real-time",
       verifyStat2Helper: "Token divalidasi seketika saat halaman dimuat.",
@@ -3841,7 +4032,8 @@ export const translations: Record<Locale, Translations> = {
       inviteFailedTitle: "Gagal",
       inviteBackToLogin: "Kembali ke Login",
       inviteRegisterTitle: "Buat akun untuk bergabung",
-      inviteRegisterDesc: "Akun Anda akan dibuat otomatis berdasarkan email undangan. Lengkapi data di bawah untuk melanjutkan.",
+      inviteRegisterDesc:
+        "Akun Anda akan dibuat otomatis berdasarkan email undangan. Lengkapi data di bawah untuk melanjutkan.",
       inviteRegisterEmailLabel: "Email",
       inviteRegisterNameLabel: "Nama",
       inviteRegisterNamePlaceholder: "Nama lengkap",
@@ -3850,7 +4042,8 @@ export const translations: Record<Locale, Translations> = {
       inviteRegisterButton: "Buat Akun & Bergabung",
       inviteRegisterLoading: "Membuat akun...",
       inviteExistingAccount: "Sudah punya akun? Masuk",
-      inviteAlreadyRegistered: "Email ini sudah memiliki akun. Silakan masuk untuk menerima undangan.",
+      inviteAlreadyRegistered:
+        "Email ini sudah memiliki akun. Silakan masuk untuk menerima undangan.",
       loginResetSuccess: "Kata sandi diperbarui. Anda dapat masuk sekarang.",
       loginPasswordChanged: "Kata sandi diubah. Silakan masuk kembali.",
     },
@@ -3902,26 +4095,35 @@ export const translations: Record<Locale, Translations> = {
       backToWebsites: "Kembali ke daftar website",
       subDashboard: "Pantau ringkasan performa dan aktivitas website Anda.",
       subSites: "Kelola dan kustomisasi seluruh website Anda.",
-      subDomains: "Hubungkan dan kelola domain kustom Anda agar situs tampil lebih profesional.",
+      subDomains:
+        "Hubungkan dan kelola domain kustom Anda agar situs tampil lebih profesional.",
       subLeads: "Inkuiri kontak dan prospek dari pengunjung situs publik Anda.",
-      subAnalytics: "Pantau volume kunjungan, asal lalu lintas, dan halaman paling populer.",
-      subSettings: "Kelola profil, keamanan akun, hak akses pengguna, dan log audit sistem.",
+      subAnalytics:
+        "Pantau volume kunjungan, asal lalu lintas, dan halaman paling populer.",
+      subSettings:
+        "Kelola profil, keamanan akun, hak akses pengguna, dan log audit sistem.",
       newWebsiteAi: "Website AI Baru",
       loadingConsole: "Memuat Console...",
       preparingWorkspace: "Menyiapkan akun & website Anda...",
-      signedOutLocally: "Keluar secara lokal. Sesi server mungkin masih perlu ditinjau.",
+      signedOutLocally:
+        "Keluar secara lokal. Sesi server mungkin masih perlu ditinjau.",
       refreshed: "Dashboard diperbarui.",
       welcome: "Selamat Datang{name}",
       welcomeDesc: "Kelola website, domain, dan leads Anda dari satu tempat.",
       newWebsite: "+ Website Baru",
       usingFreePlan: "Anda sedang menggunakan paket {plan}",
-      upgradeToProDesc: "Upgrade ke Pro untuk custom domain, SEO optimasi, lebih banyak website, dan AI generates tanpa batas.",
+      upgradeToProDesc:
+        "Upgrade ke Pro untuk custom domain, SEO optimasi, lebih banyak website, dan AI generates tanpa batas.",
       upgradeToPro: "Upgrade ke Pro",
       planExpiringSoon: "Paket {plan} Anda berakhir dalam {days} hari",
-      planExpiringSoonDesc: "Perpanjang sekarang agar website dan custom domain tetap aktif. Setelah masa aktif habis, website ditampilkan dalam mode penangguhan.",
-      planExpiredBanner: "Masa aktif paket Anda telah berakhir. Website Anda sementara ditampilkan dalam mode penangguhan.",
-      planExpiredDesc: "Website Anda sedang ditangguhkan. Data, konten, dan domain tetap aman — perpanjang paket dan website aktif kembali secara otomatis.",
-      planInGrace: "Paket Anda sudah jatuh tempo dan sedang dalam masa tenggang. Segera perpanjang sebelum {date} agar website tidak ditangguhkan.",
+      planExpiringSoonDesc:
+        "Perpanjang sekarang agar website dan custom domain tetap aktif. Setelah masa aktif habis, website ditampilkan dalam mode penangguhan.",
+      planExpiredBanner:
+        "Masa aktif paket Anda telah berakhir. Website Anda sementara ditampilkan dalam mode penangguhan.",
+      planExpiredDesc:
+        "Website Anda sedang ditangguhkan. Data, konten, dan domain tetap aman — perpanjang paket dan website aktif kembali secara otomatis.",
+      planInGrace:
+        "Paket Anda sudah jatuh tempo dan sedang dalam masa tenggang. Segera perpanjang sebelum {date} agar website tidak ditangguhkan.",
       renewPlan: "Perpanjang Sekarang",
       statWebsites: "Website",
       statLeads: "Leads",
@@ -3945,10 +4147,11 @@ export const translations: Record<Locale, Translations> = {
       loadFailed: "Gagal memuat data pemakaian.",
       recentActivity: "Aktivitas Terbaru",
       leadNew: "Lead baru: {name}",
-      siteUpdated: "Website \"{name}\" diupdate",
+      siteUpdated: 'Website "{name}" diupdate',
       noActivity: "Belum ada aktivitas.",
       aiInsights: "Wawasan AI",
-      insightTraffic: "📈 Traffic terpantau masuk minggu ini sebanyak {count} kunjungan.",
+      insightTraffic:
+        "📈 Traffic terpantau masuk minggu ini sebanyak {count} kunjungan.",
       insightNoTraffic: "📉 Belum ada traffic signifikan minggu ini.",
       insightLeads: "🔥 Anda memiliki {count} prospek baru!",
       insightCreateSite: "✨ Buat website pertama Anda dengan AI Builder!",
@@ -3969,7 +4172,8 @@ export const translations: Record<Locale, Translations> = {
       },
       admin: {
         platformOverview: "Platform Overview",
-        platformStats: "{tenants} klien · {users} pengguna · {sites} website di seluruh platform",
+        platformStats:
+          "{tenants} klien · {users} pengguna · {sites} website di seluruh platform",
         loadingMetrics: "Memuat metrik platform...",
         allTenants: "Semua Klien",
         plans: "Plans",
@@ -4042,9 +4246,12 @@ export const translations: Record<Locale, Translations> = {
         close: "Tutup",
         cancel: "Batal",
         deleteTitle: "Hapus Website?",
-        deleteBody: "Anda akan menghapus website \"{name}\" secara permanen. Tindakan ini tidak dapat dibatalkan.",
-        deleteWarning: "Semua konten, pengaturan, dan data website ini akan dihapus dan tidak bisa dipulihkan.",
-        deleteFreeNotice: "Kamu pakai paket Free — kuota 1 website ini tidak akan kembali setelah dihapus. Kamu hanya bisa membuat 1 website gratis seumur hidup.",
+        deleteBody:
+          'Anda akan menghapus website "{name}" secara permanen. Tindakan ini tidak dapat dibatalkan.',
+        deleteWarning:
+          "Semua konten, pengaturan, dan data website ini akan dihapus dan tidak bisa dipulihkan.",
+        deleteFreeNotice:
+          "Kamu pakai paket Free — kuota 1 website ini tidak akan kembali setelah dihapus. Kamu hanya bisa membuat 1 website gratis seumur hidup.",
         deleting: "Menghapus...",
         deleteConfirm: "Ya, Hapus",
         renameTitle: "Ganti Nama Website",
@@ -4052,24 +4259,31 @@ export const translations: Record<Locale, Translations> = {
         save: "Simpan",
         publishTitle: "Publikasikan Website",
         publishOneStep: "Satu Langkah Lagi! 🚀",
-        publishReady: "Website {name} Anda siap untuk dipublikasikan ke seluruh dunia.",
+        publishReady:
+          "Website {name} Anda siap untuk dipublikasikan ke seluruh dunia.",
         subdomainLabel: "Nama Subdomain",
         subdomainPlaceholder: "namaanda",
         subdomainAvailable: "Tersedia: {url}",
-        subdomainInvalidHint: "Gunakan huruf kecil, angka, atau tanda hubung (-)",
-        subdomainReservedHint: "Subdomain ini dicadangkan untuk sistem dan tidak dapat digunakan",
-        subdomainHint: "Hanya huruf kecil, angka, dan tanda hubung. Subdomain tidak bisa diubah setelah dipublikasikan.",
+        subdomainInvalidHint:
+          "Gunakan huruf kecil, angka, atau tanda hubung (-)",
+        subdomainReservedHint:
+          "Subdomain ini dicadangkan untuk sistem dan tidak dapat digunakan",
+        subdomainHint:
+          "Hanya huruf kecil, angka, dan tanda hubung. Subdomain tidak bisa diubah setelah dipublikasikan.",
         connectCustomDomain: "Hubungkan Custom Domain",
-        customDomainDescPre: "Ingin brand yang lebih profesional seperti domainanda.com? Anda dapat mengaturnya di",
+        customDomainDescPre:
+          "Ingin brand yang lebih profesional seperti domainanda.com? Anda dapat mengaturnya di",
         customDomainDescPost: "setelah website Anda live.",
         customDomainLink: "Custom Domain",
         launching: "Meluncurkan...",
         launchWebsite: "Luncurkan Website",
         publishTermsTitle: "Saya menyetujui",
         publishTermsLink: "Syarat & Ketentuan Webjoz",
-        publishTermsRequired: "Mohon centang persetujuan untuk mempublikasikan website.",
+        publishTermsRequired:
+          "Mohon centang persetujuan untuk mempublikasikan website.",
         moderationTitle: "Website tidak dapat dipublikasikan",
-        moderationDesc: "Konten website terindikasi melanggar Syarat & Ketentuan Webjoz. Perbaiki konten atau ajukan banding ke tim kami.",
+        moderationDesc:
+          "Konten website terindikasi melanggar Syarat & Ketentuan Webjoz. Perbaiki konten atau ajukan banding ke tim kami.",
         moderationCatPinjol: "Layanan pinjaman online (pinjol)",
         moderationCatJudi: "Perjudian / slot",
         moderationCatAlkohol: "Penjualan minuman beralkohol",
@@ -4083,7 +4297,8 @@ export const translations: Record<Locale, Translations> = {
         moderationAppealSent: "Banding terkirim. Tim kami akan meninjaunya.",
         moderationAppealFailed: "Gagal mengirim banding. Silakan coba lagi.",
         publishChecking: "Memeriksa konten...",
-        publishCheckingDesc: "Kami memeriksa konten Anda untuk memastikan sesuai Syarat & Ketentuan.",
+        publishCheckingDesc:
+          "Kami memeriksa konten Anda untuk memastikan sesuai Syarat & Ketentuan.",
         errorLoadSites: "Gagal memuat situs",
         connectingWorkspace: "Menghubungkan ke dashboard...",
         toastPublished: "Website berhasil dipublikasikan! 🚀",
@@ -4098,7 +4313,8 @@ export const translations: Record<Locale, Translations> = {
         toastDuplicateFailed: "Gagal membuat duplikat website",
         toastDuplicated: "Website berhasil diduplikat!",
         toastDuplicateError: "Gagal menduplikasi website",
-        toastSiteLimitReached: "Batas jumlah website tercapai. Upgrade paket Anda untuk menduplikasi.",
+        toastSiteLimitReached:
+          "Batas jumlah website tercapai. Upgrade paket Anda untuk menduplikasi.",
         publishedPrefix: "Dipublikasikan",
         updatedPrefix: "Diubah",
         justNow: "{prefix} baru saja",
@@ -4113,7 +4329,8 @@ export const translations: Record<Locale, Translations> = {
         filterPublished: "Dipublikasikan",
         loadingSites: "Memuat situs Anda...",
         noSitesMatch: "Tidak ada website yang cocok",
-        noSitesMatchDesc: "Coba kata kunci pencarian lain, filter status yang berbeda, atau buat website baru.",
+        noSitesMatchDesc:
+          "Coba kata kunci pencarian lain, filter status yang berbeda, atau buat website baru.",
         clearSearch: "Bersihkan Pencarian",
         statusLive: "Live",
         statusDraft: "Draft",
@@ -4140,15 +4357,18 @@ export const translations: Record<Locale, Translations> = {
         loadMore: "Muat Lebih Banyak",
         congratsTitle: "Website Anda Telah Live",
         congratsHeading: "Website Anda Resmi Mengudara!",
-        congratsBody: "Selamat! Halaman web {name} Anda sekarang aktif dan dapat diakses dari mana saja di seluruh dunia.",
+        congratsBody:
+          "Selamat! Halaman web {name} Anda sekarang aktif dan dapat diakses dari mana saja di seluruh dunia.",
         congratsClose: "Tutup",
         openWebsite: "Buka Website",
         copyLinkTitle: "Salin Link",
-        checkTip: "💡 Ingin mengecek? Klik link di atas untuk membuka website live Anda di tab baru.",
+        checkTip:
+          "💡 Ingin mengecek? Klik link di atas untuk membuka website live Anda di tab baru.",
         done: "Selesai",
         continueEditing: "Lanjut Edit",
         customDomainLinkLabel: "🔗 Hubungkan Custom Domain",
-        customDomainLinkHint: "Ingin pakai domain sendiri? Hubungkan domain kustom Anda ke website ini.",
+        customDomainLinkHint:
+          "Ingin pakai domain sendiri? Hubungkan domain kustom Anda ke website ini.",
       },
       leads: {
         loadFailed: "Gagal memuat inbox leads",
@@ -4156,7 +4376,8 @@ export const translations: Record<Locale, Translations> = {
         filter: "Filter",
         allWebsites: "Semua Website",
         emptyTitle: "Kotak Masuk Masih Kosong",
-        emptyDesc: "Formulir kontak dan pesanan WhatsApp dari website publik Anda akan otomatis masuk ke sini secara realtime.",
+        emptyDesc:
+          "Formulir kontak dan pesanan WhatsApp dari website publik Anda akan otomatis masuk ke sini secara realtime.",
         sender: "Pengirim",
         date: "Waktu Masuk",
         sourceSite: "Website Sumber",
@@ -4167,7 +4388,8 @@ export const translations: Record<Locale, Translations> = {
         inquiryMessage: "Isi Pesan Masuk",
         receivedOn: "Diterima Pada",
         sourceUrl: "Halaman Sumber",
-        selectPrompt: "Pilih salah satu baris untuk melihat rincian lengkap pesanan atau pesan.",
+        selectPrompt:
+          "Pilih salah satu baris untuk melihat rincian lengkap pesanan atau pesan.",
         tabAll: "Semua",
         tabOrders: "Pesanan",
         tabContacts: "Pesan Kontak",
@@ -4177,7 +4399,8 @@ export const translations: Record<Locale, Translations> = {
         totalRevenue: "Estimasi Nilai Pesanan",
         totalContacts: "Pesan Kontak",
         noFilterResults: "Tidak Ada Hasil yang Cocok",
-        noFilterResultsDesc: "Tidak ditemukan leads atau pesanan yang sesuai dengan kata kunci atau filter saat ini.",
+        noFilterResultsDesc:
+          "Tidak ditemukan leads atau pesanan yang sesuai dengan kata kunci atau filter saat ini.",
         clearFilter: "Reset Filter",
         chatWhatsapp: "Chat di WhatsApp",
         callPhone: "Telepon",
@@ -4211,11 +4434,13 @@ export const translations: Record<Locale, Translations> = {
         inviteTitle: "Undang Anggota Baru",
         emailPlaceholder: "email@contoh.com",
         sendInvite: "Kirim Undangan",
-        inviteHint: "Anggota dengan role editor bisa mengedit konten situs. Viewer hanya bisa melihat.",
+        inviteHint:
+          "Anggota dengan role editor bisa mengedit konten situs. Viewer hanya bisa melihat.",
         limitTitle: "Batas Anggota Tim Tercapai",
         later: "Nanti Saja",
         upgradeToPro: "Upgrade ke Pro",
-        limitDesc: "Paket Anda saat ini memiliki batas jumlah anggota tim. Upgrade untuk menambah lebih banyak kolaborator.",
+        limitDesc:
+          "Paket Anda saat ini memiliki batas jumlah anggota tim. Upgrade untuk menambah lebih banyak kolaborator.",
         role: {
           owner: "Pemilik",
           editor: "Editor",
@@ -4254,16 +4479,19 @@ export const translations: Record<Locale, Translations> = {
         later: "Nanti Saja",
         upgradeToPro: "Upgrade ke Pro",
         free7Days: "Paket Free — Maksimal 7 Hari",
-        free7DaysDesc: "Akun Free hanya bisa melihat data analytics maksimal 7 hari ke belakang.",
+        free7DaysDesc:
+          "Akun Free hanya bisa melihat data analytics maksimal 7 hari ke belakang.",
         selectedRange: "Kamu memilih rentang {from} s/d {to}.",
         proUpgrade: "Upgrade ke Pro",
-        proUpgradeDesc: "Dengan paket Pro, kamu bisa mengakses analytics hingga 90 hari, plus fitur eksklusif lainnya seperti kustom domain dan AI content writer tanpa batas.",
+        proUpgradeDesc:
+          "Dengan paket Pro, kamu bisa mengakses analytics hingga 90 hari, plus fitur eksklusif lainnya seperti kustom domain dan AI content writer tanpa batas.",
         invalidDateRange: "Tanggal awal tidak boleh lebih dari tanggal akhir.",
       },
       domains: {
         loadFailed: "Gagal memuat data domain",
         loading: "Memuat data domain...",
-        added: "Custom domain berhasil ditautkan! Silakan atur CNAME di DNS registrar Anda.",
+        added:
+          "Custom domain berhasil ditautkan! Silakan atur CNAME di DNS registrar Anda.",
         addFailed: "Gagal menambahkan domain",
         invalidFormat: "Format domain tidak valid. Contoh: domainanda.com",
         verified: "Domain berhasil diverifikasi!",
@@ -4276,7 +4504,8 @@ export const translations: Record<Locale, Translations> = {
         close: "Tutup",
         upgradePlan: "Upgrade Paket",
         connectedTitle: "Custom Domain Terhubung ({count})",
-        quotaTitle: "Paket {plan}: maksimal {max} domain per akun, tidak per website",
+        quotaTitle:
+          "Paket {plan}: maksimal {max} domain per akun, tidak per website",
         quota: "Kuota: {used} / {max} custom domain",
         customDomainBadge: "Custom Domain",
         siteId: "Site #{id}",
@@ -4286,56 +4515,74 @@ export const translations: Record<Locale, Translations> = {
         checkDns: "Cek DNS",
         delete: "Hapus",
         connectTitle: "Hubungkan Custom Domain",
-        connectDesc: "Gunakan domain milik Anda sendiri untuk tampil lebih profesional.",
+        connectDesc:
+          "Gunakan domain milik Anda sendiri untuk tampil lebih profesional.",
         noPublished: "Belum ada website yang dipublikasikan",
-        noPublishedDesc: "Custom domain hanya bisa dihubungkan ke website yang sudah live. Publikasikan website Anda terlebih dahulu melalui halaman",
+        noPublishedDesc:
+          "Custom domain hanya bisa dihubungkan ke website yang sudah live. Publikasikan website Anda terlebih dahulu melalui halaman",
         myWebsites: "My Websites",
         linkToSite: "Tautkan ke Website",
         domainAddress: "Alamat Custom Domain",
         domainPlaceholder: "cth. tokokamu.com atau toko.domainanda.com",
         validFormat: "✓ Format domain valid",
-        invalidFormatHint: "Format tidak valid — masukkan domain tanpa http:// atau www.",
+        invalidFormatHint:
+          "Format tidak valid — masukkan domain tanpa http:// atau www.",
         dnsInstructions: "Petunjuk Konfigurasi DNS di Provider Domain",
-        step1: "Masuk ke akun Registrar Domain tempat Anda membeli domain (seperti Niagahoster, Rumahweb, Cloudflare, Namecheap, GoDaddy, dll).",
-        step2: "Cari domain yang ingin diatur dan buka halaman DNS Management, DNS Zone Editor, atau Manage DNS.",
-        step3: "Tambahkan DNS Record baru dengan tipe CNAME dan isi kolom sesuai data di bawah:",
-        step4: "Simpan perubahan DNS Anda. Proses propagasi dan verifikasi domain biasanya memerlukan waktu mulai dari 5 menit hingga maksimal 24 jam.",
+        step1:
+          "Masuk ke akun Registrar Domain tempat Anda membeli domain (seperti Niagahoster, Rumahweb, Cloudflare, Namecheap, GoDaddy, dll).",
+        step2:
+          "Cari domain yang ingin diatur dan buka halaman DNS Management, DNS Zone Editor, atau Manage DNS.",
+        step3:
+          "Tambahkan DNS Record baru dengan tipe CNAME dan isi kolom sesuai data di bawah:",
+        step4:
+          "Simpan perubahan DNS Anda. Proses propagasi dan verifikasi domain biasanya memerlukan waktu mulai dari 5 menit hingga maksimal 24 jam.",
         dnsType: "Tipe / Type",
         dnsHost: "Host / Nama",
         dnsTarget: "Target / Value",
         note: "Catatan: Jika ingin menggunakan subdomain kustom seperti toko.domainanda.com, ubah kolom Host / Nama menjadi toko.",
-        verifyHint: "Setelah menyimpan konfigurasi DNS di atas, kembali ke dashboard dan klik tombol \"Cek DNS\" (ikon Refresh) pada daftar domain Anda untuk memverifikasi.",
+        verifyHint:
+          'Setelah menyimpan konfigurasi DNS di atas, kembali ke dashboard dan klik tombol "Cek DNS" (ikon Refresh) pada daftar domain Anda untuk memverifikasi.',
         connectBtn: "Tautkan Custom Domain",
         upsellTitle: "✨ Tingkatkan Kredibilitas Bisnis Anda",
-        upsellDesc: "Custom Domain adalah fitur Pro yang membantu brand Anda terlihat lebih profesional, terpercaya di mata pelanggan, dan lebih mudah ditemukan di Google (SEO).",
+        upsellDesc:
+          "Custom Domain adalah fitur Pro yang membantu brand Anda terlihat lebih profesional, terpercaya di mata pelanggan, dan lebih mudah ditemukan di Google (SEO).",
         upsellBranding: "Branding Profesional",
-        upsellBrandingDesc: "Gunakan domain milik Anda (cth. tokomu.com) tanpa embel-embel .webjoz.com.",
+        upsellBrandingDesc:
+          "Gunakan domain milik Anda (cth. tokomu.com) tanpa embel-embel .webjoz.com.",
         upsellSeo: "SEO Lebih Baik",
-        upsellSeoDesc: "Google memprioritaskan domain utama untuk mendapatkan posisi teratas di hasil pencarian.",
+        upsellSeoDesc:
+          "Google memprioritaskan domain utama untuk mendapatkan posisi teratas di hasil pencarian.",
         upsellSsl: "SSL/HTTPS Otomatis",
-        upsellSslDesc: "Keamanan data terjamin dengan enkripsi SSL gratis yang dipasang langsung ke domain Anda.",
+        upsellSslDesc:
+          "Keamanan data terjamin dengan enkripsi SSL gratis yang dipasang langsung ke domain Anda.",
         limitTitle: "Batas Custom Domain Tercapai",
-        limitDesc: "Paket {plan} Anda hanya mencakup {max} custom domain (berlaku untuk seluruh akun, bukan per website).",
-        limitDesc2: "Untuk menambahkan lebih banyak custom domain, silakan upgrade ke paket yang lebih tinggi.",
+        limitDesc:
+          "Paket {plan} Anda hanya mencakup {max} custom domain (berlaku untuk seluruh akun, bukan per website).",
+        limitDesc2:
+          "Untuk menambahkan lebih banyak custom domain, silakan upgrade ke paket yang lebih tinggi.",
         buyTab: "Beli Domain Baru",
         ownTab: "Sudah Punya Domain",
         buyTitle: "Beli Domain Baru",
-        buyDesc: "Daftarkan domain untuk website Anda langsung dari Webjoz. Setelah pembelian, DNS otomatis diarahkan ke website Anda.",
+        buyDesc:
+          "Daftarkan domain untuk website Anda langsung dari Webjoz. Setelah pembelian, DNS otomatis diarahkan ke website Anda.",
         searchLabel: "Nama Domain",
         searchPlaceholder: "cth. kopirempah",
         searchBtn: "Cari Ketersediaan",
         searching: "Memeriksa ketersediaan...",
         chooseTlds: "Pilih Ekstensi (TLD)",
-        noResults: "Masukkan nama domain dan pilih minimal satu ekstensi untuk memeriksa ketersediaan.",
+        noResults:
+          "Masukkan nama domain dan pilih minimal satu ekstensi untuk memeriksa ketersediaan.",
         available: "Tersedia",
         unavailable: "Sudah terdaftar / tidak tersedia",
         perYear: "/tahun",
         buyBtn: "Beli Sekarang",
         buying: "Memproses pembelian...",
-        buySuccess: "Domain berhasil dibeli! DNS sedang diarahkan ke website Anda.",
+        buySuccess:
+          "Domain berhasil dibeli! DNS sedang diarahkan ke website Anda.",
         buyFailed: "Gagal membeli domain",
         purchaserTitle: "Data Pendaftaran Domain",
-        purchaserDesc: "Lengkapi data Anda untuk pendaftaran domain. Data ini akan digunakan sebagai data WHOIS domain.",
+        purchaserDesc:
+          "Lengkapi data Anda untuk pendaftaran domain. Data ini akan digunakan sebagai data WHOIS domain.",
         purchaserName: "Nama Lengkap",
         purchaserCompany: "Perusahaan",
         purchaserEmail: "Email",
@@ -4345,15 +4592,19 @@ export const translations: Record<Locale, Translations> = {
         purchaserState: "Provinsi",
         purchaserZip: "Kode Pos",
         purchaserIdDoc: "Nomor Dokumen Identitas",
-        purchaserIdSub: "Untuk domain .id, .co.id, .web.id dan sejenisnya wajib mengisi NIK KTP (individu) atau NPWP/NIB (perusahaan) sesuai aturan registrar Indonesia.",
+        purchaserIdSub:
+          "Untuk domain .id, .co.id, .web.id dan sejenisnya wajib mengisi NIK KTP (individu) atau NPWP/NIB (perusahaan) sesuai aturan registrar Indonesia.",
         purchaserIdPlaceholder: "NIK (16 digit) / NPWP (15 digit) / NIB",
-        verificationNotice: "Domain .id, .co.id, .web.id dan .or.id memerlukan verifikasi identitas oleh registrar (1-3 hari kerja). Domain baru aktif setelah terverifikasi.",
+        verificationNotice:
+          "Domain .id, .co.id, .web.id dan .or.id memerlukan verifikasi identitas oleh registrar (1-3 hari kerja). Domain baru aktif setelah terverifikasi.",
         verificationPending: "Menunggu verifikasi identitas",
         purchasedTitle: "Domain Saya",
         expiresAt: "Berlaku hingga",
-        purchaseInactive: "Pembelian domain sedang tidak aktif. Hubungi administrator.",
+        purchaseInactive:
+          "Pembelian domain sedang tidak aktif. Hubungi administrator.",
         paymentSuccess: "Pembayaran berhasil! Domain Anda sedang didaftarkan.",
-        paymentPending: "Menunggu pembayaran... Silakan selesaikan di halaman Midtrans.",
+        paymentPending:
+          "Menunggu pembayaran... Silakan selesaikan di halaman Midtrans.",
         paymentFailed: "Pembayaran gagal, silakan coba lagi.",
         paymentCancelled: "Pembayaran dibatalkan.",
       },
@@ -4368,7 +4619,8 @@ export const translations: Record<Locale, Translations> = {
         tabNotifications: "Notifikasi",
         notifTitle: "Preferensi Notifikasi",
         notifEyebrow: "Notifikasi",
-        notifDesc: "Pilih jenis notifikasi yang ingin Anda terima. Notifikasi yang dimatikan tidak akan dikirim ke lonceng Anda.",
+        notifDesc:
+          "Pilih jenis notifikasi yang ingin Anda terima. Notifikasi yang dimatikan tidak akan dikirim ke lonceng Anda.",
         notifOn: "Aktif",
         notifOff: "Nonaktif",
         notifSaved: "Preferensi notifikasi disimpan",
@@ -4377,7 +4629,8 @@ export const translations: Record<Locale, Translations> = {
         groupAccount: "Akun",
         groupAdmin: "Admin Sistem",
         profileFailedLoad: "Gagal memuat profil",
-        profilePhoneError: "Gunakan format internasional, seperti +628123456789.",
+        profilePhoneError:
+          "Gunakan format internasional, seperti +628123456789.",
         profileUpdated: "Profil diperbarui.",
         profileFailedUpdate: "Gagal memperbarui profil",
         profileEyebrow: "Profil",
@@ -4413,7 +4666,8 @@ export const translations: Record<Locale, Translations> = {
         metricTrustedDevices: "Perangkat tepercaya",
         metricThisSession: "Sesi ini",
         noSessionsTitle: "Belum ada sesi",
-        noSessionsText: "Tidak ada sesi aktif atau perangkat tepercaya yang terkait dengan akun ini.",
+        noSessionsText:
+          "Tidak ada sesi aktif atau perangkat tepercaya yang terkait dengan akun ini.",
         statusCurrent: "sedang masuk",
         statusTrusted: "perangkat tepercaya",
         statusUnknown: "perangkat tidak dikenal",
@@ -4487,18 +4741,21 @@ export const translations: Record<Locale, Translations> = {
         investOutputTitle: "Output Investigasi AI",
         aiProcessing: "Pemrosesan AI",
         riskLevel: "Tingkat Risiko",
-        riskWeightNote: "Ditimbang berdasarkan sinyal, urgensi, volume log, dan status insiden",
+        riskWeightNote:
+          "Ditimbang berdasarkan sinyal, urgensi, volume log, dan status insiden",
         score: "Skor {score}",
         timeline: "Linimasa",
         suspiciousSignals: "Sinyal Mencurigakan",
         recommendations: "Rekomendasi",
         noItems: "Tidak ada item yang dikembalikan.",
         readyTitle: "Siap dianalisis",
-        readyDesc: "Jalankan investigasi untuk menghasilkan ringkasan, linimasa, sinyal mencurigakan, dan rekomendasi.",
+        readyDesc:
+          "Jalankan investigasi untuk menghasilkan ringkasan, linimasa, sinyal mencurigakan, dan rekomendasi.",
         savedCount: "{count} tersimpan",
         savedTitle: "Investigasi Tersimpan",
         noSavedTitle: "Tidak ada investigasi tersimpan",
-        noSavedDesc: "Investigasi yang selesai akan muncul di sini untuk ditinjau ulang.",
+        noSavedDesc:
+          "Investigasi yang selesai akan muncul di sini untuk ditinjau ulang.",
         investigationId: "Investigasi #{id}",
         previous: "Sebelumnya",
         pageOf: "Halaman {page} dari {total}",
@@ -4506,8 +4763,10 @@ export const translations: Record<Locale, Translations> = {
         investigationDetails: "Detail Investigasi",
         closeDetails: "Tutup detail investigasi",
         status: "Status",
-        riskNoteHigh: "Segera eskalasi. Banyak sinyal kuat mengarah ke risiko tinggi.",
-        riskNoteMedium: "Perlu ditinjau. Pola mencurigakan perlu ditindaklanjuti operator.",
+        riskNoteHigh:
+          "Segera eskalasi. Banyak sinyal kuat mengarah ke risiko tinggi.",
+        riskNoteMedium:
+          "Perlu ditinjau. Pola mencurigakan perlu ditindaklanjuti operator.",
         riskNoteLow: "Pantau saja. Insiden dengan keyakinan rendah.",
         noResultYet: "Belum ada hasil investigasi yang dimuat.",
       },
@@ -4517,7 +4776,8 @@ export const translations: Record<Locale, Translations> = {
         pleaseLogin: "Silakan login terlebih dahulu",
         freeActive: "Paket Free sudah aktif",
         tokenFailed: "Gagal mendapatkan token pembayaran",
-        waitingPayment: "Menunggu pembayaran... Silakan selesaikan di halaman Midtrans.",
+        waitingPayment:
+          "Menunggu pembayaran... Silakan selesaikan di halaman Midtrans.",
         paymentFailed: "Pembayaran gagal, silakan coba lagi",
         paymentCancelled: "Pembayaran dibatalkan",
         redirecting: "Mengarahkan ke halaman pembayaran...",
@@ -4527,7 +4787,8 @@ export const translations: Record<Locale, Translations> = {
         title: "Upgrade Paket",
         subtitle: "Pilih paket langganan yang sesuai dengan skala bisnis Anda.",
         paymentSuccess: "Pembayaran Berhasil!",
-        upgradingDesc: "Paket Anda sedang di-upgrade. Mengalihkan ke dashboard...",
+        upgradingDesc:
+          "Paket Anda sedang di-upgrade. Mengalihkan ke dashboard...",
         freePrice: "Gratis",
         currentPlan: "Paket Saat Ini",
         unavailable: "Tidak Tersedia",
@@ -4641,7 +4902,8 @@ export const translations: Record<Locale, Translations> = {
       adminAiStatus: {
         noAccess: "Anda tidak memiliki akses ke halaman ini.",
         title: "Status AI Modul",
-        subtitle: "Periksa validitas konfigurasi AI: provider, API key, model, dan konektivitas tiap tier.",
+        subtitle:
+          "Periksa validitas konfigurasi AI: provider, API key, model, dan konektivitas tiap tier.",
         refresh: "Periksa Ulang",
         loadFailed: "Gagal mengambil status AI",
         loadFailedTitle: "Gagal memuat data",
@@ -4670,7 +4932,8 @@ export const translations: Record<Locale, Translations> = {
         allProvidersOk: "Semua provider valid",
         someIssues: "Ada provider bermasalah",
         usageTodayTitle: "Kuota Hari Ini per Model",
-        usageTodaySubtitle: "Total token & request AI yang tercatat sejak tengah malam (waktu lokal), per model yang terkonfigurasi.",
+        usageTodaySubtitle:
+          "Total token & request AI yang tercatat sejak tengah malam (waktu lokal), per model yang terkonfigurasi.",
         usageProviderLabel: "Penggunaan hari ini",
         freeTierLabel: "Free Tier",
         rateLimitLabel: "Limit",
@@ -4700,7 +4963,8 @@ export const translations: Record<Locale, Translations> = {
         addOverride: "Tambah Override",
         editOverride: "Edit Override",
         pola1NoticeTitle: "Pola 1 — DB Override",
-        pola1NoticeDesc: "Nilai di bawah ini meng-override konfigurasi .env saat runtime. Tier yang belum punya record akan menggunakan nilai .env sebagai fallback. API key disimpan terenkripsi dan hanya ditampilkan sebagai hint.",
+        pola1NoticeDesc:
+          "Nilai di bawah ini meng-override konfigurasi .env saat runtime. Tier yang belum punya record akan menggunakan nilai .env sebagai fallback. API key disimpan terenkripsi dan hanya ditampilkan sebagai hint.",
         tableTier: "Tier",
         tableProvider: "Provider",
         tableModel: "Model",
@@ -4718,19 +4982,22 @@ export const translations: Record<Locale, Translations> = {
         disabled: "Nonaktif",
         defaultFallback: ".env",
         noConfigsTitle: "Belum Ada Override Runtime",
-        noConfigsDesc: "Semua tier AI saat ini menggunakan konfigurasi default dari file .env. Klik 'Tambah Override' untuk menyesuaikan model atau limit dari dashboard.",
+        noConfigsDesc:
+          "Semua tier AI saat ini menggunakan konfigurasi default dari file .env. Klik 'Tambah Override' untuk menyesuaikan model atau limit dari dashboard.",
         formTier: "Tier AI",
         formTierPlaceholder: "mis. primary, fast, smart, fallback",
         formTierSelect: "— pilih tier —",
         formTierCustom: "Ketik manual…",
         formTierHasOverride: "sudah punya override",
-        formTierHint: "Pilih slot yang akan di-override (mis. router-high.1). DB menang atas .env; berlaku setelah API restart.",
+        formTierHint:
+          "Pilih slot yang akan di-override (mis. router-high.1). DB menang atas .env; berlaku setelah API restart.",
         formTierRequired: "Tier wajib dipilih atau diketik.",
         formProvider: "Provider",
         formModel: "Nama Model",
         formBaseUrl: "Base URL (Opsional)",
         formApiKey: "API Key",
-        formApiKeyPlaceholder: "Masukkan API key baru (kosongkan jika tidak diubah)",
+        formApiKeyPlaceholder:
+          "Masukkan API key baru (kosongkan jika tidak diubah)",
         formDailyLimit: "Batas Request Harian",
         formDailyLimitHint: "0 = tanpa batas tambahan",
         formAccountEmail: "Email Akun",
@@ -4741,7 +5008,8 @@ export const translations: Record<Locale, Translations> = {
         saveConfig: "Simpan Konfigurasi",
         cancel: "Batal",
         saving: "Menyimpan...",
-        deleteConfirm: "Hapus override untuk tier ini dan kembali ke fallback .env?",
+        deleteConfirm:
+          "Hapus override untuk tier ini dan kembali ke fallback .env?",
         edit: "Edit",
         delete: "Hapus",
         pageTitle: "Pengaturan AI",
@@ -4756,12 +5024,14 @@ export const translations: Record<Locale, Translations> = {
         apiKeyUnchanged: "••••••• (tidak diubah)",
         showApiKey: "Tampilkan API key",
         hideApiKey: "Sembunyikan API key",
-        pageSubtitle: "Monitor status provider, kuota penggunaan, dan atur parameter runtime AI",
+        pageSubtitle:
+          "Monitor status provider, kuota penggunaan, dan atur parameter runtime AI",
       },
       adminMetrics: {
         noAccess: "Anda tidak memiliki akses ke halaman ini.",
         title: "Metrik AI Generation",
-        subtitle: "Latensi, konkurensi, dan metrik kualitas untuk pembuatan konten AI.",
+        subtitle:
+          "Latensi, konkurensi, dan metrik kualitas untuk pembuatan konten AI.",
         refresh: "Muat Ulang",
         loadFailed: "Gagal memuat metrik",
         loadFailedTitle: "Gagal memuat data",
@@ -4789,32 +5059,42 @@ export const translations: Record<Locale, Translations> = {
       },
       adminTemplates: {
         seedLoadFailed: "Gagal mengambil data design token seeds",
-        backfillConfirm: "Backfill scores untuk semua template_library rows yang score=0?",
+        backfillConfirm:
+          "Backfill scores untuk semua template_library rows yang score=0?",
         backfillDone: "Backfill selesai — scores sudah diperbarui",
         backfillFailed: "Gagal backfill",
-        seedDeleteConfirm: "Apakah Anda yakin ingin menghapus design token seed ini secara permanen?",
+        seedDeleteConfirm:
+          "Apakah Anda yakin ingin menghapus design token seed ini secara permanen?",
         seedDeleted: "Design token seed berhasil dihapus",
         seedDeleteFailed: "Gagal menghapus seed",
         accessDenied: "Akses Ditolak",
-        superadminOnly: "Halaman ini hanya dapat diakses oleh akun dengan peran",
+        superadminOnly:
+          "Halaman ini hanya dapat diakses oleh akun dengan peran",
         superadmin: "Superadmin",
         title: "Template Gallery",
-        subtitle: "Review template bawaan sistem dan design token seeds hasil inkubasi generator AI.",
+        subtitle:
+          "Review template bawaan sistem dan design token seeds hasil inkubasi generator AI.",
         backfillScores: "Hitung Ulang Skor",
-        backfillScoresTooltip: "Hitung ulang skor kualitas (rules) untuk semua seed di database",
+        backfillScoresTooltip:
+          "Hitung ulang skor kualitas (rules) untuk semua seed di database",
         refreshSeeds: "Refresh",
         bulkAesthetic: "Jalankan Critique AI",
-        bulkAestheticConfirm: "Jalankan aesthetic critique massal pada seed yang belum dinilai (50 per run, berhenti saat rate limit)?",
-        bulkAestheticTooltip: "Evaluasi estetika template menggunakan AI Vision (screenshot + LLM)",
+        bulkAestheticConfirm:
+          "Jalankan aesthetic critique massal pada seed yang belum dinilai (50 per run, berhenti saat rate limit)?",
+        bulkAestheticTooltip:
+          "Evaluasi estetika template menggunakan AI Vision (screenshot + LLM)",
         bulkAestheticRunning: "Sedang berjalan...",
         bulkAestheticStart: "Mulai Evaluasi Estetika",
         pendingAestheticLabel: "template belum dievaluasi estetikanya oleh AI",
-        bulkAestheticDone: "Bulk critique selesai — {processed} diproses, {critiqued} berhasil, {failed} gagal, {pending} menunggu",
+        bulkAestheticDone:
+          "Bulk critique selesai — {processed} diproses, {critiqued} berhasil, {failed} gagal, {pending} menunggu",
         bulkAestheticFailed: "Bulk aesthetic critique gagal",
-        bulkAestheticRateLimit: "berhenti karena rate limit, coba lagi dalam {sec}s",
+        bulkAestheticRateLimit:
+          "berhenti karena rate limit, coba lagi dalam {sec}s",
         tabComponents: "Komponen Template",
         tabSeeds: "Design Token Seeds",
-        searchComponentsPlaceholder: "Cari nama, ID, atau deskripsi template...",
+        searchComponentsPlaceholder:
+          "Cari nama, ID, atau deskripsi template...",
         searchSeedsPlaceholder: "Cari tipe bisnis, mood, atau ID seed...",
         allCategories: "Semua Kategori",
         allBusinessTypes: "Semua Tipe Bisnis",
@@ -4829,11 +5109,14 @@ export const translations: Record<Locale, Translations> = {
         body: "Body",
         designQuality: "Kualitas Desain",
         previewFullscreen: "Pratinjau Fullscreen",
-        loginRequired: "Sesi login diperlukan untuk melihat design token seeds.",
+        loginRequired:
+          "Sesi login diperlukan untuk melihat design token seeds.",
         loginSession: "Login Sesi",
         loadingSeeds: "Memuat design token seeds dari API...",
-        superadminOnlyManage: "Hanya Superadmin yang Bisa Mengelola Design Token Seeds.",
-        insufficientAccess: "Peran akun Anda saat ini tidak memiliki hak akses administratif yang cukup.",
+        superadminOnlyManage:
+          "Hanya Superadmin yang Bisa Mengelola Design Token Seeds.",
+        insufficientAccess:
+          "Peran akun Anda saat ini tidak memiliki hak akses administratif yang cukup.",
         noSeedsInDb: "Tidak ada design token seeds di database.",
         noSeedsMatch: "Tidak ada seeds yang cocok dengan kata kunci.",
         resetSearch: "Reset Pencarian",
@@ -4866,9 +5149,11 @@ export const translations: Record<Locale, Translations> = {
         clearSelection: "Batal Pilih",
         selectedCount: "{count} dipilih",
         deleteSelected: "Hapus Terpilih",
-        bulkDeleteConfirm: "Hapus permanen {count} design token seed yang dipilih?",
+        bulkDeleteConfirm:
+          "Hapus permanen {count} design token seed yang dipilih?",
         bulkDeleted: "{count} seed berhasil dihapus",
-        bulkDeletePartialFail: "{ok} berhasil dihapus, {fail} gagal — coba lagi untuk sisanya",
+        bulkDeletePartialFail:
+          "{ok} berhasil dihapus, {fail} gagal — coba lagi untuk sisanya",
         critique: "Kritik AI",
         critiqueRunning: "Menganalisis...",
         critiqueDone: "Kritik AI selesai — skor estetika diperbarui",
@@ -4919,16 +5204,19 @@ export const translations: Record<Locale, Translations> = {
         loadFailed: "Gagal memuat semua komisi",
         tier1RangeError: "Persentase Tier 1 harus antara 0 dan 100",
         tier2RangeError: "Persentase Tier 2 harus antara 0 dan 100",
-        configUpdated: "Komisi berhasil diperbarui: Tier 1 {t1}% · Tier 2 {t2}%",
+        configUpdated:
+          "Komisi berhasil diperbarui: Tier 1 {t1}% · Tier 2 {t2}%",
         configUpdateFailed: "Gagal memperbarui komisi",
         amountPositiveError: "Nominal bonus harus berupa angka positif",
         ruleUpdated: "Aturan bonus berhasil diperbarui",
         ruleUpdateFailed: "Gagal memperbarui aturan bonus",
         loading: "Memuat data komisi admin...",
         accessRestricted: "Akses Dibatasi",
-        accessRestrictedDesc: "Halaman ini khusus untuk Admin yang memiliki akses permission `commission:read_all`.",
+        accessRestrictedDesc:
+          "Halaman ini khusus untuk Admin yang memiliki akses permission `commission:read_all`.",
         title: "Manajemen Komisi & Bonus Sales (Admin)",
-        subtitle: "Pengaturan persentase komisi, skema bonus onboarding & milestone, dan seluruh transaksi sales partner.",
+        subtitle:
+          "Pengaturan persentase komisi, skema bonus onboarding & milestone, dan seluruh transaksi sales partner.",
         rateSettings: "Pengaturan Rate Komisi Sales",
         activeScheme: "Skema Aktif",
         tieredScheme: "Skema Komisi Bertingkat",
@@ -4937,12 +5225,14 @@ export const translations: Record<Locale, Translations> = {
         tier1Label: "Tier 1 — {months} bulan pertama (%)",
         tier2Label: "Tier 2 — setelahnya (%)",
         save: "Simpan",
-        superadminOnlyEdit: "Hanya {superadmin} yang dapat mengedit skema komisi.",
+        superadminOnlyEdit:
+          "Hanya {superadmin} yang dapat mengedit skema komisi.",
         superadmin: "Superadmin",
         bonusRulesSettings: "Pengaturan Aturan Bonus (Onboarding & Milestone)",
         tier: "Tier",
         onboardingDesc: "Bonus flat per tenant baru pertama kali bayar.",
-        milestoneDesc: "Capai {threshold} tenant baru teraktivasi dalam 1 bulan.",
+        milestoneDesc:
+          "Capai {threshold} tenant baru teraktivasi dalam 1 bulan.",
         bonusAmount: "Nominal Bonus (Rp)",
         recurringCommissions: "Komisi Recurring ({count})",
         allBonuses: "Semua Bonus Sales ({count})",
@@ -4979,11 +5269,13 @@ export const translations: Record<Locale, Translations> = {
       },
       adminDesignAssets: {
         accessDenied: "Akses Ditolak",
-        accessDeniedDesc: "Halaman ini hanya dapat diakses oleh akun dengan peran {superadmin}.",
+        accessDeniedDesc:
+          "Halaman ini hanya dapat diakses oleh akun dengan peran {superadmin}.",
         superadmin: "Superadmin",
         loading: "Memuat konfigurasi design assets...",
         title: "Design Assets",
-        subtitle: "Kelola section, tipografi, palet warna, dan paket tampilan yang tersedia di editor website.",
+        subtitle:
+          "Kelola section, tipografi, palet warna, dan paket tampilan yang tersedia di editor website.",
         saving: "Menyimpan...",
         resetAll: "Reset Semua",
         resetAllConfirm: "Reset semua pengaturan Design Assets ke default?",
@@ -5004,14 +5296,17 @@ export const translations: Record<Locale, Translations> = {
         unrequire: "Lepas Wajib",
         custom: "Custom",
         sectionsVisibilityTitle: "Visibilitas Section",
-        sectionsVisibilityDesc: "Section yang disembunyikan tidak muncul di sidebar editor.",
+        sectionsVisibilityDesc:
+          "Section yang disembunyikan tidak muncul di sidebar editor.",
         resetDefault: "Reset Default",
         variantsActive: "{active}/{total} variasi aktif",
         variantsTitle: "Variasi Tampilan",
-        variantsDesc: "Kelola variasi tampilan per section. Variasi yang disembunyikan tidak muncul di dropdown editor.",
+        variantsDesc:
+          "Kelola variasi tampilan per section. Variasi yang disembunyikan tidak muncul di dropdown editor.",
         variantsCount: "{active}/{total} aktif",
         mapTilesTitle: "Gaya Peta",
-        mapTilesDesc: "Kelola pilihan gaya peta yang muncul di editor section Kontak.",
+        mapTilesDesc:
+          "Kelola pilihan gaya peta yang muncul di editor section Kontak.",
         tileLabelLight: "Terang",
         tileLabelDark: "Gelap",
         tileLabelSatellite: "Satelit",
@@ -5046,7 +5341,8 @@ export const translations: Record<Locale, Translations> = {
         noPatternsMatch: "Tidak ada palet yang cocok.",
         noPresetsMatch: "Tidak ada paket yang cocok.",
         score: "Score: {score}",
-        sectionRequiredError: 'Section "{key}" wajib aktif dan tidak bisa disembunyikan.',
+        sectionRequiredError:
+          'Section "{key}" wajib aktif dan tidak bisa disembunyikan.',
         sectionHidden: 'Section "{key}" disembunyikan.',
         sectionShown: 'Section "{key}" ditampilkan.',
         sectionRequired: 'Section "{key}" dijadikan wajib.',
@@ -5085,7 +5381,8 @@ export const translations: Record<Locale, Translations> = {
         unreadCount: "{count} notifikasi belum dibaca",
         noNew: "Tidak ada notifikasi baru",
         emptyTitle: "Tidak Ada Notifikasi",
-        emptyDesc: "Belum ada notifikasi. Anda akan mendapat pemberitahuan saat ada pengumuman baru atau lead masuk ke website Anda.",
+        emptyDesc:
+          "Belum ada notifikasi. Anda akan mendapat pemberitahuan saat ada pengumuman baru atau lead masuk ke website Anda.",
         justNow: "Baru saja",
         minutesAgo: "{n}m yang lalu",
         hoursAgo: "{n}j yang lalu",
@@ -5111,9 +5408,12 @@ export const translations: Record<Locale, Translations> = {
         runFailed: "Gagal menginvestigasi log",
         loadDetailFailed: "Gagal memuat detail investigasi",
         noResultNote: "Belum ada hasil investigasi.",
-        noteHigh: "Segera eskalasi. Banyak sinyal kuat menunjuk ke risiko akun atau akses yang meningkat.",
-        noteMedium: "Perlu ditinjau. Terdapat cukup pola mencurigakan yang perlu tindak lanjut operator.",
-        noteLow: "Pantau saja. Bukti yang ada menunjukkan insiden dengan tingkat keyakinan rendah.",
+        noteHigh:
+          "Segera eskalasi. Banyak sinyal kuat menunjuk ke risiko akun atau akses yang meningkat.",
+        noteMedium:
+          "Perlu ditinjau. Terdapat cukup pola mencurigakan yang perlu tindak lanjut operator.",
+        noteLow:
+          "Pantau saja. Bukti yang ada menunjukkan insiden dengan tingkat keyakinan rendah.",
         eyebrowAi: "Didukung AI",
         title: "Investigasi dengan AI",
         analyzing: "Menganalisis...",
@@ -5129,18 +5429,21 @@ export const translations: Record<Locale, Translations> = {
         outputTitle: "Hasil Investigasi AI",
         aiProcessing: "Pemrosesan AI",
         riskLevel: "Tingkat Risiko",
-        riskWeightedDesc: "Dibobot berdasarkan sinyal, urgensi, volume log, dan status insiden",
+        riskWeightedDesc:
+          "Dibobot berdasarkan sinyal, urgensi, volume log, dan status insiden",
         score: "Skor {score}",
         listTimeline: "Linimasa",
         listSignals: "Sinyal Mencurigakan",
         listRecommendations: "Rekomendasi",
         emptyTitle: "Siap untuk dianalisis",
-        emptyDesc: "Jalankan investigasi untuk membuat ringkasan, linimasa, sinyal mencurigakan, dan rekomendasi.",
+        emptyDesc:
+          "Jalankan investigasi untuk membuat ringkasan, linimasa, sinyal mencurigakan, dan rekomendasi.",
         savedCount: "{count} tersimpan",
         savedTitle: "Investigasi Tersimpan",
         refresh: "Muat Ulang",
         noSavedTitle: "Tidak Ada Investigasi Tersimpan",
-        noSavedDesc: "Investigasi yang selesai akan muncul di sini untuk peninjauan cepat.",
+        noSavedDesc:
+          "Investigasi yang selesai akan muncul di sini untuk peninjauan cepat.",
         investigationChip: "Investigasi #{id}",
         previous: "Sebelumnya",
         pageOf: "Halaman {page} dari {total}",
@@ -5152,7 +5455,8 @@ export const translations: Record<Locale, Translations> = {
         errorEyebrow: "Kesalahan Sistem",
         errorTitle: "Gagal Memuat Dashboard",
         errorHeading: "Terjadi kesalahan!",
-        errorDesc: "Kami menemui kesalahan tak terduga saat mencoba memuat modul investigasi. Ini bisa disebabkan masalah jaringan atau kegagalan server sementara.",
+        errorDesc:
+          "Kami menemui kesalahan tak terduga saat mencoba memuat modul investigasi. Ini bisa disebabkan masalah jaringan atau kegagalan server sementara.",
         tryAgain: "Coba Lagi",
       },
       sales: {
@@ -5163,18 +5467,22 @@ export const translations: Record<Locale, Translations> = {
         regenerateFailed: "Gagal membuat ulang kode referral",
         loading: "Memuat data referral...",
         accessDeniedTitle: "Akses Dibatasi",
-        accessDeniedDesc: "Halaman ini khusus untuk Sales Partner & Admin Webjoz. Silakan hubungi admin jika Anda tim sales.",
+        accessDeniedDesc:
+          "Halaman ini khusus untuk Sales Partner & Admin Webjoz. Silakan hubungi admin jika Anda tim sales.",
         pageTitle: "Kode Referral Partner",
-        pageDesc: "Bagikan kode atau link referral Anda kepada klien untuk mendapatkan komisi dari setiap transaksi berbayar.",
+        pageDesc:
+          "Bagikan kode atau link referral Anda kepada klien untuk mendapatkan komisi dari setiap transaksi berbayar.",
         viewCommissions: "Lihat Komisi Saya",
         codeCardTitle: "Kode Referral Anda",
-        codeCardDesc: "Gunakan kode ini saat pendaftaran website / pengguna baru.",
+        codeCardDesc:
+          "Gunakan kode ini saat pendaftaran website / pengguna baru.",
         copied: "Tersalin",
         copyCode: "Salin Kode",
         updatePrompt: "Ingin memperbarui kode?",
         regenerateCode: "Buat Ulang Kode",
         linkCardTitle: "Link Referral Pendaftaran",
-        linkCardDesc: "Klien yang mendaftar melalui link ini akan otomatis terhubung ke akun Anda.",
+        linkCardDesc:
+          "Klien yang mendaftar melalui link ini akan otomatis terhubung ke akun Anda.",
         copyLink: "Salin Link",
         shareWhatsApp: "Bagikan via WhatsApp",
         shareEmail: "Bagikan via Email",
@@ -5187,16 +5495,21 @@ export const translations: Record<Locale, Translations> = {
         copyInviteText: "Salin Pesan Ajakan",
         inviteTextCopied: "Pesan ajakan berhasil disalin ke clipboard",
         tipsLabel: "Tips:",
-        tipsText: "Cantumkan link ini di proposal, pesan WhatsApp, atau bio media sosial Anda.",
+        tipsText:
+          "Cantumkan link ini di proposal, pesan WhatsApp, atau bio media sosial Anda.",
         programTitle: "Ketentuan Komisi Sales Partner",
         commRatePrefix: "Komisi sebesar",
-        commRateSuffix: "dari nilai transaksi berbayar yang diselesaikan oleh pengguna yang Anda undang.",
+        commRateSuffix:
+          "dari nilai transaksi berbayar yang diselesaikan oleh pengguna yang Anda undang.",
         commRecurringPrefix: "Komisi berlaku",
-        commRecurringSuffix: "untuk setiap perpanjangan langganan bulanan maupun tahunan.",
-        commEditorPrefix: "Setiap website yang mendaftar dengan kode Anda otomatis menambahkan Anda sebagai",
+        commRecurringSuffix:
+          "untuk setiap perpanjangan langganan bulanan maupun tahunan.",
+        commEditorPrefix:
+          "Setiap website yang mendaftar dengan kode Anda otomatis menambahkan Anda sebagai",
         commEditorSuffix: "partner kolaborasi pada website tersebut.",
         dialogTitle: "Buat Ulang Kode Referral",
-        confirmPrefix: "Apakah Anda yakin ingin membuat kode referral baru? Kode lama",
+        confirmPrefix:
+          "Apakah Anda yakin ingin membuat kode referral baru? Kode lama",
         confirmSuffix: "tidak akan berlaku lagi untuk pendaftaran baru.",
         cancel: "Batal",
         processing: "Memproses...",
@@ -5206,9 +5519,11 @@ export const translations: Record<Locale, Translations> = {
         loadFailed: "Gagal memuat data sales",
         loading: "Memuat ringkasan...",
         accessDeniedTitle: "Akses Dibatasi",
-        accessDeniedDesc: "Halaman ini khusus untuk Sales Partner & Admin. Hubungi admin untuk mengaktifkan akses.",
+        accessDeniedDesc:
+          "Halaman ini khusus untuk Sales Partner & Admin. Hubungi admin untuk mengaktifkan akses.",
         pageTitle: "Sales Overview",
-        pageDesc: "Ringkasan pendapatan Anda — komisi Tier 1 {t1}% ({months} bln pertama) → Tier 2 {t2}%, plus bonus onboarding & milestone.",
+        pageDesc:
+          "Ringkasan pendapatan Anda — komisi Tier 1 {t1}% ({months} bln pertama) → Tier 2 {t2}%, plus bonus onboarding & milestone.",
         cardTotal: "Total Pendapatan",
         cardTotalDesc: "Komisi + Bonus terakumulasi",
         cardCommission: "Komisi Recurring",
@@ -5231,7 +5546,8 @@ export const translations: Record<Locale, Translations> = {
         bonusMilestone: "Bonus Milestone bulanan",
         quickLinksTitle: "Akses Cepat",
         linkCommissionsTitle: "Riwayat Komisi & Bonus",
-        linkCommissionsDesc: "Lihat semua transaksi komisi dan bonus yang tercatat beserta statusnya.",
+        linkCommissionsDesc:
+          "Lihat semua transaksi komisi dan bonus yang tercatat beserta statusnya.",
         linkReferralTitle: "Kelola Kode Referral",
         linkReferralDesc: "Salin, bagikan, atau regenerasi kode referral Anda.",
         codeCopied: "Kode disalin!",
@@ -5242,14 +5558,17 @@ export const translations: Record<Locale, Translations> = {
         loadFailed: "Gagal memuat data komisi",
         loading: "Memuat data pendapatan...",
         accessDeniedTitle: "Akses Dibatasi",
-        accessDeniedDesc: "Anda belum memiliki akses ke halaman komisi & bonus. Hubungi admin untuk mengaktifkan akses sales.",
+        accessDeniedDesc:
+          "Anda belum memiliki akses ke halaman komisi & bonus. Hubungi admin untuk mengaktifkan akses sales.",
         pageTitle: "Pendapatan Saya",
-        pageDesc: "Komisi bertingkat Tier 1 {t1}% ({months} bulan pertama) → Tier 2 {t2}%, plus bonus onboarding & milestone.",
+        pageDesc:
+          "Komisi bertingkat Tier 1 {t1}% ({months} bulan pertama) → Tier 2 {t2}%, plus bonus onboarding & milestone.",
         pageDescShort: "Komisi bertingkat plus bonus onboarding & milestone.",
         cardTotal: "Total Pendapatan",
         cardTotalDesc: "Komisi + Bonus terakumulasi",
         cardCommission: "Komisi Recurring",
-        cardCommissionDesc: "Komisi per pembayaran: {t1}% (Tier 1) / {t2}% (Tier 2)",
+        cardCommissionDesc:
+          "Komisi per pembayaran: {t1}% (Tier 1) / {t2}% (Tier 2)",
         cardBonus: "Total Bonus",
         cardBonusDesc: "{onboarding} Onboarding, {milestone} Milestone",
         cardPending: "Pending Payout",
@@ -5257,7 +5576,8 @@ export const translations: Record<Locale, Translations> = {
         tabCommissions: "Komisi Recurring ({count})",
         tabBonuses: "Bonus Onboarding & Milestone ({count})",
         noCommissionsTitle: "Belum ada komisi tercatat.",
-        noCommissionsDesc: "Bagikan kode referral Anda untuk mulai mendapatkan komisi.",
+        noCommissionsDesc:
+          "Bagikan kode referral Anda untuk mulai mendapatkan komisi.",
         thDate: "Tanggal",
         thOrderId: "Order ID",
         thTenantId: "ID Pengguna",
@@ -5270,7 +5590,8 @@ export const translations: Record<Locale, Translations> = {
         previous: "Sebelumnya",
         next: "Selanjutnya",
         noBonusesTitle: "Belum ada bonus tercatat.",
-        noBonusesDesc: "Bonus onboarding (Rp 50.000) dan bonus milestone bulanan akan tercatat otomatis ketika pengguna aktif.",
+        noBonusesDesc:
+          "Bonus onboarding (Rp 50.000) dan bonus milestone bulanan akan tercatat otomatis ketika pengguna aktif.",
         thBonusType: "Jenis Bonus",
         thDetail: "Detail / Periode",
         thAmount: "Nominal Bonus",
@@ -5308,7 +5629,8 @@ export const translations: Record<Locale, Translations> = {
         lock: "Kunci",
         unlock: "Buka Kunci",
         lockTitle: "Kunci Situs",
-        lockDesc: "Anda akan mengunci situs \"{name}\". Situs ini tidak akan dapat diakses publik sampai dibuka kembali.",
+        lockDesc:
+          'Anda akan mengunci situs "{name}". Situs ini tidak akan dapat diakses publik sampai dibuka kembali.',
         reasonLabel: "Alasan pelanggaran",
         reasonPlaceholder: "Mis. Konten judi online",
         reasonRequired: "Alasan wajib diisi (min. 3 karakter)",
@@ -5316,7 +5638,8 @@ export const translations: Record<Locale, Translations> = {
         cancel: "Batal",
         lockSuccess: "Situs berhasil dikunci",
         unlockTitle: "Buka Kunci Situs",
-        unlockDesc: "Situs \"{name}\" akan diaktifkan kembali dan dapat diakses publik.",
+        unlockDesc:
+          'Situs "{name}" akan diaktifkan kembali dan dapat diakses publik.',
         confirmUnlock: "Ya, Buka Kunci",
         unlockSuccess: "Situs berhasil dibuka",
       },
@@ -5406,7 +5729,8 @@ export const translations: Record<Locale, Translations> = {
         metricTrusted: "Perangkat tepercaya",
         metricCurrent: "Sesi ini",
         emptyTitle: "Belum ada sesi",
-        emptyDesc: "Belum ada sesi aktif atau perangkat tepercaya yang terhubung ke akun ini.",
+        emptyDesc:
+          "Belum ada sesi aktif atau perangkat tepercaya yang terhubung ke akun ini.",
         statusCurrent: "sedang masuk",
         statusTrusted: "perangkat tepercaya",
         statusUnknown: "perangkat tidak dikenal",
@@ -5441,11 +5765,14 @@ export const translations: Record<Locale, Translations> = {
         confirmTimeout: "Konfirmasi pembayaran sedang diproses...",
         backToDashboard: "Kembali ke Dashboard",
         pendingTitle: "Pembayaran Sedang Diproses",
-        pendingDesc: "Kami sedang memverifikasi pembayaran Anda. Halaman ini akan refresh otomatis saat pembayaran dikonfirmasi.",
+        pendingDesc:
+          "Kami sedang memverifikasi pembayaran Anda. Halaman ini akan refresh otomatis saat pembayaran dikonfirmasi.",
         successTitle: "Paket Berhasil Diupgrade!",
-        successDesc: "Selamat! Akun Anda kini menggunakan paket Pro. Nikmati AI generate tanpa batas, custom domain, dan SEO otomatis.",
+        successDesc:
+          "Selamat! Akun Anda kini menggunakan paket Pro. Nikmati AI generate tanpa batas, custom domain, dan SEO otomatis.",
         errorTitle: "Pembayaran Gagal",
-        errorDesc: "Pembayaran Anda tidak dapat diproses. Silakan coba lagi atau periksa metode pembayaran Anda.",
+        errorDesc:
+          "Pembayaran Anda tidak dapat diproses. Silakan coba lagi atau periksa metode pembayaran Anda.",
         txDetails: "Detail Transaksi",
         orderIdLabel: "Order ID",
         totalLabel: "Total",
@@ -5457,7 +5784,8 @@ export const translations: Record<Locale, Translations> = {
       sitesNew: {
         connecting: "Menghubungkan...",
         noWorkspaceTitle: "Tidak Ada Workspace Aktif",
-        noWorkspaceDesc: "Anda perlu bergabung dengan sebuah workspace terlebih dahulu untuk membuat website baru.",
+        noWorkspaceDesc:
+          "Anda perlu bergabung dengan sebuah workspace terlebih dahulu untuk membuat website baru.",
         backToDashboard: "Kembali ke Dashboard",
       },
       sitesSeo: {
@@ -5483,8 +5811,10 @@ export const translations: Record<Locale, Translations> = {
         saveFailed: "Gagal menyimpan integrasi",
         save: "Simpan",
         saving: "Menyimpan...",
-        ga4Desc: "Hubungkan Google Analytics 4 untuk melacak pengunjung, perilaku, dan konversi di website Anda.",
-        metaPixelDesc: "Tambahkan Meta Pixel untuk melacak konversi iklan dan membuat audiens ulangan di Instagram & Facebook.",
+        ga4Desc:
+          "Hubungkan Google Analytics 4 untuk melacak pengunjung, perilaku, dan konversi di website Anda.",
+        metaPixelDesc:
+          "Tambahkan Meta Pixel untuk melacak konversi iklan dan membuat audiens ulangan di Instagram & Facebook.",
       },
       sitesTestimonials: {
         loadFailed: "Gagal memuat testimoni",
@@ -5513,7 +5843,8 @@ export const translations: Record<Locale, Translations> = {
         saving: "Menyimpan...",
         saveToSite: "Simpan ke Situs",
         cancel: "Batal",
-        emptyDesc: "Belum ada testimoni. Klik Tambah Manual untuk menambahkan testimonial pertama.",
+        emptyDesc:
+          "Belum ada testimoni. Klik Tambah Manual untuk menambahkan testimonial pertama.",
       },
       sitesKatalog: {
         loading: "Memuat katalog...",
@@ -5536,18 +5867,21 @@ export const translations: Record<Locale, Translations> = {
         itemLabelCatalog: "produk",
         itemCountLabel: "{count} item",
         noCategoriesTitle: "Belum ada kategori",
-        noCategoriesDesc: "Klik + Tambah Kategori untuk memulai, atau tambahkan {itemLabel} langsung.",
+        noCategoriesDesc:
+          "Klik + Tambah Kategori untuk memulai, atau tambahkan {itemLabel} langsung.",
         itemNumberLabel: "Item {number}",
         noItemsDesc: "Belum ada {itemLabel} di kategori ini.",
         labelSectionTitle: "Judul Bagian",
-        sectionSettingsSubtitle: "Atur judul, subjudul, dan teks pengantar katalog di website",
+        sectionSettingsSubtitle:
+          "Atur judul, subjudul, dan teks pengantar katalog di website",
         labelEyebrow: "Eyebrow",
         labelSubtitle: "Subjudul",
         labelPhoto: "Foto",
         labelName: "Nama",
         labelPrice: "Harga",
         labelBadge: "Badge",
-        badgeHint: "Badge menandai item sebagai unggulan dan menampilkan badge di showcase.",
+        badgeHint:
+          "Badge menandai item sebagai unggulan dan menampilkan badge di showcase.",
         labelCapacity: "Kapasitas",
         capacityHint: "(opsional — jml tamu utk kamar / jml unit)",
         labelFeatures: "Fitur / Fasilitas",
@@ -5559,9 +5893,12 @@ export const translations: Record<Locale, Translations> = {
         addCategory: "Tambah Kategori",
         defaultCategory: "Kategori {number}",
         bannerTitle: "Kelola {itemLabel} situs Anda",
-        bannerDesc1: "Tambah kategori dan {itemLabel} di sini. Anda bisa melengkapi foto, nama, deskripsi{itemPricePart}, dan badge.",
-        bannerDesc2: "Item dengan badge otomatis ditandai sebagai unggulan di tampilan showcase.",
-        bannerDesc3: "Pengunjung website dapat menambah {itemLabel} yang Anda mintinkan.",
+        bannerDesc1:
+          "Tambah kategori dan {itemLabel} di sini. Anda bisa melengkapi foto, nama, deskripsi{itemPricePart}, dan badge.",
+        bannerDesc2:
+          "Item dengan badge otomatis ditandai sebagai unggulan di tampilan showcase.",
+        bannerDesc3:
+          "Pengunjung website dapat menambah {itemLabel} yang Anda mintinkan.",
         bannerPricePart: ", harga",
         addWord: "Tambah",
         aiPromptLabelPrefix: "Buat deskripsi untuk",
@@ -5573,10 +5910,12 @@ export const translations: Record<Locale, Translations> = {
         processing: "Memproses...",
         cancel: "Batal",
         aiGenerateTitle: "Generate dengan AI",
-        aiGenerateDesc: "Gunakan AI untuk menghasilkan deskripsi item secara otomatis.",
+        aiGenerateDesc:
+          "Gunakan AI untuk menghasilkan deskripsi item secara otomatis.",
         optional: "Opsional",
         upgradeTitle: "Fitur AI — Plan Pro",
-        upgradeDesc: "Generate deskripsi dengan AI tersedia tanpa batas di paket Pro.",
+        upgradeDesc:
+          "Generate deskripsi dengan AI tersedia tanpa batas di paket Pro.",
         upgradeNow: "Upgrade Sekarang",
         later: "Nanti",
         chipMenu: "Menu",
@@ -5596,34 +5935,41 @@ export const translations: Record<Locale, Translations> = {
         dragItem: "Geser urutan item",
         deleteCategory: "Hapus Kategori",
         deleteItem: "Hapus Item",
-        deleteCategoryConfirm: "Apakah Anda yakin ingin menghapus kategori ini beserta seluruh isinya?",
+        deleteCategoryConfirm:
+          "Apakah Anda yakin ingin menghapus kategori ini beserta seluruh isinya?",
         priceDisplay: "Tampilan Harga",
         priceDisplayPlaceholder: "cth. Rp 25.000 atau Mulai Rp 15rb",
         priceAmount: "Nominal (Angka)",
         priceAmountPlaceholder: "cth. 25000",
-        priceAmountHelp: "Digunakan untuk perhitungan subtotal checkout & pesanan",
+        priceAmountHelp:
+          "Digunakan untuk perhitungan subtotal checkout & pesanan",
         badgePlaceholder: "cth. Terlaris, Best Seller, Diskon 20%, Baru",
         capacityPlaceholder: "cth. 2 orang, 4 pax, 1 set",
-        featuresPlaceholder: "Ketik fasilitas/fitur lalu tekan Enter (cth: WiFi, AC, Breakfast)",
+        featuresPlaceholder:
+          "Ketik fasilitas/fitur lalu tekan Enter (cth: WiFi, AC, Breakfast)",
         tagsPlaceholder: "Ketik tag lalu tekan Enter (cth: Pedas, Best Seller)",
         deliveryPlatforms: "Platform Delivery Online",
-        deliveryPlatformsHelp: "Tautkan link GoFood, GrabFood, ShopeeFood, Tokopedia, dll.",
+        deliveryPlatformsHelp:
+          "Tautkan link GoFood, GrabFood, ShopeeFood, Tokopedia, dll.",
         addDeliveryPlatform: "Tambah Platform Delivery",
         platformNamePlaceholder: "Nama (cth. GrabFood)",
         platformUrlPlaceholder: "https://...",
         photoPrimary: "Foto Utama",
         photoGallery: "Galeri Foto Tambahan",
         photoGalleryCount: "Galeri Foto ({count})",
-        photoGalleryHelp: "Unggah foto tambahan dari sudut berbeda atau variasi produk.",
+        photoGalleryHelp:
+          "Unggah foto tambahan dari sudut berbeda atau variasi produk.",
         photoSetPrimary: "Jadikan Utama",
         photoAdd: "Foto",
         photoUploading: "Mengunggah...",
         variantsTitle: "Varian & Opsi Tambahan",
-        variantsSubtitle: "Kustomisasi pilihan produk seperti Ukuran, Topping, Tingkat Manis, atau Opsi Tambahan.",
+        variantsSubtitle:
+          "Kustomisasi pilihan produk seperti Ukuran, Topping, Tingkat Manis, atau Opsi Tambahan.",
         variantsAddGroup: "Tambah Grup Varian",
         variantsNoGroups: "Belum ada varian atau add-on untuk produk ini.",
         variantsGroupName: "Nama Grup",
-        variantsGroupNamePlaceholder: "cth. Ukuran Porsi, Topping Ekstra, Level Pedas",
+        variantsGroupNamePlaceholder:
+          "cth. Ukuran Porsi, Topping Ekstra, Level Pedas",
         variantsTypeSingle: "Pilih 1 Saja (Radio)",
         variantsTypeMultiple: "Bisa Pilih Banyak (Checkbox)",
         variantsRequired: "Wajib Dipilih Pengunjung",
@@ -5639,10 +5985,13 @@ export const translations: Record<Locale, Translations> = {
         variantsOptionMarkSoldOut: "Tandai habis",
         allChangesSaved: "Semua perubahan otomatis tersimpan secara aman",
         paymentTitle: "Metode Pembayaran & Pengiriman",
-        paymentSubtitle: "Tampilkan info pembayaran dan pengiriman di keranjang pesanan pengunjung. Belum perlu integrasi payment gateway — cukup info rekening/QRIS statis.",
-        paymentHint: "Perubahan tersimpan otomatis. Informasi ini hanya ditampilkan sebagai catatan — pembayaran dikonfirmasi manual lewat WhatsApp.",
+        paymentSubtitle:
+          "Tampilkan info pembayaran dan pengiriman di keranjang pesanan pengunjung. Belum perlu integrasi payment gateway — cukup info rekening/QRIS statis.",
+        paymentHint:
+          "Perubahan tersimpan otomatis. Informasi ini hanya ditampilkan sebagai catatan — pembayaran dikonfirmasi manual lewat WhatsApp.",
         paymentsVisibleLabel: "Tampilkan blok pembayaran & pengiriman",
-        paymentsVisibleHint: "Matikan untuk menyembunyikan info ini dari keranjang dan footer",
+        paymentsVisibleHint:
+          "Matikan untuk menyembunyikan info ini dari keranjang dan footer",
         methodsTitle: "Metode Pembayaran",
         methodTypeTransfer: "Transfer Bank",
         methodTypeQris: "QRIS",
@@ -5652,25 +6001,32 @@ export const translations: Record<Locale, Translations> = {
         methodTypeOther: "Lainnya",
         methodLabelPlaceholder: "Nama metode (cth. Transfer Bank BCA)",
         methodDetailPlaceholder: "No. rekening (cth. 1234567890 a.n. Nama)",
-        methodDetailPlaceholderEwallet: "Nomor HP / ID e-wallet (cth. 081234567890)",
-        methodDetailPlaceholderCod: "Catatan (cth. Bayar tunai saat pesanan tiba)",
-        methodDetailPlaceholderCard: "cth. Visa / Mastercard (bayar langsung ke toko)",
-        methodDetailPlaceholderOther: "Catatan metode (cth. transfer via platform lain)",
+        methodDetailPlaceholderEwallet:
+          "Nomor HP / ID e-wallet (cth. 081234567890)",
+        methodDetailPlaceholderCod:
+          "Catatan (cth. Bayar tunai saat pesanan tiba)",
+        methodDetailPlaceholderCard:
+          "cth. Visa / Mastercard (bayar langsung ke toko)",
+        methodDetailPlaceholderOther:
+          "Catatan metode (cth. transfer via platform lain)",
         methodQrisImageLabel: "Gambar QR",
         methodQrisImagePlaceholder: "https://... atau unggah gambar QRIS",
         paymentTitleLabel: "Judul Header",
         methodRemove: "Hapus metode",
         methodAdd: "Tambah Metode",
         shippingTitle: "Info Pengiriman",
-        shippingNotePlaceholder: "cth. Ongkir menyesuaikan lokasi. Estimasi 1–3 hari kerja.",
+        shippingNotePlaceholder:
+          "cth. Ongkir menyesuaikan lokasi. Estimasi 1–3 hari kerja.",
         returnPolicy: "Kebijakan Retur",
-        returnPolicyPlaceholder: "cth. Barang dapat dikembalikan/ditukar dalam 7 hari. Hubungi kami lewat WhatsApp.",
+        returnPolicyPlaceholder:
+          "cth. Barang dapat dikembalikan/ditukar dalam 7 hari. Hubungi kami lewat WhatsApp.",
         toggleItemDetail: "Buka/tutup detail item",
         advancedSettings: "Pengaturan lanjutan",
         quickView: "Lihat Detail",
         previewItem: "Pratinjau",
         categoryNamePlaceholder: "Nama kategori",
-        emptyItemsDesc: "Belum ada {itemLabel}. Klik tombol di bawah untuk menambah.",
+        emptyItemsDesc:
+          "Belum ada {itemLabel}. Klik tombol di bawah untuk menambah.",
         addItem: "Tambah {itemLabel}",
         itemName: "Nama {itemLabel}",
         itemNameExampleMenu: "cth. Nasi Goreng Spesial",
@@ -5686,7 +6042,8 @@ export const translations: Record<Locale, Translations> = {
         discountLabelPlaceholder: "cth. Diskon 20%",
         capacityHelp: "opsional — jml tamu / unit",
         description: "Deskripsi",
-        descriptionPlaceholder: "Jelaskan keunggulan dan spesifikasi {itemLabel} ini...",
+        descriptionPlaceholder:
+          "Jelaskan keunggulan dan spesifikasi {itemLabel} ini...",
         labelTagsMenu: "Tags Menu",
         tagsMenuHint: "misal: Pedas, Vegetarian, Signature",
         phSectionTitle: "cth. {sectionTitle}",
@@ -5780,10 +6137,13 @@ export const translations: Record<Locale, Translations> = {
         brandIdentitySettings: "PENGATURAN IDENTITAS",
         brandStyle: "Gaya Brand (Brand style)",
         brandStyleSubtitle: "Jaga konsistensi font & warna di seluruh halaman",
-        testimonialsExampleBanner: "Contoh testimoni buatan AI. Tidak tampil di situs publik sampai Anda menggantinya dengan testimoni asli atau mengonfirmasinya.",
+        testimonialsExampleBanner:
+          "Contoh testimoni buatan AI. Tidak tampil di situs publik sampai Anda menggantinya dengan testimoni asli atau mengonfirmasinya.",
         testimonialsCollect: "Kumpulkan testimoni asli",
         testimonialsConfirmReal: "Ini testimoni asli, tayangkan",
-        testimonialsConfirmPrompt: "Dengan melanjutkan, Anda menyatakan testimoni ini nyata dan berasal dari pelanggan Anda. Lanjutkan?",        headingFontLabel: "Font Judul (Heading font)",
+        testimonialsConfirmPrompt:
+          "Dengan melanjutkan, Anda menyatakan testimoni ini nyata dan berasal dari pelanggan Anda. Lanjutkan?",
+        headingFontLabel: "Font Judul (Heading font)",
         bodyFontLabel: "Font Teks Isi (Body font)",
         brandAccentLabel: "Warna Aksen Brand (Accent color)",
         resetDefaultFont: "Reset ke font bawaan",
@@ -5797,22 +6157,27 @@ export const translations: Record<Locale, Translations> = {
         uploadFontTab: "Upload File (.woff2/.ttf)",
         urlFontTab: "Input URL Font",
         selectFontFileComputer: "Pilih file font dari komputer",
-        fontFileFormatHint: "Format: .woff2 (rekomendasi), .ttf, .otf (Maks. 3 MB)",
+        fontFileFormatHint:
+          "Format: .woff2 (rekomendasi), .ttf, .otf (Maks. 3 MB)",
         fontFamilyNameLabel: "Nama Font Family:",
         fontFamilyNamePlaceholder: "mis. Clash Display / Helvetica",
         fontUrlLabel: "URL Font (Stylesheet CSS / Woff2):",
-        fontUrlPlaceholder: "https://api.fontshare.com/v2/css?f[]=... atau .woff2",
+        fontUrlPlaceholder:
+          "https://api.fontshare.com/v2/css?f[]=... atau .woff2",
         applyFontUrlButton: "Terapkan Font URL",
-        customFontAppliedSuccess: "Font \"{name}\" berhasil diterapkan!",
-        customFontUrlAppliedSuccess: "Font \"{name}\" dari URL berhasil diterapkan!",
+        customFontAppliedSuccess: 'Font "{name}" berhasil diterapkan!',
+        customFontUrlAppliedSuccess:
+          'Font "{name}" dari URL berhasil diterapkan!',
         fontNameAndUrlRequired: "Nama font dan URL font wajib diisi",
-        fontInvalidFormatError: "Format file harus .woff2, .woff, .ttf, atau .otf",
+        fontInvalidFormatError:
+          "Format file harus .woff2, .woff, .ttf, atau .otf",
         fontFileSizeError: "Ukuran file font maksimal 3 MB",
         fontReadError: "Gagal membaca file font",
         brandPreviewTitle: "PRATINJAU IDENTITAS",
         brandPreviewSampleHeadline: "Bisnis Anda, identitas Anda.",
         brandPreviewContactButton: "Hubungi Kami",
-        brandStylesLockedHint: "Font & warna ini terkunci otomatis di semua section & halaman.",
+        brandStylesLockedHint:
+          "Font & warna ini terkunci otomatis di semua section & halaman.",
         pickCustomColorTitle: "Pilih warna kustom...",
         styleIdeaTitle: "Ide Gaya:",
         aiDesignPromptExample: "cth: tema kopi vintage hangat...",
@@ -5899,11 +6264,11 @@ export const translations: Record<Locale, Translations> = {
         aiDesignPrompt: "AI Design Prompt",
         aiInstructionsTitle: "Instruksi AI",
         aiPromptDesc: "Apa yang ingin kamu ubah di bagian {label}?",
-        aiPromptPlaceholder: "cth. \"buat lebih persuasif dan emosional\"",
+        aiPromptPlaceholder: 'cth. "buat lebih persuasif dan emosional"',
         aiPlaceholder: "Buat copy lebih jelas dan meyakinkan...",
         fieldAiTitle: "Instruksi AI — {label}",
         fieldAiDesc: "Tambahkan instruksi khusus atau langsung klik Generate.",
-        fieldAiPlaceholder: "cth. \"buat lebih kasual dan ramah\"",
+        fieldAiPlaceholder: 'cth. "buat lebih kasual dan ramah"',
         fieldAiImagePrompt: "Tulis deskripsi berdasarkan foto produk ini",
         fieldAiImageChip: "Tulis deskripsi dari foto produk",
         generateAi: "Generate AI",
@@ -5915,13 +6280,17 @@ export const translations: Record<Locale, Translations> = {
         upgradeToPro: "Upgrade ke Pro",
         upgradeDefaultTitle: "Fitur AI Only untuk Pro",
         upgradeDefaultBody: "Fitur AI hanya tersedia untuk pengguna Pro.",
-        upgradeProDesc: "Dengan Pro, kamu bisa menggunakan AI Generate untuk konten, gambar, SEO, dan desain website.",
+        upgradeProDesc:
+          "Dengan Pro, kamu bisa menggunakan AI Generate untuk konten, gambar, SEO, dan desain website.",
         upgradeRegenTitle: "Regenerasi AI — fitur Pro",
-        upgradeRegenBody: "Regenerasi ulang konten section dengan AI tersedia tanpa batas di paket Pro.",
+        upgradeRegenBody:
+          "Regenerasi ulang konten section dengan AI tersedia tanpa batas di paket Pro.",
         upgradeDesignTitle: "Desain ulang dengan AI — fitur Pro",
-        upgradeDesignBody: "Minta AI mengubah gaya, warna, dan layout website Anda secara instan di paket Pro.",
+        upgradeDesignBody:
+          "Minta AI mengubah gaya, warna, dan layout website Anda secara instan di paket Pro.",
         upgradeSuggestionTitle: "Saran instruksi AI — fitur Pro",
-        upgradeSuggestionBody: "Gunakan saran instruksi siap pakai untuk mempercepat proses AI di paket Pro.",
+        upgradeSuggestionBody:
+          "Gunakan saran instruksi siap pakai untuk mempercepat proses AI di paket Pro.",
         save: "Simpan",
         saving: "Menyimpan...",
         saved: "Tersimpan",
@@ -5929,7 +6298,8 @@ export const translations: Record<Locale, Translations> = {
         saveFailed: "Gagal menyimpan perubahan",
         autosaveFailed: "Gagal menyimpan",
         notFoundTitle: "Situs Tidak Ditemukan",
-        notFoundDesc: "Kami tidak dapat menemukan situs yang Anda cari pada workspace saat ini.",
+        notFoundDesc:
+          "Kami tidak dapat menemukan situs yang Anda cari pada workspace saat ini.",
         inlineSave: "Simpan",
         inlineCancel: "Batal",
         inlineSaved: "Tersimpan",
@@ -5955,13 +6325,15 @@ export const translations: Record<Locale, Translations> = {
         designRegen: "Design Regen",
         qualityScore: "Kualitas: {score}%",
         qualityTitle: "Kelengkapan Konten ({score}%)",
-        qualityDesc: "{count} field perlu diisi agar tampilan website kamu maksimal:",
+        qualityDesc:
+          "{count} field perlu diisi agar tampilan website kamu maksimal:",
         qualityWarning: "⚠️ {count} field perlu dicek",
         qualityFieldHint: "Field belum diisi atau berisi teks contoh",
         fill: "Isi",
         viewCompleteness: "Lihat kelengkapan konten",
         undo: "Undo",
-        undoAllTitle: "Urungkan perubahan terakhir (teks, desain, atau urutan section)",
+        undoAllTitle:
+          "Urungkan perubahan terakhir (teks, desain, atau urutan section)",
         undoDesign: "Undo Desain",
         undoDesignTitle: "Urungkan perubahan desain terakhir",
         noDesignChanges: "Belum ada perubahan desain",
@@ -5972,7 +6344,8 @@ export const translations: Record<Locale, Translations> = {
         hidden: "Tersembunyi",
         hiddenOnSite: "Disembunyikan, tidak tampil di situs",
         hiddenEmpty: "Kosong, belum ada konten",
-        hiddenEmptyHint: "Disembunyikan lagi saat dimuat ulang bila masih kosong",
+        hiddenEmptyHint:
+          "Disembunyikan lagi saat dimuat ulang bila masih kosong",
         showAndFill: "Tampilkan dan isi",
         addToPage: "Tambahkan ke halaman",
         statusEmpty: "Kosong",
@@ -5989,7 +6362,8 @@ export const translations: Record<Locale, Translations> = {
         done: "Selesai",
         pageLayoutVariants: "Tata Letak Bagian",
         activeSectionsCount: "bagian aktif",
-        pageLayoutVariantsDesc: "Sesuaikan gaya dan tata letak setiap bagian halaman situs Anda secara terpusat.",
+        pageLayoutVariantsDesc:
+          "Sesuaikan gaya dan tata letak setiap bagian halaman situs Anda secara terpusat.",
         editSectionContent: "Edit konten bagian ini",
         changeSectionVariant: "Ganti varian tampilan bagian ini",
         optionsCount: "opsi",
@@ -6000,7 +6374,8 @@ export const translations: Record<Locale, Translations> = {
         mapTileDark: "Gelap",
         mapTileSatellite: "Satelit",
         mapPreviewLabel: "Pratinjau Peta",
-        mapPreviewEmpty: "Belum ada lokasi. Klik \"Pilih Lokasi\" untuk menandai lokasi di peta.",
+        mapPreviewEmpty:
+          'Belum ada lokasi. Klik "Pilih Lokasi" untuk menandai lokasi di peta.',
         mapPreviewEditAria: "Ubah lokasi peta",
         pickLocation: "Pilih Lokasi",
         selectSectionAria: "Pilih Bagian",
@@ -6018,7 +6393,8 @@ export const translations: Record<Locale, Translations> = {
         draft: "Draft",
         aiProcessing: "AI sedang memproses...",
         aiReviewActive: "Review AI Sedang Aktif",
-        aiReviewDesc1: "Silakan gunakan atau kembalikan perubahan AI pada bagian",
+        aiReviewDesc1:
+          "Silakan gunakan atau kembalikan perubahan AI pada bagian",
         aiReviewDesc2: "di bagian atas halaman preview terlebih dahulu.",
         diffAi: "Diff AI: {label}",
         diffChanges: "{count} perubahan",
@@ -6032,10 +6408,12 @@ export const translations: Record<Locale, Translations> = {
         aiCancelled: "Hasil AI dibatalkan.",
         aiReverted: "Perubahan AI pada {label} dikembalikan.",
         aiNoChange: "AI belum menghasilkan perubahan nyata.",
-        aiNoChangeHint: "Coba instruksi yang lebih spesifik, misalnya: ubah jadi headline emosional, maksimal 8 kata, dan hilangkan teks input mentah.",
+        aiNoChangeHint:
+          "Coba instruksi yang lebih spesifik, misalnya: ubah jadi headline emosional, maksimal 8 kata, dan hilangkan teks input mentah.",
         aiSectionDone: "AI selesai menulis {label}. Cek diff sebelum dipakai.",
         aiSectionFailed: "AI gagal meregenerasi bagian ini.",
-        aiStyleDone: "AI selesai mendesain ulang gaya situs. Cek hasil visual sebelum disimpan.",
+        aiStyleDone:
+          "AI selesai mendesain ulang gaya situs. Cek hasil visual sebelum disimpan.",
         aiStyleFailed: "AI gagal meregenerasi gaya website.",
         aiStyleNoChange: "AI belum menghasilkan perubahan gaya yang nyata.",
         aiProcessFailed: "AI gagal memproses.",
@@ -6048,11 +6426,13 @@ export const translations: Record<Locale, Translations> = {
         aiMoodCreated: "Nuansa {mood}. Dibuat pada {date}.",
         editLabel: "Edit — {label}",
         confirmPublishTitle: "Terapkan Perubahan ke Live?",
-        confirmPublishDesc: "Pengunjung situs akan segera melihat versi terbaru.",
-        confirmPublishBody: "Semua perubahan draf yang sudah disimpan akan diterapkan ke website live {subdomain}.webjoz.com.",
+        confirmPublishDesc:
+          "Pengunjung situs akan segera melihat versi terbaru.",
+        confirmPublishBody:
+          "Semua perubahan draf yang sudah disimpan akan diterapkan ke website live {subdomain}.webjoz.com.",
         confirmApply: "Ya, Terapkan",
         upgradeLabel: "Upgrade ke Pro",
-        aiInstructionsPlaceholder: "cth. \"buat lebih persuasif dan emosional\"",
+        aiInstructionsPlaceholder: 'cth. "buat lebih persuasif dan emosional"',
         aiDesignInstructionsPlaceholder: "cth: tema kopi vintage hangat...",
         aiDesignFailed: "Terjadi kesalahan saat membuat ulang desain dengan AI",
         aiHistory: "Riwayat AI",
@@ -6091,7 +6471,8 @@ export const translations: Record<Locale, Translations> = {
         weightSemiBold: "Semi-Bold",
         // SEO Preview & Form
         seoPreviewBannerTitle: "Pratinjau SEO & Metadata:",
-        seoPreviewBannerDesc: "Hanya dibaca mesin pencari & saat link dibagikan di media sosial.",
+        seoPreviewBannerDesc:
+          "Hanya dibaca mesin pencari & saat link dibagikan di media sosial.",
         seoEditInSidebar: "Edit di Sidebar",
         windowClose: "Tutup",
         windowMinimize: "Kecilkan",
@@ -6117,7 +6498,8 @@ export const translations: Record<Locale, Translations> = {
         seoGoogleResultsCount: "Sekitar 124.000 hasil (0,32 detik)",
         seoGoogleClickToEdit: "Klik untuk edit di sidebar",
         seoGooglePlaceholderTitle: "Tambahkan SEO Title di sidebar editor...",
-        seoGooglePlaceholderDesc: "Meta description belum diisi. Tambahkan deskripsi yang relevan di sidebar editor agar calon pengunjung tertarik mengklik link website Anda di hasil pencarian.",
+        seoGooglePlaceholderDesc:
+          "Meta description belum diisi. Tambahkan deskripsi yang relevan di sidebar editor agar calon pengunjung tertarik mengklik link website Anda di hasil pencarian.",
         seoSitelinkAbout: "Tentang Kami",
         seoSitelinkAboutDesc: "Kenali profil dan layanan terbaik kami.",
         seoSitelinkContact: "Kontak & Lokasi",
@@ -6134,19 +6516,26 @@ export const translations: Record<Locale, Translations> = {
         seoWaMessage: "Halo! Cek website resmi kami di sini ya:",
         seoWaNoOgImage: "Belum ada OG Image share",
         seoWaClickUpload: "Klik untuk upload di sidebar",
-        seoWaDefaultDesc: "Deskripsi website yang menarik akan muncul di sini saat tautan dibagikan.",
+        seoWaDefaultDesc:
+          "Deskripsi website yang menarik akan muncul di sini saat tautan dibagikan.",
         seoOgTipsTitle: "Tips Gambar Open Graph:",
-        seoOgTipsDesc: "Ukuran ideal: 1200 × 630 px (rasio 1.91:1). Gambar ini otomatis dipakai oleh WhatsApp, Telegram, Facebook, X (Twitter), dan LinkedIn saat link Anda dibagikan.",
+        seoOgTipsDesc:
+          "Ukuran ideal: 1200 × 630 px (rasio 1.91:1). Gambar ini otomatis dipakai oleh WhatsApp, Telegram, Facebook, X (Twitter), dan LinkedIn saat link Anda dibagikan.",
         seoInspectorTitle: "HTML <head> SEO Inspector",
         seoCopyHtml: "Salin Kode HTML",
         seoTargetKeywords: "Target Kata Kunci (Keywords):",
-        seoNotPublicTitle: "SEO tidak tampil sebagai section di halaman publik.",
-        seoNotPublicDesc: "Data ini dipakai mesin pencari dan preview saat link dibagikan, seperti judul Google, deskripsi, favicon, dan gambar share.",
-        seoAiTitlePrompt: "Buat SEO title yang mengandung nama bisnis, lokasi, dan layanan utama. Maks 60 karakter.",
+        seoNotPublicTitle:
+          "SEO tidak tampil sebagai section di halaman publik.",
+        seoNotPublicDesc:
+          "Data ini dipakai mesin pencari dan preview saat link dibagikan, seperti judul Google, deskripsi, favicon, dan gambar share.",
+        seoAiTitlePrompt:
+          "Buat SEO title yang mengandung nama bisnis, lokasi, dan layanan utama. Maks 60 karakter.",
         seoAiTitleBtn: "AI: generate SEO title",
-        seoAiDescPrompt: "Buat meta description yang menarik klik di Google. Maks 155 karakter, sertakan nama bisnis dan value proposition.",
+        seoAiDescPrompt:
+          "Buat meta description yang menarik klik di Google. Maks 155 karakter, sertakan nama bisnis dan value proposition.",
         seoAiDescBtn: "AI: generate meta description",
-        seoAiKeywordsPrompt: "Generate 3-8 keyword SEO yang relevan untuk bisnis ini, fokus pada produk, layanan, dan lokasi.",
+        seoAiKeywordsPrompt:
+          "Generate 3-8 keyword SEO yang relevan untuk bisnis ini, fokus pada produk, layanan, dan lokasi.",
         seoKeywordsLabel: "Keywords SEO",
         seoKeywordsPlaceholderEmpty: "Ketik keyword lalu Enter...",
         seoKeywordsPlaceholderMore: "Tambah keyword...",
@@ -6156,10 +6545,13 @@ export const translations: Record<Locale, Translations> = {
         seoSharePlaceholderTitle: "Judul belum diisi",
         seoSharePlaceholderDesc: "Deskripsi belum diisi",
         seoShareOgNotSet: "OG Image belum diatur (1200×630 px)",
-        seoShareAutoUpdate: "Preview otomatis diperbarui saat Anda mengisi Meta Title, Deskripsi, & OG Image.",
-        seoAiOgTypePrompt: "Pilih og_type yang paling sesuai: website, article, product, profile.",
+        seoShareAutoUpdate:
+          "Preview otomatis diperbarui saat Anda mengisi Meta Title, Deskripsi, & OG Image.",
+        seoAiOgTypePrompt:
+          "Pilih og_type yang paling sesuai: website, article, product, profile.",
         seoAiOgTypeBtn: "AI: suggest OG type",
-        seoAiTwitterCardPrompt: "Pilih Twitter card: summary_large_image untuk kebanyakan bisnis.",
+        seoAiTwitterCardPrompt:
+          "Pilih Twitter card: summary_large_image untuk kebanyakan bisnis.",
         seoAiTwitterCardBtn: "AI: suggest Twitter card",
         seoMetaTitleLabel: "Meta Title",
         seoMetaDescLabel: "Meta Description",
@@ -6194,14 +6586,18 @@ export const translations: Record<Locale, Translations> = {
         mapPickerConfirm: "Pilih",
         seoRobotsTxtTitle: "Custom Robots.txt",
         seoRobotsTxtLockedTitle: "Kustomisasi robots.txt untuk situs Anda",
-        seoRobotsTxtLockedDesc: "Kontrol halaman mana yang di-index Google, blok AI crawler, dan atur sitemap rules.",
+        seoRobotsTxtLockedDesc:
+          "Kontrol halaman mana yang di-index Google, blok AI crawler, dan atur sitemap rules.",
         seoBoosterActiveTitle: "SEO Booster Aktif",
-        seoBoosterActiveDesc: "Structured data rich snippet otomatis dipasang di situs Anda. Google akan menampilkan rating, harga, dan informasi bisnis langsung di hasil pencarian.",
+        seoBoosterActiveDesc:
+          "Structured data rich snippet otomatis dipasang di situs Anda. Google akan menampilkan rating, harga, dan informasi bisnis langsung di hasil pencarian.",
         seoBoosterProTitle: "SEO BOOSTER (PRO)",
         seoBoosterWithout: "TANPA SEO BOOSTER",
         seoBoosterWith: "DENGAN SEO BOOSTER",
-        seoBoosterCompetitor: "Kompetitor Anda mungkin sudah tampil seperti contoh kanan di pencarian Google.",
-        seoBoosterUpgradeBtn: "🔓 Upgrade ke Pro — Tampil Lebih Menonjol di Google",
+        seoBoosterCompetitor:
+          "Kompetitor Anda mungkin sudah tampil seperti contoh kanan di pencarian Google.",
+        seoBoosterUpgradeBtn:
+          "🔓 Upgrade ke Pro — Tampil Lebih Menonjol di Google",
         seoGscTitle: "Google Search Console",
         seoGscSubtitle: "Verifikasi kepemilikan domain Anda di GSC",
         seoGscHowToTitle: "Cara mendapatkan kode verifikasi:",
@@ -6223,12 +6619,14 @@ export const translations: Record<Locale, Translations> = {
         headerNavButtonText: "Teks Tombol Nav",
         headerNavButtonLink: "Link ke Section",
         headerNavButtonLinkAuto: "— Otomatis dari teks —",
-        headerNavButtonLinkHint: "Biarkan kosong untuk mendeteksi section otomatis berdasarkan teks tombol.",
+        headerNavButtonLinkHint:
+          "Biarkan kosong untuk mendeteksi section otomatis berdasarkan teks tombol.",
         headerTagline: "Tagline",
         headerTaglineOptional: "(opsional)",
         headerLogoUrl: "Logo URL",
         headerLogoLight: "Logo Versi Terang (opsional)",
-        headerLogoLightHint: "Dipakai di header transparan saat berada di atas hero gelap. Kosongkan untuk memutihkan logo utama otomatis.",
+        headerLogoLightHint:
+          "Dipakai di header transparan saat berada di atas hero gelap. Kosongkan untuk memutihkan logo utama otomatis.",
         headerFavicon: "Favicon",
         headerIconName: "Nama Ikon",
         headerNavMenu: "Menu Navigasi",
@@ -6322,19 +6720,23 @@ export const translations: Record<Locale, Translations> = {
         heroCarouselMainSlide: "Gambar Utama (slide 1)",
         heroCarouselPrimary: "utama",
         heroImageLabel: "Gambar Hero",
-        heroSlidesHint: "Slide #1 adalah gambar utama. Slot kosong tidak tampil di situs.",
+        heroSlidesHint:
+          "Slide #1 adalah gambar utama. Slot kosong tidak tampil di situs.",
         heroPhotoBy: "Foto oleh {name}",
         heroSlotSet: "Ada",
         heroSlotEmpty: "Kosong",
         heroVideoUrlLabel: "URL Video Hero",
-        heroVideoUrlHint: "URL langsung video (.mp4 / .webm) untuk varian \u201CVideo Latar\u201D. Jika kosong atau tidak valid, hero memakai gambar di atas sebagai poster.",
+        heroVideoUrlHint:
+          "URL langsung video (.mp4 / .webm) untuk varian \u201CVideo Latar\u201D. Jika kosong atau tidak valid, hero memakai gambar di atas sebagai poster.",
         heroCtaSecondaryText: "Teks Tombol CTA Kedua",
         heroCtaSecondaryUrl: "URL Tombol CTA Kedua",
-        heroCtaSecondaryHint: "Tombol kedua di samping tombol utama (dipakai oleh beberapa template).",
-        heroCtaSecondaryUrlHint: "Link tujuan tombol CTA kedua (section anchor, URL, atau WhatsApp).",
-        preloaderBrandAuto: "Otomatis: \"{value}\"",
+        heroCtaSecondaryHint:
+          "Tombol kedua di samping tombol utama (dipakai oleh beberapa template).",
+        heroCtaSecondaryUrlHint:
+          "Link tujuan tombol CTA kedua (section anchor, URL, atau WhatsApp).",
+        preloaderBrandAuto: 'Otomatis: "{value}"',
         preloaderBrandFallback: "Nama Brand",
-        preloaderTaglineAuto: "Otomatis: \"{value}\"",
+        preloaderTaglineAuto: 'Otomatis: "{value}"',
         preloaderTaglineFallback: "Tagline Bisnis",
         heroCarouselNoImage: "Belum ada",
         heroCarouselShowSlide: "Tampilkan slide",
@@ -6344,13 +6746,17 @@ export const translations: Record<Locale, Translations> = {
         ctaButtonLink: "Link Tombol",
         heroVideoUrl: "URL Video Hero",
         heroEyebrow: "Eyebrow / Label Badge",
-        heroEyebrowHint: "Label kecil di atas headline (dipakai oleh beberapa template).",
+        heroEyebrowHint:
+          "Label kecil di atas headline (dipakai oleh beberapa template).",
         heroSecondaryCtaText: "Teks Tombol CTA Kedua",
-        heroSecondaryCtaHint: "Tombol kedua di samping tombol utama (dipakai oleh beberapa template).",
+        heroSecondaryCtaHint:
+          "Tombol kedua di samping tombol utama (dipakai oleh beberapa template).",
         heroSecondaryCtaUrl: "URL Tombol CTA Kedua",
-        heroSecondaryCtaUrlHint: "Link tujuan tombol CTA kedua (section anchor, URL, atau WhatsApp).",
+        heroSecondaryCtaUrlHint:
+          "Link tujuan tombol CTA kedua (section anchor, URL, atau WhatsApp).",
         heroBadgeText: "Teks Badge Bawah CTA",
-        heroBadgeTextHint: "Teks kecil yang muncul di bawah tombol CTA (jam buka, info singkat, dll).",
+        heroBadgeTextHint:
+          "Teks kecil yang muncul di bawah tombol CTA (jam buka, info singkat, dll).",
         heroOpeningHours: "Jam Buka",
         // Benefits
         benefitsEyebrow: "Eyebrow",
@@ -6385,7 +6791,8 @@ export const translations: Record<Locale, Translations> = {
         contactTitle: "Judul",
         contactAddress: "Alamat",
         contactPhone: "Nomor WhatsApp",
-        contactPhoneHint: "Jika kosong, pesanan dari keranjang masuk ke Kotak Masuk Pesan di dashboard.",
+        contactPhoneHint:
+          "Jika kosong, pesanan dari keranjang masuk ke Kotak Masuk Pesan di dashboard.",
         contactEmail: "Email",
         contactShowForm: "Formulir Kontak",
         contactShowMap: "Peta Lokasi",
@@ -6394,16 +6801,22 @@ export const translations: Record<Locale, Translations> = {
         contactFormLayoutInfoLeft: "Info kiri, form kanan",
         contactFormLayoutFormLeft: "Form kiri, info kanan",
         contactFormLayoutStack: "Vertikal (form di bawah)",
-        contactFormLayoutHint: "\"Info kiri, form kanan\" cocok untuk hero dengan ruang luas. \"Vertikal\" cocok untuk mobile.",
+        contactFormLayoutHint:
+          '"Info kiri, form kanan" cocok untuk hero dengan ruang luas. "Vertikal" cocok untuk mobile.',
         contactMapLayout: "Gaya Tata Letak Peta",
         contactMapLayoutInline: "Di dalam kolom info",
         contactMapLayoutFull: "Full-width di bawah",
-        contactMapLayoutHint: "\"Full-width di bawah\" meletakkan peta penuh lebar di bawah kolom info/form.",
+        contactMapLayoutHint:
+          '"Full-width di bawah" meletakkan peta penuh lebar di bawah kolom info/form.',
         contactMapsLink: "Link Google Maps",
-        contactMapsLinkHint: "Klik \"Pilih Lokasi\" untuk menandai lokasi di peta, atau tempel link embed / share Google Maps.",
-        contactInvalidMapLink: "Link ini tidak bisa ditampilkan sebagai peta interaktif. Klik \"Pilih Lokasi\" atau gunakan link embed Google Maps.",
-        contactMapClickHint: "Klik \"Pilih Lokasi\" untuk menandai lokasi di peta, atau tempel link embed / share Google Maps.",
-        contactResolveError: "Gagal meresolve link. Coba salin link embed manual.",
+        contactMapsLinkHint:
+          'Klik "Pilih Lokasi" untuk menandai lokasi di peta, atau tempel link embed / share Google Maps.',
+        contactInvalidMapLink:
+          'Link ini tidak bisa ditampilkan sebagai peta interaktif. Klik "Pilih Lokasi" atau gunakan link embed Google Maps.',
+        contactMapClickHint:
+          'Klik "Pilih Lokasi" untuk menandai lokasi di peta, atau tempel link embed / share Google Maps.',
+        contactResolveError:
+          "Gagal meresolve link. Coba salin link embed manual.",
         // Footer
         footerTagline: "Tagline",
         footerCopyright: "Copyright",
@@ -6426,7 +6839,8 @@ export const translations: Record<Locale, Translations> = {
         testimonialsAddItem: "Tambah Testimoni",
         // Works
         worksSectionBanner: "Section Portofolio Proyek",
-        worksSectionBannerDesc: "Tampilkan proyek atau karya terbaik. Setiap proyek bisa dilengkapi kategori, tahun, klien, deskripsi, dan link proyek untuk meningkatkan kredibilitas.",
+        worksSectionBannerDesc:
+          "Tampilkan proyek atau karya terbaik. Setiap proyek bisa dilengkapi kategori, tahun, klien, deskripsi, dan link proyek untuk meningkatkan kredibilitas.",
         worksTitle: "Judul Portofolio",
         worksEyebrow: "Eyebrow",
         worksSubtitle: "Deskripsi Ringkas",
@@ -6447,7 +6861,8 @@ export const translations: Record<Locale, Translations> = {
         worksDescription: "Deskripsi",
         // Gallery
         gallerySectionBanner: "Section Galeri Foto",
-        gallerySectionBannerDesc: "Tambahkan foto-foto untuk galeri. Atur tata letak, caption, dan teks alternatif.",
+        gallerySectionBannerDesc:
+          "Tambahkan foto-foto untuk galeri. Atur tata letak, caption, dan teks alternatif.",
         galleryTitle: "Judul Galeri",
         galleryEyebrow: "Eyebrow",
         galleryLayout: "Tata Letak",
@@ -6473,7 +6888,8 @@ export const translations: Record<Locale, Translations> = {
         statsDescription: "Keterangan (Opsional)",
         // Partners
         partnersSectionBanner: "Section Mitra & Klien",
-        partnersSectionBannerDesc: "Tampilkan logo atau nama brand yang pernah bekerja sama, klien utama, atau media yang meliput.",
+        partnersSectionBannerDesc:
+          "Tampilkan logo atau nama brand yang pernah bekerja sama, klien utama, atau media yang meliput.",
         partnersEyebrow: "Eyebrow",
         partnersSectionTitle: "Judul Section",
         partnersSubtitle: "Subjudul (Opsional)",
@@ -6485,7 +6901,8 @@ export const translations: Record<Locale, Translations> = {
         partnersWebsite: "Tautan Website (Opsional)",
         // Pricing
         pricingSectionBanner: "Section Paket Harga & Rate Card",
-        pricingSectionBannerDesc: "Atur paket layanan, rate card kolaborasi, atau tier langganan dengan perbandingan fitur yang jelas.",
+        pricingSectionBannerDesc:
+          "Atur paket layanan, rate card kolaborasi, atau tier langganan dengan perbandingan fitur yang jelas.",
         pricingEyebrow: "Eyebrow",
         pricingSectionTitle: "Judul Section",
         pricingSubtitle: "Subjudul (Opsional)",
@@ -6500,10 +6917,12 @@ export const translations: Record<Locale, Translations> = {
         pricingPlanFeatures: "Daftar Fitur / Fasilitas (1 baris per fitur)",
         pricingCtaText: "Teks Tombol CTA",
         pricingCtaUrl: "URL Tombol CTA",
-        pricingIsFeatured: "Tandai sebagai paket unggulan (Highlight / Featured)",
+        pricingIsFeatured:
+          "Tandai sebagai paket unggulan (Highlight / Featured)",
         // Floating
         floatingSectionBanner: "Tombol Aksi Mengambang",
-        floatingSectionBannerDesc: "Tombol yang selalu terlihat di pojok kanan bawah halaman website.",
+        floatingSectionBannerDesc:
+          "Tombol yang selalu terlihat di pojok kanan bawah halaman website.",
         floatingButtonType: "Tipe Tombol",
         floatingNone: "Tidak Ada",
         floatingNoneDesc: "Tidak tampil tombol",
@@ -6516,209 +6935,456 @@ export const translations: Record<Locale, Translations> = {
         floatingContactLink: "Link Kontak",
         floatingContactLinkDesc: "Scroll ke section Kontak",
         floatingWhatsAppNumber: "Nomor WhatsApp",
-        floatingWhatsAppNumberHint: "Nomor ini juga dipakai di tombol WA lain di seluruh halaman.",
-        floatingWhatsAppNumberRequired: "Nomor WA wajib diisi agar tombol berfungsi.",
+        floatingWhatsAppNumberHint:
+          "Nomor ini juga dipakai di tombol WA lain di seluruh halaman.",
+        floatingWhatsAppNumberRequired:
+          "Nomor WA wajib diisi agar tombol berfungsi.",
         floatingProHint: "Chat Bubble tersedia untuk plan Pro.",
         // Preloader
         preloaderSectionBanner: "Pengaturan Preloader Halaman",
-        preloaderSectionBannerDesc: "Animasi loading singkat saat pengunjung pertama kali membuka website. Secara otomatis menggunakan nama & logo bisnis Anda, namun dapat Anda kustomisasi di bawah.",
+        preloaderSectionBannerDesc:
+          "Animasi loading singkat saat pengunjung pertama kali membuka website. Secara otomatis menggunakan nama & logo bisnis Anda, namun dapat Anda kustomisasi di bawah.",
         preloaderOrUploadLogo: "Atau Upload Logo Gambar Khusus:",
-        preloaderLogoHint: "Jika kosong, otomatis memakai logo header atau monogram brand.",
+        preloaderLogoHint:
+          "Jika kosong, otomatis memakai logo header atau monogram brand.",
         preloaderDurationLabel: "Durasi Tampil",
         ctaImageSplitVariant: "untuk variant split-image",
         preloaderTestBtn: "Uji Animasi",
         preloaderTestDesc: "Lihat tampilan animasi persis seperti pengunjung",
         preloaderTestTitle: "Uji Preview Animasi",
         preloaderBrandText: "Teks Brand / Judul",
-        preloaderBrandHint: "Kosongkan jika ingin memakai nama brand dari Header.",
+        preloaderBrandHint:
+          "Kosongkan jika ingin memakai nama brand dari Header.",
         preloaderTagline: "Tagline / Pesan Singkat",
-        preloaderTaglineHint: "Kosongkan jika ingin memakai tagline dari Header.",
+        preloaderTaglineHint:
+          "Kosongkan jika ingin memakai tagline dari Header.",
         preloaderIconLogo: "Tampilan Icon & Logo",
         preloaderChooseIcon: "Pilih Icon Lucide (Opsional):",
         // Variant labels & descriptions — hero-effect
-        variantHeroEffectModernGrid: "Grid Modern",         variantHeroEffectModernGridDesc: "Grid modular halus pada latar hero untuk kesan modern dan terstruktur.",
-        variantHeroEffectGlass: "Kaca (Glassmorphism)",     variantHeroEffectGlassDesc: "Panel transparan dengan blur kaca dan tepi halus berkilau.",
-        variantHeroEffectNeoBrut: "Neo-Brutalis",           variantHeroEffectNeoBrutDesc: "Garis tebal, bayangan tajam, dan blok warna berani khas brutalisme.",
-        variantHeroEffectScanlines: "Garis Scan",           variantHeroEffectScanlinesDesc: "Tekstur garis horizontal tipis ala layar retro CRT / terminal.",
-        variantHeroEffectStarfield: "Luar Angkasa",         variantHeroEffectStarfieldDesc: "Titik bintang berkelap-kelip di latar gelap yang dramatis.",
-        variantHeroEffectRetroPaper: "Kertas Retro",        variantHeroEffectRetroPaperDesc: "Tekstur kertas usang dan butiran hangat bergaya vintage.",
+        variantHeroEffectModernGrid: "Grid Modern",
+        variantHeroEffectModernGridDesc:
+          "Grid modular halus pada latar hero untuk kesan modern dan terstruktur.",
+        variantHeroEffectGlass: "Kaca (Glassmorphism)",
+        variantHeroEffectGlassDesc:
+          "Panel transparan dengan blur kaca dan tepi halus berkilau.",
+        variantHeroEffectNeoBrut: "Neo-Brutalis",
+        variantHeroEffectNeoBrutDesc:
+          "Garis tebal, bayangan tajam, dan blok warna berani khas brutalisme.",
+        variantHeroEffectScanlines: "Garis Scan",
+        variantHeroEffectScanlinesDesc:
+          "Tekstur garis horizontal tipis ala layar retro CRT / terminal.",
+        variantHeroEffectStarfield: "Luar Angkasa",
+        variantHeroEffectStarfieldDesc:
+          "Titik bintang berkelap-kelip di latar gelap yang dramatis.",
+        variantHeroEffectRetroPaper: "Kertas Retro",
+        variantHeroEffectRetroPaperDesc:
+          "Tekstur kertas usang dan butiran hangat bergaya vintage.",
         // about
-        variantAboutClassic: "Klasik",       variantAboutClassicDesc: "Teks di kiri, konten bersih tanpa gambar besar.",
-        variantAboutSplitImage: "Split + Gambar", variantAboutSplitImageDesc: "Teks di kiri, gambar besar di kanan.",
-        variantAboutStatHeavy: "Statistik",  variantAboutStatHeavyDesc: "Tampilkan angka highlight dan statistik bisnis.",
-        variantAboutTimeline: "Timeline",    variantAboutTimelineDesc: "Kronologi perjalanan bisnis (membutuhkan milestones).",
-        variantAboutTeamGrid: "Grid Tim",    variantAboutTeamGridDesc: "Grid anggota tim (membutuhkan team_members).",
+        variantAboutClassic: "Klasik",
+        variantAboutClassicDesc:
+          "Teks di kiri, konten bersih tanpa gambar besar.",
+        variantAboutSplitImage: "Split + Gambar",
+        variantAboutSplitImageDesc: "Teks di kiri, gambar besar di kanan.",
+        variantAboutStatHeavy: "Statistik",
+        variantAboutStatHeavyDesc:
+          "Tampilkan angka highlight dan statistik bisnis.",
+        variantAboutTimeline: "Timeline",
+        variantAboutTimelineDesc:
+          "Kronologi perjalanan bisnis (membutuhkan milestones).",
+        variantAboutTeamGrid: "Grid Tim",
+        variantAboutTeamGridDesc:
+          "Grid anggota tim (membutuhkan team_members).",
         // benefits
-        variantBenefitsGrid: "Grid",                       variantBenefitsGridDesc: "Kartu ikon tersusun grid rapi.",
-        variantBenefitsFeaturedGrid: "Grid Highlight",     variantBenefitsFeaturedGridDesc: "Kartu pertama berukuran besar sebagai sorotan utama, sisanya dalam grid rapi.",
-        variantBenefitsIconRow: "Baris Ikon Horizontal",   variantBenefitsIconRowDesc: "Ikon lingkaran besar terpusat berjajar horizontal dengan garis pemisah.",
-        variantBenefitsStatGrid: "Grid Statistik",         variantBenefitsStatGridDesc: "Grid dengan angka/statistik di tiap item.",
-        variantBenefitsChecklist: "Checklist",             variantBenefitsChecklistDesc: "List centang vertikal, sederhana dan langsung.",
-        variantBenefitsComparisonTable: "Tabel Perbandingan", variantBenefitsComparisonTableDesc: "Perbandingan A vs B dalam tabel (membutuhkan comparison).",
-        variantBenefitsBentoGrid: "Bento Grid",            variantBenefitsBentoGridDesc: "Grid asimetris ala bento box — kartu berukuran bervariasi, visual dinamis.",
-        variantBenefitsTrustBar: "Trust Bar",              variantBenefitsTrustBarDesc: "Strip horizontal penjamin kepercayaan belanja: keaslian produk, pengiriman cepat, bayar di tempat, dan garansi retur.",
-        variantBenefitsHowItWorks: "Cara Kerja",           variantBenefitsHowItWorksDesc: "Langkah proses berurutan dengan angka bertahap.",
+        variantBenefitsGrid: "Grid",
+        variantBenefitsGridDesc: "Kartu ikon tersusun grid rapi.",
+        variantBenefitsFeaturedGrid: "Grid Highlight",
+        variantBenefitsFeaturedGridDesc:
+          "Kartu pertama berukuran besar sebagai sorotan utama, sisanya dalam grid rapi.",
+        variantBenefitsIconRow: "Baris Ikon Horizontal",
+        variantBenefitsIconRowDesc:
+          "Ikon lingkaran besar terpusat berjajar horizontal dengan garis pemisah.",
+        variantBenefitsStatGrid: "Grid Statistik",
+        variantBenefitsStatGridDesc:
+          "Grid dengan angka/statistik di tiap item.",
+        variantBenefitsChecklist: "Checklist",
+        variantBenefitsChecklistDesc:
+          "List centang vertikal, sederhana dan langsung.",
+        variantBenefitsComparisonTable: "Tabel Perbandingan",
+        variantBenefitsComparisonTableDesc:
+          "Perbandingan A vs B dalam tabel (membutuhkan comparison).",
+        variantBenefitsBentoGrid: "Bento Grid",
+        variantBenefitsBentoGridDesc:
+          "Grid asimetris ala bento box — kartu berukuran bervariasi, visual dinamis.",
+        variantBenefitsTrustBar: "Trust Bar",
+        variantBenefitsTrustBarDesc:
+          "Strip horizontal penjamin kepercayaan belanja: keaslian produk, pengiriman cepat, bayar di tempat, dan garansi retur.",
+        variantBenefitsHowItWorks: "Cara Kerja",
+        variantBenefitsHowItWorksDesc:
+          "Langkah proses berurutan dengan angka bertahap.",
         // testimonials
-        variantTestimonialsCarousel: "Carousel",                   variantTestimonialsCarouselDesc: "Slide otomatis, satu testimoni per tampilan.",
-        variantTestimonialsCompact: "Ringkas",                     variantTestimonialsCompactDesc: "Avatar kecil + kutipan singkat dalam satu baris.",
-        variantTestimonialsGrid: "Grid",                           variantTestimonialsGridDesc: "Semua testimoni tampil sekaligus dalam grid.",
-        variantTestimonialsLogoWall: "Logo Klien",                 variantTestimonialsLogoWallDesc: "Logo perusahaan klien (membutuhkan logo_url).",
-        variantTestimonialsFeaturedSpotlight: "Sorotan",           variantTestimonialsFeaturedSpotlightDesc: "Satu testimoni utama ditonjolkan.",
-        variantTestimonialsGoogleReviews: "Google Reviews",        variantTestimonialsGoogleReviewsDesc: "Kartu gaya Google: foto profil, bintang, badge Google.",
-        variantTestimonialsVideoWallDesc: "Grid testimoni bergaya UGC dengan thumbnail video dan pemutar ringan.",
+        variantTestimonialsCarousel: "Carousel",
+        variantTestimonialsCarouselDesc:
+          "Slide otomatis, satu testimoni per tampilan.",
+        variantTestimonialsCompact: "Ringkas",
+        variantTestimonialsCompactDesc:
+          "Avatar kecil + kutipan singkat dalam satu baris.",
+        variantTestimonialsGrid: "Grid",
+        variantTestimonialsGridDesc:
+          "Semua testimoni tampil sekaligus dalam grid.",
+        variantTestimonialsLogoWall: "Logo Klien",
+        variantTestimonialsLogoWallDesc:
+          "Logo perusahaan klien (membutuhkan logo_url).",
+        variantTestimonialsFeaturedSpotlight: "Sorotan",
+        variantTestimonialsFeaturedSpotlightDesc:
+          "Satu testimoni utama ditonjolkan.",
+        variantTestimonialsGoogleReviews: "Google Reviews",
+        variantTestimonialsGoogleReviewsDesc:
+          "Kartu gaya Google: foto profil, bintang, badge Google.",
+        variantTestimonialsVideoWallDesc:
+          "Grid testimoni bergaya UGC dengan thumbnail video dan pemutar ringan.",
         // cta
-        variantCtaBanner: "Banner",               variantCtaBannerDesc: "Strip warna penuh lebar, teks + tombol.",
-        variantCtaCard: "Kartu",                  variantCtaCardDesc: "Kotak terpusat dengan shadow dan border.",
-        variantCtaCentered: "Tengah",             variantCtaCenteredDesc: "Teks dan tombol rata tengah tanpa background.",
-        variantCtaSplitImage: "Split + Gambar",   variantCtaSplitImageDesc: "Teks di kiri, gambar di kanan (membutuhkan image_url).",
-        variantCtaInlineLeadForm: "Form Inquiry Inline", variantCtaInlineLeadFormDesc: "Teks di kiri, form nama/email/telepon di kanan untuk tangkap lead.",
+        variantCtaBanner: "Banner",
+        variantCtaBannerDesc: "Strip warna penuh lebar, teks + tombol.",
+        variantCtaCard: "Kartu",
+        variantCtaCardDesc: "Kotak terpusat dengan shadow dan border.",
+        variantCtaCentered: "Tengah",
+        variantCtaCenteredDesc: "Teks dan tombol rata tengah tanpa background.",
+        variantCtaSplitImage: "Split + Gambar",
+        variantCtaSplitImageDesc:
+          "Teks di kiri, gambar di kanan (membutuhkan image_url).",
+        variantCtaInlineLeadForm: "Form Inquiry Inline",
+        variantCtaInlineLeadFormDesc:
+          "Teks di kiri, form nama/email/telepon di kanan untuk tangkap lead.",
         // faq
-        variantFaqAccordion: "Akordion",              variantFaqAccordionDesc: "Expand/collapse per item, hemat ruang.",
-        variantFaqSimple: "Sederhana",                variantFaqSimpleDesc: "Semua Q&A tampil terbuka tanpa interaksi.",
-        variantFaqColumns: "Kolom",                   variantFaqColumnsDesc: "2 kolom Q&A berdampingan.",
-        variantFaqSidebarCategory: "Kategori Sidebar",variantFaqSidebarCategoryDesc: "Filter Q&A per kategori (membutuhkan category).",
-        variantFaqTwoColumnGrid: "Grid 2 Kolom",      variantFaqTwoColumnGridDesc: "Q&A dalam kartu grid 2 kolom, semua terbuka.",
-        variantFaqChatBubble: "Gaya Chat",            variantFaqChatBubbleDesc: "Q&A seperti percakapan chat — pertanyaan di kanan, jawaban di kiri.",
+        variantFaqAccordion: "Akordion",
+        variantFaqAccordionDesc: "Expand/collapse per item, hemat ruang.",
+        variantFaqSimple: "Sederhana",
+        variantFaqSimpleDesc: "Semua Q&A tampil terbuka tanpa interaksi.",
+        variantFaqColumns: "Kolom",
+        variantFaqColumnsDesc: "2 kolom Q&A berdampingan.",
+        variantFaqSidebarCategory: "Kategori Sidebar",
+        variantFaqSidebarCategoryDesc:
+          "Filter Q&A per kategori (membutuhkan category).",
+        variantFaqTwoColumnGrid: "Grid 2 Kolom",
+        variantFaqTwoColumnGridDesc:
+          "Q&A dalam kartu grid 2 kolom, semua terbuka.",
+        variantFaqChatBubble: "Gaya Chat",
+        variantFaqChatBubbleDesc:
+          "Q&A seperti percakapan chat — pertanyaan di kanan, jawaban di kiri.",
         // gallery
-        variantGalleryGrid: "Grid",                     variantGalleryGridDesc: "Foto dalam kotak seragam tersusun rapi.",
-        variantGalleryMasonry: "Masonry",               variantGalleryMasonryDesc: "Tinggi foto bervariasi seperti Pinterest.",
-        variantGalleryCarousel: "Carousel",             variantGalleryCarouselDesc: "Foto slide bergilir otomatis.",
-        variantGalleryLightboxStory: "Story Lightbox",  variantGalleryLightboxStoryDesc: "Grid foto yang membuka fullscreen dengan narasi besar dan navigasi cerita.",
-        variantGalleryBeforeAfter: "Before & After Slider", variantGalleryBeforeAfterDesc: "Komparasi gambar sebelum/sesudah dengan slider drag.",
-        variantGalleryVideoGridDesc: "Grid seragam dengan poster dan tombol putar untuk item video.",
+        variantGalleryGrid: "Grid",
+        variantGalleryGridDesc: "Foto dalam kotak seragam tersusun rapi.",
+        variantGalleryMasonry: "Masonry",
+        variantGalleryMasonryDesc: "Tinggi foto bervariasi seperti Pinterest.",
+        variantGalleryCarousel: "Carousel",
+        variantGalleryCarouselDesc: "Foto slide bergilir otomatis.",
+        variantGalleryLightboxStory: "Story Lightbox",
+        variantGalleryLightboxStoryDesc:
+          "Grid foto yang membuka fullscreen dengan narasi besar dan navigasi cerita.",
+        variantGalleryBeforeAfter: "Before & After Slider",
+        variantGalleryBeforeAfterDesc:
+          "Komparasi gambar sebelum/sesudah dengan slider drag.",
+        variantGalleryVideoGridDesc:
+          "Grid seragam dengan poster dan tombol putar untuk item video.",
         // works
-        variantWorksGrid: "Grid",                      variantWorksGridDesc: "Kartu proyek seragam dalam grid rapi.",
-        variantWorksMasonry: "Masonry",                variantWorksMasonryDesc: "Tinggi kartu bervariasi seperti Pinterest.",
-        variantWorksFeaturedGrid: "Grid Unggulan",     variantWorksFeaturedGridDesc: "Proyek pertama besar sebagai sorotan, sisanya grid rapi.",
-        variantWorksShowcaseFeatured: "Showcase Unggulan", variantWorksShowcaseFeaturedDesc: "Proyek utama horizontal besar, sisanya grid 2 kolom.",
+        variantWorksGrid: "Grid",
+        variantWorksGridDesc: "Kartu proyek seragam dalam grid rapi.",
+        variantWorksMasonry: "Masonry",
+        variantWorksMasonryDesc: "Tinggi kartu bervariasi seperti Pinterest.",
+        variantWorksFeaturedGrid: "Grid Unggulan",
+        variantWorksFeaturedGridDesc:
+          "Proyek pertama besar sebagai sorotan, sisanya grid rapi.",
+        variantWorksShowcaseFeatured: "Showcase Unggulan",
+        variantWorksShowcaseFeaturedDesc:
+          "Proyek utama horizontal besar, sisanya grid 2 kolom.",
         // stats
-        variantStatsCounterRow: "Baris Metrik",            variantStatsCounterRowDesc: "Baris metrik horizontal dengan pembatas rapi dan angka besar.",
-        variantStatsCardGrid: "Grid Kartu",                variantStatsCardGridDesc: "Kartu statistik melayang dengan ikon dan efek glow aksen.",
-        variantStatsMinimalSplit: "Split Minimalis",        variantStatsMinimalSplitDesc: "Judul narasi di sisi kiri, matriks 2x2 angka di sisi kanan.",
-        variantStatsBigNumberSpotlight: "Sorotan Angka Besar", variantStatsBigNumberSpotlightDesc: "Satu metrik utama berukuran raksasa dengan sorotan aksen dan sub-metrik pendukung.",
+        variantStatsCounterRow: "Baris Metrik",
+        variantStatsCounterRowDesc:
+          "Baris metrik horizontal dengan pembatas rapi dan angka besar.",
+        variantStatsCardGrid: "Grid Kartu",
+        variantStatsCardGridDesc:
+          "Kartu statistik melayang dengan ikon dan efek glow aksen.",
+        variantStatsMinimalSplit: "Split Minimalis",
+        variantStatsMinimalSplitDesc:
+          "Judul narasi di sisi kiri, matriks 2x2 angka di sisi kanan.",
+        variantStatsBigNumberSpotlight: "Sorotan Angka Besar",
+        variantStatsBigNumberSpotlightDesc:
+          "Satu metrik utama berukuran raksasa dengan sorotan aksen dan sub-metrik pendukung.",
         // partners
-        variantPartnersLogoWall: "Grid Logo / Brand",          variantPartnersLogoWallDesc: "Grid logo/brand mitra dengan efek grayscale dan hover berwarna.",
-        variantPartnersMarquee: "Ticker Berjalan",             variantPartnersMarqueeDesc: "Banner logo/nama brand berjalan otomatis tanpa henti.",
-        variantPartnersPillGrid: "Grid Pill Interaktif",       variantPartnersPillGridDesc: "Koleksi badge/pill brand modern dengan inisial dan tag kategori.",
-        variantPartnersFeaturedCollabGrid: "Kolaborasi Unggulan", variantPartnersFeaturedCollabGridDesc: "Grid mitra/klien dengan kartu sorotan kolaborasi utama dan ringkasan peran.",
+        variantPartnersLogoWall: "Grid Logo / Brand",
+        variantPartnersLogoWallDesc:
+          "Grid logo/brand mitra dengan efek grayscale dan hover berwarna.",
+        variantPartnersMarquee: "Ticker Berjalan",
+        variantPartnersMarqueeDesc:
+          "Banner logo/nama brand berjalan otomatis tanpa henti.",
+        variantPartnersPillGrid: "Grid Pill Interaktif",
+        variantPartnersPillGridDesc:
+          "Koleksi badge/pill brand modern dengan inisial dan tag kategori.",
+        variantPartnersFeaturedCollabGrid: "Kolaborasi Unggulan",
+        variantPartnersFeaturedCollabGridDesc:
+          "Grid mitra/klien dengan kartu sorotan kolaborasi utama dan ringkasan peran.",
         // pricing
-        variantPricingCards: "Kartu Paket",                      variantPricingCardsDesc: "Kartu 3 tier klasik dengan penanda paket terpopuler dan tombol aksi.",
-        variantPricingHorizontalRows: "Baris Horizontal",        variantPricingHorizontalRowsDesc: "Daftar paket horizontal dengan fitur di kiri dan harga/tombol di kanan.",
-        variantPricingComparisonTable: "Tabel Perbandingan",     variantPricingComparisonTableDesc: "Tabel perbandingan fitur lengkap antar paket layanan.",
-        variantPricingSingleTierHighlight: "Satu Paket Sorotan", variantPricingSingleTierHighlightDesc: "Satu kartu besar menonjol — cocok bisnis dengan satu penawaran utama.",
+        variantPricingCards: "Kartu Paket",
+        variantPricingCardsDesc:
+          "Kartu 3 tier klasik dengan penanda paket terpopuler dan tombol aksi.",
+        variantPricingHorizontalRows: "Baris Horizontal",
+        variantPricingHorizontalRowsDesc:
+          "Daftar paket horizontal dengan fitur di kiri dan harga/tombol di kanan.",
+        variantPricingComparisonTable: "Tabel Perbandingan",
+        variantPricingComparisonTableDesc:
+          "Tabel perbandingan fitur lengkap antar paket layanan.",
+        variantPricingSingleTierHighlight: "Satu Paket Sorotan",
+        variantPricingSingleTierHighlightDesc:
+          "Satu kartu besar menonjol — cocok bisnis dengan satu penawaran utama.",
         // menu
-        variantMenuGrid: "Grid",                        variantMenuGridDesc: "Kartu produk dalam grid dengan foto.",
-        variantMenuCompact: "Ringkas",                  variantMenuCompactDesc: "List kompak nama + harga tanpa foto besar.",
-        variantMenuCards: "Kartu",                      variantMenuCardsDesc: "Kartu besar dengan foto dan deskripsi.",
-        variantMenuTextList: "Teks List",               variantMenuTextListDesc: "Daftar teks minimalis, tanpa gambar.",
-        variantMenuCompactList: "List Ringkas",         variantMenuCompactListDesc: "Baris kompak dengan thumbnail kecil.",
-        variantMenuTabsByCategory: "Tab Kategori",      variantMenuTabsByCategoryDesc: "Tab per kategori menu di atas.",
-        variantMenuAccordionByCategory: "Akordion Kategori", variantMenuAccordionByCategoryDesc: "Tiap kategori bisa di-expand.",
-        variantMenuBentoPhotoGrid: "Bento Foto Grid",   variantMenuBentoPhotoGridDesc: "Grid bento gaya foto besar, kaya visual.",
-        variantMenuVisualShowcaseHero: "Hero Visual",   variantMenuVisualShowcaseHeroDesc: "Hero besar dengan katalog visual di bawahnya.",
-        variantMenuSidebarScrollspyPhoto: "Sidebar Scrollspy", variantMenuSidebarScrollspyPhotoDesc: "Navigasi kategori sticky + konten foto di sisi kanan.",
-        variantMenuCarouselDesc: "Kartu menu besar yang bisa di-swipe horizontal per kategori.",
-        variantMenuMasonryDesc: "Layout Pinterest dengan tinggi kartu menu bervariasi.",
+        variantMenuGrid: "Grid",
+        variantMenuGridDesc: "Kartu produk dalam grid dengan foto.",
+        variantMenuCompact: "Ringkas",
+        variantMenuCompactDesc: "List kompak nama + harga tanpa foto besar.",
+        variantMenuCards: "Kartu",
+        variantMenuCardsDesc: "Kartu besar dengan foto dan deskripsi.",
+        variantMenuTextList: "Teks List",
+        variantMenuTextListDesc: "Daftar teks minimalis, tanpa gambar.",
+        variantMenuCompactList: "List Ringkas",
+        variantMenuCompactListDesc: "Baris kompak dengan thumbnail kecil.",
+        variantMenuTabsByCategory: "Tab Kategori",
+        variantMenuTabsByCategoryDesc: "Tab per kategori menu di atas.",
+        variantMenuAccordionByCategory: "Akordion Kategori",
+        variantMenuAccordionByCategoryDesc: "Tiap kategori bisa di-expand.",
+        variantMenuBentoPhotoGrid: "Bento Foto Grid",
+        variantMenuBentoPhotoGridDesc:
+          "Grid bento gaya foto besar, kaya visual.",
+        variantMenuVisualShowcaseHero: "Hero Visual",
+        variantMenuVisualShowcaseHeroDesc:
+          "Hero besar dengan katalog visual di bawahnya.",
+        variantMenuSidebarScrollspyPhoto: "Sidebar Scrollspy",
+        variantMenuSidebarScrollspyPhotoDesc:
+          "Navigasi kategori sticky + konten foto di sisi kanan.",
+        variantMenuCarouselDesc:
+          "Kartu menu besar yang bisa di-swipe horizontal per kategori.",
+        variantMenuMasonryDesc:
+          "Layout Pinterest dengan tinggi kartu menu bervariasi.",
         // catalog
-        variantCatalogGrid: "Grid",                      variantCatalogGridDesc: "Kartu produk standar dalam grid.",
-        variantCatalogCompact: "Ringkas",                variantCatalogCompactDesc: "List kompak nama + harga.",
-        variantCatalogCards: "Kartu",                    variantCatalogCardsDesc: "Kartu besar dengan foto dan badge.",
-        variantCatalogGridDense: "Grid Padat",           variantCatalogGridDenseDesc: "Grid lebih rapat, lebih banyak produk per baris.",
-        variantCatalogShowcaseFeatured: "Showcase Unggulan", variantCatalogShowcaseFeaturedDesc: "Produk berbadge ditampilkan lebih besar.",
-        variantCatalogTabsByCategory: "Tab Kategori",    variantCatalogTabsByCategoryDesc: "Tab per kategori produk.",
-        variantCatalogEditorialGrid: "Grid Editorial",   variantCatalogEditorialGridDesc: "Grid asimetris gaya majalah, ukuran kartu bervariasi.",
-        variantCatalogMasonryFlow: "Aliran Masonry",     variantCatalogMasonryFlowDesc: "Layout Pinterest dengan tinggi kartu bervariasi.",
-        variantCatalogInstagramGrid: "Grid Instagram",   variantCatalogInstagramGridDesc: "Kotak seragam seperti galeri Instagram.",
-        variantCatalogSplitHero: "Split Hero",           variantCatalogSplitHeroDesc: "Split screen: hero besar kiri, list scroll kanan.",
-        variantCatalogNeoBrutalist: "Matrix Brutalis",   variantCatalogNeoBrutalistDesc: "Grid brutal dengan border tebal dan posisi miring.",
-        variantCatalogHorizontalCarousel: "Carousel Horizontal", variantCatalogHorizontalCarouselDesc: "Card besar yang bisa di-swipe horizontal.",
-        variantCatalogProductTableDesc: "Tabel produk/spec-sheet dengan kolom harga, stok, dan aksi.",
-        variantCatalogSpotlightDesc: "Satu produk utama full-bleed dengan produk lain dalam grid.",
+        variantCatalogGrid: "Grid",
+        variantCatalogGridDesc: "Kartu produk standar dalam grid.",
+        variantCatalogCompact: "Ringkas",
+        variantCatalogCompactDesc: "List kompak nama + harga.",
+        variantCatalogCards: "Kartu",
+        variantCatalogCardsDesc: "Kartu besar dengan foto dan badge.",
+        variantCatalogGridDense: "Grid Padat",
+        variantCatalogGridDenseDesc:
+          "Grid lebih rapat, lebih banyak produk per baris.",
+        variantCatalogShowcaseFeatured: "Showcase Unggulan",
+        variantCatalogShowcaseFeaturedDesc:
+          "Produk berbadge ditampilkan lebih besar.",
+        variantCatalogTabsByCategory: "Tab Kategori",
+        variantCatalogTabsByCategoryDesc: "Tab per kategori produk.",
+        variantCatalogEditorialGrid: "Grid Editorial",
+        variantCatalogEditorialGridDesc:
+          "Grid asimetris gaya majalah, ukuran kartu bervariasi.",
+        variantCatalogMasonryFlow: "Aliran Masonry",
+        variantCatalogMasonryFlowDesc:
+          "Layout Pinterest dengan tinggi kartu bervariasi.",
+        variantCatalogInstagramGrid: "Grid Instagram",
+        variantCatalogInstagramGridDesc:
+          "Kotak seragam seperti galeri Instagram.",
+        variantCatalogSplitHero: "Split Hero",
+        variantCatalogSplitHeroDesc:
+          "Split screen: hero besar kiri, list scroll kanan.",
+        variantCatalogNeoBrutalist: "Matrix Brutalis",
+        variantCatalogNeoBrutalistDesc:
+          "Grid brutal dengan border tebal dan posisi miring.",
+        variantCatalogHorizontalCarousel: "Carousel Horizontal",
+        variantCatalogHorizontalCarouselDesc:
+          "Card besar yang bisa di-swipe horizontal.",
+        variantCatalogProductTableDesc:
+          "Tabel produk/spec-sheet dengan kolom harga, stok, dan aksi.",
+        variantCatalogSpotlightDesc:
+          "Satu produk utama full-bleed dengan produk lain dalam grid.",
         // contact
-        variantContactClassicSplit: "Klasik Split",    variantContactClassicSplitDesc: "Form pesan di kiri, info kontak & peta di kanan.",
-        variantContactWhatsAppDirect: "WhatsApp Instan", variantContactWhatsAppDirectDesc: "Fokus tombol aksi WhatsApp cepat + preview pesan & badge online.",
-        variantContactBentoGrid: "Bento Grid",         variantContactBentoGridDesc: "Kartu modular tersusun rapi gaya bento box modern.",
-        variantContactOverlayMap: "Overlay Peta",      variantContactOverlayMapDesc: "Peta interaktif penuh dengan kartu kontak melayang.",
-        variantContactDarkSplit: "Dark Split",         variantContactDarkSplitDesc: "Tema gelap premium kontras tinggi dengan aksen bercahaya.",
-        variantContactMinimalCentered: "Minimal Tengah", variantContactMinimalCenteredDesc: "Kartu kontak ringkas terpusat tanpa peta.",
+        variantContactClassicSplit: "Klasik Split",
+        variantContactClassicSplitDesc:
+          "Form pesan di kiri, info kontak & peta di kanan.",
+        variantContactWhatsAppDirect: "WhatsApp Instan",
+        variantContactWhatsAppDirectDesc:
+          "Fokus tombol aksi WhatsApp cepat + preview pesan & badge online.",
+        variantContactBentoGrid: "Bento Grid",
+        variantContactBentoGridDesc:
+          "Kartu modular tersusun rapi gaya bento box modern.",
+        variantContactOverlayMap: "Overlay Peta",
+        variantContactOverlayMapDesc:
+          "Peta interaktif penuh dengan kartu kontak melayang.",
+        variantContactDarkSplit: "Dark Split",
+        variantContactDarkSplitDesc:
+          "Tema gelap premium kontras tinggi dengan aksen bercahaya.",
+        variantContactMinimalCentered: "Minimal Tengah",
+        variantContactMinimalCenteredDesc:
+          "Kartu kontak ringkas terpusat tanpa peta.",
         // header
-        variantHeaderLeftLogoInlineNav: "Logo Kiri + Nav Inline",    variantHeaderLeftLogoInlineNavDesc: "Logo di kiri, navigasi sejajar di kanan, CTA tombol.",
-        variantHeaderCenteredLogo: "Logo Tengah",                    variantHeaderCenteredLogoDesc: "Logo di tengah, navigasi di bawahnya, CTA tombol.",
-        variantHeaderTransparentOverlay: "Transparan (Hero Overlay)", variantHeaderTransparentOverlayDesc: "Menimpa hero (teks putih), mengecil dan menjadi kaca buram setelah scroll.",
-        variantHeaderLogoWithCtaButton: "Logo + CTA Tombol",         variantHeaderLogoWithCtaButtonDesc: "Logo kiri, nav tengah, tombol CTA warna solid di kanan.",
-        variantHeaderStackedLogoTagline: "Logo + Tagline Tumpuk",    variantHeaderStackedLogoTaglineDesc: "Logo dan tagline vertikal di tengah, nav tipis di bawah.",
+        variantHeaderLeftLogoInlineNav: "Logo Kiri + Nav Inline",
+        variantHeaderLeftLogoInlineNavDesc:
+          "Logo di kiri, navigasi sejajar di kanan, CTA tombol.",
+        variantHeaderCenteredLogo: "Logo Tengah",
+        variantHeaderCenteredLogoDesc:
+          "Logo di tengah, navigasi di bawahnya, CTA tombol.",
+        variantHeaderTransparentOverlay: "Transparan (Hero Overlay)",
+        variantHeaderTransparentOverlayDesc:
+          "Menimpa hero (teks putih), mengecil dan menjadi kaca buram setelah scroll.",
+        variantHeaderLogoWithCtaButton: "Logo + CTA Tombol",
+        variantHeaderLogoWithCtaButtonDesc:
+          "Logo kiri, nav tengah, tombol CTA warna solid di kanan.",
+        variantHeaderStackedLogoTagline: "Logo + Tagline Tumpuk",
+        variantHeaderStackedLogoTaglineDesc:
+          "Logo dan tagline vertikal di tengah, nav tipis di bawah.",
         // footer
-        variantFooterMinimalBand: "Band Minimal",           variantFooterMinimalBandDesc: "Brand + tagline + copyright dalam satu baris gelap bersih.",
-        variantFooterColumnsWithNav: "Kolom + Navigasi Cepat", variantFooterColumnsWithNavDesc: "Multi-kolom dengan tautan navigasi landing page & tombol Kembali ke Atas.",
-        variantFooterColumnsWithSocial: "Kolom + Media Sosial", variantFooterColumnsWithSocialDesc: "Multi-kolom dengan tautan akun media sosial bisnis.",
-        variantFooterDarkContrastBand: "Band Gelap Kontras", variantFooterDarkContrastBandDesc: "Footer gelap solid dengan aksen warna primary, kontras kuat.",
-        variantFooterLocationAndHours: "Lokasi & Jam",      variantFooterLocationAndHoursDesc: "Brand + alamat peta + jam operasional dalam grid bersih.",
+        variantFooterMinimalBand: "Band Minimal",
+        variantFooterMinimalBandDesc:
+          "Brand + tagline + copyright dalam satu baris gelap bersih.",
+        variantFooterColumnsWithNav: "Kolom + Navigasi Cepat",
+        variantFooterColumnsWithNavDesc:
+          "Multi-kolom dengan tautan navigasi landing page & tombol Kembali ke Atas.",
+        variantFooterColumnsWithSocial: "Kolom + Media Sosial",
+        variantFooterColumnsWithSocialDesc:
+          "Multi-kolom dengan tautan akun media sosial bisnis.",
+        variantFooterDarkContrastBand: "Band Gelap Kontras",
+        variantFooterDarkContrastBandDesc:
+          "Footer gelap solid dengan aksen warna primary, kontras kuat.",
+        variantFooterLocationAndHours: "Lokasi & Jam",
+        variantFooterLocationAndHoursDesc:
+          "Brand + alamat peta + jam operasional dalam grid bersih.",
         // blog
-        variantBlogGrid: "Grid",      variantBlogGridDesc: "Kartu dalam 3 kolom rapi.",
-        variantBlogList: "List",      variantBlogListDesc: "Horizontal dengan gambar di kiri, teks di kanan.",
-        variantBlogFeatured: "Unggulan", variantBlogFeaturedDesc: "Satu postingan besar hero + grid kecil di bawah.",
-        variantBlogMinimal: "Minimal",variantBlogMinimalDesc: "Daftar judul dan tanggal tanpa gambar.",
+        variantBlogGrid: "Grid",
+        variantBlogGridDesc: "Kartu dalam 3 kolom rapi.",
+        variantBlogList: "List",
+        variantBlogListDesc: "Horizontal dengan gambar di kiri, teks di kanan.",
+        variantBlogFeatured: "Unggulan",
+        variantBlogFeaturedDesc:
+          "Satu postingan besar hero + grid kecil di bawah.",
+        variantBlogMinimal: "Minimal",
+        variantBlogMinimalDesc: "Daftar judul dan tanggal tanpa gambar.",
         // preloader
-        variantPreloaderNone: "Tanpa Preloader",            variantPreloaderNoneDesc: "Halaman langsung tampil seketika tanpa jeda loading.",
-        variantPreloaderTopBar: "Garis Atas (Top Progress)",variantPreloaderTopBarDesc: "Garis tipis di bibir atas layar tanpa menutupi konten.",
-        variantPreloaderMinimalFade: "Fade Tipografi",      variantPreloaderMinimalFadeDesc: "Nama brand tipografis halus di tengah layar tanpa ornamen tambahan.",
-        variantPreloaderMinimalSpinner: "Monoline Ring",    variantPreloaderMinimalSpinnerDesc: "Cincin putar satu garis super tipis dan bersih di tengah layar.",
-        variantPreloaderMinimalCounter: "Counter Angka",    variantPreloaderMinimalCounterDesc: "Persentase angka monospace minimalis yang menghitung cepat.",
-        variantPreloaderPulseLogo: "Logo Berdenyut (Pulse)",variantPreloaderPulseLogoDesc: "Logo brand berdenyut halus di tengah layar.",
-        variantPreloaderOrbitRing: "Cincin Orbit",          variantPreloaderOrbitRingDesc: "Cincin berputar mengelilingi inisial logo brand.",
-        variantPreloaderProgressLine: "Bar Progres Ramping",variantPreloaderProgressLineDesc: "Logo dengan bar progres horizontal di bawahnya.",
-        variantPreloaderShimmerReveal: "Shimmer Kilau",     variantPreloaderShimmerRevealDesc: "Efek kilau gradien cahaya menyapu teks brand.",
-        variantPreloaderStaggerDots: "Titik Gelombang",     variantPreloaderStaggerDotsDesc: "Tiga titik bergelombang halus di bawah brand.",
+        variantPreloaderNone: "Tanpa Preloader",
+        variantPreloaderNoneDesc:
+          "Halaman langsung tampil seketika tanpa jeda loading.",
+        variantPreloaderTopBar: "Garis Atas (Top Progress)",
+        variantPreloaderTopBarDesc:
+          "Garis tipis di bibir atas layar tanpa menutupi konten.",
+        variantPreloaderMinimalFade: "Fade Tipografi",
+        variantPreloaderMinimalFadeDesc:
+          "Nama brand tipografis halus di tengah layar tanpa ornamen tambahan.",
+        variantPreloaderMinimalSpinner: "Monoline Ring",
+        variantPreloaderMinimalSpinnerDesc:
+          "Cincin putar satu garis super tipis dan bersih di tengah layar.",
+        variantPreloaderMinimalCounter: "Counter Angka",
+        variantPreloaderMinimalCounterDesc:
+          "Persentase angka monospace minimalis yang menghitung cepat.",
+        variantPreloaderPulseLogo: "Logo Berdenyut (Pulse)",
+        variantPreloaderPulseLogoDesc:
+          "Logo brand berdenyut halus di tengah layar.",
+        variantPreloaderOrbitRing: "Cincin Orbit",
+        variantPreloaderOrbitRingDesc:
+          "Cincin berputar mengelilingi inisial logo brand.",
+        variantPreloaderProgressLine: "Bar Progres Ramping",
+        variantPreloaderProgressLineDesc:
+          "Logo dengan bar progres horizontal di bawahnya.",
+        variantPreloaderShimmerReveal: "Shimmer Kilau",
+        variantPreloaderShimmerRevealDesc:
+          "Efek kilau gradien cahaya menyapu teks brand.",
+        variantPreloaderStaggerDots: "Titik Gelombang",
+        variantPreloaderStaggerDotsDesc:
+          "Tiga titik bergelombang halus di bawah brand.",
         // About extras
-        aboutTeamName: "Nama", aboutTeamRole: "Jabatan", aboutTeamPhoto: "Foto", aboutRemove: "Hapus",
+        aboutTeamName: "Nama",
+        aboutTeamRole: "Jabatan",
+        aboutTeamPhoto: "Foto",
+        aboutRemove: "Hapus",
         // Placeholder strings
-        phNavCta: "cth. Hubungi Kami", phTagline: "cth. Cita Rasa Nusantara", phIconName: "cth. Utensils",
-        phEyebrowAvailable: "cth. Tersedia Sekarang", phLearnMore: "cth. Pelajari Lebih Lanjut",
-        phSecondaryCta: "cth. #about atau https://...", phBadgeText: "cth. Buka 7 Hari · Jam 07.00–22.00",
-        phOpeningHours: "cth. Buka Setiap Hari 07.00 – 22.00", phAboutEyebrow: "cth. Tentang Kami",
-        phStatValue: "cth. 500+", phStatLabel: "cth. Pelanggan Puas", phBenefitsStat: "Proyek Selesai",
-        phWhyChooseUs: "cth. Kenapa Pilih Kami", phBenefitsSubtitle: "cth. Berbagai alasan mengapa pelanggan mempercayai kami",
-        phBenefitsColA: "cth. Bersama Kami", phBenefitsColB: "cth. Kompetitor",
-        phComparisonLabel: "Label (cth. Harga)", phValueA: "Nilai A", phValueB: "Nilai B",
-        phCtaEyebrow: "cth. Mulai Sekarang", phCtaSubheadline: "cth. Dapatkan penawaran spesial sebelum kehabisan!",
+        phNavCta: "cth. Hubungi Kami",
+        phTagline: "cth. Cita Rasa Nusantara",
+        phIconName: "cth. Utensils",
+        phEyebrowAvailable: "cth. Tersedia Sekarang",
+        phLearnMore: "cth. Pelajari Lebih Lanjut",
+        phSecondaryCta: "cth. #about atau https://...",
+        phBadgeText: "cth. Buka 7 Hari · Jam 07.00–22.00",
+        phOpeningHours: "cth. Buka Setiap Hari 07.00 – 22.00",
+        phAboutEyebrow: "cth. Tentang Kami",
+        phStatValue: "cth. 500+",
+        phStatLabel: "cth. Pelanggan Puas",
+        phBenefitsStat: "Proyek Selesai",
+        phWhyChooseUs: "cth. Kenapa Pilih Kami",
+        phBenefitsSubtitle:
+          "cth. Berbagai alasan mengapa pelanggan mempercayai kami",
+        phBenefitsColA: "cth. Bersama Kami",
+        phBenefitsColB: "cth. Kompetitor",
+        phComparisonLabel: "Label (cth. Harga)",
+        phValueA: "Nilai A",
+        phValueB: "Nilai B",
+        phCtaEyebrow: "cth. Mulai Sekarang",
+        phCtaSubheadline: "cth. Dapatkan penawaran spesial sebelum kehabisan!",
         phCtaTrustSignal: "cth. ✅ Lebih dari 500 pelanggan puas",
         phSocialUrl: "URL (cth. https://instagram.com/...)",
-        phGalleryTitle: "Galeri Kami", phGalleryEyebrow: "DOKUMENTASI",
-        phGalleryCaption: "Suasana nyaman di dalam", phGalleryAltText: "Deskripsi singkat gambar",
-        phStatsEyebrow: "cth. DALAM ANGKA", phStatsSectionTitle: "cth. Pencapaian yang Berbicara",
+        phGalleryTitle: "Galeri Kami",
+        phGalleryEyebrow: "DOKUMENTASI",
+        phGalleryCaption: "Suasana nyaman di dalam",
+        phGalleryAltText: "Deskripsi singkat gambar",
+        phStatsEyebrow: "cth. DALAM ANGKA",
+        phStatsSectionTitle: "cth. Pencapaian yang Berbicara",
         phStatsSubtitle: "cth. Hasil nyata dari dedikasi dan kerja keras kami",
-        phStatsValue: "cth. 1.2M atau 98%", phStatsLabel: "cth. Subscribers", phStatsDescription: "cth. Aktif di 3 platform",
-        phPartnersEyebrow: "cth. DIPERCAYA OLEH", phPartnersSectionTitle: "cth. Brand yang Telah Berkolaborasi",
-        phPartnersSubtitle: "cth. Lebih dari 50+ brand telah mempercayai karya kami",
-        phPartnersBrandName: "cth. Tokopedia", phPartnersCategory: "cth. E-Commerce",
-        phPricingEyebrow: "cth. RATE CARD / PILIHAN PAKET", phPricingSectionTitle: "cth. Paket Kolaborasi & Jasa",
-        phPricingSubtitle: "cth. Pilih paket yang paling sesuai dengan kebutuhan kampanye Anda",
-        phPricingPlanName: "cth. Basic / Pro", phPricingBadge: "cth. Paling Populer",
-        phPricingPrice: "cth. Rp 2.500.000", phPricingPeriod: "cth. /bulan atau /video",
+        phStatsValue: "cth. 1.2M atau 98%",
+        phStatsLabel: "cth. Subscribers",
+        phStatsDescription: "cth. Aktif di 3 platform",
+        phPartnersEyebrow: "cth. DIPERCAYA OLEH",
+        phPartnersSectionTitle: "cth. Brand yang Telah Berkolaborasi",
+        phPartnersSubtitle:
+          "cth. Lebih dari 50+ brand telah mempercayai karya kami",
+        phPartnersBrandName: "cth. Tokopedia",
+        phPartnersCategory: "cth. E-Commerce",
+        phPricingEyebrow: "cth. RATE CARD / PILIHAN PAKET",
+        phPricingSectionTitle: "cth. Paket Kolaborasi & Jasa",
+        phPricingSubtitle:
+          "cth. Pilih paket yang paling sesuai dengan kebutuhan kampanye Anda",
+        phPricingPlanName: "cth. Basic / Pro",
+        phPricingBadge: "cth. Paling Populer",
+        phPricingPrice: "cth. Rp 2.500.000",
+        phPricingPeriod: "cth. /bulan atau /video",
         phPricingDesc: "cth. Cocok untuk kampanye brand skala menengah",
-        phPricingFeatures: "1 Video TikTok/Reels\nTermasuk Hak Cipta 3 Bulan\n2x Revisi Video",
+        phPricingFeatures:
+          "1 Video TikTok/Reels\nTermasuk Hak Cipta 3 Bulan\n2x Revisi Video",
         phPricingCtaText: "cth. Pilih Paket",
         phFloatingWaNumber: "cth. 628123456789 atau 08123456789",
-        phHeroStatValue: "cth. 12", phHeroStatLabel: "cth. Projects",
-        phAccessoryNone: "— Tidak Ada —", phAccessoryLabel: "cth. Mulai dari", phAccessoryLabelAvailFor: "cth. Tersedia untuk",
-        phAccessoryValue: "cth. Rp 99.000", phAccessoryValueConsultation: "cth. Pemesanan & konsultasi",
+        phHeroStatValue: "cth. 12",
+        phHeroStatLabel: "cth. Projects",
+        phAccessoryNone: "— Tidak Ada —",
+        phAccessoryLabel: "cth. Mulai dari",
+        phAccessoryLabelAvailFor: "cth. Tersedia untuk",
+        phAccessoryValue: "cth. Rp 99.000",
+        phAccessoryValueConsultation: "cth. Pemesanan & konsultasi",
         phAccessorySkills: "cth. Fotografi, Video, Branding",
-        phHeroBgColor: "Kosongkan untuk pakai warna global", phHeroCaption: "Caption (opsional)",
-        phTestimonialsEyebrow: "cth. Testimoni", phTestimonialsSectionTitle: "cth. Cerita dari Pelanggan Kami",
+        phHeroBgColor: "Kosongkan untuk pakai warna global",
+        phHeroCaption: "Caption (opsional)",
+        phTestimonialsEyebrow: "cth. Testimoni",
+        phTestimonialsSectionTitle: "cth. Cerita dari Pelanggan Kami",
         phTestimonialsSubtitle: "cth. Ulasan dari pelanggan setia kami",
         phTestimonialsQuote: "Tulis kutipan spesifik dan believable...",
-        phTestimonialsName: "cth. Budi Santoso", phTestimonialsRole: "cth. Pelanggan tetap",
+        phTestimonialsName: "cth. Budi Santoso",
+        phTestimonialsRole: "cth. Pelanggan tetap",
         phTestimonialsCompany: "cth. PT Maju Jaya",
-        phWorksTitle: "Proyek Kami", phWorksSubtitle: "Beberapa proyek terbaik yang pernah kami kerjakan.",
-        phWorksItemTitle: "cth. Rebranding Toko Kopi Ketan", phWorksClient: "cth. Kedai Kopi Nusantara",
-        phWorksDescription: "Ceritakan ruang lingkup dan hasil proyek ini...", phWorksAltText: "Deskripsi singkat gambar proyek",
+        phWorksTitle: "Proyek Kami",
+        phWorksSubtitle: "Beberapa proyek terbaik yang pernah kami kerjakan.",
+        phWorksItemTitle: "cth. Rebranding Toko Kopi Ketan",
+        phWorksClient: "cth. Kedai Kopi Nusantara",
+        phWorksDescription: "Ceritakan ruang lingkup dan hasil proyek ini...",
+        phWorksAltText: "Deskripsi singkat gambar proyek",
         // HeroStats & HeroAccessory
         heroStatHighlight: "Statistik Hero",
-        heroStatHighlightHint: "Baris angka (mis. 12 / Projects) di varian Editorial Split, Personal Billboard, Portrait Showcase, dan Chronology Badge. Kosong = baris disembunyikan.",
-        heroStatHighlightEmpty: "Belum ada statistik. Tambahkan nilai dan label, lalu row akan tampil di hero.",
+        heroStatHighlightHint:
+          "Baris angka (mis. 12 / Projects) di varian Editorial Split, Personal Billboard, Portrait Showcase, dan Chronology Badge. Kosong = baris disembunyikan.",
+        heroStatHighlightEmpty:
+          "Belum ada statistik. Tambahkan nilai dan label, lalu row akan tampil di hero.",
         heroStatAddItem: "Tambah Statistik",
         heroAccessoryLabel: "Info Bisnis di Hero",
-        heroAccessoryHint: "Blok kecil di hero sesuai jenis usaha (harga, ketersediaan, atau keahlian).",
+        heroAccessoryHint:
+          "Blok kecil di hero sesuai jenis usaha (harga, ketersediaan, atau keahlian).",
         heroAccessoryTagsLabel: "Daftar (dipisah koma)",
         heroAccessoryPrice: "Harga (toko online/produk)",
         heroAccessoryAvailability: "Ketersediaan (jasa/service)",
@@ -6726,52 +7392,68 @@ export const translations: Record<Locale, Translations> = {
         heroAccessoryRating: "Rating (undangan/acara)",
         heroAccessoryMenuHighlight: "Menu Unggulan (kuliner)",
         // AI prompt strings
-        aiAboutTitlePrompt: "Buat judul section tentang yang menarik dan relevan dengan bisnis",
-        aiAboutTitleLabel: "Judul Tentang", aiAboutTitleBtn: "AI: generate judul",
-        aiAboutBodyPrompt: "Tulis paragraf tentang bisnis ini yang hangat, spesifik, dan manusiawi. 2-4 kalimat.",
-        aiAboutBodyLabel: "Deskripsi", aiAboutBodyBtn: "AI: generate deskripsi",
-        aiHeroHeadlinePrompt: "Buat headline yang kuat dan memikat, max 10 kata",
-        aiHeroHeadlineLabel: "Headline", aiHeroHeadlineBtn: "AI: generate headline",
-        aiHeroSubheadlinePrompt: "Buat subheadline yang jelas menyampaikan value proposition, max 25 kata",
-        aiHeroSubheadlineLabel: "Subheadline", aiHeroSubheadlineBtn: "AI: generate subheadline",
-        aiCtaHeadlinePrompt: "Buat headline CTA yang kuat, action-oriented, dan menutup keraguan pembeli",
-        aiCtaHeadlineLabel: "Headline CTA", aiCtaHeadlineBtn: "AI: generate headline",
+        aiAboutTitlePrompt:
+          "Buat judul section tentang yang menarik dan relevan dengan bisnis",
+        aiAboutTitleLabel: "Judul Tentang",
+        aiAboutTitleBtn: "AI: generate judul",
+        aiAboutBodyPrompt:
+          "Tulis paragraf tentang bisnis ini yang hangat, spesifik, dan manusiawi. 2-4 kalimat.",
+        aiAboutBodyLabel: "Deskripsi",
+        aiAboutBodyBtn: "AI: generate deskripsi",
+        aiHeroHeadlinePrompt:
+          "Buat headline yang kuat dan memikat, max 10 kata",
+        aiHeroHeadlineLabel: "Headline",
+        aiHeroHeadlineBtn: "AI: generate headline",
+        aiHeroSubheadlinePrompt:
+          "Buat subheadline yang jelas menyampaikan value proposition, max 25 kata",
+        aiHeroSubheadlineLabel: "Subheadline",
+        aiHeroSubheadlineBtn: "AI: generate subheadline",
+        aiCtaHeadlinePrompt:
+          "Buat headline CTA yang kuat, action-oriented, dan menutup keraguan pembeli",
+        aiCtaHeadlineLabel: "Headline CTA",
+        aiCtaHeadlineBtn: "AI: generate headline",
         // Gallery
-        gallerySectionBannerDesc2: "Tambahkan foto-foto untuk galeri. Atur tata letak, caption, dan teks alternatif.",
+        gallerySectionBannerDesc2:
+          "Tambahkan foto-foto untuk galeri. Atur tata letak, caption, dan teks alternatif.",
         galleryLayoutGridDesc: "Kotak seragam",
         galleryLayoutMasonryDesc: "Tinggi bervariasi",
         galleryLayoutCarouselDesc: "Slide bergilir",
         galleryCarouselSettingsLabel: "Pengaturan Carousel",
         // Floating button descriptions
-        floatingWhatsAppDescLong: "Tombol hijau WhatsApp tampil di pojok kanan bawah. Klik langsung membuka WA.",
-        floatingWhatsAppPillDescLong: "Tab WhatsApp di sisi kanan layar. Menyusut rapi saat diam, membesar saat kursor mendekat atau disentuh.",
-        floatingChatBubbleDescLong: "Widget chat WA interaktif. Pengunjung bisa ketik pesan sebelum diarahkan ke WA.",
+        floatingWhatsAppDescLong:
+          "Tombol hijau WhatsApp tampil di pojok kanan bawah. Klik langsung membuka WA.",
+        floatingWhatsAppPillDescLong:
+          "Tab WhatsApp di sisi kanan layar. Menyusut rapi saat diam, membesar saat kursor mendekat atau disentuh.",
+        floatingChatBubbleDescLong:
+          "Widget chat WA interaktif. Pengunjung bisa ketik pesan sebelum diarahkan ke WA.",
         floatingChatBubbleProRequired: "Aktifkan plan Pro untuk Chat Bubble.",
-        floatingContactLinkDescLong: "Tombol scroll ke section Kontak. Tidak membutuhkan nomor WA.",
+        floatingContactLinkDescLong:
+          "Tombol scroll ke section Kontak. Tidak membutuhkan nomor WA.",
       },
       wizard: {
-        initialMessage: "Halo! Saya Joz-AI, asisten AI yang akan membantu Anda membuat website. Mari kita mulai: apa nama bisnis atau brand Anda?",
-        nameAckVariants: [
-          "Siap!",
-          "Baik!",
-          "Oke!",
-          "Mantap!",
-          "Keren!"
-        ],
+        initialMessage:
+          "Halo! Saya Joz-AI, asisten AI yang akan membantu Anda membuat website. Mari kita mulai: apa nama bisnis atau brand Anda?",
+        nameAckVariants: ["Siap!", "Baik!", "Oke!", "Mantap!", "Keren!"],
         nameConfirmVariants: [
           "Itu nama aslinya, atau masih nama sementara? Pilih 'Ya' untuk lanjut, atau 'Ganti' jika ingin diubah 😊",
           "Apakah itu nama sebenarnya? Klik 'Ya' untuk lanjut, atau 'Ganti' jika ingin memasukkan nama lain.",
-          "Nama tersebut terdengar seperti percobaan — pastikan ini yang Anda mau. Klik 'Ya' untuk lanjut atau 'Ganti'."
+          "Nama tersebut terdengar seperti percobaan — pastikan ini yang Anda mau. Klik 'Ya' untuk lanjut atau 'Ganti'.",
         ],
-        descriptionPrompt: "Ceritakan sekilas tentang bisnis atau profil Anda 1-2 paragraf. (Tekan Enter untuk lewati)",
+        descriptionPrompt:
+          "Ceritakan sekilas tentang bisnis atau profil Anda 1-2 paragraf. (Tekan Enter untuk lewati)",
         descriptionSkipKeyword: "lewat",
-        descriptionInferenceHigh: "Sepertinya Anda cocok di kategori **{subType}**. Langsung buat website-nya?",
-        descriptionInferenceMedium: "Sepertinya bidang Anda adalah {type}. Bisa pilih yang lebih spesifik?",
-        descriptionInferenceTypeOnly: "Bagus! Bisnis Anda masuk kategori {category}. Lebih spesifiknya, pilih jenis yang paling pas di bawah:",
+        descriptionInferenceHigh:
+          "Sepertinya Anda cocok di kategori **{subType}**. Langsung buat website-nya?",
+        descriptionInferenceMedium:
+          "Sepertinya bidang Anda adalah {type}. Bisa pilih yang lebih spesifik?",
+        descriptionInferenceTypeOnly:
+          "Bagus! Bisnis Anda masuk kategori {category}. Lebih spesifiknya, pilih jenis yang paling pas di bawah:",
         descriptionInferenceNone: "Baik, silakan pilih kategori Anda:",
-        pickFieldPrompt: "Saya belum bisa memastikan jenis usahanya. Pilih bidang yang paling sesuai:",
+        pickFieldPrompt:
+          "Saya belum bisa memastikan jenis usahanya. Pilih bidang yang paling sesuai:",
         pickFieldAiFailed: "Koneksi ke AI bermasalah. Pilih bidang usaha Anda:",
-        descriptionAiFailed: "Koneksi ke AI bermasalah. Silakan pilih kategori Anda:",
+        descriptionAiFailed:
+          "Koneksi ke AI bermasalah. Silakan pilih kategori Anda:",
         analyzingDescription: "Menganalisis profil Anda...",
         descriptionRefinedIntro: "Siap! Deskripsi Anda:",
         selectMoodPrompt: "Website Anda nanti mau tampil seperti apa?",
@@ -6780,7 +7462,8 @@ export const translations: Record<Locale, Translations> = {
         preparingTheme: "Meracik tema & karakter visual...",
         preparingComponents: "Menyusun layout & komponen website...",
         preparingOpening: "Membuka tampilan website...",
-        websiteReady: "Selamat! Website Anda siap. Gunakan tombol Edit untuk kustomisasi konten, lalu klik Publish untuk mempublikasikan website Anda.",
+        websiteReady:
+          "Selamat! Website Anda siap. Gunakan tombol Edit untuk kustomisasi konten, lalu klik Publish untuk mempublikasikan website Anda.",
         confirmCardTitle: "Hampir jadi — cek dan lengkapi",
         confirmCardLabelName: "Nama",
         confirmCardLabelType: "Jenis",
@@ -6796,7 +7479,8 @@ export const translations: Record<Locale, Translations> = {
         confirmCardBtnGenerating: "Sedang dibuat...",
         confirmCardBtnFinishEdit: "Selesai edit dulu ↑",
         successModalTitle: "Selamat! Website Anda Telah Siap 🎉",
-        successModalDesc: "Website telah berhasil dibuat oleh AI. Silakan periksa hasil tampilannya terlebih dahulu. Jika ada bagian konten, gambar, warna, atau tata letak yang kurang pas, Anda bisa dengan mudah menyesuaikan semuanya di halaman Editor.",
+        successModalDesc:
+          "Website telah berhasil dibuat oleh AI. Silakan periksa hasil tampilannya terlebih dahulu. Jika ada bagian konten, gambar, warna, atau tata letak yang kurang pas, Anda bisa dengan mudah menyesuaikan semuanya di halaman Editor.",
         successModalBtnPreview: "Lihat Preview",
         successModalBtnEdit: "Edit & Publikasikan",
         errorModalRetry: "Coba lagi",
@@ -6843,7 +7527,8 @@ export const translations: Record<Locale, Translations> = {
         openForm: "Buka Form",
         closeForm: "Tutup Form",
         businessDetailsTitle: "Detail Bisnis",
-        businessDetailsSubtitle: "Dua data ini langsung dipakai AI untuk isi tombol kontak dan bikin copy yang lebih relevan.",
+        businessDetailsSubtitle:
+          "Dua data ini langsung dipakai AI untuk isi tombol kontak dan bikin copy yang lebih relevan.",
         waSaved: "WA tersimpan",
         waEmpty: "WA belum diisi",
         areaEmpty: "Area belum diisi",
@@ -6864,35 +7549,44 @@ export const translations: Record<Locale, Translations> = {
         sttProcessingTitle: "Memproses suara Anda...",
         sttProcessingSubtitle: "Membuat draft informasi bisnis...",
         sttReviewTitle: "Berikut yang saya dengar dari Anda:",
-        sttReviewPrompt: "Apakah sudah sesuai? Anda bisa edit sebelum saya lanjutkan.",
+        sttReviewPrompt:
+          "Apakah sudah sesuai? Anda bisa edit sebelum saya lanjutkan.",
         sttBtnEdit: "Edit",
         sttBtnConfirm: "Ya, lanjutkan",
         editMessage: "Edit pesan",
         editedBadge: "(diedit)",
         editShortcutHint: "Enter untuk simpan, Esc untuk batal",
         editPlaceholder: "Ketik perubahan pesan...",
-        micReadyHint: "Klik icon mic untuk menjelaskan bisnis Anda secara lisan",
-        micPermissionDenied: "Izin mikrofon diperlukan untuk merekam suara. Silakan aktifkan izin mikrofon pada browser Anda.",
-        sttNoVoiceDetected: "Tidak ada suara yang terdeteksi. Silakan coba lagi atau ketik deskripsi bisnis Anda secara langsung.",
+        micReadyHint:
+          "Klik icon mic untuk menjelaskan bisnis Anda secara lisan",
+        micPermissionDenied:
+          "Izin mikrofon diperlukan untuk merekam suara. Silakan aktifkan izin mikrofon pada browser Anda.",
+        sttNoVoiceDetected:
+          "Tidak ada suara yang terdeteksi. Silakan coba lagi atau ketik deskripsi bisnis Anda secara langsung.",
         backToChat: "Kembali ke chat",
         generationFailed: "Generate belum berhasil",
         generationErrorMessage: "Terjadi kesalahan saat membuat preview.",
         successToastTitle: "Website Anda Telah Siap!",
-        successToastDesc: "Konten, warna, atau tata letak bisa diubah kapan saja di halaman Editor.",
+        successToastDesc:
+          "Konten, warna, atau tata letak bisa diubah kapan saja di halaman Editor.",
         closeNotification: "Tutup notifikasi",
         btnLater: "Nanti saja",
         btnCompleteData: "Lengkapi Data",
         btnEditPublish: "Edit & Publikasikan",
         completeContactDataTitle: "Lengkapi data kontak",
-        completeContactDataDesc: "Tambah nomor WA supaya tombol kontak di website aktif.",
+        completeContactDataDesc:
+          "Tambah nomor WA supaya tombol kontak di website aktif.",
         editPublishHintTitle: "Mau ubah isi website?",
-        editPublishHintDesc: "Tenang, semua teks, gambar, dan bagian website bisa kamu edit, ganti, atau hapus sesuai keinginan.",
+        editPublishHintDesc:
+          "Tenang, semua teks, gambar, dan bagian website bisa kamu edit, ganti, atau hapus sesuai keinginan.",
         mobileEditPublishHintTitle: "✏️ Mau ubah isi website?",
-        mobileEditPublishHintDesc: "Bisa edit teks, ganti, atau hapus bagian sesukamu",
+        mobileEditPublishHintDesc:
+          "Bisa edit teks, ganti, atau hapus bagian sesukamu",
         mobileHintTitle: "📋 Tambah nomor WA & area",
         mobileHintDesc: "Supaya tombol kontak aktif",
         tooFastTitle: "Terlalu cepat!",
-        tooFastMessage: "Kamu sudah generate beberapa kali dalam waktu singkat. Tunggu 30 detik, lalu coba lagi ya.",
+        tooFastMessage:
+          "Kamu sudah generate beberapa kali dalam waktu singkat. Tunggu 30 detik, lalu coba lagi ya.",
         btnConfirmYes: "Ya, lanjut",
         btnChangeCategory: "Ganti kategori",
         btnTryOtherRecommendation: "Coba rekomendasi lain ({current}/{total})",
@@ -6907,7 +7601,8 @@ export const translations: Record<Locale, Translations> = {
         otherSubTypePlaceholder: "Tulis sub-kategori spesifik...",
         chooseMoodHint: "Pilih mood yang sesuai dengan brand Anda",
         typeSelectedChooseSub: "✓ Dipilih — pilih jenis di bawah",
-        prefillTypePrompt: "Saya sudah memperkirakan kategori website Anda. Lanjutkan jika sesuai, atau ubah dulu:",
+        prefillTypePrompt:
+          "Saya sudah memperkirakan kategori website Anda. Lanjutkan jika sesuai, atau ubah dulu:",
         btnContinueType: "Lanjut dengan jenis ini →",
         changeBidang: "Bidang lain →",
         selectSector: "Pilih bidang usaha:",
@@ -6932,9 +7627,12 @@ export const translations: Record<Locale, Translations> = {
         nameConfirmPlaceholder: "Pilih opsi di atas atau ketik nama bisnis...",
         nameConfirmYes: "Ya",
         nameConfirmChange: "Ganti",
-        nameChangePrompt: "Baik, silakan ketik nama bisnis yang ingin Anda gunakan:",
-        descPlaceholder: "Contoh: Jual kopi spesial di Jogja, melayani pesanan partai besar",
-        descPlaceholderWithMic: "Ceritakan tentang bisnis Anda, atau klik mic 🎤",
+        nameChangePrompt:
+          "Baik, silakan ketik nama bisnis yang ingin Anda gunakan:",
+        descPlaceholder:
+          "Contoh: Jual kopi spesial di Jogja, melayani pesanan partai besar",
+        descPlaceholderWithMic:
+          "Ceritakan tentang bisnis Anda, atau klik mic 🎤",
         labelBusinessName: "Nama Bisnis",
         labelBusinessType: "Kategori",
         labelBusinessSubType: "Sub Kategori",
@@ -6942,7 +7640,8 @@ export const translations: Record<Locale, Translations> = {
         labelWhatsapp: "Nomor WhatsApp",
         labelServiceArea: "Wilayah Layanan",
         labelMood: "Gaya & Suasana Website (Mood)",
-        disambiguateJasaPortofolio: "Bingung Jasa & Booking vs Kreatif & Profesional? Kalau pelanggan Anda perlu booking jadwal/reservasi → pilih Jasa & Booking. Kalau mereka perlu lihat contoh hasil kerja dulu sebelum order → pilih Kreatif & Profesional.",
+        disambiguateJasaPortofolio:
+          "Bingung Jasa & Booking vs Kreatif & Profesional? Kalau pelanggan Anda perlu booking jadwal/reservasi → pilih Jasa & Booking. Kalau mereka perlu lihat contoh hasil kerja dulu sebelum order → pilih Kreatif & Profesional.",
         categories: {
           kuliner: "Kuliner",
           kulinerDesc: "Restoran, Warung, Cafe & Catering",
@@ -6952,7 +7651,8 @@ export const translations: Record<Locale, Translations> = {
           jasaBookingDesc: "Salon, Workshop, Klinik, dll",
           // Kategori "Kreatif & Profesional" mencakup website portofolio, kreator, seniman, agensi, dan profesional
           portofolioKreator: "Kreatif & Profesional",
-          portofolioKreatorDesc: "Portofolio, Kreator, Developer, Desainer, Agency, dll",
+          portofolioKreatorDesc:
+            "Portofolio, Kreator, Developer, Desainer, Agency, dll",
           company: "Company Profile",
           companyDesc: "Properti, Konstruksi, Manufaktur, Yayasan, & Institusi",
         },
@@ -6978,9 +7678,9 @@ export const translations: Record<Locale, Translations> = {
           // Kuliner
           "Restoran & Warung Makan": "Restoran",
           "Kuliner Tradisional & Nusantara": "Kuliner Tradisional",
-          "Kafe": "Kafe",
+          Kafe: "Kafe",
           "Bakery & Pastry": "Bakery",
-          "Catering": "Catering",
+          Catering: "Catering",
           "Minuman & Bubble Tea": "Minuman",
           "Makanan Rumahan & Frozen Food": "Dapur Rumahan",
           "Frozen Food Homemade": "Frozen Food",
@@ -6989,7 +7689,7 @@ export const translations: Record<Locale, Translations> = {
           "Herbal & Jamu": "Herbal & Jamu",
           // Toko
           "Fashion & Pakaian": "Fashion",
-          "Elektronik": "Elektronik",
+          Elektronik: "Elektronik",
           "Kecantikan & Kosmetik": "Kosmetik & Skincare",
           "Produk Lokal Handmade": "Handmade",
           "Minimarket & Sembako": "Minimarket & Sembako",
@@ -7003,30 +7703,30 @@ export const translations: Record<Locale, Translations> = {
           "Hotel & Penginapan": "Penginapan",
           "Makeup Artist (MUA)": "Makeup Artist (MUA)",
           "Salon & Kecantikan": "Salon & Spa",
-          "Barbershop": "Barbershop",
+          Barbershop: "Barbershop",
           "Klinik & Kesehatan": "Klinik & Kesehatan",
           "Gym & Olahraga": "Gym & Olahraga",
           "Event & Wedding Organizer": "Event Organizer",
           "Otomotif & Bengkel": "Bengkel & Servis",
           "Bengkel Motor": "Bengkel Motor",
           "Bengkel Mobil & Otomotif": "Bengkel Mobil & Servis",
-          "Laundry": "Laundry",
+          Laundry: "Laundry",
           "Jasa Rumah & Kebersihan": "Jasa Rumah & Kebersihan",
           "Pendidikan & Kursus": "Les & Kursus",
           "Biro Jasa & Perizinan": "Biro Jasa",
           "Koperasi & Simpan Pinjam": "Koperasi & Simpan Pinjam",
           // Portofolio & Kreator / Kreatif & Profesional
           "Konten Kreator": "Konten Kreator",
-          "Fotografer": "Fotografer",
-          "Videografer": "Videografer",
-          "Desainer": "Desainer",
+          Fotografer: "Fotografer",
+          Videografer: "Videografer",
+          Desainer: "Desainer",
           "Ilustrator & Seniman": "Ilustrator & Seniman",
           "Arsitek & Desainer Interior": "Arsitek & Interior",
           "Penulis & Copywriter": "Penulis & Copywriter",
           "Developer & IT": "Developer & IT",
           "SEO & Digital Specialist": "SEO & Digital",
           "Digital & Marketing Agency": "Digital Agency",
-          "Konsultan": "Konsultan",
+          Konsultan: "Konsultan",
           "Tutor & Life Coach": "Tutor & Coach",
           "Public Speaker & Trainer": "Speaker & Trainer",
           "Musisi & Entertainer": "Musisi & Hiburan",
@@ -7175,7 +7875,8 @@ export const translations: Record<Locale, Translations> = {
         googleLabel: "Google",
         linkedStatus: "Tertaut",
         unlink: "Putuskan",
-        needPasswordToUnlink: "Atur kata sandi terlebih dahulu untuk memutuskan",
+        needPasswordToUnlink:
+          "Atur kata sandi terlebih dahulu untuk memutuskan",
         linking: "Menautkan...",
         linkGoogle: "Tautkan Akun Google",
         emailUpdated: "Email berhasil diperbarui",
@@ -7192,8 +7893,10 @@ export const translations: Record<Locale, Translations> = {
         currentPassword: "Kata sandi saat ini",
       },
       emailPrompt: {
-        title: "Tambahkan email Anda untuk menerima faktur dan notifikasi penting",
-        description: "Akun Anda saat ini menggunakan email yang dibuat sistem. Tambahkan email nyata untuk menerima pembayaran dan pembaruan.",
+        title:
+          "Tambahkan email Anda untuk menerima faktur dan notifikasi penting",
+        description:
+          "Akun Anda saat ini menggunakan email yang dibuat sistem. Tambahkan email nyata untuk menerima pembayaran dan pembaruan.",
         save: "Simpan",
         dismiss: "Tutup",
         emailUpdated: "Email berhasil diperbarui",
@@ -7203,38 +7906,58 @@ export const translations: Record<Locale, Translations> = {
   },
   en: {
     landing: {
-      heroTitle: 'Generate websites <br className="lg:hidden" />instantly.<br /><span class="inline-block text-[0.58em] sm:text-[0.66em] lg:text-[0.6em] font-extrabold tracking-tight bg-primary text-primary-foreground dark:bg-white dark:text-black px-3.5 py-1 sm:px-5 sm:py-1.5 rounded-none mt-2 sm:mt-2.5 shadow-lg">Unlimited customization.</span>',
-      heroSubtitle: 'Just a <strong class="text-foreground font-bold">quick chat</strong>, <strong class="text-foreground font-bold">no coding</strong> —<br />your business website is <strong class="text-foreground font-bold">instantly live</strong>.',
+      heroTitle:
+        'Generate websites <br className="lg:hidden" />instantly.<br /><span class="inline-block text-[0.58em] sm:text-[0.66em] lg:text-[0.6em] font-extrabold tracking-tight bg-primary text-primary-foreground dark:bg-white dark:text-black px-3.5 py-1 sm:px-5 sm:py-1.5 rounded-none mt-2 sm:mt-2.5 shadow-lg">Unlimited customization.</span>',
+      heroSubtitle:
+        'Just a <strong class="text-foreground font-bold">quick chat</strong>, <strong class="text-foreground font-bold">no coding</strong> —<br />your business website is <strong class="text-foreground font-bold">instantly live</strong>.',
       heroSubtitleBold: "",
       ctaPrimary: "Create Website Now",
       ctaFloating: "Create Website Now",
       tryFree: "100% Free",
       chatNotForm: "AI Chat, not forms",
       activeInMinutes: "Live in Minutes",
-      howItWorksTitle: 'From chat to website in <span class="text-primary">4 easy steps</span>',
+      howItWorksTitle:
+        'From chat to website in <span class="text-primary">4 easy steps</span>',
       howItWorksSubtitle: "HOW IT WORKS",
       howItWorksCta: "Try Now — Free",
       featuresEyebrow: "KEY FEATURES",
-      featuresTitle: 'More than just a <span class="text-primary">regular website</span>',
+      featuresTitle:
+        'More than just a <span class="text-primary">regular website</span>',
       featuresTitleAccent: "regular website",
       dashboardBadge: "Dashboard",
       dashboardTitle: "Monitor & grow your business",
-      dashboardDesc: "Complete dashboard with visitor analytics, lead management, and website list in one place.",
+      dashboardDesc:
+        "Complete dashboard with visitor analytics, lead management, and website list in one place.",
       dashboardTags: ["Real-time analytics", "Lead management", "Website list"],
       domainBadge: "Domain & SEO",
       domainTitle: "Custom domain & automatic SEO",
-      domainDesc: "Connect your custom domain, SEO title/description, OG tags, JSON-LD, sitemap — all handled by AI.",
-      domainTags: ["Custom domain", "Automatic SEO", "Structured data", "Sitemap"],
+      domainDesc:
+        "Connect your custom domain, SEO title/description, OG tags, JSON-LD, sitemap — all handled by AI.",
+      domainTags: [
+        "Custom domain",
+        "Automatic SEO",
+        "Structured data",
+        "Sitemap",
+      ],
       catalogBadge: "Catalog & Menu",
       catalogTitle: "Product catalog & digital menu",
-      catalogDesc: "Showcase products or menus with photos, prices, and descriptions — customers can order directly without another app.",
-      catalogTags: ["Product catalog", "Digital menu", "Direct ordering", "WhatsApp order"],
+      catalogDesc:
+        "Showcase products or menus with photos, prices, and descriptions — customers can order directly without another app.",
+      catalogTags: [
+        "Product catalog",
+        "Digital menu",
+        "Direct ordering",
+        "WhatsApp order",
+      ],
       templatesEyebrow: "AI GENERATED EXAMPLES",
-      templatesTitle: 'Websites generated <span class="text-primary">for various businesses</span>',
+      templatesTitle:
+        'Websites generated <span class="text-primary">for various businesses</span>',
       templatesTitleAccent: "for various businesses",
-      templatesDesc: "AI selects templates and writes content automatically. Here are examples for several business types.",
+      templatesDesc:
+        "AI selects templates and writes content automatically. Here are examples for several business types.",
       whyEyebrow: "WHY WEBJOZ",
-      whyTitle: 'Everything you need, <span class="text-primary">already available</span>',
+      whyTitle:
+        'Everything you need, <span class="text-primary">already available</span>',
       whyTitleAccent: "already available",
       statsLabel1: "Generation time",
       statsValue1: "< 5 mins",
@@ -7261,12 +7984,14 @@ export const translations: Record<Locale, Translations> = {
       startFree: "Start Free",
       choosePlan: "Choose {plan} ({cycle})",
       ctaBannerTitle: "Ready to build your business website?",
-      ctaBannerDesc: "Start for free now. No credit card needed — just a short chat with AI and your website is ready.",
+      ctaBannerDesc:
+        "Start for free now. No credit card needed — just a short chat with AI and your website is ready.",
       ctaBannerCta: "Start Free Now",
       ctaBannerWhatsapp: "Consult via WhatsApp",
       ctaBannerHelper: "Need custom design or company profile?",
       ctaBannerContact: "Contact our team",
-      footerCopyright: "© {year} Webjoz by Giwangan Studio. AI Website Builder for Indonesian Businesses.",
+      footerCopyright:
+        "© {year} Webjoz by Giwangan Studio. AI Website Builder for Indonesian Businesses.",
       footerPrivacy: "Privacy Policy",
       footerTerms: "Terms & Conditions",
       footerRefund: "Refund Policy",
@@ -7277,33 +8002,47 @@ export const translations: Record<Locale, Translations> = {
       footerBlog: "Blog",
       footerHome: "Home",
       step1Title: "Introduce Your Business",
-      step1Desc: "Chat with AI and tell them the name and type of business you run. All through a casual conversation.",
+      step1Desc:
+        "Chat with AI and tell them the name and type of business you run. All through a casual conversation.",
       step2Title: "Share Brief Details",
-      step2Desc: "Tell them a little about your services, coverage area, or what makes your business special.",
+      step2Desc:
+        "Tell them a little about your services, coverage area, or what makes your business special.",
       step3Title: "Choose Category & Mood",
-      step3Desc: "Pick your industry type and design mood so AI can match your website's appearance.",
+      step3Desc:
+        "Pick your industry type and design mood so AI can match your website's appearance.",
       step4Title: "Generate & Publish",
-      step4Desc: "Website is built in seconds. Review, edit any section, and publish immediately.",
+      step4Desc:
+        "Website is built in seconds. Review, edit any section, and publish immediately.",
       featureChatTitle: "AI Chat, Not Forms",
-      featureChatDesc: "No long forms to fill. Just chat with AI and all content and design are generated automatically.",
+      featureChatDesc:
+        "No long forms to fill. Just chat with AI and all content and design are generated automatically.",
       featureDomainTitle: "Custom Domain",
-      featureDomainDesc: "Connect your own domain with CNAME guidance. Perfect for professional company branding.",
+      featureDomainDesc:
+        "Connect your own domain with CNAME guidance. Perfect for professional company branding.",
       featureAnalyticsTitle: "Analytics & Leads",
-      featureAnalyticsDesc: "Track website visitors and collect leads directly from the contact form — all in one dashboard.",
+      featureAnalyticsDesc:
+        "Track website visitors and collect leads directly from the contact form — all in one dashboard.",
       featureEditTitle: "Edit Per Section",
-      featureEditDesc: "Not satisfied with a section? Regenerate it with AI, or edit manually in the editor.",
+      featureEditDesc:
+        "Not satisfied with a section? Regenerate it with AI, or edit manually in the editor.",
       featureCustomTitle: "Full Customization",
-      featureCustomDesc: "Hero, profile, services, testimonials, menu, FAQ, footer, and SEO — all content can be edited and customized anytime.",
+      featureCustomDesc:
+        "Hero, profile, services, testimonials, menu, FAQ, footer, and SEO — all content can be edited and customized anytime.",
       featureWaTitle: "Integrated WhatsApp",
-      featureWaDesc: "WhatsApp button is automatically installed on every website. Customers can chat in one click.",
+      featureWaDesc:
+        "WhatsApp button is automatically installed on every website. Customers can chat in one click.",
       featureSeoTitle: "SEO Ready",
-      featureSeoDesc: "Title, description, OG tags, JSON-LD structured data, and sitemap — all handled by AI.",
+      featureSeoDesc:
+        "Title, description, OG tags, JSON-LD structured data, and sitemap — all handled by AI.",
       featureSubTitle: "Instant Subdomain",
-      featureSubDesc: "Every website is instantly active on a Webjoz subdomain. No server setup or manual DNS needed.",
+      featureSubDesc:
+        "Every website is instantly active on a Webjoz subdomain. No server setup or manual DNS needed.",
       featureCatalogTitle: "Product Catalog",
-      featureCatalogDesc: "Showcase your products or services with a neat, professional, and attractive catalog.",
+      featureCatalogDesc:
+        "Showcase your products or services with a neat, professional, and attractive catalog.",
       featureMenuTitle: "Sales Menu",
-      featureMenuDesc: "Make it easy for customers to order with an interactive menu ready for transactions.",
+      featureMenuDesc:
+        "Make it easy for customers to order with an interactive menu ready for transactions.",
       navHowItWorks: "How It Works",
       navFeatures: "Features",
       navPricing: "Pricing",
@@ -7333,7 +8072,8 @@ export const translations: Record<Locale, Translations> = {
       mockupSitesManage: "Manage generated site URLs (Super Admin)",
       mockupSitesClose: "Close Editor",
       mockupSitesTitle: "Generated website result URLs (with business name)",
-      mockupSitesHint: "Each row has a business name and a generated result URL. The sites appear in the mockup preview panel one per cycle, and the business name shows in the mockup chat. Save empty to fall back to the local template preview.",
+      mockupSitesHint:
+        "Each row has a business name and a generated result URL. The sites appear in the mockup preview panel one per cycle, and the business name shows in the mockup chat. Save empty to fall back to the local template preview.",
       mockupSitesAdd: "Add URL",
       mockupSitesReset: "Reset Default",
       mockupSitesSave: "Save",
@@ -7361,7 +8101,8 @@ export const translations: Record<Locale, Translations> = {
       featureFreeCard: "No credit card required",
       featureChatEasy: "Faster & easier",
       featureLiveInstant: "Live in minutes",
-      heroReassurance: "Try instantly without signing up • 100% Free • Live preview",
+      heroReassurance:
+        "Try instantly without signing up • 100% Free • Live preview",
       bottomNavHome: "Home",
       bottomNavFeatures: "Features",
       bottomNavCreate: "Create",
@@ -7370,9 +8111,11 @@ export const translations: Record<Locale, Translations> = {
     },
     auth: {
       loginTitle: "Continue managing your business website.",
-      loginDesc: "Log in to manage your website, edit content, view analytics, and monitor performance — all from one dashboard.",
+      loginDesc:
+        "Log in to manage your website, edit content, view analytics, and monitor performance — all from one dashboard.",
       loginCardTitle: "Login",
-      loginCardDesc: "Use WhatsApp, email OTP, or password to access the dashboard.",
+      loginCardDesc:
+        "Use WhatsApp, email OTP, or password to access the dashboard.",
       loginFooterHome: "Home",
       loginFooterRegister: "Create account",
       loginFooterForgot: "Forgot password",
@@ -7385,12 +8128,14 @@ export const translations: Record<Locale, Translations> = {
       loginStats2Helper: "All templates are optimized for mobile and ad-ready.",
       loginCardEyebrow: "Login to continue",
       loginSending: "Sending code...",
-      loginWhatsappHint: "A link or OTP code is sent via WhatsApp. New number? An account is created automatically.",
+      loginWhatsappHint:
+        "A link or OTP code is sent via WhatsApp. New number? An account is created automatically.",
       loginOrContinueWith: "or continue with",
       loginOrEmail: "or log in with email",
       loginEmailLabel: "Email address",
       loginEmailPlaceholder: "Your email address",
-      loginEmailHint: "A link or OTP code is sent via email. New email? An account is created automatically.",
+      loginEmailHint:
+        "A link or OTP code is sent via email. New email? An account is created automatically.",
       loginSendCodeWhatsapp: "Send OTP via WhatsApp",
       loginSendCode: "Send OTP",
       loginPasswordTitle: "Log in with password",
@@ -7407,7 +8152,8 @@ export const translations: Record<Locale, Translations> = {
       loginShowPassword: "Show password",
       loginLoginLoading: "Logging in",
       loginSubmitPassword: "Log in with password",
-      loginCodeSentTo: "Code sent via {channel} to {target}. Valid for 5 minutes.",
+      loginCodeSentTo:
+        "Code sent via {channel} to {target}. Valid for 5 minutes.",
       loginCodeLabel: "OTP Code",
       loginTrustDevice: "Trust this device",
       loginBack: "Back",
@@ -7415,7 +8161,8 @@ export const translations: Record<Locale, Translations> = {
       loginVerifyOtp: "Verify OTP",
       loginResendCountdown: "Resend ({sec}s)",
       loginResend: "Didn't receive a code? Resend",
-      loginLinkSent: "A login link has been sent. Open it on this device to continue.",
+      loginLinkSent:
+        "A login link has been sent. Open it on this device to continue.",
       loginOtherOptions: "Other options",
       loginOptionWhatsapp: "WhatsApp",
       loginOptionEmail: "Email OTP",
@@ -7432,12 +8179,14 @@ export const translations: Record<Locale, Translations> = {
       errorOtpInvalidExpired: "Invalid or expired OTP code",
       loginSuccess: "Successfully logged in. Welcome back.",
       toastSessionExpired: "Session Expired",
-      toastSessionExpiredDesc: "Your session has expired. Please log in again to continue.",
+      toastSessionExpiredDesc:
+        "Your session has expired. Please log in again to continue.",
       toastDismiss: "Dismiss",
       errorMagicLinkInvalid: "Login link is invalid or expired",
       registerBadge: "Webjoz Console",
       registerTitle: "Start managing your business with ease.",
-      registerDesc: "Sign up to start building a professional, fast, ad-ready business website.",
+      registerDesc:
+        "Sign up to start building a professional, fast, ad-ready business website.",
       registerCardEyebrow: "Create new account",
       registerCardTitle: "Registration",
       registerCardDesc: "Fill in the details below to register your account.",
@@ -7452,32 +8201,38 @@ export const translations: Record<Locale, Translations> = {
       errorRegisterFailed: "Failed to sign up. Try again.",
       forgotBadge: "Password Recovery",
       forgotTitle: "Start the password reset flow from the dashboard frontend.",
-      forgotDesc: "Submit your email and the Go API will issue the reset token and email link through its existing forgot-password flow.",
+      forgotDesc:
+        "Submit your email and the Go API will issue the reset token and email link through its existing forgot-password flow.",
       forgotCardEyebrow: "Recovery",
       forgotCardTitle: "Forgot Password",
-      forgotCardDesc: "Enter your account email to request a password reset link.",
+      forgotCardDesc:
+        "Enter your account email to request a password reset link.",
       forgotFooterLogin: "Back to login",
       forgotFooterRegister: "Create account",
       forgotEmail: "Email",
       forgotEmailPlaceholder: "you@mail.com",
       forgotSending: "Sending link...",
       forgotSubmit: "Send Reset Link",
-      forgotSentSuccess: "Reset link sent. Check your email for the password reset link.",
+      forgotSentSuccess:
+        "Reset link sent. Check your email for the password reset link.",
       forgotSentToast: "Reset link sent.",
       errorForgotSend: "Failed to send reset link",
       forgotStat1Label: "Delivery",
       forgotStat1Value: "Email Link",
-      forgotStat1Helper: "The backend sends a reset link to the email address you submit.",
+      forgotStat1Helper:
+        "The backend sends a reset link to the email address you submit.",
       forgotStat2Label: "Reset Route",
       forgotStat2Value: "/reset-password",
       forgotStat2Helper: "The emailed link lands on the dashboard reset page.",
       resetBadge: "Reset Password",
       resetTitle: "Set a new password using the token issued by the backend.",
-      resetDesc: "This page consumes the password reset token from the email link and submits the new password directly to the Go API.",
+      resetDesc:
+        "This page consumes the password reset token from the email link and submits the new password directly to the Go API.",
       resetCardEyebrow: "Recovery",
       resetCardTitle: "Choose a New Password",
       resetCardDesc: "Enter your new password to complete the reset flow.",
-      resetCardDescNoToken: "Open this page from the password reset email so the token is included.",
+      resetCardDescNoToken:
+        "Open this page from the password reset email so the token is included.",
       resetFooterLogin: "Back to login",
       resetFooterRequest: "Request another reset link",
       resetNewPassword: "New Password",
@@ -7491,13 +8246,15 @@ export const translations: Record<Locale, Translations> = {
       errorResetFailed: "Failed to reset password",
       resetStat1Label: "Token Source",
       resetStat1Value: "URL Query",
-      resetStat1Helper: "The backend email links here with a `token` query parameter.",
+      resetStat1Helper:
+        "The backend email links here with a `token` query parameter.",
       resetStat2Label: "Validation",
       resetStat2Value: "Backend-first",
       resetStat2Helper: "Expired or invalid tokens are rejected by the API.",
       verifyBadge: "Account Verification",
       verifyTitle: "Verifying your email address.",
-      verifyDesc: "This page verifies your email using the token provided in the link sent to your inbox.",
+      verifyDesc:
+        "This page verifies your email using the token provided in the link sent to your inbox.",
       verifyCardEyebrow: "Verification",
       verifyCardTitle: "Email Verification",
       verifyCardIdle: "Check your inbox for the verification link.",
@@ -7509,13 +8266,18 @@ export const translations: Record<Locale, Translations> = {
       verifySuccessTitle: "Success!",
       verifyGoToLogin: "Go to Login",
       verifyFailedTitle: "Verification Failed",
-      verifySentTo: "A verification email was sent to {email}. Open the link in that email to complete verification.",
-      verifyNoToken: "Open this page from your verification email so the token is included in the URL.",
-      verifyDone: "Your email has been successfully verified! You can now log in.",
-      errorVerifyFailed: "Failed to verify email. The link might be expired or invalid.",
+      verifySentTo:
+        "A verification email was sent to {email}. Open the link in that email to complete verification.",
+      verifyNoToken:
+        "Open this page from your verification email so the token is included in the URL.",
+      verifyDone:
+        "Your email has been successfully verified! You can now log in.",
+      errorVerifyFailed:
+        "Failed to verify email. The link might be expired or invalid.",
       verifyStat1Label: "Token Source",
       verifyStat1Value: "URL Query",
-      verifyStat1Helper: "The backend email link includes a unique `token` parameter.",
+      verifyStat1Helper:
+        "The backend email link includes a unique `token` parameter.",
       verifyStat2Label: "Status",
       verifyStat2Value: "Real-time Validation",
       verifyStat2Helper: "Tokens are validated instantly upon page load.",
@@ -7526,7 +8288,8 @@ export const translations: Record<Locale, Translations> = {
       inviteFailedTitle: "Failed",
       inviteBackToLogin: "Back to Login",
       inviteRegisterTitle: "Create your account to join",
-      inviteRegisterDesc: "Your account will be created automatically from the invitation email. Fill in your details below to continue.",
+      inviteRegisterDesc:
+        "Your account will be created automatically from the invitation email. Fill in your details below to continue.",
       inviteRegisterEmailLabel: "Email",
       inviteRegisterNameLabel: "Name",
       inviteRegisterNamePlaceholder: "Full name",
@@ -7535,7 +8298,8 @@ export const translations: Record<Locale, Translations> = {
       inviteRegisterButton: "Create Account & Join",
       inviteRegisterLoading: "Creating account...",
       inviteExistingAccount: "Already have an account? Sign in",
-      inviteAlreadyRegistered: "This email already has an account. Please sign in to accept the invitation.",
+      inviteAlreadyRegistered:
+        "This email already has an account. Please sign in to accept the invitation.",
       loginResetSuccess: "Password updated. You can sign in now.",
       loginPasswordChanged: "Password changed. Please sign in again.",
     },
@@ -7585,28 +8349,39 @@ export const translations: Record<Locale, Translations> = {
       language: "Language",
       logout: "Logout",
       backToWebsites: "Back to websites list",
-      subDashboard: "Monitor the summary of your website's performance and activity.",
+      subDashboard:
+        "Monitor the summary of your website's performance and activity.",
       subSites: "Manage and customize all of your websites.",
-      subDomains: "Connect and manage custom domains to make your site look more professional.",
-      subLeads: "Contact inquiries and prospects from your public site visitors.",
-      subAnalytics: "Monitor visit volume, traffic sources, and most popular pages.",
-      subSettings: "Manage profile, account security, user access, and system audit logs.",
+      subDomains:
+        "Connect and manage custom domains to make your site look more professional.",
+      subLeads:
+        "Contact inquiries and prospects from your public site visitors.",
+      subAnalytics:
+        "Monitor visit volume, traffic sources, and most popular pages.",
+      subSettings:
+        "Manage profile, account security, user access, and system audit logs.",
       newWebsiteAi: "New AI Website",
       loadingConsole: "Loading Console...",
       preparingWorkspace: "Preparing your account & websites...",
-      signedOutLocally: "Signed out locally. The server session may still need review.",
+      signedOutLocally:
+        "Signed out locally. The server session may still need review.",
       refreshed: "Dashboard refreshed.",
       welcome: "Welcome{name}",
       welcomeDesc: "Manage your websites, domains, and leads in one place.",
       newWebsite: "+ New Website",
       usingFreePlan: "You are currently on the {plan} plan",
-      upgradeToProDesc: "Upgrade to Pro for custom domain, SEO optimization, more websites, and unlimited AI generates.",
+      upgradeToProDesc:
+        "Upgrade to Pro for custom domain, SEO optimization, more websites, and unlimited AI generates.",
       upgradeToPro: "Upgrade to Pro",
       planExpiringSoon: "Your {plan} plan expires in {days} days",
-      planExpiringSoonDesc: "Renew now to keep your websites and custom domains active. After the plan lapses, websites show a suspension page.",
-      planExpiredBanner: "Your subscription has expired. Your websites are temporarily showing a suspension page.",
-      planExpiredDesc: "Your websites are suspended. Your data, content, and domains are safe — renew and they go back online automatically.",
-      planInGrace: "Your plan is past due and in its grace period. Renew before {date} to avoid suspension.",
+      planExpiringSoonDesc:
+        "Renew now to keep your websites and custom domains active. After the plan lapses, websites show a suspension page.",
+      planExpiredBanner:
+        "Your subscription has expired. Your websites are temporarily showing a suspension page.",
+      planExpiredDesc:
+        "Your websites are suspended. Your data, content, and domains are safe — renew and they go back online automatically.",
+      planInGrace:
+        "Your plan is past due and in its grace period. Renew before {date} to avoid suspension.",
       renewPlan: "Renew Now",
       statWebsites: "Websites",
       statLeads: "Leads",
@@ -7630,10 +8405,11 @@ export const translations: Record<Locale, Translations> = {
       loadFailed: "Failed to load usage data.",
       recentActivity: "Recent Activity",
       leadNew: "New lead: {name}",
-      siteUpdated: "Website \"{name}\" updated",
+      siteUpdated: 'Website "{name}" updated',
       noActivity: "No activity yet.",
       aiInsights: "AI Insights",
-      insightTraffic: "📈 Traffic is being monitored entering this week with {count} visits.",
+      insightTraffic:
+        "📈 Traffic is being monitored entering this week with {count} visits.",
       insightNoTraffic: "📉 No significant traffic this week yet.",
       insightLeads: "🔥 You have {count} new prospects!",
       insightCreateSite: "✨ Create your first website with AI Builder!",
@@ -7654,7 +8430,8 @@ export const translations: Record<Locale, Translations> = {
       },
       admin: {
         platformOverview: "Platform Overview",
-        platformStats: "{tenants} tenants · {users} users · {sites} sites across the platform",
+        platformStats:
+          "{tenants} tenants · {users} users · {sites} sites across the platform",
         loadingMetrics: "Loading platform metrics...",
         allTenants: "All Tenants",
         plans: "Plans",
@@ -7727,9 +8504,12 @@ export const translations: Record<Locale, Translations> = {
         close: "Close",
         cancel: "Cancel",
         deleteTitle: "Delete Website?",
-        deleteBody: "You are about to permanently delete website \"{name}\". This action cannot be undone.",
-        deleteWarning: "All content, settings, and data of this website will be deleted and cannot be recovered.",
-        deleteFreeNotice: "You are on the Free plan — this 1 website quota will not be returned after deletion. You can only create 1 free website for life.",
+        deleteBody:
+          'You are about to permanently delete website "{name}". This action cannot be undone.',
+        deleteWarning:
+          "All content, settings, and data of this website will be deleted and cannot be recovered.",
+        deleteFreeNotice:
+          "You are on the Free plan — this 1 website quota will not be returned after deletion. You can only create 1 free website for life.",
         deleting: "Deleting...",
         deleteConfirm: "Yes, Delete",
         renameTitle: "Rename Website",
@@ -7737,15 +8517,19 @@ export const translations: Record<Locale, Translations> = {
         save: "Save",
         publishTitle: "Publish Website",
         publishOneStep: "One Step Left! 🚀",
-        publishReady: "Your website {name} is ready to be published to the world.",
+        publishReady:
+          "Your website {name} is ready to be published to the world.",
         subdomainLabel: "Subdomain Name",
         subdomainPlaceholder: "yourname",
         subdomainAvailable: "Available: {url}",
         subdomainInvalidHint: "Use lowercase letters, numbers, or hyphens (-)",
-        subdomainReservedHint: "This subdomain is reserved for the system and cannot be used",
-        subdomainHint: "Only lowercase letters, numbers, and hyphens. Subdomain cannot be changed after publishing.",
+        subdomainReservedHint:
+          "This subdomain is reserved for the system and cannot be used",
+        subdomainHint:
+          "Only lowercase letters, numbers, and hyphens. Subdomain cannot be changed after publishing.",
         connectCustomDomain: "Connect Custom Domain",
-        customDomainDescPre: "Want a more professional brand like domainanda.com? You can set it up in",
+        customDomainDescPre:
+          "Want a more professional brand like domainanda.com? You can set it up in",
         customDomainDescPost: "after your website is live.",
         customDomainLink: "Custom Domain",
         launching: "Launching...",
@@ -7754,7 +8538,8 @@ export const translations: Record<Locale, Translations> = {
         publishTermsLink: "Webjoz's Terms & Conditions",
         publishTermsRequired: "Please check this box to publish the website.",
         moderationTitle: "Website cannot be published",
-        moderationDesc: "Your website content appears to violate Webjoz's Terms & Conditions. Please fix the content or submit an appeal to our team.",
+        moderationDesc:
+          "Your website content appears to violate Webjoz's Terms & Conditions. Please fix the content or submit an appeal to our team.",
         moderationCatPinjol: "Online lending (pinjol) services",
         moderationCatJudi: "Gambling / slots",
         moderationCatAlkohol: "Selling alcoholic beverages",
@@ -7768,7 +8553,8 @@ export const translations: Record<Locale, Translations> = {
         moderationAppealSent: "Appeal submitted. Our team will review it.",
         moderationAppealFailed: "Failed to submit appeal. Please try again.",
         publishChecking: "Checking content...",
-        publishCheckingDesc: "We're checking your content to make sure it complies with our Terms & Conditions.",
+        publishCheckingDesc:
+          "We're checking your content to make sure it complies with our Terms & Conditions.",
         errorLoadSites: "Failed to load sites",
         connectingWorkspace: "Connecting to dashboard...",
         toastPublished: "Website published successfully! 🚀",
@@ -7783,7 +8569,8 @@ export const translations: Record<Locale, Translations> = {
         toastDuplicateFailed: "Failed to create website duplicate",
         toastDuplicated: "Website duplicated successfully!",
         toastDuplicateError: "Failed to duplicate website",
-        toastSiteLimitReached: "Website limit reached. Upgrade your plan to duplicate.",
+        toastSiteLimitReached:
+          "Website limit reached. Upgrade your plan to duplicate.",
         publishedPrefix: "Published",
         updatedPrefix: "Updated",
         justNow: "{prefix} just now",
@@ -7798,7 +8585,8 @@ export const translations: Record<Locale, Translations> = {
         filterPublished: "Published",
         loadingSites: "Loading your sites...",
         noSitesMatch: "No matching websites",
-        noSitesMatchDesc: "Try a different search keyword, another status filter, or create a new website.",
+        noSitesMatchDesc:
+          "Try a different search keyword, another status filter, or create a new website.",
         clearSearch: "Clear Search",
         statusLive: "Live",
         statusDraft: "Draft",
@@ -7825,15 +8613,18 @@ export const translations: Record<Locale, Translations> = {
         loadMore: "Load More",
         congratsTitle: "Your Website Is Live",
         congratsHeading: "Your Website Is Officially Live!",
-        congratsBody: "Congratulations! Your web page {name} is now active and accessible from anywhere in the world.",
+        congratsBody:
+          "Congratulations! Your web page {name} is now active and accessible from anywhere in the world.",
         congratsClose: "Close",
         openWebsite: "Open Website",
         copyLinkTitle: "Copy Link",
-        checkTip: "💡 Want to check? Click the link above to open your live website in a new tab.",
+        checkTip:
+          "💡 Want to check? Click the link above to open your live website in a new tab.",
         done: "Done",
         continueEditing: "Continue Editing",
         customDomainLinkLabel: "🔗 Connect Custom Domain",
-        customDomainLinkHint: "Want to use your own domain? Connect a custom domain to this website.",
+        customDomainLinkHint:
+          "Want to use your own domain? Connect a custom domain to this website.",
       },
       leads: {
         loadFailed: "Failed to load leads inbox",
@@ -7841,7 +8632,8 @@ export const translations: Record<Locale, Translations> = {
         filter: "Filter",
         allWebsites: "All Websites",
         emptyTitle: "Inbox is Empty",
-        emptyDesc: "Contact form inquiries and WhatsApp catalog orders from your public website visitors will appear here automatically.",
+        emptyDesc:
+          "Contact form inquiries and WhatsApp catalog orders from your public website visitors will appear here automatically.",
         sender: "Sender",
         date: "Received At",
         sourceSite: "Source Website",
@@ -7862,7 +8654,8 @@ export const translations: Record<Locale, Translations> = {
         totalRevenue: "Estimated Order Value",
         totalContacts: "Contact Messages",
         noFilterResults: "No Matching Leads Found",
-        noFilterResultsDesc: "No leads or orders match your current search query or filter selection.",
+        noFilterResultsDesc:
+          "No leads or orders match your current search query or filter selection.",
         clearFilter: "Reset Filter",
         chatWhatsapp: "Chat on WhatsApp",
         callPhone: "Call",
@@ -7896,11 +8689,13 @@ export const translations: Record<Locale, Translations> = {
         inviteTitle: "Invite New Member",
         emailPlaceholder: "email@example.com",
         sendInvite: "Send Invitation",
-        inviteHint: "Members with the editor role can edit site content. Viewers can only view.",
+        inviteHint:
+          "Members with the editor role can edit site content. Viewers can only view.",
         limitTitle: "Team Member Limit Reached",
         later: "Later",
         upgradeToPro: "Upgrade to Pro",
-        limitDesc: "Your current plan has a limit on the number of team members. Upgrade to add more collaborators.",
+        limitDesc:
+          "Your current plan has a limit on the number of team members. Upgrade to add more collaborators.",
         role: {
           owner: "Owner",
           editor: "Editor",
@@ -7939,16 +8734,19 @@ export const translations: Record<Locale, Translations> = {
         later: "Later",
         upgradeToPro: "Upgrade to Pro",
         free7Days: "Free Plan — Max 7 Days",
-        free7DaysDesc: "Free accounts can only view analytics up to 7 days back.",
+        free7DaysDesc:
+          "Free accounts can only view analytics up to 7 days back.",
         selectedRange: "You selected the range {from} to {to}.",
         proUpgrade: "Upgrade to Pro",
-        proUpgradeDesc: "With the Pro plan, you can access up to 90 days of analytics, plus exclusive features like custom domains and unlimited AI content writer.",
+        proUpgradeDesc:
+          "With the Pro plan, you can access up to 90 days of analytics, plus exclusive features like custom domains and unlimited AI content writer.",
         invalidDateRange: "Start date cannot be after end date.",
       },
       domains: {
         loadFailed: "Failed to load domain data",
         loading: "Loading domain data...",
-        added: "Custom domain connected! Set up the CNAME record at your DNS registrar.",
+        added:
+          "Custom domain connected! Set up the CNAME record at your DNS registrar.",
         addFailed: "Failed to add domain",
         invalidFormat: "Invalid domain format. Example: domainanda.com",
         verified: "Domain verified successfully!",
@@ -7961,7 +8759,8 @@ export const translations: Record<Locale, Translations> = {
         close: "Close",
         upgradePlan: "Upgrade Plan",
         connectedTitle: "Connected Custom Domains ({count})",
-        quotaTitle: "{plan} plan: max {max} domains per account, not per website",
+        quotaTitle:
+          "{plan} plan: max {max} domains per account, not per website",
         quota: "Quota: {used} / {max} custom domains",
         customDomainBadge: "Custom Domain",
         siteId: "Site #{id}",
@@ -7973,45 +8772,60 @@ export const translations: Record<Locale, Translations> = {
         connectTitle: "Connect Custom Domain",
         connectDesc: "Use your own domain to look more professional.",
         noPublished: "No published websites yet",
-        noPublishedDesc: "Custom domains can only be connected to live websites. Publish your website first via the",
+        noPublishedDesc:
+          "Custom domains can only be connected to live websites. Publish your website first via the",
         myWebsites: "My Websites",
         linkToSite: "Link to Website",
         domainAddress: "Custom Domain Address",
         domainPlaceholder: "e.g. tokokamu.com or toko.domainanda.com",
         validFormat: "✓ Valid domain format",
-        invalidFormatHint: "Invalid format — enter a domain without http:// or www.",
+        invalidFormatHint:
+          "Invalid format — enter a domain without http:// or www.",
         dnsInstructions: "DNS Configuration Guide at Your Domain Provider",
-        step1: "Log in to your Domain Registrar account where you bought the domain (such as Niagahoster, Rumahweb, Cloudflare, Namecheap, GoDaddy, etc.).",
-        step2: "Find the domain you want to manage and open the DNS Management, DNS Zone Editor, or Manage DNS page.",
-        step3: "Add a new DNS Record with type CNAME and fill in the columns according to the data below:",
-        step4: "Save your DNS changes. Propagation and domain verification usually take from 5 minutes up to 24 hours.",
+        step1:
+          "Log in to your Domain Registrar account where you bought the domain (such as Niagahoster, Rumahweb, Cloudflare, Namecheap, GoDaddy, etc.).",
+        step2:
+          "Find the domain you want to manage and open the DNS Management, DNS Zone Editor, or Manage DNS page.",
+        step3:
+          "Add a new DNS Record with type CNAME and fill in the columns according to the data below:",
+        step4:
+          "Save your DNS changes. Propagation and domain verification usually take from 5 minutes up to 24 hours.",
         dnsType: "Type",
         dnsHost: "Host / Name",
         dnsTarget: "Target / Value",
         note: "Note: If you want to use a custom subdomain like toko.domainanda.com, change the Host / Name column to toko.",
-        verifyHint: "After saving the DNS configuration above, return to the dashboard and click the \"Check DNS\" (Refresh icon) button on your domain list to verify.",
+        verifyHint:
+          'After saving the DNS configuration above, return to the dashboard and click the "Check DNS" (Refresh icon) button on your domain list to verify.',
         connectBtn: "Connect Custom Domain",
         upsellTitle: "✨ Boost Your Business Credibility",
-        upsellDesc: "Custom Domain is a Pro feature that makes your brand look more professional, trustworthy to customers, and easier to find on Google (SEO).",
+        upsellDesc:
+          "Custom Domain is a Pro feature that makes your brand look more professional, trustworthy to customers, and easier to find on Google (SEO).",
         upsellBranding: "Professional Branding",
-        upsellBrandingDesc: "Use your own domain (e.g. tokomu.com) without the .webjoz.com suffix.",
+        upsellBrandingDesc:
+          "Use your own domain (e.g. tokomu.com) without the .webjoz.com suffix.",
         upsellSeo: "Better SEO",
-        upsellSeoDesc: "Google prioritizes primary domains to rank at the top of search results.",
+        upsellSeoDesc:
+          "Google prioritizes primary domains to rank at the top of search results.",
         upsellSsl: "Automatic SSL/HTTPS",
-        upsellSslDesc: "Data security is guaranteed with free SSL encryption installed directly on your domain.",
+        upsellSslDesc:
+          "Data security is guaranteed with free SSL encryption installed directly on your domain.",
         limitTitle: "Custom Domain Limit Reached",
-        limitDesc: "Your {plan} plan only includes {max} custom domains (applies to the whole account, not per website).",
-        limitDesc2: "To add more custom domains, please upgrade to a higher plan.",
+        limitDesc:
+          "Your {plan} plan only includes {max} custom domains (applies to the whole account, not per website).",
+        limitDesc2:
+          "To add more custom domains, please upgrade to a higher plan.",
         buyTab: "Buy New Domain",
         ownTab: "I Already Own a Domain",
         buyTitle: "Buy a New Domain",
-        buyDesc: "Register a domain for your website right from Webjoz. After purchase, DNS is automatically pointed to your website.",
+        buyDesc:
+          "Register a domain for your website right from Webjoz. After purchase, DNS is automatically pointed to your website.",
         searchLabel: "Domain Name",
         searchPlaceholder: "e.g. kopirempah",
         searchBtn: "Check Availability",
         searching: "Checking availability...",
         chooseTlds: "Choose Extensions (TLDs)",
-        noResults: "Enter a domain name and select at least one extension to check availability.",
+        noResults:
+          "Enter a domain name and select at least one extension to check availability.",
         available: "Available",
         unavailable: "Already registered / not available",
         perYear: "/year",
@@ -8020,7 +8834,8 @@ export const translations: Record<Locale, Translations> = {
         buySuccess: "Domain purchased! DNS is being pointed to your website.",
         buyFailed: "Failed to buy domain",
         purchaserTitle: "Domain Registration Data",
-        purchaserDesc: "Complete your details for domain registration. This data will be used as the domain WHOIS information.",
+        purchaserDesc:
+          "Complete your details for domain registration. This data will be used as the domain WHOIS information.",
         purchaserName: "Full Name",
         purchaserCompany: "Company",
         purchaserEmail: "Email",
@@ -8030,15 +8845,19 @@ export const translations: Record<Locale, Translations> = {
         purchaserState: "State/Province",
         purchaserZip: "Postal Code",
         purchaserIdDoc: "Identity Document Number",
-        purchaserIdSub: ".id, .co.id, .web.id and similar domains require your NIK KTP (individual) or NPWP/NIB (business), following Indonesian registrar rules.",
+        purchaserIdSub:
+          ".id, .co.id, .web.id and similar domains require your NIK KTP (individual) or NPWP/NIB (business), following Indonesian registrar rules.",
         purchaserIdPlaceholder: "NIK (16 digits) / NPWP (15 digits) / NIB",
-        verificationNotice: ".id, .co.id, .web.id and .or.id domains require identity verification by the registrar (1-3 working days). The domain becomes active only after verification.",
+        verificationNotice:
+          ".id, .co.id, .web.id and .or.id domains require identity verification by the registrar (1-3 working days). The domain becomes active only after verification.",
         verificationPending: "Awaiting identity verification",
         purchasedTitle: "My Domains",
         expiresAt: "Valid until",
-        purchaseInactive: "Domain purchase is currently inactive. Contact an administrator.",
+        purchaseInactive:
+          "Domain purchase is currently inactive. Contact an administrator.",
         paymentSuccess: "Payment successful! Your domain is being registered.",
-        paymentPending: "Waiting for payment... Please complete it on the Midtrans page.",
+        paymentPending:
+          "Waiting for payment... Please complete it on the Midtrans page.",
         paymentFailed: "Payment failed, please try again.",
         paymentCancelled: "Payment cancelled.",
       },
@@ -8053,7 +8872,8 @@ export const translations: Record<Locale, Translations> = {
         tabNotifications: "Notifications",
         notifTitle: "Notification Preferences",
         notifEyebrow: "Notifications",
-        notifDesc: "Choose which types of notifications you want to receive. Disabled types will not be sent to your bell.",
+        notifDesc:
+          "Choose which types of notifications you want to receive. Disabled types will not be sent to your bell.",
         notifOn: "On",
         notifOff: "Off",
         notifSaved: "Notification preferences saved",
@@ -8098,7 +8918,8 @@ export const translations: Record<Locale, Translations> = {
         metricTrustedDevices: "Trusted devices",
         metricThisSession: "This session",
         noSessionsTitle: "No sessions yet",
-        noSessionsText: "No active sessions or trusted devices associated with this account.",
+        noSessionsText:
+          "No active sessions or trusted devices associated with this account.",
         statusCurrent: "currently signed in",
         statusTrusted: "trusted device",
         statusUnknown: "unknown device",
@@ -8172,18 +8993,21 @@ export const translations: Record<Locale, Translations> = {
         investOutputTitle: "AI Investigation Output",
         aiProcessing: "AI Processing",
         riskLevel: "Risk Level",
-        riskWeightNote: "Weighted by signals, urgency, log volume, and incident status",
+        riskWeightNote:
+          "Weighted by signals, urgency, log volume, and incident status",
         score: "Score {score}",
         timeline: "Timeline",
         suspiciousSignals: "Suspicious Signals",
         recommendations: "Recommendations",
         noItems: "No items returned.",
         readyTitle: "Ready for analysis",
-        readyDesc: "Run an investigation to generate a summary, timeline, suspicious signals, and recommendations.",
+        readyDesc:
+          "Run an investigation to generate a summary, timeline, suspicious signals, and recommendations.",
         savedCount: "{count} saved",
         savedTitle: "Saved Investigations",
         noSavedTitle: "No saved investigations",
-        noSavedDesc: "Completed investigations will appear here for quick review.",
+        noSavedDesc:
+          "Completed investigations will appear here for quick review.",
         investigationId: "Investigation #{id}",
         previous: "Previous",
         pageOf: "Page {page} of {total}",
@@ -8191,8 +9015,10 @@ export const translations: Record<Locale, Translations> = {
         investigationDetails: "Investigation Details",
         closeDetails: "Close investigation details",
         status: "Status",
-        riskNoteHigh: "Escalate quickly. Multiple strong signals point to elevated risk.",
-        riskNoteMedium: "Needs review. Suspicious patterns warrant operator follow-up.",
+        riskNoteHigh:
+          "Escalate quickly. Multiple strong signals point to elevated risk.",
+        riskNoteMedium:
+          "Needs review. Suspicious patterns warrant operator follow-up.",
         riskNoteLow: "Monitor only. Lower-confidence incident.",
         noResultYet: "No investigation result loaded yet.",
       },
@@ -8202,7 +9028,8 @@ export const translations: Record<Locale, Translations> = {
         pleaseLogin: "Please log in first",
         freeActive: "Free plan is already active",
         tokenFailed: "Failed to get payment token",
-        waitingPayment: "Waiting for payment... Please complete it on the Midtrans page.",
+        waitingPayment:
+          "Waiting for payment... Please complete it on the Midtrans page.",
         paymentFailed: "Payment failed, please try again",
         paymentCancelled: "Payment cancelled",
         redirecting: "Redirecting to payment page...",
@@ -8212,7 +9039,8 @@ export const translations: Record<Locale, Translations> = {
         title: "Upgrade Plan",
         subtitle: "Choose a subscription plan that fits your business scale.",
         paymentSuccess: "Payment Successful!",
-        upgradingDesc: "Your plan is being upgraded. Redirecting to dashboard...",
+        upgradingDesc:
+          "Your plan is being upgraded. Redirecting to dashboard...",
         freePrice: "Free",
         currentPlan: "Current Plan",
         unavailable: "Not Available",
@@ -8326,7 +9154,8 @@ export const translations: Record<Locale, Translations> = {
       adminAiStatus: {
         noAccess: "You do not have access to this page.",
         title: "AI Module Status",
-        subtitle: "Check the validity of your AI configuration: providers, API keys, models, and per-tier connectivity.",
+        subtitle:
+          "Check the validity of your AI configuration: providers, API keys, models, and per-tier connectivity.",
         refresh: "Re-check",
         loadFailed: "Failed to load AI status",
         loadFailedTitle: "Failed to load data",
@@ -8355,7 +9184,8 @@ export const translations: Record<Locale, Translations> = {
         allProvidersOk: "All providers valid",
         someIssues: "Some providers have issues",
         usageTodayTitle: "Today's Quota per Model",
-        usageTodaySubtitle: "Total AI tokens & requests recorded since local midnight, per configured model.",
+        usageTodaySubtitle:
+          "Total AI tokens & requests recorded since local midnight, per configured model.",
         usageProviderLabel: "Today's usage",
         freeTierLabel: "Free Tier",
         rateLimitLabel: "Limit",
@@ -8385,7 +9215,8 @@ export const translations: Record<Locale, Translations> = {
         addOverride: "Add Override",
         editOverride: "Edit Override",
         pola1NoticeTitle: "Pattern 1 — DB Override",
-        pola1NoticeDesc: "Values below override .env configurations at runtime. Tiers without DB records fall back to .env values. API keys are encrypted at rest (AES-256-GCM) and only shown as masked hints.",
+        pola1NoticeDesc:
+          "Values below override .env configurations at runtime. Tiers without DB records fall back to .env values. API keys are encrypted at rest (AES-256-GCM) and only shown as masked hints.",
         tableTier: "Tier",
         tableProvider: "Provider",
         tableModel: "Model",
@@ -8403,19 +9234,22 @@ export const translations: Record<Locale, Translations> = {
         disabled: "Disabled",
         defaultFallback: ".env",
         noConfigsTitle: "No Runtime Overrides Yet",
-        noConfigsDesc: "All AI tiers currently use default settings from the .env file. Click 'Add Override' to customize models or limits from the dashboard.",
+        noConfigsDesc:
+          "All AI tiers currently use default settings from the .env file. Click 'Add Override' to customize models or limits from the dashboard.",
         formTier: "AI Tier",
         formTierPlaceholder: "e.g. primary, fast, smart, fallback",
         formTierSelect: "— select tier —",
         formTierCustom: "Type manually…",
         formTierHasOverride: "override exists",
-        formTierHint: "Pick the slot to override (e.g. router-high.1). DB wins over .env; takes effect after the API restarts.",
+        formTierHint:
+          "Pick the slot to override (e.g. router-high.1). DB wins over .env; takes effect after the API restarts.",
         formTierRequired: "Tier is required.",
         formProvider: "Provider",
         formModel: "Model Name",
         formBaseUrl: "Base URL (Optional)",
         formApiKey: "API Key",
-        formApiKeyPlaceholder: "Enter new API key (leave empty to keep existing)",
+        formApiKeyPlaceholder:
+          "Enter new API key (leave empty to keep existing)",
         formDailyLimit: "Daily Request Limit",
         formDailyLimitHint: "0 = no custom limit",
         formAccountEmail: "Account Email",
@@ -8426,7 +9260,8 @@ export const translations: Record<Locale, Translations> = {
         saveConfig: "Save Configuration",
         cancel: "Cancel",
         saving: "Saving...",
-        deleteConfirm: "Delete override for this tier and revert to .env fallback?",
+        deleteConfirm:
+          "Delete override for this tier and revert to .env fallback?",
         edit: "Edit",
         delete: "Delete",
         pageTitle: "AI Settings",
@@ -8441,12 +9276,14 @@ export const translations: Record<Locale, Translations> = {
         apiKeyUnchanged: "••••••• (unchanged)",
         showApiKey: "Show API key",
         hideApiKey: "Hide API key",
-        pageSubtitle: "Monitor provider status and configure runtime AI parameters",
+        pageSubtitle:
+          "Monitor provider status and configure runtime AI parameters",
       },
       adminMetrics: {
         noAccess: "You do not have access to this page.",
         title: "AI Generation Metrics",
-        subtitle: "Latency, concurrency, and quality metrics for AI content generation.",
+        subtitle:
+          "Latency, concurrency, and quality metrics for AI content generation.",
         refresh: "Refresh",
         loadFailed: "Failed to load metrics",
         loadFailedTitle: "Failed to load data",
@@ -8474,32 +9311,40 @@ export const translations: Record<Locale, Translations> = {
       },
       adminTemplates: {
         seedLoadFailed: "Failed to fetch design token seeds",
-        backfillConfirm: "Backfill scores for all template_library rows with score=0?",
+        backfillConfirm:
+          "Backfill scores for all template_library rows with score=0?",
         backfillDone: "Backfill complete — scores updated",
         backfillFailed: "Backfill failed",
-        seedDeleteConfirm: "Are you sure you want to permanently delete this design token seed?",
+        seedDeleteConfirm:
+          "Are you sure you want to permanently delete this design token seed?",
         seedDeleted: "Design token seed deleted",
         seedDeleteFailed: "Failed to delete seed",
         accessDenied: "Access Denied",
         superadminOnly: "This page can only be accessed by accounts with the",
         superadmin: "Superadmin",
         title: "Template Gallery",
-        subtitle: "Review system built-in templates and design token seeds from AI generator incubation.",
+        subtitle:
+          "Review system built-in templates and design token seeds from AI generator incubation.",
         backfillScores: "Recalculate Scores",
-        backfillScoresTooltip: "Recalculate rule-based quality scores for all seeds in the database",
+        backfillScoresTooltip:
+          "Recalculate rule-based quality scores for all seeds in the database",
         refreshSeeds: "Refresh",
         bulkAesthetic: "Run AI Critique",
-        bulkAestheticConfirm: "Run bulk aesthetic critique on unscored seeds (50 per run, stops on rate limit)?",
-        bulkAestheticTooltip: "Evaluate template aesthetics using AI Vision (screenshot + LLM)",
+        bulkAestheticConfirm:
+          "Run bulk aesthetic critique on unscored seeds (50 per run, stops on rate limit)?",
+        bulkAestheticTooltip:
+          "Evaluate template aesthetics using AI Vision (screenshot + LLM)",
         bulkAestheticRunning: "Running...",
         bulkAestheticStart: "Start Aesthetic Evaluation",
         pendingAestheticLabel: "templates have not been evaluated by AI yet",
-        bulkAestheticDone: "Bulk critique done — {processed} processed, {critiqued} scored, {failed} failed, {pending} remaining",
+        bulkAestheticDone:
+          "Bulk critique done — {processed} processed, {critiqued} scored, {failed} failed, {pending} remaining",
         bulkAestheticFailed: "Bulk aesthetic critique failed",
         bulkAestheticRateLimit: "stopped on rate limit, retry in {sec}s",
         tabComponents: "Template Components",
         tabSeeds: "Design Token Seeds",
-        searchComponentsPlaceholder: "Search template name, ID, or description...",
+        searchComponentsPlaceholder:
+          "Search template name, ID, or description...",
         searchSeedsPlaceholder: "Search business type, mood, or seed ID...",
         allCategories: "All Categories",
         allBusinessTypes: "All Business Types",
@@ -8514,11 +9359,13 @@ export const translations: Record<Locale, Translations> = {
         body: "Body",
         designQuality: "Design Quality",
         previewFullscreen: "Fullscreen Preview",
-        loginRequired: "A login session is required to view design token seeds.",
+        loginRequired:
+          "A login session is required to view design token seeds.",
         loginSession: "Login Session",
         loadingSeeds: "Loading design token seeds from API...",
         superadminOnlyManage: "Only Superadmins Can Manage Design Token Seeds.",
-        insufficientAccess: "Your current account role does not have sufficient administrative access.",
+        insufficientAccess:
+          "Your current account role does not have sufficient administrative access.",
         noSeedsInDb: "No design token seeds in the database.",
         noSeedsMatch: "No seeds matched the search keywords.",
         resetSearch: "Reset Search",
@@ -8551,9 +9398,11 @@ export const translations: Record<Locale, Translations> = {
         clearSelection: "Clear Selection",
         selectedCount: "{count} selected",
         deleteSelected: "Delete Selected",
-        bulkDeleteConfirm: "Permanently delete {count} selected design token seeds?",
+        bulkDeleteConfirm:
+          "Permanently delete {count} selected design token seeds?",
         bulkDeleted: "{count} seeds deleted",
-        bulkDeletePartialFail: "{ok} deleted, {fail} failed — try again for the rest",
+        bulkDeletePartialFail:
+          "{ok} deleted, {fail} failed — try again for the rest",
         critique: "AI Critique",
         critiqueRunning: "Analyzing...",
         critiqueDone: "AI critique completed — aesthetic score updated",
@@ -8611,9 +9460,11 @@ export const translations: Record<Locale, Translations> = {
         ruleUpdateFailed: "Failed to update bonus rule",
         loading: "Loading admin commission data...",
         accessRestricted: "Access Restricted",
-        accessRestrictedDesc: "This page is for Admins with the `commission:read_all` permission.",
+        accessRestrictedDesc:
+          "This page is for Admins with the `commission:read_all` permission.",
         title: "Sales Commission & Bonus Management (Admin)",
-        subtitle: "Commission percentages, onboarding & milestone bonus schemes, and all sales partner transactions.",
+        subtitle:
+          "Commission percentages, onboarding & milestone bonus schemes, and all sales partner transactions.",
         rateSettings: "Sales Commission Rate Settings",
         activeScheme: "Active Scheme",
         tieredScheme: "Tiered Commission Scheme",
@@ -8627,7 +9478,8 @@ export const translations: Record<Locale, Translations> = {
         bonusRulesSettings: "Bonus Rules Settings (Onboarding & Milestone)",
         tier: "Tier",
         onboardingDesc: "Flat bonus per new tenant on their first payment.",
-        milestoneDesc: "Reach {threshold} newly activated tenants within 1 month.",
+        milestoneDesc:
+          "Reach {threshold} newly activated tenants within 1 month.",
         bonusAmount: "Bonus Amount (Rp)",
         recurringCommissions: "Recurring Commissions ({count})",
         allBonuses: "All Sales Bonuses ({count})",
@@ -8664,15 +9516,18 @@ export const translations: Record<Locale, Translations> = {
       },
       adminDesignAssets: {
         accessDenied: "Access Denied",
-        accessDeniedDesc: "This page can only be accessed by accounts with the {superadmin} role.",
+        accessDeniedDesc:
+          "This page can only be accessed by accounts with the {superadmin} role.",
         superadmin: "Superadmin",
         loading: "Loading design assets configuration...",
         title: "Design Assets",
-        subtitle: "Manage the sections, typography, color palettes, and visual presets available in the website editor.",
+        subtitle:
+          "Manage the sections, typography, color palettes, and visual presets available in the website editor.",
         saving: "Saving...",
         resetAll: "Reset All",
         resetAllConfirm: "Reset all Design Assets settings to defaults?",
-        resetAllSuccess: "All Design Assets settings have been reset to defaults.",
+        resetAllSuccess:
+          "All Design Assets settings have been reset to defaults.",
         resetAllFailed: "Failed to reset on the server.",
         saveLocalOnly: "Failed to save to the server. Changes saved locally.",
         tabSections: "Sections",
@@ -8689,14 +9544,17 @@ export const translations: Record<Locale, Translations> = {
         unrequire: "Make Optional",
         custom: "Custom",
         sectionsVisibilityTitle: "Section Visibility",
-        sectionsVisibilityDesc: "Hidden sections won't appear in the editor sidebar.",
+        sectionsVisibilityDesc:
+          "Hidden sections won't appear in the editor sidebar.",
         resetDefault: "Reset Default",
         variantsActive: "{active}/{total} active variants",
         variantsTitle: "Layout Variants",
-        variantsDesc: "Manage layout variants per section. Hidden variants won't appear in the editor dropdown.",
+        variantsDesc:
+          "Manage layout variants per section. Hidden variants won't appear in the editor dropdown.",
         variantsCount: "{active}/{total} active",
         mapTilesTitle: "Map Styles",
-        mapTilesDesc: "Manage the map style options that appear in the Contact section editor.",
+        mapTilesDesc:
+          "Manage the map style options that appear in the Contact section editor.",
         tileLabelLight: "Light",
         tileLabelDark: "Dark",
         tileLabelSatellite: "Satellite",
@@ -8731,7 +9589,8 @@ export const translations: Record<Locale, Translations> = {
         noPatternsMatch: "No matching palettes.",
         noPresetsMatch: "No matching presets.",
         score: "Score: {score}",
-        sectionRequiredError: 'Section "{key}" is required and cannot be hidden.',
+        sectionRequiredError:
+          'Section "{key}" is required and cannot be hidden.',
         sectionHidden: 'Section "{key}" hidden.',
         sectionShown: 'Section "{key}" shown.',
         sectionRequired: 'Section "{key}" marked as required.',
@@ -8770,7 +9629,8 @@ export const translations: Record<Locale, Translations> = {
         unreadCount: "{count} unread notifications",
         noNew: "No new notifications",
         emptyTitle: "No Notifications",
-        emptyDesc: "No notifications yet. You'll be notified when there's a new announcement or when a lead comes into your website.",
+        emptyDesc:
+          "No notifications yet. You'll be notified when there's a new announcement or when a lead comes into your website.",
         justNow: "Just now",
         minutesAgo: "{n}m ago",
         hoursAgo: "{n}h ago",
@@ -8796,9 +9656,12 @@ export const translations: Record<Locale, Translations> = {
         runFailed: "Failed to investigate logs",
         loadDetailFailed: "Failed to load investigation detail",
         noResultNote: "No investigation result loaded yet.",
-        noteHigh: "Escalate quickly. Multiple strong signals point to elevated account or access risk.",
-        noteMedium: "Needs review. There are enough suspicious patterns to warrant operator follow-up.",
-        noteLow: "Monitor only. The current evidence suggests a lower-confidence incident.",
+        noteHigh:
+          "Escalate quickly. Multiple strong signals point to elevated account or access risk.",
+        noteMedium:
+          "Needs review. There are enough suspicious patterns to warrant operator follow-up.",
+        noteLow:
+          "Monitor only. The current evidence suggests a lower-confidence incident.",
         eyebrowAi: "AI Powered",
         title: "Investigate with AI",
         analyzing: "Analyzing...",
@@ -8814,18 +9677,21 @@ export const translations: Record<Locale, Translations> = {
         outputTitle: "AI Investigation Output",
         aiProcessing: "AI Processing",
         riskLevel: "Risk Level",
-        riskWeightedDesc: "Weighted by signals, urgency, log volume, and incident status",
+        riskWeightedDesc:
+          "Weighted by signals, urgency, log volume, and incident status",
         score: "Score {score}",
         listTimeline: "Timeline",
         listSignals: "Suspicious Signals",
         listRecommendations: "Recommendations",
         emptyTitle: "Ready for analysis",
-        emptyDesc: "Run an investigation to generate a summary, timeline, suspicious signals, and recommendations.",
+        emptyDesc:
+          "Run an investigation to generate a summary, timeline, suspicious signals, and recommendations.",
         savedCount: "{count} saved",
         savedTitle: "Saved Investigations",
         refresh: "Refresh",
         noSavedTitle: "No saved investigations",
-        noSavedDesc: "Completed investigations will appear here for quick review.",
+        noSavedDesc:
+          "Completed investigations will appear here for quick review.",
         investigationChip: "Investigation #{id}",
         previous: "Previous",
         pageOf: "Page {page} of {total}",
@@ -8837,7 +9703,8 @@ export const translations: Record<Locale, Translations> = {
         errorEyebrow: "System Error",
         errorTitle: "Failed to Load Dashboard",
         errorHeading: "Something went wrong!",
-        errorDesc: "We encountered an unexpected error while trying to load the investigation module. This could be a network issue or a temporary backend failure.",
+        errorDesc:
+          "We encountered an unexpected error while trying to load the investigation module. This could be a network issue or a temporary backend failure.",
         tryAgain: "Try Again",
       },
       sales: {
@@ -8848,9 +9715,11 @@ export const translations: Record<Locale, Translations> = {
         regenerateFailed: "Failed to regenerate referral code",
         loading: "Loading referral data...",
         accessDeniedTitle: "Access Restricted",
-        accessDeniedDesc: "This page is for Webjoz Sales Partners & Admins only. Please contact an admin if you are part of the sales team.",
+        accessDeniedDesc:
+          "This page is for Webjoz Sales Partners & Admins only. Please contact an admin if you are part of the sales team.",
         pageTitle: "Partner Referral Code",
-        pageDesc: "Share your referral code or link with clients to earn commission on every paid transaction.",
+        pageDesc:
+          "Share your referral code or link with clients to earn commission on every paid transaction.",
         viewCommissions: "View My Commissions",
         codeCardTitle: "Your Referral Code",
         codeCardDesc: "Use this code when a new website/tenant signs up.",
@@ -8859,7 +9728,8 @@ export const translations: Record<Locale, Translations> = {
         updatePrompt: "Want to update your code?",
         regenerateCode: "Regenerate Code",
         linkCardTitle: "Signup Referral Link",
-        linkCardDesc: "Clients who sign up through this link are automatically connected to your account.",
+        linkCardDesc:
+          "Clients who sign up through this link are automatically connected to your account.",
         copyLink: "Copy Link",
         shareWhatsApp: "Share via WhatsApp",
         shareEmail: "Share via Email",
@@ -8872,16 +9742,21 @@ export const translations: Record<Locale, Translations> = {
         copyInviteText: "Copy Invitation Text",
         inviteTextCopied: "Invitation message copied to clipboard",
         tipsLabel: "Tip:",
-        tipsText: "Include this link in your proposal, WhatsApp message, or social media bio.",
+        tipsText:
+          "Include this link in your proposal, WhatsApp message, or social media bio.",
         programTitle: "Sales Partner Commission Terms",
         commRatePrefix: "Commission of",
-        commRateSuffix: "from every paid transaction completed by users you referred.",
+        commRateSuffix:
+          "from every paid transaction completed by users you referred.",
         commRecurringPrefix: "Commission is",
-        commRecurringSuffix: "for every monthly or yearly subscription renewal.",
-        commEditorPrefix: "Every website that registers with your code automatically connects you as a",
+        commRecurringSuffix:
+          "for every monthly or yearly subscription renewal.",
+        commEditorPrefix:
+          "Every website that registers with your code automatically connects you as a",
         commEditorSuffix: "collaborating partner for that website.",
         dialogTitle: "Regenerate Referral Code",
-        confirmPrefix: "Are you sure you want to create a new referral code? Your old code",
+        confirmPrefix:
+          "Are you sure you want to create a new referral code? Your old code",
         confirmSuffix: "will no longer work for new signups.",
         cancel: "Cancel",
         processing: "Processing...",
@@ -8891,9 +9766,11 @@ export const translations: Record<Locale, Translations> = {
         loadFailed: "Failed to load sales data",
         loading: "Loading summary...",
         accessDeniedTitle: "Access Restricted",
-        accessDeniedDesc: "This page is for Sales Partners & Admins only. Contact an admin to enable access.",
+        accessDeniedDesc:
+          "This page is for Sales Partners & Admins only. Contact an admin to enable access.",
         pageTitle: "Sales Overview",
-        pageDesc: "Your earnings summary — Tier 1 {t1}% (first {months} months) → Tier 2 {t2}%, plus onboarding & milestone bonuses.",
+        pageDesc:
+          "Your earnings summary — Tier 1 {t1}% (first {months} months) → Tier 2 {t2}%, plus onboarding & milestone bonuses.",
         cardTotal: "Total Earnings",
         cardTotalDesc: "Accumulated Commission + Bonuses",
         cardCommission: "Recurring Commission",
@@ -8916,7 +9793,8 @@ export const translations: Record<Locale, Translations> = {
         bonusMilestone: "Monthly milestone bonus",
         quickLinksTitle: "Quick Access",
         linkCommissionsTitle: "Commission & Bonus History",
-        linkCommissionsDesc: "View all recorded commission and bonus transactions with their status.",
+        linkCommissionsDesc:
+          "View all recorded commission and bonus transactions with their status.",
         linkReferralTitle: "Manage Referral Code",
         linkReferralDesc: "Copy, share, or regenerate your referral code.",
         codeCopied: "Code copied!",
@@ -8927,14 +9805,18 @@ export const translations: Record<Locale, Translations> = {
         loadFailed: "Failed to load commission data",
         loading: "Loading earnings data...",
         accessDeniedTitle: "Access Restricted",
-        accessDeniedDesc: "You don't have access to the commissions & bonuses page yet. Contact an admin to enable sales access.",
+        accessDeniedDesc:
+          "You don't have access to the commissions & bonuses page yet. Contact an admin to enable sales access.",
         pageTitle: "My Earnings",
-        pageDesc: "Tiered commission Tier 1 {t1}% (first {months} months) → Tier 2 {t2}%, plus onboarding & milestone bonuses.",
-        pageDescShort: "Tiered commissions plus onboarding & milestone bonuses.",
+        pageDesc:
+          "Tiered commission Tier 1 {t1}% (first {months} months) → Tier 2 {t2}%, plus onboarding & milestone bonuses.",
+        pageDescShort:
+          "Tiered commissions plus onboarding & milestone bonuses.",
         cardTotal: "Total Earnings",
         cardTotalDesc: "Accumulated Commission + Bonuses",
         cardCommission: "Recurring Commission",
-        cardCommissionDesc: "Commission per payment: {t1}% (Tier 1) / {t2}% (Tier 2)",
+        cardCommissionDesc:
+          "Commission per payment: {t1}% (Tier 1) / {t2}% (Tier 2)",
         cardBonus: "Total Bonuses",
         cardBonusDesc: "{onboarding} Onboarding, {milestone} Milestone",
         cardPending: "Pending Payout",
@@ -8942,7 +9824,8 @@ export const translations: Record<Locale, Translations> = {
         tabCommissions: "Recurring Commission ({count})",
         tabBonuses: "Onboarding & Milestone Bonuses ({count})",
         noCommissionsTitle: "No commissions recorded yet.",
-        noCommissionsDesc: "Share your referral code to start earning commissions.",
+        noCommissionsDesc:
+          "Share your referral code to start earning commissions.",
         thDate: "Date",
         thOrderId: "Order ID",
         thTenantId: "User ID",
@@ -8955,7 +9838,8 @@ export const translations: Record<Locale, Translations> = {
         previous: "Previous",
         next: "Next",
         noBonusesTitle: "No bonuses recorded yet.",
-        noBonusesDesc: "Onboarding bonus (Rp 50.000) and monthly milestone bonuses are recorded automatically once the user is active.",
+        noBonusesDesc:
+          "Onboarding bonus (Rp 50.000) and monthly milestone bonuses are recorded automatically once the user is active.",
         thBonusType: "Bonus Type",
         thDetail: "Detail / Period",
         thAmount: "Bonus Amount",
@@ -8993,7 +9877,8 @@ export const translations: Record<Locale, Translations> = {
         lock: "Lock",
         unlock: "Unlock",
         lockTitle: "Lock Site",
-        lockDesc: "You are about to lock site \"{name}\". It will be inaccessible to the public until unlocked.",
+        lockDesc:
+          'You are about to lock site "{name}". It will be inaccessible to the public until unlocked.',
         reasonLabel: "Violation reason",
         reasonPlaceholder: "E.g. Online gambling content",
         reasonRequired: "Reason is required (min. 3 characters)",
@@ -9001,7 +9886,8 @@ export const translations: Record<Locale, Translations> = {
         cancel: "Cancel",
         lockSuccess: "Site locked successfully",
         unlockTitle: "Unlock Site",
-        unlockDesc: "Site \"{name}\" will be reactivated and accessible to the public.",
+        unlockDesc:
+          'Site "{name}" will be reactivated and accessible to the public.',
         confirmUnlock: "Yes, Unlock",
         unlockSuccess: "Site unlocked successfully",
       },
@@ -9091,7 +9977,8 @@ export const translations: Record<Locale, Translations> = {
         metricTrusted: "Trusted devices",
         metricCurrent: "This session",
         emptyTitle: "No sessions yet",
-        emptyDesc: "No active sessions or trusted devices are currently associated with this account.",
+        emptyDesc:
+          "No active sessions or trusted devices are currently associated with this account.",
         statusCurrent: "currently signed in",
         statusTrusted: "trusted device",
         statusUnknown: "unknown device",
@@ -9126,11 +10013,14 @@ export const translations: Record<Locale, Translations> = {
         confirmTimeout: "Confirming your payment...",
         backToDashboard: "Back to Dashboard",
         pendingTitle: "Payment Processing",
-        pendingDesc: "We're verifying your payment. This page will refresh automatically once payment is confirmed.",
+        pendingDesc:
+          "We're verifying your payment. This page will refresh automatically once payment is confirmed.",
         successTitle: "Plan Upgraded Successfully!",
-        successDesc: "Congrats! Your account is now on the Pro plan. Enjoy unlimited AI generates, custom domains, and automatic SEO.",
+        successDesc:
+          "Congrats! Your account is now on the Pro plan. Enjoy unlimited AI generates, custom domains, and automatic SEO.",
         errorTitle: "Payment Failed",
-        errorDesc: "Your payment could not be processed. Please try again or check your payment method.",
+        errorDesc:
+          "Your payment could not be processed. Please try again or check your payment method.",
         txDetails: "Transaction Details",
         orderIdLabel: "Order ID",
         totalLabel: "Total",
@@ -9142,7 +10032,8 @@ export const translations: Record<Locale, Translations> = {
       sitesNew: {
         connecting: "Connecting...",
         noWorkspaceTitle: "No Active Workspace",
-        noWorkspaceDesc: "You need to join a workspace first to create a new website.",
+        noWorkspaceDesc:
+          "You need to join a workspace first to create a new website.",
         backToDashboard: "Back to Dashboard",
       },
       sitesSeo: {
@@ -9156,7 +10047,8 @@ export const translations: Record<Locale, Translations> = {
         gscSaved: "Saved to Google Search Console",
         aiFailed: "AI failed to optimize SEO",
         upgradeTitle: "AI SEO — Pro Plan",
-        upgradeDesc: "AI SEO optimization is available without limits on the Pro plan.",
+        upgradeDesc:
+          "AI SEO optimization is available without limits on the Pro plan.",
         upgradeNow: "Upgrade Now",
         later: "Later",
       },
@@ -9168,8 +10060,10 @@ export const translations: Record<Locale, Translations> = {
         saveFailed: "Failed to save integrations",
         save: "Save",
         saving: "Saving...",
-        ga4Desc: "Connect Google Analytics 4 to track visitors, behavior, and conversions on your site.",
-        metaPixelDesc: "Add the Meta Pixel to track ad conversions and build retargeting audiences on Instagram & Facebook.",
+        ga4Desc:
+          "Connect Google Analytics 4 to track visitors, behavior, and conversions on your site.",
+        metaPixelDesc:
+          "Add the Meta Pixel to track ad conversions and build retargeting audiences on Instagram & Facebook.",
       },
       sitesTestimonials: {
         loadFailed: "Failed to load testimonials",
@@ -9178,7 +10072,8 @@ export const translations: Record<Locale, Translations> = {
         linkCopied: "Testimonial link copied.",
         pendingTitle: "{count} Testimonials Pending Approval",
         approved: "Approved",
-        approvedDesc: "This testimonial has been approved and is now live on your site.",
+        approvedDesc:
+          "This testimonial has been approved and is now live on your site.",
         approve: "Approve",
         approveFailed: "Failed to approve testimonial",
         rejected: "Rejected",
@@ -9221,18 +10116,21 @@ export const translations: Record<Locale, Translations> = {
         itemLabelCatalog: "product",
         itemCountLabel: "{count} item",
         noCategoriesTitle: "No categories yet",
-        noCategoriesDesc: "Click + Add Category to start, or add {itemLabel} directly.",
+        noCategoriesDesc:
+          "Click + Add Category to start, or add {itemLabel} directly.",
         itemNumberLabel: "Item {number}",
         noItemsDesc: "No {itemLabel} in this category yet.",
         labelSectionTitle: "Section Title",
-        sectionSettingsSubtitle: "Set section title, subtitle, and intro text for your website catalog",
+        sectionSettingsSubtitle:
+          "Set section title, subtitle, and intro text for your website catalog",
         labelEyebrow: "Eyebrow",
         labelSubtitle: "Subtitle",
         labelPhoto: "Photo",
         labelName: "Name",
         labelPrice: "Price",
         labelBadge: "Badge",
-        badgeHint: "A badge marks items as featured and shows them in the showcase view.",
+        badgeHint:
+          "A badge marks items as featured and shows them in the showcase view.",
         labelCapacity: "Capacity",
         capacityHint: "(optional — max guests for rooms / units)",
         labelFeatures: "Features / Amenities",
@@ -9244,8 +10142,10 @@ export const translations: Record<Locale, Translations> = {
         addCategory: "Add Category",
         defaultCategory: "Category {number}",
         bannerTitle: "Manage your {itemLabel}",
-        bannerDesc1: "Add categories and {itemLabel} here. Fill in a photo, name, description{itemPricePart}, and badge for each.",
-        bannerDesc2: "Badged items are automatically featured in the showcase view.",
+        bannerDesc1:
+          "Add categories and {itemLabel} here. Fill in a photo, name, description{itemPricePart}, and badge for each.",
+        bannerDesc2:
+          "Badged items are automatically featured in the showcase view.",
         bannerDesc3: "Visitors can add {itemLabel} that you request.",
         bannerPricePart: ", price",
         addWord: "Add",
@@ -9261,7 +10161,8 @@ export const translations: Record<Locale, Translations> = {
         aiGenerateDesc: "Use AI to automatically generate an item description.",
         optional: "Optional",
         upgradeTitle: "AI Feature - Pro Plan",
-        upgradeDesc: "AI-generated descriptions are available without limits on the Pro plan.",
+        upgradeDesc:
+          "AI-generated descriptions are available without limits on the Pro plan.",
         upgradeNow: "Upgrade Now",
         later: "Later",
         chipMenu: "Menu",
@@ -9281,7 +10182,8 @@ export const translations: Record<Locale, Translations> = {
         dragItem: "Drag to reorder item",
         deleteCategory: "Delete Category",
         deleteItem: "Delete Item",
-        deleteCategoryConfirm: "Are you sure you want to delete this category and all its items?",
+        deleteCategoryConfirm:
+          "Are you sure you want to delete this category and all its items?",
         priceDisplay: "Display Price",
         priceDisplayPlaceholder: "e.g. $15.00 or From $10",
         priceAmount: "Numeric Price",
@@ -9289,26 +10191,31 @@ export const translations: Record<Locale, Translations> = {
         priceAmountHelp: "Used for checkout & order calculation",
         badgePlaceholder: "e.g. Best Seller, New, 20% Off",
         capacityPlaceholder: "e.g. 2 guests, 4 pax, 1 set",
-        featuresPlaceholder: "Type amenity/feature and press Enter (e.g. WiFi, AC, Breakfast)",
+        featuresPlaceholder:
+          "Type amenity/feature and press Enter (e.g. WiFi, AC, Breakfast)",
         tagsPlaceholder: "Type tag and press Enter (e.g. Spicy, Vegan)",
         deliveryPlatforms: "Online Delivery Platforms",
-        deliveryPlatformsHelp: "Link GoFood, GrabFood, ShopeeFood, Tokopedia, etc.",
+        deliveryPlatformsHelp:
+          "Link GoFood, GrabFood, ShopeeFood, Tokopedia, etc.",
         addDeliveryPlatform: "Add Delivery Platform",
         platformNamePlaceholder: "Name (e.g. GrabFood)",
         platformUrlPlaceholder: "https://...",
         photoPrimary: "Primary Photo",
         photoGallery: "Additional Photo Gallery",
         photoGalleryCount: "Photo Gallery ({count})",
-        photoGalleryHelp: "Upload extra photos from different angles or product variations.",
+        photoGalleryHelp:
+          "Upload extra photos from different angles or product variations.",
         photoSetPrimary: "Set as Primary",
         photoAdd: "Photo",
         photoUploading: "Uploading...",
         variantsTitle: "Variants & Add-ons",
-        variantsSubtitle: "Customize product options like Size, Extra Topping, Sweetness, or Add-ons.",
+        variantsSubtitle:
+          "Customize product options like Size, Extra Topping, Sweetness, or Add-ons.",
         variantsAddGroup: "Add Variant Group",
         variantsNoGroups: "No variants or add-ons added for this item.",
         variantsGroupName: "Group Name",
-        variantsGroupNamePlaceholder: "e.g. Portion Size, Extra Topping, Spicy Level",
+        variantsGroupNamePlaceholder:
+          "e.g. Portion Size, Extra Topping, Spicy Level",
         variantsTypeSingle: "Single Choice (Radio)",
         variantsTypeMultiple: "Multiple Choice (Checkbox)",
         variantsRequired: "Required for Visitors",
@@ -9324,10 +10231,13 @@ export const translations: Record<Locale, Translations> = {
         variantsOptionMarkSoldOut: "Mark as sold out",
         allChangesSaved: "All changes are automatically and securely saved",
         paymentTitle: "Payment Methods & Shipping",
-        paymentSubtitle: "Show payment and shipping info in your visitors' shopping cart. No payment gateway needed yet — just static account/QRIS details.",
-        paymentHint: "Changes save automatically. This info is shown as a note only — payments are confirmed manually via WhatsApp.",
+        paymentSubtitle:
+          "Show payment and shipping info in your visitors' shopping cart. No payment gateway needed yet — just static account/QRIS details.",
+        paymentHint:
+          "Changes save automatically. This info is shown as a note only — payments are confirmed manually via WhatsApp.",
         paymentsVisibleLabel: "Show payment & shipping block",
-        paymentsVisibleHint: "Turn off to hide this info from the cart and footer",
+        paymentsVisibleHint:
+          "Turn off to hide this info from the cart and footer",
         methodsTitle: "Payment Methods",
         methodTypeTransfer: "Bank Transfer",
         methodTypeQris: "QRIS",
@@ -9337,25 +10247,32 @@ export const translations: Record<Locale, Translations> = {
         methodTypeOther: "Other",
         methodLabelPlaceholder: "Method name (e.g. BCA Bank Transfer)",
         methodDetailPlaceholder: "Account number (e.g. 1234567890 a.n. Name)",
-        methodDetailPlaceholderEwallet: "Phone number / e-wallet ID (e.g. 081234567890)",
-        methodDetailPlaceholderCod: "Note (e.g. Pay in cash when the order arrives)",
-        methodDetailPlaceholderCard: "e.g. Visa / Mastercard (pay directly to the store)",
-        methodDetailPlaceholderOther: "Method note (e.g. transfer via another platform)",
+        methodDetailPlaceholderEwallet:
+          "Phone number / e-wallet ID (e.g. 081234567890)",
+        methodDetailPlaceholderCod:
+          "Note (e.g. Pay in cash when the order arrives)",
+        methodDetailPlaceholderCard:
+          "e.g. Visa / Mastercard (pay directly to the store)",
+        methodDetailPlaceholderOther:
+          "Method note (e.g. transfer via another platform)",
         methodQrisImageLabel: "QR image",
         methodQrisImagePlaceholder: "https://... or upload QRIS image",
         paymentTitleLabel: "Block title",
         methodRemove: "Remove method",
         methodAdd: "Add Method",
         shippingTitle: "Shipping Info",
-        shippingNotePlaceholder: "e.g. Shipping cost depends on your location. Estimated 1–3 business days.",
+        shippingNotePlaceholder:
+          "e.g. Shipping cost depends on your location. Estimated 1–3 business days.",
         returnPolicy: "Return Policy",
-        returnPolicyPlaceholder: "e.g. Items can be returned or exchanged within 7 days. Contact us via WhatsApp.",
+        returnPolicyPlaceholder:
+          "e.g. Items can be returned or exchanged within 7 days. Contact us via WhatsApp.",
         toggleItemDetail: "Expand/collapse item details",
         advancedSettings: "Advanced settings",
         quickView: "Quick View",
         previewItem: "Preview",
         categoryNamePlaceholder: "Category name",
-        emptyItemsDesc: "No {itemLabel} yet. Click the button below to add one.",
+        emptyItemsDesc:
+          "No {itemLabel} yet. Click the button below to add one.",
         addItem: "Add {itemLabel}",
         itemName: "{itemLabel} name",
         itemNameExampleMenu: "e.g. Special Fried Rice",
@@ -9371,7 +10288,8 @@ export const translations: Record<Locale, Translations> = {
         discountLabelPlaceholder: "e.g. 20% off",
         capacityHelp: "optional — guests / units",
         description: "Description",
-        descriptionPlaceholder: "Describe the strengths and specifications of this {itemLabel}...",
+        descriptionPlaceholder:
+          "Describe the strengths and specifications of this {itemLabel}...",
         labelTagsMenu: "Menu Tags",
         tagsMenuHint: "e.g. Spicy, Vegetarian, Signature",
         phSectionTitle: "e.g. {sectionTitle}",
@@ -9464,11 +10382,15 @@ export const translations: Record<Locale, Translations> = {
         sampleBusinessDesc: "Your business description text...",
         brandIdentitySettings: "BRAND IDENTITY",
         brandStyle: "Brand style",
-        brandStyleSubtitle: "Keep your typography & color consistent across all pages",
-        testimonialsExampleBanner: "AI-generated example testimonials. They stay off the public site until you replace them with real ones or confirm them.",
+        brandStyleSubtitle:
+          "Keep your typography & color consistent across all pages",
+        testimonialsExampleBanner:
+          "AI-generated example testimonials. They stay off the public site until you replace them with real ones or confirm them.",
         testimonialsCollect: "Collect real testimonials",
         testimonialsConfirmReal: "These are real, publish them",
-        testimonialsConfirmPrompt: "By continuing you confirm these testimonials are real and come from your customers. Continue?",        headingFontLabel: "Heading font",
+        testimonialsConfirmPrompt:
+          "By continuing you confirm these testimonials are real and come from your customers. Continue?",
+        headingFontLabel: "Heading font",
         bodyFontLabel: "Body font",
         brandAccentLabel: "Brand accent color",
         resetDefaultFont: "Reset to default font",
@@ -9482,14 +10404,17 @@ export const translations: Record<Locale, Translations> = {
         uploadFontTab: "Upload File (.woff2/.ttf)",
         urlFontTab: "Font URL",
         selectFontFileComputer: "Select font file from computer",
-        fontFileFormatHint: "Format: .woff2 (recommended), .ttf, .otf (Max 3 MB)",
+        fontFileFormatHint:
+          "Format: .woff2 (recommended), .ttf, .otf (Max 3 MB)",
         fontFamilyNameLabel: "Font Family Name:",
         fontFamilyNamePlaceholder: "e.g. Clash Display / Helvetica",
         fontUrlLabel: "Font URL (CSS stylesheet / Woff2):",
-        fontUrlPlaceholder: "https://api.fontshare.com/v2/css?f[]=... or .woff2",
+        fontUrlPlaceholder:
+          "https://api.fontshare.com/v2/css?f[]=... or .woff2",
         applyFontUrlButton: "Apply Font URL",
-        customFontAppliedSuccess: "Font \"{name}\" applied successfully!",
-        customFontUrlAppliedSuccess: "Font \"{name}\" from URL applied successfully!",
+        customFontAppliedSuccess: 'Font "{name}" applied successfully!',
+        customFontUrlAppliedSuccess:
+          'Font "{name}" from URL applied successfully!',
         fontNameAndUrlRequired: "Font name and URL are required",
         fontInvalidFormatError: "File must be .woff2, .woff, .ttf, or .otf",
         fontFileSizeError: "Font file size must be under 3 MB",
@@ -9497,7 +10422,8 @@ export const translations: Record<Locale, Translations> = {
         brandPreviewTitle: "PREVIEW IDENTITY",
         brandPreviewSampleHeadline: "Your business, your identity.",
         brandPreviewContactButton: "Contact Us",
-        brandStylesLockedHint: "These brand styles stay locked across all sections & pages.",
+        brandStylesLockedHint:
+          "These brand styles stay locked across all sections & pages.",
         pickCustomColorTitle: "Pick custom color...",
         styleIdeaTitle: "Style Ideas:",
         aiDesignPromptExample: "e.g. warm vintage coffee shop theme...",
@@ -9584,11 +10510,11 @@ export const translations: Record<Locale, Translations> = {
         aiDesignPrompt: "AI Design Prompt",
         aiInstructionsTitle: "AI Instructions",
         aiPromptDesc: "What would you like to change in the {label} section?",
-        aiPromptPlaceholder: "e.g. \"make it more persuasive and emotional\"",
+        aiPromptPlaceholder: 'e.g. "make it more persuasive and emotional"',
         aiPlaceholder: "Make the copy clearer and more compelling...",
         fieldAiTitle: "AI Instructions — {label}",
         fieldAiDesc: "Add a custom instruction or just click Generate.",
-        fieldAiPlaceholder: "e.g. \"make it more casual and friendly\"",
+        fieldAiPlaceholder: 'e.g. "make it more casual and friendly"',
         fieldAiImagePrompt: "Write a description based on this product photo",
         fieldAiImageChip: "Write a description from the product photo",
         generateAi: "Generate AI",
@@ -9600,13 +10526,17 @@ export const translations: Record<Locale, Translations> = {
         upgradeToPro: "Upgrade to Pro",
         upgradeDefaultTitle: "AI Features — Pro Only",
         upgradeDefaultBody: "AI features are only available for Pro users.",
-        upgradeProDesc: "With Pro, you can use AI Generate for content, images, SEO, and website design.",
+        upgradeProDesc:
+          "With Pro, you can use AI Generate for content, images, SEO, and website design.",
         upgradeRegenTitle: "Regenerate with AI — Pro feature",
-        upgradeRegenBody: "Regenerate section content with AI without limits on the Pro plan.",
+        upgradeRegenBody:
+          "Regenerate section content with AI without limits on the Pro plan.",
         upgradeDesignTitle: "Redesign with AI — Pro feature",
-        upgradeDesignBody: "Let AI change your site style, colors, and layout instantly on the Pro plan.",
+        upgradeDesignBody:
+          "Let AI change your site style, colors, and layout instantly on the Pro plan.",
         upgradeSuggestionTitle: "AI prompt suggestions — Pro feature",
-        upgradeSuggestionBody: "Use ready-made AI prompts to speed up your workflow on the Pro plan.",
+        upgradeSuggestionBody:
+          "Use ready-made AI prompts to speed up your workflow on the Pro plan.",
         save: "Save",
         saving: "Saving...",
         saved: "Saved",
@@ -9614,7 +10544,8 @@ export const translations: Record<Locale, Translations> = {
         saveFailed: "Failed to save changes",
         autosaveFailed: "Failed to save",
         notFoundTitle: "Site Not Found",
-        notFoundDesc: "We couldn't find the site you're looking for in this workspace.",
+        notFoundDesc:
+          "We couldn't find the site you're looking for in this workspace.",
         inlineSave: "Save",
         inlineCancel: "Cancel",
         inlineSaved: "Saved",
@@ -9670,11 +10601,13 @@ export const translations: Record<Locale, Translations> = {
         pickVariant: "Pick Variant",
         allVariants: "All",
         variantsCount: "variants",
-        variantPreviewHint: "Click a variant to preview instantly on the canvas.",
+        variantPreviewHint:
+          "Click a variant to preview instantly on the canvas.",
         done: "Done",
         pageLayoutVariants: "Section Layout Variants",
         activeSectionsCount: "active sections",
-        pageLayoutVariantsDesc: "Customize the layout style of each section of your site in one place.",
+        pageLayoutVariantsDesc:
+          "Customize the layout style of each section of your site in one place.",
         editSectionContent: "Edit this section's content",
         changeSectionVariant: "Change this section's layout variant",
         optionsCount: "options",
@@ -9685,7 +10618,8 @@ export const translations: Record<Locale, Translations> = {
         mapTileDark: "Dark",
         mapTileSatellite: "Satellite",
         mapPreviewLabel: "Map Preview",
-        mapPreviewEmpty: "No location yet. Click \"Pick Location\" to mark one on the map.",
+        mapPreviewEmpty:
+          'No location yet. Click "Pick Location" to mark one on the map.',
         mapPreviewEditAria: "Change map location",
         pickLocation: "Pick Location",
         selectSectionAria: "Select Section",
@@ -9717,10 +10651,13 @@ export const translations: Record<Locale, Translations> = {
         aiCancelled: "AI results cancelled.",
         aiReverted: "AI changes to {label} reverted.",
         aiNoChange: "AI produced no meaningful changes.",
-        aiNoChangeHint: "Try a more specific instruction, e.g. make it an emotional headline, max 8 words, and remove raw input text.",
-        aiSectionDone: "AI finished writing {label}. Review the diff before applying.",
+        aiNoChangeHint:
+          "Try a more specific instruction, e.g. make it an emotional headline, max 8 words, and remove raw input text.",
+        aiSectionDone:
+          "AI finished writing {label}. Review the diff before applying.",
         aiSectionFailed: "AI failed to regenerate this section.",
-        aiStyleDone: "AI finished redesigning the site style. Review the visual results before saving.",
+        aiStyleDone:
+          "AI finished redesigning the site style. Review the visual results before saving.",
         aiStyleFailed: "AI failed to regenerate the site style.",
         aiStyleNoChange: "AI produced no meaningful style changes.",
         aiProcessFailed: "AI failed to process.",
@@ -9734,10 +10671,12 @@ export const translations: Record<Locale, Translations> = {
         editLabel: "Edit — {label}",
         confirmPublishTitle: "Apply changes to Live?",
         confirmPublishDesc: "Visitors will see the latest version shortly.",
-        confirmPublishBody: "All saved draft changes will be applied to your live site at {subdomain}.webjoz.com.",
+        confirmPublishBody:
+          "All saved draft changes will be applied to your live site at {subdomain}.webjoz.com.",
         confirmApply: "Yes, Apply",
         upgradeLabel: "Upgrade to Pro",
-        aiInstructionsPlaceholder: "e.g. \"make it more persuasive and emotional\"",
+        aiInstructionsPlaceholder:
+          'e.g. "make it more persuasive and emotional"',
         aiDesignInstructionsPlaceholder: "e.g. warm vintage coffee theme...",
         aiDesignFailed: "Failed to regenerate the design with AI",
         aiHistory: "AI History",
@@ -9776,7 +10715,8 @@ export const translations: Record<Locale, Translations> = {
         weightSemiBold: "Semi-Bold",
         // SEO Preview & Form
         seoPreviewBannerTitle: "SEO & Metadata Preview:",
-        seoPreviewBannerDesc: "Only read by search engines & when links are shared on social media.",
+        seoPreviewBannerDesc:
+          "Only read by search engines & when links are shared on social media.",
         seoEditInSidebar: "Edit in Sidebar",
         windowClose: "Close",
         windowMinimize: "Minimize",
@@ -9802,7 +10742,8 @@ export const translations: Record<Locale, Translations> = {
         seoGoogleResultsCount: "About 124,000 results (0.32 seconds)",
         seoGoogleClickToEdit: "Click to edit in sidebar",
         seoGooglePlaceholderTitle: "Add SEO Title in the sidebar editor...",
-        seoGooglePlaceholderDesc: "Meta description is not set yet. Add a relevant description in the sidebar editor so visitors are enticed to click your site in search results.",
+        seoGooglePlaceholderDesc:
+          "Meta description is not set yet. Add a relevant description in the sidebar editor so visitors are enticed to click your site in search results.",
         seoSitelinkAbout: "About Us",
         seoSitelinkAboutDesc: "Learn about our profile and best services.",
         seoSitelinkContact: "Contact & Location",
@@ -9819,19 +10760,26 @@ export const translations: Record<Locale, Translations> = {
         seoWaMessage: "Hello! Check out our official website here:",
         seoWaNoOgImage: "No OG Image set yet",
         seoWaClickUpload: "Click to upload in sidebar",
-        seoWaDefaultDesc: "An engaging website description will appear here when the link is shared.",
+        seoWaDefaultDesc:
+          "An engaging website description will appear here when the link is shared.",
         seoOgTipsTitle: "Open Graph Image Tips:",
-        seoOgTipsDesc: "Ideal size: 1200 × 630 px (1.91:1 ratio). This image is automatically used by WhatsApp, Telegram, Facebook, X (Twitter), and LinkedIn when your link is shared.",
+        seoOgTipsDesc:
+          "Ideal size: 1200 × 630 px (1.91:1 ratio). This image is automatically used by WhatsApp, Telegram, Facebook, X (Twitter), and LinkedIn when your link is shared.",
         seoInspectorTitle: "HTML <head> SEO Inspector",
         seoCopyHtml: "Copy HTML Code",
         seoTargetKeywords: "Target Keywords:",
-        seoNotPublicTitle: "SEO does not appear as a section on the public page.",
-        seoNotPublicDesc: "This data is used by search engines and link preview cards, such as Google title, description, favicon, and social share image.",
-        seoAiTitlePrompt: "Create an SEO title containing the business name, location, and primary service. Max 60 characters.",
+        seoNotPublicTitle:
+          "SEO does not appear as a section on the public page.",
+        seoNotPublicDesc:
+          "This data is used by search engines and link preview cards, such as Google title, description, favicon, and social share image.",
+        seoAiTitlePrompt:
+          "Create an SEO title containing the business name, location, and primary service. Max 60 characters.",
         seoAiTitleBtn: "AI: generate SEO title",
-        seoAiDescPrompt: "Create a meta description that drives clicks on Google. Max 155 characters, include business name and value proposition.",
+        seoAiDescPrompt:
+          "Create a meta description that drives clicks on Google. Max 155 characters, include business name and value proposition.",
         seoAiDescBtn: "AI: generate meta description",
-        seoAiKeywordsPrompt: "Generate 3-8 relevant SEO keywords for this business, focusing on products, services, and location.",
+        seoAiKeywordsPrompt:
+          "Generate 3-8 relevant SEO keywords for this business, focusing on products, services, and location.",
         seoKeywordsLabel: "SEO Keywords",
         seoKeywordsPlaceholderEmpty: "Type keyword and press Enter...",
         seoKeywordsPlaceholderMore: "Add keyword...",
@@ -9841,10 +10789,13 @@ export const translations: Record<Locale, Translations> = {
         seoSharePlaceholderTitle: "Title not filled",
         seoSharePlaceholderDesc: "Description not filled",
         seoShareOgNotSet: "OG Image not configured (1200×630 px)",
-        seoShareAutoUpdate: "Preview automatically updates when you fill Meta Title, Description, & OG Image.",
-        seoAiOgTypePrompt: "Select the most suitable og_type: website, article, product, profile.",
+        seoShareAutoUpdate:
+          "Preview automatically updates when you fill Meta Title, Description, & OG Image.",
+        seoAiOgTypePrompt:
+          "Select the most suitable og_type: website, article, product, profile.",
         seoAiOgTypeBtn: "AI: suggest OG type",
-        seoAiTwitterCardPrompt: "Select Twitter card: summary_large_image for most businesses.",
+        seoAiTwitterCardPrompt:
+          "Select Twitter card: summary_large_image for most businesses.",
         seoAiTwitterCardBtn: "AI: suggest Twitter card",
         seoMetaTitleLabel: "Meta Title",
         seoMetaDescLabel: "Meta Description",
@@ -9879,13 +10830,16 @@ export const translations: Record<Locale, Translations> = {
         mapPickerConfirm: "Select",
         seoRobotsTxtTitle: "Custom Robots.txt",
         seoRobotsTxtLockedTitle: "Customize robots.txt for your site",
-        seoRobotsTxtLockedDesc: "Control which pages Google indexes, block AI crawlers, and configure sitemap rules.",
+        seoRobotsTxtLockedDesc:
+          "Control which pages Google indexes, block AI crawlers, and configure sitemap rules.",
         seoBoosterActiveTitle: "SEO Booster Active",
-        seoBoosterActiveDesc: "Structured data rich snippet is automatically enabled on your site. Google will display rating, price, and business info directly in search results.",
+        seoBoosterActiveDesc:
+          "Structured data rich snippet is automatically enabled on your site. Google will display rating, price, and business info directly in search results.",
         seoBoosterProTitle: "SEO BOOSTER (PRO)",
         seoBoosterWithout: "WITHOUT SEO BOOSTER",
         seoBoosterWith: "WITH SEO BOOSTER",
-        seoBoosterCompetitor: "Your competitors might already appear like the right example in Google search.",
+        seoBoosterCompetitor:
+          "Your competitors might already appear like the right example in Google search.",
         seoBoosterUpgradeBtn: "🔓 Upgrade to Pro — Stand Out on Google",
         seoGscTitle: "Google Search Console",
         seoGscSubtitle: "Verify your domain ownership in GSC",
@@ -9908,12 +10862,14 @@ export const translations: Record<Locale, Translations> = {
         headerNavButtonText: "Nav Button Text",
         headerNavButtonLink: "Link to Section",
         headerNavButtonLinkAuto: "— Auto from button text —",
-        headerNavButtonLinkHint: "Leave empty to auto-detect the section based on button text.",
+        headerNavButtonLinkHint:
+          "Leave empty to auto-detect the section based on button text.",
         headerTagline: "Tagline",
         headerTaglineOptional: "(optional)",
         headerLogoUrl: "Logo URL",
         headerLogoLight: "Light Version Logo (optional)",
-        headerLogoLightHint: "Used in transparent header over dark hero. Leave empty to auto-whiten the main logo.",
+        headerLogoLightHint:
+          "Used in transparent header over dark hero. Leave empty to auto-whiten the main logo.",
         headerFavicon: "Favicon",
         headerIconName: "Icon Name",
         headerNavMenu: "Navigation Menu",
@@ -10007,19 +10963,23 @@ export const translations: Record<Locale, Translations> = {
         heroCarouselMainSlide: "Main Image (slide 1)",
         heroCarouselPrimary: "primary",
         heroImageLabel: "Hero Image",
-        heroSlidesHint: "Slide #1 is the primary image. Empty slots are not shown on the site.",
+        heroSlidesHint:
+          "Slide #1 is the primary image. Empty slots are not shown on the site.",
         heroPhotoBy: "Photo by {name}",
         heroSlotSet: "Set",
         heroSlotEmpty: "Empty",
         heroVideoUrlLabel: "Hero Video URL",
-        heroVideoUrlHint: "Direct video URL (.mp4 / .webm) for the \u201CVideo Background\u201D variant. If empty or invalid, the hero falls back to the image above as poster.",
+        heroVideoUrlHint:
+          "Direct video URL (.mp4 / .webm) for the \u201CVideo Background\u201D variant. If empty or invalid, the hero falls back to the image above as poster.",
         heroCtaSecondaryText: "Secondary CTA Button Text",
         heroCtaSecondaryUrl: "Secondary CTA Button URL",
-        heroCtaSecondaryHint: "Second button next to the primary one (used by some templates).",
-        heroCtaSecondaryUrlHint: "Destination for the secondary CTA (section anchor, URL, or WhatsApp).",
-        preloaderBrandAuto: "Auto: \"{value}\"",
+        heroCtaSecondaryHint:
+          "Second button next to the primary one (used by some templates).",
+        heroCtaSecondaryUrlHint:
+          "Destination for the secondary CTA (section anchor, URL, or WhatsApp).",
+        preloaderBrandAuto: 'Auto: "{value}"',
         preloaderBrandFallback: "Brand Name",
-        preloaderTaglineAuto: "Auto: \"{value}\"",
+        preloaderTaglineAuto: 'Auto: "{value}"',
         preloaderTaglineFallback: "Business Tagline",
         heroCarouselNoImage: "No image",
         heroCarouselShowSlide: "Show slide",
@@ -10029,13 +10989,17 @@ export const translations: Record<Locale, Translations> = {
         ctaButtonLink: "Button Link",
         heroVideoUrl: "Hero Video URL",
         heroEyebrow: "Eyebrow / Badge Label",
-        heroEyebrowHint: "Small label above the headline (used by some templates).",
+        heroEyebrowHint:
+          "Small label above the headline (used by some templates).",
         heroSecondaryCtaText: "Secondary CTA Button Text",
-        heroSecondaryCtaHint: "Second button alongside the primary button (used by some templates).",
+        heroSecondaryCtaHint:
+          "Second button alongside the primary button (used by some templates).",
         heroSecondaryCtaUrl: "Secondary CTA Button URL",
-        heroSecondaryCtaUrlHint: "Destination for the secondary CTA (section anchor, URL, or WhatsApp).",
+        heroSecondaryCtaUrlHint:
+          "Destination for the secondary CTA (section anchor, URL, or WhatsApp).",
         heroBadgeText: "Badge Text Below CTA",
-        heroBadgeTextHint: "Small text below the CTA button (opening hours, quick info, etc.).",
+        heroBadgeTextHint:
+          "Small text below the CTA button (opening hours, quick info, etc.).",
         heroOpeningHours: "Opening Hours",
         // Benefits
         benefitsEyebrow: "Eyebrow",
@@ -10070,7 +11034,8 @@ export const translations: Record<Locale, Translations> = {
         contactTitle: "Title",
         contactAddress: "Address",
         contactPhone: "WhatsApp Number",
-        contactPhoneHint: "If empty, orders from cart go to the Message Inbox on the dashboard.",
+        contactPhoneHint:
+          "If empty, orders from cart go to the Message Inbox on the dashboard.",
         contactEmail: "Email",
         contactShowForm: "Contact Form",
         contactShowMap: "Location Map",
@@ -10079,16 +11044,22 @@ export const translations: Record<Locale, Translations> = {
         contactFormLayoutInfoLeft: "Info left, form right",
         contactFormLayoutFormLeft: "Form left, info right",
         contactFormLayoutStack: "Vertical (form below)",
-        contactFormLayoutHint: "\"Info left, form right\" works best for wide layouts. \"Vertical\" is great for mobile.",
+        contactFormLayoutHint:
+          '"Info left, form right" works best for wide layouts. "Vertical" is great for mobile.',
         contactMapLayout: "Map Layout Style",
         contactMapLayoutInline: "Inline with info column",
         contactMapLayoutFull: "Full-width below",
-        contactMapLayoutHint: "\"Full-width below\" places the map spanning the full width below the info/form columns.",
+        contactMapLayoutHint:
+          '"Full-width below" places the map spanning the full width below the info/form columns.',
         contactMapsLink: "Google Maps Link",
-        contactMapsLinkHint: "Click \"Pick Location\" to pin a location on the map, or paste a Google Maps embed / share link.",
-        contactInvalidMapLink: "This link cannot be displayed as an interactive map. Click \"Pick Location\" or use a Google Maps embed link.",
-        contactMapClickHint: "Click \"Pick Location\" to pin a location on the map, or paste a Google Maps embed / share link.",
-        contactResolveError: "Failed to resolve link. Try copying the embed link manually.",
+        contactMapsLinkHint:
+          'Click "Pick Location" to pin a location on the map, or paste a Google Maps embed / share link.',
+        contactInvalidMapLink:
+          'This link cannot be displayed as an interactive map. Click "Pick Location" or use a Google Maps embed link.',
+        contactMapClickHint:
+          'Click "Pick Location" to pin a location on the map, or paste a Google Maps embed / share link.',
+        contactResolveError:
+          "Failed to resolve link. Try copying the embed link manually.",
         // Footer
         footerTagline: "Tagline",
         footerCopyright: "Copyright",
@@ -10111,7 +11082,8 @@ export const translations: Record<Locale, Translations> = {
         testimonialsAddItem: "Add Testimonial",
         // Works
         worksSectionBanner: "Portfolio Section",
-        worksSectionBannerDesc: "Showcase your best projects. Each project can include a category, year, client, description, and project link to boost credibility.",
+        worksSectionBannerDesc:
+          "Showcase your best projects. Each project can include a category, year, client, description, and project link to boost credibility.",
         worksTitle: "Portfolio Title",
         worksEyebrow: "Eyebrow",
         worksSubtitle: "Brief Description",
@@ -10132,7 +11104,8 @@ export const translations: Record<Locale, Translations> = {
         worksDescription: "Description",
         // Gallery
         gallerySectionBanner: "Photo Gallery Section",
-        gallerySectionBannerDesc: "Add photos to the gallery. Customize layout, captions, and alt text.",
+        gallerySectionBannerDesc:
+          "Add photos to the gallery. Customize layout, captions, and alt text.",
         galleryTitle: "Gallery Title",
         galleryEyebrow: "Eyebrow",
         galleryLayout: "Layout",
@@ -10158,7 +11131,8 @@ export const translations: Record<Locale, Translations> = {
         statsDescription: "Note (Optional)",
         // Partners
         partnersSectionBanner: "Partners & Clients Section",
-        partnersSectionBannerDesc: "Show logos or names of brands you've worked with, key clients, or media coverage.",
+        partnersSectionBannerDesc:
+          "Show logos or names of brands you've worked with, key clients, or media coverage.",
         partnersEyebrow: "Eyebrow",
         partnersSectionTitle: "Section Title",
         partnersSubtitle: "Subtitle (Optional)",
@@ -10170,7 +11144,8 @@ export const translations: Record<Locale, Translations> = {
         partnersWebsite: "Website Link (Optional)",
         // Pricing
         pricingSectionBanner: "Pricing & Rate Card Section",
-        pricingSectionBannerDesc: "Set up service packages, collaboration rate cards, or subscription tiers with clear feature comparisons.",
+        pricingSectionBannerDesc:
+          "Set up service packages, collaboration rate cards, or subscription tiers with clear feature comparisons.",
         pricingEyebrow: "Eyebrow",
         pricingSectionTitle: "Section Title",
         pricingSubtitle: "Subtitle (Optional)",
@@ -10188,7 +11163,8 @@ export const translations: Record<Locale, Translations> = {
         pricingIsFeatured: "Mark as featured plan (Highlight / Featured)",
         // Floating
         floatingSectionBanner: "Floating Action Button",
-        floatingSectionBannerDesc: "Button that stays visible in the bottom-right corner of the website.",
+        floatingSectionBannerDesc:
+          "Button that stays visible in the bottom-right corner of the website.",
         floatingButtonType: "Button Type",
         floatingNone: "None",
         floatingNoneDesc: "No button shown",
@@ -10201,12 +11177,15 @@ export const translations: Record<Locale, Translations> = {
         floatingContactLink: "Contact Link",
         floatingContactLinkDesc: "Scroll to Contact section",
         floatingWhatsAppNumber: "WhatsApp Number",
-        floatingWhatsAppNumberHint: "This number is also used in all other WA buttons across the page.",
-        floatingWhatsAppNumberRequired: "WA number is required for the button to work.",
+        floatingWhatsAppNumberHint:
+          "This number is also used in all other WA buttons across the page.",
+        floatingWhatsAppNumberRequired:
+          "WA number is required for the button to work.",
         floatingProHint: "Chat Bubble is available on the Pro plan.",
         // Preloader
         preloaderSectionBanner: "Page Preloader Settings",
-        preloaderSectionBannerDesc: "Splash animation that appears briefly when visitors open the site. Automatically uses your business name & logo, but can be customized below.",
+        preloaderSectionBannerDesc:
+          "Splash animation that appears briefly when visitors open the site. Automatically uses your business name & logo, but can be customized below.",
         preloaderOrUploadLogo: "Or Upload Specific Preloader Logo:",
         preloaderLogoHint: "If empty, uses header logo or monogram icon.",
         preloaderDurationLabel: "Display Duration",
@@ -10217,193 +11196,431 @@ export const translations: Record<Locale, Translations> = {
         preloaderBrandText: "Custom Brand Text",
         preloaderBrandHint: "Leave empty to use business name from Header.",
         preloaderTagline: "Custom Tagline / Subtitle",
-        preloaderTaglineHint: "Leave empty to use business tagline from Header.",
+        preloaderTaglineHint:
+          "Leave empty to use business tagline from Header.",
         preloaderIconLogo: "Icon & Logo Display",
         preloaderChooseIcon: "Choose Lucide Icon (Optional):",
         // Variant labels & descriptions — hero-effect
-        variantHeroEffectModernGrid: "Modern Grid",        variantHeroEffectModernGridDesc: "Subtle modular grid on the hero background for a modern, structured look.",
-        variantHeroEffectGlass: "Glass (Glassmorphism)",   variantHeroEffectGlassDesc: "Transparent panel with glass blur and soft glowing edges.",
-        variantHeroEffectNeoBrut: "Neo-Brutalist",         variantHeroEffectNeoBrutDesc: "Bold borders, sharp shadows, and vivid color blocks in brutalist style.",
-        variantHeroEffectScanlines: "Scanlines",           variantHeroEffectScanlinesDesc: "Thin horizontal line texture inspired by retro CRT / terminal screens.",
-        variantHeroEffectStarfield: "Starfield",           variantHeroEffectStarfieldDesc: "Twinkling star dots on a dramatic dark background.",
-        variantHeroEffectRetroPaper: "Retro Paper",        variantHeroEffectRetroPaperDesc: "Aged paper texture and warm grain in a vintage style.",
+        variantHeroEffectModernGrid: "Modern Grid",
+        variantHeroEffectModernGridDesc:
+          "Subtle modular grid on the hero background for a modern, structured look.",
+        variantHeroEffectGlass: "Glass (Glassmorphism)",
+        variantHeroEffectGlassDesc:
+          "Transparent panel with glass blur and soft glowing edges.",
+        variantHeroEffectNeoBrut: "Neo-Brutalist",
+        variantHeroEffectNeoBrutDesc:
+          "Bold borders, sharp shadows, and vivid color blocks in brutalist style.",
+        variantHeroEffectScanlines: "Scanlines",
+        variantHeroEffectScanlinesDesc:
+          "Thin horizontal line texture inspired by retro CRT / terminal screens.",
+        variantHeroEffectStarfield: "Starfield",
+        variantHeroEffectStarfieldDesc:
+          "Twinkling star dots on a dramatic dark background.",
+        variantHeroEffectRetroPaper: "Retro Paper",
+        variantHeroEffectRetroPaperDesc:
+          "Aged paper texture and warm grain in a vintage style.",
         // about
-        variantAboutClassic: "Classic",       variantAboutClassicDesc: "Text on the left, clean layout with no large image.",
-        variantAboutSplitImage: "Split + Image", variantAboutSplitImageDesc: "Text on the left, large image on the right.",
-        variantAboutStatHeavy: "Statistics",  variantAboutStatHeavyDesc: "Show highlight numbers and business statistics.",
-        variantAboutTimeline: "Timeline",     variantAboutTimelineDesc: "Business journey timeline (requires milestones).",
-        variantAboutTeamGrid: "Team Grid",    variantAboutTeamGridDesc: "Grid of team members (requires team_members).",
+        variantAboutClassic: "Classic",
+        variantAboutClassicDesc:
+          "Text on the left, clean layout with no large image.",
+        variantAboutSplitImage: "Split + Image",
+        variantAboutSplitImageDesc:
+          "Text on the left, large image on the right.",
+        variantAboutStatHeavy: "Statistics",
+        variantAboutStatHeavyDesc:
+          "Show highlight numbers and business statistics.",
+        variantAboutTimeline: "Timeline",
+        variantAboutTimelineDesc:
+          "Business journey timeline (requires milestones).",
+        variantAboutTeamGrid: "Team Grid",
+        variantAboutTeamGridDesc:
+          "Grid of team members (requires team_members).",
         // benefits
-        variantBenefitsGrid: "Grid",                         variantBenefitsGridDesc: "Icon cards arranged in a neat grid.",
-        variantBenefitsFeaturedGrid: "Highlight Grid",       variantBenefitsFeaturedGridDesc: "First card is large as the main spotlight, the rest in a neat grid.",
-        variantBenefitsIconRow: "Horizontal Icon Row",       variantBenefitsIconRowDesc: "Large centered circular icons lined horizontally with dividers.",
-        variantBenefitsStatGrid: "Statistics Grid",          variantBenefitsStatGridDesc: "Grid with numbers/statistics on each item.",
-        variantBenefitsChecklist: "Checklist",               variantBenefitsChecklistDesc: "Vertical checkmark list, simple and direct.",
-        variantBenefitsComparisonTable: "Comparison Table",  variantBenefitsComparisonTableDesc: "A vs B comparison in a table (requires comparison).",
-        variantBenefitsBentoGrid: "Bento Grid",              variantBenefitsBentoGridDesc: "Asymmetric bento-box grid — cards of varying sizes, dynamic visual.",
-        variantBenefitsTrustBar: "Trust Bar",                variantBenefitsTrustBarDesc: "Horizontal trust strip for e-commerce: authenticity, fast shipping, pay on delivery, return guarantee.",
-        variantBenefitsHowItWorks: "How It Works",           variantBenefitsHowItWorksDesc: "Sequential process steps with numbered progression.",
+        variantBenefitsGrid: "Grid",
+        variantBenefitsGridDesc: "Icon cards arranged in a neat grid.",
+        variantBenefitsFeaturedGrid: "Highlight Grid",
+        variantBenefitsFeaturedGridDesc:
+          "First card is large as the main spotlight, the rest in a neat grid.",
+        variantBenefitsIconRow: "Horizontal Icon Row",
+        variantBenefitsIconRowDesc:
+          "Large centered circular icons lined horizontally with dividers.",
+        variantBenefitsStatGrid: "Statistics Grid",
+        variantBenefitsStatGridDesc:
+          "Grid with numbers/statistics on each item.",
+        variantBenefitsChecklist: "Checklist",
+        variantBenefitsChecklistDesc:
+          "Vertical checkmark list, simple and direct.",
+        variantBenefitsComparisonTable: "Comparison Table",
+        variantBenefitsComparisonTableDesc:
+          "A vs B comparison in a table (requires comparison).",
+        variantBenefitsBentoGrid: "Bento Grid",
+        variantBenefitsBentoGridDesc:
+          "Asymmetric bento-box grid — cards of varying sizes, dynamic visual.",
+        variantBenefitsTrustBar: "Trust Bar",
+        variantBenefitsTrustBarDesc:
+          "Horizontal trust strip for e-commerce: authenticity, fast shipping, pay on delivery, return guarantee.",
+        variantBenefitsHowItWorks: "How It Works",
+        variantBenefitsHowItWorksDesc:
+          "Sequential process steps with numbered progression.",
         // testimonials
-        variantTestimonialsCarousel: "Carousel",                   variantTestimonialsCarouselDesc: "Auto-sliding, one testimonial per view.",
-        variantTestimonialsCompact: "Compact",                     variantTestimonialsCompactDesc: "Small avatar + short quote in a single row.",
-        variantTestimonialsGrid: "Grid",                           variantTestimonialsGridDesc: "All testimonials displayed at once in a grid.",
-        variantTestimonialsLogoWall: "Client Logos",               variantTestimonialsLogoWallDesc: "Client company logos (requires logo_url).",
-        variantTestimonialsFeaturedSpotlight: "Spotlight",         variantTestimonialsFeaturedSpotlightDesc: "One main testimonial highlighted.",
-        variantTestimonialsGoogleReviews: "Google Reviews",        variantTestimonialsGoogleReviewsDesc: "Google-style cards: profile photo, stars, Google badge.",
-        variantTestimonialsVideoWallDesc: "UGC-style testimonial grid with video thumbnails and a lightweight player.",
+        variantTestimonialsCarousel: "Carousel",
+        variantTestimonialsCarouselDesc:
+          "Auto-sliding, one testimonial per view.",
+        variantTestimonialsCompact: "Compact",
+        variantTestimonialsCompactDesc:
+          "Small avatar + short quote in a single row.",
+        variantTestimonialsGrid: "Grid",
+        variantTestimonialsGridDesc:
+          "All testimonials displayed at once in a grid.",
+        variantTestimonialsLogoWall: "Client Logos",
+        variantTestimonialsLogoWallDesc:
+          "Client company logos (requires logo_url).",
+        variantTestimonialsFeaturedSpotlight: "Spotlight",
+        variantTestimonialsFeaturedSpotlightDesc:
+          "One main testimonial highlighted.",
+        variantTestimonialsGoogleReviews: "Google Reviews",
+        variantTestimonialsGoogleReviewsDesc:
+          "Google-style cards: profile photo, stars, Google badge.",
+        variantTestimonialsVideoWallDesc:
+          "UGC-style testimonial grid with video thumbnails and a lightweight player.",
         // cta
-        variantCtaBanner: "Banner",              variantCtaBannerDesc: "Full-width color strip with text + button.",
-        variantCtaCard: "Card",                  variantCtaCardDesc: "Centered box with shadow and border.",
-        variantCtaCentered: "Centered",          variantCtaCenteredDesc: "Text and button centered with no background.",
-        variantCtaSplitImage: "Split + Image",   variantCtaSplitImageDesc: "Text on the left, image on the right (requires image_url).",
-        variantCtaInlineLeadForm: "Inline Lead Form", variantCtaInlineLeadFormDesc: "Text on the left, name/email/phone form on the right to capture leads.",
+        variantCtaBanner: "Banner",
+        variantCtaBannerDesc: "Full-width color strip with text + button.",
+        variantCtaCard: "Card",
+        variantCtaCardDesc: "Centered box with shadow and border.",
+        variantCtaCentered: "Centered",
+        variantCtaCenteredDesc: "Text and button centered with no background.",
+        variantCtaSplitImage: "Split + Image",
+        variantCtaSplitImageDesc:
+          "Text on the left, image on the right (requires image_url).",
+        variantCtaInlineLeadForm: "Inline Lead Form",
+        variantCtaInlineLeadFormDesc:
+          "Text on the left, name/email/phone form on the right to capture leads.",
         // faq
-        variantFaqAccordion: "Accordion",           variantFaqAccordionDesc: "Expand/collapse per item, saves space.",
-        variantFaqSimple: "Simple",                 variantFaqSimpleDesc: "All Q&As displayed open with no interaction.",
-        variantFaqColumns: "Columns",               variantFaqColumnsDesc: "2 Q&A columns side by side.",
-        variantFaqSidebarCategory: "Sidebar Category", variantFaqSidebarCategoryDesc: "Filter Q&As by category (requires category).",
-        variantFaqTwoColumnGrid: "2-Column Grid",   variantFaqTwoColumnGridDesc: "Q&As in a 2-column card grid, all open.",
-        variantFaqChatBubble: "Chat Style",         variantFaqChatBubbleDesc: "Q&A styled like a chat conversation — questions on the right, answers on the left.",
+        variantFaqAccordion: "Accordion",
+        variantFaqAccordionDesc: "Expand/collapse per item, saves space.",
+        variantFaqSimple: "Simple",
+        variantFaqSimpleDesc: "All Q&As displayed open with no interaction.",
+        variantFaqColumns: "Columns",
+        variantFaqColumnsDesc: "2 Q&A columns side by side.",
+        variantFaqSidebarCategory: "Sidebar Category",
+        variantFaqSidebarCategoryDesc:
+          "Filter Q&As by category (requires category).",
+        variantFaqTwoColumnGrid: "2-Column Grid",
+        variantFaqTwoColumnGridDesc: "Q&As in a 2-column card grid, all open.",
+        variantFaqChatBubble: "Chat Style",
+        variantFaqChatBubbleDesc:
+          "Q&A styled like a chat conversation — questions on the right, answers on the left.",
         // gallery
-        variantGalleryGrid: "Grid",                    variantGalleryGridDesc: "Photos in uniform boxes arranged neatly.",
-        variantGalleryMasonry: "Masonry",              variantGalleryMasonryDesc: "Variable photo heights like Pinterest.",
-        variantGalleryCarousel: "Carousel",            variantGalleryCarouselDesc: "Auto-sliding photo carousel.",
-        variantGalleryLightboxStory: "Story Lightbox", variantGalleryLightboxStoryDesc: "Photo grid that opens fullscreen with large narrative and story navigation.",
-        variantGalleryBeforeAfter: "Before & After Slider", variantGalleryBeforeAfterDesc: "Before/after image comparison with a drag slider.",
-        variantGalleryVideoGridDesc: "Uniform grid with poster and play button for video items.",
+        variantGalleryGrid: "Grid",
+        variantGalleryGridDesc: "Photos in uniform boxes arranged neatly.",
+        variantGalleryMasonry: "Masonry",
+        variantGalleryMasonryDesc: "Variable photo heights like Pinterest.",
+        variantGalleryCarousel: "Carousel",
+        variantGalleryCarouselDesc: "Auto-sliding photo carousel.",
+        variantGalleryLightboxStory: "Story Lightbox",
+        variantGalleryLightboxStoryDesc:
+          "Photo grid that opens fullscreen with large narrative and story navigation.",
+        variantGalleryBeforeAfter: "Before & After Slider",
+        variantGalleryBeforeAfterDesc:
+          "Before/after image comparison with a drag slider.",
+        variantGalleryVideoGridDesc:
+          "Uniform grid with poster and play button for video items.",
         // works
-        variantWorksGrid: "Grid",                    variantWorksGridDesc: "Uniform project cards in a neat grid.",
-        variantWorksMasonry: "Masonry",              variantWorksMasonryDesc: "Variable card heights like Pinterest.",
-        variantWorksFeaturedGrid: "Featured Grid",   variantWorksFeaturedGridDesc: "First project large as the spotlight, the rest in a neat grid.",
-        variantWorksShowcaseFeatured: "Showcase",    variantWorksShowcaseFeaturedDesc: "Main project horizontal hero, the rest in a 2-column grid.",
+        variantWorksGrid: "Grid",
+        variantWorksGridDesc: "Uniform project cards in a neat grid.",
+        variantWorksMasonry: "Masonry",
+        variantWorksMasonryDesc: "Variable card heights like Pinterest.",
+        variantWorksFeaturedGrid: "Featured Grid",
+        variantWorksFeaturedGridDesc:
+          "First project large as the spotlight, the rest in a neat grid.",
+        variantWorksShowcaseFeatured: "Showcase",
+        variantWorksShowcaseFeaturedDesc:
+          "Main project horizontal hero, the rest in a 2-column grid.",
         // stats
-        variantStatsCounterRow: "Metric Row",              variantStatsCounterRowDesc: "Horizontal metric row with neat dividers and large numbers.",
-        variantStatsCardGrid: "Card Grid",                 variantStatsCardGridDesc: "Floating stat cards with icons and accent glow effect.",
-        variantStatsMinimalSplit: "Minimal Split",          variantStatsMinimalSplitDesc: "Narrative title on the left, 2x2 number matrix on the right.",
-        variantStatsBigNumberSpotlight: "Big Number Spotlight", variantStatsBigNumberSpotlightDesc: "One giant main metric with accent spotlight and supporting sub-metrics.",
+        variantStatsCounterRow: "Metric Row",
+        variantStatsCounterRowDesc:
+          "Horizontal metric row with neat dividers and large numbers.",
+        variantStatsCardGrid: "Card Grid",
+        variantStatsCardGridDesc:
+          "Floating stat cards with icons and accent glow effect.",
+        variantStatsMinimalSplit: "Minimal Split",
+        variantStatsMinimalSplitDesc:
+          "Narrative title on the left, 2x2 number matrix on the right.",
+        variantStatsBigNumberSpotlight: "Big Number Spotlight",
+        variantStatsBigNumberSpotlightDesc:
+          "One giant main metric with accent spotlight and supporting sub-metrics.",
         // partners
-        variantPartnersLogoWall: "Logo / Brand Grid",       variantPartnersLogoWallDesc: "Partner logo/brand grid with grayscale effect and colored hover.",
-        variantPartnersMarquee: "Marquee Ticker",           variantPartnersMarqueeDesc: "Auto-scrolling infinite banner of logos/brand names.",
-        variantPartnersPillGrid: "Interactive Pill Grid",   variantPartnersPillGridDesc: "Modern badge/pill collection with initials and category tags.",
-        variantPartnersFeaturedCollabGrid: "Featured Collab Grid", variantPartnersFeaturedCollabGridDesc: "Partner/client grid with a main collab spotlight card and role summary.",
+        variantPartnersLogoWall: "Logo / Brand Grid",
+        variantPartnersLogoWallDesc:
+          "Partner logo/brand grid with grayscale effect and colored hover.",
+        variantPartnersMarquee: "Marquee Ticker",
+        variantPartnersMarqueeDesc:
+          "Auto-scrolling infinite banner of logos/brand names.",
+        variantPartnersPillGrid: "Interactive Pill Grid",
+        variantPartnersPillGridDesc:
+          "Modern badge/pill collection with initials and category tags.",
+        variantPartnersFeaturedCollabGrid: "Featured Collab Grid",
+        variantPartnersFeaturedCollabGridDesc:
+          "Partner/client grid with a main collab spotlight card and role summary.",
         // pricing
-        variantPricingCards: "Pricing Cards",                   variantPricingCardsDesc: "Classic 3-tier cards with most popular marker and action buttons.",
-        variantPricingHorizontalRows: "Horizontal Rows",        variantPricingHorizontalRowsDesc: "Horizontal plan list with features on the left and price/button on the right.",
-        variantPricingComparisonTable: "Comparison Table",      variantPricingComparisonTableDesc: "Full feature comparison table across service tiers.",
-        variantPricingSingleTierHighlight: "Single Tier Highlight", variantPricingSingleTierHighlightDesc: "One large prominent card — great for businesses with a single main offer.",
+        variantPricingCards: "Pricing Cards",
+        variantPricingCardsDesc:
+          "Classic 3-tier cards with most popular marker and action buttons.",
+        variantPricingHorizontalRows: "Horizontal Rows",
+        variantPricingHorizontalRowsDesc:
+          "Horizontal plan list with features on the left and price/button on the right.",
+        variantPricingComparisonTable: "Comparison Table",
+        variantPricingComparisonTableDesc:
+          "Full feature comparison table across service tiers.",
+        variantPricingSingleTierHighlight: "Single Tier Highlight",
+        variantPricingSingleTierHighlightDesc:
+          "One large prominent card — great for businesses with a single main offer.",
         // menu
-        variantMenuGrid: "Grid",                      variantMenuGridDesc: "Product cards in a grid with photos.",
-        variantMenuCompact: "Compact",                variantMenuCompactDesc: "Compact list of names + prices without large photos.",
-        variantMenuCards: "Cards",                    variantMenuCardsDesc: "Large cards with photo and description.",
-        variantMenuTextList: "Text List",             variantMenuTextListDesc: "Minimalist text list, no images.",
-        variantMenuCompactList: "Compact List",       variantMenuCompactListDesc: "Compact rows with small thumbnails.",
-        variantMenuTabsByCategory: "Category Tabs",   variantMenuTabsByCategoryDesc: "Category tabs at the top.",
-        variantMenuAccordionByCategory: "Category Accordion", variantMenuAccordionByCategoryDesc: "Each category can be expanded.",
-        variantMenuBentoPhotoGrid: "Bento Photo Grid",variantMenuBentoPhotoGridDesc: "Bento-style large photo grid, visually rich.",
-        variantMenuVisualShowcaseHero: "Visual Hero",  variantMenuVisualShowcaseHeroDesc: "Large hero with visual catalog below.",
-        variantMenuSidebarScrollspyPhoto: "Sidebar Scrollspy", variantMenuSidebarScrollspyPhotoDesc: "Sticky category navigation + photo content on the right side.",
-        variantMenuCarouselDesc: "Large menu cards swipeable horizontally per category.",
-        variantMenuMasonryDesc: "Pinterest-style layout with variable menu card heights.",
+        variantMenuGrid: "Grid",
+        variantMenuGridDesc: "Product cards in a grid with photos.",
+        variantMenuCompact: "Compact",
+        variantMenuCompactDesc:
+          "Compact list of names + prices without large photos.",
+        variantMenuCards: "Cards",
+        variantMenuCardsDesc: "Large cards with photo and description.",
+        variantMenuTextList: "Text List",
+        variantMenuTextListDesc: "Minimalist text list, no images.",
+        variantMenuCompactList: "Compact List",
+        variantMenuCompactListDesc: "Compact rows with small thumbnails.",
+        variantMenuTabsByCategory: "Category Tabs",
+        variantMenuTabsByCategoryDesc: "Category tabs at the top.",
+        variantMenuAccordionByCategory: "Category Accordion",
+        variantMenuAccordionByCategoryDesc: "Each category can be expanded.",
+        variantMenuBentoPhotoGrid: "Bento Photo Grid",
+        variantMenuBentoPhotoGridDesc:
+          "Bento-style large photo grid, visually rich.",
+        variantMenuVisualShowcaseHero: "Visual Hero",
+        variantMenuVisualShowcaseHeroDesc:
+          "Large hero with visual catalog below.",
+        variantMenuSidebarScrollspyPhoto: "Sidebar Scrollspy",
+        variantMenuSidebarScrollspyPhotoDesc:
+          "Sticky category navigation + photo content on the right side.",
+        variantMenuCarouselDesc:
+          "Large menu cards swipeable horizontally per category.",
+        variantMenuMasonryDesc:
+          "Pinterest-style layout with variable menu card heights.",
         // catalog
-        variantCatalogGrid: "Grid",                       variantCatalogGridDesc: "Standard product cards in a grid.",
-        variantCatalogCompact: "Compact",                 variantCatalogCompactDesc: "Compact list of names + prices.",
-        variantCatalogCards: "Cards",                     variantCatalogCardsDesc: "Large cards with photo and badge.",
-        variantCatalogGridDense: "Dense Grid",            variantCatalogGridDenseDesc: "Tighter grid, more products per row.",
-        variantCatalogShowcaseFeatured: "Showcase Featured", variantCatalogShowcaseFeaturedDesc: "Badged products displayed larger.",
-        variantCatalogTabsByCategory: "Category Tabs",    variantCatalogTabsByCategoryDesc: "Category tabs for products.",
-        variantCatalogEditorialGrid: "Editorial Grid",    variantCatalogEditorialGridDesc: "Asymmetric magazine-style grid with varying card sizes.",
-        variantCatalogMasonryFlow: "Masonry Flow",        variantCatalogMasonryFlowDesc: "Pinterest layout with variable card heights.",
-        variantCatalogInstagramGrid: "Instagram Grid",    variantCatalogInstagramGridDesc: "Uniform squares like an Instagram gallery.",
-        variantCatalogSplitHero: "Split Hero",            variantCatalogSplitHeroDesc: "Split screen: large hero left, scrollable list right.",
-        variantCatalogNeoBrutalist: "Neo-Brutalist Matrix", variantCatalogNeoBrutalistDesc: "Brutal grid with thick borders and angled positioning.",
-        variantCatalogHorizontalCarousel: "Horizontal Carousel", variantCatalogHorizontalCarouselDesc: "Large cards swipeable horizontally.",
-        variantCatalogProductTableDesc: "Product/spec-sheet table with price, stock, and action columns.",
-        variantCatalogSpotlightDesc: "One main product full-bleed with other products in a grid.",
+        variantCatalogGrid: "Grid",
+        variantCatalogGridDesc: "Standard product cards in a grid.",
+        variantCatalogCompact: "Compact",
+        variantCatalogCompactDesc: "Compact list of names + prices.",
+        variantCatalogCards: "Cards",
+        variantCatalogCardsDesc: "Large cards with photo and badge.",
+        variantCatalogGridDense: "Dense Grid",
+        variantCatalogGridDenseDesc: "Tighter grid, more products per row.",
+        variantCatalogShowcaseFeatured: "Showcase Featured",
+        variantCatalogShowcaseFeaturedDesc: "Badged products displayed larger.",
+        variantCatalogTabsByCategory: "Category Tabs",
+        variantCatalogTabsByCategoryDesc: "Category tabs for products.",
+        variantCatalogEditorialGrid: "Editorial Grid",
+        variantCatalogEditorialGridDesc:
+          "Asymmetric magazine-style grid with varying card sizes.",
+        variantCatalogMasonryFlow: "Masonry Flow",
+        variantCatalogMasonryFlowDesc:
+          "Pinterest layout with variable card heights.",
+        variantCatalogInstagramGrid: "Instagram Grid",
+        variantCatalogInstagramGridDesc:
+          "Uniform squares like an Instagram gallery.",
+        variantCatalogSplitHero: "Split Hero",
+        variantCatalogSplitHeroDesc:
+          "Split screen: large hero left, scrollable list right.",
+        variantCatalogNeoBrutalist: "Neo-Brutalist Matrix",
+        variantCatalogNeoBrutalistDesc:
+          "Brutal grid with thick borders and angled positioning.",
+        variantCatalogHorizontalCarousel: "Horizontal Carousel",
+        variantCatalogHorizontalCarouselDesc:
+          "Large cards swipeable horizontally.",
+        variantCatalogProductTableDesc:
+          "Product/spec-sheet table with price, stock, and action columns.",
+        variantCatalogSpotlightDesc:
+          "One main product full-bleed with other products in a grid.",
         // contact
-        variantContactClassicSplit: "Classic Split",    variantContactClassicSplitDesc: "Message form on the left, contact info & map on the right.",
-        variantContactWhatsAppDirect: "WhatsApp Direct", variantContactWhatsAppDirectDesc: "Focused WhatsApp quick-action button + message preview & online badge.",
-        variantContactBentoGrid: "Bento Grid",          variantContactBentoGridDesc: "Modular cards arranged neatly in a modern bento box style.",
-        variantContactOverlayMap: "Map Overlay",        variantContactOverlayMapDesc: "Full interactive map with a floating contact card.",
-        variantContactDarkSplit: "Dark Split",          variantContactDarkSplitDesc: "High-contrast premium dark theme with glowing accent.",
-        variantContactMinimalCentered: "Minimal Centered", variantContactMinimalCenteredDesc: "Compact centered contact card without a map.",
+        variantContactClassicSplit: "Classic Split",
+        variantContactClassicSplitDesc:
+          "Message form on the left, contact info & map on the right.",
+        variantContactWhatsAppDirect: "WhatsApp Direct",
+        variantContactWhatsAppDirectDesc:
+          "Focused WhatsApp quick-action button + message preview & online badge.",
+        variantContactBentoGrid: "Bento Grid",
+        variantContactBentoGridDesc:
+          "Modular cards arranged neatly in a modern bento box style.",
+        variantContactOverlayMap: "Map Overlay",
+        variantContactOverlayMapDesc:
+          "Full interactive map with a floating contact card.",
+        variantContactDarkSplit: "Dark Split",
+        variantContactDarkSplitDesc:
+          "High-contrast premium dark theme with glowing accent.",
+        variantContactMinimalCentered: "Minimal Centered",
+        variantContactMinimalCenteredDesc:
+          "Compact centered contact card without a map.",
         // header
-        variantHeaderLeftLogoInlineNav: "Logo Left + Inline Nav",    variantHeaderLeftLogoInlineNavDesc: "Logo on the left, inline navigation on the right, CTA button.",
-        variantHeaderCenteredLogo: "Centered Logo",                  variantHeaderCenteredLogoDesc: "Logo centered, navigation below it, CTA button.",
-        variantHeaderTransparentOverlay: "Transparent (Hero Overlay)", variantHeaderTransparentOverlayDesc: "Overlaps the hero (white text), shrinks and becomes frosted glass after scroll.",
-        variantHeaderLogoWithCtaButton: "Logo + CTA Button",         variantHeaderLogoWithCtaButtonDesc: "Logo on left, nav centered, solid-color CTA button on the right.",
-        variantHeaderStackedLogoTagline: "Logo + Tagline Stacked",   variantHeaderStackedLogoTaglineDesc: "Logo and tagline stacked vertically in the center, thin nav below.",
+        variantHeaderLeftLogoInlineNav: "Logo Left + Inline Nav",
+        variantHeaderLeftLogoInlineNavDesc:
+          "Logo on the left, inline navigation on the right, CTA button.",
+        variantHeaderCenteredLogo: "Centered Logo",
+        variantHeaderCenteredLogoDesc:
+          "Logo centered, navigation below it, CTA button.",
+        variantHeaderTransparentOverlay: "Transparent (Hero Overlay)",
+        variantHeaderTransparentOverlayDesc:
+          "Overlaps the hero (white text), shrinks and becomes frosted glass after scroll.",
+        variantHeaderLogoWithCtaButton: "Logo + CTA Button",
+        variantHeaderLogoWithCtaButtonDesc:
+          "Logo on left, nav centered, solid-color CTA button on the right.",
+        variantHeaderStackedLogoTagline: "Logo + Tagline Stacked",
+        variantHeaderStackedLogoTaglineDesc:
+          "Logo and tagline stacked vertically in the center, thin nav below.",
         // footer
-        variantFooterMinimalBand: "Minimal Band",              variantFooterMinimalBandDesc: "Brand + tagline + copyright in a single clean dark row.",
-        variantFooterColumnsWithNav: "Columns + Quick Nav",    variantFooterColumnsWithNavDesc: "Multi-column with landing page navigation links & Back to Top button.",
-        variantFooterColumnsWithSocial: "Columns + Social",    variantFooterColumnsWithSocialDesc: "Multi-column with social media account links.",
-        variantFooterDarkContrastBand: "Dark Contrast Band",   variantFooterDarkContrastBandDesc: "Solid dark footer with primary color accent, strong contrast.",
-        variantFooterLocationAndHours: "Location & Hours",     variantFooterLocationAndHoursDesc: "Brand + map address + operating hours in a clean grid.",
+        variantFooterMinimalBand: "Minimal Band",
+        variantFooterMinimalBandDesc:
+          "Brand + tagline + copyright in a single clean dark row.",
+        variantFooterColumnsWithNav: "Columns + Quick Nav",
+        variantFooterColumnsWithNavDesc:
+          "Multi-column with landing page navigation links & Back to Top button.",
+        variantFooterColumnsWithSocial: "Columns + Social",
+        variantFooterColumnsWithSocialDesc:
+          "Multi-column with social media account links.",
+        variantFooterDarkContrastBand: "Dark Contrast Band",
+        variantFooterDarkContrastBandDesc:
+          "Solid dark footer with primary color accent, strong contrast.",
+        variantFooterLocationAndHours: "Location & Hours",
+        variantFooterLocationAndHoursDesc:
+          "Brand + map address + operating hours in a clean grid.",
         // blog
-        variantBlogGrid: "Grid",       variantBlogGridDesc: "Cards in a 3-column neat layout.",
-        variantBlogList: "List",       variantBlogListDesc: "Horizontal with image on left, text on right.",
-        variantBlogFeatured: "Featured", variantBlogFeaturedDesc: "One large hero post + small grid below.",
-        variantBlogMinimal: "Minimal", variantBlogMinimalDesc: "Titles and dates list without images.",
+        variantBlogGrid: "Grid",
+        variantBlogGridDesc: "Cards in a 3-column neat layout.",
+        variantBlogList: "List",
+        variantBlogListDesc: "Horizontal with image on left, text on right.",
+        variantBlogFeatured: "Featured",
+        variantBlogFeaturedDesc: "One large hero post + small grid below.",
+        variantBlogMinimal: "Minimal",
+        variantBlogMinimalDesc: "Titles and dates list without images.",
         // preloader
-        variantPreloaderNone: "No Preloader",              variantPreloaderNoneDesc: "Page appears instantly without a loading delay.",
-        variantPreloaderTopBar: "Top Progress Bar",        variantPreloaderTopBarDesc: "Thin line at the top of the screen without covering content (like Linear / YouTube).",
-        variantPreloaderMinimalFade: "Typography Fade",    variantPreloaderMinimalFadeDesc: "Subtle typographic brand name in the center of the screen with no extra ornaments.",
-        variantPreloaderMinimalSpinner: "Monoline Ring",   variantPreloaderMinimalSpinnerDesc: "Ultra-thin single-line spinning ring clean in the center of the screen.",
-        variantPreloaderMinimalCounter: "Number Counter",  variantPreloaderMinimalCounterDesc: "Minimal monospace percentage counting up quickly.",
-        variantPreloaderPulseLogo: "Pulsing Logo",         variantPreloaderPulseLogoDesc: "Brand logo gently pulsing in the center of the screen.",
-        variantPreloaderOrbitRing: "Orbit Ring",           variantPreloaderOrbitRingDesc: "Ring spinning around brand logo initials.",
-        variantPreloaderProgressLine: "Slim Progress Bar", variantPreloaderProgressLineDesc: "Logo with a horizontal progress bar below it.",
-        variantPreloaderShimmerReveal: "Shimmer Reveal",   variantPreloaderShimmerRevealDesc: "Gradient light shimmer effect sweeping across the brand text.",
-        variantPreloaderStaggerDots: "Wave Dots",          variantPreloaderStaggerDotsDesc: "Three dots gently waving below the brand name.",
+        variantPreloaderNone: "No Preloader",
+        variantPreloaderNoneDesc:
+          "Page appears instantly without a loading delay.",
+        variantPreloaderTopBar: "Top Progress Bar",
+        variantPreloaderTopBarDesc:
+          "Thin line at the top of the screen without covering content (like Linear / YouTube).",
+        variantPreloaderMinimalFade: "Typography Fade",
+        variantPreloaderMinimalFadeDesc:
+          "Subtle typographic brand name in the center of the screen with no extra ornaments.",
+        variantPreloaderMinimalSpinner: "Monoline Ring",
+        variantPreloaderMinimalSpinnerDesc:
+          "Ultra-thin single-line spinning ring clean in the center of the screen.",
+        variantPreloaderMinimalCounter: "Number Counter",
+        variantPreloaderMinimalCounterDesc:
+          "Minimal monospace percentage counting up quickly.",
+        variantPreloaderPulseLogo: "Pulsing Logo",
+        variantPreloaderPulseLogoDesc:
+          "Brand logo gently pulsing in the center of the screen.",
+        variantPreloaderOrbitRing: "Orbit Ring",
+        variantPreloaderOrbitRingDesc:
+          "Ring spinning around brand logo initials.",
+        variantPreloaderProgressLine: "Slim Progress Bar",
+        variantPreloaderProgressLineDesc:
+          "Logo with a horizontal progress bar below it.",
+        variantPreloaderShimmerReveal: "Shimmer Reveal",
+        variantPreloaderShimmerRevealDesc:
+          "Gradient light shimmer effect sweeping across the brand text.",
+        variantPreloaderStaggerDots: "Wave Dots",
+        variantPreloaderStaggerDotsDesc:
+          "Three dots gently waving below the brand name.",
         // About extras
-        aboutTeamName: "Name", aboutTeamRole: "Role / Title", aboutTeamPhoto: "Photo", aboutRemove: "Remove",
+        aboutTeamName: "Name",
+        aboutTeamRole: "Role / Title",
+        aboutTeamPhoto: "Photo",
+        aboutRemove: "Remove",
         // Placeholder strings
-        phNavCta: "e.g. Contact Us", phTagline: "e.g. Authentic Indonesian Cuisine", phIconName: "e.g. Utensils",
-        phEyebrowAvailable: "e.g. Available Now", phLearnMore: "e.g. Learn More",
-        phSecondaryCta: "e.g. #about or https://...", phBadgeText: "e.g. Open 7 Days · 07:00–22:00",
-        phOpeningHours: "e.g. Open Every Day 07:00 – 22:00", phAboutEyebrow: "e.g. About Us",
-        phStatValue: "e.g. 500+", phStatLabel: "e.g. Happy Customers", phBenefitsStat: "Completed Projects",
-        phWhyChooseUs: "e.g. Why Choose Us", phBenefitsSubtitle: "e.g. Reasons customers trust us",
-        phBenefitsColA: "e.g. With Us", phBenefitsColB: "e.g. Competitor",
-        phComparisonLabel: "Label (e.g. Price)", phValueA: "Value A", phValueB: "Value B",
-        phCtaEyebrow: "e.g. Start Now", phCtaSubheadline: "e.g. Get a special offer before it's gone!",
+        phNavCta: "e.g. Contact Us",
+        phTagline: "e.g. Authentic Indonesian Cuisine",
+        phIconName: "e.g. Utensils",
+        phEyebrowAvailable: "e.g. Available Now",
+        phLearnMore: "e.g. Learn More",
+        phSecondaryCta: "e.g. #about or https://...",
+        phBadgeText: "e.g. Open 7 Days · 07:00–22:00",
+        phOpeningHours: "e.g. Open Every Day 07:00 – 22:00",
+        phAboutEyebrow: "e.g. About Us",
+        phStatValue: "e.g. 500+",
+        phStatLabel: "e.g. Happy Customers",
+        phBenefitsStat: "Completed Projects",
+        phWhyChooseUs: "e.g. Why Choose Us",
+        phBenefitsSubtitle: "e.g. Reasons customers trust us",
+        phBenefitsColA: "e.g. With Us",
+        phBenefitsColB: "e.g. Competitor",
+        phComparisonLabel: "Label (e.g. Price)",
+        phValueA: "Value A",
+        phValueB: "Value B",
+        phCtaEyebrow: "e.g. Start Now",
+        phCtaSubheadline: "e.g. Get a special offer before it's gone!",
         phCtaTrustSignal: "e.g. ✅ Trusted by 500+ customers",
         phSocialUrl: "URL (e.g. https://instagram.com/...)",
-        phGalleryTitle: "Our Gallery", phGalleryEyebrow: "DOCUMENTATION",
-        phGalleryCaption: "Cozy atmosphere inside", phGalleryAltText: "Brief image description",
-        phStatsEyebrow: "e.g. BY THE NUMBERS", phStatsSectionTitle: "e.g. Achievements That Speak",
+        phGalleryTitle: "Our Gallery",
+        phGalleryEyebrow: "DOCUMENTATION",
+        phGalleryCaption: "Cozy atmosphere inside",
+        phGalleryAltText: "Brief image description",
+        phStatsEyebrow: "e.g. BY THE NUMBERS",
+        phStatsSectionTitle: "e.g. Achievements That Speak",
         phStatsSubtitle: "e.g. Real results from our dedication and hard work",
-        phStatsValue: "e.g. 1.2M or 98%", phStatsLabel: "e.g. Subscribers", phStatsDescription: "e.g. Active on 3 platforms",
-        phPartnersEyebrow: "e.g. TRUSTED BY", phPartnersSectionTitle: "e.g. Brands We've Collaborated With",
+        phStatsValue: "e.g. 1.2M or 98%",
+        phStatsLabel: "e.g. Subscribers",
+        phStatsDescription: "e.g. Active on 3 platforms",
+        phPartnersEyebrow: "e.g. TRUSTED BY",
+        phPartnersSectionTitle: "e.g. Brands We've Collaborated With",
         phPartnersSubtitle: "e.g. Over 50+ brands have trusted our work",
-        phPartnersBrandName: "e.g. Tokopedia", phPartnersCategory: "e.g. E-Commerce",
-        phPricingEyebrow: "e.g. RATE CARD / PACKAGES", phPricingSectionTitle: "e.g. Collaboration & Service Packages",
-        phPricingSubtitle: "e.g. Choose the package that best fits your campaign needs",
-        phPricingPlanName: "e.g. Basic / Pro", phPricingBadge: "e.g. Most Popular",
-        phPricingPrice: "e.g. $250", phPricingPeriod: "e.g. /month or /video",
+        phPartnersBrandName: "e.g. Tokopedia",
+        phPartnersCategory: "e.g. E-Commerce",
+        phPricingEyebrow: "e.g. RATE CARD / PACKAGES",
+        phPricingSectionTitle: "e.g. Collaboration & Service Packages",
+        phPricingSubtitle:
+          "e.g. Choose the package that best fits your campaign needs",
+        phPricingPlanName: "e.g. Basic / Pro",
+        phPricingBadge: "e.g. Most Popular",
+        phPricingPrice: "e.g. $250",
+        phPricingPeriod: "e.g. /month or /video",
         phPricingDesc: "e.g. Great for mid-scale brand campaigns",
-        phPricingFeatures: "1 TikTok/Reels Video\nIncludes 3-Month Copyright\n2x Video Revisions",
+        phPricingFeatures:
+          "1 TikTok/Reels Video\nIncludes 3-Month Copyright\n2x Video Revisions",
         phPricingCtaText: "e.g. Choose Plan",
         phFloatingWaNumber: "e.g. 628123456789 or 08123456789",
-        phHeroStatValue: "e.g. 12", phHeroStatLabel: "e.g. Projects",
-        phAccessoryNone: "— None —", phAccessoryLabel: "e.g. Starting from", phAccessoryLabelAvailFor: "e.g. Available for",
-        phAccessoryValue: "e.g. $9.99", phAccessoryValueConsultation: "e.g. Booking & consultation",
+        phHeroStatValue: "e.g. 12",
+        phHeroStatLabel: "e.g. Projects",
+        phAccessoryNone: "— None —",
+        phAccessoryLabel: "e.g. Starting from",
+        phAccessoryLabelAvailFor: "e.g. Available for",
+        phAccessoryValue: "e.g. $9.99",
+        phAccessoryValueConsultation: "e.g. Booking & consultation",
         phAccessorySkills: "e.g. Photography, Video, Branding",
-        phHeroBgColor: "Leave empty to use global color", phHeroCaption: "Caption (optional)",
-        phTestimonialsEyebrow: "e.g. Testimonials", phTestimonialsSectionTitle: "e.g. Stories from Our Customers",
+        phHeroBgColor: "Leave empty to use global color",
+        phHeroCaption: "Caption (optional)",
+        phTestimonialsEyebrow: "e.g. Testimonials",
+        phTestimonialsSectionTitle: "e.g. Stories from Our Customers",
         phTestimonialsSubtitle: "e.g. Reviews from our loyal customers",
         phTestimonialsQuote: "Write a specific, believable quote...",
-        phTestimonialsName: "e.g. John Smith", phTestimonialsRole: "e.g. Regular customer",
+        phTestimonialsName: "e.g. John Smith",
+        phTestimonialsRole: "e.g. Regular customer",
         phTestimonialsCompany: "e.g. Acme Corp",
-        phWorksTitle: "Our Projects", phWorksSubtitle: "Some of the best projects we've worked on.",
-        phWorksItemTitle: "e.g. Coffee Brand Redesign", phWorksClient: "e.g. Nusantara Coffee",
-        phWorksDescription: "Describe the scope and results of this project...", phWorksAltText: "Brief description of project image",
+        phWorksTitle: "Our Projects",
+        phWorksSubtitle: "Some of the best projects we've worked on.",
+        phWorksItemTitle: "e.g. Coffee Brand Redesign",
+        phWorksClient: "e.g. Nusantara Coffee",
+        phWorksDescription: "Describe the scope and results of this project...",
+        phWorksAltText: "Brief description of project image",
         // HeroStats & HeroAccessory
         heroStatHighlight: "Hero Statistics",
-        heroStatHighlightHint: "Number row (e.g. 12 / Projects) for Editorial Split, Personal Billboard, Portrait Showcase, and Chronology Badge variants. Empty = row is hidden.",
-        heroStatHighlightEmpty: "No statistics yet. Add a value and label, then the row will appear in the hero.",
+        heroStatHighlightHint:
+          "Number row (e.g. 12 / Projects) for Editorial Split, Personal Billboard, Portrait Showcase, and Chronology Badge variants. Empty = row is hidden.",
+        heroStatHighlightEmpty:
+          "No statistics yet. Add a value and label, then the row will appear in the hero.",
         heroStatAddItem: "Add Statistic",
         heroAccessoryLabel: "Hero Business Info",
-        heroAccessoryHint: "Small block in the hero tailored to your business type (price, availability, or skills).",
+        heroAccessoryHint:
+          "Small block in the hero tailored to your business type (price, availability, or skills).",
         heroAccessoryTagsLabel: "List (comma-separated)",
         heroAccessoryPrice: "Price (online store/product)",
         heroAccessoryAvailability: "Availability (service/freelance)",
@@ -10411,52 +11628,75 @@ export const translations: Record<Locale, Translations> = {
         heroAccessoryRating: "Rating (event/invitation)",
         heroAccessoryMenuHighlight: "Featured Menu (culinary)",
         // AI prompt strings
-        aiAboutTitlePrompt: "Write an engaging, business-relevant title for the About section",
-        aiAboutTitleLabel: "About Title", aiAboutTitleBtn: "AI: generate title",
-        aiAboutBodyPrompt: "Write a warm, specific, and human paragraph about this business. 2–4 sentences.",
-        aiAboutBodyLabel: "Description", aiAboutBodyBtn: "AI: generate description",
-        aiHeroHeadlinePrompt: "Write a strong and compelling headline, max 10 words",
-        aiHeroHeadlineLabel: "Headline", aiHeroHeadlineBtn: "AI: generate headline",
-        aiHeroSubheadlinePrompt: "Write a clear subheadline that communicates the value proposition, max 25 words",
-        aiHeroSubheadlineLabel: "Subheadline", aiHeroSubheadlineBtn: "AI: generate subheadline",
-        aiCtaHeadlinePrompt: "Write a strong, action-oriented CTA headline that closes buyer hesitation",
-        aiCtaHeadlineLabel: "CTA Headline", aiCtaHeadlineBtn: "AI: generate headline",
+        aiAboutTitlePrompt:
+          "Write an engaging, business-relevant title for the About section",
+        aiAboutTitleLabel: "About Title",
+        aiAboutTitleBtn: "AI: generate title",
+        aiAboutBodyPrompt:
+          "Write a warm, specific, and human paragraph about this business. 2–4 sentences.",
+        aiAboutBodyLabel: "Description",
+        aiAboutBodyBtn: "AI: generate description",
+        aiHeroHeadlinePrompt:
+          "Write a strong and compelling headline, max 10 words",
+        aiHeroHeadlineLabel: "Headline",
+        aiHeroHeadlineBtn: "AI: generate headline",
+        aiHeroSubheadlinePrompt:
+          "Write a clear subheadline that communicates the value proposition, max 25 words",
+        aiHeroSubheadlineLabel: "Subheadline",
+        aiHeroSubheadlineBtn: "AI: generate subheadline",
+        aiCtaHeadlinePrompt:
+          "Write a strong, action-oriented CTA headline that closes buyer hesitation",
+        aiCtaHeadlineLabel: "CTA Headline",
+        aiCtaHeadlineBtn: "AI: generate headline",
         // Gallery
-        gallerySectionBannerDesc2: "Add photos to the gallery. Customize layout, captions, and alt text.",
+        gallerySectionBannerDesc2:
+          "Add photos to the gallery. Customize layout, captions, and alt text.",
         galleryLayoutGridDesc: "Uniform boxes",
         galleryLayoutMasonryDesc: "Variable heights",
         galleryLayoutCarouselDesc: "Auto-sliding",
         galleryCarouselSettingsLabel: "Carousel Settings",
         // Floating button descriptions
-        floatingWhatsAppDescLong: "Green WhatsApp button in the bottom-right corner. Click opens WA directly.",
-        floatingWhatsAppPillDescLong: "WhatsApp tab on the right side of the screen. Collapses when idle, expands on hover or touch.",
-        floatingChatBubbleDescLong: "Interactive WA chat widget. Visitors can type a message before being redirected to WA.",
+        floatingWhatsAppDescLong:
+          "Green WhatsApp button in the bottom-right corner. Click opens WA directly.",
+        floatingWhatsAppPillDescLong:
+          "WhatsApp tab on the right side of the screen. Collapses when idle, expands on hover or touch.",
+        floatingChatBubbleDescLong:
+          "Interactive WA chat widget. Visitors can type a message before being redirected to WA.",
         floatingChatBubbleProRequired: "Enable the Pro plan for Chat Bubble.",
-        floatingContactLinkDescLong: "Button that scrolls to the Contact section. No WA number required.",
+        floatingContactLinkDescLong:
+          "Button that scrolls to the Contact section. No WA number required.",
       },
       wizard: {
-        initialMessage: "Hi! I'm Joz-AI, an AI assistant who will help you create a website. Let's get started: what's the name of your business or brand?",
+        initialMessage:
+          "Hi! I'm Joz-AI, an AI assistant who will help you create a website. Let's get started: what's the name of your business or brand?",
         nameAckVariants: [
           "Got it!",
           "Great!",
           "Awesome!",
           "Sounds good!",
-          "Perfect!"
+          "Perfect!",
         ],
         nameConfirmVariants: [
           "Is that the official name, or a temporary one? Click 'Yes' to continue, or 'Change' if you'd like to edit it 😊",
           "Is that the actual name? Click 'Yes' to continue, or 'Change' to enter a different one.",
-          "That name sounds like a placeholder — make sure it's the one you want. Click 'Yes' or 'Change'."
+          "That name sounds like a placeholder — make sure it's the one you want. Click 'Yes' or 'Change'.",
         ],
-        descriptionPrompt: "Tell us briefly about your business or profile in 1-2 paragraphs. (Press Enter to skip)",
+        descriptionPrompt:
+          "Tell us briefly about your business or profile in 1-2 paragraphs. (Press Enter to skip)",
         descriptionSkipKeyword: "skip",
-        descriptionInferenceHigh: "Looks like you fit into the **{subType}** category. Shall we create the website?",
-        descriptionInferenceMedium: "Looks like your field is {type}. Could you pick a more specific category?",
-        descriptionInferenceTypeOnly: "Great! Your business belongs to {category}. More specifically, please choose the best match below:",
+        descriptionInferenceHigh:
+          "Looks like you fit into the **{subType}** category. Shall we create the website?",
+        descriptionInferenceMedium:
+          "Looks like your field is {type}. Could you pick a more specific category?",
+        descriptionInferenceTypeOnly:
+          "Great! Your business belongs to {category}. More specifically, please choose the best match below:",
         descriptionInferenceNone: "Alright, please select your category:",
-        pickFieldPrompt: "I couldn't tell your business type for sure. Pick the field that fits best:",
-        pickFieldAiFailed: "The AI connection failed. Pick your business field:",
-        descriptionAiFailed: "AI is having trouble. Please select your category manually:",
+        pickFieldPrompt:
+          "I couldn't tell your business type for sure. Pick the field that fits best:",
+        pickFieldAiFailed:
+          "The AI connection failed. Pick your business field:",
+        descriptionAiFailed:
+          "AI is having trouble. Please select your category manually:",
         analyzingDescription: "Analyzing your profile...",
         descriptionRefinedIntro: "Got it! Here's your summary:",
         selectMoodPrompt: "How do you want your website to look?",
@@ -10465,7 +11705,8 @@ export const translations: Record<Locale, Translations> = {
         preparingTheme: "Crafting visual theme & identity...",
         preparingComponents: "Assembling layout & website components...",
         preparingOpening: "Opening website preview...",
-        websiteReady: "Congratulations! Your website is ready. Use the Edit button to customize content, then click Publish to go live.",
+        websiteReady:
+          "Congratulations! Your website is ready. Use the Edit button to customize content, then click Publish to go live.",
         confirmCardTitle: "Almost done — review and complete",
         confirmCardLabelName: "Name",
         confirmCardLabelType: "Type",
@@ -10481,7 +11722,8 @@ export const translations: Record<Locale, Translations> = {
         confirmCardBtnGenerating: "Generating...",
         confirmCardBtnFinishEdit: "Finish editing first ↑",
         successModalTitle: "Congratulations! Your Website is Ready 🎉",
-        successModalDesc: "Your website has been successfully generated by AI. Feel free to review the layout and content. If you'd like to adjust any text, images, colors, or sections, you can easily customize everything in the Editor.",
+        successModalDesc:
+          "Your website has been successfully generated by AI. Feel free to review the layout and content. If you'd like to adjust any text, images, colors, or sections, you can easily customize everything in the Editor.",
         successModalBtnPreview: "View Preview",
         successModalBtnEdit: "Edit & Publish",
         errorModalRetry: "Try again",
@@ -10528,7 +11770,8 @@ export const translations: Record<Locale, Translations> = {
         openForm: "Open Form",
         closeForm: "Close Form",
         businessDetailsTitle: "Business Details",
-        businessDetailsSubtitle: "These two pieces of info are used by AI for contact buttons and generating relevant copy.",
+        businessDetailsSubtitle:
+          "These two pieces of info are used by AI for contact buttons and generating relevant copy.",
         waSaved: "WA saved",
         waEmpty: "WA not set",
         areaEmpty: "Area not set",
@@ -10549,7 +11792,8 @@ export const translations: Record<Locale, Translations> = {
         sttProcessingTitle: "Processing your voice...",
         sttProcessingSubtitle: "Drafting business information...",
         sttReviewTitle: "Here is what I heard from you:",
-        sttReviewPrompt: "Does this look correct? You can edit before we continue.",
+        sttReviewPrompt:
+          "Does this look correct? You can edit before we continue.",
         sttBtnEdit: "Edit",
         sttBtnConfirm: "Yes, continue",
         editMessage: "Edit message",
@@ -10557,30 +11801,38 @@ export const translations: Record<Locale, Translations> = {
         editShortcutHint: "Enter to save, Esc to cancel",
         editPlaceholder: "Type message changes...",
         micReadyHint: "Click the mic icon to explain your business by voice",
-        micPermissionDenied: "Microphone permission is required to record voice. Please allow microphone access in your browser.",
-        sttNoVoiceDetected: "No voice detected. Please try speaking again or type your business description directly.",
+        micPermissionDenied:
+          "Microphone permission is required to record voice. Please allow microphone access in your browser.",
+        sttNoVoiceDetected:
+          "No voice detected. Please try speaking again or type your business description directly.",
         backToChat: "Back to chat",
         generationFailed: "Generation failed",
-        generationErrorMessage: "An error occurred while generating the preview.",
+        generationErrorMessage:
+          "An error occurred while generating the preview.",
         successToastTitle: "Your website is ready!",
-        successToastDesc: "Content, colors, and layout can be changed anytime in the Editor.",
+        successToastDesc:
+          "Content, colors, and layout can be changed anytime in the Editor.",
         closeNotification: "Close notification",
         btnLater: "Later",
         btnCompleteData: "Complete Info",
         btnEditPublish: "Edit & Publish",
         completeContactDataTitle: "Complete contact info",
-        completeContactDataDesc: "Add your WhatsApp number so contact buttons on the website work.",
+        completeContactDataDesc:
+          "Add your WhatsApp number so contact buttons on the website work.",
         editPublishHintTitle: "Want to customize your site?",
-        editPublishHintDesc: "Don't worry, you can edit text, swap, or delete any section however you like.",
+        editPublishHintDesc:
+          "Don't worry, you can edit text, swap, or delete any section however you like.",
         mobileEditPublishHintTitle: "✏️ Customize your site",
         mobileEditPublishHintDesc: "Easily edit, change, or remove any section",
         mobileHintTitle: "📋 Add WhatsApp & service area",
         mobileHintDesc: "To activate contact buttons",
         tooFastTitle: "Too fast!",
-        tooFastMessage: "You've generated multiple times in a short window. Please wait 30 seconds and try again.",
+        tooFastMessage:
+          "You've generated multiple times in a short window. Please wait 30 seconds and try again.",
         btnConfirmYes: "Yes, continue",
         btnChangeCategory: "Change category",
-        btnTryOtherRecommendation: "Try other recommendation ({current}/{total})",
+        btnTryOtherRecommendation:
+          "Try other recommendation ({current}/{total})",
         btnFullPagePreview: "Full Page Preview",
         btnExitFullPagePreview: "Exit Full Page Preview",
         recommendationHintTitle: "{count} design recommendations available!",
@@ -10592,7 +11844,8 @@ export const translations: Record<Locale, Translations> = {
         otherSubTypePlaceholder: "Enter your specific business sub-type...",
         chooseMoodHint: "Choose a mood that fits your brand",
         typeSelectedChooseSub: "✓ Selected — choose type below",
-        prefillTypePrompt: "I've estimated your website category. Continue if it's correct, or change it first:",
+        prefillTypePrompt:
+          "I've estimated your website category. Continue if it's correct, or change it first:",
         btnContinueType: "Continue with this type →",
         changeBidang: "Other sector →",
         selectSector: "Select your sector:",
@@ -10617,9 +11870,12 @@ export const translations: Record<Locale, Translations> = {
         nameConfirmPlaceholder: "Choose an option above or type a new name...",
         nameConfirmYes: "Yes",
         nameConfirmChange: "Change",
-        nameChangePrompt: "Sure, please type the business name you'd like to use:",
-        descPlaceholder: "Example: Selling specialty coffee in Jogja, serving bulk orders",
-        descPlaceholderWithMic: "Tell us about your business, or click the mic 🎤",
+        nameChangePrompt:
+          "Sure, please type the business name you'd like to use:",
+        descPlaceholder:
+          "Example: Selling specialty coffee in Jogja, serving bulk orders",
+        descPlaceholderWithMic:
+          "Tell us about your business, or click the mic 🎤",
         labelBusinessName: "Business Name",
         labelBusinessType: "Category",
         labelBusinessSubType: "Sub Category",
@@ -10627,7 +11883,8 @@ export const translations: Record<Locale, Translations> = {
         labelWhatsapp: "WhatsApp Number",
         labelServiceArea: "Service Area",
         labelMood: "Website Style & Vibe (Mood)",
-        disambiguateJasaPortofolio: "Not sure whether to pick Services & Booking or Creative & Professional? If your customers need to book a schedule/reservation → choose Services & Booking. If they need to see your work first before ordering → choose Creative & Professional.",
+        disambiguateJasaPortofolio:
+          "Not sure whether to pick Services & Booking or Creative & Professional? If your customers need to book a schedule/reservation → choose Services & Booking. If they need to see your work first before ordering → choose Creative & Professional.",
         categories: {
           kuliner: "Culinary",
           kulinerDesc: "Restaurants, Cafes, Catering",
@@ -10636,9 +11893,11 @@ export const translations: Record<Locale, Translations> = {
           jasaBooking: "Services & Booking",
           jasaBookingDesc: "Salons, Workshops, Clinics, etc",
           portofolioKreator: "Creative & Professional",
-          portofolioKreatorDesc: "Developers, Designers, Agencies, Consultants, etc",
+          portofolioKreatorDesc:
+            "Developers, Designers, Agencies, Consultants, etc",
           company: "Company Profile",
-          companyDesc: "Property, Construction, Manufacturing, Foundation, & Institutions",
+          companyDesc:
+            "Property, Construction, Manufacturing, Foundation, & Institutions",
         },
         moods: {
           modernClean: "Modern & Clean",
@@ -10662,9 +11921,9 @@ export const translations: Record<Locale, Translations> = {
           // Food & Beverage
           "Restoran & Warung Makan": "Restaurant",
           "Kuliner Tradisional & Nusantara": "Traditional Cuisine",
-          "Kafe": "Cafe",
+          Kafe: "Cafe",
           "Bakery & Pastry": "Bakery",
-          "Catering": "Catering",
+          Catering: "Catering",
           "Minuman & Bubble Tea": "Drinks",
           "Makanan Rumahan & Frozen Food": "Home-Cooked",
           "Frozen Food Homemade": "Frozen Food",
@@ -10673,7 +11932,7 @@ export const translations: Record<Locale, Translations> = {
           "Herbal & Jamu": "Herbal",
           // Retail & Store
           "Fashion & Pakaian": "Fashion & Apparel",
-          "Elektronik": "Electronics",
+          Elektronik: "Electronics",
           "Kecantikan & Kosmetik": "Cosmetics & Skincare",
           "Produk Lokal Handmade": "Handmade & Crafts",
           "Minimarket & Sembako": "Convenience & Grocery",
@@ -10685,31 +11944,32 @@ export const translations: Record<Locale, Translations> = {
           "Rental Mobil & Kendaraan": "Car & Vehicle Rental",
           "Travel & Wisata": "Travel & Tourism",
           "Hotel & Penginapan": "Hotel & Lodging",
-          "Makeup Artist (MUA)": "Makeup Artist (MUA)",          "Salon & Kecantikan": "Beauty & Salon",
-          "Barbershop": "Barbershop",
+          "Makeup Artist (MUA)": "Makeup Artist (MUA)",
+          "Salon & Kecantikan": "Beauty & Salon",
+          Barbershop: "Barbershop",
           "Klinik & Kesehatan": "Clinic & Healthcare",
           "Gym & Olahraga": "Gym & Fitness",
           "Event & Wedding Organizer": "Event & Wedding Organizer",
           "Otomotif & Bengkel": "Auto & Repair",
           "Bengkel Motor": "Motorcycle Workshop",
           "Bengkel Mobil & Otomotif": "Auto & Car Repair",
-          "Laundry": "Laundry",
+          Laundry: "Laundry",
           "Jasa Rumah & Kebersihan": "Home Care & Cleaning",
           "Pendidikan & Kursus": "Tutoring & Courses",
           "Biro Jasa & Perizinan": "Licensing & Permit Agency",
           "Koperasi & Simpan Pinjam": "Cooperative & Savings",
           // Portfolio & Creator / Creative & Professional
           "Konten Kreator": "Content Creator",
-          "Fotografer": "Photography",
-          "Videografer": "Videography",
-          "Desainer": "Design",
+          Fotografer: "Photography",
+          Videografer: "Videography",
+          Desainer: "Design",
           "Ilustrator & Seniman": "Illustrator & Artist",
           "Arsitek & Desainer Interior": "Architect & Interior",
           "Penulis & Copywriter": "Writer & Copywriter",
           "Developer & IT": "Developer & IT",
           "SEO & Digital Specialist": "SEO & Digital Specialist",
           "Digital & Marketing Agency": "Digital & Marketing Agency",
-          "Konsultan": "Consulting",
+          Konsultan: "Consulting",
           "Tutor & Life Coach": "Tutor & Coach",
           "Public Speaker & Trainer": "Speaker & Trainer",
           "Musisi & Entertainer": "Music & Entertainment",
@@ -10876,7 +12136,8 @@ export const translations: Record<Locale, Translations> = {
       },
       emailPrompt: {
         title: "Add your email to receive invoices and important notifications",
-        description: "Your account currently uses a system-generated email. Add a real email to receive payments and updates.",
+        description:
+          "Your account currently uses a system-generated email. Add a real email to receive payments and updates.",
         save: "Save",
         dismiss: "Dismiss",
         emailUpdated: "Email updated",
