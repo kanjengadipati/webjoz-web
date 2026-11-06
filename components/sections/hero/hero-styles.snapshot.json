@@ -65,6 +65,11 @@
     "minImages": 1
   },
   {
+    "name": "profile-cutout",
+    "imageNeed": "required",
+    "minImages": 1
+  },
+  {
     "name": "work-preview-strip",
     "imageNeed": "optional",
     "minImages": 0
