@@ -52,6 +52,13 @@ export default function TestimonialsSection({
   const Renderer = variants[variant] ?? TestimonialsClassic;
   const isEditor = !!isEditorMode;
 
+  // Option B: AI-generated testimonials are marked as examples.
+  // On the public site, don't render them until the owner approves/replaces.
+  const isExample = (testimonials as any)?._is_example === true;
+  if (isExample && !isEditor) {
+    return null;
+  }
+
   const onAddItem = useCallback(() => {
     if (!onUpdateField) return;
     const items = [...(testimonials?.items ?? [])];
@@ -66,8 +73,14 @@ export default function TestimonialsSection({
   }, [testimonials?.items, onUpdateField]);
 
   return (
-    <Renderer
-      testimonials={testimonials}
+    <>
+      {isExample && isEditor && (
+        <div className="mb-2 px-3 py-1.5 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-medium">
+          Contoh testimoni (AI) — ganti atau setujui sebelum tayang
+        </div>
+      )}
+      <Renderer
+        testimonials={testimonials}
       design_token={design_token}
       onUpdateField={onUpdateField}
       isEditorMode={isEditorMode}
@@ -76,5 +89,6 @@ export default function TestimonialsSection({
       onEditingStateChange={onEditingStateChange}
       onAddItem={isEditor ? onAddItem : undefined}
     />
+    </>
   );
 }
