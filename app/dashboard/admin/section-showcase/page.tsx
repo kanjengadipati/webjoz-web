@@ -385,6 +385,31 @@ export default function SectionShowcasePage() {
     });
   }, [allSectionOptions, currentSectionHiddenSet, statusFilter, searchQuery]);
 
+  // Jump or select variant via dropdown
+  const handleSelectVariantDropdown = useCallback((variantVal: string) => {
+    if (!variantVal) return;
+    if (displayMode === "single") {
+      setSelectedVariant(variantVal);
+    } else {
+      if (searchQuery.trim()) {
+        setSearchQuery("");
+      }
+      if (currentSectionHiddenSet.has(variantVal) && statusFilter === "active") {
+        setStatusFilter("all");
+      }
+      setTimeout(() => {
+        const el = document.getElementById(`variant-card-${variantVal}`);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+          el.classList.add("ring-2", "ring-primary", "rounded-xl", "transition-all");
+          setTimeout(() => {
+            el.classList.remove("ring-2", "ring-primary");
+          }, 1800);
+        }
+      }, 60);
+    }
+  }, [displayMode, searchQuery, statusFilter, currentSectionHiddenSet]);
+
   // Reset selected variant on section change
   useEffect(() => {
     if (allSectionOptions.length > 0) {
@@ -521,8 +546,31 @@ export default function SectionShowcasePage() {
                 </button>
               </div>
 
+              {/* Variant Selector Dropdown */}
+              <div className="flex items-center gap-1.5 bg-muted/40 hover:bg-muted/60 transition-colors px-2 py-1 rounded-lg border border-border/60">
+                <Sliders className="size-3.5 text-muted-foreground shrink-0" />
+                <select
+                  value={displayMode === "single" ? selectedVariant : ""}
+                  onChange={(e) => handleSelectVariantDropdown(e.target.value)}
+                  className="bg-transparent text-xs font-medium text-foreground focus:outline-hidden cursor-pointer max-w-[170px] sm:max-w-[240px] truncate"
+                  title="Pilih atau lompat ke varian langsung dari dropdown"
+                >
+                  <option value="" className="bg-popover text-popover-foreground">
+                    {displayMode === "single"
+                      ? "Pilih varian..."
+                      : `Lompat ke varian (${allSectionOptions.length})…`}
+                  </option>
+                  {allSectionOptions.map((v, idx) => (
+                    <option key={v.value} value={v.value} className="bg-popover text-popover-foreground">
+                      {currentSectionHiddenSet.has(v.value) ? "🚫 " : ""}
+                      {idx + 1}. {v.label} ({v.value})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               {/* Search Bar */}
-              <div className="relative w-36 sm:w-48">
+              <div className="relative w-36 sm:w-44">
                 <Search className="size-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
                 <input
                   type="text"
@@ -591,7 +639,11 @@ export default function SectionShowcasePage() {
                 {availableVariants.map((v, index) => {
                   const isHidden = currentSectionHiddenSet.has(v.value);
                   return (
-                    <div key={v.value} data-variant-key={`${selectedSection}:${v.value}`}>
+                    <div
+                      key={v.value}
+                      id={`variant-card-${v.value}`}
+                      data-variant-key={`${selectedSection}:${v.value}`}
+                    >
                       <VariantPreviewCard
                         index={index + 1}
                         sectionKey={selectedSection}
@@ -637,29 +689,31 @@ export default function SectionShowcasePage() {
             ) : (
               <div className="space-y-4 pb-12">
                 {selectedVariant && (
-                  <VariantPreviewCard
-                    index={1}
-                    sectionKey={selectedSection}
-                    variant={
-                      allSectionOptions.find((v) => v.value === selectedVariant) ?? {
-                        value: selectedVariant,
-                        label: selectedVariant,
+                  <div id={`variant-card-${selectedVariant}`}>
+                    <VariantPreviewCard
+                      index={1}
+                      sectionKey={selectedSection}
+                      variant={
+                        allSectionOptions.find((v) => v.value === selectedVariant) ?? {
+                          value: selectedVariant,
+                          label: selectedVariant,
+                        }
                       }
-                    }
-                    designToken={currentToken}
-                    cardStyle={cardStyle}
-                    viewportClass={viewportWidthClass}
-                    copiedVariant={copiedVariant}
-                    isHidden={currentSectionHiddenSet.has(selectedVariant)}
-                    zeroState={selectedSection === "hero" && heroZeroState}
-                    onCopyVariant={handleCopyVariant}
-                    onToggleHide={() => handleToggleVariantVisibility(selectedSection, selectedVariant)}
-                    onFullScreen={() => handleOpenFullscreenSection(selectedSection, selectedVariant)}
-                    critiqueData={variantCritiques[selectedSection]?.[selectedVariant]}
-                    isCritiquing={critiquingVariant?.key === `${selectedSection}:${selectedVariant}`}
-                    critiqueMethod={critiquingVariant?.key === `${selectedSection}:${selectedVariant}` ? critiquingVariant.method : null}
-                    onCritique={(el) => handleCritiqueVariant(selectedSection, selectedVariant, el)}
-                  />
+                      designToken={currentToken}
+                      cardStyle={cardStyle}
+                      viewportClass={viewportWidthClass}
+                      copiedVariant={copiedVariant}
+                      isHidden={currentSectionHiddenSet.has(selectedVariant)}
+                      zeroState={selectedSection === "hero" && heroZeroState}
+                      onCopyVariant={handleCopyVariant}
+                      onToggleHide={() => handleToggleVariantVisibility(selectedSection, selectedVariant)}
+                      onFullScreen={() => handleOpenFullscreenSection(selectedSection, selectedVariant)}
+                      critiqueData={variantCritiques[selectedSection]?.[selectedVariant]}
+                      isCritiquing={critiquingVariant?.key === `${selectedSection}:${selectedVariant}`}
+                      critiqueMethod={critiquingVariant?.key === `${selectedSection}:${selectedVariant}` ? critiquingVariant.method : null}
+                      onCritique={(el) => handleCritiqueVariant(selectedSection, selectedVariant, el)}
+                    />
+                  </div>
                 )}
               </div>
             )}
