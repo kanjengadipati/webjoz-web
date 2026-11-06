@@ -9,6 +9,7 @@ import {
 import { SparkleGenAI } from "@/components/sparkle-icon";
 import FileUpload, { uploadImageFile } from "@/components/file-upload";
 import { ProductQuickView } from "@/components/templates/shared";
+import { SidebarField } from "@/components/sidebar-field";
 import { useI18n } from "@/lib/i18n/context";
 import { formatIdNumber } from "@/lib/utils";
 import {
@@ -1053,17 +1054,7 @@ function SortableItemRow({
 
           {/* Description */}
           <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <label className={MCF_INPUT_LABEL}>{t("dashboard.sitesKatalog.description", "Deskripsi")}</label>
-              {onAiDescription && (
-                <AiFieldButton
-                  loading={aiLoadingDesc === `${catIdx}_${itemIdx}`}
-                  onGenerate={() => onAiDescription(catIdx, itemIdx, item.name || "", catName || "", item.image_url || undefined)}
-                  title="AI: generate deskripsi"
-                  onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
-                />
-              )}
-            </div>
+            <label className={MCF_INPUT_LABEL}>{t("dashboard.sitesKatalog.description", "Deskripsi")}</label>
 
             {/* Toolbar */}
             <div className="flex items-center gap-1.5 bg-muted/40 border border-border/80 border-b-0 rounded-t-xl px-2.5 py-1.5 text-xs flex-wrap">
@@ -1133,12 +1124,15 @@ function SortableItemRow({
               </div>
             </div>
 
-            <textarea
-              value={item.description ?? ""}
+            <SidebarField
+              section="catalog"
+              fieldKey={`categories.${catIdx}.items.${itemIdx}.description`}
+              multiline
               rows={3}
-              onChange={(e) => updateItem(catIdx, itemIdx, "description", e.target.value)}
+              value={item.description ?? ""}
+              onChange={(val) => updateItem(catIdx, itemIdx, "description", val)}
               placeholder={t("dashboard.sitesKatalog.descriptionPlaceholder", undefined, { itemLabel })}
-              className="w-full px-3.5 py-2.5 border border-border/80 focus:border-primary/60 rounded-b-xl text-[13px] outline-none focus:ring-2 focus:ring-primary/20 bg-background text-foreground placeholder:text-muted-foreground/60 transition-all resize-y shadow-2xs"
+              inputClassName="!rounded-t-none !rounded-b-xl !px-3.5 !py-2.5 !bg-background !text-foreground"
             />
           </div>
 

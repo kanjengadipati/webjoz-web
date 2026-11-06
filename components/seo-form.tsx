@@ -3,6 +3,7 @@
 import { CustomSelect } from "webjoz-ui";
 
 import React, { useState } from "react";
+import { SidebarField } from "@/components/sidebar-field";
 import { CheckCircle, Lock, Search, Star, Loader2, Check, RotateCcw } from "lucide-react";
 import { AiFieldButton } from "@/components/menu-catalog-form";
 import FileUpload from "@/components/file-upload";
@@ -364,17 +365,16 @@ export function SeoForm({
 
       {/* Meta Title */}
       <div className="space-y-1">
-        <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-          <span>Meta Title</span>
-          {renderFieldActions("title", onAiText && isPremium && (
-            <AiFieldButton
-              loading={aiLoadingField === "seo.title"}
-              onGenerate={() => onAiText("title", "Buat SEO title yang mengandung nama bisnis, lokasi, dan layanan utama. Maks 60 karakter.", "Meta Title")}
-              title="AI: generate SEO title" isPremium={isPremium} onUpgradeRequired={onUpgradeRequired}
-            />
-          ))}
-        </label>
-        <input type="text" value={seo?.title || ""} onChange={(e) => updateField("seo", "title", e.target.value)} className={fieldBase} placeholder="cth. Toko Bangunan Maju — Bahan Bangunan Berkualitas di Surabaya" />
+        <SidebarField
+          section="seo"
+          fieldKey="title"
+          label="Meta Title"
+          value={seo?.title || ""}
+          onChange={(val) => updateField("seo", "title", val)}
+          placeholder="cth. Toko Bangunan Maju — Bahan Bangunan Berkualitas di Surabaya"
+          undoCount={fieldUndoStacks?.["seo.title"]?.length ?? fieldUndoStacks?.["title"]?.length}
+          onUndo={() => undoField?.("seo", "title")}
+        />
         <div className="flex justify-end">
           <span className={`text-[10px] font-mono ${titleLen > 60 ? "text-red-500" : "text-slate-500"}`}>{titleLen}/60</span>
         </div>
@@ -382,17 +382,18 @@ export function SeoForm({
 
       {/* Meta Description */}
       <div className="space-y-1">
-        <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-          <span>Meta Description</span>
-          {renderFieldActions("description", onAiText && isPremium && (
-            <AiFieldButton
-              loading={aiLoadingField === "seo.description"}
-              onGenerate={() => onAiText("description", "Buat meta description yang menarik klik di Google. Maks 155 karakter, sertakan nama bisnis dan value proposition.", "Meta Description")}
-              title="AI: generate meta description" isPremium={isPremium} onUpgradeRequired={onUpgradeRequired}
-            />
-          ))}
-        </label>
-        <textarea rows={3} value={seo?.description || ""} onChange={(e) => updateField("seo", "description", e.target.value)} className={`${fieldBase} resize-none`} placeholder="cth. Dapatkan bahan bangunan terlengkap dan terpercaya di Surabaya. Harga grosir, pengiriman cepat." />
+        <SidebarField
+          section="seo"
+          fieldKey="description"
+          multiline
+          rows={3}
+          label="Meta Description"
+          value={seo?.description || ""}
+          onChange={(val) => updateField("seo", "description", val)}
+          placeholder="cth. Dapatkan bahan bangunan terlengkap dan terpercaya di Surabaya. Harga grosir, pengiriman cepat."
+          undoCount={fieldUndoStacks?.["seo.description"]?.length ?? fieldUndoStacks?.["description"]?.length}
+          onUndo={() => undoField?.("seo", "description")}
+        />
         <div className="flex justify-end">
           <span className={`text-[10px] font-mono ${descLen > 155 ? "text-red-500" : "text-slate-500"}`}>{descLen}/155</span>
         </div>
@@ -522,13 +523,16 @@ export function SeoForm({
       </div>
 
       {/* OG Site Name */}
-      <div className="space-y-1">
-        <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-slate-400">
-          <span>OG Site Name</span>
-          {renderFieldActions("og_site_name")}
-        </label>
-        <input type="text" value={seo?.og_site_name || ""} onChange={(e) => updateField("seo", "og_site_name", e.target.value)} className={fieldBase} placeholder="Nama bisnis" />
-      </div>
+      <SidebarField
+        section="seo"
+        fieldKey="og_site_name"
+        label="OG Site Name"
+        value={seo?.og_site_name || ""}
+        onChange={(val) => updateField("seo", "og_site_name", val)}
+        placeholder="Nama bisnis"
+        undoCount={fieldUndoStacks?.["seo.og_site_name"]?.length ?? fieldUndoStacks?.["og_site_name"]?.length}
+        onUndo={() => undoField?.("seo", "og_site_name")}
+      />
 
       {/* Canonical Path */}
       <div className="space-y-1">
