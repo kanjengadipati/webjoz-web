@@ -263,7 +263,7 @@ export default function HeroProfileCutout({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.15 }}
           className="lg:col-span-5 relative flex items-end justify-center self-end w-full"
-          style={{ minHeight: "420px", marginTop: "-96px" }}
+          style={{ minHeight: "420px", marginTop: "-48px" }}
         >
           <div
             className="relative w-full max-w-[520px] lg:max-w-[600px] flex items-end justify-center"
@@ -271,13 +271,9 @@ export default function HeroProfileCutout({
               // Mask image fades the bottom gracefully so standard rectangular photos blend naturally
               maskImage: "linear-gradient(to bottom, black 82%, transparent 100%)",
               WebkitMaskImage: "linear-gradient(to bottom, black 82%, transparent 100%)",
-              // Lift the figure above the header (z-index higher than sticky header z-50)
-              position: "relative",
-              zIndex: 60,
-              // Pull portrait up to overlap header area
+              zIndex: 40,
               marginBottom: "-1rem",
-              top: "-96px",
-              marginTop: "0px",
+              pointerEvents: "none",
             }}
           >
             {(h.image_url || isEditorMode) ? (
