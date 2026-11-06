@@ -1,12 +1,14 @@
 "use client";
 import React from "react";
+import dynamic from "next/dynamic";
 import type { ComponentType } from "react";
 import type { HeaderVariantProps } from "./types";
-import LeftLogoInlineNav from "./left-logo-inline-nav";
-import CenteredLogo from "./centered-logo";
-import TransparentOverlay from "./transparent-overlay";
-import LogoWithCtaButton from "./logo-with-cta-button";
-import StackedLogoTagline from "./stacked-logo-tagline";
+
+const LeftLogoInlineNav = dynamic(() => import("./left-logo-inline-nav"));
+const CenteredLogo = dynamic(() => import("./centered-logo"));
+const TransparentOverlay = dynamic(() => import("./transparent-overlay"));
+const LogoWithCtaButton = dynamic(() => import("./logo-with-cta-button"));
+const StackedLogoTagline = dynamic(() => import("./stacked-logo-tagline"));
 
 const variants: Record<string, ComponentType<HeaderVariantProps>> = {
   "left-logo-inline-nav": LeftLogoInlineNav,

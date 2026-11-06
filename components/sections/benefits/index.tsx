@@ -1,16 +1,18 @@
 "use client";
 import React, { useCallback } from "react";
+import dynamic from "next/dynamic";
 import type { ComponentType } from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
-import BenefitsClassic from "./classic";
-import BenefitsStatGrid from "./stat-grid";
-import BenefitsChecklist from "./checklist";
-import BenefitsComparisonTable from "./comparison-table";
-import BenefitsFeaturedGrid from "./featured-grid";
-import BenefitsIconRow from "./icon-row";
-import BenefitsBentoGrid from "./bento-grid";
-import BenefitsTrustBar from "./trust-bar";
-import BenefitsHowItWorks from "./how-it-works";
+
+const BenefitsClassic = dynamic(() => import("./classic"));
+const BenefitsStatGrid = dynamic(() => import("./stat-grid"));
+const BenefitsChecklist = dynamic(() => import("./checklist"));
+const BenefitsComparisonTable = dynamic(() => import("./comparison-table"));
+const BenefitsFeaturedGrid = dynamic(() => import("./featured-grid"));
+const BenefitsIconRow = dynamic(() => import("./icon-row"));
+const BenefitsBentoGrid = dynamic(() => import("./bento-grid"));
+const BenefitsTrustBar = dynamic(() => import("./trust-bar"));
+const BenefitsHowItWorks = dynamic(() => import("./how-it-works"));
 
 type BenefitVariantProps = {
   benefits: TemplateProps["content"]["benefits"];

@@ -1,12 +1,14 @@
 "use client";
 import React from "react";
+import dynamic from "next/dynamic";
 import type { ComponentType } from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
-import CtaClassic from "./classic";
-import CtaCard from "./card";
-import CtaCentered from "./centered";
-import CtaSplitImage from "./split-image";
-import CtaInlineLeadForm from "./inline-lead-form";
+
+const CtaClassic = dynamic(() => import("./classic"));
+const CtaCard = dynamic(() => import("./card"));
+const CtaCentered = dynamic(() => import("./centered"));
+const CtaSplitImage = dynamic(() => import("./split-image"));
+const CtaInlineLeadForm = dynamic(() => import("./inline-lead-form"));
 
 export type CtaVariantProps = {
   cta: TemplateProps["content"]["cta"];

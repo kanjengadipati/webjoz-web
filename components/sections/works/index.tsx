@@ -1,11 +1,15 @@
+"use client";
+
 import React, { useCallback } from "react";
+import dynamic from "next/dynamic";
 import type { WorksItem, WorksLayout } from "@/components/templates/types";
 import { WorksSectionHeader, WorksAddTile, getRadius } from "./shared";
 import type { WorksVariantProps } from "./shared";
-import WorksGrid from "./grid";
-import WorksMasonry from "./masonry";
-import WorksFeaturedGrid from "./featured-grid";
-import WorksShowcaseFeatured from "./showcase-featured";
+
+const WorksGrid = dynamic(() => import("./grid"));
+const WorksMasonry = dynamic(() => import("./masonry"));
+const WorksFeaturedGrid = dynamic(() => import("./featured-grid"));
+const WorksShowcaseFeatured = dynamic(() => import("./showcase-featured"));
 
 export default function WorksSection({
   works,

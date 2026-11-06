@@ -1,20 +1,22 @@
 "use client";
 import React, { useCallback } from "react";
+import dynamic from "next/dynamic";
 import type { ComponentType } from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 import { genId } from "../inline-add";
-import MenuClassic from "./classic";
-import MenuCompact from "./compact";
-import MenuCards from "./cards";
-import MenuTextList from "./text-list";
-import MenuCompactList from "./compact-list";
-import MenuTabsByCategory from "./tabs-by-category";
-import MenuAccordionByCategory from "./accordion-by-category";
-import MenuBentoPhotoGrid from "./bento-photo-grid";
-import MenuVisualShowcaseHero from "./visual-showcase-hero";
-import MenuSidebarScrollspyPhoto from "./sidebar-scrollspy-photo";
-import MenuHorizontalSwipeCarousel from "./horizontal-swipe-carousel";
-import MenuMasonryFlow from "./masonry-flow";
+
+const MenuClassic = dynamic(() => import("./classic"));
+const MenuCompact = dynamic(() => import("./compact"));
+const MenuCards = dynamic(() => import("./cards"));
+const MenuTextList = dynamic(() => import("./text-list"));
+const MenuCompactList = dynamic(() => import("./compact-list"));
+const MenuTabsByCategory = dynamic(() => import("./tabs-by-category"));
+const MenuAccordionByCategory = dynamic(() => import("./accordion-by-category"));
+const MenuBentoPhotoGrid = dynamic(() => import("./bento-photo-grid"));
+const MenuVisualShowcaseHero = dynamic(() => import("./visual-showcase-hero"));
+const MenuSidebarScrollspyPhoto = dynamic(() => import("./sidebar-scrollspy-photo"));
+const MenuHorizontalSwipeCarousel = dynamic(() => import("./horizontal-swipe-carousel"));
+const MenuMasonryFlow = dynamic(() => import("./masonry-flow"));
 
 type MenuVariantProps = {
   menu: TemplateProps["content"]["menu"];
