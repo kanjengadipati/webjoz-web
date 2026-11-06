@@ -271,9 +271,9 @@ export default function HeroProfileCutout({
               // Mask image fades the bottom gracefully so standard rectangular photos blend naturally
               maskImage: "linear-gradient(to bottom, black 82%, transparent 100%)",
               WebkitMaskImage: "linear-gradient(to bottom, black 82%, transparent 100%)",
-              zIndex: 40,
-              marginBottom: "-1rem",
-              pointerEvents: "none",
+              zIndex: isEditorMode ? 60 : 40,
+              marginBottom: isEditorMode ? "-1rem" : "-1rem",
+              pointerEvents: isEditorMode ? "auto" : "none",
             }}
           >
             {(h.image_url || isEditorMode) ? (
