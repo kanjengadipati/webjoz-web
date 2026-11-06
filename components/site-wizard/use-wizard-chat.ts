@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from "react";
-import { INITIAL_MESSAGE, NAME_ACK_VARIANTS, NAME_CONFIRM_VARIANTS, DESCRIPTION_PROMPT, DESCRIPTION_SKIP_KEYWORD, DESCRIPTION_INFERENCE_HIGH, DESCRIPTION_INFERENCE_MEDIUM, MOOD_OPTIONS } from "./constants";
+import { INITIAL_MESSAGE, NAME_ACK_VARIANTS, NAME_CONFIRM_VARIANTS, DESCRIPTION_PROMPT, DESCRIPTION_SKIP_KEYWORD, DESCRIPTION_INFERENCE_HIGH, DESCRIPTION_INFERENCE_MEDIUM, DESCRIPTION_INFERENCE_NONE, MOOD_OPTIONS } from "./constants";
 
 const INITIAL_MESSAGE_WORDS = INITIAL_MESSAGE.split(" ");
 import { capitalizeWords, pickVariant, isLikelyGibberish, extractLocationFromDescription, generateDescriptionFromBusinessName } from "./helpers";
@@ -562,7 +562,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setChatStage("type");
     const msg = opts?.aiFailed
       ? t("dashboard.wizard.pickFieldAiFailed", "Koneksi ke AI bermasalah. Pilih bidang usaha Anda:")
-      : t("dashboard.wizard.pickFieldPrompt", "Saya belum bisa memastikan jenis usahanya. Pilih bidang yang paling sesuai:");
+      : t("dashboard.wizard.descriptionInferenceNone", "Baik, silakan pilih kategori Anda:");
     setTimeout(() => {
       typeMessage(msg, () => {
         setMessages((prev) => [
