@@ -36,7 +36,7 @@ export default function HeroProfileCutout({
       style={{
         position: "relative",
         background: h.background_color || "var(--dt-bg)",
-        overflow: "hidden",
+        overflow: "visible",
         minHeight: "88vh",
       }}
       className="flex flex-col justify-end"
@@ -263,14 +263,21 @@ export default function HeroProfileCutout({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.15 }}
           className="lg:col-span-5 relative flex items-end justify-center self-end w-full"
-          style={{ minHeight: "360px", marginTop: "-40px" }}
+          style={{ minHeight: "420px", marginTop: "-96px" }}
         >
           <div
-            className="relative w-full max-w-[420px] lg:max-w-[480px] flex items-end justify-center"
+            className="relative w-full max-w-[520px] lg:max-w-[600px] flex items-end justify-center"
             style={{
               // Mask image fades the bottom gracefully so standard rectangular photos blend naturally
               maskImage: "linear-gradient(to bottom, black 82%, transparent 100%)",
               WebkitMaskImage: "linear-gradient(to bottom, black 82%, transparent 100%)",
+              // Lift the figure above the header (z-index higher than sticky header z-50)
+              position: "relative",
+              zIndex: 60,
+              // Pull portrait up to overlap header area
+              marginBottom: "-1rem",
+              top: "-96px",
+              marginTop: "0px",
             }}
           >
             {(h.image_url || isEditorMode) ? (
@@ -285,7 +292,7 @@ export default function HeroProfileCutout({
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
-                className="w-auto max-w-full max-h-[58vh] lg:max-h-[72vh] object-contain object-bottom drop-shadow-2xl"
+                className="w-auto max-w-full max-h-[72vh] lg:max-h-[88vh] object-contain object-bottom drop-shadow-2xl"
                 collapseSheetForInlineEdit={collapseSheetForInlineEdit}
               />
             ) : (
