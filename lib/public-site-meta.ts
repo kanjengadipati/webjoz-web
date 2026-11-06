@@ -157,6 +157,9 @@ export async function fetchPublicSiteMetadata(hostOrSubdomain: string): Promise<
     // any favicon / OG image URL is resolved relative to the correct host,
     // not relative to webjoz.com (which is what the root layout sets).
     const faviconUrl = seo.favicon_url?.trim();
+    const isSvg = faviconUrl && (faviconUrl.startsWith("data:image/svg") || faviconUrl.endsWith(".svg"));
+    const isIco = faviconUrl && faviconUrl.endsWith(".ico");
+    const mimeType = isIco ? "image/x-icon" : isSvg ? "image/svg+xml" : "image/png";
 
     return {
       metadataBase: new URL(canonicalUrl),
@@ -172,7 +175,7 @@ export async function fetchPublicSiteMetadata(hostOrSubdomain: string): Promise<
       },
       icons: faviconUrl
         ? {
-            icon: [{ url: faviconUrl, type: faviconUrl.endsWith(".ico") ? "image/x-icon" : "image/png" }],
+            icon: [{ url: faviconUrl, type: mimeType }],
             shortcut: faviconUrl,
             apple: faviconUrl,
           }

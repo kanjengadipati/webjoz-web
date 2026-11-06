@@ -3374,8 +3374,12 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
     }
   };
 
+  // Treat auto-generated SVG initials as fallback placeholder so the AI-selected
+  // Lucide icon takes visual priority. Real user uploads are secure HTTPS image URLs.
+  const isCustomLogo = Boolean(url && !url.startsWith("data:image/svg+xml"));
+
   if (isEditorMode && onUpdateField && section) {
-    const hasLogo = url && !imgError;
+    const hasLogo = isCustomLogo && !imgError;
     return (
       <div
         className="relative group/logo shrink-0 flex items-center"
@@ -3467,7 +3471,7 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
     );
   }
 
-  if (url && !imgError) {
+  if (isCustomLogo && !imgError) {
     return <img src={url} className={imgClass} alt="Logo" onError={() => setImgError(true)} />;
   }
   return (

@@ -98,7 +98,8 @@ export function buildFullContent(
       ...c.header,                                                  // ← keep ALL fields from AI (icon, tagline, etc.)
       brand_name: businessName,
       nav_cta_text: c.header?.nav_cta_text || "Hubungi Kami",
-      logo_url: c.header?.logo_url || logoUrl,
+      logo_url: c.header?.logo_url || "",
+      icon: c.header?.icon || "Sparkles",
       tagline: c.header?.tagline || "",
     },
     hero: {
