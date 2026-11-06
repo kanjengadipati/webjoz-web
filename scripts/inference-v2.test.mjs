@@ -57,3 +57,19 @@ test("preInferredFromClassify with null v2 fields", () => {
   assert.equal(pre.industryId, undefined);
   assert.equal(pre.archetype, undefined);
 });
+
+// Putaran 7: additional routeInference cases
+test("needs_choice true with industry_id => pick", () => {
+  const route = routeInference({ needs_choice: true, industry_id: "food.cafe" });
+  assert.equal(route, "pick");
+});
+
+test("needs_choice true with empty industry_id + suggested => suggest", () => {
+  const route = routeInference({ needs_choice: true, industry_id: "", suggested_industry_id: "shop.general" });
+  assert.equal(route, "suggest");
+});
+
+test("needs_choice false with industry_id => confirm", () => {
+  const route = routeInference({ needs_choice: false, industry_id: "food.cafe" });
+  assert.equal(route, "confirm");
+});
