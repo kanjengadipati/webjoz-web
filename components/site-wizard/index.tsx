@@ -1894,6 +1894,7 @@ export function SiteWizard({
   // mengandung industri saran AI (industryId) atau grup yang punya industri archetype terbanyak.
   // (plain function — tidak boleh pakai useMemo di dalam map/render expression)
   const getEffectiveSelectedBidang = (): string | null => {
+    if (selectedBidang === "") return null;          // pengguna minta grid penuh
     if (selectedBidang) return selectedBidang;
     if (!needsBidangStep || !taxonomyV2) return null;
     // Pre-select hanya bila ada sinyal jelas: industryId atau suggestedIndustryId dari AI
@@ -2005,7 +2006,7 @@ export function SiteWizard({
         )}
         <button
           type="button"
-          onClick={() => setSelectedBidang(null)}
+          onClick={() => setSelectedBidang("")}
           className="text-[10px] text-slate-500 hover:text-slate-300 underline"
         >
           {t("dashboard.wizard.changeBidang", "Bidang lain →")}
@@ -2234,6 +2235,7 @@ export function SiteWizard({
               const tcSelectedBidang = chat.selectedBidang;
               // Pre-select Bidang dari industryId saran AI
               const tcEffectiveBidang = (() => {
+                if (tcSelectedBidang === "") return null;
                 if (tcSelectedBidang) return tcSelectedBidang;
                 if (!tcNeedsBidang || !taxonomyV2) return null;
                 if (tcArchetype && tcIndustryId) {
@@ -2372,7 +2374,7 @@ export function SiteWizard({
                             {bg && <span className="text-[11px] font-medium text-slate-300 flex items-center gap-1">{(() => { const I = BIDANG_ICONS[bg.value] ?? Tag; return <I className="w-3 h-3 text-slate-400" />; })()}{bg.label}</span>}
                             <button
                               type="button"
-                              onClick={() => chat.setSelectedBidang(null)}
+                              onClick={() => chat.setSelectedBidang("")}
                               className="text-[10px] text-slate-500 hover:text-slate-300 underline"
                             >
                               {t("dashboard.wizard.changeBidang", "Bidang lain →")}
