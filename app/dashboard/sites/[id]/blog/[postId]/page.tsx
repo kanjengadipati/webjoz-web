@@ -12,6 +12,7 @@ import { SiteSubNav } from "@/components/site-sub-nav";
 import FileUpload from "@/components/file-upload";
 import { useI18n } from "@/lib/i18n/context";
 import { decodeSiteId, encodeSiteId } from "@/lib/sqids";
+import { SidebarField, setSidebarAiRewrite } from "@/components/sidebar-field";
 import { marked } from "marked";
 import {
   Loader2, Bold, Italic, Heading2, Heading3,
@@ -116,6 +117,49 @@ export default function EditBlogPostPage() {
     };
     fetchPost();
   }, [siteId, postId, token, activeTenantId]);
+
+  useEffect(() => {
+    if (!token || !activeTenantId || !siteId) {
+      setSidebarAiRewrite(null);
+      return;
+    }
+
+    setSidebarAiRewrite(async (section: string, fieldKey: string, currentValue: string) => {
+      try {
+        const res = await request<any>(
+          "/ai/regenerate-section",
+          {
+            method: "POST",
+            headers: tenantHeaders,
+            body: JSON.stringify({
+              site_id: siteId,
+              section: "blog",
+              instructions: `Tulis ulang teks untuk field "${fieldKey}" artikel blog ini agar lebih menarik, ringkas, dan mengundang pembaca. Teks saat ini: "${currentValue}". Pertahankan relevansinya dengan topik.`,
+              tenant_id: activeTenantId,
+            }),
+          },
+          token
+        );
+
+        if (res.status !== "success") {
+          throw new Error(res.message || "AI gagal memproses teks.");
+        }
+
+        const updated = res.data?.section !== undefined ? res.data.section : res.data;
+        const result = updated?.[fieldKey] ?? updated?.excerpt ?? updated?.content;
+        if (typeof result === "string" && result.trim()) {
+          return result;
+        }
+        return currentValue;
+      } catch (err: any) {
+        throw err;
+      }
+    });
+
+    return () => {
+      setSidebarAiRewrite(null);
+    };
+  }, [token, activeTenantId, siteId, tenantHeaders]);
 
   useEffect(() => {
     marked.setOptions({ breaks: true, gfm: true });
@@ -375,15 +419,16 @@ export default function EditBlogPostPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t pt-4">
         {/* Excerpt */}
         <div>
-          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">
-            {t("dashboard.sitesBlogPost.excerpt")} <span className="text-[10px] text-muted-foreground/60">({excerpt.length}/500)</span>
-          </label>
-          <textarea
-            value={excerpt}
-            onChange={e => { setExcerpt(e.target.value); markDirty(); }}
+          <SidebarField
+            section="blog"
+            fieldKey="excerpt"
+            multiline
             rows={3}
             maxLength={500}
-            className="w-full px-3 py-2 border rounded-xl text-sm outline-none focus:border-primary bg-background resize-y"
+            label={`${t("dashboard.sitesBlogPost.excerpt")} (${excerpt.length}/500)`}
+            value={excerpt}
+            onChange={(val) => { setExcerpt(val); markDirty(); }}
+            placeholder="Ringkasan singkat artikel..."
           />
         </div>
 
@@ -411,18 +456,17 @@ export default function EditBlogPostPage() {
               placeholder="Judul untuk mesin pencari"
             />
           </div>
-          <div>
-            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">
-              {t("dashboard.sitesBlogPost.seoDescription")} <span className="text-[10px] text-muted-foreground/60">({seoDescription.length}/500)</span>
-            </label>
-            <textarea
-              value={seoDescription}
-              onChange={e => { setSeoDescription(e.target.value); markDirty(); }}
-              rows={2}
-              maxLength={500}
-              className="w-full px-3 py-2 border rounded-xl text-sm outline-none focus:border-primary bg-background resize-y"
-            />
-          </div>
+          <SidebarField
+            section="blog"
+            fieldKey="seo_description"
+            multiline
+            rows={2}
+            maxLength={500}
+            label={`${t("dashboard.sitesBlogPost.seoDescription")} (${seoDescription.length}/500)`}
+            value={seoDescription}
+            onChange={(val) => { setSeoDescription(val); markDirty(); }}
+            placeholder="Deskripsi untuk mesin pencari..."
+          />
           {/* Noindex toggle (Pro) */}
           <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 px-3 py-2.5">
             <div className="space-y-0.5">

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { SidebarField, setSidebarAiRewrite } from "@/components/sidebar-field";
 import { AiFieldButton, EMOJI_GROUPS, MCF_INPUT_BASE as inputBase_mcf, MCF_INPUT_LABEL as inputLabel_mcf, normStr, MenuCatalogForm } from "@/components/menu-catalog-form";
 import { Plus, Trash2, ChevronDown, ChevronUp, GripVertical, RefreshCw, Loader2, Star, Zap, Shield, Award, Heart, CheckCircle, Clock, Globe, Users, TrendingUp, Leaf, Flame, Lightbulb, Target, Truck, ThumbsUp, Lock, Phone, Mail, MapPin, Camera, Utensils, Coffee, ShoppingBag, Wrench, Stethoscope, BookOpen, Home, Building2, Briefcase, Search, Check, RotateCcw, BarChart2, Eye, EyeOff, X, CreditCard } from "lucide-react";
 import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
@@ -633,6 +634,67 @@ export default function SectionForms({
       .catch(() => { /* non-critical */ });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
+
+  // Register global AI rewrite handler for SidebarField inputs
+  React.useEffect(() => {
+    if (!token || !activeTenantId || !siteId) {
+      setSidebarAiRewrite(null);
+      return;
+    }
+
+    setSidebarAiRewrite(async (section: string, fieldKey: string, currentValue: string) => {
+      try {
+        const currentVariant = designToken?.layout?.section_variants?.[section];
+        const res = await request<any>(
+          "/ai/regenerate-section",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              site_id: siteId,
+              section,
+              instructions: `Fokus tulis ulang hanya untuk field "${fieldKey}" agar lebih menarik, alami, dan profesional. Teks saat ini: "${currentValue}". Pertahankan panjang kalimat yang proporsional dan makna bisnisnya. Jaga field lain tetap sama persis.`,
+              tenant_id: activeTenantId,
+              section_variant: currentVariant || "",
+            }),
+          },
+          String(token)
+        );
+
+        if (res.status !== "success") {
+          throw new Error(res.message || t("dashboard.sitesEditor.aiProcessFailed") || "AI gagal memproses.");
+        }
+
+        const updated = res.data?.section !== undefined ? res.data.section : res.data;
+        if (!updated) {
+          throw new Error("Tidak ada hasil dari AI.");
+        }
+
+        const keys = fieldKey.split(".");
+        let result: any = updated;
+        for (const k of keys) {
+          if (result == null) break;
+          result = result[k];
+        }
+
+        if (typeof result !== "string" || !result.trim()) {
+          throw new Error("Field tidak ditemukan dalam hasil AI.");
+        }
+
+        onAiSuccess?.();
+        return result;
+      } catch (err: any) {
+        if (err?.code === "ERR_PLAN_LIMIT" || err?.code === "ERR_USAGE_LIMIT") {
+          onUpgradeRequired?.();
+          throw new Error(t("dashboard.sitesEditor.upgradeRegenTitle") || "Batas AI tercapai. Silakan upgrade paket.");
+        }
+        throw err;
+      }
+    });
+
+    return () => {
+      setSidebarAiRewrite(null);
+    };
+  }, [token, activeTenantId, siteId, designToken, onAiSuccess, onUpgradeRequired, t]);
 
   const handleGscSave = async () => {
     if (!token || !activeTenantId || !siteId) return;
@@ -1410,52 +1472,30 @@ export default function SectionForms({
             <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">{t("dashboard.sitesEditor.heroEyebrowHint")}</p>
           </div>
           )}
-          <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span className="flex items-center gap-1">
-                {t("dashboard.sitesEditor.heroHeadline")} {needsAttention("hero.headline") && <span className="text-amber-300">⚠️</span>}
-              </span>
-              {renderFieldActions("hero", "headline", (
-                <AiFieldButton
-                  loading={aiLoadingField === "hero.headline"}
-                  onGenerate={() => handleAiText("hero", "headline", t("dashboard.sitesEditor.aiHeroHeadlinePrompt"), t("dashboard.sitesEditor.aiHeroHeadlineLabel"))}
-                  title={t("dashboard.sitesEditor.aiHeroHeadlineBtn")}
-                  onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
-                />
-              ))}
-            </label>
-            <input
-              id="field-hero.headline"
-              type="text"
-              value={content.hero.headline || ""}
-              onChange={(e) => updateField("hero", "headline", e.target.value)}
-              className={fieldClass("hero.headline", SIDEBAR_FIELD_CLASS)}
-
-            />
-          </div>
-          <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span className="flex items-center gap-1">
-                {t("dashboard.sitesEditor.heroSubheadline")} {needsAttention("hero.subheadline") && <span className="text-amber-300">⚠️</span>}
-              </span>
-              {renderFieldActions("hero", "subheadline", (
-                <AiFieldButton
-                  loading={aiLoadingField === "hero.subheadline"}
-                  onGenerate={() => handleAiText("hero", "subheadline", t("dashboard.sitesEditor.aiHeroSubheadlinePrompt"), t("dashboard.sitesEditor.aiHeroSubheadlineLabel"))}
-                  title={t("dashboard.sitesEditor.aiHeroSubheadlineBtn")}
-                  onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
-                />
-              ))}
-            </label>
-            <textarea
-              id="field-hero.subheadline"
-              rows={2}
-              value={content.hero.subheadline || ""}
-              onChange={(e) => updateField("hero", "subheadline", e.target.value)}
-              className={fieldClass("hero.subheadline", `${SIDEBAR_FIELD_CLASS} resize-none`)}
-
-            />
-          </div>
+          <SidebarField
+            section="hero"
+            fieldKey="headline"
+            label={t("dashboard.sitesEditor.heroHeadline")}
+            value={content.hero.headline || ""}
+            onChange={(val) => updateField("hero", "headline", val)}
+            needsAttention={needsAttention("hero.headline")}
+            inputClassName={fieldClass("hero.headline", "")}
+            undoCount={fieldUndoStacks?.["hero.headline"]?.length}
+            onUndo={() => undoField?.("hero", "headline")}
+          />
+          <SidebarField
+            section="hero"
+            fieldKey="subheadline"
+            multiline
+            rows={2}
+            label={t("dashboard.sitesEditor.heroSubheadline")}
+            value={content.hero.subheadline || ""}
+            onChange={(val) => updateField("hero", "subheadline", val)}
+            needsAttention={needsAttention("hero.subheadline")}
+            inputClassName={fieldClass("hero.subheadline", "")}
+            undoCount={fieldUndoStacks?.["hero.subheadline"]?.length}
+            onUndo={() => undoField?.("hero", "subheadline")}
+          />
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>{t("dashboard.sitesEditor.heroCtaText")} {needsAttention("hero.cta_text") && <span className="text-amber-300">⚠️</span>}</span>
@@ -1655,50 +1695,30 @@ export default function SectionForms({
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
           </div>
-          <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span className="flex items-center gap-1">
-                {t("dashboard.sitesEditor.commonTitle")} {needsAttention("about.title") && <span className="text-amber-300">⚠️</span>}
-              </span>
-              {renderFieldActions("about", "title", (
-                <AiFieldButton
-                  loading={aiLoadingField === "about.title"}
-                  onGenerate={() => handleAiText("about", "title", t("dashboard.sitesEditor.aiAboutTitlePrompt"), t("dashboard.sitesEditor.aiAboutTitleLabel"))}
-                  title={t("dashboard.sitesEditor.aiAboutTitleBtn")}
-                  onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
-                />
-              ))}
-            </label>
-            <input
-              id="field-about.title"
-              type="text"
-              value={content.about.title || ""}
-              onChange={(e) => updateField("about", "title", e.target.value)}
-              className={fieldClass("about.title", SIDEBAR_FIELD_CLASS)}
-            />
-          </div>
-          <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span className="flex items-center gap-1">
-                {t("dashboard.sitesEditor.commonDescription")} {needsAttention("about.body") && <span className="text-amber-300">⚠️</span>}
-              </span>
-              {renderFieldActions("about", "body", (
-                <AiFieldButton
-                  loading={aiLoadingField === "about.body"}
-                  onGenerate={() => handleAiText("about", "body", t("dashboard.sitesEditor.aiAboutBodyPrompt"), t("dashboard.sitesEditor.aiAboutBodyLabel"))}
-                  title={t("dashboard.sitesEditor.aiAboutBodyBtn")}
-                  onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
-                />
-              ))}
-            </label>
-            <textarea
-              id="field-about.body"
-              rows={3}
-              value={content.about.body || ""}
-              onChange={(e) => updateField("about", "body", e.target.value)}
-              className={fieldClass("about.body", `${SIDEBAR_FIELD_CLASS} resize-none`)}
-            />
-          </div>
+          <SidebarField
+            section="about"
+            fieldKey="title"
+            label={t("dashboard.sitesEditor.commonTitle")}
+            value={content.about.title || ""}
+            onChange={(val) => updateField("about", "title", val)}
+            needsAttention={needsAttention("about.title")}
+            inputClassName={fieldClass("about.title", "")}
+            undoCount={fieldUndoStacks?.["about.title"]?.length}
+            onUndo={() => undoField?.("about", "title")}
+          />
+          <SidebarField
+            section="about"
+            fieldKey="body"
+            multiline
+            rows={3}
+            label={t("dashboard.sitesEditor.commonDescription")}
+            value={content.about.body || ""}
+            onChange={(val) => updateField("about", "body", val)}
+            needsAttention={needsAttention("about.body")}
+            inputClassName={fieldClass("about.body", "")}
+            undoCount={fieldUndoStacks?.["about.body"]?.length}
+            onUndo={() => undoField?.("about", "body")}
+          />
           {/* Highlight Stats */}
           <div className="space-y-2">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground block">{t("dashboard.sitesEditor.aboutStatHighlight")}</label>
@@ -1788,28 +1808,27 @@ export default function SectionForms({
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
           </div>
-          <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              {t("dashboard.sitesEditor.benefitsSectionTitle")} {needsAttention("benefits.title") && <span className="text-amber-300">⚠️</span>}
-            </label>
-            <input
-              id="field-benefits.title"
-              type="text"
-              value={content.benefits.title || ""}
-              onChange={(e) => updateField("benefits", "title", e.target.value)}
-              className={fieldClass("benefits.title", SIDEBAR_FIELD_CLASS)}
-            />
-          </div>
-          <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.benefitsSubtitle")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></label>
-            <input
-              type="text"
-              value={content.benefits?.subtitle || ""}
-              onChange={(e) => updateField("benefits", "subtitle", e.target.value)}
-              placeholder={t("dashboard.sitesEditor.phBenefitsSubtitle")}
-              className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
-            />
-          </div>
+          <SidebarField
+            section="benefits"
+            fieldKey="title"
+            label={t("dashboard.sitesEditor.benefitsSectionTitle")}
+            value={content.benefits.title || ""}
+            onChange={(val) => updateField("benefits", "title", val)}
+            needsAttention={needsAttention("benefits.title")}
+            inputClassName={fieldClass("benefits.title", "")}
+            undoCount={fieldUndoStacks?.["benefits.title"]?.length}
+            onUndo={() => undoField?.("benefits", "title")}
+          />
+          <SidebarField
+            section="benefits"
+            fieldKey="subtitle"
+            label={t("dashboard.sitesEditor.benefitsSubtitle")}
+            value={content.benefits?.subtitle || ""}
+            onChange={(val) => updateField("benefits", "subtitle", val)}
+            placeholder={t("dashboard.sitesEditor.phBenefitsSubtitle")}
+            undoCount={fieldUndoStacks?.["benefits.subtitle"]?.length}
+            onUndo={() => undoField?.("benefits", "subtitle")}
+          />
           <div className="space-y-1">
             <label className="text-[10px] text-sidebar-subtle-foreground uppercase">{t("dashboard.sitesEditor.commonTextAlign")}</label>
             <div className="flex gap-1">
@@ -1855,16 +1874,19 @@ export default function SectionForms({
                 placeholder={t("dashboard.sitesEditor.benefitsItemTitle")}
                 className={fieldClass(`benefits.items.${idx}.title`, SIDEBAR_FIELD_CLASS)}
               />
-              <textarea
+              <SidebarField
+                section="benefits"
+                fieldKey={`items.${idx}.description`}
+                multiline
                 rows={2}
                 value={item.description || ""}
-                onChange={(e) => {
+                onChange={(val) => {
                   const n = [...content.benefits.items];
-                  n[idx].description = e.target.value;
+                  n[idx].description = val;
                   updateField("benefits", "items", n);
                 }}
                 placeholder={t("dashboard.sitesEditor.benefitsItemDesc")}
-                className={fieldClass(`benefits.items.${idx}.description`, `${SIDEBAR_FIELD_CLASS} resize-none`)}
+                inputClassName={fieldClass(`benefits.items.${idx}.description`, "")}
               />
               {/* Icon + Stat row */}
               <div className="space-y-1.5">
@@ -1942,18 +1964,17 @@ export default function SectionForms({
       {/* FAQ FORM */}
       {activeTab === "faq" && content?.faq && (
         <div className="space-y-3">
-          <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>{t("dashboard.sitesEditor.faqSectionTitle")} {needsAttention("faq.title") && <span className="text-amber-300">⚠️</span>}</span>
-              {renderFieldActions("faq", "title")}
-            </label>
-            <input
-              type="text"
-              value={content.faq.title || ""}
-              onChange={(e) => updateField("faq", "title", e.target.value)}
-              className={fieldClass("faq.title", SIDEBAR_FIELD_CLASS)}
-            />
-          </div>
+          <SidebarField
+            section="faq"
+            fieldKey="title"
+            label={t("dashboard.sitesEditor.faqSectionTitle")}
+            value={content.faq.title || ""}
+            onChange={(val) => updateField("faq", "title", val)}
+            needsAttention={needsAttention("faq.title")}
+            inputClassName={fieldClass("faq.title", "")}
+            undoCount={fieldUndoStacks?.["faq.title"]?.length}
+            onUndo={() => undoField?.("faq", "title")}
+          />
           {content.faq.items?.map((item: any, idx: number) => (
             <div key={idx} className="border border-border p-2.5 rounded-lg space-y-2 bg-muted/40">
               <div className="flex justify-between items-center">
@@ -1980,16 +2001,19 @@ export default function SectionForms({
                 placeholder={t("dashboard.sitesEditor.faqQuestion")}
                 className={fieldClass(`faq.items.${idx}.question`, SIDEBAR_FIELD_CLASS)}
               />
-              <textarea
+              <SidebarField
+                section="faq"
+                fieldKey={`items.${idx}.answer`}
+                multiline
                 rows={2}
                 value={item.answer || ""}
-                onChange={(e) => {
+                onChange={(val) => {
                   const n = [...content.faq.items];
-                  n[idx].answer = e.target.value;
+                  n[idx].answer = val;
                   updateField("faq", "items", n);
                 }}
                 placeholder={t("dashboard.sitesEditor.faqAnswer")}
-                className={fieldClass(`faq.items.${idx}.answer`, `${SIDEBAR_FIELD_CLASS} resize-none`)}
+                inputClassName={fieldClass(`faq.items.${idx}.answer`, "")}
               />
               <input
                 type="text"
@@ -2020,26 +2044,17 @@ export default function SectionForms({
       {/* CTA FORM */}
       {activeTab === "cta" && (
         <div className="space-y-3">
-          <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span className="flex items-center gap-1">
-                {t("dashboard.sitesEditor.ctaHeadline")} {needsAttention("cta.headline") && <span className="text-amber-300">⚠️</span>}
-              </span>
-              <AiFieldButton
-                loading={aiLoadingField === "cta.headline"}
-                onGenerate={() => handleAiText("cta", "headline", t("dashboard.sitesEditor.aiCtaHeadlinePrompt"), t("dashboard.sitesEditor.aiCtaHeadlineLabel"))}
-                title={t("dashboard.sitesEditor.aiCtaHeadlineBtn")}
-                onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
-              />
-            </label>
-            <input
-              id="field-cta.headline"
-              type="text"
-              value={content.cta.headline || ""}
-              onChange={(e) => updateField("cta", "headline", e.target.value)}
-              className={fieldClass("cta.headline", SIDEBAR_FIELD_CLASS)}
-            />
-          </div>
+          <SidebarField
+            section="cta"
+            fieldKey="headline"
+            label={t("dashboard.sitesEditor.ctaHeadline")}
+            value={content.cta.headline || ""}
+            onChange={(val) => updateField("cta", "headline", val)}
+            needsAttention={needsAttention("cta.headline")}
+            inputClassName={fieldClass("cta.headline", "")}
+            undoCount={fieldUndoStacks?.["cta.headline"]?.length}
+            onUndo={() => undoField?.("cta", "headline")}
+          />
           <div className="space-y-1">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.ctaEyebrow")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></label>
             <input
@@ -2134,30 +2149,25 @@ export default function SectionForms({
               })}
             </div>
           </div>
-          <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              {t("dashboard.sitesEditor.contactTitle")} {needsAttention("contact.title") && <span className="text-amber-300">⚠️</span>}
-            </label>
-            <input
-              id="field-contact.title"
-              type="text"
-              value={content.contact.title || ""}
-              onChange={(e) => updateField("contact", "title", e.target.value)}
-              className={fieldClass("contact.title", SIDEBAR_FIELD_CLASS)}
-            />
-          </div>
-          <div className="space-y-1">
-            <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              {t("dashboard.sitesEditor.contactAddress")} <span className="text-sidebar-subtle-foreground normal-case font-normal">{t("dashboard.sitesEditor.commonOptional")}</span>
-            </label>
-            <input
-              id="field-contact.address"
-              type="text"
-              value={content.contact.address || ""}
-              onChange={(e) => updateField("contact", "address", e.target.value)}
-              className={fieldClass("contact.address", SIDEBAR_FIELD_CLASS)}
-            />
-          </div>
+          <SidebarField
+            section="contact"
+            fieldKey="title"
+            label={t("dashboard.sitesEditor.contactTitle")}
+            needsAttention={needsAttention("contact.title")}
+            value={content.contact.title || ""}
+            onChange={(val) => updateField("contact", "title", val)}
+            undoCount={fieldUndoStacks?.["contact.title"]?.length}
+            onUndo={() => undoField?.("contact", "title")}
+          />
+          <SidebarField
+            section="contact"
+            fieldKey="address"
+            label={`${t("dashboard.sitesEditor.contactAddress")} (${t("dashboard.sitesEditor.commonOptional")})`}
+            value={content.contact.address || ""}
+            onChange={(val) => updateField("contact", "address", val)}
+            undoCount={fieldUndoStacks?.["contact.address"]?.length}
+            onUndo={() => undoField?.("contact", "address")}
+          />
           <div className="space-y-1">
             <label className="flex items-center gap-1 text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               {t("dashboard.sitesEditor.contactPhone")} <span className="text-sidebar-subtle-foreground normal-case font-normal">{t("dashboard.sitesEditor.commonOptional")}</span> {needsAttention("contact.phone") && <span className="text-amber-300">⚠️</span>}
@@ -2523,26 +2533,16 @@ export default function SectionForms({
 
           {/* Meta Title + Char Count */}
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span className="flex items-center gap-1">
-                {t("dashboard.sitesEditor.seoMetaTitleLabel")} {needsAttention("seo.title") && <span className="text-amber-300">⚠️</span>}
-              </span>
-              {isPremium && (
-                <AiFieldButton
-                  loading={aiLoadingField === "seo.title"}
-                  onGenerate={() => handleAiText("seo", "title", t("dashboard.sitesEditor.seoAiTitlePrompt"), "Meta Title")}
-                  title={t("dashboard.sitesEditor.seoAiTitleBtn")}
-                  onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
-                />
-              )}
-            </label>
-            <input
-              id="field-seo.title"
-              type="text"
+            <SidebarField
+              section="seo"
+              fieldKey="title"
+              label={t("dashboard.sitesEditor.seoMetaTitleLabel")}
               value={content.seo?.title || ""}
-              onChange={(e) => updateField("seo", "title", e.target.value)}
-              className={fieldClass("seo.title", SIDEBAR_FIELD_CLASS)}
-
+              onChange={(val) => updateField("seo", "title", val)}
+              needsAttention={needsAttention("seo.title")}
+              inputClassName={fieldClass("seo.title", "")}
+              undoCount={fieldUndoStacks?.["seo.title"]?.length}
+              onUndo={() => undoField?.("seo", "title")}
             />
             <div className="flex justify-end">
               <span className={`text-[10px] font-mono ${(content.seo?.title?.length || 0) > 60 ? "text-red-500" : "text-sidebar-subtle-foreground"}`}>
@@ -2553,26 +2553,18 @@ export default function SectionForms({
 
           {/* Meta Description + Char Count */}
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span className="flex items-center gap-1">
-                {t("dashboard.sitesEditor.seoMetaDescLabel")} {needsAttention("seo.description") && <span className="text-amber-300">⚠️</span>}
-              </span>
-              {isPremium && (
-                <AiFieldButton
-                  loading={aiLoadingField === "seo.description"}
-                  onGenerate={() => handleAiText("seo", "description", t("dashboard.sitesEditor.seoAiDescPrompt"), "Meta Description")}
-                  title={t("dashboard.sitesEditor.seoAiDescBtn")}
-                  onUpgradeRequired={onUpgradeRequired} isPremium={isPremium}
-                />
-              )}
-            </label>
-            <textarea
-              id="field-seo.description"
+            <SidebarField
+              section="seo"
+              fieldKey="description"
+              multiline
               rows={3}
+              label={t("dashboard.sitesEditor.seoMetaDescLabel")}
               value={content.seo?.description || ""}
-              onChange={(e) => updateField("seo", "description", e.target.value)}
-              className={fieldClass("seo.description", `${SIDEBAR_FIELD_CLASS} resize-none`)}
-
+              onChange={(val) => updateField("seo", "description", val)}
+              needsAttention={needsAttention("seo.description")}
+              inputClassName={fieldClass("seo.description", "")}
+              undoCount={fieldUndoStacks?.["seo.description"]?.length}
+              onUndo={() => undoField?.("seo", "description")}
             />
             <div className="flex justify-end">
               <span className={`text-[10px] font-mono ${(content.seo?.description?.length || 0) > 155 ? "text-red-500" : "text-sidebar-subtle-foreground"}`}>
@@ -2979,30 +2971,46 @@ export default function SectionForms({
             </label>
             <input type="text" value={content.testimonials?.eyebrow || ""} onChange={(e) => updateField("testimonials", "eyebrow", e.target.value)} placeholder={t("dashboard.sitesEditor.phTestimonialsEyebrow")} className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`} />
           </div>
-          <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>{t("dashboard.sitesEditor.testimonialsSectionTitle")}</span>
-              {renderFieldActions("testimonials", "title")}
-            </label>
-            <input type="text" value={content.testimonials?.title || ""} onChange={(e) => updateField("testimonials", "title", e.target.value)} placeholder={t("dashboard.sitesEditor.phTestimonialsSectionTitle")} className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`} />
-          </div>
-          <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>{t("dashboard.sitesEditor.testimonialsSubtitle")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></span>
-              {renderFieldActions("testimonials", "subtitle")}
-            </label>
-            <input type="text" value={content.testimonials?.subtitle || ""} onChange={(e) => updateField("testimonials", "subtitle", e.target.value)} placeholder={t("dashboard.sitesEditor.phTestimonialsSubtitle")} className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`} />
-          </div>
+          <SidebarField
+            section="testimonials"
+            fieldKey="title"
+            label={t("dashboard.sitesEditor.testimonialsSectionTitle")}
+            value={content.testimonials?.title || ""}
+            onChange={(val) => updateField("testimonials", "title", val)}
+            placeholder={t("dashboard.sitesEditor.phTestimonialsSectionTitle")}
+            undoCount={fieldUndoStacks?.["testimonials.title"]?.length}
+            onUndo={() => undoField?.("testimonials", "title")}
+          />
+          <SidebarField
+            section="testimonials"
+            fieldKey="subtitle"
+            label={t("dashboard.sitesEditor.testimonialsSubtitle")}
+            value={content.testimonials?.subtitle || ""}
+            onChange={(val) => updateField("testimonials", "subtitle", val)}
+            placeholder={t("dashboard.sitesEditor.phTestimonialsSubtitle")}
+            undoCount={fieldUndoStacks?.["testimonials.subtitle"]?.length}
+            onUndo={() => undoField?.("testimonials", "subtitle")}
+          />
           {(content.testimonials?.items || []).map((item: any, idx: number) => (
             <div key={idx} className="border border-border p-3 rounded-xl space-y-2.5 bg-muted/30">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] uppercase font-bold text-sidebar-subtle-foreground">{t("dashboard.sitesEditor.testimonialsItem")} #{idx + 1}</span>
                 <button type="button" onClick={() => { const n = content.testimonials.items.filter((_: any, i: number) => i !== idx); updateField("testimonials", "items", n); }} className="text-red-400/70 hover:text-red-400 text-[11px] cursor-pointer">{t("dashboard.sitesEditor.commonRemove")}</button>
               </div>
-              <div>
-                <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground block mb-1">{t("dashboard.sitesEditor.testimonialsQuote")}</label>
-                <textarea rows={2} value={item.quote || ""} onChange={(e) => { const n = [...content.testimonials.items]; n[idx] = { ...n[idx], quote: e.target.value }; updateField("testimonials", "items", n); }} placeholder={t("dashboard.sitesEditor.phTestimonialsQuote")} className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground resize-none`} />
-              </div>
+              <SidebarField
+                section="testimonials"
+                fieldKey={`items.${idx}.quote`}
+                multiline
+                rows={2}
+                label={t("dashboard.sitesEditor.testimonialsQuote")}
+                value={item.quote || ""}
+                onChange={(val) => {
+                  const n = [...content.testimonials.items];
+                  n[idx] = { ...n[idx], quote: val };
+                  updateField("testimonials", "items", n);
+                }}
+                placeholder={t("dashboard.sitesEditor.phTestimonialsQuote")}
+              />
               <div className="space-y-2">
                 <div>
                   <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground block mb-1">{t("dashboard.sitesEditor.testimonialsName")}</label>
@@ -3088,19 +3096,18 @@ export default function SectionForms({
             <p className="font-semibold text-primary">📸 {t("dashboard.sitesEditor.gallerySectionBanner")}</p>
             <p className="mt-1 text-primary/80">{t("dashboard.sitesEditor.gallerySectionBannerDesc2")}</p>
           </div>
-          <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>{t("dashboard.sitesEditor.galleryTitle")} {needsAttention("gallery.title") && <span className="text-amber-300">⚠️</span>}</span>
-              {renderFieldActions("gallery", "title")}
-            </label>
-            <input
-              id="field-gallery.title"
-              type="text" value={content.gallery?.title || ""}
-              onChange={(e) => updateField("gallery", "title", e.target.value)}
-              className={fieldClass("gallery.title", SIDEBAR_FIELD_CLASS)}
-              placeholder={t("dashboard.sitesEditor.phGalleryTitle")}
-            />
-          </div>
+          <SidebarField
+            section="gallery"
+            fieldKey="title"
+            label={t("dashboard.sitesEditor.galleryTitle")}
+            value={content.gallery?.title || ""}
+            onChange={(val) => updateField("gallery", "title", val)}
+            needsAttention={needsAttention("gallery.title")}
+            inputClassName={fieldClass("gallery.title", "")}
+            placeholder={t("dashboard.sitesEditor.phGalleryTitle")}
+            undoCount={fieldUndoStacks?.["gallery.title"]?.length}
+            onUndo={() => undoField?.("gallery", "title")}
+          />
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>{t("dashboard.sitesEditor.galleryEyebrow")}</span>
@@ -3274,13 +3281,18 @@ export default function SectionForms({
             <p className="font-semibold text-primary">💼 {t("dashboard.sitesEditor.worksSectionBanner")}</p>
             <p className="mt-1 text-primary/80">{t("dashboard.sitesEditor.worksSectionBannerDesc")}</p>
           </div>
-          <div className="space-y-1">
-            <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-              <span>{t("dashboard.sitesEditor.worksTitle")} {needsAttention("works.title") && <span className="text-amber-300">⚠️</span>}</span>
-              {renderFieldActions("works", "title")}
-            </label>
-            <input id="field-works.title" type="text" value={content.works?.title || ""} onChange={(e) => updateField("works", "title", e.target.value)} className={fieldClass("works.title", SIDEBAR_FIELD_CLASS)} placeholder={t("dashboard.sitesEditor.phWorksTitle")} />
-          </div>
+          <SidebarField
+            section="works"
+            fieldKey="title"
+            label={t("dashboard.sitesEditor.worksTitle")}
+            value={content.works?.title || ""}
+            onChange={(val) => updateField("works", "title", val)}
+            needsAttention={needsAttention("works.title")}
+            inputClassName={fieldClass("works.title", "")}
+            placeholder={t("dashboard.sitesEditor.phWorksTitle")}
+            undoCount={fieldUndoStacks?.["works.title"]?.length}
+            onUndo={() => undoField?.("works", "title")}
+          />
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>{t("dashboard.sitesEditor.worksEyebrow")}</span>
@@ -3288,10 +3300,16 @@ export default function SectionForms({
             </label>
             <input id="field-works.eyebrow" type="text" value={content.works?.eyebrow || ""} onChange={(e) => updateField("works", "eyebrow", e.target.value)} className={SIDEBAR_FIELD_CLASS} placeholder="PORTFOLIO" />
           </div>
-          <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.worksSubtitle")}</label>
-            <textarea rows={2} value={content.works?.subtitle || ""} onChange={(e) => updateField("works", "subtitle", e.target.value)} className={`${SIDEBAR_FIELD_CLASS} resize-none`} placeholder={t("dashboard.sitesEditor.phWorksSubtitle")} />
-          </div>
+          <SidebarField
+            section="works"
+            fieldKey="subtitle"
+            multiline
+            rows={2}
+            label={t("dashboard.sitesEditor.worksSubtitle")}
+            value={content.works?.subtitle || ""}
+            onChange={(val) => updateField("works", "subtitle", val)}
+            placeholder={t("dashboard.sitesEditor.phWorksSubtitle")}
+          />
           <div className="space-y-1.5">
             <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{t("dashboard.sitesEditor.worksLayout")}</label>
             <div className="grid grid-cols-2 gap-2">
@@ -3417,36 +3435,36 @@ export default function SectionForms({
           </div>
 
           <div className="space-y-3">
-            <div className="space-y-1">
-              <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Eyebrow (Label Atas)</label>
-              <input
-                type="text"
-                value={content.stats?.eyebrow || ""}
-                onChange={(e) => updateField("stats", "eyebrow", e.target.value)}
-                placeholder={t("dashboard.sitesEditor.phStatsEyebrow")}
-                className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Judul Section</label>
-              <input
-                type="text"
-                value={content.stats?.title || ""}
-                onChange={(e) => updateField("stats", "title", e.target.value)}
-                placeholder={t("dashboard.sitesEditor.phStatsSectionTitle")}
-                className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Subjudul (Opsional)</label>
-              <input
-                type="text"
-                value={content.stats?.subtitle || ""}
-                onChange={(e) => updateField("stats", "subtitle", e.target.value)}
-                placeholder={t("dashboard.sitesEditor.phStatsSubtitle")}
-                className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
-              />
-            </div>
+            <SidebarField
+              section="stats"
+              fieldKey="eyebrow"
+              label="Eyebrow (Label Atas)"
+              value={content.stats?.eyebrow || ""}
+              onChange={(val) => updateField("stats", "eyebrow", val)}
+              placeholder={t("dashboard.sitesEditor.phStatsEyebrow")}
+              undoCount={fieldUndoStacks?.["stats.eyebrow"]?.length}
+              onUndo={() => undoField?.("stats", "eyebrow")}
+            />
+            <SidebarField
+              section="stats"
+              fieldKey="title"
+              label="Judul Section"
+              value={content.stats?.title || ""}
+              onChange={(val) => updateField("stats", "title", val)}
+              placeholder={t("dashboard.sitesEditor.phStatsSectionTitle")}
+              undoCount={fieldUndoStacks?.["stats.title"]?.length}
+              onUndo={() => undoField?.("stats", "title")}
+            />
+            <SidebarField
+              section="stats"
+              fieldKey="subtitle"
+              label="Subjudul (Opsional)"
+              value={content.stats?.subtitle || ""}
+              onChange={(val) => updateField("stats", "subtitle", val)}
+              placeholder={t("dashboard.sitesEditor.phStatsSubtitle")}
+              undoCount={fieldUndoStacks?.["stats.subtitle"]?.length}
+              onUndo={() => undoField?.("stats", "subtitle")}
+            />
           </div>
 
           <div className="space-y-3 pt-2">
@@ -3676,36 +3694,36 @@ export default function SectionForms({
           </div>
 
           <div className="space-y-3">
-            <div className="space-y-1">
-              <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Eyebrow</label>
-              <input
-                type="text"
-                value={content.pricing?.eyebrow || ""}
-                onChange={(e) => updateField("pricing", "eyebrow", e.target.value)}
-                placeholder={t("dashboard.sitesEditor.phPricingEyebrow")}
-                className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Judul Section</label>
-              <input
-                type="text"
-                value={content.pricing?.title || ""}
-                onChange={(e) => updateField("pricing", "title", e.target.value)}
-                placeholder={t("dashboard.sitesEditor.phPricingSectionTitle")}
-                className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Subjudul (Opsional)</label>
-              <input
-                type="text"
-                value={content.pricing?.subtitle || ""}
-                onChange={(e) => updateField("pricing", "subtitle", e.target.value)}
-                placeholder={t("dashboard.sitesEditor.phPricingSubtitle")}
-                className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground`}
-              />
-            </div>
+            <SidebarField
+              section="pricing"
+              fieldKey="eyebrow"
+              label="Eyebrow"
+              value={content.pricing?.eyebrow || ""}
+              onChange={(val) => updateField("pricing", "eyebrow", val)}
+              placeholder={t("dashboard.sitesEditor.phPricingEyebrow")}
+              undoCount={fieldUndoStacks?.["pricing.eyebrow"]?.length}
+              onUndo={() => undoField?.("pricing", "eyebrow")}
+            />
+            <SidebarField
+              section="pricing"
+              fieldKey="title"
+              label="Judul Section"
+              value={content.pricing?.title || ""}
+              onChange={(val) => updateField("pricing", "title", val)}
+              placeholder={t("dashboard.sitesEditor.phPricingSectionTitle")}
+              undoCount={fieldUndoStacks?.["pricing.title"]?.length}
+              onUndo={() => undoField?.("pricing", "title")}
+            />
+            <SidebarField
+              section="pricing"
+              fieldKey="subtitle"
+              label="Subjudul (Opsional)"
+              value={content.pricing?.subtitle || ""}
+              onChange={(val) => updateField("pricing", "subtitle", val)}
+              placeholder={t("dashboard.sitesEditor.phPricingSubtitle")}
+              undoCount={fieldUndoStacks?.["pricing.subtitle"]?.length}
+              onUndo={() => undoField?.("pricing", "subtitle")}
+            />
           </div>
 
           <div className="space-y-4 pt-2">

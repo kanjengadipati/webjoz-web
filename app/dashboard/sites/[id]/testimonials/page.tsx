@@ -11,6 +11,7 @@ import { Loader2, Check, X, Copy, Star, MessageSquareQuote, Plus } from "lucide-
 import { SiteSubNav } from "@/components/site-sub-nav";
 import { useI18n } from "@/lib/i18n/context";
 import { decodeSiteId } from "@/lib/sqids";
+import { SidebarField, setSidebarAiRewrite } from "@/components/sidebar-field";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -65,6 +66,49 @@ export default function TestimonialModerationPage() {
   }, [token, activeTenantId, siteId]);
 
   useEffect(() => { fetchSubmissions(); }, [fetchSubmissions]);
+
+  useEffect(() => {
+    if (!token || !activeTenantId || !siteId) {
+      setSidebarAiRewrite(null);
+      return;
+    }
+
+    setSidebarAiRewrite(async (section: string, fieldKey: string, currentValue: string) => {
+      try {
+        const res = await request<any>(
+          "/ai/regenerate-section",
+          {
+            method: "POST",
+            headers: tenantHeaders,
+            body: JSON.stringify({
+              site_id: siteId,
+              section: "testimonials",
+              instructions: `Tulis ulang ulasan testimoni ini agar terdengar tulus, spesifik, dan memuaskan. Teks saat ini: "${currentValue}". Pertahankan panjang 1-3 kalimat.`,
+              tenant_id: activeTenantId,
+            }),
+          },
+          token
+        );
+
+        if (res.status !== "success") {
+          throw new Error(res.message || "AI gagal memproses ulasan.");
+        }
+
+        const updated = res.data?.section !== undefined ? res.data.section : res.data;
+        const result = updated?.items?.[0]?.quote ?? updated?.quote;
+        if (typeof result === "string" && result.trim()) {
+          return result;
+        }
+        return currentValue;
+      } catch (err: any) {
+        throw err;
+      }
+    });
+
+    return () => {
+      setSidebarAiRewrite(null);
+    };
+  }, [token, activeTenantId, siteId]);
 
   const handleApprove = async (subId: number) => {
     try {
@@ -224,10 +268,16 @@ export default function TestimonialModerationPage() {
               </div>
             </div>
 
-            <div className="space-y-1">
-              <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{t("dashboard.sitesTestimonials.labelQuote")} <span className="text-red-400">*</span></label>
-              <textarea rows={3} value={manualQuote} onChange={(e) => setManualQuote(e.target.value)} placeholder="Tulis atau salin teks ulasan..." className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600 resize-y" />
-            </div>
+            <SidebarField
+              section="testimonials"
+              fieldKey="quote"
+              multiline
+              rows={3}
+              label={`${t("dashboard.sitesTestimonials.labelQuote")} *`}
+              value={manualQuote}
+              onChange={setManualQuote}
+              placeholder="Tulis atau salin teks ulasan..."
+            />
 
             <div className="flex gap-2">
               <Button onClick={handleManualImport} disabled={manualSaving || !manualName.trim() || !manualQuote.trim()} className="flex-1">

@@ -8,6 +8,7 @@ import { request } from "@/lib/api/client";
 import { useToast } from "@/components/toast-provider";
 import { SiteSubNav } from "@/components/site-sub-nav";
 import { SeoForm, generateFieldText, type SeoFormProps } from "@/components/seo-form";
+import { setSidebarAiRewrite } from "@/components/sidebar-field";
 import { AiPromptModal } from "@/components/menu-catalog-form";
 import Link from "next/link";
 import { Loader2, ChevronLeft, Save, Check, SearchIcon, Zap } from "lucide-react";
@@ -78,6 +79,65 @@ export default function SeoManagerPage() {
 
   useEffect(() => { fetchContent(); }, [fetchContent]);
   useEffect(() => { seoRef.current = seoData; }, [seoData]);
+
+  // Register global AI rewrite handler for SEO page
+  useEffect(() => {
+    if (!token || !activeTenantId || !siteId) {
+      setSidebarAiRewrite(null);
+      return;
+    }
+
+    setSidebarAiRewrite(async (section: string, fieldKey: string, currentValue: string) => {
+      try {
+        const res = await request<any>(
+          "/ai/regenerate-section",
+          {
+            method: "POST",
+            headers: tenantHeaders,
+            body: JSON.stringify({
+              site_id: siteId,
+              section: "seo",
+              instructions: `Fokus tulis ulang hanya untuk field "${fieldKey}" agar optimal untuk mesin pencari Google, menarik, alami, dan relevan dengan bisnis. Teks saat ini: "${currentValue}". Pertahankan batasan karakter yang ideal. Jaga field lain tetap sama persis.`,
+              tenant_id: activeTenantId,
+            }),
+          },
+          token
+        );
+
+        if (res.status !== "success") {
+          throw new Error(res.message || t("dashboard.sitesSeo.aiFailed") || "AI gagal memproses.");
+        }
+
+        const updated = res.data?.section !== undefined ? res.data.section : res.data;
+        if (!updated) {
+          throw new Error("Tidak ada hasil dari AI.");
+        }
+
+        const keys = fieldKey.split(".");
+        let result: any = updated;
+        for (const k of keys) {
+          if (result == null) break;
+          result = result[k];
+        }
+
+        if (typeof result !== "string" || !result.trim()) {
+          throw new Error("Field tidak ditemukan dalam hasil AI.");
+        }
+
+        return result;
+      } catch (err: any) {
+        if (err?.code === "ERR_PLAN_LIMIT" || err?.code === "ERR_USAGE_LIMIT") {
+          setUpgradeOpen(true);
+          throw new Error("Batas AI tercapai. Silakan upgrade paket.");
+        }
+        throw err;
+      }
+    });
+
+    return () => {
+      setSidebarAiRewrite(null);
+    };
+  }, [token, activeTenantId, siteId, t]);
 
   // ── save ───────────────────────────────────────────────────────────────────
   const saveContent = useCallback(async (data: any) => {

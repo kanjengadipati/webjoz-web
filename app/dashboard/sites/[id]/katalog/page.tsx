@@ -19,6 +19,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { PAYMENT_METHOD_ORDER, paymentBlockTitle, paymentMethodDefaultLabel, paymentMethodDetailPlaceholder, paymentMethodImageField, paymentMethodTypeLabel } from "@/lib/payment-methods";
 import { decodeSiteId } from "@/lib/sqids";
 import { MenuCatalogForm } from "@/components/menu-catalog-form";
+import { setSidebarAiRewrite } from "@/components/sidebar-field";
 import FileUpload from "@/components/file-upload";
 import type { PaymentConfig, PaymentMethod } from "@/components/templates/types";
 
@@ -124,6 +125,60 @@ export default function KatalogManagerPage() {
       return next;
     });
   }, [scheduleAutosave, sectionKey]);
+
+  useEffect(() => {
+    if (!token || !activeTenantId || !siteId) {
+      setSidebarAiRewrite(null);
+      return;
+    }
+
+    setSidebarAiRewrite(async (section: string, fieldKey: string, currentValue: string) => {
+      try {
+        const res = await request<any>(
+          "/ai/regenerate-section",
+          {
+            method: "POST",
+            headers: tenantHeaders,
+            body: JSON.stringify({
+              site_id: siteId,
+              section: sectionKey,
+              instructions: `Fokus tulis ulang hanya untuk field "${fieldKey}" agar lebih menarik, alami, informatif, dan menggugah selera. Teks saat ini: "${currentValue}". Pertahankan panjang kalimat yang proporsional. Jaga field lain tetap sama persis.`,
+              tenant_id: activeTenantId,
+            }),
+          },
+          token
+        );
+
+        if (res.status !== "success") {
+          throw new Error(res.message || "AI gagal memproses.");
+        }
+
+        const updated = res.data?.section !== undefined ? res.data.section : res.data;
+        if (!updated) {
+          throw new Error("Tidak ada hasil dari AI.");
+        }
+
+        const keys = fieldKey.split(".");
+        let result: any = updated;
+        for (const k of keys) {
+          if (result == null) break;
+          result = result[k];
+        }
+
+        if (typeof result !== "string" || !result.trim()) {
+          throw new Error("Field tidak ditemukan dalam hasil AI.");
+        }
+
+        return result;
+      } catch (err: any) {
+        throw err;
+      }
+    });
+
+    return () => {
+      setSidebarAiRewrite(null);
+    };
+  }, [token, activeTenantId, siteId, sectionKey, tenantHeaders]);
 
   // Save the payment & shipping config block back to site content
   const savePayments = useCallback(async (data: PaymentConfig) => {
