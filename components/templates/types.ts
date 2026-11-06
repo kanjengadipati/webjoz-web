@@ -351,6 +351,8 @@ export interface TemplateProps {
       background_color?: string;
       accessory?: HeroAccessory | null;
       dashboard_widget?: HeroDashboardWidget | null;
+      cv_url?: string;
+      cv_label?: string;
     };
     about: {
       title: string;
@@ -365,6 +367,8 @@ export interface TemplateProps {
       highlight_stat_3?: { value: string; label: string };
       milestones?: Array<{ year: string; title: string; description?: string }>;
       team_members?: Array<{ name: string; role: string; photo_url?: string | null }>;
+      cv_url?: string;
+      cv_label?: string;
     };
     benefits: {
       title: string;
