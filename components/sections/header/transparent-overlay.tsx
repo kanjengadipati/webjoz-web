@@ -142,7 +142,7 @@ export default function TransparentOverlay({
           icon={header?.icon}
           defaultIcon={Globe}
           iconClass={`w-5 h-5 shrink-0 ${lightOnHero ? "text-white" : "text-[var(--dt-primary)]"}`}
-          imgClass={`w-auto shrink-0 object-contain transition-all duration-300 ${top ? "h-9" : "h-7"} ${lightOnHero && !header?.logo_url_light ? "brightness-0 invert" : ""}`}
+          imgClass={`w-auto shrink-0 object-contain transition-all duration-300 ${top ? "h-9" : "h-7"}`}
           section="header"
           onUpdateField={onUpdateField}
           isEditorMode={isEditorMode}

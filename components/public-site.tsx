@@ -146,6 +146,10 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
         // Favicon — update all rel variants so browser picks it up reliably
         if (seo?.favicon_url) {
           const faviconUrl = seo.favicon_url;
+          const isSvg = faviconUrl.startsWith("data:image/svg") || faviconUrl.endsWith(".svg");
+          const isIco = faviconUrl.endsWith(".ico");
+          const mimeType = isIco ? "image/x-icon" : isSvg ? "image/svg+xml" : "image/png";
+
           const relVariants = ["icon", "shortcut icon", "apple-touch-icon"];
           relVariants.forEach((rel) => {
             // Try to find existing link with this rel
@@ -159,9 +163,14 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
               link.rel = rel;
               document.head.appendChild(link);
             }
-            // Force cache-bust by appending a timestamp query param
-            const separator = faviconUrl.includes("?") ? "&" : "?";
-            link.href = `${faviconUrl}${separator}_t=${Date.now()}`;
+            link.type = mimeType;
+            // Force cache-bust only for external HTTP URLs; NEVER append to data URIs (it corrupts base64)
+            if (faviconUrl.startsWith("data:")) {
+              link.href = faviconUrl;
+            } else {
+              const separator = faviconUrl.includes("?") ? "&" : "?";
+              link.href = `${faviconUrl}${separator}_t=${Date.now()}`;
+            }
           });
         }
 
