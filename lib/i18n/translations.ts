@@ -3249,6 +3249,8 @@ export interface Translations {
       descriptionInferenceTypeOnly: string;
       descriptionInferenceNone: string;
       descriptionAiFailed: string;
+      pickFieldPrompt: string;
+      pickFieldAiFailed: string;
       analyzingDescription: string;
       descriptionRefinedIntro: string;
       selectMoodPrompt: string;
@@ -6760,6 +6762,8 @@ export const translations: Record<Locale, Translations> = {
         descriptionInferenceMedium: "Sepertinya bidang Anda adalah {type}. Bisa pilih yang lebih spesifik?",
         descriptionInferenceTypeOnly: "Bagus! Bisnis Anda masuk kategori {category}. Lebih spesifiknya, pilih jenis yang paling pas di bawah:",
         descriptionInferenceNone: "Baik, silakan pilih kategori Anda:",
+        pickFieldPrompt: "Saya belum bisa memastikan jenis usahanya. Pilih bidang yang paling sesuai:",
+        pickFieldAiFailed: "Koneksi ke AI bermasalah. Pilih bidang usaha Anda:",
         descriptionAiFailed: "Koneksi ke AI bermasalah. Silakan pilih kategori Anda:",
         analyzingDescription: "Menganalisis profil Anda...",
         descriptionRefinedIntro: "Siap! Deskripsi Anda:",
@@ -10440,6 +10444,8 @@ export const translations: Record<Locale, Translations> = {
         descriptionInferenceMedium: "Looks like your field is {type}. Could you pick a more specific category?",
         descriptionInferenceTypeOnly: "Great! Your business belongs to {category}. More specifically, please choose the best match below:",
         descriptionInferenceNone: "Alright, please select your category:",
+        pickFieldPrompt: "I couldn't tell your business type for sure. Pick the field that fits best:",
+        pickFieldAiFailed: "The AI connection failed. Pick your business field:",
         descriptionAiFailed: "AI is having trouble. Please select your category manually:",
         analyzingDescription: "Analyzing your profile...",
         descriptionRefinedIntro: "Got it! Here's your summary:",

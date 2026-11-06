@@ -23,6 +23,8 @@ export type ClassifyV2Fields = {
   industry_id?: string;
   industry_custom?: string;
   confidence?: string;
+  needs_choice?: boolean;
+  suggested_industry_id?: string;
 };
 
 /** Pre-inferred state from v1 classification (carried through skip/voice paths). */
