@@ -1780,17 +1780,8 @@ export function SiteWizard({
                   taxonomyV2={taxonomyV2}
                   wizardLang={wizardLang}
                   onChangeCategory={() => {
-                    chat.setTypeWasInferred(false);
-                    chat.setBusinessType("");
-                    chat.setBusinessSubType("");
-                    chat.setIndustryId("");
-                    chat.industryIdRef.current = "";
                     chat.setMessages((prev) => prev.filter((msg) => msg.id !== m.id));
-                    chat.setMessages((prev) => [
-                      ...prev,
-                      { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
-                    ]);
-                    chat.setChatStage("type");
+                    chat.showManualPicker();
                   }}
                   t={t}
                 />
@@ -1884,6 +1875,7 @@ export function SiteWizard({
   // Gunakan archetypeRef (sinkron) bukan chat.archetype (async state) agar
   // widget yang dirender di siklus yang sama dengan setArchetype tetap mendapat nilai terbaru.
   const currentArchetype = chat.archetypeRef.current || chat.archetype;
+  const hintId = chat.industryIdRef.current || chat.industryId || chat.suggestedIndustryId;
 
   // Hitung kandidat industri dari archetype (sebelum memutuskan perlu step Bidang atau tidak)
   const archetypeIndustries = (currentArchetype && taxonomyV2)
@@ -1905,7 +1897,6 @@ export function SiteWizard({
     if (selectedBidang) return selectedBidang;
     if (!needsBidangStep || !taxonomyV2) return null;
     // Pre-select hanya bila ada sinyal jelas: industryId atau suggestedIndustryId dari AI
-    const hintId = chat.industryIdRef.current || chat.industryId || chat.suggestedIndustryId;
     if (hintId) {
       const suggestedGroup = taxonomyV2.groups.find((g) =>
         g.industries.some((i) => i.id === hintId)
@@ -1953,11 +1944,11 @@ export function SiteWizard({
                 if (subTypes.length === 0) {
                   subTypes = chat.businessType ? (dynamicSubTypes[chat.businessType] ?? []) : [];
                 }
-                // Bubble API suggestion to top so user sees it first
-                if (chat.industryId) {
+                // Bubble saran AI ke atas agar terlihat dulu (tanpa tanda terpilih)
+                if (hintId) {
                   subTypes = [
-                    ...subTypes.filter((st) => st.value === chat.industryId),
-                    ...subTypes.filter((st) => st.value !== chat.industryId),
+                    ...subTypes.filter((st) => st.value === hintId),
+                    ...subTypes.filter((st) => st.value !== hintId),
                   ];
                 }
               }

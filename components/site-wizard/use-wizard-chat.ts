@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from "react";
-import { INITIAL_MESSAGE, NAME_ACK_VARIANTS, NAME_CONFIRM_VARIANTS, DESCRIPTION_PROMPT, DESCRIPTION_SKIP_KEYWORD, DESCRIPTION_INFERENCE_HIGH, DESCRIPTION_INFERENCE_MEDIUM, DESCRIPTION_INFERENCE_NONE, DESCRIPTION_AI_FAILED, MOOD_OPTIONS } from "./constants";
+import { INITIAL_MESSAGE, NAME_ACK_VARIANTS, NAME_CONFIRM_VARIANTS, DESCRIPTION_PROMPT, DESCRIPTION_SKIP_KEYWORD, DESCRIPTION_INFERENCE_HIGH, DESCRIPTION_INFERENCE_MEDIUM, DESCRIPTION_INFERENCE_NONE, MOOD_OPTIONS } from "./constants";
 
 const INITIAL_MESSAGE_WORDS = INITIAL_MESSAGE.split(" ");
 import { capitalizeWords, pickVariant, isLikelyGibberish, extractLocationFromDescription, generateDescriptionFromBusinessName } from "./helpers";
@@ -550,9 +550,11 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     return cancel;
   };
 
-  const showManualPicker = (opts?: { aiFailed?: boolean; suggestion?: string }) => {
+  const showManualPicker = (opts?: { aiFailed?: boolean }) => {
     setBusinessType("");
     setBusinessSubType("");
+    setArchetype(""); archetypeRef.current = "";
+    setIndustryId(""); industryIdRef.current = "";
     setTypeWasInferred(false);
     setSelectedBidang(null);
     setManualPicker(true);
@@ -709,19 +711,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
         ]);
       }, 500);
     } else {
-      setBusinessType("");
-      setBusinessSubType("");
-      setTypeWasInferred(false);
-      setInferenceResult({ confidence: "low" } as InferenceResult);
-      setTimeout(() => {
-        typeMessage(t("dashboard.wizard.descriptionInferenceNone", DESCRIPTION_INFERENCE_NONE), () => {
-          setMessages((prev) => [
-            ...prev,
-            { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
-          ]);
-          setChatStage("type");
-        });
-      }, 300);
+      showManualPicker();
     }
   };
 
@@ -847,6 +837,8 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
           // B1: gunakan routeInference — jangan simpan archetype/industry_id bila needs_choice
           const route = routeInference(d);
           if (route === "confirm") {
+            setManualPicker(false);
+            setSuggestedIndustryId("");
             if (d.archetype) { setArchetype(d.archetype); archetypeRef.current = d.archetype; }
             if (d.industry_id) { setIndustryId(d.industry_id); industryIdRef.current = d.industry_id; }
           } else {
@@ -905,7 +897,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
           });
           setInferenceResult(skipResult);
 
-          if (skipResult.confidence === "high" && skipResult.industryId) {
+          if (route === "confirm" && skipResult.industryId) {
             // v2 resolved: industryId diketahui — tampilkan inference-confirm card
             if (skipResult.type) setBusinessType(skipResult.type);
             if (skipResult.subType) setBusinessSubType(skipResult.subType);
@@ -1038,6 +1030,8 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
           // B1: gunakan routeInference — jangan simpan archetype/industry_id bila needs_choice
           const route = routeInference(aiRes.data);
           if (route === "confirm") {
+            setManualPicker(false);
+            setSuggestedIndustryId("");
             if (aiRes.data.archetype) { setArchetype(aiRes.data.archetype); archetypeRef.current = aiRes.data.archetype; }
             if (aiRes.data.industry_id) { setIndustryId(aiRes.data.industry_id); industryIdRef.current = aiRes.data.industry_id; }
           } else {
@@ -1364,6 +1358,9 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setIndustryCustom("");
     setDescription("");
     setDescriptionSource("none");
+    setSuggestedIndustryId("");
+    setManualPicker(false);
+    setSelectedBidang(null);
     setWhatsapp("");
     setServiceArea("");
     setMood("");
