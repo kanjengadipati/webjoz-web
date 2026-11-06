@@ -225,17 +225,15 @@ export default function BenefitsTrustBar({
 
           {/* Add item tile in editor mode */}
           {isEditorMode && onAddItem && items.length < 6 && (
-            <div className="min-h-[72px] flex items-center">
-              <InlineAddTile
-                compact
-                label={isEN ? "Add Trust Item" : "Tambah Jaminan"}
-                onClick={onAddItem}
-                style={{
-                  minHeight: "72px",
-                  borderRadius: "var(--dt-radius-lg)",
-                }}
-              />
-            </div>
+            <InlineAddTile
+              compact
+              label={isEN ? "Add Trust Item" : "Tambah Jaminan"}
+              onClick={onAddItem}
+              className="w-full h-full"
+              style={{
+                borderRadius: "var(--dt-radius-lg)",
+              }}
+            />
           )}
         </div>
       </div>
