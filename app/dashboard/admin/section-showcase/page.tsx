@@ -6,7 +6,6 @@ import { useAuthToken } from "@/lib/auth-store";
 import { useToast } from "@/components/toast-provider";
 import {
   ShieldAlert,
-  Search,
   Eye,
   EyeOff,
   Copy,
@@ -44,6 +43,7 @@ import { ShowcaseHeader } from "./components/ShowcaseHeader";
 import { ShowcaseSidebar, type SectionConfigItem } from "./components/ShowcaseSidebar";
 import { VariantPreviewCard } from "./components/VariantPreviewCard";
 import { SectionRenderer } from "./components/SectionRenderer";
+import { SearchableVariantDropdown } from "./components/SearchableVariantDropdown";
 
 const SECTION_CONFIG_LIST: SectionConfigItem[] = [
   { id: "hero", name: "Hero" },
@@ -78,7 +78,6 @@ export default function SectionShowcasePage() {
   const [viewport, setViewport] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const [activePresetId, setActivePresetId] = useState<string>("modern-tech");
   const [currentThemeMode, setCurrentThemeMode] = useState<"light" | "dark">("light");
-  const [searchQuery, setSearchQuery] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "hidden">("all");
   const [copiedVariant, setCopiedVariant] = useState<string | null>(null);
   const [cardStyle, setCardStyle] = useState<"standard" | "horizontal" | "minimal" | "overlay" | "magazine">("standard");
@@ -367,33 +366,22 @@ export default function SectionShowcasePage() {
     return new Set(hiddenVariants[selectedSection] ?? []);
   }, [hiddenVariants, selectedSection]);
 
-  // Filtered variants
+  // Filtered variants (by active/hidden status tab only; search now lives inside dropdown popup)
   const availableVariants = useMemo(() => {
     return allSectionOptions.filter((v) => {
       const isHidden = currentSectionHiddenSet.has(v.value);
       if (statusFilter === "active" && isHidden) return false;
       if (statusFilter === "hidden" && !isHidden) return false;
-
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase();
-        const matchLabel = v.label.toLowerCase().includes(q);
-        const matchValue = v.value.toLowerCase().includes(q);
-        const matchDesc = v.description?.toLowerCase().includes(q) ?? false;
-        if (!matchLabel && !matchValue && !matchDesc) return false;
-      }
       return true;
     });
-  }, [allSectionOptions, currentSectionHiddenSet, statusFilter, searchQuery]);
+  }, [allSectionOptions, currentSectionHiddenSet, statusFilter]);
 
-  // Jump or select variant via dropdown
+  // Jump to variant card (in "all" mode) or switch selected variant (in "single" mode)
   const handleSelectVariantDropdown = useCallback((variantVal: string) => {
     if (!variantVal) return;
     if (displayMode === "single") {
       setSelectedVariant(variantVal);
     } else {
-      if (searchQuery.trim()) {
-        setSearchQuery("");
-      }
       if (currentSectionHiddenSet.has(variantVal) && statusFilter === "active") {
         setStatusFilter("all");
       }
@@ -408,7 +396,7 @@ export default function SectionShowcasePage() {
         }
       }, 60);
     }
-  }, [displayMode, searchQuery, statusFilter, currentSectionHiddenSet]);
+  }, [displayMode, statusFilter, currentSectionHiddenSet]);
 
   // Reset selected variant on section change
   useEffect(() => {
@@ -476,7 +464,6 @@ export default function SectionShowcasePage() {
           selectedSection={selectedSection}
           onSelectSection={(secId) => {
             setSelectedSection(secId);
-            setSearchQuery("");
           }}
           hiddenVariants={hiddenVariants}
         />
@@ -546,40 +533,14 @@ export default function SectionShowcasePage() {
                 </button>
               </div>
 
-              {/* Variant Selector Dropdown */}
-              <div className="flex items-center gap-1.5 bg-muted/40 hover:bg-muted/60 transition-colors px-2 py-1 rounded-lg border border-border/60">
-                <Sliders className="size-3.5 text-muted-foreground shrink-0" />
-                <select
-                  value={displayMode === "single" ? selectedVariant : ""}
-                  onChange={(e) => handleSelectVariantDropdown(e.target.value)}
-                  className="bg-transparent text-xs font-medium text-foreground focus:outline-hidden cursor-pointer max-w-[170px] sm:max-w-[240px] truncate"
-                  title="Pilih atau lompat ke varian langsung dari dropdown"
-                >
-                  <option value="" className="bg-popover text-popover-foreground">
-                    {displayMode === "single"
-                      ? "Pilih varian..."
-                      : `Lompat ke varian (${allSectionOptions.length})…`}
-                  </option>
-                  {allSectionOptions.map((v, idx) => (
-                    <option key={v.value} value={v.value} className="bg-popover text-popover-foreground">
-                      {currentSectionHiddenSet.has(v.value) ? "🚫 " : ""}
-                      {idx + 1}. {v.label} ({v.value})
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Search Bar */}
-              <div className="relative w-36 sm:w-44">
-                <Search className="size-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  type="text"
-                  placeholder="Cari varian..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-8 pr-2.5 py-1 text-xs bg-muted/40 border border-border/60 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:ring-1 focus:ring-primary"
-                />
-              </div>
+              {/* Variant Selector: Searchable Dropdown (replaces native select + search bar) */}
+              <SearchableVariantDropdown
+                variants={allSectionOptions}
+                selectedVariant={selectedVariant}
+                onSelectVariant={handleSelectVariantDropdown}
+                displayMode={displayMode}
+                hiddenVariantsSet={currentSectionHiddenSet}
+              />
 
               {/* Action: Fullscreen Section */}
               <button
@@ -671,14 +632,11 @@ export default function SectionShowcasePage() {
                     <p className="text-sm font-medium">
                       {statusFilter === "hidden"
                         ? "Tidak ada varian yang disembunyikan pada section ini."
-                        : "Tidak ada varian yang cocok dengan pencarian."}
+                        : "Semua varian disembunyikan."}
                     </p>
                     <button
                       type="button"
-                      onClick={() => {
-                        setSearchQuery("");
-                        setStatusFilter("all");
-                      }}
+                      onClick={() => setStatusFilter("all")}
                       className="text-xs text-primary underline cursor-pointer"
                     >
                       Reset filter
