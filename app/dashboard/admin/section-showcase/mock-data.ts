@@ -1145,3 +1145,20 @@ export const MOCK_SHOWCASE_DATA = {
     ],
   },
 };
+
+/**
+ * Hero variants whose layout is built around a person's portrait. The showcase
+ * shares one hero payload across every variant, so without this override these
+ * variants would render the generic business photo on their portrait side.
+ */
+const PORTRAIT_HERO_VARIANTS = new Set([
+  "personal-billboard",
+  "profile-cutout",
+  "portrait-showcase",
+]);
+
+export function getShowcaseHero(variantKey: string) {
+  const hero = MOCK_SHOWCASE_DATA.hero;
+  if (!PORTRAIT_HERO_VARIANTS.has(variantKey)) return hero;
+  return { ...hero, image_url: hero.portrait_image_url };
+}

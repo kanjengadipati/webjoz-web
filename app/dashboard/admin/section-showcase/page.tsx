@@ -77,7 +77,7 @@ import HeaderSection from "@/components/sections/header";
 import FooterSection from "@/components/sections/footer";
 import { BlogPostsSection } from "@/components/templates/blog-section";
 
-import { SHOWCASE_PRESETS, MOCK_SHOWCASE_DATA, ShowcasePreset } from "./mock-data";
+import { SHOWCASE_PRESETS, MOCK_SHOWCASE_DATA, getShowcaseHero, ShowcasePreset } from "./mock-data";
 import { Skeleton } from "webjoz-ui";
 
 const SECTION_CONFIG_LIST: { id: string; name: string; icon: string }[] = [
@@ -2202,7 +2202,7 @@ function RenderSectionComponent({
     case "hero":
       return (
         <HeroSection
-          hero={(zeroState ? {} : d.hero) as any}
+          hero={(zeroState ? {} : getShowcaseHero(variantKey)) as any}
           contact={(zeroState ? undefined : d.contact) as any}
           onSubmitLead={() => Promise.resolve()}
           design_token={designToken}
