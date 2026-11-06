@@ -3288,14 +3288,24 @@ const LeadForm: React.FC<LeadFormProps> = ({
 const toPascalCase = (s: string) =>
   s.replace(/(^\w|-\w)/g, (c) => c.replace("-", "").toUpperCase());
 
-const DynamicIcon = ({ name, defaultIcon, className }: { name?: string; defaultIcon: any; className?: string }) => {
+const DynamicIcon = ({
+  name,
+  defaultIcon,
+  className,
+  style,
+}: {
+  name?: string;
+  defaultIcon: any;
+  className?: string;
+  style?: React.CSSProperties;
+}) => {
   if (name) {
     // Try exact match first (PascalCase from AI), then try PascalCase-converted (kebab-case / lowercase from AI)
     const IconComponent = (LucideIcons as any)[name] ?? (LucideIcons as any)[toPascalCase(name)];
-    if (IconComponent) return <IconComponent className={className} />;
+    if (IconComponent) return <IconComponent className={className} style={style} />;
   }
   const Default = defaultIcon;
-  return <Default className={className} />;
+  return <Default className={className} style={style} />;
 };
 
 // ─── Logo Image with Fallback ────────────────────────────────────────────────
@@ -3382,18 +3392,28 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
             onPointerDown={(e) => e.stopPropagation()}
             onTouchStart={(e) => e.stopPropagation()}
             title={t("dashboard.sitesEditor.addPhoto")}
+            style={{
+              width: "2.5rem",
+              height: "2.5rem",
+              borderRadius: "var(--dt-radius, 0.75rem)",
+              background:
+                "linear-gradient(135deg, var(--dt-primary) 0%, color-mix(in srgb, var(--dt-primary) 65%, #000 35%) 100%)",
+              boxShadow:
+                "0 2px 10px color-mix(in srgb, var(--dt-primary) 40%, transparent)",
+              flexShrink: 0,
+            }}
           >
-            <DynamicIcon name={icon} defaultIcon={defaultIcon} className={iconClass} />
+            <DynamicIcon name={icon} defaultIcon={defaultIcon} className="w-5 h-5" style={{ color: "#fff" }} />
             {/* Dashed highlight on hover / when selected */}
             <div
-              className={`absolute -inset-1 rounded-lg border-2 border-dashed border-primary/40 bg-primary/5 transition-opacity pointer-events-none ${
+              className={`absolute -inset-1 rounded-xl border-2 border-dashed border-primary/40 bg-primary/5 transition-opacity pointer-events-none ${
                 isSelected
                   ? "opacity-100"
                   : "opacity-0 group-hover/logo-ph:opacity-100"
               }`}
             />
-            {/* Small camera badge */}
-            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-slate-900/90 border border-white/30 flex items-center justify-center shadow transition-transform group-hover/logo-ph:scale-110">
+            {/* Small camera badge — corner indicator that this is clickable to upload */}
+            <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-slate-900/90 border border-white/30 flex items-center justify-center shadow transition-transform group-hover/logo-ph:scale-110">
               <Camera className="w-2.5 h-2.5 text-white" />
             </span>
           </div>
@@ -3442,7 +3462,22 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
   if (url && !imgError) {
     return <img src={url} className={imgClass} alt="Logo" onError={() => setImgError(true)} />;
   }
-  return <DynamicIcon name={icon} defaultIcon={defaultIcon} className={iconClass} />;
+  return (
+    <div
+      className="flex items-center justify-center shrink-0 shadow-sm"
+      style={{
+        width: "2.5rem",
+        height: "2.5rem",
+        borderRadius: "var(--dt-radius, 0.75rem)",
+        background:
+          "linear-gradient(135deg, var(--dt-primary) 0%, color-mix(in srgb, var(--dt-primary) 65%, #000 35%) 100%)",
+        boxShadow:
+          "0 2px 10px color-mix(in srgb, var(--dt-primary) 40%, transparent)",
+      }}
+    >
+      <DynamicIcon name={icon} defaultIcon={defaultIcon} className="w-5 h-5 text-white" />
+    </div>
+  );
 };
 
 // ─── SEO Editor Preview (Realistic Browser Mockup) ───────────────────────────
