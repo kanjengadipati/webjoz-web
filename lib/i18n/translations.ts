@@ -2252,7 +2252,10 @@ export interface Translations {
       brandIdentitySettings: string;
       brandStyle: string;
       brandStyleSubtitle: string;
-      headingFontLabel: string;
+      testimonialsExampleBanner: string;
+      testimonialsCollect: string;
+      testimonialsConfirmReal: string;
+      testimonialsConfirmPrompt: string;      headingFontLabel: string;
       bodyFontLabel: string;
       brandAccentLabel: string;
       resetDefaultFont: string;
@@ -5777,7 +5780,10 @@ export const translations: Record<Locale, Translations> = {
         brandIdentitySettings: "PENGATURAN IDENTITAS",
         brandStyle: "Gaya Brand (Brand style)",
         brandStyleSubtitle: "Jaga konsistensi font & warna di seluruh halaman",
-        headingFontLabel: "Font Judul (Heading font)",
+        testimonialsExampleBanner: "Contoh testimoni buatan AI. Tidak tampil di situs publik sampai Anda menggantinya dengan testimoni asli atau mengonfirmasinya.",
+        testimonialsCollect: "Kumpulkan testimoni asli",
+        testimonialsConfirmReal: "Ini testimoni asli, tayangkan",
+        testimonialsConfirmPrompt: "Dengan melanjutkan, Anda menyatakan testimoni ini nyata dan berasal dari pelanggan Anda. Lanjutkan?",        headingFontLabel: "Font Judul (Heading font)",
         bodyFontLabel: "Font Teks Isi (Body font)",
         brandAccentLabel: "Warna Aksen Brand (Accent color)",
         resetDefaultFont: "Reset ke font bawaan",
@@ -9459,7 +9465,10 @@ export const translations: Record<Locale, Translations> = {
         brandIdentitySettings: "BRAND IDENTITY",
         brandStyle: "Brand style",
         brandStyleSubtitle: "Keep your typography & color consistent across all pages",
-        headingFontLabel: "Heading font",
+        testimonialsExampleBanner: "AI-generated example testimonials. They stay off the public site until you replace them with real ones or confirm them.",
+        testimonialsCollect: "Collect real testimonials",
+        testimonialsConfirmReal: "These are real, publish them",
+        testimonialsConfirmPrompt: "By continuing you confirm these testimonials are real and come from your customers. Continue?",        headingFontLabel: "Heading font",
         bodyFontLabel: "Body font",
         brandAccentLabel: "Brand accent color",
         resetDefaultFont: "Reset to default font",
