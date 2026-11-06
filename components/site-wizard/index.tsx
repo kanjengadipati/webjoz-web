@@ -10,7 +10,6 @@ import {
   ArrowRight,
   Axe,
   Bot,
-  BookOpen,
   Box,
   Briefcase,
   Building2,
@@ -37,7 +36,6 @@ import {
   Gift,
   Globe,
   GraduationCap,
-  Hammer,
   HandHeart,
   Heart,
   HelpCircle,
@@ -74,7 +72,6 @@ import {
   Tablet,
   Tag,
   Tractor,
-  TreePine,
   Truck,
   UtensilsCrossed,
   Video,
@@ -1899,7 +1896,7 @@ export function SiteWizard({
 
   // Threshold: ≥8 kandidat pakai step Bidang; <8 langsung tampilkan chip
   const BIDANG_THRESHOLD = 8;
-  const needsBidangStep = !!taxonomyV2 && totalCandidates >= BIDANG_THRESHOLD;
+  const needsBidangStep = !!taxonomyV2 && (chat.manualPicker || totalCandidates >= BIDANG_THRESHOLD);
 
   // Bila archetype diketahui dan belum ada selectedBidang, pre-select Bidang yang
   // mengandung industri saran AI (industryId) atau grup yang punya industri archetype terbanyak.
@@ -1907,11 +1904,11 @@ export function SiteWizard({
   const getEffectiveSelectedBidang = (): string | null => {
     if (selectedBidang) return selectedBidang;
     if (!needsBidangStep || !taxonomyV2) return null;
-    // Pre-select hanya bila ada sinyal jelas: industryId saran AI
-    const currentIndustryId = chat.industryIdRef.current || chat.industryId;
-    if (currentArchetype && currentIndustryId) {
+    // Pre-select hanya bila ada sinyal jelas: industryId atau suggestedIndustryId dari AI
+    const hintId = chat.industryIdRef.current || chat.industryId || chat.suggestedIndustryId;
+    if (hintId) {
       const suggestedGroup = taxonomyV2.groups.find((g) =>
-        g.industries.some((i) => i.id === currentIndustryId)
+        g.industries.some((i) => i.id === hintId)
       );
       if (suggestedGroup) return suggestedGroup.id;
     }
@@ -1975,11 +1972,7 @@ export function SiteWizard({
                         chat.setBusinessSubType("");
                         chat.setSelectedBidang(null);
                         chat.setMessages((prev) => prev.filter((msg) => msg.id !== m.id));
-                        chat.setMessages((prev) => [
-                          ...prev,
-                          { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
-                        ]);
-                        chat.setChatStage("type");
+                        chat.showManualPicker();
                       }}
                       className="text-[10px] text-slate-400 hover:text-slate-200 underline mb-2 inline-block transition-colors"
                     >

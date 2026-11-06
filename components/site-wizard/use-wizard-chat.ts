@@ -50,6 +50,8 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
   const [selectedBidang, setSelectedBidang] = useState<string | null>(null);
   const [description, setDescription] = useState("");
   const [descriptionSource, setDescriptionSource] = useState<"user" | "ai" | "none">("none");
+  const [suggestedIndustryId, setSuggestedIndustryId] = useState("");
+  const [manualPicker, setManualPicker] = useState(false);
   const [whatsapp, setWhatsapp] = useState("");
   const [serviceArea, setServiceArea] = useState("");
   const [mood, setMood] = useState("");
@@ -548,6 +550,27 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     return cancel;
   };
 
+  const showManualPicker = (opts?: { aiFailed?: boolean; suggestion?: string }) => {
+    setBusinessType("");
+    setBusinessSubType("");
+    setTypeWasInferred(false);
+    setSelectedBidang(null);
+    setManualPicker(true);
+    setInferenceResult({ confidence: "low" } as InferenceResult);
+    setChatStage("type");
+    const msg = opts?.aiFailed
+      ? t("dashboard.wizard.pickFieldAiFailed", "Koneksi ke AI bermasalah. Pilih bidang usaha Anda:")
+      : t("dashboard.wizard.pickFieldPrompt", "Saya belum bisa memastikan jenis usahanya. Pilih bidang yang paling sesuai:");
+    setTimeout(() => {
+      typeMessage(msg, () => {
+        setMessages((prev) => [
+          ...prev,
+          { id: `widget-subtype-chips-${Date.now()}`, sender: "ai", text: "", widget: "subtype-chips" as const },
+        ]);
+      });
+    }, 300);
+  };
+
   const handleSelectType = (type: string) => {
     setBusinessType(type);
     setBusinessSubType("");
@@ -821,9 +844,16 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
         const aiRes = await processBusinessDescription("", currentBizName, locale);
         const d = aiRes?.data;
         if (d && (d.confidence === "high" || d.confidence === "medium")) {
-          // v2: store archetype/industry_id early from skip-path classify
-          if (d.archetype) { setArchetype(d.archetype); archetypeRef.current = d.archetype; }
-          if (d.industry_id) { setIndustryId(d.industry_id); industryIdRef.current = d.industry_id; }
+          // B1: gunakan routeInference — jangan simpan archetype/industry_id bila needs_choice
+          const route = routeInference(d);
+          if (route === "confirm") {
+            if (d.archetype) { setArchetype(d.archetype); archetypeRef.current = d.archetype; }
+            if (d.industry_id) { setIndustryId(d.industry_id); industryIdRef.current = d.industry_id; }
+          } else {
+            setArchetype(""); archetypeRef.current = "";
+            setIndustryId(""); industryIdRef.current = "";
+            setSuggestedIndustryId(route === "suggest" ? (d.suggested_industry_id ?? "") : "");
+          }
           if (d.industry_custom) setIndustryCustom(d.industry_custom);
 
           const refinedText = d.refined_text?.trim() || "";
@@ -903,16 +933,9 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
             return;
           }
 
-          // Tidak cukup yakin — tampilkan picker manual
-          setTimeout(() => {
-            typeMessage(t("dashboard.wizard.descriptionInferenceNone", DESCRIPTION_INFERENCE_NONE), () => {
-              setMessages((prev) => [
-                ...prev,
-                { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
-              ]);
-              setChatStage("type");
-            });
-          }, 500);
+          // Tidak cukup yakin — tampilkan picker manual (Bidang → Spesialisasi)
+          setIsAnalyzingDescription(false);
+          showManualPicker();
           return;
         }
       } catch (err) {
@@ -921,17 +944,9 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
         setIsAnalyzingDescription(false);
       }
 
-      // Fallback for truly non-descriptive business names (e.g. "Abc", "Delta", "123") -> show manual category chips
+      // Fallback for truly non-descriptive business names (e.g. "Abc", "Delta", "123") -> show manual category picker
       setInferenceResult({ confidence: "low" } as InferenceResult);
-      setTimeout(() => {
-        typeMessage(t("dashboard.wizard.descriptionInferenceNone", DESCRIPTION_INFERENCE_NONE), () => {
-          setMessages((prev) => [
-            ...prev,
-            { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
-          ]);
-          setChatStage("type");
-        });
-      }, 500);
+      showManualPicker();
       return;
     }
 
@@ -939,11 +954,14 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     // STEP 2: DISPLAY USER MESSAGE & ATTEMPT LOCATION EXTRACTION
     // Render the user message bubble and extract geographic location if mentioned.
     // =========================================================================
+    const fromAI = !!preInferred?.descriptionFromAI;
     const userMsgId = `user-desc-${Date.now()}`;
-    setDescriptionMessageId(userMsgId);
-    setMessages((prev) => [...prev, { id: userMsgId, sender: "user", text: val }]);
-
+    if (!fromAI) {
+      setDescriptionMessageId(userMsgId);
+      setMessages((prev) => [...prev, { id: userMsgId, sender: "user", text: val }]);
+    }
     setDescription(val);
+    descriptionRef.current = val;
     setDescriptionSource(preInferred?.descriptionFromAI ? "ai" : "user");
 
     if (!serviceArea) {
@@ -964,12 +982,22 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
       preInferred?.type
         ? (validateClassification(preInferred.type, preInferred.subType) ?? validateClassification(preInferred.type, ""))
         : null;
-    if (preValid?.type) {
-      result = {
-        type: preValid.type,
-        subType: preValid.subType || "",
-        confidence: preValid.subType ? "high" : "medium",
-      };
+    const hasPre = !!preInferred && (preInferred.industryId || preInferred.type);
+    if (preValid?.type || hasPre) {
+      if (preValid?.type) {
+        result = {
+          type: preValid.type,
+          subType: preValid.subType || "",
+          confidence: preValid.subType ? "high" : "medium",
+        };
+      } else {
+        // hasPre but no valid type — use preInferred data directly
+        result = {
+          type: preInferred?.type,
+          subType: preInferred?.subType || "",
+          confidence: preInferred?.confidence === "high" ? "high" : "medium",
+        };
+      }
       // Inferensi classify — gunakan routeInference, jangan menyimpan archetype/industry_id otomatis
       const aiResult = preInferred
         ? { archetype: preInferred.archetype, industry_id: preInferred.industryId, confidence: preInferred.confidence }
@@ -1007,25 +1035,23 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
               confidence: aiRes.data.confidence === "high" && aiValid.subType ? "high" : "medium",
             };
           }
-          // v2: store archetype/industry_id from classify response
-          if (aiRes.data.archetype) {
-            setArchetype(aiRes.data.archetype);
-            archetypeRef.current = aiRes.data.archetype;
-          }
-          if (aiRes.data.industry_id) {
-            setIndustryId(aiRes.data.industry_id);
-            industryIdRef.current = aiRes.data.industry_id;
+          // B1: gunakan routeInference — jangan simpan archetype/industry_id bila needs_choice
+          const route = routeInference(aiRes.data);
+          if (route === "confirm") {
+            if (aiRes.data.archetype) { setArchetype(aiRes.data.archetype); archetypeRef.current = aiRes.data.archetype; }
+            if (aiRes.data.industry_id) { setIndustryId(aiRes.data.industry_id); industryIdRef.current = aiRes.data.industry_id; }
+          } else {
+            setArchetype(""); archetypeRef.current = "";
+            setIndustryId(""); industryIdRef.current = "";
+            setSuggestedIndustryId(route === "suggest" ? (aiRes.data.suggested_industry_id ?? "") : "");
           }
           if (aiRes.data.industry_custom) {
             setIndustryCustom(aiRes.data.industry_custom);
           }
           // Gunakan classifyInference untuk menentukan flow (confirm/suggest/pick)
-          const aiResult = {
-            archetype: aiRes.data.archetype,
-            industry_id: aiRes.data.industry_id,
-            confidence: aiRes.data.confidence,
-            archetypeConflict: false, // will be set by ResolveV2
-          };
+          const aiResult = route === "confirm"
+            ? { archetype: aiRes.data.archetype, industry_id: aiRes.data.industry_id, confidence: aiRes.data.confidence }
+            : { confidence: "low" };
           result = classifyInference(result, null, aiResult);
         }
       } catch (err) {
@@ -1171,20 +1197,8 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
       return;
     }
 
-    // When confidence is low or medium (no exact subtype match): show native category selection directly
-    setBusinessType("");
-    setBusinessSubType("");
-    setTypeWasInferred(false);
-    setInferenceResult({ confidence: "low" } as InferenceResult);
-    setChatStage("type");
-    setTimeout(() => {
-      typeMessage(aiFailed ? t("dashboard.wizard.descriptionAiFailed", DESCRIPTION_AI_FAILED) : t("dashboard.wizard.descriptionInferenceNone", DESCRIPTION_INFERENCE_NONE), () => {
-        setMessages((prev) => [
-          ...prev,
-          { id: `widget-type-chips-${Date.now()}`, sender: "ai", text: "", widget: "type-chips" as const },
-        ]);
-      });
-    }, 300);
+    // When confidence is low or medium (no exact subtype match): show manual category picker
+    showManualPicker({ aiFailed });
   };
 
   const handleConfirmName = (confirmed: boolean) => {
@@ -1409,6 +1423,10 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     description,
     setDescription,
     descriptionSource,
+    suggestedIndustryId,
+    setSuggestedIndustryId,
+    manualPicker,
+    setManualPicker,
     whatsapp,
     setWhatsapp,
     serviceArea,
@@ -1458,6 +1476,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     handleSelectStarter,
     handleSelectType,
     handleSelectSubType,
+    showManualPicker,
     continueToLanguage,
     handleSelectLanguage,
     handleSelectMood,
