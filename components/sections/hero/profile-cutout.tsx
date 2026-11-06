@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { motion, useReducedMotion } from "motion/react";
+import { FileText } from "lucide-react";
 import type { HeroVariantProps } from "./types";
 import { InlineText } from "../../templates/shared";
 import { HeroCta, HeroImage } from "./primitives";
@@ -217,6 +218,27 @@ export default function HeroProfileCutout({
                 className="inline-flex items-center justify-center gap-2 px-6 py-3.5 text-sm sm:text-base font-medium border hover:bg-black/5 dark:hover:bg-white/5 active:scale-95 transition-all"
                 style={{
                   borderColor: "var(--dt-border, currentColor)",
+                  color: "var(--dt-text)",
+                  borderRadius: "var(--dt-radius, 0.75rem)",
+                }}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
+            )}
+
+            {Boolean(h.cv_url?.trim()) && (
+              <HeroCta
+                href={h.cv_url}
+                label={h.cv_label || (language === "en" ? "Download CV" : "Unduh CV")}
+                fieldKey="cv_label"
+                icon={<FileText style={{ width: 14, height: 14 }} />}
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-medium border active:scale-95 transition-all"
+                style={{
+                  borderColor: "var(--dt-border, currentColor)",
+                  background: "color-mix(in srgb, var(--dt-text) 6%, transparent)",
                   color: "var(--dt-text)",
                   borderRadius: "var(--dt-radius, 0.75rem)",
                 }}

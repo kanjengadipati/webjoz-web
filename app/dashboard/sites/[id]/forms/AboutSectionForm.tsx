@@ -166,6 +166,33 @@ export function AboutSectionForm({
         })}
       </div>
 
+      {/* Link CV / Resume */}
+      <div className="space-y-2 p-2.5 rounded-lg border border-border bg-muted/20">
+        <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground block">
+          📄 Link CV / Resume (Portofolio)
+        </label>
+        <div className="space-y-1">
+          <label className="text-[10px] text-sidebar-muted-foreground block">URL File CV (Google Drive, Dropbox, dll)</label>
+          <input
+            type="text"
+            value={content.about?.cv_url || ""}
+            onChange={(e) => updateField("about", "cv_url", e.target.value)}
+            placeholder="https://drive.google.com/..."
+            className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="text-[10px] text-sidebar-muted-foreground block">Teks Tombol (Default: Unduh CV / Resume)</label>
+          <input
+            type="text"
+            value={content.about?.cv_label || ""}
+            onChange={(e) => updateField("about", "cv_label", e.target.value)}
+            placeholder="Unduh CV / Resume"
+            className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
+          />
+        </div>
+      </div>
+
       {/* Milestones */}
       <CollapsibleGroup label={t("dashboard.sitesEditor.aboutMilestones")} defaultOpen={false}>
         {((content.about?.milestones as any[]) || []).map((m: any, idx: number) => (

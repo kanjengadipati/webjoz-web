@@ -12,6 +12,7 @@ import { TestimonialsSectionForm } from "./forms/TestimonialsSectionForm";
 import { GallerySectionForm } from "./forms/GallerySectionForm";
 import { WorksSectionForm } from "./forms/WorksSectionForm";
 import { StatsSectionForm } from "./forms/StatsSectionForm";
+import { SkillsSectionForm } from "./forms/SkillsSectionForm";
 import { PartnersSectionForm } from "./forms/PartnersSectionForm";
 import { PricingSectionForm } from "./forms/PricingSectionForm";
 import { FloatingSectionForm } from "./forms/FloatingSectionForm";
@@ -1297,6 +1298,35 @@ export default function SectionForms({
             <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">{t("dashboard.sitesEditor.heroCtaSecondaryUrlHint")}</p>
           </div>
           )}
+
+          {/* Link CV / Resume (opsional, untuk portofolio) */}
+          <div className="space-y-2 p-2.5 rounded-lg border border-border bg-muted/20">
+            <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground block">
+              📄 Link CV / Resume (Portofolio)
+            </label>
+            <div className="space-y-1">
+              <label className="text-[10px] text-sidebar-muted-foreground block">URL File CV (Google Drive, Dropbox, dll)</label>
+              <input
+                id="field-hero.cv_url"
+                type="text"
+                value={content.hero?.cv_url || ""}
+                onChange={(e) => updateField("hero", "cv_url", e.target.value)}
+                placeholder="https://drive.google.com/..."
+                className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] text-sidebar-muted-foreground block">Teks Tombol (Default: Unduh CV)</label>
+              <input
+                id="field-hero.cv_label"
+                type="text"
+                value={content.hero?.cv_label || ""}
+                onChange={(e) => updateField("hero", "cv_label", e.target.value)}
+                placeholder="Unduh CV"
+                className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
+              />
+            </div>
+          </div>
           {/* Badge text (opsional, dipakai oleh beberapa varian) */}
           {showIfVariant(HERO_BADGE_VARIANTS) && (
           <div className="space-y-1">
@@ -1592,6 +1622,18 @@ export default function SectionForms({
       {/* STATS FORM */}
       {activeTab === "stats" && (
         <StatsSectionForm
+          content={content}
+          updateField={updateField}
+          needsAttention={needsAttention}
+          fieldClass={fieldClass}
+          fieldUndoStacks={fieldUndoStacks}
+          undoField={undoField}
+        />
+      )}
+
+      {/* SKILLS FORM */}
+      {activeTab === "skills" && (
+        <SkillsSectionForm
           content={content}
           updateField={updateField}
           needsAttention={needsAttention}

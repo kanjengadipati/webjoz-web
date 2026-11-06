@@ -4,15 +4,16 @@
 export type SectionStatus = "visible" | "hidden-user" | "hidden-empty" | "not-in-plan";
 
 /** Section opsional yang disembunyikan otomatis saat kosong (sama dengan getAutoHiddenSections). */
-export const AUTO_HIDEABLE_SECTIONS = ["faq", "testimonials", "gallery", "works", "menu", "catalog", "blog"] as const;
+export const AUTO_HIDEABLE_SECTIONS = ["faq", "testimonials", "gallery", "works", "menu", "catalog", "blog", "skills"] as const;
 
 /** Section yang disisipkan template walau tidak ada di section_order, selama punya konten. */
-const INJECTED_WHEN_FILLED = ["menu", "catalog", "gallery", "works", "testimonials", "blog"];
+const INJECTED_WHEN_FILLED = ["menu", "catalog", "gallery", "works", "testimonials", "blog", "skills"];
 
 export function isSectionEmpty(content: any, key: string): boolean {
   if (key === "menu" || key === "catalog") return !(content?.[key]?.categories?.length);
   if (key === "blog") return !(content?.[key]?.posts?.length);
   if (key === "pricing") return !(content?.[key]?.plans?.length);
+  if (key === "skills") return !(content?.[key]?.groups?.length);
   return !(content?.[key]?.items?.length);
 }
 

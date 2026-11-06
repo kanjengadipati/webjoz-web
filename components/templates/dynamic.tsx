@@ -25,6 +25,7 @@ import TestimonialsSectionInner from "../sections/testimonials";
 import GallerySection from "../sections/gallery";
 import WorksSection from "../sections/works";
 import StatsSectionInner from "../sections/stats";
+import SkillsSectionInner from "../sections/skills";
 import PartnersSectionInner from "../sections/partners";
 import PricingSectionInner from "../sections/pricing";
 import HeaderSection from "../sections/header";
@@ -128,7 +129,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       hero: "Hero", about: "Tentang", benefits: "Keunggulan",
       faq: "FAQ", cta: "CTA", contact: "Kontak",
       testimonials: "Testimoni", menu: "Menu", catalog: "Katalog",
-      gallery: "Galeri", stats: "Statistik", partners: "Mitra / Klien",
+      gallery: "Galeri", stats: "Statistik", skills: "Keahlian", partners: "Mitra / Klien",
       pricing: "Paket & Harga", blog: "Blog", works: "Portofolio",
     };
     const label = labelMap[key] || key;
@@ -380,6 +381,28 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={activeSection === "stats"}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
+              );
+            }} />
+          </MemoPreviewSectionWrapper>
+        );
+      }
+      case "skills": {
+        const sk = sec.data as TemplateProps["content"]["skills"];
+        return (
+          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+            <MemoSectionContent content={{ skills: sk, dt }} render={(data) => {
+              const { skills: skk } = data;
+              return (
+                <SkillsSectionInner
+                  skills={skk}
+                  design_token={dt}
+                  language={language}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={activeSection === "skills"}
                   collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                   onEditingStateChange={onEditingStateChange}
                 />
