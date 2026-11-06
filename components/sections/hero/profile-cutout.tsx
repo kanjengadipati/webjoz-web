@@ -257,12 +257,13 @@ export default function HeroProfileCutout({
         </motion.div>
 
         {/* Right Column: Bottom-Anchored Portrait / Cutout Person (5 Cols on desktop) */}
+        {/* Portrait slightly lifts upward so it can overlap the header area. */}
         <motion.div
           initial={reduce ? false : { opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.15 }}
           className="lg:col-span-5 relative flex items-end justify-center self-end w-full"
-          style={{ minHeight: "360px" }}
+          style={{ minHeight: "360px", marginTop: "-40px" }}
         >
           <div
             className="relative w-full max-w-[420px] lg:max-w-[480px] flex items-end justify-center"
