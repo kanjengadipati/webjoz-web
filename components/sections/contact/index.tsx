@@ -1,13 +1,15 @@
 "use client";
 import React from "react";
+import dynamic from "next/dynamic";
 import type { ComponentType } from "react";
 import type { ContactVariantProps } from "./types";
-import ClassicSplit from "./classic-split";
-import MinimalCentered from "./minimal-centered";
-import OverlayMap from "./overlay-map";
-import BentoGrid from "./bento-grid";
-import DarkSplit from "./dark-split";
-import WhatsAppDirect from "./whatsapp-direct";
+
+const ClassicSplit = dynamic(() => import("./classic-split"));
+const MinimalCentered = dynamic(() => import("./minimal-centered"));
+const OverlayMap = dynamic(() => import("./overlay-map"));
+const BentoGrid = dynamic(() => import("./bento-grid"));
+const DarkSplit = dynamic(() => import("./dark-split"));
+const WhatsAppDirect = dynamic(() => import("./whatsapp-direct"));
 
 const variants: Record<string, ComponentType<ContactVariantProps>> = {
   "classic-split": ClassicSplit,

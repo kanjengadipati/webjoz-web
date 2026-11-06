@@ -1,13 +1,17 @@
+"use client";
+
 import React, { useState, useCallback } from "react";
+import dynamic from "next/dynamic";
 import type { GalleryItem } from "@/components/templates/types";
 import { GallerySectionHeader, Lightbox, getRadius, GalleryAddTile } from "./shared";
 import type { GalleryVariantProps } from "./shared";
-import GalleryGrid from "./grid";
-import GalleryMasonry from "./masonry";
-import GalleryCarousel from "./carousel";
-import GalleryLightboxStory from "./lightbox-story";
-import GalleryBeforeAfterSlider from "./before-after-slider";
-import GalleryVideoGrid from "./video-grid";
+
+const GalleryGrid = dynamic(() => import("./grid"));
+const GalleryMasonry = dynamic(() => import("./masonry"));
+const GalleryCarousel = dynamic(() => import("./carousel"));
+const GalleryLightboxStory = dynamic(() => import("./lightbox-story"));
+const GalleryBeforeAfterSlider = dynamic(() => import("./before-after-slider"));
+const GalleryVideoGrid = dynamic(() => import("./video-grid"));
 
 export default function GallerySection({
   gallery,

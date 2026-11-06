@@ -1,22 +1,24 @@
 "use client";
 import React, { useCallback } from "react";
+import dynamic from "next/dynamic";
 import type { ComponentType } from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 import { genId } from "../inline-add";
-import CatalogClassic from "./classic";
-import CatalogCompact from "./compact";
-import CatalogCards from "./cards";
-import CatalogGridDense from "./grid-dense";
-import CatalogShowcaseFeatured from "./showcase-featured";
-import CatalogTabsByCategory from "./tabs-by-category";
-import CatalogEditorialGrid from "./editorial-grid";
-import CatalogMasonryFlow from "./masonry-flow";
-import CatalogInstagramSquareGrid from "./instagram-square-grid";
-import CatalogSplitHeroCatalog from "./split-hero-catalog";
-import CatalogNeoBrutalistMatrix from "./neo-brutalist-matrix";
-import CatalogHorizontalSwipeCarousel from "./horizontal-swipe-carousel";
-import CatalogProductTable from "./product-table";
-import CatalogSpotlight from "./spotlight";
+
+const CatalogClassic = dynamic(() => import("./classic"));
+const CatalogCompact = dynamic(() => import("./compact"));
+const CatalogCards = dynamic(() => import("./cards"));
+const CatalogGridDense = dynamic(() => import("./grid-dense"));
+const CatalogShowcaseFeatured = dynamic(() => import("./showcase-featured"));
+const CatalogTabsByCategory = dynamic(() => import("./tabs-by-category"));
+const CatalogEditorialGrid = dynamic(() => import("./editorial-grid"));
+const CatalogMasonryFlow = dynamic(() => import("./masonry-flow"));
+const CatalogInstagramSquareGrid = dynamic(() => import("./instagram-square-grid"));
+const CatalogSplitHeroCatalog = dynamic(() => import("./split-hero-catalog"));
+const CatalogNeoBrutalistMatrix = dynamic(() => import("./neo-brutalist-matrix"));
+const CatalogHorizontalSwipeCarousel = dynamic(() => import("./horizontal-swipe-carousel"));
+const CatalogProductTable = dynamic(() => import("./product-table"));
+const CatalogSpotlight = dynamic(() => import("./spotlight"));
 
 type CatalogVariantProps = {
   catalog: TemplateProps["content"]["catalog"];

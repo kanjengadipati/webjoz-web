@@ -1,13 +1,15 @@
 "use client";
 import React, { useCallback } from "react";
+import dynamic from "next/dynamic";
 import type { ComponentType } from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
-import FaqClassic from "./classic";
-import FaqSimple from "./simple";
-import FaqColumns from "./columns";
-import FaqSidebarCategory from "./sidebar-category";
-import FaqTwoColumnGrid from "./two-column-grid";
-import FaqChatBubbleStyle from "./chat-bubble-style";
+
+const FaqClassic = dynamic(() => import("./classic"));
+const FaqSimple = dynamic(() => import("./simple"));
+const FaqColumns = dynamic(() => import("./columns"));
+const FaqSidebarCategory = dynamic(() => import("./sidebar-category"));
+const FaqTwoColumnGrid = dynamic(() => import("./two-column-grid"));
+const FaqChatBubbleStyle = dynamic(() => import("./chat-bubble-style"));
 
 const variants: Record<string, ComponentType<any>> = {
   accordion: FaqClassic,

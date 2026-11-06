@@ -1,14 +1,15 @@
 "use client";
 import React from "react";
+import dynamic from "next/dynamic";
 import type { ComponentType } from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
-import AboutClassic from "./classic";
-import AboutSplitImage from "./split-image";
-import AboutStatHeavy from "./stat-heavy";
-import AboutTimeline from "./timeline";
-import AboutTeamGrid from "./team-grid";
-
 import type { AboutVariantProps } from "./classic";
+
+const AboutClassic = dynamic(() => import("./classic"));
+const AboutSplitImage = dynamic(() => import("./split-image"));
+const AboutStatHeavy = dynamic(() => import("./stat-heavy"));
+const AboutTimeline = dynamic(() => import("./timeline"));
+const AboutTeamGrid = dynamic(() => import("./team-grid"));
 
 const variants: Record<string, ComponentType<AboutVariantProps>> = {
   classic: AboutClassic,

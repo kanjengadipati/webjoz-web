@@ -1,12 +1,14 @@
 "use client";
 import React from "react";
+import dynamic from "next/dynamic";
 import type { ComponentType } from "react";
 import type { FooterVariantProps } from "./types";
-import MinimalBand from "./minimal-band";
-import ColumnsWithSocial from "./columns-with-social";
-import ColumnsWithNav from "./columns-with-nav";
-import DarkContrastBand from "./dark-contrast-band";
-import LocationAndHours from "./location-and-hours";
+
+const MinimalBand = dynamic(() => import("./minimal-band"));
+const ColumnsWithSocial = dynamic(() => import("./columns-with-social"));
+const ColumnsWithNav = dynamic(() => import("./columns-with-nav"));
+const DarkContrastBand = dynamic(() => import("./dark-contrast-band"));
+const LocationAndHours = dynamic(() => import("./location-and-hours"));
 
 const variants: Record<string, ComponentType<FooterVariantProps>> = {
   "minimal-band": MinimalBand,

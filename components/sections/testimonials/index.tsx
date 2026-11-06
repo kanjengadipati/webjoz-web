@@ -2,16 +2,18 @@
 import React, { useCallback } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import dynamic from "next/dynamic";
 import type { ComponentType } from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 import { useI18n } from "@/lib/i18n/context";
-import TestimonialsClassic from "./classic";
-import TestimonialsCompact from "./compact";
-import TestimonialsGrid from "./grid";
-import TestimonialsLogoWall from "./logo-wall";
-import TestimonialsFeaturedSpotlight from "./featured-spotlight";
-import TestimonialsGoogleReviews from "./google-reviews";
-import TestimonialsVideoWall from "./video-wall";
+
+const TestimonialsClassic = dynamic(() => import("./classic"));
+const TestimonialsCompact = dynamic(() => import("./compact"));
+const TestimonialsGrid = dynamic(() => import("./grid"));
+const TestimonialsLogoWall = dynamic(() => import("./logo-wall"));
+const TestimonialsFeaturedSpotlight = dynamic(() => import("./featured-spotlight"));
+const TestimonialsGoogleReviews = dynamic(() => import("./google-reviews"));
+const TestimonialsVideoWall = dynamic(() => import("./video-wall"));
 
 type TestimonialVariantProps = {
   testimonials: TemplateProps["content"]["testimonials"];

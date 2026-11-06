@@ -1,36 +1,39 @@
 "use client";
 import React from "react";
+import dynamic from "next/dynamic";
 import type { ComponentType } from "react";
 import { MotionConfig } from "motion/react";
 import type { HeroVariantProps } from "./types";
 import type { HeroStyle } from "./meta";
 import { getHeroStyle } from "./meta";
 import { DesignToken, TemplateProps } from "../../templates/types";
-import HeroCentered from "./centered";
-import HeroSplit from "./split";
-import HeroMinimal from "./minimal";
-import HeroFullBleed from "./full-bleed";
-import HeroMinimalistElegant from "./minimalist-elegant";
-import HeroTechSaaS from "./tech-saas";
-import HeroNeoBrutalist from "./neo-brutalist";
-import HeroBentoGrid from "./bento-grid";
-import HeroSplitEditorial from "./split-editorial";
-import HeroNaturalOrganic from "./natural-organic";
-import HeroPersonalBillboard from "./personal-billboard";
-import HeroProfileCutout from "./profile-cutout";
-import HeroPortraitShowcase from "./portrait-showcase";
-import HeroWorkPreviewStrip from "./work-preview-strip";
-import HeroChronologyBadge from "./chronology-badge";
-import HeroFloatingCard from "./floating-card";
-import HeroArchPortrait from "./arch-portrait";
-import HeroCollageMosaic from "./collage-mosaic";
-import HeroProofBar from "./proof-bar";
-import HeroImageCarousel from "./image-carousel";
-import HeroCarouselSplit from "./carousel-split";
-import HeroCarouselFilmstrip from "./carousel-filmstrip";
-import HeroVideoBg from "./video-bg";
-import HeroBookingForm from "./booking-form";
-import HeroLocationMap from "./location-map";
+
+// Dynamic lazy-loaded hero variants (code-split per variant)
+const HeroCentered = dynamic(() => import("./centered"));
+const HeroSplit = dynamic(() => import("./split"));
+const HeroMinimal = dynamic(() => import("./minimal"));
+const HeroFullBleed = dynamic(() => import("./full-bleed"));
+const HeroMinimalistElegant = dynamic(() => import("./minimalist-elegant"));
+const HeroTechSaaS = dynamic(() => import("./tech-saas"));
+const HeroNeoBrutalist = dynamic(() => import("./neo-brutalist"));
+const HeroBentoGrid = dynamic(() => import("./bento-grid"));
+const HeroSplitEditorial = dynamic(() => import("./split-editorial"));
+const HeroNaturalOrganic = dynamic(() => import("./natural-organic"));
+const HeroPersonalBillboard = dynamic(() => import("./personal-billboard"));
+const HeroProfileCutout = dynamic(() => import("./profile-cutout"));
+const HeroPortraitShowcase = dynamic(() => import("./portrait-showcase"));
+const HeroWorkPreviewStrip = dynamic(() => import("./work-preview-strip"));
+const HeroChronologyBadge = dynamic(() => import("./chronology-badge"));
+const HeroFloatingCard = dynamic(() => import("./floating-card"));
+const HeroArchPortrait = dynamic(() => import("./arch-portrait"));
+const HeroCollageMosaic = dynamic(() => import("./collage-mosaic"));
+const HeroProofBar = dynamic(() => import("./proof-bar"));
+const HeroImageCarousel = dynamic(() => import("./image-carousel"));
+const HeroCarouselSplit = dynamic(() => import("./carousel-split"));
+const HeroCarouselFilmstrip = dynamic(() => import("./carousel-filmstrip"));
+const HeroVideoBg = dynamic(() => import("./video-bg"));
+const HeroBookingForm = dynamic(() => import("./booking-form"));
+const HeroLocationMap = dynamic(() => import("./location-map"));
 
 // Typed against HeroStyle (hero/meta.ts): adding a variant to the catalog without
 // registering its component here is a compile error. "carousel" is a legacy alias.
