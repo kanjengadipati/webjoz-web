@@ -17,6 +17,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 > - Jangan pernah membuat komponen UI duplikat di `web/components/ui/` atau `web/components/icons/`.
 > - Selalu jalankan `npx tsc --noEmit` dan `npm run build` sebelum push.
 
+> [!IMPORTANT]
+> **DYNAMIC CODE-SPLITTING VARIANT & MODULAR FORMS**:
+> - **Varian Section (`components/sections/<section>/index.tsx`)**: WAJIB menggunakan `next/dynamic` dengan `ssr: true`. DILARANG mengimpor varian secara statis agar bundle size awal tetap kecil.
+> - **Form Editor (`app/dashboard/sites/[id]/forms/`)**: Form section sidebar didekomposisi per-tab di dalam subfolder `forms/` dengan `BaseSectionFormProps` dari `forms/types.ts`. Komponen input bersama diimpor dari `forms/shared.tsx`. Jangan menumpuk kode form inline ribuan baris di `SectionForms.tsx`.
+
 
 # Feature Work Checklist (WAJIB dicek di SETIAP fitur section/komponen baru)
 
@@ -36,8 +41,9 @@ jangan pernah selesai hanya karena render utama sudah jalan:
    di section wajib punya pendamping inline edit (`InlineText`/`InlineImage`) dengan `fieldKey` yang benar
    dan nilai konten yang sama yang dirender. Jangan ada text statis yang tidak bisa diedit oleh pengguna.
    Varian baru TIDAK BOLEH selesai/release kalau masih ada teks/gambar plain yang tidak bisa diedit.
-3. **Editor (sidebar)** — setiap field baru section wajib didaftarkan di editor sidebar
-   (`app/dashboard/sites/[id]/page.tsx`) untuk DESKTOP dan variant MOBILE editor. Juga update
+3. **Editor (sidebar)** — setiap field baru section wajib didaftarkan di modul form yang bersangkutan
+   di `app/dashboard/sites/[id]/forms/[Section]SectionForm.tsx` (bukan inline di `SectionForms.tsx`)
+   untuk DESKTOP dan variant MOBILE editor. Juga update
    `editor-utils.ts` (`BODY_SECTION_KEYS`/`EDITOR_SECTION_KEYS`/`SECTION_META`/`AI_SUGGESTIONS` ID+EN)
    beserta quality scoring bila ada.
 4. **Mobile view** — tiap layout harus responsif: gunakan `flex flex-col <breakpoint>:grid` (grid hanya di
