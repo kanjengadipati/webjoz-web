@@ -356,8 +356,18 @@ export default function SiteEditorPage() {
         if (!fetchedDesignToken) return "default";
         const mood = (fetchedDesignToken.mood || "").toLowerCase();
         const bg = fetchedDesignToken.palette?.background || "";
-        const isDark = bg.startsWith("#") && parseInt(bg.slice(1), 16) < 0x444444;
-        if (isDark || mood.includes("dark") || mood.includes("premium") || mood.includes("bold")) return "dark";
+        const isDark = (() => {
+          if (!bg.startsWith("#") || bg.length < 7) return false;
+          const r = parseInt(bg.slice(1, 3), 16) / 255;
+          const g = parseInt(bg.slice(3, 5), 16) / 255;
+          const b = parseInt(bg.slice(5, 7), 16) / 255;
+          const lin = (c: number) => c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+          const lum = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+          return lum < 0.3;
+        })();
+        const isDarkMood = ["dark-premium", "bold-dark", "futuristic"].includes(mood) ||
+                           mood.includes("dark") || mood.includes("premium") || mood.includes("futuristic");
+        if (isDark || isDarkMood) return "dark";
         if (mood.includes("natural") || mood.includes("warm") || mood.includes("earthy") || mood.includes("fresh")) return "light";
         return "default";
       })();
@@ -1108,6 +1118,7 @@ export default function SiteEditorPage() {
           site_id: siteId,
           instructions: aiDesignInstructions,
           tenant_id: activeTenantId,
+          mood_hint: designTokenRef.current?.mood || undefined,
         }),
       }, token);
 
