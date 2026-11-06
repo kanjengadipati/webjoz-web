@@ -1,18 +1,51 @@
 import React from "react";
-import {
-  TemplateDynamicWithCart,
-  TemplateKuliner,
-  TemplateJasa,
-  TemplateProduk,
-  TemplateElegant,
-  TemplateNatural,
-  TemplateColorful,
-  TemplateMinimalist,
-  TemplateBold,
-  TemplateRetro,
-  TemplateFuturistic,
-  type TemplateProps,
-} from "@/components/templates";
+import dynamic from "next/dynamic";
+import type { TemplateProps } from "@/components/templates/types";
+
+const DynamicTemplateKuliner = dynamic(
+  () => import("@/components/templates/kuliner").then((m) => m.TemplateKuliner),
+  { ssr: true }
+);
+const DynamicTemplateJasa = dynamic(
+  () => import("@/components/templates/jasa").then((m) => m.TemplateJasa),
+  { ssr: true }
+);
+const DynamicTemplateProduk = dynamic(
+  () => import("@/components/templates/produk").then((m) => m.TemplateProduk),
+  { ssr: true }
+);
+const DynamicTemplateElegant = dynamic(
+  () => import("@/components/templates/elegant").then((m) => m.TemplateElegant),
+  { ssr: true }
+);
+const DynamicTemplateNatural = dynamic(
+  () => import("@/components/templates/natural").then((m) => m.TemplateNatural),
+  { ssr: true }
+);
+const DynamicTemplateColorful = dynamic(
+  () => import("@/components/templates/colorful").then((m) => m.TemplateColorful),
+  { ssr: true }
+);
+const DynamicTemplateMinimalist = dynamic(
+  () => import("@/components/templates/minimalist").then((m) => m.TemplateMinimalist),
+  { ssr: true }
+);
+const DynamicTemplateBold = dynamic(
+  () => import("@/components/templates/bold").then((m) => m.TemplateBold),
+  { ssr: true }
+);
+const DynamicTemplateRetro = dynamic(
+  () => import("@/components/templates/retro").then((m) => m.TemplateRetro),
+  { ssr: true }
+);
+const DynamicTemplateFuturistic = dynamic(
+  () => import("@/components/templates/futuristic").then((m) => m.TemplateFuturistic),
+  { ssr: true }
+);
+const DynamicTemplateDynamicWithCart = dynamic(
+  () => import("@/components/templates/dynamic").then((m) => m.TemplateDynamicWithCart),
+  { ssr: true }
+);
 
 export const BUSINESS_TEMPLATE_POOLS: Record<string, string[]> = {
   kuliner:  ["TEMPLATE_DYNAMIC", "TEMPLATE_KULINER01", "TEMPLATE_COLORFUL", "TEMPLATE_NATURAL", "TEMPLATE_ELEGANT", "TEMPLATE_RETRO", "TEMPLATE_BOLD"],
@@ -33,17 +66,17 @@ export function selectTemplate(_businessType: string): string {
 
 export function getTemplateComponent(templateId: string): React.ComponentType<TemplateProps> {
   switch (templateId) {
-    case "TEMPLATE_KULINER01": return TemplateKuliner;
-    case "TEMPLATE_JASA02": return TemplateJasa;
-    case "TEMPLATE_PRODUK03": return TemplateProduk;
-    case "TEMPLATE_ELEGANT": return TemplateElegant;
-    case "TEMPLATE_NATURAL": return TemplateNatural;
-    case "TEMPLATE_COLORFUL": return TemplateColorful;
-    case "TEMPLATE_MINIMALIST": return TemplateMinimalist;
-    case "TEMPLATE_BOLD": return TemplateBold;
-    case "TEMPLATE_RETRO": return TemplateRetro;
-    case "TEMPLATE_FUTURISTIC": return TemplateFuturistic;
-    default: return TemplateDynamicWithCart;
+    case "TEMPLATE_KULINER01": return DynamicTemplateKuliner;
+    case "TEMPLATE_JASA02": return DynamicTemplateJasa;
+    case "TEMPLATE_PRODUK03": return DynamicTemplateProduk;
+    case "TEMPLATE_ELEGANT": return DynamicTemplateElegant;
+    case "TEMPLATE_NATURAL": return DynamicTemplateNatural;
+    case "TEMPLATE_COLORFUL": return DynamicTemplateColorful;
+    case "TEMPLATE_MINIMALIST": return DynamicTemplateMinimalist;
+    case "TEMPLATE_BOLD": return DynamicTemplateBold;
+    case "TEMPLATE_RETRO": return DynamicTemplateRetro;
+    case "TEMPLATE_FUTURISTIC": return DynamicTemplateFuturistic;
+    default: return DynamicTemplateDynamicWithCart;
   }
 }
 
