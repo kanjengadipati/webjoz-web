@@ -61,6 +61,7 @@ export interface GenerateStreamRequest {
   archetype?: string;
   industry_id?: string;
   industry_custom?: string;
+  entity?: "individual" | "organization";
 }
 
 export interface UseGenerateStreamOptions {

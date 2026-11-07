@@ -91,7 +91,7 @@ import { AudioProcessingCard } from "./audio-processing-card";
 import { useToast } from "@/components/toast-provider";
 import { buildFullContent } from "@/lib/build-full-content";
 import { SiteWizardProps, PreviewData } from "./types";
-import { PENDING_KEY, BUSINESS_TYPES, SUB_TYPES, MOOD_OPTIONS, INITIAL_MESSAGE } from "./constants";
+import { PENDING_KEY, BUSINESS_TYPES, SUB_TYPES, MOOD_OPTIONS, INITIAL_MESSAGE, INDIVIDUAL_GROUP_IDS, ORGANIZATION_GROUP_IDS } from "./constants";
 import { useTaxonomy, useTaxonomyV2 } from "@/hooks/use-taxonomy";
 import { selectTemplate, formatText, generateSubdomain, generateSlug, getTemplatePool, getDynamicDescriptionPlaceholder, generateDescriptionFromBusinessName } from "./helpers";
 import { sanitizeClassificationPair } from "./taxonomy";
@@ -590,10 +590,11 @@ export function SiteWizard({
       ...(() => {
         const arch = chat.archetypeRef.current;
         const iid = chat.industryIdRef.current;
-        if (arch || iid) {
-          return { archetype: arch || undefined, industry_id: iid || undefined, industry_custom: chat.industryCustom || undefined };
-        }
-        return enrichGeneratePayloadV2({ business_type: safeBusinessType, business_sub_type: safeBusinessSubType });
+        const ent = chat.entityRef.current;
+        const base = (arch || iid)
+          ? { archetype: arch || undefined, industry_id: iid || undefined, industry_custom: chat.industryCustom || undefined }
+          : enrichGeneratePayloadV2({ business_type: safeBusinessType, business_sub_type: safeBusinessSubType });
+        return { ...base, entity: ent || undefined };
       })(),
     });
   };
@@ -822,6 +823,7 @@ export function SiteWizard({
           archetype: chat.archetype || undefined,
           industryId: chat.industryId || undefined,
           industryCustom: chat.industryCustom || undefined,
+          entity: chat.entity || undefined,
         },
         preview: preview.previewData ? toResumePreview(preview.previewData) : undefined,
       };
@@ -1216,13 +1218,23 @@ export function SiteWizard({
   const effectiveSelectedBidang = getEffectiveSelectedBidang();
 
   const showBidangStep = needsBidangStep && !effectiveSelectedBidang && !isLocked;
-  const bidangChips = taxonomyV2
-    ? taxonomyV2.groups.map((g) => ({
-        value: g.id,
-        label: uiLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label),
-        emoji: g.emoji ?? "🏷️",
-      }))
+  const filteredGroups = taxonomyV2
+    ? taxonomyV2.groups.filter((g) => {
+        if (chat.entity === "individual") {
+          return INDIVIDUAL_GROUP_IDS.has(g.id);
+        }
+        if (chat.entity === "organization") {
+          return ORGANIZATION_GROUP_IDS.has(g.id);
+        }
+        return true;
+      })
     : [];
+
+  const bidangChips = filteredGroups.map((g) => ({
+    value: g.id,
+    label: uiLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label),
+    emoji: g.emoji ?? "🏷️",
+  }));
               // v2: susun subTypes berdasarkan selectedBidang (grup terpilih) atau archetype.
               // Bila showBidangStep=true, tidak ada chip spesialisasi yang boleh tampil.
               let subTypes: Array<{ value: string; label: string; emoji?: string; kind?: "v1" | "v2" }> = [];
@@ -1231,7 +1243,19 @@ export function SiteWizard({
                   // Bidang terpilih (manual atau pre-select) — tampilkan semua industri di grup itu, urut rank
                   const group = taxonomyV2.groups.find((g) => g.id === effectiveSelectedBidang);
                   if (group) {
-                    const sorted = [...group.industries].sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99));
+                    let indList = group.industries;
+                    if (chat.entity === "individual") {
+                      const portOnly = group.industries.filter((i) => i.archetype === "portfolio_individual");
+                      if (portOnly.length > 0) {
+                        indList = portOnly;
+                      }
+                    } else if (chat.entity === "organization") {
+                      const orgOnly = group.industries.filter((i) => i.archetype !== "portfolio_individual");
+                      if (orgOnly.length > 0) {
+                        indList = orgOnly;
+                      }
+                    }
+                    const sorted = [...indList].sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99));
                     subTypes = sorted.map((i) => ({
                       value: i.id,
                       kind: "v2" as const,
@@ -1280,6 +1304,44 @@ export function SiteWizard({
 
   {showBidangStep && (
     <>
+      <div className="mb-3 p-2 rounded-xl border border-slate-700/60 bg-white/[0.03]">
+        <p className="text-[11px] font-medium text-slate-300 mb-2 px-0.5">
+          {t("dashboard.wizard.entityQuestion", "Website ini untuk siapa?")}
+        </p>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              chat.setEntity("individual");
+              chat.entityRef.current = "individual";
+              chat.setSelectedBidang(null);
+            }}
+            className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
+              chat.entity === "individual"
+                ? "bg-blue-600/25 border-blue-500 text-white shadow-sm ring-1 ring-blue-500/50 font-semibold"
+                : "border-slate-700/80 bg-white/[0.04] text-slate-300 hover:bg-white/[0.08] hover:border-slate-500/60"
+            }`}
+          >
+            <span>{t("dashboard.wizard.entityIndividual", "👤 Pribadi / Freelancer")}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              chat.setEntity("organization");
+              chat.entityRef.current = "organization";
+              chat.setSelectedBidang(null);
+            }}
+            className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
+              chat.entity === "organization"
+                ? "bg-blue-600/25 border-blue-500 text-white shadow-sm ring-1 ring-blue-500/50 font-semibold"
+                : "border-slate-700/80 bg-white/[0.04] text-slate-300 hover:bg-white/[0.08] hover:border-slate-500/60"
+            }`}
+          >
+            <span>{t("dashboard.wizard.entityOrganization", "🏢 Usaha / Tim / Perusahaan")}</span>
+          </button>
+        </div>
+      </div>
+
       <p className="text-[10px] font-semibold text-slate-400 mb-2 px-0.5">{t("dashboard.wizard.selectSector", "Pilih bidang usaha:")}</p>
       <div className="grid grid-cols-2 gap-1.5 mb-3">
       {bidangChips.map((bg) => {
@@ -1352,6 +1414,11 @@ export function SiteWizard({
                                 if (entry) {
                                   chat.setArchetype(entry.archetype);
                                   chat.archetypeRef.current = entry.archetype;
+                                  if (!chat.entityRef.current) {
+                                    const e = entry.archetype === "portfolio_individual" ? "individual" : "organization";
+                                    chat.setEntity(e);
+                                    chat.entityRef.current = e;
+                                  }
                                 }
                               }
                               handleSelectSubType(labelText);
@@ -1708,7 +1775,15 @@ export function SiteWizard({
                                   chat.industryIdRef.current = st.value;
                                   if (taxonomyV2) {
                                     const entry = taxonomyV2.groups.flatMap(g => g.industries).find(i => i.id === st.value);
-                                    if (entry) { chat.setArchetype(entry.archetype); chat.archetypeRef.current = entry.archetype; }
+                                    if (entry) {
+                                      chat.setArchetype(entry.archetype);
+                                      chat.archetypeRef.current = entry.archetype;
+                                      if (!chat.entityRef.current) {
+                                        const e = entry.archetype === "portfolio_individual" ? "individual" : "organization";
+                                        chat.setEntity(e);
+                                        chat.entityRef.current = e;
+                                      }
+                                    }
                                   }
                                   handleSelectSubType(labelText);
                                 } else {
