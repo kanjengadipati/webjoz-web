@@ -553,32 +553,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     return cancel;
   };
 
-  const handleSelectEntity = (chosenEntity: "individual" | "organization") => {
-    // Guard: ignore if entity already selected (prevents double-click duplicate bubbles)
-    if (entityRef.current) return;
-    setEntity(chosenEntity);
-    entityRef.current = chosenEntity;
-    const label = chosenEntity === "individual"
-      ? t("dashboard.wizard.entityIndividual", "Personal")
-      : t("dashboard.wizard.entityOrganization", "Bisnis / Organisasi");
-
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now().toString(), sender: "user", text: label },
-    ]);
-
-    const msg = t("dashboard.wizard.descriptionInferenceNone", "Baik, silakan pilih kategori Anda:");
-    setTimeout(() => {
-      typeMessage(msg, () => {
-        setMessages((prev) => [
-          ...prev,
-          { id: `widget-subtype-chips-${Date.now()}`, sender: "ai", text: "", widget: "subtype-chips" as const },
-        ]);
-      });
-    }, 300);
-  };
-
-  const showManualPicker = (opts?: { aiFailed?: boolean; forceEntityPrompt?: boolean }) => {
+  const showManualPicker = (opts?: { aiFailed?: boolean }) => {
     setBusinessType("");
     setBusinessSubType("");
     setArchetype(""); archetypeRef.current = "";
@@ -588,23 +563,6 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setManualPicker(true);
     setInferenceResult({ confidence: "low" } as InferenceResult);
     setChatStage("type");
-
-    // Jika entity belum ditentukan (atau dipaksa reset), tanyakan entitas dulu via chat:
-    if (!entityRef.current || opts?.forceEntityPrompt) {
-      setEntity(null);
-      entityRef.current = null;
-      const questionMsg = t("dashboard.wizard.entityQuestion", "Website ini untuk siapa?");
-      setTimeout(() => {
-        typeMessage(questionMsg, () => {
-          setMessages((prev) => [
-            ...prev,
-            { id: `widget-entity-chips-${Date.now()}`, sender: "ai", text: "", widget: "entity-chips" as const },
-          ]);
-        });
-      }, 300);
-      return;
-    }
-
     const msg = opts?.aiFailed
       ? t("dashboard.wizard.pickFieldAiFailed", "Koneksi ke AI bermasalah. Pilih bidang usaha Anda:")
       : t("dashboard.wizard.descriptionInferenceNone", "Baik, silakan pilih kategori Anda:");
@@ -756,7 +714,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
         ]);
       }, 500);
     } else {
-      showManualPicker({ forceEntityPrompt: true });
+      showManualPicker();
     }
   };
 
@@ -1532,7 +1490,6 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     // Handlers
     handleSendText,
     handleSelectStarter,
-    handleSelectEntity,
     handleSelectType,
     handleSelectSubType,
     showManualPicker,
