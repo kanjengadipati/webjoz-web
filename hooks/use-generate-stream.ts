@@ -211,18 +211,34 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
           buffer = parts.pop() ?? "";
 
           for (const part of parts) {
-            // Format SSE: "data: {...json...}"
-            const line = part.trim();
-            if (!line.startsWith("data:")) continue;
+            const rawLines = part.split("\n").map((l) => l.trim()).filter(Boolean);
+            if (rawLines.length === 0) continue;
 
-            const jsonStr = line.slice("data:".length).trim();
-            if (!jsonStr) continue;
+            let eventType = "";
+            let dataStr = "";
+            for (const line of rawLines) {
+              if (line.startsWith("event:")) {
+                eventType = line.slice("event:".length).trim();
+              } else if (line.startsWith("data:")) {
+                const val = line.slice("data:".length).trim();
+                dataStr = dataStr ? `${dataStr}\n${val}` : val;
+              }
+            }
+
+            if (!dataStr) continue;
 
             let event: StreamEvent;
             try {
-              event = JSON.parse(jsonStr);
+              event = JSON.parse(dataStr);
             } catch {
               continue;
+            }
+
+            if (!event.type && eventType) {
+              (event as any).type = eventType;
+            }
+            if ((event as any).error && event.type !== "error") {
+              event.type = "error";
             }
 
             switch (event.type) {
@@ -259,6 +275,12 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
                 break;
             }
           }
+        }
+
+        if (!isDoneReceived) {
+          markStage("error");
+          isDoneReceived = true;
+          onErrorRef.current("Koneksi terputus sebelum generasi website selesai.");
         }
       } catch (err: any) {
         if (err?.name === "AbortError") return;
