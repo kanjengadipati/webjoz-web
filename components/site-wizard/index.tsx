@@ -1311,12 +1311,12 @@ export function SiteWizard({
             chat.setSelectedBidang(null);
           }}
           className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
-            chat.entity === "individual"
+            pickerEntity === "individual"
               ? "bg-white text-slate-950 border-white shadow-sm font-semibold"
               : "border-slate-600/60 bg-white/[0.06] text-slate-200 hover:border-slate-400/60 hover:text-white hover:bg-white/[0.10]"
           }`}
         >
-          <User className={`w-3.5 h-3.5 shrink-0 ${chat.entity === "individual" ? "text-slate-950" : "text-slate-400"}`} />
+          <User className={`w-3.5 h-3.5 shrink-0 ${pickerEntity === "individual" ? "text-slate-950" : "text-slate-400"}`} />
           <span>{t("dashboard.wizard.entityIndividual", "Perorangan")}</span>
         </button>
         <button
@@ -1326,12 +1326,12 @@ export function SiteWizard({
             chat.setSelectedBidang(null);
           }}
           className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
-            chat.entity === "organization"
+            pickerEntity === "organization"
               ? "bg-white text-slate-950 border-white shadow-sm font-semibold"
               : "border-slate-600/60 bg-white/[0.06] text-slate-200 hover:border-slate-400/60 hover:text-white hover:bg-white/[0.10]"
           }`}
         >
-          <Building2 className={`w-3.5 h-3.5 shrink-0 ${chat.entity === "organization" ? "text-slate-950" : "text-slate-400"}`} />
+          <Building2 className={`w-3.5 h-3.5 shrink-0 ${pickerEntity === "organization" ? "text-slate-950" : "text-slate-400"}`} />
           <span>{t("dashboard.wizard.entityOrganization", "Bisnis / Organisasi")}</span>
         </button>
       </div>
