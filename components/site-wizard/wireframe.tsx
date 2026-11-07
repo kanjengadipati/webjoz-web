@@ -4,7 +4,9 @@ import React from "react";
 import { WIREFRAME_STEPS } from "./constants";
 import type { ChatStage } from "./types";
 import { buildCssVars, loadGoogleFont } from "../templates/helpers";
-import { useI18n } from "@/lib/i18n/context";
+import { useI18n, resolvePath } from "@/lib/i18n/context";
+import { translations } from "@/lib/i18n/translations";
+import { generateDescriptionFromBusinessName } from "./helpers";
 
 interface WireframeProps {
   businessName: string;
@@ -13,20 +15,20 @@ interface WireframeProps {
   description: string;
   chatStage: ChatStage;
   designToken?: Record<string, any> | null;
+  language?: "id" | "en";
 }
 
 function isHighlighted(stage: ChatStage): boolean {
   return stage === "done";
 }
 
-export function Wireframe({ businessName, businessType, businessSubType, description, chatStage, designToken }: WireframeProps) {
+export function Wireframe({ businessName, businessType, businessSubType, description, chatStage, designToken, language }: WireframeProps) {
   const { t } = useI18n();
+  const effectiveLang: "id" | "en" = language === "en" ? "en" : "id";
   const highlight = isHighlighted(chatStage);
-  const wireframeStepLabels = [
-    t("dashboard.wizard.wireframeAbout", "Tentang"),
-    t("dashboard.wizard.wireframeFeatures", "Keunggulan"),
-    t("dashboard.wizard.wireframeContact", "Kontak"),
-  ];
+  const wireframeStepLabels = effectiveLang === "en"
+    ? ["About", "Features", "Contact"]
+    : ["Tentang", "Keunggulan", "Kontak"];
 
   const cssVars = React.useMemo(() => buildCssVars(designToken), [designToken]);
 
@@ -199,8 +201,12 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
                     "Company": "company",
                   };
                   const typeKey = categoryKeyMap[businessType];
-                  const translatedType = typeKey ? t(`dashboard.wizard.categories.${typeKey}`, businessType) : businessType;
-                  const translatedSubType = businessSubType ? t(`dashboard.wizard.subtypes.${businessSubType}`, businessSubType) : "";
+                  const translatedType = typeKey
+                    ? ((resolvePath(translations[effectiveLang], `dashboard.wizard.categories.${typeKey}`) as string) || businessType)
+                    : businessType;
+                  const translatedSubType = businessSubType
+                    ? ((resolvePath(translations[effectiveLang], `dashboard.wizard.subtypes.${businessSubType}`) as string) || businessSubType)
+                    : "";
                   return translatedSubType || translatedType;
                 })()}
               </div>
@@ -251,7 +257,7 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
                 : { ...skeletonStrong }
               }
             >
-              {highlight ? "Pesan Sekarang →" : <div className="h-full w-full rounded-xl" style={skeletonStrong} />}
+              {highlight ? (effectiveLang === "en" ? "Order Now →" : "Pesan Sekarang →") : <div className="h-full w-full rounded-xl" style={skeletonStrong} />}
             </div>
           </div>
           

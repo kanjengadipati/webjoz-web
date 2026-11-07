@@ -655,6 +655,33 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setInputValue("");
     siteLanguageRef.current = lang;
 
+    // Bila deskripsi bukan input manual user (mis. hasil inferensi AI atau skip),
+    // sesuaikan bahasa deskripsi secara instan agar pratinjau dan prompt sinkron dengan bahasa yang dipilih.
+    if (descriptionSource !== "user") {
+      const refreshed = generateDescriptionFromBusinessName(
+        businessNameRef.current || businessName,
+        { subType: businessSubTypeRef.current || businessSubType, type: businessTypeRef.current || businessType },
+        lang
+      );
+      if (refreshed) {
+        descriptionRef.current = refreshed;
+        setDescription(refreshed);
+      }
+      // Bila deskripsi awal diperoleh dari inferensi AI (skip), minta AI poles ulang deskripsi dalam bahasa target di background
+      const curBiz = businessNameRef.current || businessName;
+      if (descriptionSource === "ai" && curBiz) {
+        processBusinessDescription("", curBiz, lang)
+          .then((aiRes) => {
+            const refined = aiRes?.data?.refined_text?.trim();
+            if (refined && siteLanguageRef.current === lang) {
+              descriptionRef.current = refined;
+              setDescription(refined);
+            }
+          })
+          .catch(() => {});
+      }
+    }
+
     const displayText = lang === "en" ? "🇬🇧 English" : "🇮🇩 Indonesia";
     setMessages((prev) => [
       ...prev,

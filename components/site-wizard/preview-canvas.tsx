@@ -9,6 +9,7 @@ import { Wireframe } from "./wireframe";
 import { useWizardChat } from "./use-wizard-chat";
 import { useWizardPreview } from "./use-wizard-preview";
 import { useWizardDevice } from "./use-wizard-device";
+import { useI18n } from "@/lib/i18n/context";
 
 interface PreviewCanvasProps {
   chat: ReturnType<typeof useWizardChat>;
@@ -17,6 +18,7 @@ interface PreviewCanvasProps {
 }
 
 export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
+  const { locale } = useI18n();
   const {
     previewState,
     previewData,
@@ -40,6 +42,8 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
   // it would produce a flash of the previous result at the start of the new stream.
   const hasPreviewData = isStreamingLive ? hasLiveData : !!previewData;
 
+  const siteLang: "id" | "en" = (chat.siteLanguage || (locale === "en" ? "en" : "id")) as "id" | "en";
+
   if (!hasLiveData && !hasPreviewData) {
     return (
       <Wireframe
@@ -49,6 +53,7 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
         description={chat.description}
         chatStage={chat.chatStage}
         designToken={streamedDesignToken ?? null}
+        language={siteLang}
       />
     );
   }
@@ -82,6 +87,7 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
       description={chat.description}
       chatStage={chat.chatStage}
       designToken={streamedDesignToken ?? null}
+      language={siteLang}
     />
   );
 
@@ -123,6 +129,7 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
             businessSubType={chat.businessSubType}
             description={chat.description}
             chatStage="done"
+            language={siteLang}
           />
         </div>
       )}
