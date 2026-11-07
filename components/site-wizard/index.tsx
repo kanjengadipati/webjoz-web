@@ -1304,42 +1304,39 @@ export function SiteWizard({
 
   {showBidangStep && (
     <>
-      <div className="mb-3 p-2 rounded-xl border border-slate-700/60 bg-white/[0.03]">
-        <p className="text-[11px] font-medium text-slate-300 mb-2 px-0.5">
-          {t("dashboard.wizard.entityQuestion", "Website ini untuk siapa?")}
-        </p>
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={() => {
-              chat.setEntity("individual");
-              chat.entityRef.current = "individual";
-              chat.setSelectedBidang(null);
-            }}
-            className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
-              chat.entity === "individual"
-                ? "bg-blue-600/25 border-blue-500 text-white shadow-sm ring-1 ring-blue-500/50 font-semibold"
-                : "border-slate-700/80 bg-white/[0.04] text-slate-300 hover:bg-white/[0.08] hover:border-slate-500/60"
-            }`}
-          >
-            <span>{t("dashboard.wizard.entityIndividual", "👤 Pribadi / Freelancer")}</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              chat.setEntity("organization");
-              chat.entityRef.current = "organization";
-              chat.setSelectedBidang(null);
-            }}
-            className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
-              chat.entity === "organization"
-                ? "bg-blue-600/25 border-blue-500 text-white shadow-sm ring-1 ring-blue-500/50 font-semibold"
-                : "border-slate-700/80 bg-white/[0.04] text-slate-300 hover:bg-white/[0.08] hover:border-slate-500/60"
-            }`}
-          >
-            <span>{t("dashboard.wizard.entityOrganization", "🏢 Usaha / Tim / Perusahaan")}</span>
-          </button>
-        </div>
+      <div className="grid grid-cols-2 gap-1.5 mb-2.5">
+        <button
+          type="button"
+          onClick={() => {
+            const next = chat.entity === "individual" ? null : "individual";
+            chat.setEntity(next);
+            chat.entityRef.current = next;
+            chat.setSelectedBidang(null);
+          }}
+          className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
+            chat.entity === "individual"
+              ? "bg-white text-slate-950 border-white shadow-sm font-semibold"
+              : "border-slate-600/60 bg-white/[0.06] text-slate-200 hover:border-slate-400/60 hover:text-white hover:bg-white/[0.10]"
+          }`}
+        >
+          <span>{t("dashboard.wizard.entityIndividual", "👤 Personal")}</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            const next = chat.entity === "organization" ? null : "organization";
+            chat.setEntity(next);
+            chat.entityRef.current = next;
+            chat.setSelectedBidang(null);
+          }}
+          className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
+            chat.entity === "organization"
+              ? "bg-white text-slate-950 border-white shadow-sm font-semibold"
+              : "border-slate-600/60 bg-white/[0.06] text-slate-200 hover:border-slate-400/60 hover:text-white hover:bg-white/[0.10]"
+          }`}
+        >
+          <span>{t("dashboard.wizard.entityOrganization", "🏢 Bisnis / Organisasi")}</span>
+        </button>
       </div>
 
       <p className="text-[10px] font-semibold text-slate-400 mb-2 px-0.5">{t("dashboard.wizard.selectSector", "Pilih bidang usaha:")}</p>
