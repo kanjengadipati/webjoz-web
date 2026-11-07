@@ -73,6 +73,7 @@ import {
   Tag,
   Tractor,
   Truck,
+  User,
   UtensilsCrossed,
   Video,
   Waves,
@@ -83,7 +84,6 @@ import {
   Zap,
   Maximize2,
   Minimize2,
-  User,
 } from "lucide-react";
 import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import { AudioWaveform } from "./audio-waveform";
@@ -1090,7 +1090,7 @@ export function SiteWizard({
                   uiLang={uiLang}
                   onChangeCategory={() => {
                     chat.setMessages((prev) => prev.filter((msg) => msg.id !== m.id));
-                    chat.showManualPicker({ forceEntityPrompt: true });
+                    chat.showManualPicker();
                   }}
                   t={t}
                 />
@@ -1173,47 +1173,6 @@ export function SiteWizard({
                   onChangeCategory={() => handleConfirmInference(false)}
                   t={t}
                 />
-              );
-            }
-
-            if (m.widget === "entity-chips") {
-              // Lock as soon as entity is chosen (prevents double-click / duplicate bubbles)
-              const isLocked = !!chat.entity;
-              return (
-                <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400">
-                  <div className="grid grid-cols-2 gap-2 max-w-sm">
-                    <button
-                      type="button"
-                      disabled={isLocked}
-                      onClick={() => chat.handleSelectEntity("individual")}
-                      className={`flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
-                        chat.entity === "individual"
-                          ? "bg-white text-slate-950 border-white shadow-sm font-semibold"
-                          : isLocked
-                          ? "border-slate-800 bg-white/[0.02] text-slate-500 cursor-not-allowed"
-                          : "border-slate-600/60 bg-white/[0.06] text-slate-200 hover:border-slate-400/60 hover:text-white hover:bg-white/[0.10]"
-                      }`}
-                    >
-                      <User className="w-3.5 h-3.5 shrink-0 text-current" />
-                      <span>{t("dashboard.wizard.entityIndividual", "Personal")}</span>
-                    </button>
-                    <button
-                      type="button"
-                      disabled={isLocked}
-                      onClick={() => chat.handleSelectEntity("organization")}
-                      className={`flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
-                        chat.entity === "organization"
-                          ? "bg-white text-slate-950 border-white shadow-sm font-semibold"
-                          : isLocked
-                          ? "border-slate-800 bg-white/[0.02] text-slate-500 cursor-not-allowed"
-                          : "border-slate-600/60 bg-white/[0.06] text-slate-200 hover:border-slate-400/60 hover:text-white hover:bg-white/[0.10]"
-                      }`}
-                    >
-                      <Building2 className="w-3.5 h-3.5 shrink-0 text-current" />
-                      <span>{t("dashboard.wizard.entityOrganization", "Bisnis / Organisasi")}</span>
-                    </button>
-                  </div>
-                </div>
               );
             }
 
@@ -1336,7 +1295,7 @@ export function SiteWizard({
                         chat.setBusinessSubType("");
                         chat.setSelectedBidang(null);
                         chat.setMessages((prev) => prev.filter((msg) => msg.id !== m.id));
-                        chat.showManualPicker({ forceEntityPrompt: true });
+                        chat.showManualPicker();
                       }}
                       className="text-[10px] text-slate-400 hover:text-slate-200 underline mb-2 inline-block transition-colors"
                     >
@@ -1346,41 +1305,43 @@ export function SiteWizard({
 
   {showBidangStep && (
     <>
-      {/* Opsi 1: Entity toggle tab — user can switch entity at any time before picking a sector */}
-      <div className="flex gap-1 mb-3 p-0.5 bg-white/[0.04] rounded-xl border border-slate-700/60">
+      <div className="grid grid-cols-2 gap-1.5 mb-2.5">
         <button
           type="button"
           onClick={() => {
-            chat.setEntity("individual");
-            chat.entityRef.current = "individual";
+            const next = chat.entity === "individual" ? null : "individual";
+            chat.setEntity(next);
+            chat.entityRef.current = next;
             chat.setSelectedBidang(null);
           }}
-          className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[10px] text-xs font-medium transition-all ${
+          className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
             chat.entity === "individual"
-              ? "bg-white/[0.12] text-white border border-white/20 shadow-sm"
-              : "text-slate-400 hover:text-slate-200"
+              ? "bg-white text-slate-950 border-white shadow-sm font-semibold"
+              : "border-slate-600/60 bg-white/[0.06] text-slate-200 hover:border-slate-400/60 hover:text-white hover:bg-white/[0.10]"
           }`}
         >
-          <User className="w-3.5 h-3.5 shrink-0" />
+          <User className={`w-3.5 h-3.5 shrink-0 ${chat.entity === "individual" ? "text-slate-950" : "text-slate-400"}`} />
           <span>{t("dashboard.wizard.entityIndividual", "Personal")}</span>
         </button>
         <button
           type="button"
           onClick={() => {
-            chat.setEntity("organization");
-            chat.entityRef.current = "organization";
+            const next = chat.entity === "organization" ? null : "organization";
+            chat.setEntity(next);
+            chat.entityRef.current = next;
             chat.setSelectedBidang(null);
           }}
-          className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[10px] text-xs font-medium transition-all ${
+          className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
             chat.entity === "organization"
-              ? "bg-white/[0.12] text-white border border-white/20 shadow-sm"
-              : "text-slate-400 hover:text-slate-200"
+              ? "bg-white text-slate-950 border-white shadow-sm font-semibold"
+              : "border-slate-600/60 bg-white/[0.06] text-slate-200 hover:border-slate-400/60 hover:text-white hover:bg-white/[0.10]"
           }`}
         >
-          <Building2 className="w-3.5 h-3.5 shrink-0" />
+          <Building2 className={`w-3.5 h-3.5 shrink-0 ${chat.entity === "organization" ? "text-slate-950" : "text-slate-400"}`} />
           <span>{t("dashboard.wizard.entityOrganization", "Bisnis / Organisasi")}</span>
         </button>
       </div>
+
       <p className="text-[10px] font-semibold text-slate-400 mb-2 px-0.5">{t("dashboard.wizard.selectSector", "Pilih bidang usaha:")}</p>
       <div className="grid grid-cols-2 gap-1.5 mb-3">
       {bidangChips.map((bg) => {
@@ -1509,6 +1470,7 @@ export function SiteWizard({
                         />
                         <button
                           type="button"
+                          aria-label="Submit"
                           onClick={() => {
                             const clean = customSubTextInput.replace(/<[^>]*>?/gm, "").trim().slice(0, 80);
                             if (clean) {
@@ -1517,9 +1479,9 @@ export function SiteWizard({
                               setCustomSubTextInput("");
                             }
                           }}
-                          className="px-2.5 py-1 text-xs font-semibold bg-primary text-white rounded-lg hover:bg-primary/90"
+                          className="h-7 w-7 flex items-center justify-center bg-white text-slate-950 rounded-lg hover:bg-slate-200 transition-colors cursor-pointer shrink-0 shadow-sm"
                         >
-                          ✓
+                          <Check className="w-4 h-4 text-slate-950 stroke-[3]" />
                         </button>
                       </div>
                     ))}
@@ -1760,41 +1722,6 @@ export function SiteWizard({
 
                       {tcShowBidang && (
                         <>
-                          {/* Opsi 1: Entity toggle tab above sector grid */}
-                          <div className="flex gap-1 mb-3 p-0.5 bg-white/[0.04] rounded-xl border border-slate-700/60">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                chat.setEntity("individual");
-                                chat.entityRef.current = "individual";
-                                chat.setSelectedBidang(null);
-                              }}
-                              className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[10px] text-xs font-medium transition-all ${
-                                chat.entity === "individual"
-                                  ? "bg-white/[0.12] text-white border border-white/20 shadow-sm"
-                                  : "text-slate-400 hover:text-slate-200"
-                              }`}
-                            >
-                              <User className="w-3.5 h-3.5 shrink-0" />
-                              <span>{t("dashboard.wizard.entityIndividual", "Personal")}</span>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                chat.setEntity("organization");
-                                chat.entityRef.current = "organization";
-                                chat.setSelectedBidang(null);
-                              }}
-                              className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[10px] text-xs font-medium transition-all ${
-                                chat.entity === "organization"
-                                  ? "bg-white/[0.12] text-white border border-white/20 shadow-sm"
-                                  : "text-slate-400 hover:text-slate-200"
-                              }`}
-                            >
-                              <Building2 className="w-3.5 h-3.5 shrink-0" />
-                              <span>{t("dashboard.wizard.entityOrganization", "Bisnis / Organisasi")}</span>
-                            </button>
-                          </div>
                           <p className="text-[10px] font-semibold text-slate-400 mb-2 px-0.5">{t("dashboard.wizard.selectSector", "Pilih bidang usaha:")}</p>
                           <div className="grid grid-cols-2 gap-1.5 mb-3">
                             {tcBidangChips.map((bg) => {
@@ -1907,6 +1834,7 @@ export function SiteWizard({
                             />
                             <button
                               type="button"
+                              aria-label="Submit"
                               onClick={() => {
                                 const clean = customSubTextInput.replace(/<[^>]*>?/gm, "").trim().slice(0, 60);
                                 if (clean) {
@@ -1915,9 +1843,9 @@ export function SiteWizard({
                                   setCustomSubTextInput("");
                                 }
                               }}
-                              className="px-2.5 py-1 text-xs font-semibold bg-primary text-white rounded-lg hover:bg-primary/90"
+                              className="h-7 w-7 flex items-center justify-center bg-white text-slate-950 rounded-lg hover:bg-slate-200 transition-colors cursor-pointer shrink-0 shadow-sm"
                             >
-                              ✓
+                              <Check className="w-4 h-4 text-slate-950 stroke-[3]" />
                             </button>
                           </div>
                         ))}
