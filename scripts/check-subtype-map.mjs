@@ -34,6 +34,7 @@ const tsSource = fs.readFileSync(tsPath, "utf8");
 
 // Extract all  "SubType": ["archetype", "industry.id"]  entries from the TS const
 const entryRe = /"([^"]+)":\s*\["([^"]+)",\s*"([^"]+)"\]/g;
+/** @type {Record<string, [string, string]>} */
 const tsMap = {};
 let m;
 while ((m = entryRe.exec(tsSource)) !== null) {
@@ -42,6 +43,7 @@ while ((m = entryRe.exec(tsSource)) !== null) {
   tsMap[m[1]] = [m[2], m[3]];
 }
 
+/** @type {string[]} */
 const errors = [];
 
 // JSON → TS direction
