@@ -22,6 +22,7 @@ export interface WizardResumeChat {
   archetype?: string;
   industryId?: string;
   industryCustom?: string;
+  entity?: "individual" | "organization" | null;
 }
 
 export interface WizardResumePreview {

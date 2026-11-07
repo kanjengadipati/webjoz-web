@@ -48,6 +48,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
   const [industryId, setIndustryId] = useState("");
   const [industryCustom, setIndustryCustom] = useState("");
   const [selectedBidang, setSelectedBidang] = useState<string | null>(null);
+  const [entity, setEntity] = useState<"individual" | "organization" | null>(null);
   const [description, setDescription] = useState("");
   const [descriptionSource, setDescriptionSource] = useState<"user" | "ai" | "none">("none");
   const [suggestedIndustryId, setSuggestedIndustryId] = useState("");
@@ -413,6 +414,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
   const whatsappRef = useRef(whatsapp);
   const serviceAreaRef = useRef(serviceArea);
   const moodRef = useRef(mood);
+  const entityRef = useRef<"individual" | "organization" | null>(null);
   const siteLanguageRef = useRef<"id" | "en" | null>(null);
   const activeTypingCancellerRef = useRef<(() => void) | null>(null);
 
@@ -420,6 +422,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
   useEffect(() => { archetypeRef.current = archetype; }, [archetype]);
   useEffect(() => { industryIdRef.current = industryId; }, [industryId]);
   useEffect(() => { moodRef.current = mood; }, [mood]);
+  useEffect(() => { entityRef.current = entity; }, [entity]);
 
   // Cancel any active typing animation on unmount
   useEffect(() => {
@@ -839,7 +842,11 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
           if (route === "confirm") {
             setManualPicker(false);
             setSuggestedIndustryId("");
-            if (d.archetype) { setArchetype(d.archetype); archetypeRef.current = d.archetype; }
+            if (d.archetype) {
+              setArchetype(d.archetype); archetypeRef.current = d.archetype;
+              const inferredEnt = d.archetype === "portfolio_individual" ? "individual" : (d.archetype === "professional_firm" || d.archetype === "corporate_org" || d.archetype === "institution_org") ? "organization" : null;
+              if (inferredEnt && !entityRef.current) { setEntity(inferredEnt); entityRef.current = inferredEnt; }
+            }
             if (d.industry_id) { setIndustryId(d.industry_id); industryIdRef.current = d.industry_id; }
           } else {
             setArchetype(""); archetypeRef.current = "";
@@ -1032,7 +1039,11 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
           if (route === "confirm") {
             setManualPicker(false);
             setSuggestedIndustryId("");
-            if (aiRes.data.archetype) { setArchetype(aiRes.data.archetype); archetypeRef.current = aiRes.data.archetype; }
+            if (aiRes.data.archetype) {
+              setArchetype(aiRes.data.archetype); archetypeRef.current = aiRes.data.archetype;
+              const inferredEnt = aiRes.data.archetype === "portfolio_individual" ? "individual" : (aiRes.data.archetype === "professional_firm" || aiRes.data.archetype === "corporate_org" || aiRes.data.archetype === "institution_org") ? "organization" : null;
+              if (inferredEnt && !entityRef.current) { setEntity(inferredEnt); entityRef.current = inferredEnt; }
+            }
             if (aiRes.data.industry_id) { setIndustryId(aiRes.data.industry_id); industryIdRef.current = aiRes.data.industry_id; }
           } else {
             setArchetype(""); archetypeRef.current = "";
@@ -1274,6 +1285,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     whatsapp?: string;
     serviceArea?: string;
     mood?: string;
+    entity?: "individual" | "organization" | null;
   }) => {
     if (overrides.businessName !== undefined) businessNameRef.current = overrides.businessName;
     if (overrides.businessType !== undefined) businessTypeRef.current = overrides.businessType;
@@ -1282,6 +1294,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     if (overrides.whatsapp !== undefined) whatsappRef.current = overrides.whatsapp;
     if (overrides.serviceArea !== undefined) serviceAreaRef.current = overrides.serviceArea;
     if (overrides.mood !== undefined) moodRef.current = overrides.mood;
+    if (overrides.entity !== undefined) entityRef.current = overrides.entity;
   };
 
   const hydrate = (snap: WizardResumeChat) => {
@@ -1304,8 +1317,10 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setArchetype(snap.archetype ?? "");
     setIndustryId(snap.industryId ?? "");
     setIndustryCustom(snap.industryCustom ?? "");
+    setEntity(snap.entity ?? null);
     archetypeRef.current = snap.archetype ?? "";
     industryIdRef.current = snap.industryId ?? "";
+    entityRef.current = snap.entity ?? null;
     setDescription(snap.description ?? "");
     setDescriptionSource(snap.description ? "user" : "none"); // konservatif: resume dianggap user
     setWhatsapp(snap.whatsapp ?? "");
@@ -1382,6 +1397,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     whatsappRef.current = "";
     serviceAreaRef.current = "";
     moodRef.current = "";
+    entityRef.current = null;
     siteLanguageRef.current = null;
     hasAskedNameConfirmRef.current = false;
     inferenceAutoConfirmRef.current = null;
@@ -1417,6 +1433,8 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setIndustryCustom,
     selectedBidang,
     setSelectedBidang,
+    entity,
+    setEntity,
     description,
     setDescription,
     descriptionSource,
@@ -1467,6 +1485,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     whatsappRef,
     serviceAreaRef,
     moodRef,
+    entityRef,
     siteLanguageRef,
     // Handlers
     handleSendText,

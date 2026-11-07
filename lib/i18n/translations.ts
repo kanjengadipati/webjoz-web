@@ -3526,6 +3526,9 @@ export interface Translations {
       btnContinueType: string;
       changeBidang: string;
       selectSector: string;
+      entityQuestion: string;
+      entityIndividual: string;
+      entityOrganization: string;
       btnContinue: string;
       btnGenerate: string;
       cardName: string;
@@ -7623,6 +7626,9 @@ export const translations: Record<Locale, Translations> = {
         btnContinueType: "Lanjut dengan jenis ini →",
         changeBidang: "Bidang lain →",
         selectSector: "Pilih bidang usaha:",
+        entityQuestion: "Website ini untuk siapa?",
+        entityIndividual: "👤 Pribadi / Freelancer",
+        entityOrganization: "🏢 Usaha / Tim / Perusahaan",
         btnContinue: "Ya, lanjut",
         btnGenerate: "Buat Website Sekarang",
         cardName: "Nama usaha",
@@ -11876,6 +11882,9 @@ export const translations: Record<Locale, Translations> = {
         btnContinueType: "Continue with this type →",
         changeBidang: "Other sector →",
         selectSector: "Select your sector:",
+        entityQuestion: "Who is this website for?",
+        entityIndividual: "👤 Individual / Freelancer",
+        entityOrganization: "🏢 Business / Team / Company",
         btnContinue: "Yes, continue",
         btnGenerate: "Build My Website Now",
         cardName: "Business name",

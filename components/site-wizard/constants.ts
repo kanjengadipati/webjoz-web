@@ -247,3 +247,36 @@ export const NAME_CONFIRM_VARIANTS = [
   "Nama tersebut terdengar seperti percobaan — pastikan ini yang Anda mau. Klik 'Ya' untuk lanjut atau 'Ganti'."
 ];
 
+/** Bidang (grup) yang relevan untuk individu/perorangan/freelancer/kreator */
+export const INDIVIDUAL_GROUP_IDS = new Set([
+  "creative",
+  "tech",
+  "event",
+  "edu",
+  "biz",
+  "gift",
+  "beauty",
+]);
+
+/** Bidang (grup) yang relevan untuk usaha/tim/perusahaan komersial */
+export const ORGANIZATION_GROUP_IDS = new Set([
+  "food",
+  "fashion",
+  "beauty",
+  "health",
+  "home",
+  "auto",
+  "elec",
+  "agri",
+  "edu",
+  "travel",
+  "event",
+  "creative",
+  "tech",
+  "biz",
+  "prop",
+  "trade",
+  "comm",
+]);
+
+
