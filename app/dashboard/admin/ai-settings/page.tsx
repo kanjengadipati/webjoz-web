@@ -173,6 +173,7 @@ function todayUsagePath() {
   const start = new Date();
   start.setHours(0, 0, 0, 0);
   const end = new Date();
+  end.setHours(23, 59, 59, 999);
   return `/ai/admin/metrics/ai-generation/token-usage?date_from=${encodeURIComponent(start.toISOString())}&date_to=${encodeURIComponent(end.toISOString())}`;
 }
 
@@ -345,7 +346,21 @@ export default function AdminAiSettingsPage() {
   const usageBySlot = useMemo(() => {
     const map = new Map<string, TokenSlotSum>();
     for (const s of usage?.by_slot ?? []) {
-      map.set(slotKeyOf(s.provider, s.base_url, s.model), s);
+      const key = slotKeyOf(s.provider, s.base_url, s.model);
+      const existing = map.get(key);
+      if (existing) {
+        map.set(key, {
+          ...existing,
+          prompt_tokens: existing.prompt_tokens + s.prompt_tokens,
+          completion_tokens: existing.completion_tokens + s.completion_tokens,
+          total_tokens: existing.total_tokens + s.total_tokens,
+          requests: existing.requests + s.requests,
+          generate_count: existing.generate_count + s.generate_count,
+          rate_limit: existing.rate_limit ?? s.rate_limit,
+        });
+      } else {
+        map.set(key, { ...s });
+      }
     }
     return map;
   }, [usage]);
