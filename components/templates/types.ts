@@ -245,6 +245,7 @@ export interface DesignToken {
     heading_tracking?: string;
   };
   layout?: {
+    entity?: "individual" | "organization";
     hero_style?: HeroStyle;
     section_spacing?: "compact" | "normal" | "relaxed";
     corner_radius?: "sharp" | "soft" | "rounded";
