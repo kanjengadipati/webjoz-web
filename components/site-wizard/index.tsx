@@ -1089,7 +1089,7 @@ export function SiteWizard({
                   uiLang={uiLang}
                   onChangeCategory={() => {
                     chat.setMessages((prev) => prev.filter((msg) => msg.id !== m.id));
-                    chat.showManualPicker();
+                    chat.showManualPicker({ forceEntityPrompt: true });
                   }}
                   t={t}
                 />
@@ -1172,6 +1172,44 @@ export function SiteWizard({
                   onChangeCategory={() => handleConfirmInference(false)}
                   t={t}
                 />
+              );
+            }
+
+            if (m.widget === "entity-chips") {
+              const isLocked = !!chat.entity && chat.chatStage !== "type";
+              return (
+                <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400">
+                  <div className="grid grid-cols-2 gap-2 max-w-sm">
+                    <button
+                      type="button"
+                      disabled={isLocked}
+                      onClick={() => chat.handleSelectEntity("individual")}
+                      className={`flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
+                        chat.entity === "individual"
+                          ? "bg-white text-slate-950 border-white shadow-sm font-semibold"
+                          : isLocked
+                          ? "border-slate-800 bg-white/[0.02] text-slate-500 cursor-not-allowed"
+                          : "border-slate-600/60 bg-white/[0.06] text-slate-200 hover:border-slate-400/60 hover:text-white hover:bg-white/[0.10]"
+                      }`}
+                    >
+                      <span>{t("dashboard.wizard.entityIndividual", "👤 Personal")}</span>
+                    </button>
+                    <button
+                      type="button"
+                      disabled={isLocked}
+                      onClick={() => chat.handleSelectEntity("organization")}
+                      className={`flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
+                        chat.entity === "organization"
+                          ? "bg-white text-slate-950 border-white shadow-sm font-semibold"
+                          : isLocked
+                          ? "border-slate-800 bg-white/[0.02] text-slate-500 cursor-not-allowed"
+                          : "border-slate-600/60 bg-white/[0.06] text-slate-200 hover:border-slate-400/60 hover:text-white hover:bg-white/[0.10]"
+                      }`}
+                    >
+                      <span>{t("dashboard.wizard.entityOrganization", "🏢 Bisnis / Organisasi")}</span>
+                    </button>
+                  </div>
+                </div>
               );
             }
 
@@ -1294,7 +1332,7 @@ export function SiteWizard({
                         chat.setBusinessSubType("");
                         chat.setSelectedBidang(null);
                         chat.setMessages((prev) => prev.filter((msg) => msg.id !== m.id));
-                        chat.showManualPicker();
+                        chat.showManualPicker({ forceEntityPrompt: true });
                       }}
                       className="text-[10px] text-slate-400 hover:text-slate-200 underline mb-2 inline-block transition-colors"
                     >
@@ -1304,41 +1342,6 @@ export function SiteWizard({
 
   {showBidangStep && (
     <>
-      <div className="grid grid-cols-2 gap-1.5 mb-2.5">
-        <button
-          type="button"
-          onClick={() => {
-            const next = chat.entity === "individual" ? null : "individual";
-            chat.setEntity(next);
-            chat.entityRef.current = next;
-            chat.setSelectedBidang(null);
-          }}
-          className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
-            chat.entity === "individual"
-              ? "bg-white text-slate-950 border-white shadow-sm font-semibold"
-              : "border-slate-600/60 bg-white/[0.06] text-slate-200 hover:border-slate-400/60 hover:text-white hover:bg-white/[0.10]"
-          }`}
-        >
-          <span>{t("dashboard.wizard.entityIndividual", "👤 Personal")}</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            const next = chat.entity === "organization" ? null : "organization";
-            chat.setEntity(next);
-            chat.entityRef.current = next;
-            chat.setSelectedBidang(null);
-          }}
-          className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
-            chat.entity === "organization"
-              ? "bg-white text-slate-950 border-white shadow-sm font-semibold"
-              : "border-slate-600/60 bg-white/[0.06] text-slate-200 hover:border-slate-400/60 hover:text-white hover:bg-white/[0.10]"
-          }`}
-        >
-          <span>{t("dashboard.wizard.entityOrganization", "🏢 Bisnis / Organisasi")}</span>
-        </button>
-      </div>
-
       <p className="text-[10px] font-semibold text-slate-400 mb-2 px-0.5">{t("dashboard.wizard.selectSector", "Pilih bidang usaha:")}</p>
       <div className="grid grid-cols-2 gap-1.5 mb-3">
       {bidangChips.map((bg) => {
