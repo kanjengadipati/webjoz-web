@@ -23,6 +23,9 @@ export interface WizardResumeChat {
   industryId?: string;
   industryCustom?: string;
   entity?: "individual" | "organization" | null;
+  manualPicker?: boolean;
+  selectedBidang?: string | null;
+  suggestedIndustryId?: string;
 }
 
 export interface WizardResumePreview {
