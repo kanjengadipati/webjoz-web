@@ -20,9 +20,12 @@ const apiRoot = customApiPath ? path.resolve(customApiPath) : path.join(root, ".
 
 // Load the canonical JSON source
 const jsonPath = path.join(apiRoot, "internal", "taxonomy", "testdata", "legacy_subtype_map.json");
+const skipMissing = args.includes("--skip-missing");
 if (!fs.existsSync(jsonPath)) {
-  console.warn(`WARN: canonical mapping not found at ${jsonPath} (use --api-path <path> if running from separate directory)`);
-  process.exit(0);
+  const msg = `canonical mapping not found at ${jsonPath} (use --api-path <path> or API_PATH)`;
+  if (skipMissing) { console.warn(`WARN: ${msg}`); process.exit(0); }
+  console.error(`ERROR: ${msg}`);
+  process.exit(1);
 }
 
 const canonical = JSON.parse(fs.readFileSync(jsonPath, "utf8"));
