@@ -1512,13 +1512,13 @@ export function SiteWizard({
 
             if (m.widget === "language-chips") {
               const isLocked = chat.chatStage !== "language";
+              // Ketika sudah dipilih (locked), sembunyikan widget — user bubble sudah cukup sebagai konfirmasi.
+              if (isLocked && chat.siteLanguage) return null;
               const langs = [
                 { value: "id" as const, label: "Indonesia", flag: "🇮🇩" },
                 { value: "en" as const, label: "English", flag: "🇬🇧" },
               ];
-              const visibleLangs = isLocked && chat.siteLanguage
-                ? langs.filter((lang) => lang.value === chat.siteLanguage)
-                : langs;
+              const visibleLangs = langs;
 
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2">
