@@ -23,6 +23,7 @@ export interface WizardResumeChat {
   industryId?: string;
   industryCustom?: string;
   entity?: "individual" | "organization" | null;
+  entitySource?: "user" | "inferred" | null;
   manualPicker?: boolean;
   selectedBidang?: string | null;
   suggestedIndustryId?: string;

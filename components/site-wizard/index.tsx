@@ -92,7 +92,14 @@ import { AudioProcessingCard } from "./audio-processing-card";
 import { useToast } from "@/components/toast-provider";
 import { buildFullContent } from "@/lib/build-full-content";
 import { SiteWizardProps, PreviewData } from "./types";
-import { PENDING_KEY, BUSINESS_TYPES, SUB_TYPES, MOOD_OPTIONS, INITIAL_MESSAGE, INDIVIDUAL_GROUP_IDS, ORGANIZATION_GROUP_IDS } from "./constants";
+import { PENDING_KEY, BUSINESS_TYPES, SUB_TYPES, MOOD_OPTIONS, INITIAL_MESSAGE } from "./constants";
+import {
+  groupsForEntity,
+  industriesForEntity,
+  buildSubTypeChips,
+  toggleUserEntity,
+  nextEntityFromArchetype,
+} from "./entity";
 import { useTaxonomy, useTaxonomyV2 } from "@/hooks/use-taxonomy";
 import { selectTemplate, formatText, generateSubdomain, generateSlug, getTemplatePool, getDynamicDescriptionPlaceholder, generateDescriptionFromBusinessName } from "./helpers";
 import { sanitizeClassificationPair } from "./taxonomy";
@@ -591,13 +598,15 @@ export function SiteWizard({
       // v2 fields: prefer direct chat state (archetype/industryId from classify v2),
       // fall back to derivation from v1 type/subType for old FE compatibility.
       ...(() => {
-        const arch = chat.archetypeRef.current || (ent === "individual" ? "portfolio_individual" : "booking_service");
+        const arch = chat.archetypeRef.current ||
+          (!safePair.businessType ? (ent === "individual" ? "portfolio_individual" : "booking_service") : undefined);
         const iid = chat.industryIdRef.current;
         const custom = chat.industryCustom || (!iid && safeBusinessSubType ? safeBusinessSubType : undefined);
         const base = (arch || iid)
           ? { archetype: arch || undefined, industry_id: iid || undefined, industry_custom: custom }
           : enrichGeneratePayloadV2({ business_type: safeBusinessType, business_sub_type: safeBusinessSubType });
-        return { ...base, entity: ent || undefined };
+        const explicitEntity = chat.entitySourceRef.current === "user" ? ent : undefined;
+        return { ...base, entity: explicitEntity || undefined };
       })(),
     });
   };
@@ -641,6 +650,7 @@ export function SiteWizard({
     if (!chat.archetypeRef.current) {
       chat.setArchetype(fallbackArch);
       chat.archetypeRef.current = fallbackArch;
+      chat.setEntityState((prev) => nextEntityFromArchetype(prev, fallbackArch));
     }
     // lanjut ke pemilihan bahasa seperti handleSelectSubType
     chat.setMessages((prev) => [
@@ -837,6 +847,7 @@ export function SiteWizard({
           industryId: chat.industryId || undefined,
           industryCustom: chat.industryCustom || undefined,
           entity: chat.entity || undefined,
+          entitySource: chat.entitySource || undefined,
           manualPicker: chat.manualPicker,
           selectedBidang: chat.selectedBidang,
           suggestedIndustryId: chat.suggestedIndustryId || undefined,
@@ -1240,15 +1251,7 @@ export function SiteWizard({
 
   const showBidangStep = needsBidangStep && !effectiveSelectedBidang && !isLocked;
   const filteredGroups = taxonomyV2
-    ? taxonomyV2.groups.filter((g) => {
-        if (chat.entity === "individual") {
-          return INDIVIDUAL_GROUP_IDS.has(g.id);
-        }
-        if (chat.entity === "organization") {
-          return ORGANIZATION_GROUP_IDS.has(g.id);
-        }
-        return true;
-      })
+    ? groupsForEntity(taxonomyV2.groups, chat.entity)
     : [];
 
   const bidangChips = filteredGroups.map((g) => ({
@@ -1258,50 +1261,23 @@ export function SiteWizard({
   }));
               // v2: susun subTypes berdasarkan selectedBidang (grup terpilih) atau archetype.
               // Bila showBidangStep=true, tidak ada chip spesialisasi yang boleh tampil.
-              let subTypes: Array<{ value: string; label: string; emoji?: string; kind?: "v1" | "v2" }> = [];
+              let subTypes: Array<{ value: string; label: string; emoji?: string; kind?: "v1" | "v2"; archetype?: string }> = [];
+              let isFallbackCategory = false;
               if (!showBidangStep) {
-                if (effectiveSelectedBidang && taxonomyV2) {
-                  // Bidang terpilih (manual atau pre-select) — tampilkan semua industri di grup itu, urut rank
-                  const group = taxonomyV2.groups.find((g) => g.id === effectiveSelectedBidang);
-                  if (group) {
-                    let indList = group.industries;
-                    if (chat.entity === "individual") {
-                      const portOnly = group.industries.filter((i) => i.archetype === "portfolio_individual");
-                      if (portOnly.length > 0) {
-                        indList = portOnly;
-                      }
-                    } else if (chat.entity === "organization") {
-                      const orgOnly = group.industries.filter((i) => i.archetype !== "portfolio_individual");
-                      if (orgOnly.length > 0) {
-                        indList = orgOnly;
-                      }
-                    }
-                    const sorted = [...indList].sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99));
-                    subTypes = sorted.map((i) => ({
-                      value: i.id,
-                      kind: "v2" as const,
-                      label: uiLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
-                      emoji: i.emoji ?? "🏷️",
-                    }));
-                  }
-                } else if (!needsBidangStep && currentArchetype && taxonomyV2) {
-                  // < threshold: langsung tampilkan semua industri archetype ini (semua grup)
-                  subTypes = archetypeIndustries.map((i) => ({
-                    value: i.id,
-                    kind: "v2" as const,
-                    label: uiLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
-                    emoji: i.emoji ?? "🏷️",
-                  }));
+                if (taxonomyV2) {
+                  const chipResult = buildSubTypeChips({
+                    groups: taxonomyV2.groups,
+                    bidangId: effectiveSelectedBidang,
+                    entity: chat.entity,
+                    archetypeIndustries: !needsBidangStep && currentArchetype ? archetypeIndustries : undefined,
+                    hintId,
+                    lang: uiLang,
+                  });
+                  subTypes = chipResult.items;
+                  isFallbackCategory = chipResult.fallback;
                 }
                 if (subTypes.length === 0) {
                   subTypes = chat.businessType ? (dynamicSubTypes[chat.businessType] ?? []) : [];
-                }
-                // Bubble saran AI ke atas agar terlihat dulu (tanpa tanda terpilih)
-                if (hintId) {
-                  subTypes = [
-                    ...subTypes.filter((st) => st.value === hintId),
-                    ...subTypes.filter((st) => st.value !== hintId),
-                  ];
                 }
               }
               return (
@@ -1329,9 +1305,7 @@ export function SiteWizard({
         <button
           type="button"
           onClick={() => {
-            const next = chat.entity === "individual" ? null : "individual";
-            chat.setEntity(next);
-            chat.entityRef.current = next;
+            chat.setEntityState((prev) => toggleUserEntity(prev, "individual"));
             chat.setSelectedBidang(null);
           }}
           className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
@@ -1341,14 +1315,12 @@ export function SiteWizard({
           }`}
         >
           <User className={`w-3.5 h-3.5 shrink-0 ${chat.entity === "individual" ? "text-slate-950" : "text-slate-400"}`} />
-          <span>{t("dashboard.wizard.entityIndividual", "Personal")}</span>
+          <span>{uiLang === "en" ? t("dashboard.wizard.entityIndividual", "Personal") : t("dashboard.wizard.entityIndividual", "Perorangan")}</span>
         </button>
         <button
           type="button"
           onClick={() => {
-            const next = chat.entity === "organization" ? null : "organization";
-            chat.setEntity(next);
-            chat.entityRef.current = next;
+            chat.setEntityState((prev) => toggleUserEntity(prev, "organization"));
             chat.setSelectedBidang(null);
           }}
           className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
@@ -1434,11 +1406,7 @@ export function SiteWizard({
                                 if (entry) {
                                   chat.setArchetype(entry.archetype);
                                   chat.archetypeRef.current = entry.archetype;
-                                  if (!chat.entityRef.current) {
-                                    const e = entry.archetype === "portfolio_individual" ? "individual" : "organization";
-                                    chat.setEntity(e);
-                                    chat.entityRef.current = e;
-                                  }
+                                  chat.setEntityState((prev) => nextEntityFromArchetype(prev, entry.archetype));
                                 }
                               }
                               handleSelectSubType(labelText);
@@ -1506,6 +1474,13 @@ export function SiteWizard({
                       </div>
                     ))}
                   </div>
+                  {isFallbackCategory && !isLocked && (
+                    <p className="text-[11px] text-amber-400/80 italic mt-1.5 px-0.5">
+                      {uiLang === "en"
+                        ? "No individual options yet for this sector; showing all available options."
+                        : "Belum ada versi perorangan untuk bidang ini; kami tampilkan semua pilihan."}
+                    </p>
+                  )}
                 </div>
               );
             }
@@ -1648,43 +1623,32 @@ export function SiteWizard({
                 return null;
               })();
               const tcShowBidang = tcNeedsBidang && !tcEffectiveBidang && !isLocked;
-              const tcBidangChips = taxonomyV2
-                ? taxonomyV2.groups.map((g) => ({
-                    value: g.id,
-                    label: uiLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label),
-                    emoji: g.emoji ?? "🏷️",
-                  }))
+              const tcFilteredGroups = taxonomyV2
+                ? groupsForEntity(taxonomyV2.groups, chat.entity)
                 : [];
+              const tcBidangChips = tcFilteredGroups.map((g) => ({
+                value: g.id,
+                label: uiLang === "en" ? (g.label_en || g.label) : (g.label_id || g.label),
+                emoji: g.emoji ?? "🏷️",
+              }));
               // Susun subTypes — kosong bila tcShowBidang
               let subTypes: Array<{ value: string; label: string; emoji?: string; kind?: string }> | null = null;
               if (!tcShowBidang) {
-                if (tcEffectiveBidang && taxonomyV2) {
-                  const grp = taxonomyV2.groups.find((g) => g.id === tcEffectiveBidang);
-                  if (grp) {
-                    const sorted = [...grp.industries].sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99));
-                    subTypes = sorted.map((i) => ({
-                      value: i.id,
-                      label: uiLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
-                      emoji: i.emoji ?? "🏷️",
-                      kind: "v2" as const,
-                    }));
+                if (taxonomyV2) {
+                  const chipRes = buildSubTypeChips({
+                    groups: taxonomyV2.groups,
+                    bidangId: tcEffectiveBidang,
+                    entity: chat.entity,
+                    archetypeIndustries: !tcNeedsBidang && tcArchetype ? tcArchIndustries : undefined,
+                    hintId: tcIndustryId,
+                    lang: uiLang,
+                  });
+                  if (chipRes.items.length > 0) {
+                    subTypes = chipRes.items;
                   }
-                } else if (!tcNeedsBidang && tcArchetype && taxonomyV2) {
-                  subTypes = tcArchIndustries.map((i) => ({
-                    value: i.id,
-                    label: uiLang === "en" ? (i.label_en || i.label) : (i.label_id || i.label),
-                    emoji: i.emoji ?? "🏷️",
-                    kind: "v2" as const,
-                  }));
                 }
                 if (!subTypes) {
                   subTypes = chat.businessType ? (dynamicSubTypes[chat.businessType] ?? null) : null;
-                }
-                if (tcIndustryId && subTypes) {
-                  subTypes = [
-                    ...subTypes.filter((s) => s.value === tcIndustryId),
-                    ...subTypes.filter((s) => s.value !== tcIndustryId),
-                  ];
                 }
               }
               return (
@@ -1811,11 +1775,7 @@ export function SiteWizard({
                                     if (entry) {
                                       chat.setArchetype(entry.archetype);
                                       chat.archetypeRef.current = entry.archetype;
-                                      if (!chat.entityRef.current) {
-                                        const e = entry.archetype === "portfolio_individual" ? "individual" : "organization";
-                                        chat.setEntity(e);
-                                        chat.entityRef.current = e;
-                                      }
+                                      chat.setEntityState((prev) => nextEntityFromArchetype(prev, entry.archetype));
                                     }
                                   }
                                   handleSelectSubType(labelText);

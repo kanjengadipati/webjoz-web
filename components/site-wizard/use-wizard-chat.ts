@@ -15,6 +15,13 @@ import { useToast } from "@/components/toast-provider";
 import { refineTranscript, processBusinessDescription } from "@/lib/api/ai";
 import { validateClassification, sanitizeClassificationPair } from "./taxonomy";
 import { markMicHintAsSeen } from "./mic-onboarding-hint";
+import {
+  type Entity,
+  type EntitySource,
+  type EntityState,
+  nextEntityFromArchetype,
+  toggleUserEntity,
+} from "./entity";
 
 export function useWizardChat(prefillInput?: { businessType?: string; businessSubType?: string }) {
   const { t, locale } = useI18n();
@@ -48,7 +55,15 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
   const [industryId, setIndustryId] = useState("");
   const [industryCustom, setIndustryCustom] = useState("");
   const [selectedBidang, setSelectedBidang] = useState<string | null>(null);
-  const [entity, setEntity] = useState<"individual" | "organization" | null>(null);
+  const [entityState, setEntityState] = useState<EntityState>({ value: null, source: null });
+  const entity = entityState.value;
+  const entitySource = entityState.source;
+  const setEntity = (val: Entity | ((prev: Entity) => Entity), src?: EntitySource) => {
+    setEntityState((prev) => {
+      const nextVal = typeof val === "function" ? val(prev.value) : val;
+      return { value: nextVal, source: src ?? (nextVal ? "inferred" : null) };
+    });
+  };
   const [description, setDescription] = useState("");
   const [descriptionSource, setDescriptionSource] = useState<"user" | "ai" | "none">("none");
   const [suggestedIndustryId, setSuggestedIndustryId] = useState("");
@@ -414,7 +429,8 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
   const whatsappRef = useRef(whatsapp);
   const serviceAreaRef = useRef(serviceArea);
   const moodRef = useRef(mood);
-  const entityRef = useRef<"individual" | "organization" | null>(null);
+  const entityRef = useRef<Entity>(null);
+  const entitySourceRef = useRef<EntitySource>(null);
   const siteLanguageRef = useRef<"id" | "en" | null>(null);
   const activeTypingCancellerRef = useRef<(() => void) | null>(null);
 
@@ -422,7 +438,10 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
   useEffect(() => { archetypeRef.current = archetype; }, [archetype]);
   useEffect(() => { industryIdRef.current = industryId; }, [industryId]);
   useEffect(() => { moodRef.current = mood; }, [mood]);
-  useEffect(() => { entityRef.current = entity; }, [entity]);
+  useEffect(() => {
+    entityRef.current = entityState.value;
+    entitySourceRef.current = entityState.source;
+  }, [entityState]);
 
   // Cancel any active typing animation on unmount
   useEffect(() => {
@@ -844,8 +863,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
             setSuggestedIndustryId("");
             if (d.archetype) {
               setArchetype(d.archetype); archetypeRef.current = d.archetype;
-              const inferredEnt = d.archetype === "portfolio_individual" ? "individual" : (d.archetype === "professional_firm" || d.archetype === "corporate_org" || d.archetype === "institution_org") ? "organization" : null;
-              if (inferredEnt && !entityRef.current) { setEntity(inferredEnt); entityRef.current = inferredEnt; }
+              setEntityState((prev) => nextEntityFromArchetype(prev, d.archetype));
             }
             if (d.industry_id) { setIndustryId(d.industry_id); industryIdRef.current = d.industry_id; }
           } else {
@@ -1041,8 +1059,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
             setSuggestedIndustryId("");
             if (aiRes.data.archetype) {
               setArchetype(aiRes.data.archetype); archetypeRef.current = aiRes.data.archetype;
-              const inferredEnt = aiRes.data.archetype === "portfolio_individual" ? "individual" : (aiRes.data.archetype === "professional_firm" || aiRes.data.archetype === "corporate_org" || aiRes.data.archetype === "institution_org") ? "organization" : null;
-              if (inferredEnt && !entityRef.current) { setEntity(inferredEnt); entityRef.current = inferredEnt; }
+              setEntityState((prev) => nextEntityFromArchetype(prev, aiRes.data.archetype));
             }
             if (aiRes.data.industry_id) { setIndustryId(aiRes.data.industry_id); industryIdRef.current = aiRes.data.industry_id; }
           } else {
@@ -1318,13 +1335,16 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setArchetype(snap.archetype ?? "");
     setIndustryId(snap.industryId ?? "");
     setIndustryCustom(snap.industryCustom ?? "");
-    setEntity(snap.entity ?? null);
+    const restoredEntity: Entity = snap.entity ?? null;
+    const restoredSource: EntitySource = restoredEntity ? (snap.entitySource ?? "inferred") : null;
+    setEntityState({ value: restoredEntity, source: restoredSource });
     setSelectedBidang(snap.selectedBidang ?? null);
     setSuggestedIndustryId(snap.suggestedIndustryId ?? "");
     setManualPicker(snap.manualPicker !== undefined ? snap.manualPicker : (!restoredPair.businessType && !snap.industryId));
     archetypeRef.current = snap.archetype ?? "";
     industryIdRef.current = snap.industryId ?? "";
-    entityRef.current = snap.entity ?? null;
+    entityRef.current = restoredEntity;
+    entitySourceRef.current = restoredSource;
     setDescription(snap.description ?? "");
     setDescriptionSource(snap.description ? "user" : "none"); // konservatif: resume dianggap user
     setWhatsapp(snap.whatsapp ?? "");
@@ -1383,6 +1403,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setWhatsapp("");
     setServiceArea("");
     setMood("");
+    setEntityState({ value: null, source: null });
     setSiteLanguage(null);
     setIsAiTyping(false);
     setIsAnalyzingDescription(false);
@@ -1402,6 +1423,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     serviceAreaRef.current = "";
     moodRef.current = "";
     entityRef.current = null;
+    entitySourceRef.current = null;
     siteLanguageRef.current = null;
     hasAskedNameConfirmRef.current = false;
     inferenceAutoConfirmRef.current = null;
@@ -1438,7 +1460,10 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     selectedBidang,
     setSelectedBidang,
     entity,
+    entitySource,
+    entityState,
     setEntity,
+    setEntityState,
     description,
     setDescription,
     descriptionSource,
@@ -1490,6 +1515,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     serviceAreaRef,
     moodRef,
     entityRef,
+    entitySourceRef,
     siteLanguageRef,
     // Handlers
     handleSendText,

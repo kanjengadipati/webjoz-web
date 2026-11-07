@@ -2903,15 +2903,6 @@ export interface Translations {
       worksTitle: string;
       worksEyebrow: string;
       worksSubtitle: string;
-      worksLayout: string;
-      worksLayoutGrid: string;
-      worksLayoutGridDesc: string;
-      worksLayoutMasonry: string;
-      worksLayoutMasonryDesc: string;
-      worksLayoutFeaturedGrid: string;
-      worksLayoutFeaturedGridDesc: string;
-      worksLayoutShowcase: string;
-      worksLayoutShowcaseDesc: string;
       worksItems: string;
       worksItem: string;
       worksItemTitle: string;
@@ -6854,15 +6845,6 @@ export const translations: Record<Locale, Translations> = {
         worksTitle: "Judul Portofolio",
         worksEyebrow: "Eyebrow",
         worksSubtitle: "Deskripsi Ringkas",
-        worksLayout: "Tata Letak",
-        worksLayoutGrid: "Grid",
-        worksLayoutGridDesc: "Kotak seragam",
-        worksLayoutMasonry: "Masonry",
-        worksLayoutMasonryDesc: "Tinggi bervariasi",
-        worksLayoutFeaturedGrid: "Grid Unggulan",
-        worksLayoutFeaturedGridDesc: "Proyek pertama besar",
-        worksLayoutShowcase: "Showcase",
-        worksLayoutShowcaseDesc: "Hero horizontal + grid",
         worksItems: "Proyek",
         worksItem: "Proyek",
         worksItemTitle: "Judul Proyek",
@@ -11110,15 +11092,6 @@ export const translations: Record<Locale, Translations> = {
         worksTitle: "Portfolio Title",
         worksEyebrow: "Eyebrow",
         worksSubtitle: "Brief Description",
-        worksLayout: "Layout",
-        worksLayoutGrid: "Grid",
-        worksLayoutGridDesc: "Uniform boxes",
-        worksLayoutMasonry: "Masonry",
-        worksLayoutMasonryDesc: "Variable height",
-        worksLayoutFeaturedGrid: "Featured Grid",
-        worksLayoutFeaturedGridDesc: "First project larger",
-        worksLayoutShowcase: "Showcase",
-        worksLayoutShowcaseDesc: "Horizontal hero + grid",
         worksItems: "Projects",
         worksItem: "Project",
         worksItemTitle: "Project Title",
