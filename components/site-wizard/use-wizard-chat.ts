@@ -554,11 +554,13 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
   };
 
   const handleSelectEntity = (chosenEntity: "individual" | "organization") => {
+    // Guard: ignore if entity already selected (prevents double-click duplicate bubbles)
+    if (entityRef.current) return;
     setEntity(chosenEntity);
     entityRef.current = chosenEntity;
     const label = chosenEntity === "individual"
-      ? t("dashboard.wizard.entityIndividual", "👤 Personal")
-      : t("dashboard.wizard.entityOrganization", "🏢 Bisnis / Organisasi");
+      ? t("dashboard.wizard.entityIndividual", "Personal")
+      : t("dashboard.wizard.entityOrganization", "Bisnis / Organisasi");
 
     setMessages((prev) => [
       ...prev,
