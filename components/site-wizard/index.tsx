@@ -523,9 +523,11 @@ export function SiteWizard({
     // Guard taksonomi: hanya pasangan {type, subType} kanonis yang boleh
     // mencapai payload generate — pair stale/tidak-valid jatuh ke type-only.
     const safePair = sanitizeClassificationPair(bType, nextBusinessSubType);
-    // Kirim businessType apa adanya — bila kosong, API akan derive dari archetype/industry_id
-    // via NormalizeGenerateSiteRequestV2 di server side.
-    const safeBusinessType = safePair.businessType;
+    const ent = chat.entityRef.current || chat.entity;
+    let safeBusinessType = safePair.businessType;
+    if (!safeBusinessType) {
+      safeBusinessType = ent === "individual" ? "Portofolio" : "Layanan & Reservasi";
+    }
     const safeBusinessSubType = safePair.businessSubType;
     const nextWhatsapp = overrides.whatsapp ?? chat.whatsappRef.current;
     const nextServiceArea = overrides.serviceArea ?? chat.serviceAreaRef.current;
@@ -589,11 +591,11 @@ export function SiteWizard({
       // v2 fields: prefer direct chat state (archetype/industryId from classify v2),
       // fall back to derivation from v1 type/subType for old FE compatibility.
       ...(() => {
-        const arch = chat.archetypeRef.current;
+        const arch = chat.archetypeRef.current || (ent === "individual" ? "portfolio_individual" : "booking_service");
         const iid = chat.industryIdRef.current;
-        const ent = chat.entityRef.current;
+        const custom = chat.industryCustom || (!iid && safeBusinessSubType ? safeBusinessSubType : undefined);
         const base = (arch || iid)
-          ? { archetype: arch || undefined, industry_id: iid || undefined, industry_custom: chat.industryCustom || undefined }
+          ? { archetype: arch || undefined, industry_id: iid || undefined, industry_custom: custom }
           : enrichGeneratePayloadV2({ business_type: safeBusinessType, business_sub_type: safeBusinessSubType });
         return { ...base, entity: ent || undefined };
       })(),
@@ -626,10 +628,20 @@ export function SiteWizard({
   const handleSelectCustomIndustry = (text: string) => {
     const clean = text.replace(/<[^>]*>?/gm, "").trim().slice(0, 80); // sama dengan batas server
     if (!clean) return;
+    const fallbackArch = chat.entity === "individual" ? "portfolio_individual" : "booking_service";
+    const fallbackType = chat.entity === "individual" ? "Portofolio" : "Layanan & Reservasi";
     chat.setIndustryId("");
     chat.industryIdRef.current = "";
     chat.setIndustryCustom(clean);
     chat.setBusinessSubType(clean);   // label tampil di bubble dan jalur v1 yang tersisa
+    if (!chat.businessType) {
+      chat.setBusinessType(fallbackType);
+      chat.businessTypeRef.current = fallbackType;
+    }
+    if (!chat.archetypeRef.current) {
+      chat.setArchetype(fallbackArch);
+      chat.archetypeRef.current = fallbackArch;
+    }
     // lanjut ke pemilihan bahasa seperti handleSelectSubType
     chat.setMessages((prev) => [
       ...prev,
@@ -1469,7 +1481,7 @@ export function SiteWizard({
                               e.preventDefault();
                               const clean = customSubTextInput.replace(/<[^>]*>?/gm, "").trim().slice(0, 60);
                               if (clean) {
-                                handleSelectSubType(clean);
+                                handleSelectCustomIndustry(clean);
                                 setCustomSubTypeOpen(false);
                                 setCustomSubTextInput("");
                               }
@@ -1845,7 +1857,7 @@ export function SiteWizard({
                                   e.preventDefault();
                                   const clean = customSubTextInput.replace(/<[^>]*>?/gm, "").trim().slice(0, 60);
                                   if (clean) {
-                                    handleSelectSubType(clean);
+                                    handleSelectCustomIndustry(clean);
                                     setCustomSubTypeOpen(false);
                                     setCustomSubTextInput("");
                                   }
@@ -1858,7 +1870,7 @@ export function SiteWizard({
                               onClick={() => {
                                 const clean = customSubTextInput.replace(/<[^>]*>?/gm, "").trim().slice(0, 60);
                                 if (clean) {
-                                  handleSelectSubType(clean);
+                                  handleSelectCustomIndustry(clean);
                                   setCustomSubTypeOpen(false);
                                   setCustomSubTextInput("");
                                 }
