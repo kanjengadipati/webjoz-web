@@ -1547,12 +1547,12 @@ export function SiteWizard({
 
             if (m.widget === "mood-chips") {
               const isLocked = chat.chatStage !== "mood";
-              const visibleMoods = isLocked && chat.mood
-                ? MOOD_OPTIONS.filter((mo) => mo.value === chat.mood)
-                : MOOD_OPTIONS;
+              // Ketika sudah dipilih (locked), sembunyikan widget — user bubble sudah cukup sebagai konfirmasi.
+              if (isLocked && chat.mood) return null;
+              const visibleMoods = MOOD_OPTIONS;
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2">
-                  <div className={isLocked ? "flex gap-2" : "grid grid-cols-2 sm:grid-cols-3 gap-2"}>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {visibleMoods.map((mo) => {
                       const isSelected = chat.mood === mo.value;
                       const moodKeyMap: Record<string, string> = {
