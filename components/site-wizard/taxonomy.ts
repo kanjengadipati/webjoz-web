@@ -81,6 +81,6 @@ export function sanitizeClassificationPair(
     validateClassification(businessType, "");
   return {
     businessType: pair?.type ?? (businessType || "").trim(),
-    businessSubType: pair?.subType ?? "",
+    businessSubType: pair?.subType || (businessSubType || "").trim(),
   };
 }

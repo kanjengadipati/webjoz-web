@@ -35,9 +35,16 @@ export function WizardResumeBanner({
               </span>
               <span className="text-[10px] text-slate-500">· {resumeSavedText}</span>
             </div>
-            <p className="text-xs sm:text-[13px] font-bold text-white truncate leading-snug mt-0.5">
-              {resumeDraft.businessName || t("dashboard.wizard.untitledDraft", "Draft Tanpa Nama")}
-            </p>
+            <div className="flex items-center gap-1.5 mt-0.5 min-w-0">
+              <p className="text-xs sm:text-[13px] font-bold text-white truncate leading-snug">
+                {resumeDraft.businessName || t("dashboard.wizard.untitledDraft", "Draft Tanpa Nama")}
+              </p>
+              {(resumeDraft.chat.businessSubType || resumeDraft.chat.industryCustom || resumeDraft.chat.businessType) && (
+                <span className="text-[11px] font-medium text-slate-400 truncate">
+                  · {resumeDraft.chat.businessSubType || resumeDraft.chat.industryCustom || resumeDraft.chat.businessType}
+                </span>
+              )}
+            </div>
           </div>
         </div>
 

@@ -1311,13 +1311,17 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     // Guard resume: pasangan stale/tidak-kanonis dari localStorage lama
     // di-drop sampai sub-nya saja (type tetap bila tipenya valid).
     const restoredPair = sanitizeClassificationPair(snap.businessType, snap.businessSubType);
+    const finalSubType = snap.businessSubType || restoredPair.businessSubType;
     setBusinessType(restoredPair.businessType);
-    setBusinessSubType(restoredPair.businessSubType);
+    setBusinessSubType(finalSubType);
     // v2 fields
     setArchetype(snap.archetype ?? "");
     setIndustryId(snap.industryId ?? "");
     setIndustryCustom(snap.industryCustom ?? "");
     setEntity(snap.entity ?? null);
+    setSelectedBidang(snap.selectedBidang ?? null);
+    setSuggestedIndustryId(snap.suggestedIndustryId ?? "");
+    setManualPicker(snap.manualPicker !== undefined ? snap.manualPicker : (!restoredPair.businessType && !snap.industryId));
     archetypeRef.current = snap.archetype ?? "";
     industryIdRef.current = snap.industryId ?? "";
     entityRef.current = snap.entity ?? null;
@@ -1334,7 +1338,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     if (snap.chatStage !== "name") hasAskedNameConfirmRef.current = true;
     businessNameRef.current = snap.businessName ?? "";
     businessTypeRef.current = restoredPair.businessType;
-    businessSubTypeRef.current = restoredPair.businessSubType;
+    businessSubTypeRef.current = finalSubType;
     descriptionRef.current = snap.description ?? "";
     whatsappRef.current = snap.whatsapp ?? "";
     serviceAreaRef.current = snap.serviceArea ?? "";

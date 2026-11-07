@@ -825,6 +825,9 @@ export function SiteWizard({
           industryId: chat.industryId || undefined,
           industryCustom: chat.industryCustom || undefined,
           entity: chat.entity || undefined,
+          manualPicker: chat.manualPicker,
+          selectedBidang: chat.selectedBidang,
+          suggestedIndustryId: chat.suggestedIndustryId || undefined,
         },
         preview: preview.previewData ? toResumePreview(preview.previewData) : undefined,
       };
@@ -849,6 +852,10 @@ export function SiteWizard({
     chat.archetype,
     chat.industryId,
     chat.industryCustom,
+    chat.entity,
+    chat.manualPicker,
+    chat.selectedBidang,
+    chat.suggestedIndustryId,
     preview.previewData,
     resumeSnapshotProgress,
   ]);
@@ -1195,9 +1202,10 @@ export function SiteWizard({
     ? archetypeIndustries.length || v1SubTypes.length
     : v1SubTypes.length;
 
-  // Threshold: ≥8 kandidat pakai step Bidang; <8 langsung tampilkan chip
+  // Threshold: ≥8 kandidat pakai step Bidang; <8 langsung tampilkan chip.
+  // Bila belum ada archetype (belum pilih kategori), selalu tampilkan step Bidang agar tidak kosong.
   const BIDANG_THRESHOLD = 8;
-  const needsBidangStep = !!taxonomyV2 && (chat.manualPicker || totalCandidates >= BIDANG_THRESHOLD);
+  const needsBidangStep = !!taxonomyV2 && (chat.manualPicker || !currentArchetype || totalCandidates >= BIDANG_THRESHOLD);
 
   // Bila archetype diketahui dan belum ada selectedBidang, pre-select Bidang yang
   // mengandung industri saran AI (industryId) atau grup yang punya industri archetype terbanyak.
