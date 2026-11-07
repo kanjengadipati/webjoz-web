@@ -91,10 +91,10 @@ export function InferenceConfirmWidget({
         {/* Always show selected chip */}
         {selectedChip && renderChip(selectedChip, isLocked)}
 
-        {/* Other chips — only visible after user taps "Pilih jenis lain" */}
-        {showOthers && visibleOtherChips.map((st) => renderChip(st, isLocked))}
+        {/* Other chips — only visible after user taps "Pilih jenis lain" and not locked */}
+        {showOthers && !isLocked && visibleOtherChips.map((st) => renderChip(st, isLocked))}
 
-        {showOthers && !showAll && hiddenCount > 0 && (
+        {showOthers && !isLocked && !showAll && hiddenCount > 0 && (
           <button
             type="button"
             onClick={() => setShowAll(true)}

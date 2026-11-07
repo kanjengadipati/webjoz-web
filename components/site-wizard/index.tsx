@@ -1504,10 +1504,14 @@ export function SiteWizard({
                 { value: "id" as const, label: "Indonesia", flag: "🇮🇩" },
                 { value: "en" as const, label: "English", flag: "🇬🇧" },
               ];
+              const visibleLangs = isLocked && chat.siteLanguage
+                ? langs.filter((lang) => lang.value === chat.siteLanguage)
+                : langs;
+
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2">
                   <div className="flex gap-2">
-                    {langs.map((lang) => {
+                    {visibleLangs.map((lang) => {
                       const isSelected = chat.siteLanguage === lang.value;
                       return (
                         <button
@@ -1531,10 +1535,13 @@ export function SiteWizard({
 
             if (m.widget === "mood-chips") {
               const isLocked = chat.chatStage !== "mood";
+              const visibleMoods = isLocked && chat.mood
+                ? MOOD_OPTIONS.filter((mo) => mo.value === chat.mood)
+                : MOOD_OPTIONS;
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2">
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {MOOD_OPTIONS.map((mo) => {
+                  <div className={isLocked ? "flex gap-2" : "grid grid-cols-2 sm:grid-cols-3 gap-2"}>
+                    {visibleMoods.map((mo) => {
                       const isSelected = chat.mood === mo.value;
                       const moodKeyMap: Record<string, string> = {
                         "clean-modern": "modernClean",
@@ -1596,7 +1603,9 @@ export function SiteWizard({
                       );
                     })}
                   </div>
-                  <p className="text-[10px] text-slate-500 px-0.5">{t("dashboard.wizard.chooseMoodHint", "Pilih karakter visual yang cocok untuk brand Anda")}</p>
+                  {!isLocked && (
+                    <p className="text-[10px] text-slate-500 px-0.5">{t("dashboard.wizard.chooseMoodHint", "Pilih karakter visual yang cocok untuk brand Anda")}</p>
+                  )}
                 </div>
               );
             }
@@ -1669,7 +1678,10 @@ export function SiteWizard({
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2.5">
                   <div className="flex flex-wrap gap-1.5 mt-1.5">
-                    {dynamicBusinessTypes.map((bt) => {
+                    {(isLocked && chat.businessType
+                      ? dynamicBusinessTypes.filter((bt) => bt.value === chat.businessType)
+                      : dynamicBusinessTypes
+                    ).map((bt) => {
                       const isSelected = chat.businessType === bt.value;
                       const categoryKeyMap: Record<string, { label: string; desc: string }> = {
                         "Kuliner": { label: "kuliner", desc: "kulinerDesc" },
