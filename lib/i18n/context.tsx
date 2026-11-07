@@ -17,7 +17,7 @@ interface I18nContextValue {
 
 const I18nContext = createContext<I18nContextValue | null>(null);
 
-function resolvePath(obj: Translations, path: string): any {
+export function resolvePath(obj: Translations, path: string): any {
   const parts = path.split(".");
   let current: unknown = obj;
   for (const part of parts) {

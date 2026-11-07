@@ -434,7 +434,14 @@ export function generateDescriptionFromBusinessName(
           : `Offering a stylish collection of modern apparel, comfortable everyday wear, and quality fashion at ${name}.`;
       case "Produk Lokal Handmade":
         return `Showcasing authentic handcrafted local goods, souvenirs, and artisanal creations at ${name}.`;
+      case "Makanan Rumahan & Frozen Food":
+      case "Frozen Food Homemade":
+      case "food.home_kitchen":
+        return `Providing a variety of quality frozen foods, home-cooked meals, and delicious culinary options crafted with care at ${name}.`;
       default:
+        if (/frozen|fozen|nugget|dimsum/i.test(`${name} ${subType || ""}`)) {
+          return `Providing a variety of quality frozen food options and delicious daily meals at ${name}.`;
+        }
         return `Providing premium quality products and trusted professional services at ${name}.`;
     }
   }
@@ -494,7 +501,14 @@ export function generateDescriptionFromBusinessName(
         : `Menyediakan aneka koleksi pakaian dan busana berkualitas dengan desain terkini, bahan nyaman, dan harga terbaik di ${name}.`;
     case "Produk Lokal Handmade":
       return `Menyediakan aneka produk kerajinan tangan dan souvenir lokal berkualitas tinggi dengan sentuhan seni autentik di ${name}.`;
+    case "Makanan Rumahan & Frozen Food":
+    case "Frozen Food Homemade":
+    case "food.home_kitchen":
+      return `Menyediakan aneka pilihan frozen food berkualitas dan sajian makanan rumahan lezat praktis di ${name}.`;
     default:
+      if (/frozen|fozen|nugget|dimsum/i.test(`${name} ${subType || ""}`)) {
+        return `Menyediakan aneka produk frozen food berkualitas dan makanan lezat praktis untuk kebutuhan keluarga di ${name}.`;
+      }
       return `Menyediakan produk dan layanan berkualitas tinggi yang terpercaya untuk pelanggan setia ${name}.`;
   }
 }
