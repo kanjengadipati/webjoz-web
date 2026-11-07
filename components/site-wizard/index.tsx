@@ -83,6 +83,7 @@ import {
   Zap,
   Maximize2,
   Minimize2,
+  User,
 } from "lucide-react";
 import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import { AudioWaveform } from "./audio-waveform";
@@ -1176,7 +1177,8 @@ export function SiteWizard({
             }
 
             if (m.widget === "entity-chips") {
-              const isLocked = !!chat.entity && chat.chatStage !== "type";
+              // Lock as soon as entity is chosen (prevents double-click / duplicate bubbles)
+              const isLocked = !!chat.entity;
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400">
                   <div className="grid grid-cols-2 gap-2 max-w-sm">
@@ -1192,7 +1194,8 @@ export function SiteWizard({
                           : "border-slate-600/60 bg-white/[0.06] text-slate-200 hover:border-slate-400/60 hover:text-white hover:bg-white/[0.10]"
                       }`}
                     >
-                      <span>{t("dashboard.wizard.entityIndividual", "👤 Personal")}</span>
+                      <User className="w-3.5 h-3.5 shrink-0 text-current" />
+                      <span>{t("dashboard.wizard.entityIndividual", "Personal")}</span>
                     </button>
                     <button
                       type="button"
@@ -1206,7 +1209,8 @@ export function SiteWizard({
                           : "border-slate-600/60 bg-white/[0.06] text-slate-200 hover:border-slate-400/60 hover:text-white hover:bg-white/[0.10]"
                       }`}
                     >
-                      <span>{t("dashboard.wizard.entityOrganization", "🏢 Bisnis / Organisasi")}</span>
+                      <Building2 className="w-3.5 h-3.5 shrink-0 text-current" />
+                      <span>{t("dashboard.wizard.entityOrganization", "Bisnis / Organisasi")}</span>
                     </button>
                   </div>
                 </div>
@@ -1342,6 +1346,41 @@ export function SiteWizard({
 
   {showBidangStep && (
     <>
+      {/* Opsi 1: Entity toggle tab — user can switch entity at any time before picking a sector */}
+      <div className="flex gap-1 mb-3 p-0.5 bg-white/[0.04] rounded-xl border border-slate-700/60">
+        <button
+          type="button"
+          onClick={() => {
+            chat.setEntity("individual");
+            chat.entityRef.current = "individual";
+            chat.setSelectedBidang(null);
+          }}
+          className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[10px] text-xs font-medium transition-all ${
+            chat.entity === "individual"
+              ? "bg-white/[0.12] text-white border border-white/20 shadow-sm"
+              : "text-slate-400 hover:text-slate-200"
+          }`}
+        >
+          <User className="w-3.5 h-3.5 shrink-0" />
+          <span>{t("dashboard.wizard.entityIndividual", "Personal")}</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            chat.setEntity("organization");
+            chat.entityRef.current = "organization";
+            chat.setSelectedBidang(null);
+          }}
+          className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[10px] text-xs font-medium transition-all ${
+            chat.entity === "organization"
+              ? "bg-white/[0.12] text-white border border-white/20 shadow-sm"
+              : "text-slate-400 hover:text-slate-200"
+          }`}
+        >
+          <Building2 className="w-3.5 h-3.5 shrink-0" />
+          <span>{t("dashboard.wizard.entityOrganization", "Bisnis / Organisasi")}</span>
+        </button>
+      </div>
       <p className="text-[10px] font-semibold text-slate-400 mb-2 px-0.5">{t("dashboard.wizard.selectSector", "Pilih bidang usaha:")}</p>
       <div className="grid grid-cols-2 gap-1.5 mb-3">
       {bidangChips.map((bg) => {
@@ -1721,6 +1760,41 @@ export function SiteWizard({
 
                       {tcShowBidang && (
                         <>
+                          {/* Opsi 1: Entity toggle tab above sector grid */}
+                          <div className="flex gap-1 mb-3 p-0.5 bg-white/[0.04] rounded-xl border border-slate-700/60">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                chat.setEntity("individual");
+                                chat.entityRef.current = "individual";
+                                chat.setSelectedBidang(null);
+                              }}
+                              className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[10px] text-xs font-medium transition-all ${
+                                chat.entity === "individual"
+                                  ? "bg-white/[0.12] text-white border border-white/20 shadow-sm"
+                                  : "text-slate-400 hover:text-slate-200"
+                              }`}
+                            >
+                              <User className="w-3.5 h-3.5 shrink-0" />
+                              <span>{t("dashboard.wizard.entityIndividual", "Personal")}</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                chat.setEntity("organization");
+                                chat.entityRef.current = "organization";
+                                chat.setSelectedBidang(null);
+                              }}
+                              className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[10px] text-xs font-medium transition-all ${
+                                chat.entity === "organization"
+                                  ? "bg-white/[0.12] text-white border border-white/20 shadow-sm"
+                                  : "text-slate-400 hover:text-slate-200"
+                              }`}
+                            >
+                              <Building2 className="w-3.5 h-3.5 shrink-0" />
+                              <span>{t("dashboard.wizard.entityOrganization", "Bisnis / Organisasi")}</span>
+                            </button>
+                          </div>
                           <p className="text-[10px] font-semibold text-slate-400 mb-2 px-0.5">{t("dashboard.wizard.selectSector", "Pilih bidang usaha:")}</p>
                           <div className="grid grid-cols-2 gap-1.5 mb-3">
                             {tcBidangChips.map((bg) => {
