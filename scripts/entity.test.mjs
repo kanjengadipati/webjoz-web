@@ -83,3 +83,10 @@ test("buildSubTypeChips: bidangId with fallback and hintId", () => {
   assert.equal(r.items[0].value, "food.cafe");
 });
 
+test("entitas null (turunan AI) tidak menyaring: semua bidang dan industri tampil", () => {
+  assert.equal(groupsForEntity(groups, null).length, 3);
+  assert.equal(industriesForEntity(groups[0], null).items.length, 3);
+  assert.equal(industriesForEntity(groups[0], null).fallback, false);
+});
+
+

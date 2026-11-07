@@ -162,6 +162,8 @@ export function SiteWizard({
 
   const wizardLang = chat.siteLanguage || (locale === "en" ? "en" : "id");
   const uiLang = locale === "en" ? "en" : "id";
+  // Hanya pilihan eksplisit pengguna yang menyaring picker; entitas turunan AI tidak.
+  const pickerEntity = chat.entitySource === "user" ? chat.entity : null;
   const { businessTypes: dynamicBusinessTypes, subTypes: dynamicSubTypes } = useTaxonomy(wizardLang);
   // v2 taxonomy — industries grouped by Bidang, used for sub-type chips
   const { data: taxonomyV2, getIndustryLabel } = useTaxonomyV2(wizardLang);
@@ -1251,7 +1253,7 @@ export function SiteWizard({
 
   const showBidangStep = needsBidangStep && !effectiveSelectedBidang && !isLocked;
   const filteredGroups = taxonomyV2
-    ? groupsForEntity(taxonomyV2.groups, chat.entity)
+    ? groupsForEntity(taxonomyV2.groups, pickerEntity)
     : [];
 
   const bidangChips = filteredGroups.map((g) => ({
@@ -1268,7 +1270,7 @@ export function SiteWizard({
                   const chipResult = buildSubTypeChips({
                     groups: taxonomyV2.groups,
                     bidangId: effectiveSelectedBidang,
-                    entity: chat.entity,
+                    entity: pickerEntity,
                     archetypeIndustries: !needsBidangStep && currentArchetype ? archetypeIndustries : undefined,
                     hintId,
                     lang: uiLang,
@@ -1315,7 +1317,7 @@ export function SiteWizard({
           }`}
         >
           <User className={`w-3.5 h-3.5 shrink-0 ${chat.entity === "individual" ? "text-slate-950" : "text-slate-400"}`} />
-          <span>{uiLang === "en" ? t("dashboard.wizard.entityIndividual", "Personal") : t("dashboard.wizard.entityIndividual", "Perorangan")}</span>
+          <span>{t("dashboard.wizard.entityIndividual", "Perorangan")}</span>
         </button>
         <button
           type="button"
@@ -1624,7 +1626,7 @@ export function SiteWizard({
               })();
               const tcShowBidang = tcNeedsBidang && !tcEffectiveBidang && !isLocked;
               const tcFilteredGroups = taxonomyV2
-                ? groupsForEntity(taxonomyV2.groups, chat.entity)
+                ? groupsForEntity(taxonomyV2.groups, pickerEntity)
                 : [];
               const tcBidangChips = tcFilteredGroups.map((g) => ({
                 value: g.id,
@@ -1638,7 +1640,7 @@ export function SiteWizard({
                   const chipRes = buildSubTypeChips({
                     groups: taxonomyV2.groups,
                     bidangId: tcEffectiveBidang,
-                    entity: chat.entity,
+                    entity: pickerEntity,
                     archetypeIndustries: !tcNeedsBidang && tcArchetype ? tcArchIndustries : undefined,
                     hintId: tcIndustryId,
                     lang: uiLang,
