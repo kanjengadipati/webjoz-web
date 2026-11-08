@@ -6,6 +6,7 @@ import { Button, Badge } from "webjoz-ui";
 import { loadGoogleFont, loadCustomFont } from "@/components/templates/helpers";
 import FontPicker from "./FontPicker";
 import { useI18n } from "@/lib/i18n/context";
+import { uploadFontFile, FONT_UPLOAD_EXTS, FONT_UPLOAD_MAX_BYTES } from "@/components/file-upload";
 
 interface Props {
   designToken: any;
@@ -48,6 +49,7 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
   const [urlFontHref, setUrlFontHref] = useState("");
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [uploadSuccess, setUploadSuccess] = useState<string | null>(null);
+  const [uploadingFont, setUploadingFont] = useState(false);
 
   const currentHeading = designToken?.typography?.heading_font || "Inter";
   const currentBody = designToken?.typography?.body_font || "Inter";
@@ -89,24 +91,28 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
   };
 
   // Handler Upload File Font (.woff2, .woff, .ttf, .otf)
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  // File diupload ke storage, lalu design token hanya menyimpan URL-nya (bukan base64).
+  // Site lama yang sudah berisi data URL tetap terbaca oleh loadCustomFont.
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target;
+    const file = input.files?.[0];
     if (!file) return;
 
     setUploadError(null);
     setUploadSuccess(null);
 
     // Validasi ekstensi
-    const validExts = [".woff2", ".woff", ".ttf", ".otf"];
     const ext = "." + file.name.split(".").pop()?.toLowerCase();
-    if (!validExts.includes(ext)) {
+    if (!FONT_UPLOAD_EXTS.includes(ext)) {
       setUploadError(t("dashboard.sitesEditor.fontInvalidFormatError"));
+      input.value = "";
       return;
     }
 
-    // Maksimal 3MB
-    if (file.size > 3 * 1024 * 1024) {
+    // Batas ukuran (satu konstanta bersama dengan helper upload)
+    if (file.size > FONT_UPLOAD_MAX_BYTES) {
       setUploadError(t("dashboard.sitesEditor.fontFileSizeError"));
+      input.value = "";
       return;
     }
 
@@ -116,32 +122,30 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
       .replace(/[-_]/g, " ")
       .trim();
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result as string;
-      if (!dataUrl) return;
+    setUploadingFont(true);
+    try {
+      const fontUrl = await uploadFontFile(file);
 
       // Muat font ke browser secara real-time
-      loadCustomFont(cleanFontName, dataUrl);
+      loadCustomFont(cleanFontName, fontUrl);
 
       if (fontTarget === "heading") {
         onUpdateField("typography", "heading_font", cleanFontName);
-        onUpdateField("typography", "heading_font_url", dataUrl);
+        onUpdateField("typography", "heading_font_url", fontUrl);
       } else {
         onUpdateField("typography", "body_font", cleanFontName);
-        onUpdateField("typography", "body_font_url", dataUrl);
+        onUpdateField("typography", "body_font_url", fontUrl);
       }
 
       setUploadSuccess(
         t("dashboard.sitesEditor.customFontAppliedSuccess", undefined, { name: cleanFontName })
       );
-    };
-
-    reader.onerror = () => {
-      setUploadError(t("dashboard.sitesEditor.fontReadError"));
-    };
-
-    reader.readAsDataURL(file);
+    } catch (err) {
+      setUploadError(err instanceof Error && err.message ? err.message : t("dashboard.sitesEditor.fontReadError"));
+    } finally {
+      setUploadingFont(false);
+      input.value = "";
+    }
   };
 
   // Handler Terapkan Font via URL
@@ -463,14 +467,17 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
                 <input
                   ref={fontFileInputRef}
                   type="file"
-                  accept=".woff2,.woff,.ttf,.otf"
+                  accept={FONT_UPLOAD_EXTS.join(",")}
                   onChange={handleFileUpload}
+                  disabled={uploadingFont}
                   className="sr-only"
                 />
                 <button
                   type="button"
                   onClick={() => fontFileInputRef.current?.click()}
-                  className="w-full py-4 border-2 border-dashed border-border hover:border-primary/60 rounded-xl flex flex-col items-center justify-center gap-1.5 bg-sidebar-muted/30 hover:bg-sidebar-muted/60 transition cursor-pointer"
+                  disabled={uploadingFont}
+                  aria-busy={uploadingFont}
+                  className="w-full py-4 border-2 border-dashed border-border hover:border-primary/60 rounded-xl flex flex-col items-center justify-center gap-1.5 bg-sidebar-muted/30 hover:bg-sidebar-muted/60 transition cursor-pointer disabled:opacity-60 disabled:cursor-wait"
                 >
                   <Upload className="w-5 h-5 text-sidebar-muted-foreground" />
                   <span className="text-xs font-semibold text-sidebar-foreground">
