@@ -2042,30 +2042,6 @@ export default function SiteEditorPage() {
 
                   <div className="border-t border-border my-2" />
 
-                  {/* Paket Tampilan */}
-                  <IndustryPresetPicker
-                    designToken={designToken}
-                    aiDesignToken={latestAiDesignToken}
-                    designTokenScore={designTokenScore}
-                    onApply={applyIndustryPreset}
-                    onRestoreAi={() => {
-                      if (!latestAiDesignToken?.palette || !latestAiDesignToken?.typography) return;
-                      pushGlobalUndo({ force: true });
-                      pushDesignUndo();
-                      setDesignToken((prev: any) => {
-                        const next = { ...(prev || {}) };
-                        next.palette = { ...(next.palette || {}), ...latestAiDesignToken.palette };
-                        if (latestAiDesignToken.theme_mode) {
-                          next.theme_mode = latestAiDesignToken.theme_mode;
-                        }
-                        next.typography = { ...(next.typography || {}), ...latestAiDesignToken.typography };
-                        return next;
-                      });
-                    }}
-                  />
-
-                  <div className="border-t border-border my-2" />
-
                   {/* Tipografi */}
                   <TypographyPairingPicker
                     designToken={designToken}
@@ -2093,6 +2069,30 @@ export default function SiteEditorPage() {
                       });
                     }}
                     onFieldChange={(section, field, value) => updateDesignTokenField(section as any, field, value)}
+                  />
+
+                  <div className="border-t border-border my-2" />
+
+                  {/* Paket Tampilan */}
+                  <IndustryPresetPicker
+                    designToken={designToken}
+                    aiDesignToken={latestAiDesignToken}
+                    designTokenScore={designTokenScore}
+                    onApply={applyIndustryPreset}
+                    onRestoreAi={() => {
+                      if (!latestAiDesignToken?.palette || !latestAiDesignToken?.typography) return;
+                      pushGlobalUndo({ force: true });
+                      pushDesignUndo();
+                      setDesignToken((prev: any) => {
+                        const next = { ...(prev || {}) };
+                        next.palette = { ...(next.palette || {}), ...latestAiDesignToken.palette };
+                        if (latestAiDesignToken.theme_mode) {
+                          next.theme_mode = latestAiDesignToken.theme_mode;
+                        }
+                        next.typography = { ...(next.typography || {}), ...latestAiDesignToken.typography };
+                        return next;
+                      });
+                    }}
                   />
 
                   <div className="border-t border-border my-2" />
@@ -3397,28 +3397,6 @@ export default function SiteEditorPage() {
 
                   <div className="border-t border-border" />
 
-                  {/* IndustryPresetPicker */}
-                  <IndustryPresetPicker
-                    designToken={designToken}
-                    aiDesignToken={latestAiDesignToken}
-                    designTokenScore={designTokenScore}
-                    onApply={applyIndustryPreset}
-                    onRestoreAi={() => {
-                      if (!latestAiDesignToken?.palette || !latestAiDesignToken?.typography) return;
-                      pushGlobalUndo({ force: true });
-                      pushDesignUndo();
-                      setDesignToken((prev: any) => {
-                        const next = { ...(prev || {}) };
-                        next.palette = { ...(next.palette || {}), ...latestAiDesignToken.palette };
-                        if (latestAiDesignToken.theme_mode) next.theme_mode = latestAiDesignToken.theme_mode;
-                        next.typography = { ...(next.typography || {}), ...latestAiDesignToken.typography };
-                        return next;
-                      });
-                    }}
-                  />
-
-                  <div className="border-t border-border" />
-
                   {/* TypographyPairingPicker */}
                   <TypographyPairingPicker
                     designToken={designToken}
@@ -3444,6 +3422,28 @@ export default function SiteEditorPage() {
                       });
                     }}
                     onFieldChange={(section, field, value) => updateDesignTokenField(section as any, field, value)}
+                  />
+
+                  <div className="border-t border-border" />
+
+                  {/* IndustryPresetPicker */}
+                  <IndustryPresetPicker
+                    designToken={designToken}
+                    aiDesignToken={latestAiDesignToken}
+                    designTokenScore={designTokenScore}
+                    onApply={applyIndustryPreset}
+                    onRestoreAi={() => {
+                      if (!latestAiDesignToken?.palette || !latestAiDesignToken?.typography) return;
+                      pushGlobalUndo({ force: true });
+                      pushDesignUndo();
+                      setDesignToken((prev: any) => {
+                        const next = { ...(prev || {}) };
+                        next.palette = { ...(next.palette || {}), ...latestAiDesignToken.palette };
+                        if (latestAiDesignToken.theme_mode) next.theme_mode = latestAiDesignToken.theme_mode;
+                        next.typography = { ...(next.typography || {}), ...latestAiDesignToken.typography };
+                        return next;
+                      });
+                    }}
                   />
 
                   <div className="border-t border-border" />
