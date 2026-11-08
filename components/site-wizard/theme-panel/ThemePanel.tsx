@@ -13,6 +13,8 @@ import { FontSection } from "./FontSection";
 import { CustomFontEditor } from "./CustomFontEditor";
 import { ContrastHint } from "./ContrastHint";
 import { UndoToast } from "./UndoToast";
+import { MoodSection } from "./MoodSection";
+import { MOOD_OPTIONS } from "../constants";
 
 interface ThemePanelProps {
   mood: string;
@@ -21,6 +23,7 @@ interface ThemePanelProps {
   onBack: () => void;
   onReset: () => void;
   onLogoApplied?: (url: string, paletteMap: Record<string, string>, themeMode: "light" | "dark") => void;
+  onSelectMood?: (mood: string) => void;
 }
 
 type SubView = "none" | "brand-color" | "custom-font";
@@ -32,6 +35,7 @@ export function ThemePanel({
   onBack,
   onReset,
   onLogoApplied,
+  onSelectMood,
 }: ThemePanelProps) {
   const { t } = useI18n();
   const [subView, setSubView] = useState<SubView>("none");
@@ -70,6 +74,13 @@ export function ThemePanel({
     setToastLabel(label);
     setSubView("none");
   }, []);
+
+  const handleSelectMood = useCallback((newMood: string) => {
+    onSelectMood?.(newMood);
+    const mo = MOOD_OPTIONS.find((m) => m.value === newMood);
+    const label = mo?.label || newMood;
+    handleApplyPreset(t("dashboard.wizard.theme.moodApplied", 'Gaya "{mood}" diterapkan', { mood: label }));
+  }, [onSelectMood, handleApplyPreset, t]);
 
   const handleDismissToast = useCallback(() => {
     setToastLabel(null);
@@ -191,6 +202,11 @@ export function ThemePanel({
       <div className="flex-1 overflow-y-auto">
         {subView === "none" && (
           <>
+            {/* Mood section */}
+            <div className="border-b border-border">
+              <MoodSection mood={mood} onSelectMood={handleSelectMood} />
+            </div>
+
             {/* Palette section */}
             <div className="border-b border-border">
               <PaletteSection

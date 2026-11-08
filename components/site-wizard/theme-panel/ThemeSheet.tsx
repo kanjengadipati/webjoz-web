@@ -12,6 +12,8 @@ import { FontSection } from "./FontSection";
 import { CustomFontEditor } from "./CustomFontEditor";
 import { ContrastHint } from "./ContrastHint";
 import { UndoToast } from "./UndoToast";
+import { MoodSection } from "./MoodSection";
+import { MOOD_OPTIONS } from "../constants";
 
 type SheetTab = "warna" | "font";
 type SubView = "none" | "brand-color" | "custom-font";
@@ -23,6 +25,7 @@ interface ThemeSheetProps {
   baseToken: Record<string, any> | null;
   onClose: () => void;
   onLogoApplied?: (url: string, paletteMap: Record<string, string>, themeMode: "light" | "dark") => void;
+  onSelectMood?: (mood: string) => void;
 }
 
 export function ThemeSheet({
@@ -32,6 +35,7 @@ export function ThemeSheet({
   baseToken,
   onClose,
   onLogoApplied,
+  onSelectMood,
 }: ThemeSheetProps) {
   const { t } = useI18n();
   const [tab, setTab] = useState<SheetTab>("warna");
@@ -44,6 +48,13 @@ export function ThemeSheet({
     setToastLabel(label);
     setSubView("none");
   }, []);
+
+  const handleSelectMood = useCallback((newMood: string) => {
+    onSelectMood?.(newMood);
+    const mo = MOOD_OPTIONS.find((m) => m.value === newMood);
+    const label = mo?.label || newMood;
+    handleApplyPreset(t("dashboard.wizard.theme.moodApplied", 'Gaya "{mood}" diterapkan', { mood: label }));
+  }, [onSelectMood, handleApplyPreset, t]);
 
   const handleDismissToast = useCallback(() => {
     setToastLabel(null);
@@ -126,6 +137,12 @@ export function ThemeSheet({
 
         {/* Scrollable content */}
         <div className="flex-1 overflow-y-auto relative">
+          {subView === "none" && (
+            <div className="border-b border-border">
+              <MoodSection mood={mood} onSelectMood={handleSelectMood} />
+            </div>
+          )}
+
           {subView === "none" && tab === "warna" && (
             <PaletteSection
               palettes={presets.palettes}

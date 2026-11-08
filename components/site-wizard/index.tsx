@@ -155,6 +155,7 @@ import {
 } from "@/lib/wizard-font-storage";
 import { FEATURE_FLAGS } from "@/lib/feature-flags";
 import { ThemePanel, ThemeSheet } from "./theme-panel";
+import { getPresets } from "@/lib/theme-presets";
 
 // Skor kualitas minimal (dari SSE done event) sebelum hasil AI ditampilkan.
 // Di bawah ini dan konten masih dari AI murni (bukan mock fallback) → auto-retry.
@@ -215,13 +216,51 @@ export function SiteWizard({
     preview.previewData?.design_token ??
     null;
 
+  const handleThemeMoodChange = React.useCallback(
+    (newMood: string) => {
+      chat.setMood(newMood);
+      chat.moodRef.current = newMood;
+
+      preview.setStreamedDesignToken((prev: any) =>
+        prev ? { ...prev, mood: newMood } : prev
+      );
+
+      preview.setPreviewHistory((prev) => {
+        if (!prev || prev.length === 0) return prev;
+        const next = [...prev];
+        const activeIdx = preview.historyIndexRef.current;
+        if (next[activeIdx]) {
+          next[activeIdx] = {
+            ...next[activeIdx],
+            design_token: {
+              ...(next[activeIdx].design_token || {}),
+              mood: newMood,
+            },
+          };
+        }
+        return next;
+      });
+    },
+    [chat, preview]
+  );
+
   const themeDraft = useThemeDraft({
     previewData: preview.previewData,
     setPreviewData: preview.setPreviewData,
     baseToken: baseThemeToken,
     enabled: preview.previewState !== "loading" && !!preview.previewData,
     resetKey: `${preview.regenCount}:${preview.historyIndex}`,
+    onMoodChange: handleThemeMoodChange,
   });
+
+  const handleThemeMoodSelect = React.useCallback(
+    (newMood: string) => {
+      const presets = getPresets(newMood);
+      themeDraft.applyMood(newMood, presets, chat.brandLogoPalette);
+      handleThemeMoodChange(newMood);
+    },
+    [themeDraft, chat.brandLogoPalette, handleThemeMoodChange]
+  );
 
   const wizardLang = chat.siteLanguage || (locale === "en" ? "en" : "id");
   const uiLang = locale === "en" ? "en" : "id";
@@ -1303,6 +1342,7 @@ export function SiteWizard({
             onBack={handleBack}
             onReset={handleResetChat}
             onLogoApplied={handleLogoApplied}
+            onSelectMood={handleThemeMoodSelect}
           />
         ) : (
           <>
@@ -2671,6 +2711,7 @@ export function SiteWizard({
           baseToken={baseThemeToken}
           onClose={() => setThemeSheetOpen(false)}
           onLogoApplied={handleLogoApplied}
+          onSelectMood={handleThemeMoodSelect}
         />
       )}
 
