@@ -174,6 +174,15 @@ export function CustomFontEditor({
   };
 
   const handleApply = () => {
+    const typo = {
+      ...(theme.applied.typography || {}),
+      ...(theme.draft.typography || {}),
+    };
+    if (typo && (typo.heading_font || typo.body_font)) {
+      try {
+        localStorage.setItem("webjoz_wizard_custom_typography", JSON.stringify(typo));
+      } catch {}
+    }
     theme.commitDraft();
     onApply();
     onClose();

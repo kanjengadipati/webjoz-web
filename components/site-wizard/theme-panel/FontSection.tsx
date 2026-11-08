@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Check, Type } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import type { UseThemeDraftReturn } from "../use-theme-draft";
+import type { ThemeOverrides } from "@/lib/theme-overrides";
 import type { FontPreset } from "@/lib/theme-presets";
 import { isFontApplied } from "@/lib/theme-presets";
 import { loadGoogleFont } from "@/components/templates/helpers";
@@ -38,17 +39,39 @@ export function FontSection({
   const aiHeading = baseToken?.typography?.heading_font || "Inter";
   const aiBody = baseToken?.typography?.body_font || "Inter";
   const isPresetActive = fonts.some((f) => isFontApplied(f, theme.applied));
-  const isAiActive = !theme.applied.typography || Object.keys(theme.applied.typography).length === 0;
-  const isCustomApplied =
-    !isAiActive &&
-    !isPresetActive &&
-    Boolean(theme.applied.typography?.heading_font || theme.applied.typography?.body_font);
 
-  const activeCustomFont = isCustomApplied ? theme.applied.typography : theme.lastCustomTypography;
+  const [savedCustomFont, setSavedCustomFont] = useState<ThemeOverrides["typography"] | null>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const raw = localStorage.getItem("webjoz_wizard_custom_typography");
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("webjoz_wizard_custom_typography");
+      if (raw) {
+        setSavedCustomFont(JSON.parse(raw));
+      }
+    } catch {}
+  }, [theme.applied]);
+
+  const activeCustomFont = savedCustomFont ?? theme.lastCustomTypography;
   const hasCustomFont = Boolean(
     activeCustomFont && (activeCustomFont.heading_font || activeCustomFont.body_font)
   );
-  const isCustomActive = isCustomApplied;
+
+  const isCustomActive = Boolean(
+    hasCustomFont &&
+    activeCustomFont &&
+    theme.applied.typography?.heading_font === activeCustomFont.heading_font &&
+    (!activeCustomFont.body_font || theme.applied.typography?.body_font === activeCustomFont.body_font)
+  );
+
+  const isAiActive = !isCustomActive && !isPresetActive && (!theme.applied.typography || Object.keys(theme.applied.typography).length === 0);
 
   useEffect(() => {
     if (activeCustomFont?.heading_font || activeCustomFont?.body_font) {
@@ -204,7 +227,15 @@ export function FontSection({
         {hasCustomFont && activeCustomFont ? (
           <div
             onClick={() => {
-              if (!isCustomActive) {
+              if (!isCustomActive && activeCustomFont) {
+                if (activeCustomFont.heading_font || activeCustomFont.body_font) {
+                  loadGoogleFont(
+                    activeCustomFont.heading_font,
+                    activeCustomFont.body_font,
+                    activeCustomFont.heading_font_url,
+                    activeCustomFont.body_font_url
+                  );
+                }
                 theme.applyNow(
                   { typography: activeCustomFont },
                   t("dashboard.wizard.theme.customFontTitle", "Font Kustom")
