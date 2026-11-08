@@ -98,6 +98,7 @@ export function ThemePanel({ mood, theme, baseToken, onClose }: ThemePanelProps)
               <PaletteSection
                 palettes={presets.palettes}
                 theme={theme}
+                baseToken={baseToken}
                 onApply={handleApplyPreset}
                 onOpenBrandColor={() => setSubView("brand-color")}
               />
@@ -107,6 +108,7 @@ export function ThemePanel({ mood, theme, baseToken, onClose }: ThemePanelProps)
             <FontSection
               fonts={presets.fonts}
               theme={theme}
+              baseToken={baseToken}
               onApply={handleApplyPreset}
               onOpenCustomFont={() => setSubView("custom-font")}
             />

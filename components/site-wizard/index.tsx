@@ -218,6 +218,22 @@ export function SiteWizard({
   // Theme panel state
   const [leftPane, setLeftPane] = useState<"chat" | "theme">("chat");
   const [themeSheetOpen, setThemeSheetOpen] = useState(false);
+  const hasAutoOpenedThemeRef = React.useRef(false);
+
+  React.useEffect(() => {
+    if (preview.previewState === "result") {
+      if (!hasAutoOpenedThemeRef.current && FEATURE_FLAGS.THEME_PANEL) {
+        hasAutoOpenedThemeRef.current = true;
+        if (!device.isMobile) {
+          setLeftPane("theme");
+        } else {
+          setThemeSheetOpen(true);
+        }
+      }
+    } else {
+      hasAutoOpenedThemeRef.current = false;
+    }
+  }, [preview.previewState, device.isMobile]);
 
   // One-time onboarding hint for "Coba rekomendasi lain" button
   const [showRekomendasiHint, setShowRekomendasiHint] = useState(false);
@@ -304,6 +320,9 @@ export function SiteWizard({
     clearWizardSnapshot();
     clearCustomFontStorage();
     setResumeDraft(null);
+    setLeftPane("chat");
+    setThemeSheetOpen(false);
+    hasAutoOpenedThemeRef.current = false;
     if (device.isMobile) {
       device.setMobileScreen("chat");
     }
@@ -1259,6 +1278,19 @@ export function SiteWizard({
                   className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/[0.06] border border-white/10 text-slate-200 text-[10px] font-bold transition-all active:scale-95 cursor-pointer"
                 >
                   Preview &rarr;
+                </button>
+              )}
+
+              {/* Re-open theme panel button if user closed it on desktop */}
+              {FEATURE_FLAGS.THEME_PANEL && preview.previewState === "result" && !device.isMobile && (
+                <button
+                  type="button"
+                  onClick={() => setLeftPane("theme")}
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-cyan-400/30 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400/50 transition-all text-xs font-semibold cursor-pointer shadow-xs active:scale-95"
+                  title={t("dashboard.wizard.theme.customizeTheme", "Sesuaikan Tema")}
+                >
+                  <PaletteIcon size={13} />
+                  <span>{t("dashboard.wizard.theme.buttonLabel", "Tema")}</span>
                 </button>
               )}
 
@@ -2396,26 +2428,6 @@ export function SiteWizard({
             )}
           </div>
 
-          {/* Theme Customize Button (Desktop left pane toggle) */}
-          {FEATURE_FLAGS.THEME_PANEL && preview.previewState === "result" && !device.isMobile && (
-            <button
-              type="button"
-              onClick={() => setLeftPane((prev) => (prev === "theme" ? "chat" : "theme"))}
-              title={leftPane === "theme" ? t("dashboard.wizard.theme.backToChat", "Kembali ke Chat") : t("dashboard.wizard.theme.customizeTheme", "Sesuaikan Tema")}
-              className={`flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-semibold border transition-all active:scale-95 cursor-pointer ${
-                leftPane === "theme"
-                  ? "border-cyan-400/50 bg-cyan-500/15 text-cyan-300"
-                  : "border-white/10 bg-white/[0.06] text-slate-200 hover:bg-white/10 hover:border-white/20 hover:text-white"
-              }`}
-            >
-              <PaletteIcon size={11} />
-              <span>{t("dashboard.wizard.theme.buttonLabel", "Tema")}</span>
-              {themeDraft.hasDraft && (
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-              )}
-            </button>
-          )}
-
           {/* Full Page Preview Button */}
           {preview.previewState === "result" && (
             <button
@@ -2583,7 +2595,6 @@ export function SiteWizard({
         device={device}
         onOpenSheet={() => { setShowLengkapiHint(false); setSheetOpen(true); }}
         onGoToEditor={() => { setShowEditPublishHint(false); handleGoToEditor(); }}
-        onOpenTheme={FEATURE_FLAGS.THEME_PANEL ? () => setThemeSheetOpen(true) : undefined}
         showLengkapiHint={showLengkapiHint}
         showEditPublishHint={showEditPublishHint}
       />

@@ -20,6 +20,12 @@ export function applyBrandPalette(
       ...(token?.palette || {}),
       ...palette,
     },
+    ...(token?.dark_palette ? {
+      dark_palette: {
+        ...token.dark_palette,
+        ...palette,
+      },
+    } : {}),
   };
 
   if (themeMode) {
