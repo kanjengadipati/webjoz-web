@@ -3685,6 +3685,7 @@ export interface Translations {
         fontUploadTab: string;
         fontUploadAction: string;
         fontUploadFailed: string;
+        logoUploadFailed: string;
         slotHeading: string;
         slotBody: string;
         moreActions: string;
@@ -8054,6 +8055,7 @@ export const translations: Record<Locale, Translations> = {
           fontUploadTab: "Upload File (.woff2)",
           fontUploadAction: "Pilih file font lokal",
           fontUploadFailed: "Font {slot} gagal diunggah dan dikembalikan ke font bawaan.",
+          logoUploadFailed: "Logo gagal diunggah ke penyimpanan dan dilewati.",
           slotHeading: "judul",
           slotBody: "isi",
           moreActions: "Opsi lain",
@@ -12379,6 +12381,7 @@ export const translations: Record<Locale, Translations> = {
           fontUploadTab: "Upload File (.woff2)",
           fontUploadAction: "Choose local font file",
           fontUploadFailed: "{slot} font failed to upload and was reverted to default.",
+          logoUploadFailed: "Failed to upload logo to storage; proceeding without logo.",
           slotHeading: "heading",
           slotBody: "body",
           moreActions: "More actions",

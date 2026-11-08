@@ -684,9 +684,6 @@ export function SiteWizard({
     preview.setArrivedSections([]);
     preview.setStreamedTemplateId("");
     preview.streamedSectionsRef.current = {};
-    if (!nextBrandPalette) {
-      preview.streamedTokenRef.current = null;
-    }
     preview.streamDoneRef.current = false;
     preview.setPreviewState("loading");
     preview.setLoadingStep(0);
@@ -915,6 +912,13 @@ export function SiteWizard({
           } catch (uploadErr) {
             console.error("[wizard] failed to upload logo to storage before save", uploadErr);
             logoForSave = null;
+            pushToast(
+              t(
+                "dashboard.wizard.theme.logoUploadFailed",
+                "Logo gagal diunggah ke penyimpanan dan dilewati."
+              ),
+              "info"
+            );
           }
         }
 
