@@ -3,16 +3,24 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { smoothScrollToSection } from "@/components/templates/shared";
+import { loadGoogleFont } from "@/components/templates/helpers";
 import type { PreviewDevice } from "./types";
 
 export function DevicePreviewFrame({
   device,
   children,
   iframeRef: externalRef,
+  typography,
 }: {
   device: PreviewDevice;
   children: React.ReactNode;
   iframeRef?: React.RefObject<HTMLIFrameElement | null>;
+  typography?: {
+    heading_font?: string;
+    body_font?: string;
+    heading_font_url?: string;
+    body_font_url?: string;
+  };
 }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [mountNode, setMountNode] = useState<HTMLElement | null>(null);
@@ -69,11 +77,40 @@ export function DevicePreviewFrame({
     doc.head.appendChild(lightOverride);
 
     if (doc.body) setMountNode(doc.body);
+
+    // Initial font injection into iframe head
+    if (typography) {
+      loadGoogleFont(
+        typography.heading_font,
+        typography.body_font,
+        typography.heading_font_url,
+        typography.body_font_url,
+        doc
+      );
+    }
   };
 
   useEffect(() => {
     syncFrameDocument();
   }, [device]);
+
+  // Reactive font injection whenever typography overrides change
+  useEffect(() => {
+    const doc = iframeRef.current?.contentDocument;
+    if (!doc?.head || !typography) return;
+    loadGoogleFont(
+      typography.heading_font,
+      typography.body_font,
+      typography.heading_font_url,
+      typography.body_font_url,
+      doc
+    );
+  }, [
+    typography?.heading_font,
+    typography?.body_font,
+    typography?.heading_font_url,
+    typography?.body_font_url,
+  ]);
 
   useEffect(() => {
     const doc = iframeRef.current?.contentDocument;

@@ -3631,6 +3631,8 @@ export interface Translations {
         fontName: string;
         fontUrl: string;
         openGoogleFonts: string;
+        fontUploadTab: string;
+        fontUploadAction: string;
       };
     };
     linkAccount: {
@@ -7931,6 +7933,8 @@ export const translations: Record<Locale, Translations> = {
           fontName: "Nama Font (Google Fonts)",
           fontUrl: "URL CSS Google Fonts",
           openGoogleFonts: "Buka Google Fonts",
+          fontUploadTab: "Upload File (.woff2)",
+          fontUploadAction: "Pilih file font lokal",
         },
       },
       linkAccount: {
@@ -12212,6 +12216,8 @@ export const translations: Record<Locale, Translations> = {
           fontName: "Font Name (Google Fonts)",
           fontUrl: "Google Fonts CSS URL",
           openGoogleFonts: "Open Google Fonts",
+          fontUploadTab: "Upload File (.woff2)",
+          fontUploadAction: "Choose local font file",
         },
       },
       linkAccount: {
