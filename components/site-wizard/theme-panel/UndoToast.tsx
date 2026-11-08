@@ -32,11 +32,11 @@ export function UndoToast({ label, theme, onDismiss }: UndoToastProps) {
 
   return (
     <div className="absolute bottom-4 left-4 right-4 z-50 animate-in slide-in-from-bottom-3 fade-in duration-300">
-      <div className="flex items-center gap-3 rounded-xl bg-[#1e2330] border border-white/15 px-4 py-3 shadow-xl backdrop-blur-sm">
-        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400">
+      <div className="flex items-center gap-3 rounded-xl bg-sidebar border border-border px-4 py-3 shadow-2xl backdrop-blur-sm">
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
           <CheckIcon className="h-3.5 w-3.5" />
         </span>
-        <p className="flex-1 text-xs font-medium text-slate-200">
+        <p className="flex-1 text-xs font-medium text-sidebar-foreground">
           {t("dashboard.wizard.theme.toastApplied", "{label} diterapkan", { label })}
         </p>
         {theme.canUndo && (
@@ -46,7 +46,7 @@ export function UndoToast({ label, theme, onDismiss }: UndoToastProps) {
               theme.undo();
               onDismiss();
             }}
-            className="flex items-center gap-1 text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition-colors active:scale-95 cursor-pointer"
+            className="flex items-center gap-1 text-xs font-bold text-primary hover:text-primary/80 transition-colors active:scale-95 cursor-pointer"
           >
             <RotateCcw className="h-3 w-3" />
             {t("dashboard.wizard.theme.toastUndo", "Urungkan")}

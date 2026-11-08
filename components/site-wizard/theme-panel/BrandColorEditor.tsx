@@ -68,25 +68,25 @@ export function BrandColorEditor({
   }, [theme, onClose]);
 
   return (
-    <div className="px-4 py-4 space-y-4">
+    <div className="p-4 space-y-4 bg-sidebar text-sidebar-foreground">
       <div className="flex items-center justify-between">
-        <p className="text-xs font-bold text-white">
+        <p className="text-sm font-bold text-sidebar-foreground">
           {t("dashboard.wizard.theme.brandColorTitle", "Warna Brand Saya")}
         </p>
         <button
           type="button"
           onClick={handleCancel}
-          className="flex h-6 w-6 items-center justify-center rounded-md text-slate-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+          className="flex h-7 w-7 items-center justify-center rounded-lg text-sidebar-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-muted transition-all cursor-pointer"
           title={t("common.close", "Tutup")}
         >
-          <X className="h-3.5 w-3.5" />
+          <X className="h-4 w-4" />
         </button>
       </div>
 
       {theme.hasDraft && (
-        <div className="flex items-center gap-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 px-2.5 py-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
-          <span className="text-[11px] text-amber-300 font-medium">
+        <div className="flex items-center gap-1.5 rounded-lg bg-sidebar-muted border border-border px-2.5 py-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+          <span className="text-[11px] text-sidebar-foreground font-medium">
             {t("dashboard.wizard.theme.draftBadge", "Belum diterapkan")}
           </span>
         </div>
@@ -104,14 +104,14 @@ export function BrandColorEditor({
                 className="sr-only"
               />
               <div
-                className="h-9 w-9 rounded-lg border-2 border-white/20 shadow-sm transition-all hover:border-white/40 cursor-pointer"
+                className="h-9 w-9 rounded-lg border-2 border-border shadow-xs transition-all hover:border-sidebar-foreground/40 cursor-pointer"
                 style={{ backgroundColor: localColors[slot] }}
               />
             </label>
 
             {/* Hex input */}
             <div className="flex-1">
-              <label className="block text-[10px] font-semibold text-slate-500 mb-0.5 uppercase tracking-wide">
+              <label className="block text-[10px] font-semibold text-sidebar-subtle-foreground mb-0.5 uppercase tracking-wide">
                 {isIndonesian ? SLOT_LABELS[slot].id : SLOT_LABELS[slot].en}
               </label>
               <input
@@ -126,7 +126,7 @@ export function BrandColorEditor({
                     setLocalColors((prev) => ({ ...prev, [slot]: v }));
                   }
                 }}
-                className="w-full rounded-lg bg-white/[0.06] border border-white/10 px-2.5 py-1.5 text-xs font-mono text-slate-200 placeholder-slate-500 focus:border-white/30 focus:outline-none focus:bg-white/10 transition-all"
+                className="w-full rounded-lg bg-sidebar-input border border-border px-2.5 py-1.5 text-xs font-mono text-sidebar-foreground placeholder:text-sidebar-muted-foreground focus:border-primary focus:outline-none transition-all"
                 placeholder="#000000"
                 maxLength={7}
               />
@@ -137,17 +137,17 @@ export function BrandColorEditor({
 
       <div className="flex gap-2 pt-1">
         <Button
-          variant="ghost"
+          variant="outline"
           size="sm"
           onClick={handleCancel}
-          className="flex-1 text-slate-400 hover:text-white border border-white/10 hover:border-white/20 hover:bg-white/5 rounded-lg"
+          className="flex-1 border-border text-sidebar-foreground hover:bg-sidebar-muted rounded-lg"
         >
           {t("dashboard.wizard.theme.cancel", "Batal")}
         </Button>
         <Button
           size="sm"
           onClick={handleApply}
-          className="flex-1 rounded-lg bg-cyan-500 text-black font-bold hover:bg-cyan-400"
+          className="flex-1 rounded-lg bg-primary text-primary-foreground font-bold hover:bg-primary/90"
         >
           {t("dashboard.wizard.theme.apply", "Terapkan")}
         </Button>

@@ -68,17 +68,17 @@ export function ThemeSheet({ open, mood, theme, baseToken, onClose }: ThemeSheet
 
       {/* Sheet */}
       <div
-        className="fixed bottom-0 left-0 right-0 z-50 flex flex-col rounded-t-2xl bg-[#141720] overflow-hidden animate-in slide-in-from-bottom duration-300"
+        className="fixed bottom-0 left-0 right-0 z-50 flex flex-col rounded-t-2xl bg-sidebar text-sidebar-foreground border-t border-border overflow-hidden animate-in slide-in-from-bottom duration-300 shadow-2xl"
         style={{ maxHeight: "75dvh" }}
       >
         {/* Handle bar */}
         <div className="flex justify-center pt-3 pb-1">
-          <div className="h-1 w-10 rounded-full bg-white/20" />
+          <div className="h-1 w-10 rounded-full bg-sidebar-muted-foreground/30" />
         </div>
 
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-2 shrink-0">
-          <p className="text-sm font-bold text-white">
+          <p className="text-sm font-bold text-sidebar-foreground">
             {subView === "brand-color"
               ? t("dashboard.wizard.theme.brandColorTitle", "Warna Brand Saya")
               : subView === "custom-font"
@@ -88,7 +88,7 @@ export function ThemeSheet({ open, mood, theme, baseToken, onClose }: ThemeSheet
           <button
             type="button"
             onClick={handleClose}
-            className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-slate-400 hover:text-white transition-all cursor-pointer"
+            className="flex h-7 w-7 items-center justify-center rounded-full bg-sidebar-muted text-sidebar-muted-foreground hover:text-sidebar-foreground transition-all cursor-pointer"
           >
             <X className="h-4 w-4" />
           </button>
@@ -97,7 +97,7 @@ export function ThemeSheet({ open, mood, theme, baseToken, onClose }: ThemeSheet
         {/* Tabs — only show when not in subview */}
         {subView === "none" && (
           <div
-            className="flex gap-1 mx-4 mb-1 p-0.5 rounded-lg bg-white/[0.06] border border-white/10 shrink-0"
+            className="flex gap-1 mx-4 mb-1 p-0.5 rounded-lg bg-sidebar-muted/60 border border-border shrink-0"
           >
             {TABS.map(({ key, label }) => (
               <button
@@ -106,8 +106,8 @@ export function ThemeSheet({ open, mood, theme, baseToken, onClose }: ThemeSheet
                 onClick={() => setTab(key)}
                 className={`flex-1 rounded-md py-1.5 text-xs font-semibold transition-all cursor-pointer ${
                   tab === key
-                    ? "bg-white/15 text-white shadow-xs"
-                    : "text-slate-400 hover:text-white"
+                    ? "bg-sidebar text-sidebar-foreground shadow-xs font-bold"
+                    : "text-sidebar-muted-foreground hover:text-sidebar-foreground"
                 }`}
               >
                 {label}

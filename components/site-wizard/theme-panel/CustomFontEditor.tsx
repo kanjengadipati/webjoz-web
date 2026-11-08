@@ -289,17 +289,17 @@ export function CustomFontEditor({
   const isBodyCustomGoogle = !isBodyInPopular && !bodyUrl;
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-[#12151b] p-4 space-y-4 shadow-xl">
+    <div className="rounded-2xl border border-border bg-sidebar-muted/30 p-4 space-y-4 shadow-xs text-sidebar-foreground">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-400 block mb-0.5">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-sidebar-muted-foreground block mb-0.5">
             {t("dashboard.sitesEditor.brandIdentitySettings", "PENGATURAN IDENTITAS")}
           </span>
-          <h3 className="text-sm font-bold text-white">
+          <h3 className="text-sm font-bold text-sidebar-foreground">
             {t("dashboard.sitesEditor.brandStyle", "Gaya Brand (Brand style)")}
           </h3>
-          <p className="text-[11px] text-slate-400 mt-0.5">
+          <p className="text-[11px] text-sidebar-muted-foreground mt-0.5">
             {t(
               "dashboard.sitesEditor.brandStyleSubtitle",
               "Jaga konsistensi font & warna di seluruh halaman"
@@ -307,13 +307,13 @@ export function CustomFontEditor({
           </p>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="p-1.5 rounded-lg bg-white/[0.06] text-slate-300 border border-white/10">
+          <div className="p-1.5 rounded-lg bg-sidebar-muted text-sidebar-foreground border border-border">
             <Palette className="w-4 h-4" />
           </div>
           <button
             type="button"
             onClick={handleCancel}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-sidebar-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-muted transition-colors cursor-pointer"
             title={t("common.close", "Tutup")}
           >
             <X className="w-4 h-4" />
@@ -324,17 +324,17 @@ export function CustomFontEditor({
       {/* Heading font section */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <label className="text-xs font-semibold text-slate-200 block">
+          <label className="text-xs font-semibold text-sidebar-foreground block">
             {t("dashboard.sitesEditor.headingFontLabel", "Font Judul (Heading font)")}
           </label>
           {headingUrl && (
-            <span className="inline-flex items-center gap-1 text-[10px] bg-cyan-500/15 text-cyan-300 px-1.5 py-0.5 rounded-md font-medium border border-cyan-500/30">
+            <span className="inline-flex items-center gap-1 text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-md font-medium border border-primary/20">
               <Sparkles className="w-2.5 h-2.5" />
               {t("dashboard.sitesEditor.customFontBadge", "Custom Font")}
               <button
                 type="button"
                 onClick={() => handleResetCustom("heading")}
-                className="hover:text-red-400 ml-0.5 cursor-pointer"
+                className="hover:text-red-500 ml-0.5 cursor-pointer"
                 title={t("dashboard.sitesEditor.resetDefaultFont", "Reset ke font bawaan")}
               >
                 <Trash2 className="w-2.5 h-2.5" />
@@ -352,25 +352,25 @@ export function CustomFontEditor({
                 onClick={() => handleSelectHeading(font.id)}
                 className={`flex items-center justify-between px-3 py-2 rounded-xl border text-xs cursor-pointer transition-all ${
                   isSelected
-                    ? "border-cyan-400/80 bg-cyan-500/10 text-white font-semibold ring-1 ring-cyan-400/30 shadow-xs"
-                    : "border-white/10 bg-white/[0.03] hover:bg-white/[0.07] text-slate-300 hover:text-white"
+                    ? "border-primary bg-primary/10 text-sidebar-foreground font-semibold ring-1 ring-primary/40 shadow-xs"
+                    : "border-border/70 bg-sidebar hover:bg-sidebar-muted/60 text-sidebar-muted-foreground hover:text-sidebar-foreground"
                 }`}
               >
                 <div className="flex items-center gap-2.5">
                   <span
                     className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center transition-colors ${
                       isSelected
-                        ? "border-cyan-400 bg-cyan-400 text-slate-900"
-                        : "border-white/20 bg-transparent"
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-sidebar"
                     }`}
                   >
                     {isSelected && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-slate-900" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary-foreground" />
                     )}
                   </span>
                   <span style={{ fontFamily: font.id }}>{font.label}</span>
                 </div>
-                <span className="text-[10px] text-slate-400 font-normal">
+                <span className="text-[10px] text-sidebar-subtle-foreground font-normal">
                   {isIndonesian ? font.sampleId : font.sampleEn}
                 </span>
               </label>
@@ -379,24 +379,24 @@ export function CustomFontEditor({
 
           {/* Active Custom Font item (Upload/URL) */}
           {headingUrl && (
-            <div className="flex items-center justify-between px-3 py-2 rounded-xl border text-xs border-cyan-400/80 bg-cyan-500/10 text-white font-semibold ring-1 ring-cyan-400/30">
+            <div className="flex items-center justify-between px-3 py-2 rounded-xl border text-xs border-primary bg-primary/10 text-sidebar-foreground font-semibold ring-1 ring-primary/40">
               <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                <span className="w-3.5 h-3.5 rounded-full border border-cyan-400 bg-cyan-400 flex items-center justify-center shrink-0">
-                  <span className="w-1.5 h-1.5 rounded-full bg-slate-900" />
+                <span className="w-3.5 h-3.5 rounded-full border border-primary bg-primary text-primary-foreground flex items-center justify-center shrink-0">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary-foreground" />
                 </span>
                 <span className="truncate" style={{ fontFamily: headingFont }}>
                   {headingFont}
                 </span>
               </div>
               <div className="flex items-center gap-1.5 shrink-0 ml-2">
-                <span className="inline-flex items-center gap-1 text-[10px] bg-cyan-400/20 text-cyan-300 px-1.5 py-0.5 rounded-md font-medium">
+                <span className="inline-flex items-center gap-1 text-[10px] bg-primary/20 text-primary px-1.5 py-0.5 rounded-md font-medium">
                   <Sparkles className="w-2.5 h-2.5" />
                   {t("dashboard.sitesEditor.customFontBadge", "Custom Font")}
                 </span>
                 <button
                   type="button"
                   onClick={() => handleResetCustom("heading")}
-                  className="hover:text-red-400 text-slate-400 cursor-pointer p-0.5"
+                  className="hover:text-red-500 text-sidebar-subtle-foreground cursor-pointer p-0.5"
                   title={t("dashboard.sitesEditor.resetDefaultFont", "Reset ke font bawaan")}
                 >
                   <Trash2 className="w-3 h-3" />
@@ -413,20 +413,20 @@ export function CustomFontEditor({
                 onClick={() => setHeadingDropdownOpen((v) => !v)}
                 className={`flex items-center justify-between w-full px-3 py-2 rounded-xl border text-xs cursor-pointer transition-all ${
                   isHeadingCustomGoogle
-                    ? "border-cyan-400/80 bg-cyan-500/10 text-white font-semibold ring-1 ring-cyan-400/30"
-                    : "border-white/10 bg-white/[0.03] hover:bg-white/[0.07] text-slate-400 hover:text-white"
+                    ? "border-primary bg-primary/10 text-sidebar-foreground font-semibold ring-1 ring-primary/40"
+                    : "border-border/70 bg-sidebar hover:bg-sidebar-muted/60 text-sidebar-muted-foreground hover:text-sidebar-foreground"
                 }`}
               >
                 <div className="flex items-center gap-2.5 min-w-0 flex-1">
                   <span
                     className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center shrink-0 transition-colors ${
                       isHeadingCustomGoogle
-                        ? "border-cyan-400 bg-cyan-400 text-slate-900"
-                        : "border-white/20 bg-transparent"
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-sidebar"
                     }`}
                   >
                     {isHeadingCustomGoogle && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-slate-900" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary-foreground" />
                     )}
                   </span>
                   <span
@@ -443,12 +443,12 @@ export function CustomFontEditor({
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0 ml-2">
                   {isHeadingCustomGoogle && (
-                    <span className="text-[10px] text-cyan-300/80 font-normal">
+                    <span className="text-[10px] text-primary font-normal">
                       {t("dashboard.sitesEditor.googleFontBadge", "Google Font")}
                     </span>
                   )}
                   <ChevronDown
-                    className={`w-3.5 h-3.5 text-slate-400 transition-transform ${
+                    className={`w-3.5 h-3.5 text-sidebar-muted-foreground transition-transform ${
                       headingDropdownOpen ? "rotate-180" : ""
                     }`}
                   />
@@ -456,7 +456,7 @@ export function CustomFontEditor({
               </button>
 
               {headingDropdownOpen && (
-                <div className="absolute z-50 top-full mt-1 left-0 right-0 bg-[#161a22] border border-white/15 rounded-xl max-h-56 overflow-y-auto shadow-2xl p-1">
+                <div className="absolute z-50 top-full mt-1 left-0 right-0 bg-sidebar border border-border rounded-xl max-h-56 overflow-y-auto shadow-2xl p-1 text-sidebar-foreground">
                   {GOOGLE_FONTS_WHITELIST.map((f) => (
                     <button
                       key={f}
@@ -467,8 +467,8 @@ export function CustomFontEditor({
                       }}
                       className={`w-full text-left px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer ${
                         f === headingFont
-                          ? "bg-cyan-500/20 text-cyan-300 font-semibold"
-                          : "text-slate-200 hover:bg-white/10"
+                          ? "bg-primary/15 text-primary font-semibold"
+                          : "text-sidebar-foreground hover:bg-sidebar-muted"
                       }`}
                       style={{ fontFamily: f }}
                     >
@@ -485,17 +485,17 @@ export function CustomFontEditor({
       {/* Body font section */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <label className="text-xs font-semibold text-slate-200 block">
+          <label className="text-xs font-semibold text-sidebar-foreground block">
             {t("dashboard.sitesEditor.bodyFontLabel", "Font Teks Isi (Body font)")}
           </label>
           {bodyUrl && (
-            <span className="inline-flex items-center gap-1 text-[10px] bg-cyan-500/15 text-cyan-300 px-1.5 py-0.5 rounded-md font-medium border border-cyan-500/30">
+            <span className="inline-flex items-center gap-1 text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-md font-medium border border-primary/20">
               <Sparkles className="w-2.5 h-2.5" />
               {t("dashboard.sitesEditor.customFontBadge", "Custom Font")}
               <button
                 type="button"
                 onClick={() => handleResetCustom("body")}
-                className="hover:text-red-400 ml-0.5 cursor-pointer"
+                className="hover:text-red-500 ml-0.5 cursor-pointer"
                 title={t("dashboard.sitesEditor.resetDefaultFont", "Reset ke font bawaan")}
               >
                 <Trash2 className="w-2.5 h-2.5" />
@@ -513,25 +513,25 @@ export function CustomFontEditor({
                 onClick={() => handleSelectBody(font.id)}
                 className={`flex items-center justify-between px-3 py-2 rounded-xl border text-xs cursor-pointer transition-all ${
                   isSelected
-                    ? "border-cyan-400/80 bg-cyan-500/10 text-white font-semibold ring-1 ring-cyan-400/30 shadow-xs"
-                    : "border-white/10 bg-white/[0.03] hover:bg-white/[0.07] text-slate-300 hover:text-white"
+                    ? "border-primary bg-primary/10 text-sidebar-foreground font-semibold ring-1 ring-primary/40 shadow-xs"
+                    : "border-border/70 bg-sidebar hover:bg-sidebar-muted/60 text-sidebar-muted-foreground hover:text-sidebar-foreground"
                 }`}
               >
                 <div className="flex items-center gap-2.5">
                   <span
                     className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center transition-colors ${
                       isSelected
-                        ? "border-cyan-400 bg-cyan-400 text-slate-900"
-                        : "border-white/20 bg-transparent"
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-sidebar"
                     }`}
                   >
                     {isSelected && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-slate-900" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary-foreground" />
                     )}
                   </span>
                   <span style={{ fontFamily: font.id }}>{font.label}</span>
                 </div>
-                <span className="text-[10px] text-slate-400 font-normal">
+                <span className="text-[10px] text-sidebar-subtle-foreground font-normal">
                   {isIndonesian ? font.sampleId : font.sampleEn}
                 </span>
               </label>
@@ -540,24 +540,24 @@ export function CustomFontEditor({
 
           {/* Active Custom Font item (Upload/URL) */}
           {bodyUrl && (
-            <div className="flex items-center justify-between px-3 py-2 rounded-xl border text-xs border-cyan-400/80 bg-cyan-500/10 text-white font-semibold ring-1 ring-cyan-400/30">
+            <div className="flex items-center justify-between px-3 py-2 rounded-xl border text-xs border-primary bg-primary/10 text-sidebar-foreground font-semibold ring-1 ring-primary/40">
               <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                <span className="w-3.5 h-3.5 rounded-full border border-cyan-400 bg-cyan-400 flex items-center justify-center shrink-0">
-                  <span className="w-1.5 h-1.5 rounded-full bg-slate-900" />
+                <span className="w-3.5 h-3.5 rounded-full border border-primary bg-primary text-primary-foreground flex items-center justify-center shrink-0">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary-foreground" />
                 </span>
                 <span className="truncate" style={{ fontFamily: bodyFont }}>
                   {bodyFont}
                 </span>
               </div>
               <div className="flex items-center gap-1.5 shrink-0 ml-2">
-                <span className="inline-flex items-center gap-1 text-[10px] bg-cyan-400/20 text-cyan-300 px-1.5 py-0.5 rounded-md font-medium">
+                <span className="inline-flex items-center gap-1 text-[10px] bg-primary/20 text-primary px-1.5 py-0.5 rounded-md font-medium">
                   <Sparkles className="w-2.5 h-2.5" />
                   {t("dashboard.sitesEditor.customFontBadge", "Custom Font")}
                 </span>
                 <button
                   type="button"
                   onClick={() => handleResetCustom("body")}
-                  className="hover:text-red-400 text-slate-400 cursor-pointer p-0.5"
+                  className="hover:text-red-500 text-sidebar-subtle-foreground cursor-pointer p-0.5"
                   title={t("dashboard.sitesEditor.resetDefaultFont", "Reset ke font bawaan")}
                 >
                   <Trash2 className="w-3 h-3" />
@@ -574,20 +574,20 @@ export function CustomFontEditor({
                 onClick={() => setBodyDropdownOpen((v) => !v)}
                 className={`flex items-center justify-between w-full px-3 py-2 rounded-xl border text-xs cursor-pointer transition-all ${
                   isBodyCustomGoogle
-                    ? "border-cyan-400/80 bg-cyan-500/10 text-white font-semibold ring-1 ring-cyan-400/30"
-                    : "border-white/10 bg-white/[0.03] hover:bg-white/[0.07] text-slate-400 hover:text-white"
+                    ? "border-primary bg-primary/10 text-sidebar-foreground font-semibold ring-1 ring-primary/40"
+                    : "border-border/70 bg-sidebar hover:bg-sidebar-muted/60 text-sidebar-muted-foreground hover:text-sidebar-foreground"
                 }`}
               >
                 <div className="flex items-center gap-2.5 min-w-0 flex-1">
                   <span
                     className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center shrink-0 transition-colors ${
                       isBodyCustomGoogle
-                        ? "border-cyan-400 bg-cyan-400 text-slate-900"
-                        : "border-white/20 bg-transparent"
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-sidebar"
                     }`}
                   >
                     {isBodyCustomGoogle && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-slate-900" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary-foreground" />
                     )}
                   </span>
                   <span
@@ -604,12 +604,12 @@ export function CustomFontEditor({
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0 ml-2">
                   {isBodyCustomGoogle && (
-                    <span className="text-[10px] text-cyan-300/80 font-normal">
+                    <span className="text-[10px] text-primary font-normal">
                       {t("dashboard.sitesEditor.googleFontBadge", "Google Font")}
                     </span>
                   )}
                   <ChevronDown
-                    className={`w-3.5 h-3.5 text-slate-400 transition-transform ${
+                    className={`w-3.5 h-3.5 text-sidebar-muted-foreground transition-transform ${
                       bodyDropdownOpen ? "rotate-180" : ""
                     }`}
                   />
@@ -617,7 +617,7 @@ export function CustomFontEditor({
               </button>
 
               {bodyDropdownOpen && (
-                <div className="absolute z-50 top-full mt-1 left-0 right-0 bg-[#161a22] border border-white/15 rounded-xl max-h-56 overflow-y-auto shadow-2xl p-1">
+                <div className="absolute z-50 top-full mt-1 left-0 right-0 bg-sidebar border border-border rounded-xl max-h-56 overflow-y-auto shadow-2xl p-1 text-sidebar-foreground">
                   {GOOGLE_FONTS_WHITELIST.map((f) => (
                     <button
                       key={f}
@@ -628,8 +628,8 @@ export function CustomFontEditor({
                       }}
                       className={`w-full text-left px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer ${
                         f === bodyFont
-                          ? "bg-cyan-500/20 text-cyan-300 font-semibold"
-                          : "text-slate-200 hover:bg-white/10"
+                          ? "bg-primary/15 text-primary font-semibold"
+                          : "text-sidebar-foreground hover:bg-sidebar-muted"
                       }`}
                       style={{ fontFamily: f }}
                     >
@@ -644,14 +644,14 @@ export function CustomFontEditor({
       </div>
 
       {/* Accordion Drawer: Upload Font Kustom & Input URL Font */}
-      <div className="pt-2 border-t border-white/10">
+      <div className="pt-2 border-t border-border">
         <button
           type="button"
           onClick={() => setShowDrawer((prev) => !prev)}
           className={`w-full flex items-center justify-between px-3 py-2 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
             showDrawer
-              ? "border-cyan-400/80 bg-cyan-500/10 text-cyan-300 ring-1 ring-cyan-400/30"
-              : "border-white/10 bg-white/[0.03] text-slate-300 hover:text-white hover:bg-white/[0.06]"
+              ? "border-primary bg-primary/10 text-primary ring-1 ring-primary/40"
+              : "border-border/70 bg-sidebar text-sidebar-foreground hover:bg-sidebar-muted/60"
           }`}
         >
           <span className="flex items-center gap-2">
@@ -669,20 +669,20 @@ export function CustomFontEditor({
         </button>
 
         {showDrawer && (
-          <div className="mt-3 p-3.5 rounded-xl border border-white/10 bg-white/[0.02] space-y-3.5 animate-in fade-in-50 duration-200">
+          <div className="mt-3 p-3.5 rounded-xl border border-border bg-sidebar space-y-3.5 animate-in fade-in-50 duration-200">
             {/* Target Font selector */}
             <div>
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
+              <label className="text-[10px] font-bold text-sidebar-muted-foreground uppercase tracking-wider block mb-1.5">
                 {t("dashboard.sitesEditor.applyFontTo", "Terapkan Ke:")}
               </label>
-              <div className="grid grid-cols-2 gap-1.5 p-0.5 rounded-lg border border-white/10 bg-white/[0.03] text-xs">
+              <div className="grid grid-cols-2 gap-1.5 p-0.5 rounded-lg border border-border bg-sidebar-muted/50 text-xs">
                 <button
                   type="button"
                   onClick={() => setFontTarget("heading")}
                   className={`py-1.5 text-center rounded-md font-semibold transition-all cursor-pointer ${
                     fontTarget === "heading"
-                      ? "bg-white/15 text-white shadow-xs font-bold"
-                      : "text-slate-400 hover:text-white"
+                      ? "bg-sidebar text-foreground shadow-2xs font-bold"
+                      : "text-sidebar-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {t("dashboard.sitesEditor.fontTargetHeading", "Font Judul (Heading)")}
@@ -692,8 +692,8 @@ export function CustomFontEditor({
                   onClick={() => setFontTarget("body")}
                   className={`py-1.5 text-center rounded-md font-semibold transition-all cursor-pointer ${
                     fontTarget === "body"
-                      ? "bg-white/15 text-white shadow-xs font-bold"
-                      : "text-slate-400 hover:text-white"
+                      ? "bg-sidebar text-foreground shadow-2xs font-bold"
+                      : "text-sidebar-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {t("dashboard.sitesEditor.fontTargetBody", "Font Teks (Body)")}
@@ -702,7 +702,7 @@ export function CustomFontEditor({
             </div>
 
             {/* Sub-Tabs: Upload File vs Font URL */}
-            <div className="flex gap-4 border-b border-white/10 pb-2">
+            <div className="flex gap-4 border-b border-border pb-2">
               <button
                 type="button"
                 onClick={() => {
@@ -712,8 +712,8 @@ export function CustomFontEditor({
                 }}
                 className={`text-xs font-semibold pb-1 flex items-center gap-1.5 transition cursor-pointer border-b-2 -mb-[9px] ${
                   customMode === "upload"
-                    ? "border-cyan-400 text-cyan-300"
-                    : "border-transparent text-slate-400 hover:text-white"
+                    ? "border-primary text-primary"
+                    : "border-transparent text-sidebar-muted-foreground hover:text-sidebar-foreground"
                 }`}
               >
                 <Upload className="w-3.5 h-3.5" />
@@ -728,8 +728,8 @@ export function CustomFontEditor({
                 }}
                 className={`text-xs font-semibold pb-1 flex items-center gap-1.5 transition cursor-pointer border-b-2 -mb-[9px] ${
                   customMode === "url"
-                    ? "border-cyan-400 text-cyan-300"
-                    : "border-transparent text-slate-400 hover:text-white"
+                    ? "border-primary text-primary"
+                    : "border-transparent text-sidebar-muted-foreground hover:text-sidebar-foreground"
                 }`}
               >
                 <Link2 className="w-3.5 h-3.5" />
@@ -752,10 +752,10 @@ export function CustomFontEditor({
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploading}
-                  className="w-full py-5 border-2 border-dashed border-white/20 hover:border-cyan-400/60 rounded-xl flex flex-col items-center justify-center gap-1.5 bg-white/[0.02] hover:bg-white/[0.05] transition-all cursor-pointer disabled:opacity-50"
+                  className="w-full py-5 border-2 border-dashed border-border hover:border-primary/60 rounded-xl flex flex-col items-center justify-center gap-1.5 bg-sidebar-muted/30 hover:bg-sidebar-muted/60 transition-all cursor-pointer disabled:opacity-50"
                 >
-                  <Upload className="w-5 h-5 text-slate-400" />
-                  <span className="text-xs font-semibold text-white">
+                  <Upload className="w-5 h-5 text-sidebar-muted-foreground" />
+                  <span className="text-xs font-semibold text-sidebar-foreground">
                     {uploading
                       ? t("common.processing", "Memproses font...")
                       : t(
@@ -763,7 +763,7 @@ export function CustomFontEditor({
                           "Pilih file font dari komputer"
                         )}
                   </span>
-                  <span className="text-[10px] text-slate-400">
+                  <span className="text-[10px] text-sidebar-muted-foreground">
                     {t(
                       "dashboard.sitesEditor.fontFileFormatHint",
                       "Format: .woff2 (rekomendasi), .ttf, .otf (Maks. 3 MB)"
@@ -777,7 +777,7 @@ export function CustomFontEditor({
             {customMode === "url" && (
               <div className="space-y-2.5 text-xs">
                 <div>
-                  <label className="text-[10px] font-semibold text-slate-400 block mb-1">
+                  <label className="text-[10px] font-semibold text-sidebar-muted-foreground block mb-1">
                     {t("dashboard.sitesEditor.fontFamilyNameLabel", "Nama Font Family:")}
                   </label>
                   <input
@@ -788,12 +788,12 @@ export function CustomFontEditor({
                     )}
                     value={urlFamily}
                     onChange={(e) => setUrlFamily(e.target.value)}
-                    className="w-full px-3 py-1.5 rounded-lg border border-white/10 bg-white/[0.05] text-white text-xs focus:outline-hidden focus:border-cyan-400"
+                    className="w-full px-3 py-1.5 rounded-lg border border-border bg-sidebar-input text-sidebar-foreground text-xs focus:outline-hidden focus:border-primary"
                   />
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-semibold text-slate-400 block mb-1">
+                  <label className="text-[10px] font-semibold text-sidebar-muted-foreground block mb-1">
                     {t(
                       "dashboard.sitesEditor.fontUrlLabel",
                       "URL Font (Stylesheet CSS / Woff2):"
@@ -807,7 +807,7 @@ export function CustomFontEditor({
                     )}
                     value={urlHref}
                     onChange={(e) => setUrlHref(e.target.value)}
-                    className="w-full px-3 py-1.5 rounded-lg border border-white/10 bg-white/[0.05] text-white text-xs focus:outline-hidden focus:border-cyan-400 font-mono text-[11px]"
+                    className="w-full px-3 py-1.5 rounded-lg border border-border bg-sidebar-input text-sidebar-foreground text-xs focus:outline-hidden focus:border-primary font-mono text-[11px]"
                   />
                 </div>
 
@@ -816,7 +816,7 @@ export function CustomFontEditor({
                   variant="default"
                   size="sm"
                   onClick={handleApplyUrl}
-                  className="w-full text-xs font-semibold bg-cyan-500 hover:bg-cyan-400 text-slate-900 cursor-pointer"
+                  className="w-full text-xs font-bold bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
                 >
                   <Link2 className="w-3.5 h-3.5 mr-1.5" />
                   {t("dashboard.sitesEditor.applyFontUrlButton", "Terapkan Font URL")}
@@ -826,13 +826,13 @@ export function CustomFontEditor({
 
             {/* Feedback messages */}
             {errorMsg && (
-              <div className="flex items-center gap-1.5 text-[11px] text-red-400 bg-red-500/10 border border-red-500/20 px-2.5 py-1.5 rounded-lg">
+              <div className="flex items-center gap-1.5 text-[11px] text-destructive bg-destructive/10 border border-destructive/20 px-2.5 py-1.5 rounded-lg">
                 <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                 <span>{errorMsg}</span>
               </div>
             )}
             {successMsg && (
-              <div className="flex items-center gap-1.5 text-[11px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1.5 rounded-lg">
+              <div className="flex items-center gap-1.5 text-[11px] text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1.5 rounded-lg">
                 <Check className="w-3.5 h-3.5 shrink-0" />
                 <span>{successMsg}</span>
               </div>
@@ -842,13 +842,13 @@ export function CustomFontEditor({
       </div>
 
       {/* Action Buttons: Cancel and Apply */}
-      <div className="pt-2 flex items-center gap-2 border-t border-white/10">
+      <div className="pt-2 flex items-center gap-2 border-t border-border">
         <Button
           type="button"
           variant="outline"
           size="sm"
           onClick={handleCancel}
-          className="flex-1 text-xs border-white/15 hover:bg-white/10 text-slate-300 hover:text-white cursor-pointer"
+          className="flex-1 text-xs border-border hover:bg-sidebar-muted text-sidebar-foreground cursor-pointer"
         >
           {t("dashboard.wizard.theme.cancel", "Batal")}
         </Button>
@@ -857,7 +857,7 @@ export function CustomFontEditor({
           variant="default"
           size="sm"
           onClick={handleApply}
-          className="flex-1 text-xs font-semibold bg-cyan-500 hover:bg-cyan-400 text-slate-900 shadow-md shadow-cyan-500/20 cursor-pointer"
+          className="flex-1 text-xs font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs cursor-pointer"
         >
           {t("dashboard.wizard.theme.apply", "Terapkan")}
         </Button>
