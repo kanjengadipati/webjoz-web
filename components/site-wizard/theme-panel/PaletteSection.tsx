@@ -273,17 +273,19 @@ export function PaletteSection({
         })}
       </div>
 
-      {/* Brand Color Card Button */}
-      <button
-        type="button"
-        onClick={onOpenBrandColor}
-        className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl border border-dashed border-border bg-sidebar hover:bg-sidebar-muted/50 transition-all cursor-pointer text-sidebar-foreground mt-1"
-      >
-        <Palette className="h-4 w-4 text-sidebar-foreground shrink-0" />
-        <span className="text-xs font-semibold">
-          {t("dashboard.wizard.theme.brandColorCard", "Warna brand saya")}
-        </span>
-      </button>
+      {/* Brand Color Card Button (only shown when no custom brand color is configured) */}
+      {(!hasCustomBrandColor || !activeCustom) && (
+        <button
+          type="button"
+          onClick={onOpenBrandColor}
+          className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl border border-dashed border-border bg-sidebar hover:bg-sidebar-muted/50 transition-all cursor-pointer text-sidebar-foreground mt-1"
+        >
+          <Palette className="h-4 w-4 text-sidebar-foreground shrink-0" />
+          <span className="text-xs font-semibold">
+            {t("dashboard.wizard.theme.brandColorCard", "Warna brand saya")}
+          </span>
+        </button>
+      )}
 
       {/* Dedicated Card for Custom Brand Color */}
       {hasCustomBrandColor && activeCustom && (
