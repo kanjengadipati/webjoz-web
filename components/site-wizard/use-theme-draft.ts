@@ -38,6 +38,7 @@ export interface UseThemeDraftReturn {
   mergeApplied: (token: Record<string, any>) => Record<string, any>;
   rehydrate: (applied: ThemeOverrides) => void;
   hardReset: () => void;
+  lastCustomTypography: ThemeOverrides["typography"] | null;
 }
 
 function mergeOverrides(base: ThemeOverrides, patch: ThemeOverrides): ThemeOverrides {
@@ -68,6 +69,7 @@ export function useThemeDraft({
   const [draft, setDraftState] = useState<ThemeOverrides>({});
   const [applied, setApplied] = useState<ThemeOverrides>({});
   const [undoStack, setUndoStack] = useState<ThemeOverrides[]>([]);
+  const [lastCustomTypography, setLastCustomTypography] = useState<ThemeOverrides["typography"] | null>(null);
 
   // Single source of truth ref for closures (e.g. onDesignToken & onDone in useWizardGenerate)
   const appliedRef = useRef<ThemeOverrides>(applied);
@@ -136,6 +138,10 @@ export function useThemeDraft({
     const nextApplied = mergeOverrides(applied, draft);
     appliedRef.current = nextApplied;
     setApplied(nextApplied);
+    const typo = nextApplied.typography;
+    if (typo && (typo.heading_font_url || typo.body_font_url)) {
+      setLastCustomTypography(typo);
+    }
 
     setPreviewData((prev) => {
       if (!prev) return prev;
@@ -157,6 +163,10 @@ export function useThemeDraft({
     const nextApplied = mergeOverrides(applied, patch);
     appliedRef.current = nextApplied;
     setApplied(nextApplied);
+    const typo = nextApplied.typography;
+    if (typo && (typo.heading_font_url || typo.body_font_url)) {
+      setLastCustomTypography(typo);
+    }
 
     setPreviewData((prev) => {
       if (!prev) return prev;
@@ -198,6 +208,7 @@ export function useThemeDraft({
     setDraftState({});
     setApplied({});
     setUndoStack([]);
+    setLastCustomTypography(null);
 
     setPreviewData((prev) => {
       if (!prev || !baseToken) return prev;
@@ -222,6 +233,7 @@ export function useThemeDraft({
     setDraftState({});
     setApplied({});
     setUndoStack([]);
+    setLastCustomTypography(null);
   }, []);
 
   // Dev helper: expose to window in development for testing before UI panel (Phase 3)
@@ -278,5 +290,6 @@ export function useThemeDraft({
     mergeApplied,
     rehydrate,
     hardReset,
+    lastCustomTypography,
   };
 }

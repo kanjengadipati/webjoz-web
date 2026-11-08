@@ -7,7 +7,6 @@ import type { UseThemeDraftReturn } from "../use-theme-draft";
 import type { FontPreset } from "@/lib/theme-presets";
 import { isFontApplied } from "@/lib/theme-presets";
 import { loadGoogleFont } from "@/components/templates/helpers";
-import { loadCustomFontStorage } from "@/lib/wizard-font-storage";
 import { cn } from "@/lib/utils";
 
 interface FontSectionProps {
@@ -45,40 +44,7 @@ export function FontSection({
     !isPresetActive &&
     Boolean(theme.applied.typography?.heading_font || theme.applied.typography?.body_font);
 
-  const [savedCustomFont, setSavedCustomFont] = useState<{
-    heading_font?: string;
-    body_font?: string;
-    heading_font_url?: string;
-    body_font_url?: string;
-  } | null>(() => {
-    if (typeof window === "undefined") return null;
-    try {
-      const raw = localStorage.getItem("webjoz_wizard_custom_typography");
-      if (raw) return JSON.parse(raw);
-    } catch {}
-    const storageFonts = loadCustomFontStorage();
-    if (storageFonts.heading || storageFonts.body) {
-      return {
-        heading_font: storageFonts.heading?.name,
-        heading_font_url: storageFonts.heading?.dataUrl,
-        body_font: storageFonts.body?.name,
-        body_font_url: storageFonts.body?.dataUrl,
-      };
-    }
-    return null;
-  });
-
-  useEffect(() => {
-    if (isCustomApplied && theme.applied.typography) {
-      const typo = theme.applied.typography;
-      setSavedCustomFont(typo);
-      try {
-        localStorage.setItem("webjoz_wizard_custom_typography", JSON.stringify(typo));
-      } catch {}
-    }
-  }, [isCustomApplied, theme.applied.typography]);
-
-  const activeCustomFont = isCustomApplied ? theme.applied.typography : savedCustomFont;
+  const activeCustomFont = isCustomApplied ? theme.applied.typography : theme.lastCustomTypography;
   const hasCustomFont = Boolean(
     activeCustomFont && (activeCustomFont.heading_font || activeCustomFont.body_font)
   );

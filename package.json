@@ -26,7 +26,8 @@
     "test:inference-v2": "node --test scripts/inference-v2.test.mjs",
     "test:brand-color": "node --test --experimental-strip-types scripts/brand-color.test.mjs",
     "test:theme-overrides": "node --test --experimental-strip-types scripts/theme-overrides.test.mjs",
-    "test:theme-presets": "node --test --experimental-strip-types scripts/theme-presets.test.mjs"
+    "test:theme-presets": "node --test --experimental-strip-types scripts/theme-presets.test.mjs",
+    "test:wizard-font-storage": "node --test --experimental-strip-types scripts/wizard-font-storage.test.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
