@@ -243,5 +243,124 @@ test.describe("Theme Draft Mechanism (useThemeDraft)", () => {
       }
     }
   });
+
+  test("resume restores applied theme and merges with previewToken", async ({ siteWizardPage }) => {
+    const { page } = siteWizardPage;
+    await siteWizardPage.goto();
+    await page.waitForLoadState("networkidle");
+
+    const snapshotWithTheme = {
+      ...makeDoneSnapshot(),
+      theme: {
+        applied: {
+          palette: { primary: "#7c3aed" },
+          typography: { heading_font: "Playfair Display" },
+        },
+      },
+    };
+
+    await page.evaluate(
+      ([k, s]: [string, string]) => localStorage.setItem(k, s),
+      [KEY, JSON.stringify(snapshotWithTheme)] as [string, string]
+    );
+
+    await page.reload();
+    await page.waitForLoadState("networkidle");
+
+    const resumeBtn = page.locator("text=/lanjutkan|continue/i").first();
+    if (await resumeBtn.isVisible({ timeout: 4000 }).catch(() => false)) {
+      await resumeBtn.click();
+    }
+
+    await page.waitForFunction(() => !!(window as any).__themeDraft, { timeout: 10000 });
+
+    const restoredTheme = await page.evaluate(() => {
+      const td = (window as any).__themeDraft;
+      return {
+        appliedPrimary: td.applied?.palette?.primary,
+        previewPrimary: td.previewToken?.palette?.primary,
+        previewFont: td.previewToken?.typography?.heading_font,
+      };
+    });
+
+    expect(restoredTheme.appliedPrimary).toBe("#7c3aed");
+    expect(restoredTheme.previewPrimary).toBe("#7c3aed");
+    expect(restoredTheme.previewFont).toBe("Playfair Display");
+  });
+
+  test("legacy snapshot without theme field resumes cleanly without errors", async ({ siteWizardPage }) => {
+    const { page } = siteWizardPage;
+    await siteWizardPage.goto();
+    await page.waitForLoadState("networkidle");
+
+    // Pure legacy snapshot without theme field
+    const legacySnapshot = makeDoneSnapshot();
+    await page.evaluate(
+      ([k, s]: [string, string]) => localStorage.setItem(k, s),
+      [KEY, JSON.stringify(legacySnapshot)] as [string, string]
+    );
+
+    await page.reload();
+    await page.waitForLoadState("networkidle");
+
+    const resumeBtn = page.locator("text=/lanjutkan|continue/i").first();
+    if (await resumeBtn.isVisible({ timeout: 4000 }).catch(() => false)) {
+      await resumeBtn.click();
+    }
+
+    await page.waitForFunction(() => !!(window as any).__themeDraft, { timeout: 10000 });
+
+    const legacyState = await page.evaluate(() => {
+      const td = (window as any).__themeDraft;
+      return {
+        hasApplied: Object.keys(td.applied || {}).length > 0,
+        previewPrimary: td.previewToken?.palette?.primary,
+      };
+    });
+
+    expect(legacyState.hasApplied).toBe(false);
+    expect(legacyState.previewPrimary).toBe("#2563eb");
+  });
+
+  test("hardReset clears applied theme on chat reset", async ({ siteWizardPage }) => {
+    const { page } = siteWizardPage;
+    await siteWizardPage.goto();
+    await page.waitForLoadState("networkidle");
+
+    await page.evaluate(
+      ([k, s]: [string, string]) => localStorage.setItem(k, s),
+      [KEY, JSON.stringify(makeDoneSnapshot())] as [string, string]
+    );
+
+    await page.reload();
+    await page.waitForLoadState("networkidle");
+
+    const resumeBtn = page.locator("text=/lanjutkan|continue/i").first();
+    if (await resumeBtn.isVisible({ timeout: 4000 }).catch(() => false)) {
+      await resumeBtn.click();
+    }
+
+    await page.waitForFunction(() => !!(window as any).__themeDraft, { timeout: 10000 });
+
+    // Apply custom palette then hardReset
+    await page.evaluate(() => {
+      const td = (window as any).__themeDraft;
+      td.applyNow({ palette: { primary: "#ef4444" } });
+      td.hardReset();
+    });
+
+    const resetState = await page.evaluate(() => {
+      const td = (window as any).__themeDraft;
+      return {
+        applied: td.applied,
+        draft: td.draft,
+        canUndo: td.canUndo,
+      };
+    });
+
+    expect(Object.keys(resetState.applied)).toHaveLength(0);
+    expect(Object.keys(resetState.draft)).toHaveLength(0);
+    expect(resetState.canUndo).toBe(false);
+  });
 });
 

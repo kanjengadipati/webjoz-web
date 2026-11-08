@@ -7,7 +7,10 @@ import {
   presetFont,
   customFont,
   deriveSurface,
+  ensureReadableText,
+  stripHeavyOverrides,
 } from "../lib/theme-overrides.ts";
+import { applyBrandPalette } from "../lib/apply-brand-palette.ts";
 
 test("mergeThemeOverrides does not mutate base or layers", () => {
   const baseLayout = { hero_style: "split-image", corner_radius: "rounded" };
@@ -189,4 +192,118 @@ test("overridesEqual compares equality correctly", () => {
 
   // Different theme_mode
   assert.equal(overridesEqual(a, { ...b, theme_mode: "dark" }), false);
+});
+
+test("ensureReadableText guards contrast >= 4.5:1 without mutating input", () => {
+  // Low contrast: dark grey text #666666 on near-black background #111111 (< 4.5:1)
+  const token = {
+    palette: {
+      background: "#111111",
+      text: "#333333",
+    },
+  };
+  const snapshot = JSON.parse(JSON.stringify(token));
+
+  const readable = ensureReadableText(token);
+
+  // Original token not mutated
+  assert.deepEqual(token, snapshot);
+
+  // Text replaced with high contrast fallback (white on dark)
+  assert.equal(readable.palette.text, "#ffffff");
+
+  // Valid contrast: white on dark is already >= 4.5:1, left untouched
+  const goodToken = {
+    palette: {
+      background: "#ffffff",
+      text: "#0f172a",
+    },
+  };
+  assert.equal(ensureReadableText(goodToken).palette.text, "#0f172a");
+});
+
+test("stripHeavyOverrides strips data URLs and strings > 2048 chars", () => {
+  const overrides = {
+    theme_mode: "dark",
+    palette: {
+      primary: "#2563eb",
+      accent: "data:image/svg+xml;base64,PHN2Zz48L3N2Zz4=", // data URL in palette (unlikely but should be stripped)
+    },
+    typography: {
+      heading_font: "Outfit",
+      heading_font_url: "https://fonts.gstatic.com/s/outfit/v11/abc.woff2", // keep regular url
+      body_font: "CustomFont",
+      body_font_url: "data:font/woff2;base64," + "A".repeat(3000), // data URL > 2KB
+    },
+  };
+
+  const stripped = stripHeavyOverrides(overrides);
+
+  assert.equal(stripped.theme_mode, "dark");
+  assert.equal(stripped.palette.primary, "#2563eb");
+  assert.equal(stripped.palette.accent, undefined);
+  assert.equal(stripped.typography.heading_font, "Outfit");
+  assert.equal(stripped.typography.heading_font_url, "https://fonts.gstatic.com/s/outfit/v11/abc.woff2");
+  assert.equal(stripped.typography.body_font, "CustomFont");
+  assert.equal(stripped.typography.body_font_url, undefined);
+});
+
+test("five-layer merge order: AI -> brand palette -> applied -> draft -> ensureReadableText", () => {
+  // 1. AI base token
+  const aiToken = {
+    palette: {
+      primary: "#aaaaaa",
+      accent: "#bbbbbb",
+      background: "#111111",
+      surface: "#222222",
+      text: "#333333", // low contrast on #111111
+    },
+    typography: { heading_font: "Inter", body_font: "Inter" },
+    theme_mode: "dark",
+  };
+
+  // 2. Brand palette from logo (pra-generate)
+  const brandPalette = {
+    primary: "#0000ff", // blue
+  };
+  const withBrand = applyBrandPalette(aiToken, brandPalette);
+  assert.equal(withBrand.palette.primary, "#0000ff");
+
+  // 3. Applied theme overrides (pasca-generate)
+  const applied = {
+    palette: { accent: "#00ff00" }, // green accent overrides AI
+  };
+
+  // 4. Draft overrides (in-flight)
+  const draft = {
+    palette: { primary: "#ff0000" }, // red primary overrides brand palette
+  };
+
+  const merged = mergeThemeOverrides(withBrand, applied, draft);
+  const finalToken = ensureReadableText(merged);
+
+  // Draft won over brand palette and AI
+  assert.equal(finalToken.palette.primary, "#ff0000");
+  // Applied won over AI accent
+  assert.equal(finalToken.palette.accent, "#00ff00");
+  // ensureReadableText fixed the unreadable text #333333 on #111111
+  assert.equal(finalToken.palette.text, "#ffffff");
+});
+
+test("history entry merge does not mutate original history entry", () => {
+  const historyEntryToken = {
+    palette: { primary: "#123456", background: "#ffffff", text: "#000000" },
+    typography: { heading_font: "Roboto" },
+  };
+  const snapshot = JSON.parse(JSON.stringify(historyEntryToken));
+
+  const applied = {
+    palette: { primary: "#654321" },
+  };
+
+  const targetMerged = ensureReadableText(mergeThemeOverrides(historyEntryToken, applied));
+
+  // Original entry token unchanged
+  assert.deepEqual(historyEntryToken, snapshot);
+  assert.equal(targetMerged.palette.primary, "#654321");
 });

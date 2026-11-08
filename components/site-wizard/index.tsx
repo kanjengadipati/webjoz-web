@@ -120,6 +120,7 @@ import { useWizardPreview } from "./use-wizard-preview";
 import { useWizardDevice } from "./use-wizard-device";
 import { useWizardGenerate } from "./use-wizard-generate";
 import { useThemeDraft } from "./use-theme-draft";
+import { stripHeavyOverrides, isEmptyOverrides } from "@/lib/theme-overrides";
 import { PreviewCanvas } from "./preview-canvas";
 import { MobileActionBar } from "./mobile-action-bar";
 import { BusinessDetailsSheet } from "./business-details-sheet";
@@ -291,6 +292,7 @@ export function SiteWizard({
     }
     chat.resetChat();
     preview.resetPreview();
+    themeDraft.hardReset();
     clearWizardSnapshot();
     setResumeDraft(null);
     if (device.isMobile) {
@@ -319,9 +321,10 @@ export function SiteWizard({
 
   const generate = useWizardGenerate({
     onDesignToken: (token) => {
-      const mergedToken = chat.brandLogoPalette
+      const withBrand = chat.brandLogoPalette
         ? applyBrandPalette(token, chat.brandLogoPalette, chat.brandLogoThemeMode ?? undefined)
         : token;
+      const mergedToken = themeDraft.mergeApplied(withBrand);
       preview.setStreamedDesignToken(mergedToken);
       preview.streamedTokenRef.current = mergedToken;
       if (token.template_id) {
@@ -372,6 +375,7 @@ export function SiteWizard({
       if (chat.brandLogoPalette) {
         finalToken = applyBrandPalette(finalToken, chat.brandLogoPalette, chat.brandLogoThemeMode ?? undefined);
       }
+      finalToken = themeDraft.mergeApplied(finalToken);
 
       const basePreview: PreviewData & { logo_url?: string | null } = {
         content: Object.keys(finalContent).length > 0 ? finalContent : {},
@@ -953,6 +957,9 @@ export function SiteWizard({
           brandLogoThemeMode: chat.brandLogoThemeMode || undefined,
         },
         preview: preview.previewData ? toResumePreview(preview.previewData) : undefined,
+        theme: !isEmptyOverrides(themeDraft.applied)
+          ? { applied: stripHeavyOverrides(themeDraft.applied) }
+          : undefined,
       };
       saveWizardSnapshot(snapshot);
     }, 600);
@@ -984,11 +991,13 @@ export function SiteWizard({
     chat.brandLogoThemeMode,
     preview.previewData,
     resumeSnapshotProgress,
+    themeDraft.applied,
   ]);
 
   const handleResume = () => {
     if (!resumeDraft) return;
     chat.hydrate(resumeDraft.chat);
+    themeDraft.rehydrate(resumeDraft.theme?.applied ?? {});
     if (resumeDraft.preview) {
       const restoredPreview: PreviewData = {
         content: resumeDraft.preview.content,
