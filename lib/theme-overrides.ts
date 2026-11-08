@@ -17,6 +17,7 @@ export type ThemeOverrides = {
     heading_tracking: string;
   }>;
   theme_mode?: "light" | "dark";
+  mood?: string;
 };
 
 function parseHex(hex: string): { r: number; g: number; b: number } | null {
@@ -100,6 +101,7 @@ export function isEmptyOverrides(o?: ThemeOverrides | null): boolean {
   if (!o || typeof o !== "object") return true;
 
   if (o.theme_mode !== undefined) return false;
+  if (o.mood !== undefined) return false;
 
   if (o.palette && typeof o.palette === "object") {
     for (const val of Object.values(o.palette)) {
@@ -131,6 +133,7 @@ export function overridesEqual(
   if (!a || !b) return false;
 
   if (a.theme_mode !== b.theme_mode) return false;
+  if (a.mood !== b.mood) return false;
 
   const paletteKeys: (keyof NonNullable<ThemeOverrides["palette"]>)[] = [
     "primary",
@@ -225,6 +228,10 @@ export function mergeThemeOverrides(
 
     if (layer.theme_mode !== undefined) {
       result.theme_mode = layer.theme_mode;
+    }
+
+    if (layer.mood !== undefined) {
+      result.mood = layer.mood;
     }
 
     if (layer.palette && typeof layer.palette === "object") {
@@ -349,6 +356,10 @@ export function stripHeavyOverrides(overrides: ThemeOverrides): ThemeOverrides {
     result.theme_mode = overrides.theme_mode;
   }
 
+  if (overrides.mood !== undefined) {
+    result.mood = overrides.mood;
+  }
+
   if (overrides.palette && typeof overrides.palette === "object") {
     const cleanPalette: NonNullable<ThemeOverrides["palette"]> = {};
     for (const [key, val] of Object.entries(overrides.palette) as [
@@ -384,4 +395,58 @@ export function stripHeavyOverrides(overrides: ThemeOverrides): ThemeOverrides {
   }
 
   return result;
+}
+
+export interface BuildMoodOverridesOptions {
+  currentApplied: ThemeOverrides;
+  presets: { palettes: { override: ThemeOverrides }[]; fonts: { override: ThemeOverrides }[] };
+  newMood: string;
+  brandPalette?: Record<string, string> | null;
+}
+
+/**
+ * Builds a new ThemeOverrides object for a mood switch.
+ * Preserves brand palette (if present) and custom uploaded/URL fonts.
+ * Resets manual palette tweaks and preset fonts to the new mood defaults.
+ */
+export function buildMoodOverrides(options: BuildMoodOverridesOptions): ThemeOverrides {
+  const { currentApplied, presets, newMood, brandPalette } = options;
+  const firstPalette = presets.palettes[0];
+  const firstFont = presets.fonts[0];
+
+  // 1. Determine target theme_mode
+  const targetThemeMode =
+    firstPalette?.override.theme_mode ??
+    (newMood === "dark-premium" || newMood === "bold-dark" ? "dark" : "light");
+
+  // 2. Palette: brand palette wins over preset palette if present
+  let nextPalette: ThemeOverrides["palette"] | undefined;
+  if (brandPalette && Object.keys(brandPalette).length > 0) {
+    nextPalette = { ...brandPalette };
+  } else if (firstPalette?.override.palette) {
+    nextPalette = { ...firstPalette.override.palette };
+  }
+
+  // 3. Typography: custom fonts (upload/URL) persist! Preset fonts are replaced by firstFont
+  const currentTypo = currentApplied.typography;
+  const hasCustomHeading = Boolean(currentTypo?.heading_font_url);
+  const hasCustomBody = Boolean(currentTypo?.body_font_url);
+
+  const nextTypography: NonNullable<ThemeOverrides["typography"]> = {
+    heading_font: hasCustomHeading
+      ? (currentTypo?.heading_font || "Inter")
+      : (firstFont?.override.typography?.heading_font || "Inter"),
+    body_font: hasCustomBody
+      ? (currentTypo?.body_font || "Inter")
+      : (firstFont?.override.typography?.body_font || "Inter"),
+    heading_font_url: hasCustomHeading ? currentTypo?.heading_font_url : "",
+    body_font_url: hasCustomBody ? currentTypo?.body_font_url : "",
+  };
+
+  return {
+    palette: nextPalette,
+    typography: nextTypography,
+    theme_mode: targetThemeMode,
+    mood: newMood,
+  };
 }

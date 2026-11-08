@@ -9,6 +9,7 @@ import {
   overridesEqual,
   ensureReadableText,
   stripHeavyOverrides,
+  buildMoodOverrides,
 } from "@/lib/theme-overrides";
 
 export interface UseThemeDraftArgs {
@@ -17,6 +18,7 @@ export interface UseThemeDraftArgs {
   baseToken: Record<string, any> | null;
   enabled: boolean;
   resetKey: string | number;
+  onMoodChange?: (mood: string) => void;
 }
 
 export interface UseThemeDraftReturn {
@@ -29,6 +31,11 @@ export interface UseThemeDraftReturn {
   clearDraft: () => void;
   commitDraft: () => void;
   applyNow: (patch: ThemeOverrides, label?: string) => void;
+  applyMood: (
+    newMood: string,
+    presets: { palettes: { override: ThemeOverrides }[]; fonts: { override: ThemeOverrides }[] },
+    brandPalette?: Record<string, string> | null
+  ) => void;
 
   canUndo: boolean;
   undo: () => void;
@@ -56,6 +63,9 @@ function mergeOverrides(base: ThemeOverrides, patch: ThemeOverrides): ThemeOverr
   if (patch.theme_mode !== undefined) {
     result.theme_mode = patch.theme_mode;
   }
+  if (patch.mood !== undefined) {
+    result.mood = patch.mood;
+  }
   return result;
 }
 
@@ -65,6 +75,7 @@ export function useThemeDraft({
   baseToken,
   enabled,
   resetKey,
+  onMoodChange,
 }: UseThemeDraftArgs): UseThemeDraftReturn {
   const [draft, setDraftState] = useState<ThemeOverrides>({});
   const [applied, setApplied] = useState<ThemeOverrides>({});
@@ -180,6 +191,44 @@ export function useThemeDraft({
     setDraftState({});
   }, [enabled, applied, baseToken, setPreviewData]);
 
+  const applyMood = useCallback(
+    (
+      newMood: string,
+      presets: { palettes: { override: ThemeOverrides }[]; fonts: { override: ThemeOverrides }[] },
+      brandPalette?: Record<string, string> | null
+    ) => {
+      if (!enabled) return;
+
+      setUndoStack((prev) => [...prev.slice(-4), applied]);
+
+      const nextApplied = buildMoodOverrides({
+        currentApplied: applied,
+        presets,
+        newMood,
+        brandPalette,
+      });
+
+      appliedRef.current = nextApplied;
+      setApplied(nextApplied);
+
+      setPreviewData((prev) => {
+        if (!prev) return prev;
+        const nextToken = mergeThemeOverrides(baseToken ?? prev.design_token, nextApplied);
+        return {
+          ...prev,
+          design_token: ensureReadableText({
+            ...nextToken,
+            mood: newMood,
+          }),
+        };
+      });
+
+      setDraftState({});
+      onMoodChange?.(newMood);
+    },
+    [enabled, applied, baseToken, setPreviewData, onMoodChange]
+  );
+
   const canUndo = undoStack.length > 0;
 
   const undo = useCallback(() => {
@@ -191,33 +240,41 @@ export function useThemeDraft({
     setApplied(prevSnapshot);
     setDraftState({});
 
+    const restoredMood = prevSnapshot.mood || baseToken?.mood || "clean-modern";
+    onMoodChange?.(restoredMood);
+
     setPreviewData((prev) => {
       if (!prev) return prev;
       const nextToken = mergeThemeOverrides(baseToken ?? prev.design_token, prevSnapshot);
       return {
         ...prev,
-        design_token: ensureReadableText(nextToken),
+        design_token: ensureReadableText({
+          ...nextToken,
+          mood: restoredMood,
+        }),
       };
     });
-  }, [enabled, undoStack, baseToken, setPreviewData]);
+  }, [enabled, undoStack, baseToken, setPreviewData, onMoodChange]);
 
   const resetAll = useCallback(() => {
     if (!enabled) return;
 
+    const baseMood = baseToken?.mood || "clean-modern";
     appliedRef.current = {};
     setDraftState({});
     setApplied({});
     setUndoStack([]);
     setLastCustomTypography(null);
+    onMoodChange?.(baseMood);
 
     setPreviewData((prev) => {
       if (!prev || !baseToken) return prev;
       return {
         ...prev,
-        design_token: { ...baseToken },
+        design_token: { ...baseToken, mood: baseMood },
       };
     });
-  }, [enabled, baseToken, setPreviewData]);
+  }, [enabled, baseToken, setPreviewData, onMoodChange]);
 
   const rehydrate = useCallback((savedApplied: ThemeOverrides) => {
     if (!savedApplied || typeof savedApplied !== "object") return;
@@ -248,6 +305,7 @@ export function useThemeDraft({
         clearDraft,
         commitDraft,
         applyNow,
+        applyMood,
         canUndo,
         undo,
         resetAll,
@@ -266,6 +324,7 @@ export function useThemeDraft({
     clearDraft,
     commitDraft,
     applyNow,
+    applyMood,
     canUndo,
     undo,
     resetAll,
@@ -283,6 +342,7 @@ export function useThemeDraft({
     clearDraft,
     commitDraft,
     applyNow,
+    applyMood,
     canUndo,
     undo,
     resetAll,

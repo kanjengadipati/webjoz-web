@@ -9,8 +9,10 @@ import {
   deriveSurface,
   ensureReadableText,
   stripHeavyOverrides,
+  buildMoodOverrides,
 } from "../lib/theme-overrides.ts";
 import { applyBrandPalette } from "../lib/apply-brand-palette.ts";
+import { getPresets } from "../lib/theme-presets.ts";
 
 test("mergeThemeOverrides does not mutate base or layers", () => {
   const baseLayout = { hero_style: "split-image", corner_radius: "rounded" };
@@ -371,5 +373,73 @@ test("ensureReadableText adjusts palette and dark_palette contrast independently
   assert.equal(result.palette.text, "#0f172a"); // adjusted to dark text
   assert.equal(result.dark_palette.text, "#e5e7eb"); // preserved light text
 });
+
+test("buildMoodOverrides switches mood, applies first palette and font preset, and sets theme_mode", () => {
+  const presets = getPresets("dark-premium");
+  const currentApplied = {
+    palette: { primary: "#2563eb", background: "#ffffff" },
+    typography: { heading_font: "Inter", body_font: "Inter" },
+  };
+
+  const nextOverrides = buildMoodOverrides({
+    currentApplied,
+    presets,
+    newMood: "dark-premium",
+  });
+
+  assert.equal(nextOverrides.mood, "dark-premium");
+  assert.equal(nextOverrides.theme_mode, "dark");
+  assert.equal(nextOverrides.palette.primary, presets.palettes[0].override.palette.primary);
+  assert.equal(nextOverrides.palette.background, presets.palettes[0].override.palette.background);
+  assert.equal(nextOverrides.typography.heading_font, presets.fonts[0].override.typography.heading_font);
+  assert.equal(nextOverrides.typography.body_font, presets.fonts[0].override.typography.body_font);
+});
+
+test("buildMoodOverrides preserves brand palette over preset palette", () => {
+  const presets = getPresets("warm-earthy");
+  const brandPalette = {
+    primary: "#001122",
+    accent: "#334455",
+    background: "#ffffff",
+    surface: "#f0f0f0",
+    text: "#111111",
+  };
+
+  const nextOverrides = buildMoodOverrides({
+    currentApplied: {},
+    presets,
+    newMood: "warm-earthy",
+    brandPalette,
+  });
+
+  assert.equal(nextOverrides.palette.primary, "#001122");
+  assert.equal(nextOverrides.palette.accent, "#334455");
+  assert.equal(nextOverrides.theme_mode, "light");
+});
+
+test("buildMoodOverrides preserves custom uploaded/URL fonts while updating preset fonts", () => {
+  const presets = getPresets("retro");
+  const currentApplied = {
+    typography: {
+      heading_font: "MyCustomFont",
+      heading_font_url: "data:font/woff2;base64,123",
+      body_font: "Inter",
+      body_font_url: "",
+    },
+  };
+
+  const nextOverrides = buildMoodOverrides({
+    currentApplied,
+    presets,
+    newMood: "retro",
+  });
+
+  // Custom heading font preserved
+  assert.equal(nextOverrides.typography.heading_font, "MyCustomFont");
+  assert.equal(nextOverrides.typography.heading_font_url, "data:font/woff2;base64,123");
+  // Preset body font updated to retro's first font
+  assert.equal(nextOverrides.typography.body_font, presets.fonts[0].override.typography.body_font);
+});
+
 
 

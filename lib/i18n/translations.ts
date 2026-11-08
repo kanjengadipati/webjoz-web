@@ -3653,6 +3653,9 @@ export interface Translations {
         backToChat: string;
         panelTitle: string;
         panelSubtitle: string;
+        moodSection: string;
+        moodHint: string;
+        moodApplied: string;
         back: string;
         resetAll: string;
         customizedStatus: string;
@@ -8023,6 +8026,9 @@ export const translations: Record<Locale, Translations> = {
           backToChat: "Kembali ke Chat",
           panelTitle: "Sesuaikan Tema",
           panelSubtitle: "Ubah warna & font pratinjau",
+          moodSection: "Gaya Tampilan",
+          moodHint: "Mengubah tampilan, teks tetap",
+          moodApplied: 'Gaya "{mood}" diterapkan',
           back: "Kembali",
           resetAll: "Reset semua",
           customizedStatus: "Tema dimodifikasi",
@@ -12349,6 +12355,9 @@ export const translations: Record<Locale, Translations> = {
           backToChat: "Back to Chat",
           panelTitle: "Customize Theme",
           panelSubtitle: "Change preview colors & fonts",
+          moodSection: "Visual Style",
+          moodHint: "Changes appearance, text remains",
+          moodApplied: 'Style "{mood}" applied',
           back: "Back",
           resetAll: "Reset all",
           customizedStatus: "Theme customized",
