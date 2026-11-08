@@ -80,7 +80,6 @@ import ColorPatternPicker from "./components/ColorPatternPicker";
 import BrandLogoColorPicker from "./components/BrandLogoColorPicker";
 import CompactColorPicker from "./components/CompactColorPicker";
 import SiteStyleSelector from "./components/SiteStyleSelector";
-import BrandStylePicker from "./components/BrandStylePicker";
 import IndustryPresetPicker from "./components/IndustryPresetPicker";
 import SectionVariantVisualPicker from "./components/SectionVariantVisualPicker";
 import PageLayoutHub from "./components/PageLayoutHub";
@@ -1953,14 +1952,6 @@ export default function SiteEditorPage() {
                   </p>
                 </div>
                 <div ref={designContentRef} className="flex-1 overflow-y-auto px-3.5 py-3 space-y-4 relative bg-sidebar text-sidebar-foreground">
-                  {/* Brand Style: Quick consistent font & accent color picker */}
-                  <BrandStylePicker
-                    designToken={designToken}
-                    onUpdateField={updateDesignTokenField}
-                    onUpdateBatch={updateDesignTokenBatch}
-                    locale={locale}
-                  />
-
                   {/* Theme Mode Toggle (Segmented: Terang / Gelap) */}
                   <div className="flex items-center justify-between p-2 rounded-xl border border-border bg-sidebar-muted/30">
                     <span className="text-[11px] font-semibold text-sidebar-foreground">
@@ -3367,16 +3358,6 @@ export default function SiteEditorPage() {
                     aiDesignPromptOpen={aiDesignPromptOpen}
                     setAiDesignPromptOpen={setAiDesignPromptOpen}
                     isDesignTokenEqual={isDesignTokenEqual}
-                    locale={locale}
-                  />
-
-                  <div className="border-t border-border" />
-
-                  {/* Brand Style: Quick consistent font & accent color picker */}
-                  <BrandStylePicker
-                    designToken={designToken}
-                    onUpdateField={updateDesignTokenField}
-                    onUpdateBatch={updateDesignTokenBatch}
                     locale={locale}
                   />
 

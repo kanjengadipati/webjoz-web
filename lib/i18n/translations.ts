@@ -2260,6 +2260,8 @@ export interface Translations {
       quickPairingsLabel: string;
       customizeFontButton: string;
       customizeColorButton: string;
+      brandColorButton: string;
+      brandFontButton: string;
       myBrandColorTitle: string;
       brandFontTitle: string;
       headingShort: string;
@@ -6220,6 +6222,8 @@ export const translations: Record<Locale, Translations> = {
         quickPairingsLabel: "Pilihan Pasangan Cepat",
         customizeFontButton: "Kustomisasi Font",
         customizeColorButton: "Sesuaikan Warna Brand",
+        brandColorButton: "Warna brand saya",
+        brandFontButton: "Font brand saya",
         myBrandColorTitle: "Warna Brand Saya",
         brandFontTitle: "Font Brand Saya",
         headingShort: "Judul",
@@ -10545,6 +10549,8 @@ export const translations: Record<Locale, Translations> = {
         quickPairingsLabel: "Quick Pairings",
         customizeFontButton: "Customize Font",
         customizeColorButton: "Customize Brand Color",
+        brandColorButton: "My brand color",
+        brandFontButton: "My brand font",
         myBrandColorTitle: "My Brand Color",
         brandFontTitle: "My Brand Font",
         headingShort: "Heading",
