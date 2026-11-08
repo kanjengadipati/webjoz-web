@@ -118,6 +118,7 @@ export function ThemePanel({ mood, theme, baseToken }: ThemePanelProps) {
         {subView === "custom-font" && (
           <CustomFontEditor
             theme={theme}
+            baseToken={baseToken}
             onClose={() => setSubView("none")}
             onApply={() => handleApplyPreset(t("dashboard.wizard.theme.customFontApplied", "Font kustom"))}
           />
