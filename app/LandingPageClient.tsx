@@ -393,7 +393,7 @@ export default function LandingPageClient() {
                 onClick={() => startWizard()}
                 variant="floating-arrow"
                 size="lg"
-                className="w-full max-w-sm sm:max-w-md rounded-full"
+                className="w-full sm:w-auto rounded-full"
               >
                 {t("landing.ctaPrimary")}
               </Button>
