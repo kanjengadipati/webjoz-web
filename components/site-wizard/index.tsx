@@ -119,6 +119,7 @@ import { useWizardChat } from "./use-wizard-chat";
 import { useWizardPreview } from "./use-wizard-preview";
 import { useWizardDevice } from "./use-wizard-device";
 import { useWizardGenerate } from "./use-wizard-generate";
+import { useThemeDraft } from "./use-theme-draft";
 import { PreviewCanvas } from "./preview-canvas";
 import { MobileActionBar } from "./mobile-action-bar";
 import { BusinessDetailsSheet } from "./business-details-sheet";
@@ -162,6 +163,19 @@ export function SiteWizard({
   const chat = useWizardChat({ businessType: initialBusinessType, businessSubType: initialBusinessSubType });
   const preview = useWizardPreview();
   const device = useWizardDevice();
+
+  const baseThemeToken =
+    preview.previewHistory[preview.historyIndex]?.design_token ??
+    preview.previewData?.design_token ??
+    null;
+
+  const themeDraft = useThemeDraft({
+    previewData: preview.previewData,
+    setPreviewData: preview.setPreviewData,
+    baseToken: baseThemeToken,
+    enabled: preview.previewState !== "loading" && !!preview.previewData,
+    resetKey: `${preview.regenCount}:${preview.historyIndex}`,
+  });
 
   const wizardLang = chat.siteLanguage || (locale === "en" ? "en" : "id");
   const uiLang = locale === "en" ? "en" : "id";
@@ -2311,7 +2325,7 @@ export function SiteWizard({
         </div>
 
         <div className="flex-1 overflow-hidden relative bg-background" ref={previewContainerRef}>
-          <PreviewCanvas chat={chat} preview={preview} device={device} />
+          <PreviewCanvas chat={chat} preview={preview} device={device} themeDraft={themeDraft} />
 
           {preview.previewState === "loading" && !device.isMobile && (
             <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/10">

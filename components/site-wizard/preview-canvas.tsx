@@ -10,14 +10,16 @@ import { useWizardChat } from "./use-wizard-chat";
 import { useWizardPreview } from "./use-wizard-preview";
 import { useWizardDevice } from "./use-wizard-device";
 import { useI18n } from "@/lib/i18n/context";
+import type { useThemeDraft } from "./use-theme-draft";
 
 interface PreviewCanvasProps {
   chat: ReturnType<typeof useWizardChat>;
   preview: ReturnType<typeof useWizardPreview>;
   device: ReturnType<typeof useWizardDevice>;
+  themeDraft?: ReturnType<typeof useThemeDraft>;
 }
 
-export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
+export function PreviewCanvas({ chat, preview, device, themeDraft }: PreviewCanvasProps) {
   const { locale } = useI18n();
   const {
     previewState,
@@ -61,7 +63,9 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
   const candidatePool = getTemplatePool(chat.businessType, chat.mood);
   const fallbackTemplateId = candidatePool[0] || "TEMPLATE_JASA02";
   const liveContent = isStreamingLive ? streamedSections : (previewData?.content || {});
-  const liveToken = isStreamingLive ? (streamedDesignToken ?? {}) : (previewData?.design_token || {});
+  const liveToken = isStreamingLive
+    ? (streamedDesignToken ?? {})
+    : (themeDraft?.previewToken ?? previewData?.design_token ?? {});
   const liveTemplateId = isStreamingLive
     ? (streamedTemplateId || (streamedDesignToken as any)?.template_id || fallbackTemplateId)
     : (previewData?.template_id || fallbackTemplateId);
