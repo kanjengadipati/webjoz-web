@@ -81,7 +81,40 @@ export function PaletteSection({
   const isEN = locale === "en";
 
   const aiPalette = baseToken?.palette || {};
+  const isPresetActive = palettes.some((p) => isPaletteApplied(p, theme.applied));
   const isAiActive = !theme.applied.palette || Object.keys(theme.applied.palette).length === 0;
+  const isCustomApplied =
+    !isAiActive && !isPresetActive && Boolean(theme.applied.palette?.primary);
+
+  const [savedCustomPalette, setSavedCustomPalette] = React.useState<{
+    palette: Record<string, string>;
+    theme_mode?: "light" | "dark";
+  } | null>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const raw = localStorage.getItem("webjoz_wizard_custom_palette");
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  React.useEffect(() => {
+    if (isCustomApplied && theme.applied.palette) {
+      const data = {
+        palette: theme.applied.palette as Record<string, string>,
+        theme_mode: theme.applied.theme_mode as "light" | "dark" | undefined,
+      };
+      setSavedCustomPalette(data);
+      try {
+        localStorage.setItem("webjoz_wizard_custom_palette", JSON.stringify(data));
+      } catch {}
+    }
+  }, [isCustomApplied, theme.applied.palette, theme.applied.theme_mode]);
+
+  const activeCustom = isCustomApplied ? theme.applied.palette : savedCustomPalette?.palette;
+  const hasCustomBrandColor = Boolean(activeCustom && activeCustom.primary);
+  const isCustomActive = isCustomApplied;
 
   // Check if any existing preset matches the AI recommendation
   const matchingPresetIndex = palettes.findIndex((preset) => {
@@ -240,6 +273,90 @@ export function PaletteSection({
           {t("dashboard.wizard.theme.brandColorCard", "Warna brand saya")}
         </span>
       </button>
+
+      {/* Dedicated Card for Custom Brand Color */}
+      {hasCustomBrandColor && activeCustom && (
+        <div
+          onClick={() => {
+            if (!isCustomActive) {
+              theme.applyNow(
+                {
+                  palette: activeCustom,
+                  theme_mode:
+                    savedCustomPalette?.theme_mode ??
+                    (isColorDark(activeCustom.background || "#000") ? "dark" : "light"),
+                },
+                t("dashboard.wizard.theme.brandColorTitle", "Warna Brand Saya")
+              );
+              onApply(t("dashboard.wizard.theme.brandColorTitle", "Warna Brand Saya"));
+            }
+          }}
+          className={cn(
+            "w-full p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between mt-1",
+            isCustomActive
+              ? "relative border-2 border-cyan-400/80 bg-cyan-500/10 ring-2 ring-cyan-400/30"
+              : "border-white/10 bg-white/[0.04] hover:border-white/20 hover:bg-white/[0.07]"
+          )}
+        >
+          <div>
+            <div className="flex items-center justify-between mb-1.5 gap-1">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <p className="text-[11px] font-bold text-slate-100 truncate">
+                  {t("dashboard.wizard.theme.brandColorTitle", "Warna Brand Saya")}
+                </p>
+                <span className="inline-flex shrink-0 items-center rounded px-1 py-0.2 text-[8px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                  Custom
+                </span>
+              </div>
+              {isCustomActive && (
+                <span className="inline-flex items-center gap-0.5 rounded-full bg-cyan-400 px-1.5 py-0.5 text-[8px] font-black text-black shrink-0">
+                  <Check className="h-2 w-2 stroke-[3]" />
+                  <span>{t("dashboard.sitesEditor.activeBadge", "In use")}</span>
+                </span>
+              )}
+            </div>
+
+            {/* Contextual mini preview */}
+            <MiniPalettePreview palette={activeCustom} />
+
+            {/* 5 Swatches */}
+            <div className="flex gap-1 mb-1.5">
+              {[
+                activeCustom.primary,
+                activeCustom.accent,
+                activeCustom.background,
+                activeCustom.surface,
+                activeCustom.text,
+              ]
+                .filter(Boolean)
+                .map((color, i) => (
+                  <div
+                    key={i}
+                    className="w-4.5 h-4.5 rounded-md border border-white/20 shadow-2xs shrink-0"
+                    style={{ backgroundColor: color }}
+                  />
+                ))}
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between mt-0.5">
+            <p className="text-[9px] text-slate-400 leading-tight">
+              {t("dashboard.wizard.theme.brandColorApplied", "Warna brand")} &middot;{" "}
+              {isColorDark(activeCustom.background || "#000") ? "Dark" : "Light"}
+            </p>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenBrandColor();
+              }}
+              className="text-[9px] text-cyan-400 hover:text-cyan-300 font-semibold cursor-pointer"
+            >
+              {t("dashboard.sitesEditor.edit", "Ubah")}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
