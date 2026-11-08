@@ -114,7 +114,12 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
               className="w-1.5 h-1.5 rounded-full animate-ping"
               style={{ background: "var(--dt-primary)" }}
             />
-            <span>Pratinjau desain — hasil akhir sedang dibuat AI</span>
+            <span>
+              {t(
+                "dashboard.wizard.wireframeDesignPreviewBanner",
+                "Pratinjau desain — hasil akhir sedang dibuat AI"
+              )}
+            </span>
           </div>
         )}
 
@@ -315,7 +320,13 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
               className="w-2 h-2 rounded-full animate-ping"
               style={{ background: designToken ? "var(--dt-primary)" : "currentColor" }}
             />
-            <span>AI sedang menyusun tata letak & konten untuk {businessName || "bisnis Anda"}...</span>
+            <span>
+              {t(
+                "dashboard.wizard.wireframeGeneratingStatus",
+                "AI sedang menyusun tata letak & konten untuk {name}...",
+                { name: businessName || t("dashboard.wizard.yourBusinessFallback", "bisnis Anda") }
+              )}
+            </span>
           </div>
         )}
       </div>
