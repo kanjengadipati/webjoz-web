@@ -44,7 +44,8 @@ export function WizardChatFooter({
             (chatStage === "name" ||
               chatStage === "description" ||
               chatStage === "type" ||
-              chatStage === "mood") &&
+              chatStage === "mood" ||
+              chatStage === "brand-logo") &&
             (isAnalyzingDescription
               ? t("dashboard.wizard.statusAnalyzingName", "AI menganalisis nama...")
               : t("dashboard.wizard.statusWaitingInput", "Menunggu input..."))}

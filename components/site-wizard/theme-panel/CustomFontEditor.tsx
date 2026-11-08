@@ -23,17 +23,17 @@ import {
 } from "@/lib/wizard-font-storage";
 
 export const POPULAR_HEADING_FONTS = [
-  { id: "Inter", label: "Inter", sample: "Modern & Bersih" },
-  { id: "Poppins", label: "Poppins", sample: "Geometris & Ramah" },
-  { id: "Playfair Display", label: "Playfair Display", sample: "Klasik & Elegan" },
-  { id: "Plus Jakarta Sans", label: "Plus Jakarta Sans", sample: "Kontemporer & Tegas" },
+  { id: "Inter", label: "Inter", sampleId: "Modern & Bersih", sampleEn: "Modern & Clean" },
+  { id: "Poppins", label: "Poppins", sampleId: "Geometris & Ramah", sampleEn: "Geometric & Friendly" },
+  { id: "Playfair Display", label: "Playfair Display", sampleId: "Klasik & Elegan", sampleEn: "Classic & Elegant" },
+  { id: "Plus Jakarta Sans", label: "Plus Jakarta Sans", sampleId: "Kontemporer & Tegas", sampleEn: "Contemporary & Bold" },
 ];
 
 export const POPULAR_BODY_FONTS = [
-  { id: "Inter", label: "Inter", sample: "Sangat mudah dibaca" },
-  { id: "Roboto", label: "Roboto", sample: "Standar global web" },
-  { id: "Open Sans", label: "Open Sans", sample: "Netral & nyaman" },
-  { id: "Plus Jakarta Sans", label: "Plus Jakarta Sans", sample: "Harmonis modern" },
+  { id: "Inter", label: "Inter", sampleId: "Sangat mudah dibaca", sampleEn: "Highly readable" },
+  { id: "Roboto", label: "Roboto", sampleId: "Standar global web", sampleEn: "Global web standard" },
+  { id: "Open Sans", label: "Open Sans", sampleId: "Netral & nyaman", sampleEn: "Neutral & comfortable" },
+  { id: "Plus Jakarta Sans", label: "Plus Jakarta Sans", sampleId: "Harmonis modern", sampleEn: "Modern harmony" },
 ];
 
 export const GOOGLE_FONTS_WHITELIST = [
@@ -59,7 +59,7 @@ export function CustomFontEditor({
   onClose,
   onApply,
 }: CustomFontEditorProps) {
-  const { t } = useI18n();
+  const { t, isIndonesian } = useI18n();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Initial font states
@@ -197,10 +197,16 @@ export function CustomFontEditor({
         saveCustomFontStorage("body", name, dataUrl);
         updateLivePreview(headingFont, headingUrl, name, dataUrl);
       }
-      setSuccessMsg(`Font "${name}" berhasil diterapkan!`);
+      setSuccessMsg(
+        t("dashboard.sitesEditor.customFontAppliedSuccess", 'Font "{name}" berhasil diterapkan!', {
+          name,
+        })
+      );
     } catch (err) {
       setErrorMsg(
-        err instanceof Error ? err.message : "Gagal memproses file font."
+        err instanceof Error && err.message
+          ? err.message
+          : t("dashboard.sitesEditor.fontReadError", "Gagal membaca file font")
       );
     } finally {
       setUploading(false);
@@ -211,7 +217,9 @@ export function CustomFontEditor({
   // URL handler for Google Fonts / Custom CSS URL
   const handleApplyUrl = () => {
     if (!urlFamily.trim() || !urlHref.trim()) {
-      setErrorMsg("Nama font dan URL font wajib diisi.");
+      setErrorMsg(
+        t("dashboard.sitesEditor.fontNameAndUrlRequired", "Nama font dan URL font wajib diisi")
+      );
       return;
     }
     setErrorMsg(null);
@@ -231,7 +239,13 @@ export function CustomFontEditor({
       saveCustomFontStorage("body", cleanName, cleanUrl);
       updateLivePreview(headingFont, headingUrl, cleanName, cleanUrl);
     }
-    setSuccessMsg(`Font "${cleanName}" via URL berhasil diterapkan!`);
+    setSuccessMsg(
+      t(
+        "dashboard.sitesEditor.customFontUrlAppliedSuccess",
+        'Font "{name}" dari URL berhasil diterapkan!',
+        { name: cleanName }
+      )
+    );
   };
 
   // Commit and apply changes
@@ -280,13 +294,16 @@ export function CustomFontEditor({
       <div className="flex items-start justify-between">
         <div>
           <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-400 block mb-0.5">
-            BRAND IDENTITY
+            {t("dashboard.sitesEditor.brandIdentitySettings", "PENGATURAN IDENTITAS")}
           </span>
           <h3 className="text-sm font-bold text-white">
-            Brand style
+            {t("dashboard.sitesEditor.brandStyle", "Gaya Brand (Brand style)")}
           </h3>
           <p className="text-[11px] text-slate-400 mt-0.5">
-            Keep your typography & color consistent across all pages
+            {t(
+              "dashboard.sitesEditor.brandStyleSubtitle",
+              "Jaga konsistensi font & warna di seluruh halaman"
+            )}
           </p>
         </div>
         <div className="flex items-center gap-1.5">
@@ -297,7 +314,7 @@ export function CustomFontEditor({
             type="button"
             onClick={handleCancel}
             className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-            title="Tutup"
+            title={t("common.close", "Tutup")}
           >
             <X className="w-4 h-4" />
           </button>
@@ -308,17 +325,17 @@ export function CustomFontEditor({
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <label className="text-xs font-semibold text-slate-200 block">
-            Heading font
+            {t("dashboard.sitesEditor.headingFontLabel", "Font Judul (Heading font)")}
           </label>
           {headingUrl && (
             <span className="inline-flex items-center gap-1 text-[10px] bg-cyan-500/15 text-cyan-300 px-1.5 py-0.5 rounded-md font-medium border border-cyan-500/30">
               <Sparkles className="w-2.5 h-2.5" />
-              Custom
+              {t("dashboard.sitesEditor.customFontBadge", "Custom Font")}
               <button
                 type="button"
                 onClick={() => handleResetCustom("heading")}
                 className="hover:text-red-400 ml-0.5 cursor-pointer"
-                title="Reset font default"
+                title={t("dashboard.sitesEditor.resetDefaultFont", "Reset ke font bawaan")}
               >
                 <Trash2 className="w-2.5 h-2.5" />
               </button>
@@ -354,7 +371,7 @@ export function CustomFontEditor({
                   <span style={{ fontFamily: font.id }}>{font.label}</span>
                 </div>
                 <span className="text-[10px] text-slate-400 font-normal">
-                  {font.sample}
+                  {isIndonesian ? font.sampleId : font.sampleEn}
                 </span>
               </label>
             );
@@ -374,13 +391,13 @@ export function CustomFontEditor({
               <div className="flex items-center gap-1.5 shrink-0 ml-2">
                 <span className="inline-flex items-center gap-1 text-[10px] bg-cyan-400/20 text-cyan-300 px-1.5 py-0.5 rounded-md font-medium">
                   <Sparkles className="w-2.5 h-2.5" />
-                  Custom
+                  {t("dashboard.sitesEditor.customFontBadge", "Custom Font")}
                 </span>
                 <button
                   type="button"
                   onClick={() => handleResetCustom("heading")}
                   className="hover:text-red-400 text-slate-400 cursor-pointer p-0.5"
-                  title="Reset font default"
+                  title={t("dashboard.sitesEditor.resetDefaultFont", "Reset ke font bawaan")}
                 >
                   <Trash2 className="w-3 h-3" />
                 </button>
@@ -418,13 +435,16 @@ export function CustomFontEditor({
                   >
                     {isHeadingCustomGoogle
                       ? headingFont
-                      : "Choose more Google fonts..."}
+                      : t(
+                          "dashboard.sitesEditor.moreGoogleFontsPlaceholder",
+                          "Pilih Google Font lainnya..."
+                        )}
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0 ml-2">
                   {isHeadingCustomGoogle && (
                     <span className="text-[10px] text-cyan-300/80 font-normal">
-                      Google Font
+                      {t("dashboard.sitesEditor.googleFontBadge", "Google Font")}
                     </span>
                   )}
                   <ChevronDown
@@ -466,17 +486,17 @@ export function CustomFontEditor({
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <label className="text-xs font-semibold text-slate-200 block">
-            Body font
+            {t("dashboard.sitesEditor.bodyFontLabel", "Font Teks Isi (Body font)")}
           </label>
           {bodyUrl && (
             <span className="inline-flex items-center gap-1 text-[10px] bg-cyan-500/15 text-cyan-300 px-1.5 py-0.5 rounded-md font-medium border border-cyan-500/30">
               <Sparkles className="w-2.5 h-2.5" />
-              Custom
+              {t("dashboard.sitesEditor.customFontBadge", "Custom Font")}
               <button
                 type="button"
                 onClick={() => handleResetCustom("body")}
                 className="hover:text-red-400 ml-0.5 cursor-pointer"
-                title="Reset font default"
+                title={t("dashboard.sitesEditor.resetDefaultFont", "Reset ke font bawaan")}
               >
                 <Trash2 className="w-2.5 h-2.5" />
               </button>
@@ -512,7 +532,7 @@ export function CustomFontEditor({
                   <span style={{ fontFamily: font.id }}>{font.label}</span>
                 </div>
                 <span className="text-[10px] text-slate-400 font-normal">
-                  {font.sample}
+                  {isIndonesian ? font.sampleId : font.sampleEn}
                 </span>
               </label>
             );
@@ -532,13 +552,13 @@ export function CustomFontEditor({
               <div className="flex items-center gap-1.5 shrink-0 ml-2">
                 <span className="inline-flex items-center gap-1 text-[10px] bg-cyan-400/20 text-cyan-300 px-1.5 py-0.5 rounded-md font-medium">
                   <Sparkles className="w-2.5 h-2.5" />
-                  Custom
+                  {t("dashboard.sitesEditor.customFontBadge", "Custom Font")}
                 </span>
                 <button
                   type="button"
                   onClick={() => handleResetCustom("body")}
                   className="hover:text-red-400 text-slate-400 cursor-pointer p-0.5"
-                  title="Reset font default"
+                  title={t("dashboard.sitesEditor.resetDefaultFont", "Reset ke font bawaan")}
                 >
                   <Trash2 className="w-3 h-3" />
                 </button>
@@ -576,13 +596,16 @@ export function CustomFontEditor({
                   >
                     {isBodyCustomGoogle
                       ? bodyFont
-                      : "Choose more Google fonts..."}
+                      : t(
+                          "dashboard.sitesEditor.moreGoogleFontsPlaceholder",
+                          "Pilih Google Font lainnya..."
+                        )}
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0 ml-2">
                   {isBodyCustomGoogle && (
                     <span className="text-[10px] text-cyan-300/80 font-normal">
-                      Google Font
+                      {t("dashboard.sitesEditor.googleFontBadge", "Google Font")}
                     </span>
                   )}
                   <ChevronDown
@@ -633,7 +656,10 @@ export function CustomFontEditor({
         >
           <span className="flex items-center gap-2">
             <Upload className="w-3.5 h-3.5" />
-            Upload font or use font URL
+            {t(
+              "dashboard.sitesEditor.customFontDrawerButton",
+              "Upload font sendiri atau pakai URL font"
+            )}
           </span>
           <ChevronDown
             className={`w-3.5 h-3.5 transition-transform duration-200 ${
@@ -647,7 +673,7 @@ export function CustomFontEditor({
             {/* Target Font selector */}
             <div>
               <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
-                APPLY TO:
+                {t("dashboard.sitesEditor.applyFontTo", "Terapkan Ke:")}
               </label>
               <div className="grid grid-cols-2 gap-1.5 p-0.5 rounded-lg border border-white/10 bg-white/[0.03] text-xs">
                 <button
@@ -659,7 +685,7 @@ export function CustomFontEditor({
                       : "text-slate-400 hover:text-white"
                   }`}
                 >
-                  Heading Font
+                  {t("dashboard.sitesEditor.fontTargetHeading", "Font Judul (Heading)")}
                 </button>
                 <button
                   type="button"
@@ -670,7 +696,7 @@ export function CustomFontEditor({
                       : "text-slate-400 hover:text-white"
                   }`}
                 >
-                  Body Font
+                  {t("dashboard.sitesEditor.fontTargetBody", "Font Teks (Body)")}
                 </button>
               </div>
             </div>
@@ -691,7 +717,7 @@ export function CustomFontEditor({
                 }`}
               >
                 <Upload className="w-3.5 h-3.5" />
-                Upload File (.woff2/.ttf)
+                {t("dashboard.sitesEditor.uploadFontTab", "Upload File (.woff2/.ttf)")}
               </button>
               <button
                 type="button"
@@ -707,7 +733,7 @@ export function CustomFontEditor({
                 }`}
               >
                 <Link2 className="w-3.5 h-3.5" />
-                Font URL
+                {t("dashboard.sitesEditor.urlFontTab", "Input URL Font")}
               </button>
             </div>
 
@@ -730,10 +756,18 @@ export function CustomFontEditor({
                 >
                   <Upload className="w-5 h-5 text-slate-400" />
                   <span className="text-xs font-semibold text-white">
-                    {uploading ? "Memproses font..." : "Select font file from computer"}
+                    {uploading
+                      ? t("common.processing", "Memproses font...")
+                      : t(
+                          "dashboard.sitesEditor.selectFontFileComputer",
+                          "Pilih file font dari komputer"
+                        )}
                   </span>
                   <span className="text-[10px] text-slate-400">
-                    Format: .woff2 (recommended), .ttf, .otf (Max 3 MB)
+                    {t(
+                      "dashboard.sitesEditor.fontFileFormatHint",
+                      "Format: .woff2 (rekomendasi), .ttf, .otf (Maks. 3 MB)"
+                    )}
                   </span>
                 </button>
               </div>
@@ -744,11 +778,14 @@ export function CustomFontEditor({
               <div className="space-y-2.5 text-xs">
                 <div>
                   <label className="text-[10px] font-semibold text-slate-400 block mb-1">
-                    FONT FAMILY NAME
+                    {t("dashboard.sitesEditor.fontFamilyNameLabel", "Nama Font Family:")}
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. Outfit, Clash Display"
+                    placeholder={t(
+                      "dashboard.sitesEditor.fontFamilyNamePlaceholder",
+                      "mis. Clash Display / Helvetica"
+                    )}
                     value={urlFamily}
                     onChange={(e) => setUrlFamily(e.target.value)}
                     className="w-full px-3 py-1.5 rounded-lg border border-white/10 bg-white/[0.05] text-white text-xs focus:outline-hidden focus:border-cyan-400"
@@ -757,11 +794,17 @@ export function CustomFontEditor({
 
                 <div>
                   <label className="text-[10px] font-semibold text-slate-400 block mb-1">
-                    GOOGLE FONTS / CSS URL
+                    {t(
+                      "dashboard.sitesEditor.fontUrlLabel",
+                      "URL Font (Stylesheet CSS / Woff2):"
+                    )}
                   </label>
                   <input
                     type="url"
-                    placeholder="https://fonts.googleapis.com/css2?family=..."
+                    placeholder={t(
+                      "dashboard.sitesEditor.fontUrlPlaceholder",
+                      "https://api.fontshare.com/v2/css?f[]=... atau .woff2"
+                    )}
                     value={urlHref}
                     onChange={(e) => setUrlHref(e.target.value)}
                     className="w-full px-3 py-1.5 rounded-lg border border-white/10 bg-white/[0.05] text-white text-xs focus:outline-hidden focus:border-cyan-400 font-mono text-[11px]"
@@ -776,7 +819,7 @@ export function CustomFontEditor({
                   className="w-full text-xs font-semibold bg-cyan-500 hover:bg-cyan-400 text-slate-900 cursor-pointer"
                 >
                   <Link2 className="w-3.5 h-3.5 mr-1.5" />
-                  Apply Font URL
+                  {t("dashboard.sitesEditor.applyFontUrlButton", "Terapkan Font URL")}
                 </Button>
               </div>
             )}
@@ -807,7 +850,7 @@ export function CustomFontEditor({
           onClick={handleCancel}
           className="flex-1 text-xs border-white/15 hover:bg-white/10 text-slate-300 hover:text-white cursor-pointer"
         >
-          {t("common.cancel", "Batal")}
+          {t("dashboard.wizard.theme.cancel", "Batal")}
         </Button>
         <Button
           type="button"
@@ -816,7 +859,7 @@ export function CustomFontEditor({
           onClick={handleApply}
           className="flex-1 text-xs font-semibold bg-cyan-500 hover:bg-cyan-400 text-slate-900 shadow-md shadow-cyan-500/20 cursor-pointer"
         >
-          {t("common.apply", "Terapkan")}
+          {t("dashboard.wizard.theme.apply", "Terapkan")}
         </Button>
       </div>
     </div>
