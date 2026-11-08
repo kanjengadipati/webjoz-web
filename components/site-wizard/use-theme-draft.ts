@@ -80,7 +80,15 @@ export function useThemeDraft({
   const [draft, setDraftState] = useState<ThemeOverrides>({});
   const [applied, setApplied] = useState<ThemeOverrides>({});
   const [undoStack, setUndoStack] = useState<ThemeOverrides[]>([]);
-  const [lastCustomTypography, setLastCustomTypography] = useState<ThemeOverrides["typography"] | null>(null);
+  const [lastCustomTypography, setLastCustomTypography] = useState<ThemeOverrides["typography"] | null>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const raw = localStorage.getItem("webjoz_wizard_custom_typography");
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  });
 
   // Single source of truth ref for closures (e.g. onDesignToken & onDone in useWizardGenerate)
   const appliedRef = useRef<ThemeOverrides>(applied);
@@ -150,8 +158,11 @@ export function useThemeDraft({
     appliedRef.current = nextApplied;
     setApplied(nextApplied);
     const typo = nextApplied.typography;
-    if (typo && (typo.heading_font_url || typo.body_font_url)) {
+    if (typo && (typo.heading_font || typo.body_font)) {
       setLastCustomTypography(typo);
+      try {
+        localStorage.setItem("webjoz_wizard_custom_typography", JSON.stringify(typo));
+      } catch {}
     }
 
     setPreviewData((prev) => {
@@ -174,10 +185,6 @@ export function useThemeDraft({
     const nextApplied = mergeOverrides(applied, patch);
     appliedRef.current = nextApplied;
     setApplied(nextApplied);
-    const typo = nextApplied.typography;
-    if (typo && (typo.heading_font_url || typo.body_font_url)) {
-      setLastCustomTypography(typo);
-    }
 
     setPreviewData((prev) => {
       if (!prev) return prev;
