@@ -391,11 +391,11 @@ export default function LandingPageClient() {
             <div className="flex flex-col items-start gap-2.5 w-full pt-0.5 sm:pt-1">
               <Button
                 onClick={() => startWizard()}
+                variant="floating-arrow"
                 size="lg"
-                className="w-auto rounded-full bg-primary text-primary-foreground font-extrabold px-7 py-5 sm:px-9 sm:py-6 text-base sm:text-lg shadow-xl hover:bg-primary/90 transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2.5 sm:gap-3 group dark:bg-white dark:text-black dark:hover:bg-slate-200"
+                className="w-full max-w-sm sm:max-w-md rounded-full"
               >
-                <span>{t("landing.ctaPrimary")}</span>
-                <ArrowRight className="size-4 sm:size-4.5 text-primary-foreground dark:text-black group-hover:translate-x-1 transition-transform" />
+                {t("landing.ctaPrimary")}
               </Button>
             </div>
 
