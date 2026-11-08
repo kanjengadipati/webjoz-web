@@ -3626,6 +3626,8 @@ export interface Translations {
         customizedStatus: string;
         paletteTitle: string;
         fontTitle: string;
+        aiPaletteName: string;
+        aiFontName: string;
         brandColorCard: string;
         customFontCard: string;
         brandColorTitle: string;
@@ -7945,6 +7947,8 @@ export const translations: Record<Locale, Translations> = {
           customizedStatus: "Tema dimodifikasi",
           paletteTitle: "Palet Warna",
           fontTitle: "Font",
+          aiPaletteName: "Bawaan AI",
+          aiFontName: "Bawaan AI",
           brandColorCard: "Warna brand saya",
           customFontCard: "Font kustom",
           brandColorTitle: "Warna Brand Saya",
@@ -12245,6 +12249,8 @@ export const translations: Record<Locale, Translations> = {
           customizedStatus: "Theme customized",
           paletteTitle: "Color Palette",
           fontTitle: "Typography",
+          aiPaletteName: "AI Original",
+          aiFontName: "AI Original",
           brandColorCard: "My brand color",
           customFontCard: "Custom font",
           brandColorTitle: "My Brand Colors",
