@@ -41,17 +41,14 @@ export function ThemePanel({ mood, theme, baseToken }: ThemePanelProps) {
   }, []);
 
   return (
-    <div className="flex h-full flex-col bg-[#111318] overflow-hidden relative">
+    <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground border-r border-border overflow-hidden relative">
       {/* ── Header ─────────────────────────────────────────────────────── */}
-      <div
-        className="shrink-0 flex items-center justify-between px-4 py-3"
-        style={{ borderBottom: "1px solid rgba(255,255,255,0.09)" }}
-      >
+      <div className="shrink-0 flex items-center justify-between px-4 py-3 border-b border-border bg-sidebar">
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-bold text-white leading-tight">
+          <p className="text-sm font-bold text-sidebar-foreground leading-tight">
             {t("dashboard.wizard.theme.panelTitle", "Sesuaikan Tema")}
           </p>
-          <p className="text-[11px] text-slate-400 leading-tight truncate">
+          <p className="text-[11px] text-sidebar-muted-foreground leading-tight truncate">
             {t("dashboard.wizard.theme.panelSubtitle", "Ubah warna & font pratinjau")}
           </p>
         </div>
@@ -65,7 +62,7 @@ export function ThemePanel({ mood, theme, baseToken }: ThemePanelProps) {
               setSubView("none");
             }}
             title={t("dashboard.wizard.theme.resetAll", "Reset semua")}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-400 transition-all hover:border-white/20 hover:text-white hover:bg-white/[0.08] active:scale-95 cursor-pointer"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-border bg-sidebar hover:bg-sidebar-muted text-sidebar-muted-foreground hover:text-sidebar-foreground transition-all active:scale-95 cursor-pointer"
           >
             <RotateCcw className="h-3.5 w-3.5" />
           </button>
@@ -82,10 +79,7 @@ export function ThemePanel({ mood, theme, baseToken }: ThemePanelProps) {
         {subView === "none" && (
           <>
             {/* Palette section */}
-            <div
-              className="border-b"
-              style={{ borderColor: "rgba(255,255,255,0.07)" }}
-            >
+            <div className="border-b border-border">
               <PaletteSection
                 palettes={presets.palettes}
                 theme={theme}
@@ -127,14 +121,11 @@ export function ThemePanel({ mood, theme, baseToken }: ThemePanelProps) {
 
       {/* ── Footer status ─────────────────────────────────────────────── */}
       {hasApplied && subView === "none" && (
-        <div
-          className="shrink-0 px-4 py-2.5 flex items-center justify-between gap-2"
-          style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
-        >
-          <span className="text-[11px] text-slate-400 leading-tight">
+        <div className="shrink-0 px-4 py-2.5 flex items-center justify-between gap-2 border-t border-border bg-sidebar">
+          <span className="text-[11px] text-sidebar-muted-foreground leading-tight">
             {t("dashboard.wizard.theme.customizedStatus", "Tema dimodifikasi")}
           </span>
-          <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse" />
+          <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
         </div>
       )}
 

@@ -31,7 +31,7 @@ function MiniPalettePreview({
 
   return (
     <div
-      className="w-full h-11 rounded-lg p-1.5 flex flex-col justify-between border border-white/10 shadow-2xs relative overflow-hidden mb-2 transition-all"
+      className="w-full h-11 rounded-lg p-1.5 flex flex-col justify-between border border-border/40 shadow-2xs relative overflow-hidden mb-2 transition-all"
       style={{ backgroundColor: bg }}
     >
       <div className="flex items-center justify-between">
@@ -57,7 +57,7 @@ function MiniPalettePreview({
           Button
         </div>
         <div
-          className="h-3 flex-1 rounded px-1 flex items-center border border-white/10 shadow-2xs min-w-0"
+          className="h-3 flex-1 rounded px-1 flex items-center border border-border/30 shadow-2xs min-w-0"
           style={{ backgroundColor: surface }}
         >
           <div
@@ -129,7 +129,7 @@ export function PaletteSection({
   return (
     <div className="px-4 py-3 space-y-2.5">
       <div className="flex items-center justify-between">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+        <p className="text-[10px] font-bold uppercase tracking-wider text-sidebar-subtle-foreground">
           {t("dashboard.sitesEditor.colorPattern", "COLOR PATTERNS")}
         </p>
       </div>
@@ -147,22 +147,22 @@ export function PaletteSection({
             className={cn(
               "p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between",
               isAiActive
-                ? "relative border-2 border-cyan-400/80 bg-cyan-500/10 ring-2 ring-cyan-400/30"
-                : "border-white/10 bg-white/[0.04] hover:border-white/20 hover:bg-white/[0.07]"
+                ? "relative border-2 border-primary bg-primary/10 ring-1 ring-primary/40"
+                : "border-border/70 bg-sidebar hover:border-border hover:bg-sidebar-muted/60"
             )}
           >
             <div>
               <div className="flex items-center justify-between mb-1.5 gap-1">
                 <div className="flex items-center gap-1 min-w-0">
-                  <p className="text-[11px] font-bold text-slate-100 truncate">
+                  <p className="text-[11px] font-bold text-sidebar-foreground truncate">
                     {t("dashboard.wizard.theme.aiPaletteName", "AI Original")}
                   </p>
-                  <span className="inline-flex shrink-0 items-center rounded px-1 py-0.2 text-[8px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                  <span className="inline-flex shrink-0 items-center rounded px-1 py-0.2 text-[8px] font-bold bg-sidebar-muted text-sidebar-foreground border border-border">
                     AI Recom
                   </span>
                 </div>
                 {isAiActive && (
-                  <span className="inline-flex items-center gap-0.5 rounded-full bg-cyan-400 px-1.5 py-0.5 text-[8px] font-black text-black shrink-0">
+                  <span className="inline-flex items-center gap-0.5 rounded-full bg-primary px-1.5 py-0.5 text-[8px] font-black text-primary-foreground shrink-0">
                     <Check className="h-2 w-2 stroke-[3]" />
                     <span>{t("dashboard.sitesEditor.activeBadge", "In use")}</span>
                   </span>
@@ -179,14 +179,14 @@ export function PaletteSection({
                   .map((color, i) => (
                     <div
                       key={i}
-                      className="w-4.5 h-4.5 rounded-md border border-white/20 shadow-2xs shrink-0"
+                      className="w-4.5 h-4.5 rounded-md border border-border/50 shadow-2xs shrink-0"
                       style={{ backgroundColor: color }}
                     />
                   ))}
               </div>
             </div>
 
-            <p className="text-[9px] text-slate-400 leading-tight line-clamp-1 mt-0.5">
+            <p className="text-[9px] text-sidebar-muted-foreground leading-tight line-clamp-1 mt-0.5">
               {t("dashboard.sitesEditor.aiRecommendation", "Rekomendasi AI")} &middot; {isColorDark(aiPalette.background || "#000") ? "Dark" : "Light"}
             </p>
           </button>
@@ -215,24 +215,24 @@ export function PaletteSection({
               className={cn(
                 "p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between",
                 isActive
-                  ? "relative border-2 border-cyan-400/80 bg-cyan-500/10 ring-2 ring-cyan-400/30"
-                  : "border-white/10 bg-white/[0.04] hover:border-white/20 hover:bg-white/[0.07]"
+                  ? "relative border-2 border-primary bg-primary/10 ring-1 ring-primary/40"
+                  : "border-border/70 bg-sidebar hover:border-border hover:bg-sidebar-muted/60"
               )}
             >
               <div>
                 <div className="flex items-center justify-between mb-1.5 gap-1">
                   <div className="flex items-center gap-1 min-w-0">
-                    <p className="text-[11px] font-bold text-slate-100 truncate">
+                    <p className="text-[11px] font-bold text-sidebar-foreground truncate">
                       {preset.name}
                     </p>
                     {isPresetMatchingAi && (
-                      <span className="inline-flex shrink-0 items-center rounded px-1 py-0.2 text-[8px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                      <span className="inline-flex shrink-0 items-center rounded px-1 py-0.2 text-[8px] font-bold bg-sidebar-muted text-sidebar-foreground border border-border">
                         AI Recom
                       </span>
                     )}
                   </div>
                   {isActive && (
-                    <span className="inline-flex items-center gap-0.5 rounded-full bg-cyan-400 px-1.5 py-0.5 text-[8px] font-black text-black shrink-0">
+                    <span className="inline-flex items-center gap-0.5 rounded-full bg-primary px-1.5 py-0.5 text-[8px] font-black text-primary-foreground shrink-0">
                       <Check className="h-2 w-2 stroke-[3]" />
                       <span>{t("dashboard.sitesEditor.activeBadge", "In use")}</span>
                     </span>
@@ -247,14 +247,14 @@ export function PaletteSection({
                   {preset.swatches.map((color, i) => (
                     <div
                       key={i}
-                      className="w-4.5 h-4.5 rounded-md border border-white/20 shadow-2xs shrink-0"
+                      className="w-4.5 h-4.5 rounded-md border border-border/50 shadow-2xs shrink-0"
                       style={{ backgroundColor: color }}
                     />
                   ))}
                 </div>
               </div>
 
-              <p className="text-[9px] text-slate-400 leading-tight line-clamp-1 mt-0.5">
+              <p className="text-[9px] text-sidebar-muted-foreground leading-tight line-clamp-1 mt-0.5">
                 {isEN ? preset.nameEn : preset.name} &middot; {isColorDark(p.background || "#000") ? "Dark" : "Light"}
               </p>
             </button>
@@ -266,9 +266,9 @@ export function PaletteSection({
       <button
         type="button"
         onClick={onOpenBrandColor}
-        className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl border border-dashed border-white/20 bg-white/[0.02] hover:bg-white/[0.06] hover:border-white/30 transition-all cursor-pointer text-slate-300 mt-1"
+        className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl border border-dashed border-border bg-sidebar hover:bg-sidebar-muted/50 transition-all cursor-pointer text-sidebar-foreground mt-1"
       >
-        <Palette className="h-4 w-4 text-cyan-400 shrink-0" />
+        <Palette className="h-4 w-4 text-sidebar-foreground shrink-0" />
         <span className="text-xs font-semibold">
           {t("dashboard.wizard.theme.brandColorCard", "Warna brand saya")}
         </span>
@@ -294,22 +294,22 @@ export function PaletteSection({
           className={cn(
             "w-full p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between mt-1",
             isCustomActive
-              ? "relative border-2 border-cyan-400/80 bg-cyan-500/10 ring-2 ring-cyan-400/30"
-              : "border-white/10 bg-white/[0.04] hover:border-white/20 hover:bg-white/[0.07]"
+              ? "relative border-2 border-primary bg-primary/10 ring-1 ring-primary/40"
+              : "border-border/70 bg-sidebar hover:border-border hover:bg-sidebar-muted/60"
           )}
         >
           <div>
             <div className="flex items-center justify-between mb-1.5 gap-1">
               <div className="flex items-center gap-1.5 min-w-0">
-                <p className="text-[11px] font-bold text-slate-100 truncate">
+                <p className="text-[11px] font-bold text-sidebar-foreground truncate">
                   {t("dashboard.wizard.theme.brandColorTitle", "Warna Brand Saya")}
                 </p>
-                <span className="inline-flex shrink-0 items-center rounded px-1 py-0.2 text-[8px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                <span className="inline-flex shrink-0 items-center rounded px-1 py-0.2 text-[8px] font-bold bg-sidebar-muted text-sidebar-muted-foreground border border-border">
                   Custom
                 </span>
               </div>
               {isCustomActive && (
-                <span className="inline-flex items-center gap-0.5 rounded-full bg-cyan-400 px-1.5 py-0.5 text-[8px] font-black text-black shrink-0">
+                <span className="inline-flex items-center gap-0.5 rounded-full bg-primary px-1.5 py-0.5 text-[8px] font-black text-primary-foreground shrink-0">
                   <Check className="h-2 w-2 stroke-[3]" />
                   <span>{t("dashboard.sitesEditor.activeBadge", "In use")}</span>
                 </span>
@@ -332,7 +332,7 @@ export function PaletteSection({
                 .map((color, i) => (
                   <div
                     key={i}
-                    className="w-4.5 h-4.5 rounded-md border border-white/20 shadow-2xs shrink-0"
+                    className="w-4.5 h-4.5 rounded-md border border-border/50 shadow-2xs shrink-0"
                     style={{ backgroundColor: color }}
                   />
                 ))}
@@ -340,7 +340,7 @@ export function PaletteSection({
           </div>
 
           <div className="flex items-center justify-between mt-0.5">
-            <p className="text-[9px] text-slate-400 leading-tight">
+            <p className="text-[9px] text-sidebar-muted-foreground leading-tight">
               {t("dashboard.wizard.theme.brandColorApplied", "Warna brand")} &middot;{" "}
               {isColorDark(activeCustom.background || "#000") ? "Dark" : "Light"}
             </p>
@@ -350,7 +350,7 @@ export function PaletteSection({
                 e.stopPropagation();
                 onOpenBrandColor();
               }}
-              className="text-[9px] text-cyan-400 hover:text-cyan-300 font-semibold cursor-pointer"
+              className="text-[9px] text-primary hover:underline font-semibold cursor-pointer"
             >
               {t("dashboard.sitesEditor.edit", "Ubah")}
             </button>

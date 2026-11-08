@@ -1285,11 +1285,10 @@ export function SiteWizard({
     >
       {/* ══ LEFT SIDEBAR: Chat Panel ══════════════════════════════════════════ */}
       <div
-        className={`absolute inset-0 z-20 flex h-full w-full shrink-0 flex-col overflow-hidden border-r bg-[#111318] shadow-xl transition-transform duration-300 ease-out md:relative md:inset-auto md:z-10 md:w-[410px] lg:w-[430px] md:translate-x-0 ${device.isMobile
+        className={`absolute inset-0 z-20 flex h-full w-full shrink-0 flex-col overflow-hidden border-r border-border bg-sidebar shadow-xl transition-transform duration-300 ease-out md:relative md:inset-auto md:z-10 md:w-[410px] lg:w-[430px] md:translate-x-0 ${device.isMobile
             ? device.mobileScreen === "chat" ? "translate-x-0" : "-translate-x-full"
             : device.mobilePreviewOpen ? "-translate-x-full" : "translate-x-0"
           }`}
-        style={{ borderColor: "rgba(255,255,255,0.07)" }}
       >
         {FEATURE_FLAGS.THEME_PANEL && preview.previewState === "result" ? (
           <ThemePanel
