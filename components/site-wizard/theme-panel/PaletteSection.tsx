@@ -5,9 +5,7 @@ import { useI18n } from "@/lib/i18n/context";
 import type { UseThemeDraftReturn } from "../use-theme-draft";
 import type { PalettePreset } from "@/lib/theme-presets";
 import { isPaletteApplied } from "@/lib/theme-presets";
-import { isEmptyOverrides } from "@/lib/theme-overrides";
 import { isColorDark } from "@/components/templates/helpers";
-import { SparkleIcon } from "@/components/sparkle-icon";
 import { Check, Palette } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -85,74 +83,99 @@ export function PaletteSection({
   const aiPalette = baseToken?.palette || {};
   const isAiActive = !theme.applied.palette || Object.keys(theme.applied.palette).length === 0;
 
+  // Check if any existing preset matches the AI recommendation
+  const matchingPresetIndex = palettes.findIndex((preset) => {
+    const p = preset.override.palette;
+    if (!p || !aiPalette.primary) return false;
+    return (
+      p.primary?.toLowerCase() === aiPalette.primary?.toLowerCase() &&
+      p.background?.toLowerCase() === aiPalette.background?.toLowerCase()
+    );
+  });
+
   return (
-    <div className="px-4 py-3 space-y-3">
-      <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-        {t("dashboard.sitesEditor.colorPattern", "COLOR PATTERNS")}
-      </p>
-
-      {/* AI Recommendation Card */}
-      {aiPalette.primary && (
-        <button
-          type="button"
-          onClick={() => {
-            theme.resetAll();
-            onApply("AI Recommendation");
-          }}
-          className={cn(
-            "relative w-full p-2.5 rounded-xl border text-left transition-all cursor-pointer",
-            isAiActive
-              ? "border-cyan-400/60 bg-cyan-500/10 shadow-[0_0_0_1px_rgba(6,182,212,0.3)] ring-1 ring-cyan-400/40"
-              : "border-white/15 bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/25"
-          )}
-        >
-          <div className="flex items-center justify-between mb-1.5">
-            <p className="text-[11px] font-bold text-white truncate flex items-center gap-1.5">
-              <SparkleIcon className="h-3 w-3 text-cyan-400 shrink-0" />
-              <span>{t("dashboard.sitesEditor.aiRecommendation", "AI Recommendation")}</span>
-            </p>
-            {isAiActive && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-cyan-400 px-1.5 py-0.5 text-[9px] font-bold text-black">
-                <Check className="h-2.5 w-2.5 stroke-[3]" />
-                <span>{t("dashboard.sitesEditor.activeBadge", "In use")}</span>
-              </span>
-            )}
-          </div>
-
-          <MiniPalettePreview palette={aiPalette} />
-
-          <div className="flex gap-1.5 mb-1.5">
-            {[aiPalette.primary, aiPalette.accent, aiPalette.background, aiPalette.surface, aiPalette.text]
-              .filter(Boolean)
-              .map((color, i) => (
-                <div
-                  key={i}
-                  className="w-5 h-5 rounded-md border border-white/20 shadow-2xs shrink-0"
-                  style={{ backgroundColor: color }}
-                />
-              ))}
-          </div>
-          <p className="text-[9.5px] text-slate-400 leading-tight">
-            {t("dashboard.sitesEditor.aiMadeFor", "Dibuat khusus dari info bisnis Anda")}
-          </p>
-        </button>
-      )}
-
-      {/* Separator */}
-      <p className="text-[10px] font-medium text-slate-500 text-center py-0.5">
-        {t("dashboard.sitesEditor.orChoosePalette", "— or choose your favorite palette —")}
-      </p>
+    <div className="px-4 py-3 space-y-2.5">
+      <div className="flex items-center justify-between">
+        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+          {t("dashboard.sitesEditor.colorPattern", "COLOR PATTERNS")}
+        </p>
+      </div>
 
       {/* 2-Column Palette Grid */}
       <div className="grid grid-cols-2 gap-2">
-        {palettes.map((preset) => {
-          const isActive = isPaletteApplied(preset, theme.applied);
+        {/* If AI palette is unique (doesn't match any preset), show it as the first card */}
+        {matchingPresetIndex === -1 && aiPalette.primary && (
+          <button
+            type="button"
+            onClick={() => {
+              theme.resetAll();
+              onApply("AI Recommendation");
+            }}
+            className={cn(
+              "p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between",
+              isAiActive
+                ? "relative border-2 border-cyan-400/80 bg-cyan-500/10 ring-2 ring-cyan-400/30"
+                : "border-white/10 bg-white/[0.04] hover:border-white/20 hover:bg-white/[0.07]"
+            )}
+          >
+            <div>
+              <div className="flex items-center justify-between mb-1.5 gap-1">
+                <div className="flex items-center gap-1 min-w-0">
+                  <p className="text-[11px] font-bold text-slate-100 truncate">
+                    {t("dashboard.wizard.theme.aiPaletteName", "AI Original")}
+                  </p>
+                  <span className="inline-flex shrink-0 items-center rounded px-1 py-0.2 text-[8px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                    AI Recom
+                  </span>
+                </div>
+                {isAiActive && (
+                  <span className="inline-flex items-center gap-0.5 rounded-full bg-cyan-400 px-1.5 py-0.5 text-[8px] font-black text-black shrink-0">
+                    <Check className="h-2 w-2 stroke-[3]" />
+                    <span>{t("dashboard.sitesEditor.activeBadge", "In use")}</span>
+                  </span>
+                )}
+              </div>
+
+              {/* Contextual mini preview */}
+              <MiniPalettePreview palette={aiPalette} />
+
+              {/* 5 Swatches */}
+              <div className="flex gap-1 mb-1.5">
+                {[aiPalette.primary, aiPalette.accent, aiPalette.background, aiPalette.surface, aiPalette.text]
+                  .filter(Boolean)
+                  .map((color, i) => (
+                    <div
+                      key={i}
+                      className="w-4.5 h-4.5 rounded-md border border-white/20 shadow-2xs shrink-0"
+                      style={{ backgroundColor: color }}
+                    />
+                  ))}
+              </div>
+            </div>
+
+            <p className="text-[9px] text-slate-400 leading-tight line-clamp-1 mt-0.5">
+              {t("dashboard.sitesEditor.aiRecommendation", "Rekomendasi AI")} &middot; {isColorDark(aiPalette.background || "#000") ? "Dark" : "Light"}
+            </p>
+          </button>
+        )}
+
+        {/* Preset Palettes */}
+        {palettes.map((preset, index) => {
+          const isPresetMatchingAi = index === matchingPresetIndex;
+          const isActive = isPresetMatchingAi
+            ? isAiActive || isPaletteApplied(preset, theme.applied)
+            : isPaletteApplied(preset, theme.applied);
           const p = preset.override.palette || {};
+
           return (
             <button
               key={preset.id}
               type="button"
               onClick={() => {
+                if (isPresetMatchingAi && isAiActive) {
+                  // already active AI recommendation
+                  return;
+                }
                 theme.applyNow(preset.override, preset.name);
                 onApply(preset.name);
               }}
@@ -164,10 +187,17 @@ export function PaletteSection({
               )}
             >
               <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <p className="text-[11px] font-bold text-slate-100 truncate pr-1">
-                    {preset.name}
-                  </p>
+                <div className="flex items-center justify-between mb-1.5 gap-1">
+                  <div className="flex items-center gap-1 min-w-0">
+                    <p className="text-[11px] font-bold text-slate-100 truncate">
+                      {preset.name}
+                    </p>
+                    {isPresetMatchingAi && (
+                      <span className="inline-flex shrink-0 items-center rounded px-1 py-0.2 text-[8px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                        AI Recom
+                      </span>
+                    )}
+                  </div>
                   {isActive && (
                     <span className="inline-flex items-center gap-0.5 rounded-full bg-cyan-400 px-1.5 py-0.5 text-[8px] font-black text-black shrink-0">
                       <Check className="h-2 w-2 stroke-[3]" />
@@ -203,7 +233,7 @@ export function PaletteSection({
       <button
         type="button"
         onClick={onOpenBrandColor}
-        className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl border border-dashed border-white/20 bg-white/[0.02] hover:bg-white/[0.06] hover:border-white/30 transition-all cursor-pointer text-slate-300"
+        className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl border border-dashed border-white/20 bg-white/[0.02] hover:bg-white/[0.06] hover:border-white/30 transition-all cursor-pointer text-slate-300 mt-1"
       >
         <Palette className="h-4 w-4 text-cyan-400 shrink-0" />
         <span className="text-xs font-semibold">
