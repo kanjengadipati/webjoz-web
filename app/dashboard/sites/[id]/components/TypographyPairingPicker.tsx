@@ -144,7 +144,7 @@ export default function TypographyPairingPicker({
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-          {t("dashboard.sitesEditor.typographyPairings")}
+          {t("dashboard.sitesEditor.typographyPairings", "Kombinasi Tipografi")}
         </label>
         {aiDesignToken?.typography && (
           <button
@@ -153,7 +153,7 @@ export default function TypographyPairingPicker({
             className="flex items-center gap-1 text-[10px] text-primary hover:underline font-semibold cursor-pointer"
           >
             <SparkleIcon className="w-2.5 h-2.5" />
-            {t("dashboard.sitesEditor.restoreAi")}
+            {t("dashboard.sitesEditor.restoreAi", "Pulihkan AI")}
           </button>
         )}
       </div>

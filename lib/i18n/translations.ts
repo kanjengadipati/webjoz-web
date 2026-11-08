@@ -2269,6 +2269,17 @@ export interface Translations {
       popularAccentsLabel: string;
       customAccentLabel: string;
       closeCustomEditor: string;
+      typographyPairings: string;
+      restoreAi: string;
+      brandLogoColorTitle: string;
+      extractFromSiteLogo: string;
+      extractedPaletteReady: string;
+      changeLogoBtn: string;
+      lightMode: string;
+      darkMode: string;
+      useAsSiteLogoCheckbox: string;
+      paletteAppliedSuccess: string;
+      applyBrandPaletteBtn: string;
       testimonialsExampleBanner: string;
       testimonialsCollect: string;
       testimonialsConfirmReal: string;
@@ -6231,6 +6242,17 @@ export const translations: Record<Locale, Translations> = {
         popularAccentsLabel: "Warna Populer",
         customAccentLabel: "Warna Kustom",
         closeCustomEditor: "Tutup",
+        typographyPairings: "Kombinasi Tipografi",
+        restoreAi: "Pulihkan AI",
+        brandLogoColorTitle: "Ekstrak Warna Logo",
+        extractFromSiteLogo: "Ekstrak dari logo situs aktif",
+        extractedPaletteReady: "Palet Warna Terdeteksi",
+        changeLogoBtn: "Ganti",
+        lightMode: "Tema Terang",
+        darkMode: "Tema Gelap",
+        useAsSiteLogoCheckbox: "Pasang juga logo ini di header website",
+        paletteAppliedSuccess: "Palet Berhasil Diterapkan!",
+        applyBrandPaletteBtn: "Terapkan Palet Logo Brand",
         testimonialsExampleBanner:
           "Contoh testimoni buatan AI. Tidak tampil di situs publik sampai Anda menggantinya dengan testimoni asli atau mengonfirmasinya.",
         testimonialsCollect: "Kumpulkan testimoni asli",
@@ -10558,6 +10580,17 @@ export const translations: Record<Locale, Translations> = {
         popularAccentsLabel: "Popular Colors",
         customAccentLabel: "Custom Color",
         closeCustomEditor: "Close",
+        typographyPairings: "Typography Pairings",
+        restoreAi: "Restore AI",
+        brandLogoColorTitle: "Logo Color Extraction",
+        extractFromSiteLogo: "Extract from active site logo",
+        extractedPaletteReady: "Detected Color Palette",
+        changeLogoBtn: "Change",
+        lightMode: "Light Theme",
+        darkMode: "Dark Theme",
+        useAsSiteLogoCheckbox: "Also use this logo in website header",
+        paletteAppliedSuccess: "Palette Successfully Applied!",
+        applyBrandPaletteBtn: "Apply Brand Logo Palette",
         testimonialsExampleBanner:
           "AI-generated example testimonials. They stay off the public site until you replace them with real ones or confirm them.",
         testimonialsCollect: "Collect real testimonials",
