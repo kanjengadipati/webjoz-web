@@ -7,6 +7,8 @@ import {
   mergeThemeOverrides,
   isEmptyOverrides,
   overridesEqual,
+  ensureReadableText,
+  stripHeavyOverrides,
 } from "@/lib/theme-overrides";
 
 export interface UseThemeDraftArgs {
@@ -31,6 +33,11 @@ export interface UseThemeDraftReturn {
   canUndo: boolean;
   undo: () => void;
   resetAll: () => void;
+
+  appliedRef: React.MutableRefObject<ThemeOverrides>;
+  mergeApplied: (token: Record<string, any>) => Record<string, any>;
+  rehydrate: (applied: ThemeOverrides) => void;
+  hardReset: () => void;
 }
 
 function mergeOverrides(base: ThemeOverrides, patch: ThemeOverrides): ThemeOverrides {
@@ -62,25 +69,48 @@ export function useThemeDraft({
   const [applied, setApplied] = useState<ThemeOverrides>({});
   const [undoStack, setUndoStack] = useState<ThemeOverrides[]>([]);
 
+  // Single source of truth ref for closures (e.g. onDesignToken & onDone in useWizardGenerate)
+  const appliedRef = useRef<ThemeOverrides>(applied);
+  appliedRef.current = applied;
+
+  // Stable merge helper reading appliedRef.current directly
+  const mergeApplied = useCallback((token: Record<string, any>): Record<string, any> => {
+    if (!token || typeof token !== "object") return token;
+    const merged = mergeThemeOverrides(token, appliedRef.current);
+    return ensureReadableText(merged);
+  }, []);
+
   // Throttle draft evaluation using useDeferredValue to keep 60fps during rapid slider/color input
   const deferredDraft = useDeferredValue(draft);
 
   // Clear draft when resetKey changes (new generation or history navigation)
+  // Retain applied and re-merge with baseToken if history entry changed
   const prevResetKeyRef = useRef(resetKey);
   useEffect(() => {
     if (prevResetKeyRef.current !== resetKey) {
       prevResetKeyRef.current = resetKey;
       setDraftState({});
-      // TODO (Fase 2): perlakuan applied setelah generate ulang / navigasi riwayat
+      // Synchronize previewData with baseToken + applied when history entry changes
+      if (enabled && baseToken && !isEmptyOverrides(appliedRef.current)) {
+        setPreviewData((prev) => {
+          if (!prev) return prev;
+          const nextToken = mergeApplied(baseToken);
+          return {
+            ...prev,
+            design_token: nextToken,
+          };
+        });
+      }
     }
-  }, [resetKey]);
+  }, [resetKey, enabled, baseToken, mergeApplied, setPreviewData]);
 
   // Combined token for preview rendering
   const previewToken = useMemo(() => {
     if (!enabled || !baseToken) {
       return baseToken ?? previewData?.design_token ?? null;
     }
-    return mergeThemeOverrides(baseToken, applied, deferredDraft);
+    const merged = mergeThemeOverrides(baseToken, applied, deferredDraft);
+    return ensureReadableText(merged);
   }, [enabled, baseToken, previewData?.design_token, applied, deferredDraft]);
 
   const hasDraft = useMemo(() => {
@@ -104,6 +134,7 @@ export function useThemeDraft({
     setUndoStack((prev) => [...prev.slice(-4), applied]);
 
     const nextApplied = mergeOverrides(applied, draft);
+    appliedRef.current = nextApplied;
     setApplied(nextApplied);
 
     setPreviewData((prev) => {
@@ -111,7 +142,7 @@ export function useThemeDraft({
       const nextToken = mergeThemeOverrides(baseToken ?? prev.design_token, nextApplied);
       return {
         ...prev,
-        design_token: nextToken,
+        design_token: ensureReadableText(nextToken),
       };
     });
 
@@ -124,6 +155,7 @@ export function useThemeDraft({
     setUndoStack((prev) => [...prev.slice(-4), applied]);
 
     const nextApplied = mergeOverrides(applied, patch);
+    appliedRef.current = nextApplied;
     setApplied(nextApplied);
 
     setPreviewData((prev) => {
@@ -131,7 +163,7 @@ export function useThemeDraft({
       const nextToken = mergeThemeOverrides(baseToken ?? prev.design_token, nextApplied);
       return {
         ...prev,
-        design_token: nextToken,
+        design_token: ensureReadableText(nextToken),
       };
     });
 
@@ -145,6 +177,7 @@ export function useThemeDraft({
 
     const prevSnapshot = undoStack[undoStack.length - 1];
     setUndoStack((prev) => prev.slice(0, -1));
+    appliedRef.current = prevSnapshot;
     setApplied(prevSnapshot);
     setDraftState({});
 
@@ -153,7 +186,7 @@ export function useThemeDraft({
       const nextToken = mergeThemeOverrides(baseToken ?? prev.design_token, prevSnapshot);
       return {
         ...prev,
-        design_token: nextToken,
+        design_token: ensureReadableText(nextToken),
       };
     });
   }, [enabled, undoStack, baseToken, setPreviewData]);
@@ -161,6 +194,7 @@ export function useThemeDraft({
   const resetAll = useCallback(() => {
     if (!enabled) return;
 
+    appliedRef.current = {};
     setDraftState({});
     setApplied({});
     setUndoStack([]);
@@ -173,6 +207,22 @@ export function useThemeDraft({
       };
     });
   }, [enabled, baseToken, setPreviewData]);
+
+  const rehydrate = useCallback((savedApplied: ThemeOverrides) => {
+    if (!savedApplied || typeof savedApplied !== "object") return;
+    const sanitized = stripHeavyOverrides(savedApplied);
+    appliedRef.current = sanitized;
+    setApplied(sanitized);
+    setDraftState({});
+    setUndoStack([]);
+  }, []);
+
+  const hardReset = useCallback(() => {
+    appliedRef.current = {};
+    setDraftState({});
+    setApplied({});
+    setUndoStack([]);
+  }, []);
 
   // Dev helper: expose to window in development for testing before UI panel (Phase 3)
   useEffect(() => {
@@ -189,6 +239,10 @@ export function useThemeDraft({
         canUndo,
         undo,
         resetAll,
+        appliedRef,
+        mergeApplied,
+        rehydrate,
+        hardReset,
       };
     }
   }, [
@@ -203,6 +257,9 @@ export function useThemeDraft({
     canUndo,
     undo,
     resetAll,
+    mergeApplied,
+    rehydrate,
+    hardReset,
   ]);
 
   return {
@@ -217,6 +274,9 @@ export function useThemeDraft({
     canUndo,
     undo,
     resetAll,
+    appliedRef,
+    mergeApplied,
+    rehydrate,
+    hardReset,
   };
 }
-

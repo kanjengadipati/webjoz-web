@@ -256,3 +256,101 @@ export function mergeThemeOverrides(
 
   return result;
 }
+
+/**
+ * Checks contrast between text and background. If < 4.5:1, returns a new token
+ * with text replaced by high-contrast black (#0f172a) or white (#ffffff).
+ * Does not mutate input token or applied state.
+ */
+export function ensureReadableText(token: any): any {
+  if (!token || typeof token !== "object" || !token.palette) {
+    return token;
+  }
+
+  const { background, text } = token.palette;
+  if (!background || !text) {
+    return token;
+  }
+
+  const bgRgb = parseHex(background);
+  const textRgb = parseHex(text);
+  if (!bgRgb || !textRgb) {
+    return token;
+  }
+
+  const bgLum = relativeLuminance(bgRgb.r, bgRgb.g, bgRgb.b);
+  const textLum = relativeLuminance(textRgb.r, textRgb.g, textRgb.b);
+  const currentRatio = (Math.max(bgLum, textLum) + 0.05) / (Math.min(bgLum, textLum) + 0.05);
+
+  if (currentRatio >= 4.5) {
+    return token;
+  }
+
+  // Under 4.5:1 -> pick higher contrast between white and dark
+  const whiteRatio = (1.0 + 0.05) / (bgLum + 0.05);
+  const darkRgb = { r: 15, g: 23, b: 42 }; // #0f172a
+  const darkLum = relativeLuminance(darkRgb.r, darkRgb.g, darkRgb.b);
+  const darkRatio = (Math.max(bgLum, darkLum) + 0.05) / (Math.min(bgLum, darkLum) + 0.05);
+
+  const fallbackText = whiteRatio >= darkRatio ? "#ffffff" : "#0f172a";
+
+  return {
+    ...token,
+    palette: {
+      ...token.palette,
+      text: fallbackText,
+    },
+  };
+}
+
+/**
+ * Strips data URLs (e.g. uploaded font files) and string values exceeding 2 KB
+ * so the overrides object is lightweight and safe to store in WIZARD_RESUME_KEY.
+ */
+export function stripHeavyOverrides(overrides: ThemeOverrides): ThemeOverrides {
+  if (!overrides || typeof overrides !== "object") {
+    return {};
+  }
+
+  const result: ThemeOverrides = {};
+
+  if (overrides.theme_mode !== undefined) {
+    result.theme_mode = overrides.theme_mode;
+  }
+
+  if (overrides.palette && typeof overrides.palette === "object") {
+    const cleanPalette: NonNullable<ThemeOverrides["palette"]> = {};
+    for (const [key, val] of Object.entries(overrides.palette) as [
+      keyof NonNullable<ThemeOverrides["palette"]>,
+      string | undefined
+    ][]) {
+      if (typeof val === "string") {
+        if (!val.startsWith("data:") && val.length <= 2048) {
+          cleanPalette[key] = val;
+        }
+      }
+    }
+    if (Object.keys(cleanPalette).length > 0) {
+      result.palette = cleanPalette;
+    }
+  }
+
+  if (overrides.typography && typeof overrides.typography === "object") {
+    const cleanTypography: NonNullable<ThemeOverrides["typography"]> = {};
+    for (const [key, val] of Object.entries(overrides.typography) as [
+      keyof NonNullable<ThemeOverrides["typography"]>,
+      string | undefined
+    ][]) {
+      if (typeof val === "string") {
+        if (!val.startsWith("data:") && val.length <= 2048) {
+          cleanTypography[key] = val;
+        }
+      }
+    }
+    if (Object.keys(cleanTypography).length > 0) {
+      result.typography = cleanTypography;
+    }
+  }
+
+  return result;
+}

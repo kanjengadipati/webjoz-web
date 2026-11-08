@@ -1,4 +1,5 @@
 import type { ChatStage, InferenceResult, Message, PreviewData } from "./types";
+import type { ThemeOverrides } from "@/lib/theme-overrides";
 
 export const WIZARD_RESUME_KEY = "webjoz_wizard_resume_v1";
 /** v2 persistence key — stores archetype + industry_id alongside v1 fields */
@@ -39,12 +40,17 @@ export interface WizardResumePreview {
   designToken: Record<string, any>;
 }
 
+export interface WizardResumeTheme {
+  applied: ThemeOverrides;
+}
+
 export interface WizardResumeSnapshot {
   version: 1;
   savedAt: number;
   businessName: string;
   chat: WizardResumeChat;
   preview?: WizardResumePreview;
+  theme?: WizardResumeTheme;
 }
 
 const VALID_STAGES: ChatStage[] = ["name", "description", "type", "language", "mood", "brand-logo", "done"];
@@ -81,6 +87,7 @@ export function loadWizardSnapshot(): WizardResumeSnapshot | null {
         messages: sanitizeMessages(parsed.chat.messages),
       },
       preview: parsed.preview && parsed.preview.content ? parsed.preview : undefined,
+      theme: parsed.theme?.applied ? { applied: parsed.theme.applied } : undefined,
     };
   } catch {
     return null;
