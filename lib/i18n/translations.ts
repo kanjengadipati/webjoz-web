@@ -3598,6 +3598,40 @@ export interface Translations {
       timeMinutesAgo: string;
       timeHoursAgo: string;
       timeDaysAgo: string;
+      theme: {
+        buttonLabel: string;
+        customizeTheme: string;
+        backToChat: string;
+        panelTitle: string;
+        panelSubtitle: string;
+        back: string;
+        resetAll: string;
+        customizedStatus: string;
+        paletteTitle: string;
+        fontTitle: string;
+        brandColorCard: string;
+        customFontCard: string;
+        brandColorTitle: string;
+        brandColorApplied: string;
+        customFontTitle: string;
+        customFontApplied: string;
+        draftBadge: string;
+        apply: string;
+        cancel: string;
+        preview: string;
+        tabColor: string;
+        tabFont: string;
+        contrastLow: string;
+        contrastDesc: string;
+        contrastFix: string;
+        toastApplied: string;
+        toastUndo: string;
+        fontHeading: string;
+        fontBody: string;
+        fontName: string;
+        fontUrl: string;
+        openGoogleFonts: string;
+      };
     };
     linkAccount: {
       title: string;
@@ -7864,6 +7898,40 @@ export const translations: Record<Locale, Translations> = {
         timeMinutesAgo: "{count} menit lalu",
         timeHoursAgo: "{count} jam lalu",
         timeDaysAgo: "{count} hari lalu",
+        theme: {
+          buttonLabel: "Tema",
+          customizeTheme: "Sesuaikan Tema",
+          backToChat: "Kembali ke Chat",
+          panelTitle: "Sesuaikan Tema",
+          panelSubtitle: "Ubah warna & font pratinjau",
+          back: "Kembali",
+          resetAll: "Reset semua",
+          customizedStatus: "Tema dimodifikasi",
+          paletteTitle: "Palet Warna",
+          fontTitle: "Font",
+          brandColorCard: "Warna brand saya",
+          customFontCard: "Font kustom",
+          brandColorTitle: "Warna Brand Saya",
+          brandColorApplied: "Warna brand",
+          customFontTitle: "Font Kustom",
+          customFontApplied: "Font kustom",
+          draftBadge: "Belum diterapkan",
+          apply: "Terapkan",
+          cancel: "Batal",
+          preview: "Preview",
+          tabColor: "Warna",
+          tabFont: "Font",
+          contrastLow: "Kontras teks rendah ({ratio}:1)",
+          contrastDesc: "Teks mungkin sulit dibaca di beberapa template.",
+          contrastFix: "Perbaiki otomatis",
+          toastApplied: "{label} diterapkan",
+          toastUndo: "Urungkan",
+          fontHeading: "Heading",
+          fontBody: "Body",
+          fontName: "Nama Font (Google Fonts)",
+          fontUrl: "URL CSS Google Fonts",
+          openGoogleFonts: "Buka Google Fonts",
+        },
       },
       linkAccount: {
         title: "Akun Tertaut",
@@ -12111,6 +12179,40 @@ export const translations: Record<Locale, Translations> = {
         timeMinutesAgo: "{count} min ago",
         timeHoursAgo: "{count} hr ago",
         timeDaysAgo: "{count} days ago",
+        theme: {
+          buttonLabel: "Theme",
+          customizeTheme: "Customize Theme",
+          backToChat: "Back to Chat",
+          panelTitle: "Customize Theme",
+          panelSubtitle: "Change preview colors & fonts",
+          back: "Back",
+          resetAll: "Reset all",
+          customizedStatus: "Theme customized",
+          paletteTitle: "Color Palette",
+          fontTitle: "Typography",
+          brandColorCard: "My brand color",
+          customFontCard: "Custom font",
+          brandColorTitle: "My Brand Colors",
+          brandColorApplied: "Brand colors",
+          customFontTitle: "Custom Font",
+          customFontApplied: "Custom font",
+          draftBadge: "Not applied",
+          apply: "Apply",
+          cancel: "Cancel",
+          preview: "Preview",
+          tabColor: "Color",
+          tabFont: "Font",
+          contrastLow: "Low text contrast ({ratio}:1)",
+          contrastDesc: "Text might be hard to read on some templates.",
+          contrastFix: "Auto-fix",
+          toastApplied: "{label} applied",
+          toastUndo: "Undo",
+          fontHeading: "Heading",
+          fontBody: "Body",
+          fontName: "Font Name (Google Fonts)",
+          fontUrl: "Google Fonts CSS URL",
+          openGoogleFonts: "Open Google Fonts",
+        },
       },
       linkAccount: {
         title: "Linked Accounts",
