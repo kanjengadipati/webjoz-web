@@ -23,8 +23,11 @@ interface ThemeSheetProps {
   mood: string;
   theme: UseThemeDraftReturn;
   baseToken: Record<string, any> | null;
+  brandPalette?: Record<string, string> | null;
+  brandThemeMode?: "light" | "dark" | null;
   onClose: () => void;
   onLogoApplied?: (url: string, paletteMap: Record<string, string>, themeMode: "light" | "dark") => void;
+  onBrandColorApplied?: (paletteMap: Record<string, string>, themeMode: "light" | "dark") => void;
   onSelectMood?: (mood: string) => void;
 }
 
@@ -33,8 +36,11 @@ export function ThemeSheet({
   mood,
   theme,
   baseToken,
+  brandPalette,
+  brandThemeMode,
   onClose,
   onLogoApplied,
+  onBrandColorApplied,
   onSelectMood,
 }: ThemeSheetProps) {
   const { t } = useI18n();
@@ -148,6 +154,8 @@ export function ThemeSheet({
               palettes={presets.palettes}
               theme={theme}
               baseToken={baseToken}
+              brandPalette={brandPalette}
+              brandThemeMode={brandThemeMode}
               onApply={handleApplyPreset}
               onOpenBrandColor={() => setSubView("brand-color")}
             />
@@ -167,9 +175,12 @@ export function ThemeSheet({
             <BrandColorEditor
               theme={theme}
               baseToken={baseToken}
+              brandPalette={brandPalette}
+              brandThemeMode={brandThemeMode}
               onClose={() => setSubView("none")}
               onApply={() => handleApplyPreset(t("dashboard.wizard.theme.brandColorApplied", "Warna brand"))}
               onLogoApplied={onLogoApplied}
+              onBrandColorApplied={onBrandColorApplied}
             />
           )}
 

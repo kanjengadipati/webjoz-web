@@ -6,6 +6,7 @@ import { Button } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
 import type { UseThemeDraftReturn } from "../use-theme-draft";
 import { isColorDark } from "@/components/templates/helpers";
+import { deriveSurface } from "@/lib/theme-overrides";
 import { ContrastHint } from "./ContrastHint";
 import { extractBrandPalettes, type ExtractedBrandPalette } from "@/lib/brand-color-extractor";
 import { compressImage } from "@/components/file-upload";
@@ -15,9 +16,12 @@ type ColorSlot = "primary" | "accent" | "background" | "text";
 interface BrandColorEditorProps {
   theme: UseThemeDraftReturn;
   baseToken: Record<string, any> | null;
+  brandPalette?: Record<string, string> | null;
+  brandThemeMode?: "light" | "dark" | null;
   onClose: () => void;
   onApply: () => void;
   onLogoApplied?: (url: string, paletteMap: Record<string, string>, themeMode: "light" | "dark") => void;
+  onBrandColorApplied?: (paletteMap: Record<string, string>, themeMode: "light" | "dark") => void;
 }
 
 const SLOT_LABELS: Record<ColorSlot, { id: string; en: string }> = {
@@ -35,20 +39,24 @@ const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 export function BrandColorEditor({
   theme,
   baseToken,
+  brandPalette,
+  brandThemeMode,
   onClose,
   onApply,
   onLogoApplied,
+  onBrandColorApplied,
 }: BrandColorEditorProps) {
   const { t, isIndonesian } = useI18n();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Initial colors calculated once from applied or baseToken
+  // Initial colors priority:
+  // 1. brandPalette (from chat state — set when user uploaded a logo)
+  // 2. baseToken.palette (AI-generated colors for the current mood)
+  // Never from theme.applied.palette (which may be a preset like "Hutan Pagi")
+  // Never from localStorage (which may be stale from a previous session)
   const getInitial = (slot: ColorSlot): string => {
-    return (
-      theme.applied.palette?.[slot] ??
-      baseToken?.palette?.[slot] ??
-      "#888888"
-    );
+    if (brandPalette?.[slot]) return brandPalette[slot];
+    return baseToken?.palette?.[slot] ?? "#888888";
   };
 
   const initialColorsRef = useRef<Record<ColorSlot, string>>({
@@ -183,37 +191,57 @@ export function BrandColorEditor({
         text: extractedPalette.text,
       };
 
+      try {
+        localStorage.setItem(
+          "webjoz_wizard_custom_palette",
+          JSON.stringify({ palette: paletteMap, theme_mode: mode })
+        );
+      } catch {}
+
       onLogoApplied?.(logoDataUrl, paletteMap, mode);
-      theme.applyNow({
-        palette: paletteMap,
-        theme_mode: mode,
-      });
+      onBrandColorApplied?.(paletteMap, mode);
+      theme.applyNow(
+        {
+          palette: paletteMap,
+          theme_mode: mode,
+        },
+        t("dashboard.wizard.theme.brandColorTitle", "Warna Brand Saya")
+      );
       onApply();
       onClose();
       return;
     }
 
-    // Otherwise apply ONLY changed slots
-    const initialColors = initialColorsRef.current;
-    const changed = (Object.keys(SLOT_LABELS) as ColorSlot[]).filter(
-      (s) => localColors[s].toLowerCase() !== initialColors[s].toLowerCase()
+    // Apply full brand palette based on localColors
+    const bg = localColors.background;
+    const mode: "light" | "dark" = isColorDark(bg) ? "dark" : "light";
+    const surface = deriveSurface(bg, localColors.text);
+    const fullBrandPalette: Record<string, string> = {
+      primary: localColors.primary,
+      accent: localColors.accent,
+      background: localColors.background,
+      surface,
+      text: localColors.text,
+    };
+
+    try {
+      localStorage.setItem(
+        "webjoz_wizard_custom_palette",
+        JSON.stringify({ palette: fullBrandPalette, theme_mode: mode })
+      );
+    } catch {}
+
+    onBrandColorApplied?.(fullBrandPalette, mode);
+    theme.applyNow(
+      {
+        palette: fullBrandPalette,
+        theme_mode: mode,
+      },
+      t("dashboard.wizard.theme.brandColorTitle", "Warna Brand Saya")
     );
-
-    if (changed.length === 0) {
-      onClose();
-      return;
-    }
-
-    const palette = Object.fromEntries(changed.map((s) => [s, localColors[s]]));
-    theme.applyNow({
-      palette,
-      ...(changed.includes("background")
-        ? { theme_mode: isColorDark(localColors.background) ? "dark" : "light" }
-        : {}),
-    });
     onApply();
     onClose();
-  }, [allValid, logoDataUrl, extractedPalette, localColors, theme, onLogoApplied, onApply, onClose]);
+  }, [allValid, logoDataUrl, extractedPalette, localColors, theme, onLogoApplied, onBrandColorApplied, onApply, onClose, t]);
 
   const handleCancel = useCallback(() => {
     theme.clearDraft();

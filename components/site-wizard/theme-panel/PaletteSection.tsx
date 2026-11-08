@@ -13,6 +13,8 @@ interface PaletteSectionProps {
   palettes: PalettePreset[];
   theme: UseThemeDraftReturn;
   baseToken: Record<string, any> | null;
+  brandPalette?: Record<string, string> | null;
+  brandThemeMode?: "light" | "dark" | null;
   onApply: (label: string) => void;
   onOpenBrandColor: () => void;
 }
@@ -74,6 +76,8 @@ export function PaletteSection({
   palettes,
   theme,
   baseToken,
+  brandPalette,
+  brandThemeMode,
   onApply,
   onOpenBrandColor,
 }: PaletteSectionProps) {
@@ -82,9 +86,6 @@ export function PaletteSection({
 
   const aiPalette = baseToken?.palette || {};
   const isPresetActive = palettes.some((p) => isPaletteApplied(p, theme.applied));
-  const isAiActive = !theme.applied.palette || Object.keys(theme.applied.palette).length === 0;
-  const isCustomApplied =
-    !isAiActive && !isPresetActive && Boolean(theme.applied.palette?.primary);
 
   const [savedCustomPalette, setSavedCustomPalette] = React.useState<{
     palette: Record<string, string>;
@@ -99,22 +100,32 @@ export function PaletteSection({
     }
   });
 
+  // Re-sync with localStorage whenever applied overrides change
   React.useEffect(() => {
-    if (isCustomApplied && theme.applied.palette) {
-      const data = {
-        palette: theme.applied.palette as Record<string, string>,
-        theme_mode: theme.applied.theme_mode as "light" | "dark" | undefined,
-      };
-      setSavedCustomPalette(data);
-      try {
-        localStorage.setItem("webjoz_wizard_custom_palette", JSON.stringify(data));
-      } catch {}
-    }
-  }, [isCustomApplied, theme.applied.palette, theme.applied.theme_mode]);
+    try {
+      const raw = localStorage.getItem("webjoz_wizard_custom_palette");
+      if (raw) {
+        setSavedCustomPalette(JSON.parse(raw));
+      }
+    } catch {}
+  }, [theme.applied]);
 
-  const activeCustom = isCustomApplied ? theme.applied.palette : savedCustomPalette?.palette;
+  const activeCustom = brandPalette ?? savedCustomPalette?.palette ?? null;
+  const activeCustomMode: "light" | "dark" =
+    brandThemeMode ??
+    savedCustomPalette?.theme_mode ??
+    (activeCustom?.background ? (isColorDark(activeCustom.background) ? "dark" : "light") : "dark");
   const hasCustomBrandColor = Boolean(activeCustom && activeCustom.primary);
-  const isCustomActive = isCustomApplied;
+
+  // Custom is active only if currently applied palette matches activeCustom
+  const isCustomActive = Boolean(
+    hasCustomBrandColor &&
+    activeCustom?.primary &&
+    theme.applied.palette?.primary?.toLowerCase() === activeCustom.primary.toLowerCase() &&
+    (!activeCustom.background || theme.applied.palette?.background?.toLowerCase() === activeCustom.background.toLowerCase())
+  );
+
+  const isAiActive = !isCustomActive && !isPresetActive && (!theme.applied.palette || Object.keys(theme.applied.palette).length === 0);
 
   // Check if any existing preset matches the AI recommendation
   const matchingPresetIndex = palettes.findIndex((preset) => {
@@ -278,13 +289,11 @@ export function PaletteSection({
       {hasCustomBrandColor && activeCustom && (
         <div
           onClick={() => {
-            if (!isCustomActive) {
+            if (!isCustomActive && activeCustom) {
               theme.applyNow(
                 {
                   palette: activeCustom,
-                  theme_mode:
-                    savedCustomPalette?.theme_mode ??
-                    (isColorDark(activeCustom.background || "#000") ? "dark" : "light"),
+                  theme_mode: activeCustomMode,
                 },
                 t("dashboard.wizard.theme.brandColorTitle", "Warna Brand Saya")
               );
@@ -342,7 +351,7 @@ export function PaletteSection({
           <div className="flex items-center justify-between mt-0.5">
             <p className="text-[9px] text-sidebar-muted-foreground leading-tight">
               {t("dashboard.wizard.theme.brandColorApplied", "Warna brand")} &middot;{" "}
-              {isColorDark(activeCustom.background || "#000") ? "Dark" : "Light"}
+              {activeCustomMode === "dark" ? "Dark" : "Light"}
             </p>
             <button
               type="button"
