@@ -136,6 +136,8 @@ import { WizardResumeBanner } from "./chat/wizard-resume-banner";
 import { WizardChatFooter } from "./chat/wizard-chat-footer";
 import { WizardChatInput } from "./chat/wizard-chat-input";
 import { BrandLogoWidget } from "./chat/brand-logo-widget";
+import { applyBrandPalette } from "@/lib/apply-brand-palette";
+import { uploadImageFile } from "@/components/file-upload";
 
 // Skor kualitas minimal (dari SSE done event) sebelum hasil AI ditampilkan.
 // Di bawah ini dan konten masih dari AI murni (bukan mock fallback) → auto-retry.
@@ -303,8 +305,11 @@ export function SiteWizard({
 
   const generate = useWizardGenerate({
     onDesignToken: (token) => {
-      preview.setStreamedDesignToken(token);
-      preview.streamedTokenRef.current = token;
+      const mergedToken = chat.brandLogoPalette
+        ? applyBrandPalette(token, chat.brandLogoPalette, chat.brandLogoThemeMode ?? undefined)
+        : token;
+      preview.setStreamedDesignToken(mergedToken);
+      preview.streamedTokenRef.current = mergedToken;
       if (token.template_id) {
         preview.setStreamedTemplateId(token.template_id);
       }
@@ -349,7 +354,10 @@ export function SiteWizard({
       preview.setTemplatePoolIndex(0);
 
       const finalContent = preview.streamedSectionsRef.current;
-      const finalToken = preview.streamedTokenRef.current ?? {};
+      let finalToken = preview.streamedTokenRef.current ?? {};
+      if (chat.brandLogoPalette) {
+        finalToken = applyBrandPalette(finalToken, chat.brandLogoPalette, chat.brandLogoThemeMode ?? undefined);
+      }
 
       const basePreview: PreviewData & { logo_url?: string | null } = {
         content: Object.keys(finalContent).length > 0 ? finalContent : {},
@@ -388,20 +396,27 @@ export function SiteWizard({
       // streamDoneRef is still set for the fast-path pacing check in the interval.
       preview.streamDoneRef.current = true;
       preview.setStreamDone(true);
-      localStorage.setItem(
-        PENDING_KEY,
-        JSON.stringify({
-          businessName: chat.businessNameRef.current,
-          businessType: chat.businessTypeRef.current,
-          businessSubType: chat.businessSubTypeRef.current,
-          description: chat.descriptionRef.current,
-          whatsapp: chat.whatsappRef.current || "",
-          service_area: chat.serviceAreaRef.current || "",
-          templateId: mergedPreview.template_id,
-          previewContent: mergedPreview.content,
-          previewDesignToken: mergedPreview.design_token,
-        })
-      );
+      try {
+        localStorage.setItem(
+          PENDING_KEY,
+          JSON.stringify({
+            businessName: chat.businessNameRef.current,
+            businessType: chat.businessTypeRef.current,
+            businessSubType: chat.businessSubTypeRef.current,
+            description: chat.descriptionRef.current,
+            whatsapp: chat.whatsappRef.current || "",
+            service_area: chat.serviceAreaRef.current || "",
+            templateId: mergedPreview.template_id,
+            previewContent: mergedPreview.content,
+            previewDesignToken: mergedPreview.design_token,
+            logo_url: chat.brandLogoUrl || undefined,
+            brandPalette: chat.brandLogoPalette || undefined,
+            brandLogoThemeMode: chat.brandLogoThemeMode || undefined,
+          })
+        );
+      } catch (storageErr) {
+        console.warn("[wizard] storage quota exceeded saving PENDING_KEY on done", storageErr);
+      }
       if (device.isMobileRef.current) {
         device.setPreviewDevice("mobile");
         if (mobileTransitionTimerRef.current) {
@@ -537,7 +552,17 @@ export function SiteWizard({
   const runGenerate = async (
     bName = chat.businessNameRef.current,
     bType = chat.businessTypeRef.current,
-    overrides: { businessSubType?: string; whatsapp?: string; serviceArea?: string; description?: string; mood?: string; language?: string; logoUrl?: string; brandPalette?: Record<string, string> } = {}
+    overrides: {
+      businessSubType?: string;
+      whatsapp?: string;
+      serviceArea?: string;
+      description?: string;
+      mood?: string;
+      language?: string;
+      logoUrl?: string;
+      brandPalette?: Record<string, string>;
+      brandLogoThemeMode?: "light" | "dark";
+    } = {}
   ) => {
     const nextBusinessSubType = overrides.businessSubType ?? chat.businessSubTypeRef.current;
     // Guard taksonomi: hanya pasangan {type, subType} kanonis yang boleh
@@ -559,11 +584,17 @@ export function SiteWizard({
 
     preview.setStreamedSections({});
     preview.setSectionSources({});
-    preview.setStreamedDesignToken(null);
+    // Pertahankan palet brand di wireframe selama generate bila user memilih logo brand
+    if (!nextBrandPalette) {
+      preview.setStreamedDesignToken(null);
+      preview.streamedTokenRef.current = null;
+    }
     preview.setArrivedSections([]);
     preview.setStreamedTemplateId("");
     preview.streamedSectionsRef.current = {};
-    preview.streamedTokenRef.current = null;
+    if (!nextBrandPalette) {
+      preview.streamedTokenRef.current = null;
+    }
     preview.streamDoneRef.current = false;
     preview.setPreviewState("loading");
     preview.setLoadingStep(0);
@@ -594,25 +625,29 @@ export function SiteWizard({
     });
     if (nextDescription) chat.descriptionRef.current = nextDescription;
 
-    localStorage.setItem(PENDING_KEY, JSON.stringify({
-      businessName: bName, businessType: safeBusinessType, businessSubType: safeBusinessSubType,
-      description: nextDescription || "",
-      whatsapp: nextWhatsapp || "", service_area: nextServiceArea || "", mood: nextMood || "",
-      language: nextLanguage,
-      ...(nextLogoUrl ? { logo_url: nextLogoUrl } : {}),
-    }));
+    try {
+      localStorage.setItem(PENDING_KEY, JSON.stringify({
+        businessName: bName, businessType: safeBusinessType, businessSubType: safeBusinessSubType,
+        description: nextDescription || "",
+        whatsapp: nextWhatsapp || "", service_area: nextServiceArea || "", mood: nextMood || "",
+        language: nextLanguage,
+        ...(nextLogoUrl ? { logo_url: nextLogoUrl } : {}),
+        ...(nextBrandPalette ? { brandPalette: nextBrandPalette, brandLogoThemeMode: overrides.brandLogoThemeMode ?? chat.brandLogoThemeMode } : {}),
+      }));
+    } catch (storageErr) {
+      console.warn("[wizard] storage quota exceeded saving pending draft", storageErr);
+    }
 
-    // If brand palette was provided, build a merged design_token with it as seed
-    const brandSeedToken = nextBrandPalette
-      ? { ...(initialDesignTokenRef.current || {}), palette: { ...(initialDesignTokenRef.current?.palette || {}), ...nextBrandPalette } }
-      : (initialDesignTokenRef.current ?? undefined);
+    // Biarkan backend AI men-generate token desain lengkap (tipografi, radius, layout, mood).
+    // Palet warna brand akan digabungkan di klien lewat onDesignToken dan final merge.
+    const initialToken = initialDesignTokenRef.current ?? undefined;
 
     await generate.startStream({
       business_name: bName, business_type: safeBusinessType, business_sub_type: safeBusinessSubType || undefined,
       whatsapp: nextWhatsapp || "", service_area: nextServiceArea || "",
       description: nextDescription || undefined, mood: nextMood || undefined,
       language: nextLanguage,
-      design_token: brandSeedToken,
+      design_token: initialToken,
       logo_url: nextLogoUrl || undefined,
       story: nextDescription || undefined,
       tagline: undefined,
@@ -729,6 +764,9 @@ export function SiteWizard({
           templateId: templateIdToSave,
           previewContent: contentToSave,
           previewDesignToken: tokenToSave,
+          logo_url: chat.brandLogoUrl || undefined,
+          brandPalette: chat.brandLogoPalette || undefined,
+          brandLogoThemeMode: chat.brandLogoThemeMode || undefined,
           savedAt: Date.now(),
         }));
         localStorage.setItem("webjoz_login_redirect", "/create?action=save");
@@ -774,13 +812,27 @@ export function SiteWizard({
       const siteId = createRes.data.id;
 
       if (preview.previewData) {
+        let logoForSave = chat.brandLogoUrl;
+        if (logoForSave?.startsWith("data:")) {
+          try {
+            const blob = await (await fetch(logoForSave)).blob();
+            logoForSave = await uploadImageFile(
+              new File([blob], "brand-logo", { type: blob.type || "image/png" }),
+              { maxWidth: 512, maxHeight: 512 }
+            );
+          } catch (uploadErr) {
+            console.error("[wizard] failed to upload logo to storage before save", uploadErr);
+            logoForSave = null;
+          }
+        }
+
         const enrichedContent = buildFullContent(
-          { content: preview.previewData.content, design_token: preview.previewData.design_token, logo_url: chat.brandLogoUrl },
+          { content: preview.previewData.content, design_token: preview.previewData.design_token, logo_url: logoForSave },
           chat.businessName, chat.businessSubType || chat.businessType, chat.description, chat.whatsapp
         );
-        if (chat.brandLogoUrl) {
-          if (enrichedContent.header) enrichedContent.header.logo_url = chat.brandLogoUrl;
-          if (enrichedContent.seo) enrichedContent.seo.favicon_url = chat.brandLogoUrl;
+        if (logoForSave && !logoForSave.startsWith("data:")) {
+          if (enrichedContent.header) enrichedContent.header.logo_url = logoForSave;
+          if (enrichedContent.seo) enrichedContent.seo.favicon_url = logoForSave;
         }
         await request(
           `/sites/${siteId}/content`,
@@ -881,6 +933,10 @@ export function SiteWizard({
           manualPicker: chat.manualPicker,
           selectedBidang: chat.selectedBidang,
           suggestedIndustryId: chat.suggestedIndustryId || undefined,
+          // Brand logo & palette
+          brandLogoUrl: chat.brandLogoUrl || undefined,
+          brandLogoPalette: chat.brandLogoPalette || undefined,
+          brandLogoThemeMode: chat.brandLogoThemeMode || undefined,
         },
         preview: preview.previewData ? toResumePreview(preview.previewData) : undefined,
       };
@@ -909,6 +965,9 @@ export function SiteWizard({
     chat.manualPicker,
     chat.selectedBidang,
     chat.suggestedIndustryId,
+    chat.brandLogoUrl,
+    chat.brandLogoPalette,
+    chat.brandLogoThemeMode,
     preview.previewData,
     resumeSnapshotProgress,
   ]);
@@ -954,8 +1013,19 @@ export function SiteWizard({
           businessSubType: resumeDraft.chat.businessSubType,
           mood: resumeDraft.chat.mood,
           language: resumeDraft.chat.siteLanguage ?? "id",
+          logoUrl: resumeDraft.chat.brandLogoUrl || undefined,
+          brandPalette: resumeDraft.chat.brandLogoPalette || undefined,
+          brandLogoThemeMode: resumeDraft.chat.brandLogoThemeMode || undefined,
         }
       );
+    } else {
+      // Tahap pra-preview (mis. brand-logo): pulihkan palet brand ke wireframe
+      if (resumeDraft.chat.brandLogoPalette) {
+        preview.setStreamedDesignToken({
+          palette: resumeDraft.chat.brandLogoPalette,
+          theme_mode: resumeDraft.chat.brandLogoThemeMode || "light",
+        });
+      }
     }
     setResumeDraft(null);
   };
@@ -1635,7 +1705,8 @@ export function SiteWizard({
                   isLocked={isLocked}
                   logoUrl={chat.brandLogoUrl}
                   palette={chat.brandLogoPalette as any}
-                  onLogoSelected={(url, extracted) => {
+                  mood={chat.moodRef.current || chat.mood}
+                  onLogoSelected={(url, extracted, _fileName, themeMode) => {
                     const paletteMap: Record<string, string> = {
                       primary: extracted.primary,
                       accent: extracted.accent,
@@ -1643,10 +1714,11 @@ export function SiteWizard({
                       surface: extracted.surface,
                       text: extracted.text,
                     };
-                    chat.setBrandLogo(url, paletteMap);
+                    chat.setBrandLogo(url, paletteMap, themeMode);
                     preview.setStreamedDesignToken((prev: any) => ({
                       ...(prev || {}),
                       palette: { ...(prev?.palette || {}), ...paletteMap },
+                      theme_mode: themeMode,
                     }));
                   }}
                   onLogoRemoved={() => {

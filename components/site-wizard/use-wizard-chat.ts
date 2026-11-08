@@ -76,6 +76,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
   // Brand Logo — wizard step setelah mood
   const [brandLogoUrl, setBrandLogoUrlState] = useState<string | null>(null);
   const [brandLogoPalette, setBrandLogoPaletteState] = useState<Record<string, string> | null>(null);
+  const [brandLogoThemeMode, setBrandLogoThemeMode] = useState<"light" | "dark" | null>(null);
 
   const [isAiTyping, setIsAiTyping] = useState(false);
   const [isAnalyzingDescription, setIsAnalyzingDescription] = useState(false);
@@ -753,17 +754,20 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
       language: siteLanguageRef.current || siteLanguage || "id",
       logoUrl: brandLogoUrl || undefined,
       brandPalette: brandLogoPalette || undefined,
+      brandLogoThemeMode: brandLogoThemeMode || undefined,
     });
   };
 
-  const setBrandLogo = (url: string, palette: Record<string, string>) => {
+  const setBrandLogo = (url: string, palette: Record<string, string>, themeMode?: "light" | "dark") => {
     setBrandLogoUrlState(url);
     setBrandLogoPaletteState(palette);
+    setBrandLogoThemeMode(themeMode ?? null);
   };
 
   const clearBrandLogo = () => {
     setBrandLogoUrlState(null);
     setBrandLogoPaletteState(null);
+    setBrandLogoThemeMode(null);
   };
 
   const handleConfirmInference = (
@@ -1416,6 +1420,9 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setAwaitingNameConfirm(!!snap.awaitingNameConfirm);
     setInferenceResult(snap.inferenceResult ?? null);
     setTypeWasInferred(!!snap.typeWasInferred);
+    setBrandLogoUrlState(snap.brandLogoUrl ?? null);
+    setBrandLogoPaletteState(snap.brandLogoPalette ?? null);
+    setBrandLogoThemeMode(snap.brandLogoThemeMode ?? null);
 
     if (snap.chatStage !== "name") hasAskedNameConfirmRef.current = true;
     businessNameRef.current = snap.businessName ?? "";
@@ -1465,6 +1472,9 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setWhatsapp("");
     setServiceArea("");
     setMood("");
+    setBrandLogoUrlState(null);
+    setBrandLogoPaletteState(null);
+    setBrandLogoThemeMode(null);
     setEntityState({ value: null, source: null });
     setSiteLanguage(null);
     setIsAiTyping(false);
@@ -1543,6 +1553,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setSiteLanguage,
     brandLogoUrl,
     brandLogoPalette,
+    brandLogoThemeMode,
     setBrandLogo,
     clearBrandLogo,
     handleStartGeneration,

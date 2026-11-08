@@ -23,7 +23,8 @@
     "test:catalog-reorder": "node --test scripts/catalog-reorder.test.mjs",
     "test:section-status": "node --test scripts/section-status.test.mjs",
     "test:section-order": "node --test scripts/section-order.test.mjs",
-    "test:inference-v2": "node --test scripts/inference-v2.test.mjs"
+    "test:inference-v2": "node --test scripts/inference-v2.test.mjs",
+    "test:brand-color": "node --test --experimental-strip-types scripts/brand-color.test.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

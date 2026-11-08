@@ -27,6 +27,10 @@ export interface WizardResumeChat {
   manualPicker?: boolean;
   selectedBidang?: string | null;
   suggestedIndustryId?: string;
+  // Brand logo & palette
+  brandLogoUrl?: string | null;
+  brandLogoPalette?: Record<string, string> | null;
+  brandLogoThemeMode?: "light" | "dark" | null;
 }
 
 export interface WizardResumePreview {
@@ -43,7 +47,7 @@ export interface WizardResumeSnapshot {
   preview?: WizardResumePreview;
 }
 
-const VALID_STAGES: ChatStage[] = ["name", "description", "type", "language", "mood", "done"];
+const VALID_STAGES: ChatStage[] = ["name", "description", "type", "language", "mood", "brand-logo", "done"];
 
 function sanitizeMessages(messages: Message[]): Message[] {
   return Array.isArray(messages)
