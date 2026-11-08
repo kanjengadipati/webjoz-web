@@ -664,6 +664,18 @@ export function SiteWizard({
     );
   };
 
+  const handleBrandColorApplied = (
+    paletteMap: Record<string, string>,
+    themeMode: "light" | "dark"
+  ) => {
+    chat.setBrandLogo(chat.brandLogoUrl || "", paletteMap, themeMode);
+    preview.setStreamedDesignToken((prev: any) => ({
+      ...(prev || {}),
+      palette: { ...(prev?.palette || {}), ...paletteMap },
+      theme_mode: themeMode,
+    }));
+  };
+
   const handleCancelGenerationError = () => {
     generate.handleCancelGenerationError();
     preview.setPreviewState("wireframe");
@@ -1339,9 +1351,12 @@ export function SiteWizard({
             mood={chat.moodRef.current || chat.mood || "clean-modern"}
             theme={themeDraft}
             baseToken={baseThemeToken}
+            brandPalette={chat.brandLogoPalette}
+            brandThemeMode={chat.brandLogoThemeMode}
             onBack={handleBack}
             onReset={handleResetChat}
             onLogoApplied={handleLogoApplied}
+            onBrandColorApplied={handleBrandColorApplied}
             onSelectMood={handleThemeMoodSelect}
           />
         ) : (
@@ -2709,8 +2724,11 @@ export function SiteWizard({
           mood={chat.moodRef.current || chat.mood || "clean-modern"}
           theme={themeDraft}
           baseToken={baseThemeToken}
+          brandPalette={chat.brandLogoPalette}
+          brandThemeMode={chat.brandLogoThemeMode}
           onClose={() => setThemeSheetOpen(false)}
           onLogoApplied={handleLogoApplied}
+          onBrandColorApplied={handleBrandColorApplied}
           onSelectMood={handleThemeMoodSelect}
         />
       )}
