@@ -219,8 +219,9 @@ export const SECTION_STEP_MAP: Record<string, number> = {
   about: 1,
   benefits: 2,
   testimonials: 3, faq: 3,
-  menu: 4, catalog: 4, gallery: 4, works: 4,
-  cta: 5, contact: 5, footer: 5, seo: 5,
+  menu: 4, catalog: 4, gallery: 4,
+  works: 5,
+  cta: 6, contact: 6, footer: 6, seo: 6,
 };
 
 export const WIREFRAME_STEPS = ["Tentang", "Keunggulan", "Kontak"] as const;
