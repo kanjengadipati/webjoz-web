@@ -133,6 +133,48 @@ export async function uploadImageFile(
   return body.secure_url;
 }
 
+/** Ekstensi dan batas ukuran font kustom. Dipakai UI dan validasi agar angkanya selalu sama. */
+export const FONT_UPLOAD_EXTS = [".woff2", ".woff", ".ttf", ".otf"];
+export const FONT_UPLOAD_MAX_BYTES = 3 * 1024 * 1024;
+
+/**
+ * Upload file font ke Cloudinary (resource_type "raw") dan kembalikan secure_url.
+ * Dipakai sebagai pengganti data URL base64 supaya design token hanya menyimpan URL.
+ * Catatan: upload preset unsigned harus mengizinkan resource type raw.
+ */
+export async function uploadFontFile(file: File): Promise<string> {
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
+  if (!cloudName || !uploadPreset) {
+    throw new Error("Konfigurasi Cloudinary belum lengkap di env.");
+  }
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", uploadPreset);
+
+  const res = await fetch(
+    `https://api.cloudinary.com/v1_1/${cloudName}/raw/upload`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody?.error?.message || "Gagal mengupload font ke Cloudinary.");
+  }
+
+  const body = await res.json();
+  if (!body.secure_url) {
+    throw new Error("Format respon Cloudinary tidak valid.");
+  }
+
+  return body.secure_url;
+}
+
 export default function FileUpload({
   label,
   value,
