@@ -24,7 +24,7 @@ export function useWizardPreview() {
   const [loadingStep, setLoadingStep] = useState(0);
   const [isSwitchingTemplate, setIsSwitchingTemplate] = useState(false);
   const [resultClear, setResultClear] = useState(false);
-  const [stepElapsed, setStepElapsed] = useState<number[]>([0, 0, 0, 0, 0, 0]);
+  const [stepElapsed, setStepElapsed] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
   const [smoothProgress, setSmoothProgress] = useState(0);
 
   const streamedSectionsRef = useRef<Record<string, any>>({});
@@ -37,7 +37,7 @@ export function useWizardPreview() {
   const lastStepTimeRef = useRef(0);
   const prevStepRef = useRef(0);
   const pendingResultRef = useRef(false);
-  const stepStartTimesRef = useRef<number[]>([0, 0, 0, 0, 0, 0]);
+  const stepStartTimesRef = useRef<number[]>([0, 0, 0, 0, 0, 0, 0]);
   const previewScrollRef = useRef<HTMLDivElement>(null);
   const previewIframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -149,13 +149,13 @@ export function useWizardPreview() {
     if (previewState !== "loading") return;
 
     setLoadingStep(0);
-    setStepElapsed([0, 0, 0, 0, 0, 0]);
+    setStepElapsed([0, 0, 0, 0, 0, 0, 0]);
     streamDoneRef.current = false;
     setStreamDone(false);
     desiredStepRef.current = 0;
     lastStepTimeRef.current = Date.now();
     pendingResultRef.current = false;
-    stepStartTimesRef.current = [Date.now(), 0, 0, 0, 0, 0];
+    stepStartTimesRef.current = [Date.now(), 0, 0, 0, 0, 0, 0];
     const startTime = Date.now();
 
     const interval = setInterval(() => {
@@ -178,9 +178,9 @@ export function useWizardPreview() {
       }
 
       // 3. Advance loading step if needed (transition to result handled by useEffect)
-      if (currentStep >= 5) return;
+      if (currentStep >= 6) return;
 
-      const targetStep = streamDoneRef.current ? 5 : desiredStepRef.current;
+      const targetStep = streamDoneRef.current ? 6 : desiredStepRef.current;
       if (currentStep >= targetStep) return;
 
       // Pacing: minimum 1.2s per step when stream is in flight
@@ -197,7 +197,9 @@ export function useWizardPreview() {
         return next;
       });
 
-      setLoadingStep(currentStep + 1);
+      const nextStep = currentStep + 1;
+      loadingStepRef.current = nextStep;
+      setLoadingStep(nextStep);
     }, 250);
 
     return () => clearInterval(interval);

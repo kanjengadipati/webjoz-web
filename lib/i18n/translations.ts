@@ -3422,6 +3422,23 @@ export interface Translations {
       loadingChecklist3: string;
       loadingChecklist4: string;
       loadingChecklist5: string;
+      loadingChecklist6: string;
+      logoPrompt: string;
+      uploadLogoTitle: string;
+      uploadLogoHint: string;
+      brandLogoAlt: string;
+      brandColorsApplied: string;
+      changeLogo: string;
+      removeLogo: string;
+      extractedPalette: string;
+      extractingBrandColor: string;
+      btnCreateMyWebsite: string;
+      colorsFontEditableNotice: string;
+      colorExtractionFailed: string;
+      continueOrRetryHint: string;
+      imageFileSizeError: string;
+      svgFileSizeError: string;
+      invalidImageFormat: string;
       loadingCardChecklist0: string;
       loadingCardChecklist1: string;
       loadingCardChecklist2: string;
@@ -7537,7 +7554,24 @@ export const translations: Record<Locale, Translations> = {
         loadingChecklist2: "Menulis keunggulan & layanan",
         loadingChecklist3: "Menyiapkan testimoni & FAQ",
         loadingChecklist4: "Menyusun katalog & galeri",
-        loadingChecklist5: "Optimasi SEO & finalisasi",
+        loadingChecklist5: "Kurasi portofolio proyek",
+        loadingChecklist6: "Optimasi SEO & finalisasi",
+        logoPrompt: "Pilihan bagus! Punya logo brand? Upload supaya warna brandmu dipakai sejak awal. Kalau belum, lewati saja.",
+        uploadLogoTitle: "Upload logo",
+        uploadLogoHint: "PNG, JPG, atau SVG · warnanya jadi dasar tema",
+        brandLogoAlt: "Logo Brand",
+        brandColorsApplied: "Warna brand diterapkan",
+        changeLogo: "Ganti",
+        removeLogo: "Hapus logo",
+        extractedPalette: "Palet Terdeteksi",
+        extractingBrandColor: "Mengekstrak warna brand...",
+        btnCreateMyWebsite: "Buat website saya",
+        colorsFontEditableNotice: "Warna dan font bisa diubah kapan saja setelah website jadi.",
+        colorExtractionFailed: "Warna tidak terbaca, pakai warna bawaan mood",
+        continueOrRetryHint: "Anda dapat mencoba file lain atau melanjutkan dengan warna bawaan mood.",
+        imageFileSizeError: "Ukuran gambar maksimal 10 MB.",
+        svgFileSizeError: "Ukuran file SVG maksimal 512 KB.",
+        invalidImageFormat: "Format file tidak didukung. Gunakan PNG, JPG, WebP, atau SVG.",
         loadingCardChecklist0: "Analisis bisnis & target pasar",
         loadingCardChecklist1: "Menyusun struktur halaman",
         loadingCardChecklist2: "Menulis headline & copywriting",
@@ -11820,7 +11854,24 @@ export const translations: Record<Locale, Translations> = {
         loadingChecklist2: "Crafting benefits & services",
         loadingChecklist3: "Preparing testimonials & FAQ",
         loadingChecklist4: "Setting up catalog & gallery",
-        loadingChecklist5: "SEO optimization & finalization",
+        loadingChecklist5: "Curating project portfolio",
+        loadingChecklist6: "SEO optimization & finalization",
+        logoPrompt: "Great choice! Have a brand logo? Upload it so your brand colors are used from the start. If not, feel free to skip.",
+        uploadLogoTitle: "Upload logo",
+        uploadLogoHint: "PNG, JPG, or SVG · colors become the theme foundation",
+        brandLogoAlt: "Brand Logo",
+        brandColorsApplied: "Brand colors applied",
+        changeLogo: "Change",
+        removeLogo: "Remove logo",
+        extractedPalette: "Extracted Palette",
+        extractingBrandColor: "Extracting brand colors...",
+        btnCreateMyWebsite: "Create my website",
+        colorsFontEditableNotice: "Colors and fonts can be changed anytime after the website is created.",
+        colorExtractionFailed: "Colors could not be detected, using default mood colors",
+        continueOrRetryHint: "You can try another file or continue with default mood colors.",
+        imageFileSizeError: "Image file size must be at most 10 MB.",
+        svgFileSizeError: "SVG file size must be at most 512 KB.",
+        invalidImageFormat: "Unsupported file format. Please use PNG, JPG, WebP, or SVG.",
         loadingCardChecklist0: "Analyzing business & target market",
         loadingCardChecklist1: "Structuring the page layout",
         loadingCardChecklist2: "Writing headlines & copy",
