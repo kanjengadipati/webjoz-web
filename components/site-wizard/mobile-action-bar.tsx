@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Plus, Pencil } from "lucide-react";
+import { Plus, Pencil, Palette } from "lucide-react";
 import { useWizardPreview } from "./use-wizard-preview";
 import { useWizardDevice } from "./use-wizard-device";
 import { useI18n } from "@/lib/i18n/context";
@@ -11,6 +11,7 @@ interface MobileActionBarProps {
   device: ReturnType<typeof useWizardDevice>;
   onOpenSheet: () => void;
   onGoToEditor: () => void;
+  onOpenTheme?: () => void;
   showLengkapiHint?: boolean;
   showEditPublishHint?: boolean;
 }
@@ -20,6 +21,7 @@ export function MobileActionBar({
   device,
   onOpenSheet,
   onGoToEditor,
+  onOpenTheme,
   showLengkapiHint = false,
   showEditPublishHint = false,
 }: MobileActionBarProps) {
@@ -31,6 +33,19 @@ export function MobileActionBar({
 
   return (
     <div className="absolute bottom-0 left-0 right-0 z-50 flex gap-2 px-4 pb-6 pt-3" style={{ background: "linear-gradient(transparent, #0d0f14 30%)" }}>
+
+      {/* Tema */}
+      {onOpenTheme && (
+        <button
+          type="button"
+          onClick={onOpenTheme}
+          aria-label={t("dashboard.wizard.theme.buttonLabel", "Tema")}
+          title={t("dashboard.wizard.theme.buttonLabel", "Tema")}
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/10 border border-border text-slate-200 transition-all active:scale-95 backdrop-blur-sm cursor-pointer"
+        >
+          <Palette className="h-4 w-4 text-slate-300" />
+        </button>
+      )}
 
       {/* Lengkapi Data */}
       <div className="relative flex-1">

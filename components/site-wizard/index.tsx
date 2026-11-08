@@ -140,6 +140,8 @@ import { WizardChatInput } from "./chat/wizard-chat-input";
 import { BrandLogoWidget } from "./chat/brand-logo-widget";
 import { applyBrandPalette } from "@/lib/apply-brand-palette";
 import { uploadImageFile } from "@/components/file-upload";
+import { ThemePanel, ThemeSheet } from "./theme-panel";
+import { Palette as PaletteIcon } from "lucide-react";
 
 // Skor kualitas minimal (dari SSE done event) sebelum hasil AI ditampilkan.
 // Di bawah ini dan konten masih dari AI murni (bukan mock fallback) → auto-retry.
@@ -210,6 +212,10 @@ export function SiteWizard({
   const [sheetOpen, setSheetOpen] = useState(false);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
+  // Theme panel state
+  const [leftPane, setLeftPane] = useState<"chat" | "theme">("chat");
+  const [themeSheetOpen, setThemeSheetOpen] = useState(false);
 
   // One-time onboarding hint for "Coba rekomendasi lain" button
   const [showRekomendasiHint, setShowRekomendasiHint] = useState(false);
@@ -615,6 +621,7 @@ export function SiteWizard({
     }
     preview.streamDoneRef.current = false;
     preview.setPreviewState("loading");
+    setLeftPane("chat");
     preview.setLoadingStep(0);
     generate.didGenerateRef.current = true;
 
@@ -1133,7 +1140,16 @@ export function SiteWizard({
           }`}
         style={{ borderColor: "rgba(255,255,255,0.07)" }}
       >
-        <div className="px-5 pt-4 pb-0 shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.09)", boxShadow: "0 1px 0 rgba(255,255,255,0.025)" }}>
+        {leftPane === "theme" && preview.previewState === "result" ? (
+          <ThemePanel
+            mood={chat.moodRef.current || chat.mood || "clean-modern"}
+            theme={themeDraft}
+            baseToken={baseThemeToken}
+            onClose={() => setLeftPane("chat")}
+          />
+        ) : (
+          <>
+            <div className="px-5 pt-4 pb-0 shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.09)", boxShadow: "0 1px 0 rgba(255,255,255,0.025)" }}>
           <div className="flex items-center justify-between gap-3 mb-4">
             {/* Left: Back button + Avatar + Title & Subtitle */}
             <div className="flex items-center gap-3 min-w-0">
@@ -2209,6 +2225,8 @@ export function SiteWizard({
           handleResetChat={handleResetChat}
           t={t}
         />
+          </>
+        )}
       </div>
 
       {/* ══ RIGHT: Browser Preview ════════════════════════════════════════════ */}
@@ -2309,6 +2327,26 @@ export function SiteWizard({
               <span className="ml-auto text-[10px] font-semibold text-slate-200 bg-white/5 border border-white/10 px-1.5 py-0.5 rounded-full w-fit block">Live Preview</span>
             )}
           </div>
+
+          {/* Theme Customize Button (Desktop left pane toggle) */}
+          {preview.previewState === "result" && !device.isMobile && (
+            <button
+              type="button"
+              onClick={() => setLeftPane((prev) => (prev === "theme" ? "chat" : "theme"))}
+              title={leftPane === "theme" ? t("dashboard.wizard.theme.backToChat", "Kembali ke Chat") : t("dashboard.wizard.theme.customizeTheme", "Sesuaikan Tema")}
+              className={`flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-semibold border transition-all active:scale-95 cursor-pointer ${
+                leftPane === "theme"
+                  ? "border-cyan-400/50 bg-cyan-500/15 text-cyan-300"
+                  : "border-white/10 bg-white/[0.06] text-slate-200 hover:bg-white/10 hover:border-white/20 hover:text-white"
+              }`}
+            >
+              <PaletteIcon size={11} />
+              <span>{t("dashboard.wizard.theme.buttonLabel", "Tema")}</span>
+              {themeDraft.hasDraft && (
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+              )}
+            </button>
+          )}
 
           {/* Full Page Preview Button */}
           {preview.previewState === "result" && (
@@ -2477,8 +2515,17 @@ export function SiteWizard({
         device={device}
         onOpenSheet={() => { setShowLengkapiHint(false); setSheetOpen(true); }}
         onGoToEditor={() => { setShowEditPublishHint(false); handleGoToEditor(); }}
+        onOpenTheme={() => setThemeSheetOpen(true)}
         showLengkapiHint={showLengkapiHint}
         showEditPublishHint={showEditPublishHint}
+      />
+
+      <ThemeSheet
+        open={themeSheetOpen}
+        mood={chat.moodRef.current || chat.mood || "clean-modern"}
+        theme={themeDraft}
+        baseToken={baseThemeToken}
+        onClose={() => setThemeSheetOpen(false)}
       />
 
       <div className="md:hidden">
