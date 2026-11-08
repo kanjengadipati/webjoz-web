@@ -271,103 +271,105 @@ export function PaletteSection({
             </button>
           );
         })}
-      </div>
 
-      {/* Brand Color Card Button (only shown when no custom brand color is configured) */}
-      {(!hasCustomBrandColor || !activeCustom) && (
-        <button
-          type="button"
-          onClick={onOpenBrandColor}
-          className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl border border-dashed border-border bg-sidebar hover:bg-sidebar-muted/50 transition-all cursor-pointer text-sidebar-foreground mt-1"
-        >
-          <Palette className="h-4 w-4 text-sidebar-foreground shrink-0" />
-          <span className="text-xs font-semibold">
-            {t("dashboard.wizard.theme.brandColorCard", "Warna brand saya")}
-          </span>
-        </button>
-      )}
-
-      {/* Dedicated Card for Custom Brand Color */}
-      {hasCustomBrandColor && activeCustom && (
-        <div
-          onClick={() => {
-            if (!isCustomActive && activeCustom) {
-              theme.applyNow(
-                {
-                  palette: activeCustom,
-                  theme_mode: activeCustomMode,
-                },
-                t("dashboard.wizard.theme.brandColorTitle", "Warna Brand Saya")
-              );
-              onApply(t("dashboard.wizard.theme.brandColorTitle", "Warna Brand Saya"));
-            }
-          }}
-          className={cn(
-            "w-full p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between mt-1",
-            isCustomActive
-              ? "relative border-2 border-primary bg-primary/10 ring-1 ring-primary/40"
-              : "border-border/70 bg-sidebar hover:border-border hover:bg-sidebar-muted/60"
-          )}
-        >
-          <div>
-            <div className="flex items-center justify-between mb-1.5 gap-1">
-              <div className="flex items-center gap-1.5 min-w-0">
-                <p className="text-[11px] font-bold text-sidebar-foreground truncate">
-                  {t("dashboard.wizard.theme.brandColorTitle", "Warna Brand Saya")}
-                </p>
-                <span className="inline-flex shrink-0 items-center rounded px-1 py-0.2 text-[8px] font-bold bg-sidebar-muted text-sidebar-muted-foreground border border-border">
-                  Custom
-                </span>
+        {/* Custom Brand Color in Grid */}
+        {hasCustomBrandColor && activeCustom ? (
+          <div
+            onClick={() => {
+              if (!isCustomActive && activeCustom) {
+                theme.applyNow(
+                  {
+                    palette: activeCustom,
+                    theme_mode: activeCustomMode,
+                  },
+                  t("dashboard.wizard.theme.brandColorTitle", "Warna Brand Saya")
+                );
+                onApply(t("dashboard.wizard.theme.brandColorTitle", "Warna Brand Saya"));
+              }
+            }}
+            className={cn(
+              "p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between",
+              isCustomActive
+                ? "relative border-2 border-primary bg-primary/10 ring-1 ring-primary/40"
+                : "border-border/70 bg-sidebar hover:border-border hover:bg-sidebar-muted/60"
+            )}
+          >
+            <div>
+              <div className="flex items-center justify-between mb-1.5 gap-1">
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <p className="text-[11px] font-bold text-sidebar-foreground truncate">
+                    {t("dashboard.wizard.theme.brandColorTitle", "Warna Brand Saya")}
+                  </p>
+                  <span className="inline-flex shrink-0 items-center rounded px-1 py-0.2 text-[8px] font-bold bg-sidebar-muted text-sidebar-muted-foreground border border-border">
+                    Custom
+                  </span>
+                </div>
+                {isCustomActive && (
+                  <span className="inline-flex items-center gap-0.5 rounded-full bg-primary px-1.5 py-0.5 text-[8px] font-black text-primary-foreground shrink-0">
+                    <Check className="h-2 w-2 stroke-[3]" />
+                    <span>{t("dashboard.sitesEditor.activeBadge", "In use")}</span>
+                  </span>
+                )}
               </div>
-              {isCustomActive && (
-                <span className="inline-flex items-center gap-0.5 rounded-full bg-primary px-1.5 py-0.5 text-[8px] font-black text-primary-foreground shrink-0">
-                  <Check className="h-2 w-2 stroke-[3]" />
-                  <span>{t("dashboard.sitesEditor.activeBadge", "In use")}</span>
-                </span>
-              )}
+
+              {/* Contextual mini preview */}
+              <MiniPalettePreview palette={activeCustom} />
+
+              {/* 5 Swatches */}
+              <div className="flex gap-1 mb-1.5">
+                {[
+                  activeCustom.primary,
+                  activeCustom.accent,
+                  activeCustom.background,
+                  activeCustom.surface,
+                  activeCustom.text,
+                ]
+                  .filter(Boolean)
+                  .map((color, i) => (
+                    <div
+                      key={i}
+                      className="w-4.5 h-4.5 rounded-md border border-border/50 shadow-2xs shrink-0"
+                      style={{ backgroundColor: color }}
+                    />
+                  ))}
+              </div>
             </div>
 
-            {/* Contextual mini preview */}
-            <MiniPalettePreview palette={activeCustom} />
-
-            {/* 5 Swatches */}
-            <div className="flex gap-1 mb-1.5">
-              {[
-                activeCustom.primary,
-                activeCustom.accent,
-                activeCustom.background,
-                activeCustom.surface,
-                activeCustom.text,
-              ]
-                .filter(Boolean)
-                .map((color, i) => (
-                  <div
-                    key={i}
-                    className="w-4.5 h-4.5 rounded-md border border-border/50 shadow-2xs shrink-0"
-                    style={{ backgroundColor: color }}
-                  />
-                ))}
+            <div className="flex items-center justify-between mt-0.5">
+              <p className="text-[9px] text-sidebar-muted-foreground leading-tight truncate">
+                {t("dashboard.wizard.theme.brandColorApplied", "Warna brand")} &middot;{" "}
+                {activeCustomMode === "dark" ? "Dark" : "Light"}
+              </p>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenBrandColor();
+                }}
+                className="text-[9px] text-primary hover:underline font-semibold cursor-pointer shrink-0 ml-1"
+              >
+                {t("dashboard.sitesEditor.edit", "Ubah")}
+              </button>
             </div>
           </div>
-
-          <div className="flex items-center justify-between mt-0.5">
-            <p className="text-[9px] text-sidebar-muted-foreground leading-tight">
-              {t("dashboard.wizard.theme.brandColorApplied", "Warna brand")} &middot;{" "}
-              {activeCustomMode === "dark" ? "Dark" : "Light"}
-            </p>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onOpenBrandColor();
-              }}
-              className="text-[9px] text-primary hover:underline font-semibold cursor-pointer"
-            >
-              {t("dashboard.sitesEditor.edit", "Ubah")}
-            </button>
-          </div>
-        </div>
-      )}
+        ) : (
+          <button
+            type="button"
+            onClick={onOpenBrandColor}
+            className="p-2.5 rounded-xl border border-dashed border-border bg-sidebar hover:bg-sidebar-muted/50 transition-all cursor-pointer text-sidebar-foreground flex flex-col items-center justify-center gap-1.5 text-center min-h-[140px]"
+          >
+            <div className="w-8 h-8 rounded-lg bg-sidebar-muted/60 flex items-center justify-center text-sidebar-foreground">
+              <Palette className="h-4 w-4" />
+            </div>
+            <span className="text-[11px] font-bold text-sidebar-foreground leading-tight">
+              {t("dashboard.wizard.theme.brandColorCard", "Warna brand saya")}
+            </span>
+            <span className="text-[9px] text-sidebar-muted-foreground leading-tight">
+              {t("dashboard.wizard.theme.brandColorDesc", "Upload logo / kustom")}
+            </span>
+          </button>
+        )}
+      </div>
     </div>
   );
 }

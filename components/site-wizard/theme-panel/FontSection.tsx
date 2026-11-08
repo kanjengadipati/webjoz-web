@@ -199,98 +199,100 @@ export function FontSection({
             </button>
           );
         })}
-      </div>
 
-      {/* Custom Font Button (only shown when no custom font is configured) */}
-      {(!hasCustomFont || !activeCustomFont) && (
-        <button
-          type="button"
-          onClick={onOpenCustomFont}
-          className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl border border-dashed border-border bg-sidebar hover:bg-sidebar-muted/50 transition-all cursor-pointer text-sidebar-foreground mt-1"
-        >
-          <Type className="h-4 w-4 text-sidebar-foreground shrink-0" />
-          <span className="text-xs font-semibold">
-            {t("dashboard.wizard.theme.customFontCard", "Font kustom")}
-          </span>
-        </button>
-      )}
-
-      {/* Dedicated Card for Custom Font */}
-      {hasCustomFont && activeCustomFont && (
-        <div
-          onClick={() => {
-            if (!isCustomActive) {
-              theme.applyNow(
-                { typography: activeCustomFont },
-                t("dashboard.wizard.theme.customFontTitle", "Font Kustom")
-              );
-              onApply(t("dashboard.wizard.theme.customFontTitle", "Font Kustom"));
-            }
-          }}
-          className={cn(
-            "w-full p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between mt-1",
-            isCustomActive
-              ? "relative border-2 border-primary bg-primary/10 ring-1 ring-primary/40"
-              : "border-border/70 bg-sidebar hover:border-border hover:bg-sidebar-muted/60"
-          )}
-        >
-          <div>
-            <div className="flex items-center justify-between mb-1.5 gap-1">
-              <div className="flex items-center gap-1.5 min-w-0">
-                <p className="text-[11px] font-bold text-sidebar-foreground truncate">
-                  {activeCustomFont.heading_font || activeCustomFont.body_font}
-                </p>
-                <span className="inline-flex shrink-0 items-center rounded px-1 py-0.2 text-[8px] font-bold bg-sidebar-muted text-sidebar-muted-foreground border border-border">
-                  Custom
-                </span>
+        {/* Custom Font in Grid */}
+        {hasCustomFont && activeCustomFont ? (
+          <div
+            onClick={() => {
+              if (!isCustomActive) {
+                theme.applyNow(
+                  { typography: activeCustomFont },
+                  t("dashboard.wizard.theme.customFontTitle", "Font Kustom")
+                );
+                onApply(t("dashboard.wizard.theme.customFontTitle", "Font Kustom"));
+              }
+            }}
+            className={cn(
+              "p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between",
+              isCustomActive
+                ? "relative border-2 border-primary bg-primary/10 ring-1 ring-primary/40"
+                : "border-border/70 bg-sidebar hover:border-border hover:bg-sidebar-muted/60"
+            )}
+          >
+            <div>
+              <div className="flex items-center justify-between mb-1.5 gap-1">
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <p className="text-[11px] font-bold text-sidebar-foreground truncate">
+                    {activeCustomFont.heading_font || activeCustomFont.body_font}
+                  </p>
+                  <span className="inline-flex shrink-0 items-center rounded px-1 py-0.2 text-[8px] font-bold bg-sidebar-muted text-sidebar-muted-foreground border border-border">
+                    Custom
+                  </span>
+                </div>
+                {isCustomActive && (
+                  <span className="inline-flex items-center gap-0.5 rounded-full bg-primary px-1.5 py-0.5 text-[8px] font-black text-primary-foreground shrink-0">
+                    <Check className="h-2 w-2 stroke-[3]" />
+                    <span>{t("dashboard.sitesEditor.activeBadge", "In use")}</span>
+                  </span>
+                )}
               </div>
-              {isCustomActive && (
-                <span className="inline-flex items-center gap-0.5 rounded-full bg-primary px-1.5 py-0.5 text-[8px] font-black text-primary-foreground shrink-0">
-                  <Check className="h-2 w-2 stroke-[3]" />
-                  <span>{t("dashboard.sitesEditor.activeBadge", "In use")}</span>
-                </span>
-              )}
+
+              {/* Font sample preview box */}
+              <div className="space-y-0.5 pointer-events-none p-1.5 rounded-md bg-sidebar-muted/40 border border-border/40 mb-1.5">
+                <p
+                  style={{
+                    fontFamily: `'${activeCustomFont.heading_font || "sans-serif"}', sans-serif`,
+                    fontWeight: "700",
+                  }}
+                  className="text-xs text-sidebar-foreground leading-tight"
+                >
+                  Heading
+                </p>
+                <p
+                  style={{
+                    fontFamily: `'${activeCustomFont.body_font || "sans-serif"}', sans-serif`,
+                  }}
+                  className="text-[9.5px] text-sidebar-muted-foreground leading-normal line-clamp-1"
+                >
+                  Aa Bb Cc 123
+                </p>
+              </div>
             </div>
 
-            {/* Font sample preview box */}
-            <div className="space-y-0.5 pointer-events-none p-1.5 rounded-md bg-sidebar-muted/40 border border-border/40 mb-1.5">
-              <p
-                style={{
-                  fontFamily: `'${activeCustomFont.heading_font || "sans-serif"}', sans-serif`,
-                  fontWeight: "700",
-                }}
-                className="text-xs text-sidebar-foreground leading-tight"
-              >
-                Heading
+            <div className="flex items-center justify-between mt-0.5">
+              <p className="text-[9px] text-sidebar-muted-foreground truncate">
+                {activeCustomFont.heading_font || "Default"} / {activeCustomFont.body_font || "Default"}
               </p>
-              <p
-                style={{
-                  fontFamily: `'${activeCustomFont.body_font || "sans-serif"}', sans-serif`,
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenCustomFont();
                 }}
-                className="text-[9.5px] text-sidebar-muted-foreground leading-normal line-clamp-1"
+                className="text-[9px] text-primary hover:underline font-semibold cursor-pointer shrink-0 ml-1"
               >
-                Aa Bb Cc 123
-              </p>
+                {t("dashboard.sitesEditor.edit", "Ubah")}
+              </button>
             </div>
           </div>
-
-          <div className="flex items-center justify-between mt-0.5">
-            <p className="text-[9px] text-sidebar-muted-foreground truncate">
-              {activeCustomFont.heading_font || "Default"} / {activeCustomFont.body_font || "Default"}
-            </p>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onOpenCustomFont();
-              }}
-              className="text-[9px] text-primary hover:underline font-semibold cursor-pointer"
-            >
-              {t("dashboard.sitesEditor.edit", "Ubah")}
-            </button>
-          </div>
-        </div>
-      )}
+        ) : (
+          <button
+            type="button"
+            onClick={onOpenCustomFont}
+            className="p-2.5 rounded-xl border border-dashed border-border bg-sidebar hover:bg-sidebar-muted/50 transition-all cursor-pointer text-sidebar-foreground flex flex-col items-center justify-center gap-1.5 text-center min-h-[140px]"
+          >
+            <div className="w-8 h-8 rounded-lg bg-sidebar-muted/60 flex items-center justify-center text-sidebar-foreground">
+              <Type className="h-4 w-4" />
+            </div>
+            <span className="text-[11px] font-bold text-sidebar-foreground leading-tight">
+              {t("dashboard.wizard.theme.customFontCard", "Font kustom")}
+            </span>
+            <span className="text-[9px] text-sidebar-muted-foreground leading-tight">
+              {t("dashboard.wizard.theme.customFontDesc", "Upload / Google Fonts")}
+            </span>
+          </button>
+        )}
+      </div>
     </div>
   );
 }
