@@ -134,10 +134,10 @@ export function InferenceConfirmWidget({
           type="button"
           onClick={() => onConfirmWithSubType(pending)}
           disabled={isLocked}
-          className={`mt-2 w-full py-2 rounded-xl text-xs font-semibold transition-all ${
+          className={`mt-2 w-full py-2 rounded-xl text-xs font-bold transition-all ${
             isLocked
               ? "bg-white/10 text-slate-500 cursor-not-allowed"
-              : "bg-primary text-white hover:bg-primary/90 cursor-pointer"
+              : "bg-white text-slate-900 hover:bg-slate-100 cursor-pointer shadow-md"
           }`}
         >
           {t("dashboard.wizard.btnContinue", "Ya, lanjut")}

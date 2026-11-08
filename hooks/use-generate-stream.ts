@@ -57,6 +57,7 @@ export interface GenerateStreamRequest {
   proof?: string;
   /** Design token pilihan dari galeri — dipakai backend sebagai starting point (skip AI generate token). */
   design_token?: Record<string, any>;
+  logo_url?: string;
   // v2 taxonomy fields (Tahap 4) — sent alongside v1 fields via adaptor
   archetype?: string;
   industry_id?: string;

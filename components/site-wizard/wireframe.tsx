@@ -16,13 +16,14 @@ interface WireframeProps {
   chatStage: ChatStage;
   designToken?: Record<string, any> | null;
   language?: "id" | "en";
+  logoUrl?: string | null;
 }
 
 function isHighlighted(stage: ChatStage): boolean {
   return stage === "done";
 }
 
-export function Wireframe({ businessName, businessType, businessSubType, description, chatStage, designToken, language }: WireframeProps) {
+export function Wireframe({ businessName, businessType, businessSubType, description, chatStage, designToken, language, logoUrl }: WireframeProps) {
   const { t } = useI18n();
   const effectiveLang: "id" | "en" = language === "en" ? "en" : "id";
   const highlight = isHighlighted(chatStage);
@@ -123,6 +124,12 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
           style={{ borderBottom: designToken ? "1px solid var(--dt-border)" : "1px solid rgba(255,255,255,0.07)" }}
         >
           <div className="flex items-center gap-2 min-w-0">
+            {logoUrl && (
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg border border-white/20 p-0.5 bg-black/20 flex items-center justify-center shrink-0 overflow-hidden shadow-xs animate-in fade-in duration-300">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
+              </div>
+            )}
             {businessName ? (
               <div
                 className="py-1.5 px-3 flex items-center rounded-lg text-xs sm:text-sm font-bold truncate max-w-[150px] sm:max-w-none whitespace-nowrap animate-in fade-in slide-in-from-left-2 duration-400 shadow-sm"

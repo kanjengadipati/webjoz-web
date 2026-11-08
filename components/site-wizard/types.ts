@@ -19,7 +19,7 @@ export type Message = {
   id: string;
   sender: "ai" | "user";
   text: string;
-  widget?: "type-chips" | "inference-confirm" | "inference-confirm-card" | "subtype-chips" | "mood-chips" | "language-chips" | "name-confirm";
+  widget?: "type-chips" | "inference-confirm" | "inference-confirm-card" | "subtype-chips" | "mood-chips" | "language-chips" | "name-confirm" | "brand-logo";
   /** Mood value yang dipilih user — dipakai untuk render SVG icon di bubble */
   moodValue?: string;
   isPreparing?: boolean;
@@ -34,7 +34,7 @@ export type PreviewData = {
   template_id?: string;
 };
 
-export type ChatStage = "name" | "description" | "type" | "language" | "mood" | "done";
+export type ChatStage = "name" | "description" | "type" | "language" | "mood" | "brand-logo" | "done";
 export type InferenceConfidence = "high" | "medium" | "low";
 export type InferenceResult = {
   type?: string;

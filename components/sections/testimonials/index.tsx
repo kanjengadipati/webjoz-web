@@ -88,20 +88,32 @@ export default function TestimonialsSection({
   return (
     <>
       {isExample && isEditor && (
-        <div className="mb-2 px-3 py-2 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs space-y-2">
-          <p className="font-medium">
-            {t("dashboard.sitesEditor.testimonialsExampleBanner",
-              "Contoh testimoni buatan AI. Tidak tampil di situs publik sampai Anda menggantinya dengan testimoni asli atau mengonfirmasinya.")}
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {params?.id && (
-              <Link href={`/dashboard/sites/${params.id}/testimonials`} className="underline">
-                {t("dashboard.sitesEditor.testimonialsCollect", "Kumpulkan testimoni asli")}
-              </Link>
-            )}
-            <button type="button" onClick={confirmReal} className="underline">
-              {t("dashboard.sitesEditor.testimonialsConfirmReal", "Ini testimoni asli, tayangkan")}
-            </button>
+        <div className="mt-11 mb-4 mx-3 sm:mx-6 px-3.5 py-2.5 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-300 text-xs shadow-sm">
+          <div className="flex items-start gap-2">
+            <span className="shrink-0 mt-0.5 text-amber-400">⚠️</span>
+            <div className="space-y-2 flex-1">
+              <p className="font-medium leading-relaxed">
+                {t("dashboard.sitesEditor.testimonialsExampleBanner",
+                  "Contoh testimoni buatan AI. Tidak tampil di situs publik sampai Anda menggantinya dengan testimoni asli atau mengonfirmasinya.")}
+              </p>
+              <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                {params?.id && (
+                  <Link
+                    href={`/dashboard/sites/${params.id}/testimonials`}
+                    className="inline-flex items-center px-2.5 py-1 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 text-[11px] font-semibold transition-colors"
+                  >
+                    {t("dashboard.sitesEditor.testimonialsCollect", "Kumpulkan testimoni asli")}
+                  </Link>
+                )}
+                <button
+                  type="button"
+                  onClick={confirmReal}
+                  className="inline-flex items-center px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-500/40 text-[11px] font-semibold transition-colors cursor-pointer"
+                >
+                  {t("dashboard.sitesEditor.testimonialsConfirmReal", "Ini testimoni asli, tayangkan")}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

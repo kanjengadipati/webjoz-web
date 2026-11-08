@@ -73,6 +73,10 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
   const [mood, setMood] = useState("");
   const [siteLanguage, setSiteLanguage] = useState<"id" | "en" | null>(null);
 
+  // Brand Logo — wizard step setelah mood
+  const [brandLogoUrl, setBrandLogoUrlState] = useState<string | null>(null);
+  const [brandLogoPalette, setBrandLogoPaletteState] = useState<Record<string, string> | null>(null);
+
   const [isAiTyping, setIsAiTyping] = useState(false);
   const [isAnalyzingDescription, setIsAnalyzingDescription] = useState(false);
   const [awaitingNameConfirm, setAwaitingNameConfirm] = useState(false);
@@ -655,10 +659,17 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setInputValue("");
     siteLanguageRef.current = lang;
 
-    // Bila deskripsi bukan input manual user (mis. hasil inferensi AI atau skip),
+    // Bila deskripsi bukan input manual murni user (mis. hasil inferensi AI, template lokal, atau bypass nama),
     // sesuaikan bahasa deskripsi secara instan via template lokal (0 token AI)
-    // agar pratinjau dan prompt sinkron dengan bahasa yang dipilih tanpa memboroskan token LLM.
-    if (descriptionSource !== "user") {
+    // agar pratinjau wireframe dan prompt sinkron dengan bahasa yang dipilih.
+    const currentDesc = descriptionRef.current || description;
+    const isAutoDesc =
+      descriptionSource !== "user" ||
+      !currentDesc ||
+      /^(Providing|Serving|Offering|Capturing|Cinematic|Creative|Modern|Strategic|Fast|Professional|Showcasing|Freshly)/i.test(currentDesc) ||
+      /^(Menyajikan|Melayani|Penginapan|Penyedia|Layanan|Potong|Pusat|Membuat|Jasa|Produksi|Solusi|Memproduksi|Menyediakan)/i.test(currentDesc);
+
+    if (isAutoDesc) {
       const refreshed = generateDescriptionFromBusinessName(
         businessNameRef.current || businessName,
         { subType: businessSubTypeRef.current || businessSubType, type: businessTypeRef.current || businessType },
@@ -711,12 +722,48 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setMessages((prev) => [
       ...prev,
       { id: Date.now().toString(), sender: "user", text: displayText, moodValue: selectedMood },
-      { id: `ai-${Date.now()}`, sender: "ai", text: t("dashboard.wizard.preparingWebsite", "Baik, AI sedang menyiapkan website Anda..."), isPreparing: true },
     ]);
 
-    setChatStage("done");
+    // Transition to brand-logo step instead of immediately generating
+    setChatStage("brand-logo");
+    setTimeout(() => {
+      typeMessage(
+        t("dashboard.wizard.logoPrompt", "Pilihan bagus! Punya logo brand? Upload supaya warna brandmu dipakai sejak awal. Kalau belum, lewati saja."),
+        () => {
+          setMessages((prev) => [
+            ...prev,
+            { id: `widget-brand-logo-${Date.now()}`, sender: "ai", text: "", widget: "brand-logo" as const },
+          ]);
+        }
+      );
+    }, 400);
+  };
 
-    onGenerate(businessName, businessType, { businessSubType, mood: selectedMood, language: siteLanguageRef.current || siteLanguage || "id" });
+  const handleStartGeneration = (
+    onGenerate: (name: string, type: string, overrides: any) => void
+  ) => {
+    setMessages((prev) => [
+      ...prev,
+      { id: `ai-${Date.now()}`, sender: "ai", text: t("dashboard.wizard.preparingWebsite", "Baik, AI sedang menyiapkan website Anda..."), isPreparing: true },
+    ]);
+    setChatStage("done");
+    onGenerate(businessName, businessType, {
+      businessSubType,
+      mood: moodRef.current || mood,
+      language: siteLanguageRef.current || siteLanguage || "id",
+      logoUrl: brandLogoUrl || undefined,
+      brandPalette: brandLogoPalette || undefined,
+    });
+  };
+
+  const setBrandLogo = (url: string, palette: Record<string, string>) => {
+    setBrandLogoUrlState(url);
+    setBrandLogoPaletteState(palette);
+  };
+
+  const clearBrandLogo = () => {
+    setBrandLogoUrlState(null);
+    setBrandLogoPaletteState(null);
   };
 
   const handleConfirmInference = (
@@ -1494,6 +1541,11 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setMood,
     siteLanguage,
     setSiteLanguage,
+    brandLogoUrl,
+    brandLogoPalette,
+    setBrandLogo,
+    clearBrandLogo,
+    handleStartGeneration,
     isAiTyping,
     isAnalyzingDescription,
     isInitialTyping,

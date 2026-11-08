@@ -54,6 +54,7 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
         chatStage={chat.chatStage}
         designToken={streamedDesignToken ?? null}
         language={siteLang}
+        logoUrl={chat.brandLogoUrl}
       />
     );
   }
@@ -65,7 +66,12 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
     ? (streamedTemplateId || (streamedDesignToken as any)?.template_id || fallbackTemplateId)
     : (previewData?.template_id || fallbackTemplateId);
   const TemplateComponent = liveTemplateId ? getTemplateComponent(liveTemplateId) : null;
-  const displayData: PreviewData = { content: liveContent, design_token: liveToken, template_id: liveTemplateId };
+  const displayData: PreviewData & { logo_url?: string | null } = {
+    content: liveContent,
+    design_token: liveToken,
+    template_id: liveTemplateId,
+    logo_url: chat.brandLogoUrl,
+  };
 
   const templatePreview = TemplateComponent ? (
     // eslint-disable-next-line react-hooks/static-components
@@ -88,6 +94,7 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
       chatStage={chat.chatStage}
       designToken={streamedDesignToken ?? null}
       language={siteLang}
+      logoUrl={chat.brandLogoUrl}
     />
   );
 
@@ -130,6 +137,7 @@ export function PreviewCanvas({ chat, preview, device }: PreviewCanvasProps) {
             description={chat.description}
             chatStage="done"
             language={siteLang}
+            logoUrl={chat.brandLogoUrl}
           />
         </div>
       )}
