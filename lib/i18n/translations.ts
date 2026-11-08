@@ -3451,6 +3451,7 @@ export interface Translations {
       inputPlaceholderName: string;
       inputPlaceholderDesc: string;
       inputPlaceholderGeneral: string;
+      inputDisabledBrandLogo: string;
       sttListening: string;
       sttUseVoice: string;
       btnNext: string;
@@ -7586,6 +7587,7 @@ export const translations: Record<Locale, Translations> = {
         inputPlaceholderName: "Masukkan nama bisnis Anda...",
         inputPlaceholderDesc: "Ceritakan singkat tentang bisnis Anda...",
         inputPlaceholderGeneral: "Ketik nama bisnis atau jawaban...",
+        inputDisabledBrandLogo: "Klik 'Buat website saya' di atas untuk melanjutkan...",
         sttListening: "Mendengarkan...",
         sttUseVoice: "Gunakan Suara (STT)",
         btnNext: "Lanjut",
@@ -11888,6 +11890,7 @@ export const translations: Record<Locale, Translations> = {
         inputPlaceholderName: "Enter your business name...",
         inputPlaceholderDesc: "Briefly describe your business...",
         inputPlaceholderGeneral: "Type business name or answer...",
+        inputDisabledBrandLogo: "Click 'Create my website' above to continue...",
         sttListening: "Listening...",
         sttUseVoice: "Use Voice (STT)",
         btnNext: "Next",

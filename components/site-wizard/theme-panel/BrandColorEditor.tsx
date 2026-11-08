@@ -29,7 +29,7 @@ export function BrandColorEditor({
   onClose,
   onApply,
 }: BrandColorEditorProps) {
-  const { t } = useI18n();
+  const { t, isIndonesian } = useI18n();
 
   // Local draft state for the 4 visible slots
   const getInitial = (slot: ColorSlot): string => {
@@ -77,6 +77,7 @@ export function BrandColorEditor({
           type="button"
           onClick={handleCancel}
           className="flex h-6 w-6 items-center justify-center rounded-md text-slate-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+          title={t("common.close", "Tutup")}
         >
           <X className="h-3.5 w-3.5" />
         </button>
@@ -111,7 +112,7 @@ export function BrandColorEditor({
             {/* Hex input */}
             <div className="flex-1">
               <label className="block text-[10px] font-semibold text-slate-500 mb-0.5 uppercase tracking-wide">
-                {SLOT_LABELS[slot].id}
+                {isIndonesian ? SLOT_LABELS[slot].id : SLOT_LABELS[slot].en}
               </label>
               <input
                 type="text"

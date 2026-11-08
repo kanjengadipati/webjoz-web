@@ -53,6 +53,13 @@ export function WizardChatInput({
     return null;
   }
 
+  const isBrandLogoStage = chat.chatStage === "brand-logo";
+  const isInputDisabled =
+    chat.isAiTyping ||
+    chat.isAnalyzingDescription ||
+    chat.isProcessingAudio ||
+    isBrandLogoStage;
+
   return (
     <div
       className={`shrink-0 px-4 pt-2 md:py-3 relative transition-all duration-150 ${
@@ -167,21 +174,28 @@ export function WizardChatInput({
         </div>
       ) : (
         <form
-          onSubmit={handleSendText}
-          className="flex items-center rounded-2xl px-4 py-1 gap-2 transition-all"
+          onSubmit={isBrandLogoStage ? (e) => e.preventDefault() : handleSendText}
+          className={`flex items-center rounded-2xl px-4 py-1 gap-2 transition-all ${
+            isBrandLogoStage ? "opacity-40 cursor-not-allowed" : ""
+          }`}
           style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}
         >
           <input
             ref={chat.inputRef}
             type="text"
-            onFocus={() => {
-              setTimeout(() => {
-                window.scrollTo(0, 0);
-                chat.chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-              }, 120);
-            }}
-            value={chat.inputValue}
-            onChange={(e) => chat.setInputValue(e.target.value)}
+            readOnly={isBrandLogoStage}
+            onFocus={
+              isBrandLogoStage
+                ? (e) => e.target.blur()
+                : () => {
+                    setTimeout(() => {
+                      window.scrollTo(0, 0);
+                      chat.chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+                    }, 120);
+                  }
+            }
+            value={isBrandLogoStage ? "" : chat.inputValue}
+            onChange={isBrandLogoStage ? undefined : (e) => chat.setInputValue(e.target.value)}
             placeholder={
               chat.isRecording
                 ? t("dashboard.wizard.sttListening", "Mendengarkan...")
@@ -189,11 +203,18 @@ export function WizardChatInput({
                 ? t("dashboard.wizard.nameConfirmPlaceholder", "Ketik 'ya' untuk lanjut, atau nama yang benar...")
                 : chat.chatStage === "description"
                 ? getDynamicDescriptionPlaceholder(locale)
+                : isBrandLogoStage
+                ? t(
+                    "dashboard.wizard.inputDisabledBrandLogo",
+                    "Klik 'Buat website saya' di atas untuk melanjutkan..."
+                  )
                 : t("dashboard.wizard.inputPlaceholderName", "Masukkan nama bisnis Anda...")
             }
-            autoFocus
-            disabled={chat.isAiTyping || chat.isAnalyzingDescription || chat.isProcessingAudio}
-            className="flex-1 bg-transparent border-none py-2.5 text-base md:text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50"
+            autoFocus={!isBrandLogoStage}
+            disabled={isInputDisabled}
+            className={`flex-1 bg-transparent border-none py-2.5 text-base md:text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50 ${
+              isBrandLogoStage ? "cursor-not-allowed select-none" : ""
+            }`}
           />
           {chat.chatStage === "description" && (
             <div className="relative shrink-0 flex items-center">
@@ -203,7 +224,7 @@ export function WizardChatInput({
               <button
                 type="button"
                 onClick={chat.startRecording}
-                disabled={chat.isAiTyping || chat.isAnalyzingDescription || chat.isProcessingAudio}
+                disabled={isInputDisabled}
                 className="w-8 h-8 flex items-center justify-center rounded-xl bg-white/[0.06] border border-border text-slate-400 hover:text-white hover:bg-white/[0.12] transition-all disabled:opacity-30 shrink-0 active:scale-95 animate-mic-pulse cursor-pointer"
                 title={t("dashboard.wizard.sttStartRecording", "Bicara dengan mic")}
               >
@@ -214,12 +235,12 @@ export function WizardChatInput({
           <button
             type="submit"
             disabled={
-              chat.isAiTyping ||
-              chat.isAnalyzingDescription ||
-              chat.isProcessingAudio ||
+              isInputDisabled ||
               (chat.chatStage === "name" && !chat.inputValue.trim())
             }
-            className="w-8 h-8 flex items-center justify-center rounded-xl bg-white text-slate-900 hover:bg-slate-100 transition-all disabled:opacity-30 shrink-0 cursor-pointer shadow-xs"
+            className={`w-8 h-8 flex items-center justify-center rounded-xl bg-white text-slate-900 hover:bg-slate-100 transition-all disabled:opacity-30 shrink-0 shadow-xs ${
+              isBrandLogoStage ? "cursor-not-allowed" : "cursor-pointer"
+            }`}
           >
             {chat.isAnalyzingDescription ? (
               <Loader2 className="w-3.5 h-3.5 animate-spin" />
