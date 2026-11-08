@@ -100,10 +100,23 @@ export function CustomFontEditor({ theme, onClose, onApply }: CustomFontEditorPr
   };
 
   const handleApply = useCallback(() => {
-    theme.commitDraft();
+    const patch: Record<string, any> = {};
+    if (headingName) {
+      patch.heading_font = headingName;
+      if (headingUrl) patch.heading_font_url = headingUrl;
+    }
+    if (bodyName) {
+      patch.body_font = bodyName;
+      if (bodyUrl) patch.body_font_url = bodyUrl;
+    }
+    if (Object.keys(patch).length > 0) {
+      theme.applyNow({ typography: patch });
+    } else {
+      theme.commitDraft();
+    }
     onApply();
     onClose();
-  }, [theme, onApply, onClose]);
+  }, [theme, headingName, headingUrl, bodyName, bodyUrl, onApply, onClose]);
 
   const handleCancel = useCallback(() => {
     theme.clearDraft();

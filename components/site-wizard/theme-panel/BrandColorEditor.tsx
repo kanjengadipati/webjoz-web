@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import { Button } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
 import type { UseThemeDraftReturn } from "../use-theme-draft";
+import { isColorDark } from "@/components/templates/helpers";
 
 type ColorSlot = "primary" | "accent" | "background" | "text";
 
@@ -53,10 +54,13 @@ export function BrandColorEditor({
   }, [theme]);
 
   const handleApply = useCallback(() => {
-    theme.commitDraft();
+    theme.applyNow({
+      palette: localColors,
+      theme_mode: isColorDark(localColors.background || "#000") ? "dark" : "light",
+    });
     onApply();
     onClose();
-  }, [theme, onApply, onClose]);
+  }, [theme, localColors, onApply, onClose]);
 
   const handleCancel = useCallback(() => {
     theme.clearDraft();
