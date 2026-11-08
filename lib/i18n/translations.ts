@@ -2252,6 +2252,21 @@ export interface Translations {
       brandIdentitySettings: string;
       brandStyle: string;
       brandStyleSubtitle: string;
+      brandColorsCardTitle: string;
+      brandColorsCardSubtitle: string;
+      brandTypographyCardTitle: string;
+      brandTypographyCardSubtitle: string;
+      activeFontPairing: string;
+      quickPairingsLabel: string;
+      customizeFontButton: string;
+      customizeColorButton: string;
+      myBrandColorTitle: string;
+      brandFontTitle: string;
+      headingShort: string;
+      bodyShort: string;
+      popularAccentsLabel: string;
+      customAccentLabel: string;
+      closeCustomEditor: string;
       testimonialsExampleBanner: string;
       testimonialsCollect: string;
       testimonialsConfirmReal: string;
@@ -6197,6 +6212,21 @@ export const translations: Record<Locale, Translations> = {
         brandIdentitySettings: "PENGATURAN IDENTITAS",
         brandStyle: "Gaya Brand (Brand style)",
         brandStyleSubtitle: "Jaga konsistensi font & warna di seluruh halaman",
+        brandColorsCardTitle: "Warna Brand",
+        brandColorsCardSubtitle: "Atur warna aksen utama website Anda",
+        brandTypographyCardTitle: "Tipografi Brand",
+        brandTypographyCardSubtitle: "Kombinasi font judul dan teks isi",
+        activeFontPairing: "Pasangan Font Aktif",
+        quickPairingsLabel: "Pilihan Pasangan Cepat",
+        customizeFontButton: "Kustomisasi Font",
+        customizeColorButton: "Sesuaikan Warna Brand",
+        myBrandColorTitle: "Warna Brand Saya",
+        brandFontTitle: "Font Brand Saya",
+        headingShort: "Judul",
+        bodyShort: "Isi",
+        popularAccentsLabel: "Warna Populer",
+        customAccentLabel: "Warna Kustom",
+        closeCustomEditor: "Tutup",
         testimonialsExampleBanner:
           "Contoh testimoni buatan AI. Tidak tampil di situs publik sampai Anda menggantinya dengan testimoni asli atau mengonfirmasinya.",
         testimonialsCollect: "Kumpulkan testimoni asli",
@@ -10507,6 +10537,21 @@ export const translations: Record<Locale, Translations> = {
         brandStyle: "Brand style",
         brandStyleSubtitle:
           "Keep your typography & color consistent across all pages",
+        brandColorsCardTitle: "Brand Colors",
+        brandColorsCardSubtitle: "Set the primary accent color for your website",
+        brandTypographyCardTitle: "Brand Typography",
+        brandTypographyCardSubtitle: "Heading and body font combination",
+        activeFontPairing: "Active Font Pairing",
+        quickPairingsLabel: "Quick Pairings",
+        customizeFontButton: "Customize Font",
+        customizeColorButton: "Customize Brand Color",
+        myBrandColorTitle: "My Brand Color",
+        brandFontTitle: "My Brand Font",
+        headingShort: "Heading",
+        bodyShort: "Body",
+        popularAccentsLabel: "Popular Colors",
+        customAccentLabel: "Custom Color",
+        closeCustomEditor: "Close",
         testimonialsExampleBanner:
           "AI-generated example testimonials. They stay off the public site until you replace them with real ones or confirm them.",
         testimonialsCollect: "Collect real testimonials",
