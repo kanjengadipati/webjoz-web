@@ -127,6 +127,7 @@ export function ThemeSheet({ open, mood, theme, baseToken, onClose }: ThemeSheet
             <PaletteSection
               palettes={presets.palettes}
               theme={theme}
+              baseToken={baseToken}
               onApply={handleApplyPreset}
               onOpenBrandColor={() => setSubView("brand-color")}
             />
@@ -136,6 +137,7 @@ export function ThemeSheet({ open, mood, theme, baseToken, onClose }: ThemeSheet
             <FontSection
               fonts={presets.fonts}
               theme={theme}
+              baseToken={baseToken}
               onApply={handleApplyPreset}
               onOpenCustomFont={() => setSubView("custom-font")}
             />

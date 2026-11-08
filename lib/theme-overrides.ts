@@ -241,6 +241,14 @@ export function mergeThemeOverrides(
       }
 
       result.palette = nextPalette;
+
+      // Synchronize dark_palette if present so buildCssVars doesn't fallback to stale AI dark tokens
+      if (result.dark_palette) {
+        result.dark_palette = {
+          ...result.dark_palette,
+          ...nextPalette,
+        };
+      }
     }
 
     if (layer.typography && typeof layer.typography === "object") {
@@ -300,6 +308,12 @@ export function ensureReadableText(token: any): any {
       ...token.palette,
       text: fallbackText,
     },
+    ...(token.dark_palette ? {
+      dark_palette: {
+        ...token.dark_palette,
+        text: fallbackText,
+      },
+    } : {}),
   };
 }
 
