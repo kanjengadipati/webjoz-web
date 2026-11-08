@@ -310,7 +310,7 @@ export function FontSection({
           <button
             type="button"
             onClick={onOpenCustomFont}
-            className="p-2.5 rounded-xl border border-dashed border-border bg-sidebar hover:bg-sidebar-muted/50 transition-all cursor-pointer text-sidebar-foreground flex flex-col items-center justify-center gap-1.5 text-center min-h-[140px]"
+            className="p-2.5 rounded-xl border border-dashed border-border bg-sidebar hover:bg-sidebar-muted/50 transition-all cursor-pointer text-sidebar-foreground flex flex-col items-center justify-center gap-1.5 text-center"
           >
             <div className="w-8 h-8 rounded-lg bg-sidebar-muted/60 flex items-center justify-center text-sidebar-foreground">
               <Type className="h-4 w-4" />

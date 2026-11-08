@@ -87,33 +87,19 @@ export function PaletteSection({
   const aiPalette = baseToken?.palette || {};
   const isPresetActive = palettes.some((p) => isPaletteApplied(p, theme.applied));
 
-  const [savedCustomPalette, setSavedCustomPalette] = React.useState<{
-    palette: Record<string, string>;
-    theme_mode?: "light" | "dark";
-  } | null>(() => {
-    if (typeof window === "undefined") return null;
-    try {
-      const raw = localStorage.getItem("webjoz_wizard_custom_palette");
-      return raw ? JSON.parse(raw) : null;
-    } catch {
-      return null;
-    }
-  });
-
-  // Re-sync with localStorage whenever applied overrides change
+  // Purge stale brand palette key from previous site sessions on mount
   React.useEffect(() => {
-    try {
-      const raw = localStorage.getItem("webjoz_wizard_custom_palette");
-      if (raw) {
-        setSavedCustomPalette(JSON.parse(raw));
-      }
-    } catch {}
-  }, [theme.applied]);
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.removeItem("webjoz_wizard_custom_palette");
+      } catch {}
+    }
+  }, []);
 
-  const activeCustom = brandPalette ?? savedCustomPalette?.palette ?? null;
+  // Brand palette is strictly scoped to this session's brandLogoPalette
+  const activeCustom = brandPalette && Object.keys(brandPalette).length > 0 ? brandPalette : null;
   const activeCustomMode: "light" | "dark" =
     brandThemeMode ??
-    savedCustomPalette?.theme_mode ??
     (activeCustom?.background ? (isColorDark(activeCustom.background) ? "dark" : "light") : "dark");
   const hasCustomBrandColor = Boolean(activeCustom && activeCustom.primary);
 
@@ -356,7 +342,7 @@ export function PaletteSection({
           <button
             type="button"
             onClick={onOpenBrandColor}
-            className="p-2.5 rounded-xl border border-dashed border-border bg-sidebar hover:bg-sidebar-muted/50 transition-all cursor-pointer text-sidebar-foreground flex flex-col items-center justify-center gap-1.5 text-center min-h-[140px]"
+            className="p-2.5 rounded-xl border border-dashed border-border bg-sidebar hover:bg-sidebar-muted/50 transition-all cursor-pointer text-sidebar-foreground flex flex-col items-center justify-center gap-1.5 text-center"
           >
             <div className="w-8 h-8 rounded-lg bg-sidebar-muted/60 flex items-center justify-center text-sidebar-foreground">
               <Palette className="h-4 w-4" />
