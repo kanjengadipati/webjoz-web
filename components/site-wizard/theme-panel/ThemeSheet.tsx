@@ -155,6 +155,7 @@ export function ThemeSheet({ open, mood, theme, baseToken, onClose }: ThemeSheet
           {subView === "custom-font" && (
             <CustomFontEditor
               theme={theme}
+              baseToken={baseToken}
               onClose={() => setSubView("none")}
               onApply={() => handleApplyPreset(t("dashboard.wizard.theme.customFontApplied", "Font kustom"))}
             />
