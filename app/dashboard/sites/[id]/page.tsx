@@ -1345,6 +1345,41 @@ export default function SiteEditorPage() {
     });
   };
 
+  const updateDesignTokenBatch = (updates: Array<{ group: "palette" | "typography" | "layout"; key: string; value: any }>) => {
+    pushGlobalUndo();
+    pushDesignUndo();
+    setDesignToken((prev: any) => {
+      let next = { ...(prev || {}) };
+
+      if (siteDetails.template_id !== "TEMPLATE_DYNAMIC") {
+        const defaults = getTemplateDefaultDesignToken(siteDetails.template_id);
+        next = {
+          ...defaults,
+          ...next,
+          palette: { ...defaults.palette, ...(next.palette || {}) },
+          typography: { ...defaults.typography, ...(next.typography || {}) },
+          layout: { ...defaults.layout, ...(next.layout || {}) }
+        };
+        setSiteDetails({ ...siteDetails, template_id: "TEMPLATE_DYNAMIC" });
+      }
+
+      for (const u of updates) {
+        next[u.group] = {
+          ...(next[u.group] || {}),
+          [u.key]: u.value
+        };
+        if (u.group === "layout" && u.key === "hero_style") {
+          next.layout.section_variants = {
+            ...(next.layout?.section_variants || {}),
+            hero: u.value,
+          };
+        }
+      }
+
+      return next;
+    });
+  };
+
   const updateSectionVariant = (section: string, value: string) => {
     pushGlobalUndo();
     pushDesignUndo();
@@ -1922,6 +1957,7 @@ export default function SiteEditorPage() {
                   <BrandStylePicker
                     designToken={designToken}
                     onUpdateField={updateDesignTokenField}
+                    onUpdateBatch={updateDesignTokenBatch}
                     locale={locale}
                   />
 
@@ -3340,6 +3376,7 @@ export default function SiteEditorPage() {
                   <BrandStylePicker
                     designToken={designToken}
                     onUpdateField={updateDesignTokenField}
+                    onUpdateBatch={updateDesignTokenBatch}
                     locale={locale}
                   />
 
