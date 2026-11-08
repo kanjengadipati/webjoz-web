@@ -341,3 +341,35 @@ test("dark_palette is NOT overwritten by light mode palettes (Temuan 11)", () =>
   assert.equal(mergedDark.dark_palette.background, "#0a0a0a");
 });
 
+test("in dark mode, overriding only primary preserves dark_palette.background and surface (Review Finding 1)", () => {
+  const darkToken = {
+    theme_mode: "dark",
+    palette: { primary: "#60a5fa", accent: "#fbbf24", background: "#ffffff", surface: "#f8fafc", text: "#0f172a" },
+    dark_palette: { primary: "#60a5fa", accent: "#fbbf24", background: "#0b1020", surface: "#141a2e", text: "#e5e7eb" },
+  };
+
+  const overridePrimary = {
+    palette: { primary: "#ff0000" },
+  };
+
+  const merged = mergeThemeOverrides(darkToken, overridePrimary);
+  assert.equal(merged.dark_palette.primary, "#ff0000");
+  // Background, surface, text must remain dark values, NOT overwritten by palette (#ffffff)
+  assert.equal(merged.dark_palette.background, "#0b1020");
+  assert.equal(merged.dark_palette.surface, "#141a2e");
+  assert.equal(merged.dark_palette.text, "#e5e7eb");
+});
+
+test("ensureReadableText adjusts palette and dark_palette contrast independently (Review Finding 2)", () => {
+  const token = {
+    theme_mode: "light",
+    palette: { background: "#ffffff", text: "#f5f5f5" }, // low contrast on white -> needs dark text
+    dark_palette: { background: "#0b1020", text: "#e5e7eb" }, // already high contrast on dark -> must NOT change
+  };
+
+  const result = ensureReadableText(token);
+  assert.equal(result.palette.text, "#0f172a"); // adjusted to dark text
+  assert.equal(result.dark_palette.text, "#e5e7eb"); // preserved light text
+});
+
+

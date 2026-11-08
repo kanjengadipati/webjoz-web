@@ -412,7 +412,7 @@ export function loadCustomFont(fontFamily: string, fontUrl: string, targetDoc?: 
   }
 
   // 1. Link stylesheet (hanya Google Fonts yang diizinkan sesuai CSP)
-  if (fontUrl.includes("fonts.googleapis.com")) {
+  if (Boolean(parseGoogleFontsUrl(fontUrl))) {
     const link = doc.createElement("link");
     link.id = safeId;
     link.rel = "stylesheet";

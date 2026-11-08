@@ -98,8 +98,8 @@ export function loadWizardSnapshot(): WizardResumeSnapshot | null {
 export function saveWizardSnapshot(snapshot: WizardResumeSnapshot): void {
   try {
     window.localStorage.setItem(WIZARD_RESUME_KEY, JSON.stringify(snapshot));
-  } catch {
-    /* ignore quota errors */
+  } catch (e) {
+    console.warn("[wizard] saveWizardSnapshot failed (quota)", e);
   }
 }
 

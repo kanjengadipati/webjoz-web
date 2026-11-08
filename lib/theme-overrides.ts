@@ -242,12 +242,19 @@ export function mergeThemeOverrides(
 
       result.palette = nextPalette;
 
-      // Synchronize dark_palette if present only in dark mode so light palettes don't overwrite dark variants (Temuan 11)
+      // Synchronize dark_palette if present only in dark mode applying only layer overrides,
+      // so light palettes don't overwrite dark variants (Temuan 11 & Review Finding 1)
       if (result.dark_palette && result.theme_mode === "dark") {
-        result.dark_palette = {
-          ...result.dark_palette,
-          ...nextPalette,
-        };
+        const darkNext = { ...result.dark_palette };
+        for (const [k, v] of Object.entries(layer.palette)) {
+          if (v !== undefined) {
+            darkNext[k] = v;
+          }
+        }
+        if (layer.palette.background !== undefined && layer.palette.surface === undefined) {
+          darkNext.surface = deriveSurface(layer.palette.background, darkNext.text);
+        }
+        result.dark_palette = darkNext;
       }
     }
 
@@ -265,56 +272,66 @@ export function mergeThemeOverrides(
   return result;
 }
 
-/**
- * Checks contrast between text and background. If < 4.5:1, returns a new token
- * with text replaced by high-contrast black (#0f172a) or white (#ffffff).
- * Does not mutate input token or applied state.
- */
-export function ensureReadableText(token: any): any {
-  if (!token || typeof token !== "object" || !token.palette) {
-    return token;
-  }
-
-  const { background, text } = token.palette;
-  if (!background || !text) {
-    return token;
-  }
-
+function readableTextColor(background?: string, currentText?: string): string | null {
+  if (!background || !currentText) return null;
   const bgRgb = parseHex(background);
-  const textRgb = parseHex(text);
-  if (!bgRgb || !textRgb) {
-    return token;
-  }
+  const textRgb = parseHex(currentText);
+  if (!bgRgb || !textRgb) return null;
 
   const bgLum = relativeLuminance(bgRgb.r, bgRgb.g, bgRgb.b);
   const textLum = relativeLuminance(textRgb.r, textRgb.g, textRgb.b);
   const currentRatio = (Math.max(bgLum, textLum) + 0.05) / (Math.min(bgLum, textLum) + 0.05);
 
-  if (currentRatio >= 4.5) {
-    return token;
-  }
+  if (currentRatio >= 4.5) return null;
 
-  // Under 4.5:1 -> pick higher contrast between white and dark
   const whiteRatio = (1.0 + 0.05) / (bgLum + 0.05);
   const darkRgb = { r: 15, g: 23, b: 42 }; // #0f172a
   const darkLum = relativeLuminance(darkRgb.r, darkRgb.g, darkRgb.b);
   const darkRatio = (Math.max(bgLum, darkLum) + 0.05) / (Math.min(bgLum, darkLum) + 0.05);
 
-  const fallbackText = whiteRatio >= darkRatio ? "#ffffff" : "#0f172a";
+  return whiteRatio >= darkRatio ? "#ffffff" : "#0f172a";
+}
 
-  return {
-    ...token,
-    palette: {
-      ...token.palette,
-      text: fallbackText,
-    },
-    ...(token.dark_palette ? {
-      dark_palette: {
-        ...token.dark_palette,
-        text: fallbackText,
-      },
-    } : {}),
-  };
+/**
+ * Checks contrast between text and background. If < 4.5:1, returns a new token
+ * with text replaced by high-contrast black (#0f172a) or white (#ffffff).
+ * Checks palette and dark_palette independently (Review Finding 2).
+ * Does not mutate input token or applied state.
+ */
+export function ensureReadableText(token: any): any {
+  if (!token || typeof token !== "object") {
+    return token;
+  }
+
+  let result = token;
+
+  if (token.palette) {
+    const fixedText = readableTextColor(token.palette.background, token.palette.text);
+    if (fixedText) {
+      result = {
+        ...result,
+        palette: {
+          ...result.palette,
+          text: fixedText,
+        },
+      };
+    }
+  }
+
+  if (token.dark_palette) {
+    const fixedDarkText = readableTextColor(token.dark_palette.background, token.dark_palette.text);
+    if (fixedDarkText) {
+      result = {
+        ...result,
+        dark_palette: {
+          ...result.dark_palette,
+          text: fixedDarkText,
+        },
+      };
+    }
+  }
+
+  return result;
 }
 
 /**
