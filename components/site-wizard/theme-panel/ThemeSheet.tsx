@@ -22,9 +22,17 @@ interface ThemeSheetProps {
   theme: UseThemeDraftReturn;
   baseToken: Record<string, any> | null;
   onClose: () => void;
+  onLogoApplied?: (url: string, paletteMap: Record<string, string>, themeMode: "light" | "dark") => void;
 }
 
-export function ThemeSheet({ open, mood, theme, baseToken, onClose }: ThemeSheetProps) {
+export function ThemeSheet({
+  open,
+  mood,
+  theme,
+  baseToken,
+  onClose,
+  onLogoApplied,
+}: ThemeSheetProps) {
   const { t } = useI18n();
   const [tab, setTab] = useState<SheetTab>("warna");
   const [subView, setSubView] = useState<SubView>("none");
@@ -59,17 +67,12 @@ export function ThemeSheet({ open, mood, theme, baseToken, onClose }: ThemeSheet
 
   return (
     <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
-        onClick={handleClose}
-        aria-hidden="true"
-      />
-
       {/* Sheet */}
       <div
-        className="fixed bottom-0 left-0 right-0 z-50 flex flex-col rounded-t-2xl bg-sidebar text-sidebar-foreground border-t border-border overflow-hidden animate-in slide-in-from-bottom duration-300 shadow-2xl"
-        style={{ maxHeight: "75dvh" }}
+        role="dialog"
+        aria-label={t("dashboard.wizard.theme.panelTitle", "Sesuaikan Tema")}
+        className="fixed inset-x-0 bottom-0 z-50 flex flex-col rounded-t-2xl bg-sidebar text-sidebar-foreground border-t border-border overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-300"
+        style={{ maxHeight: "45dvh", paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         {/* Handle bar */}
         <div className="flex justify-center pt-3 pb-1">
@@ -149,6 +152,7 @@ export function ThemeSheet({ open, mood, theme, baseToken, onClose }: ThemeSheet
               baseToken={baseToken}
               onClose={() => setSubView("none")}
               onApply={() => handleApplyPreset(t("dashboard.wizard.theme.brandColorApplied", "Warna brand"))}
+              onLogoApplied={onLogoApplied}
             />
           )}
 

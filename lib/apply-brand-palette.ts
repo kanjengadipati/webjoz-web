@@ -14,13 +14,15 @@ export function applyBrandPalette(
     return token;
   }
 
+  const isDark = themeMode === "dark" || (!themeMode && token?.theme_mode === "dark");
+
   const next = {
     ...(token || {}),
     palette: {
       ...(token?.palette || {}),
       ...palette,
     },
-    ...(token?.dark_palette ? {
+    ...(token?.dark_palette && isDark ? {
       dark_palette: {
         ...token.dark_palette,
         ...palette,

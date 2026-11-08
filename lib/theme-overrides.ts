@@ -242,8 +242,8 @@ export function mergeThemeOverrides(
 
       result.palette = nextPalette;
 
-      // Synchronize dark_palette if present so buildCssVars doesn't fallback to stale AI dark tokens
-      if (result.dark_palette) {
+      // Synchronize dark_palette if present only in dark mode so light palettes don't overwrite dark variants (Temuan 11)
+      if (result.dark_palette && result.theme_mode === "dark") {
         result.dark_palette = {
           ...result.dark_palette,
           ...nextPalette,

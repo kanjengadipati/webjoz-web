@@ -3684,6 +3684,22 @@ export interface Translations {
         openGoogleFonts: string;
         fontUploadTab: string;
         fontUploadAction: string;
+        fontUploadFailed: string;
+        slotHeading: string;
+        slotBody: string;
+        moreActions: string;
+        confirmReset: string;
+        confirmResetYes: string;
+        openPanel: string;
+        fontVerifyFailed: string;
+        fontDetected: string;
+        useFor: string;
+        useForHeading: string;
+        useForBody: string;
+        useForBoth: string;
+        fontsOnSite: string;
+        licenseNote: string;
+        resetToMoodDefault: string;
       };
     };
     linkAccount: {
@@ -8037,6 +8053,22 @@ export const translations: Record<Locale, Translations> = {
           openGoogleFonts: "Buka Google Fonts",
           fontUploadTab: "Upload File (.woff2)",
           fontUploadAction: "Pilih file font lokal",
+          fontUploadFailed: "Font {slot} gagal diunggah dan dikembalikan ke font bawaan.",
+          slotHeading: "judul",
+          slotBody: "isi",
+          moreActions: "Opsi lain",
+          confirmReset: "Mulai ulang dari awal? Hasil dan pilihan temamu akan dihapus.",
+          confirmResetYes: "Ya, mulai ulang",
+          openPanel: "Tema",
+          fontVerifyFailed: "Font tidak bisa dimuat. Periksa URL, atau coba file .woff2.",
+          fontDetected: 'Font "{family}" terdeteksi',
+          useFor: "Pakai untuk",
+          useForHeading: "Judul",
+          useForBody: "Isi",
+          useForBoth: "Keduanya",
+          fontsOnSite: "Font di website ini",
+          licenseNote: "Pastikan Anda memiliki lisensi penggunaan komersial untuk font yang diunggah.",
+          resetToMoodDefault: "Kembalikan ke font bawaan mood",
         },
       },
       linkAccount: {
@@ -12261,31 +12293,6 @@ export const translations: Record<Locale, Translations> = {
           "health.psychology": "Psychology & Counseling",
           "service.fitness": "Gym & Fitness",
           "shop.pharmacy_health": "Pharmacy & Health Supplies",
-          "shop.furniture": "Furniture",
-          "service.home_services": "Home Repair & Maintenance",
-          "service.laundry": "Laundry",
-          "shop.auto_parts": "Auto Parts & Accessories",
-          "service.motorcycle_repair": "Motorcycle Repair",
-          "service.car_repair": "Car Repair & Service",
-          "service.car_wash": "Car Wash & Detailing",
-          "service.vehicle_rental": "Vehicle Rental",
-          "shop.electronics": "Electronics & Gadgets",
-          "service.device_repair": "Phone & Electronics Repair",
-          "shop.agri": "Agriculture & Livestock Supplies",
-          "shop.pet": "Pet Shop & Supplies",
-          "service.pet_care": "Pet Grooming & Boarding",
-          "health.veterinary": "Veterinary",
-          "service.course": "Lessons & Courses",
-          "pro.coach_tutor": "Tutor & Life Coach",
-          "inst.school": "School & Educational Institution",
-          "inst.pesantren": "Islamic Boarding School",
-          "service.travel_agent": "Travel Agency & Tours",
-          "stay.hotel": "Hotel",
-          "stay.villa": "Villa & Holiday Rental",
-          "stay.homestay": "Homestay & Guesthouse",
-          "stay.kost": "Boarding House",
-          "dest.attraction": "Tourist Attraction",
-          "service.event_wedding": "Event & Wedding Planner",
           "creator.musician": "Musician & Entertainer",
           "creator.photographer": "Photographer",
           "creator.videographer": "Videographer",
@@ -12371,6 +12378,22 @@ export const translations: Record<Locale, Translations> = {
           openGoogleFonts: "Open Google Fonts",
           fontUploadTab: "Upload File (.woff2)",
           fontUploadAction: "Choose local font file",
+          fontUploadFailed: "{slot} font failed to upload and was reverted to default.",
+          slotHeading: "heading",
+          slotBody: "body",
+          moreActions: "More actions",
+          confirmReset: "Restart from beginning? Your results and theme choices will be cleared.",
+          confirmResetYes: "Yes, restart",
+          openPanel: "Theme",
+          fontVerifyFailed: "Font could not be loaded. Check URL or try a .woff2 file.",
+          fontDetected: 'Font "{family}" detected',
+          useFor: "Apply to",
+          useForHeading: "Heading",
+          useForBody: "Body",
+          useForBoth: "Both",
+          fontsOnSite: "Fonts on this website",
+          licenseNote: "Ensure you have commercial rights for uploaded custom fonts.",
+          resetToMoodDefault: "Reset to mood default font",
         },
       },
       linkAccount: {

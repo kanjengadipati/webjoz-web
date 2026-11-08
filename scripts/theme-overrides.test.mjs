@@ -307,3 +307,37 @@ test("history entry merge does not mutate original history entry", () => {
   assert.deepEqual(historyEntryToken, snapshot);
   assert.equal(targetMerged.palette.primary, "#654321");
 });
+
+test("dark_palette is NOT overwritten by light mode palettes (Temuan 11)", () => {
+  const base = {
+    theme_mode: "light",
+    palette: { primary: "#111111", background: "#ffffff" },
+    dark_palette: { primary: "#eeeeee", background: "#121212" },
+  };
+
+  const appliedLight = {
+    palette: { primary: "#ffaa00", background: "#f8f9fa" },
+  };
+
+  const merged = mergeThemeOverrides(base, appliedLight);
+  // In light mode, dark_palette stays preserved
+  assert.equal(merged.dark_palette.primary, "#eeeeee");
+  assert.equal(merged.dark_palette.background, "#121212");
+  assert.equal(merged.palette.primary, "#ffaa00");
+
+  // In dark mode, dark_palette is synchronized
+  const baseDark = {
+    theme_mode: "dark",
+    palette: { primary: "#111111", background: "#121212" },
+    dark_palette: { primary: "#111111", background: "#121212" },
+  };
+
+  const appliedDark = {
+    palette: { primary: "#ffaa00", background: "#0a0a0a" },
+  };
+
+  const mergedDark = mergeThemeOverrides(baseDark, appliedDark);
+  assert.equal(mergedDark.dark_palette.primary, "#ffaa00");
+  assert.equal(mergedDark.dark_palette.background, "#0a0a0a");
+});
+

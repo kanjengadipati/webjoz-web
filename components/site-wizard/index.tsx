@@ -145,7 +145,14 @@ import { WizardChatInput } from "./chat/wizard-chat-input";
 import { BrandLogoWidget } from "./chat/brand-logo-widget";
 import { applyBrandPalette } from "@/lib/apply-brand-palette";
 import { uploadImageFile, uploadFontFile } from "@/components/file-upload";
-import { clearCustomFontStorage, loadCustomFontStorage } from "@/lib/wizard-font-storage";
+import {
+  clearCustomFontStorage,
+  loadCustomFontStorage,
+  syncCustomFontStorage,
+  restoreCustomFontUrls,
+  dataUrlToBlob,
+  fontExtFromMime,
+} from "@/lib/wizard-font-storage";
 import { FEATURE_FLAGS } from "@/lib/feature-flags";
 import { ThemePanel, ThemeSheet } from "./theme-panel";
 
@@ -153,6 +160,36 @@ import { ThemePanel, ThemeSheet } from "./theme-panel";
 // Di bawah ini dan konten masih dari AI murni (bukan mock fallback) → auto-retry.
 const QUALITY_GATE_THRESHOLD = 70;
 const MAX_QUALITY_RETRIES = 1;
+
+async function persistCustomFonts(
+  typography: Record<string, any> | undefined,
+  baseTypography: Record<string, any> | undefined,
+  notifyFail: (slot: "heading" | "body") => void
+) {
+  if (!typography) return typography;
+  const next = { ...typography };
+  for (const slot of ["heading", "body"] as const) {
+    const urlKey = `${slot}_font_url`;
+    const nameKey = `${slot}_font`;
+    const url: string | undefined = next[urlKey];
+    if (!url?.startsWith("data:")) continue;
+    try {
+      const blob = dataUrlToBlob(url);
+      const ext = fontExtFromMime(blob.type);
+      next[urlKey] = await uploadFontFile(
+        new File([blob], `${slot}-font.${ext}`, { type: blob.type })
+      );
+    } catch (err) {
+      console.error(`[wizard] failed to upload ${slot} font before save`, err);
+      // Kembalikan NAMA font juga, bukan hanya URL, agar template tidak meminta
+      // nama font kustom itu ke Google Fonts.
+      next[urlKey] = "";
+      next[nameKey] = baseTypography?.[nameKey] ?? "Inter";
+      notifyFail(slot);
+    }
+  }
+  return next;
+}
 
 export function SiteWizard({
   mode,
@@ -219,22 +256,8 @@ export function SiteWizard({
   const [successModalOpen, setSuccessModalOpen] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
-  // Theme panel state
+  // Theme panel state (opened on demand via MobileActionBar button)
   const [themeSheetOpen, setThemeSheetOpen] = useState(false);
-  const hasAutoOpenedThemeRef = React.useRef(false);
-
-  React.useEffect(() => {
-    if (preview.previewState === "result") {
-      if (!hasAutoOpenedThemeRef.current && FEATURE_FLAGS.THEME_PANEL) {
-        hasAutoOpenedThemeRef.current = true;
-        if (device.isMobile) {
-          setThemeSheetOpen(true);
-        }
-      }
-    } else {
-      hasAutoOpenedThemeRef.current = false;
-    }
-  }, [preview.previewState, device.isMobile]);
 
   // One-time onboarding hint for "Coba rekomendasi lain" button
   const [showRekomendasiHint, setShowRekomendasiHint] = useState(false);
@@ -322,7 +345,6 @@ export function SiteWizard({
     clearCustomFontStorage();
     setResumeDraft(null);
     setThemeSheetOpen(false);
-    hasAutoOpenedThemeRef.current = false;
     if (device.isMobile) {
       device.setMobileScreen("chat");
     }
@@ -399,11 +421,12 @@ export function SiteWizard({
       preview.setTemplatePoolIndex(0);
 
       const finalContent = preview.streamedSectionsRef.current;
-      let finalToken = preview.streamedTokenRef.current ?? {};
+      let rawToken = preview.streamedTokenRef.current ?? {};
       if (chat.brandLogoPalette) {
-        finalToken = applyBrandPalette(finalToken, chat.brandLogoPalette, chat.brandLogoThemeMode ?? undefined);
+        rawToken = applyBrandPalette(rawToken, chat.brandLogoPalette, chat.brandLogoThemeMode ?? undefined);
       }
-      finalToken = themeDraft.mergeApplied(finalToken);
+      // Token yang ditampilkan dan disimpan: sudah memuat pilihan tema user.
+      const finalToken = themeDraft.mergeApplied(rawToken);
 
       const basePreview: PreviewData & { logo_url?: string | null } = {
         content: Object.keys(finalContent).length > 0 ? finalContent : {},
@@ -431,9 +454,12 @@ export function SiteWizard({
         template_id: templateId,
       };
 
+      // Riwayat menyimpan versi MENTAH supaya Reset dan resume punya dasar yang bersih.
+      const historyEntry: PreviewData = { ...mergedPreview, design_token: rawToken };
+
       preview.setPreviewHistory((prev) => {
         const base = prev.slice(0, preview.historyIndexRef.current + 1);
-        const next = [...base, mergedPreview].slice(-5);
+        const next = [...base, historyEntry].slice(-5);
         preview.setHistoryIndex(next.length - 1);
         return next;
       });
@@ -577,6 +603,26 @@ export function SiteWizard({
     }
     // mode public (/create) — kembali ke landing page.
     router.push("/");
+  };
+
+  const handleLogoApplied = (
+    url: string,
+    paletteMap: Record<string, string>,
+    themeMode: "light" | "dark"
+  ) => {
+    chat.setBrandLogo(url, paletteMap, themeMode);
+    preview.setPreviewData((prev) =>
+      prev
+        ? {
+            ...prev,
+            content: {
+              ...prev.content,
+              header: { ...(prev.content?.header ?? {}), logo_url: url },
+              seo: { ...(prev.content?.seo ?? {}), favicon_url: url },
+            },
+          }
+        : prev
+    );
   };
 
   const handleCancelGenerationError = () => {
@@ -861,7 +907,7 @@ export function SiteWizard({
         let logoForSave = chat.brandLogoUrl;
         if (logoForSave?.startsWith("data:")) {
           try {
-            const blob = await (await fetch(logoForSave)).blob();
+            const blob = dataUrlToBlob(logoForSave);
             logoForSave = await uploadImageFile(
               new File([blob], "brand-logo", { type: blob.type || "image/png" }),
               { maxWidth: 512, maxHeight: 512 }
@@ -872,52 +918,20 @@ export function SiteWizard({
           }
         }
 
-        // Unggah font kustom jika masih berupa data URL sebelum disimpan ke database
-        let finalDesignToken = preview.previewData.design_token;
-        if (finalDesignToken?.typography) {
-          let headingUrl = finalDesignToken.typography.heading_font_url;
-          let bodyUrl = finalDesignToken.typography.body_font_url;
-          let changed = false;
-
-          if (headingUrl?.startsWith("data:")) {
-            try {
-              const blob = await (await fetch(headingUrl)).blob();
-              const ext = headingUrl.includes("font/woff2") ? "woff2" : headingUrl.includes("font/ttf") ? "ttf" : "woff2";
-              headingUrl = await uploadFontFile(new File([blob], `heading-font.${ext}`, { type: blob.type }));
-              changed = true;
-            } catch (fontErr) {
-              console.error("[wizard] failed to upload heading font to storage before save", fontErr);
-              headingUrl = "";
-              changed = true;
-              pushToast("Gagal mengunggah font heading. Font kustom dikembalikan ke bawaan template.", "info");
-            }
-          }
-
-          if (bodyUrl?.startsWith("data:")) {
-            try {
-              const blob = await (await fetch(bodyUrl)).blob();
-              const ext = bodyUrl.includes("font/woff2") ? "woff2" : bodyUrl.includes("font/ttf") ? "ttf" : "woff2";
-              bodyUrl = await uploadFontFile(new File([blob], `body-font.${ext}`, { type: blob.type }));
-              changed = true;
-            } catch (fontErr) {
-              console.error("[wizard] failed to upload body font to storage before save", fontErr);
-              bodyUrl = "";
-              changed = true;
-              pushToast("Gagal mengunggah font body. Font kustom dikembalikan ke bawaan template.", "info");
-            }
-          }
-
-          if (changed) {
-            finalDesignToken = {
-              ...finalDesignToken,
-              typography: {
-                ...finalDesignToken.typography,
-                heading_font_url: headingUrl,
-                body_font_url: bodyUrl,
-              },
-            };
-          }
-        }
+        const baseTypo = preview.previewHistory[preview.historyIndex]?.design_token?.typography;
+        const typography = await persistCustomFonts(
+          preview.previewData.design_token?.typography,
+          baseTypo,
+          (slot) => pushToast(
+            t("dashboard.wizard.theme.fontUploadFailed",
+              "Font {slot} gagal diunggah dan dikembalikan ke font bawaan.",
+              { slot: slot === "heading" ? t("dashboard.wizard.theme.slotHeading", "judul") : t("dashboard.wizard.theme.slotBody", "isi") }),
+            "info"
+          )
+        );
+        const finalDesignToken = typography
+          ? { ...preview.previewData.design_token, typography }
+          : preview.previewData.design_token;
 
         const enrichedContent = buildFullContent(
           { content: preview.previewData.content, design_token: finalDesignToken, logo_url: logoForSave },
@@ -999,7 +1013,7 @@ export function SiteWizard({
   const buildCurrentSnapshot = React.useCallback((): WizardResumeSnapshot | null => {
     if (!resumeSnapshotProgress) return null;
     const baseToken =
-      preview.previewHistory[0]?.design_token ??
+      preview.previewHistory[preview.historyIndex]?.design_token ??
       baseThemeToken ??
       preview.previewData?.design_token;
 
@@ -1069,6 +1083,7 @@ export function SiteWizard({
     chat.brandLogoThemeMode,
     preview.previewData,
     preview.previewHistory,
+    preview.historyIndex,
     baseThemeToken,
     themeDraft.applied,
   ]);
@@ -1089,6 +1104,7 @@ export function SiteWizard({
   React.useEffect(() => {
     if (prevAppliedRef.current !== themeDraft.applied) {
       prevAppliedRef.current = themeDraft.applied;
+      syncCustomFontStorage(themeDraft.applied.typography);
       const snapshot = buildCurrentSnapshot();
       if (snapshot) {
         saveWizardSnapshot(snapshot);
@@ -1121,22 +1137,10 @@ export function SiteWizard({
   const handleResume = () => {
     if (!resumeDraft) return;
     chat.hydrate(resumeDraft.chat);
-    const restoredApplied = { ...(resumeDraft.theme?.applied ?? {}) };
-    // Pulihkan font data URL jika tersimpan di isolated storage
-    const savedCustomFonts = loadCustomFontStorage();
-    if (savedCustomFonts.heading || savedCustomFonts.body) {
-      restoredApplied.typography = {
-        ...(restoredApplied.typography || {}),
-      };
-      if (savedCustomFonts.heading) {
-        restoredApplied.typography.heading_font = savedCustomFonts.heading.name;
-        restoredApplied.typography.heading_font_url = savedCustomFonts.heading.dataUrl;
-      }
-      if (savedCustomFonts.body) {
-        restoredApplied.typography.body_font = savedCustomFonts.body.name;
-        restoredApplied.typography.body_font_url = savedCustomFonts.body.dataUrl;
-      }
-    }
+    const restoredApplied = restoreCustomFontUrls(
+      { ...(resumeDraft.theme?.applied ?? {}) },
+      loadCustomFontStorage()
+    );
     themeDraft.rehydrate(restoredApplied);
     if (resumeDraft.preview) {
       const baseToken =
@@ -1180,9 +1184,6 @@ export function SiteWizard({
       device.setMobilePreviewOpen(true);
       if (device.isMobileRef.current) {
         device.setMobileScreen("preview");
-        if (FEATURE_FLAGS.THEME_PANEL) {
-          setThemeSheetOpen(true);
-        }
       }
     } else if (resumeDraft.chat.chatStage === "done") {
       // Generation was interrupted — restart it
@@ -1295,6 +1296,9 @@ export function SiteWizard({
             mood={chat.moodRef.current || chat.mood || "clean-modern"}
             theme={themeDraft}
             baseToken={baseThemeToken}
+            onBack={handleBack}
+            onReset={handleResetChat}
+            onLogoApplied={handleLogoApplied}
           />
         ) : (
           <>
@@ -2500,7 +2504,11 @@ export function SiteWizard({
           )}
         </div>
 
-        <div className="flex-1 overflow-hidden relative bg-background" ref={previewContainerRef}>
+        <div
+          className="flex-1 overflow-hidden relative bg-background"
+          ref={previewContainerRef}
+          style={{ paddingBottom: device.isMobile && themeSheetOpen ? "45dvh" : undefined }}
+        >
           <PreviewCanvas chat={chat} preview={preview} device={device} themeDraft={themeDraft} />
 
           {preview.previewState === "loading" && !device.isMobile && (
@@ -2639,14 +2647,17 @@ export function SiteWizard({
         onRetry={handleRetryGeneration}
       />
 
-      <MobileActionBar
-        preview={preview}
-        device={device}
-        onOpenSheet={() => { setShowLengkapiHint(false); setSheetOpen(true); }}
-        onGoToEditor={() => { setShowEditPublishHint(false); handleGoToEditor(); }}
-        showLengkapiHint={showLengkapiHint}
-        showEditPublishHint={showEditPublishHint}
-      />
+      {!themeSheetOpen && (
+        <MobileActionBar
+          preview={preview}
+          device={device}
+          onOpenSheet={() => { setShowLengkapiHint(false); setSheetOpen(true); }}
+          onGoToEditor={() => { setShowEditPublishHint(false); handleGoToEditor(); }}
+          onOpenTheme={FEATURE_FLAGS.THEME_PANEL ? () => setThemeSheetOpen(true) : undefined}
+          showLengkapiHint={showLengkapiHint}
+          showEditPublishHint={showEditPublishHint}
+        />
+      )}
 
       {FEATURE_FLAGS.THEME_PANEL && (
         <ThemeSheet
@@ -2655,6 +2666,7 @@ export function SiteWizard({
           theme={themeDraft}
           baseToken={baseThemeToken}
           onClose={() => setThemeSheetOpen(false)}
+          onLogoApplied={handleLogoApplied}
         />
       )}
 
