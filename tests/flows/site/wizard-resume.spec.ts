@@ -112,4 +112,49 @@ test.describe("Wizard Resume", () => {
     const stored = await page.evaluate((k: string) => localStorage.getItem(k), KEY);
     expect(stored).toBeNull();
   });
+
+  test("resume restores brand-logo stage with logo and palette", async ({ siteWizardPage }) => {
+    const { page } = siteWizardPage;
+    await siteWizardPage.goto();
+    await page.waitForLoadState("networkidle");
+
+    const brandLogoSnapshot = makeSnapshot({
+      chat: {
+        chatStage: "brand-logo",
+        businessName: "Kopi Brand Test",
+        mood: "dark-premium",
+        brandLogoUrl: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMjU2M2ViIi8+PC9zdmc+",
+        brandLogoPalette: {
+          primary: "#2563eb",
+          accent: "#f59e0b",
+          background: "#0b0f17",
+          surface: "#141c2b",
+          text: "#f8fafc",
+        },
+        brandLogoThemeMode: "dark",
+        messages: [
+          { id: "ai-init", sender: "ai", text: "Halo! Siapa nama bisnis Anda?" },
+          { id: "u1", sender: "user", text: "Kopi Brand Test" },
+          { id: "w-logo", sender: "ai", text: "", widget: "brand-logo" },
+        ],
+      },
+    });
+
+    await seedSnapshot(page, brandLogoSnapshot);
+
+    await page.reload();
+    await page.waitForLoadState("networkidle");
+
+    // Wait for resume banner and click
+    await page.waitForFunction(
+      () => document.body.innerText.includes("Lanjutkan") || document.body.innerText.includes("Continue"),
+      { timeout: 15000 }
+    );
+    const resumeBtn = page.locator("text=/lanjutkan|continue/i").first();
+    await expect(resumeBtn).toBeVisible({ timeout: 5000 });
+    await resumeBtn.click();
+
+    // Verify brand logo widget button is restored
+    await expect(page.locator("text=/buat website saya/i").first()).toBeVisible({ timeout: 10000 });
+  });
 });

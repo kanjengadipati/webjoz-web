@@ -12,6 +12,7 @@ import { buildFullContent } from "@/lib/build-full-content";
 import { decodeDesignTokenParam } from "@/lib/design-token-library";
 import { WIZARD_RESUME_KEY, loadWizardSnapshot } from "@/components/site-wizard/wizard-persistence";
 import { encodeSiteId } from "@/lib/sqids";
+import { uploadImageFile } from "@/components/file-upload";
 
 const PENDING_KEY = "webjoz_pending_wizard_data";
 const SAVE_LOCK_KEY = "webjoz_save_in_progress";
@@ -228,13 +229,35 @@ function PublicWizardContent() {
         // field kosong. Jalankan buildFullContent dulu, sama seperti yang dipakai untuk
         // preview di wizard, supaya site yang baru dibuat tidak kosong di Editor.
         if (pending.previewContent) {
+          let logoForSave =
+            pending.logo_url ||
+            pending.previewContent?.header?.logo_url ||
+            pending.previewContent?.seo?.favicon_url;
+
+          if (logoForSave?.startsWith("data:")) {
+            try {
+              const blob = await (await fetch(logoForSave)).blob();
+              logoForSave = await uploadImageFile(
+                new File([blob], "brand-logo", { type: blob.type || "image/png" }),
+                { maxWidth: 512, maxHeight: 512 }
+              );
+            } catch (e) {
+              console.warn("[create] failed to upload pending logo, omitting base64", e);
+              logoForSave = null;
+            }
+          }
+
           const enrichedContent = buildFullContent(
-            { content: pending.previewContent, design_token: pending.previewDesignToken },
+            { content: pending.previewContent, design_token: pending.previewDesignToken, logo_url: logoForSave },
             pending.businessName,
             pending.businessSubType || pending.businessType,
             pending.description || "",
             pending.whatsapp || ""
           );
+          if (logoForSave && !logoForSave.startsWith("data:")) {
+            if (enrichedContent.header) enrichedContent.header.logo_url = logoForSave;
+            if (enrichedContent.seo) enrichedContent.seo.favicon_url = logoForSave;
+          }
           await request(
             `/sites/${siteId}/content`,
             {
