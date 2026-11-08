@@ -997,13 +997,18 @@ export function isPaletteApplied(
   const p = preset.override.palette;
   const a = applied.palette;
   if (!p || !a) return false;
-  return (
-    a.primary === p.primary &&
-    a.accent === p.accent &&
-    a.background === p.background &&
-    a.text === p.text &&
-    applied.theme_mode === preset.override.theme_mode
-  );
+  const eq = (x?: string, y?: string) =>
+    (x || "").trim().toLowerCase() === (y || "").trim().toLowerCase();
+  const paletteMatches =
+    eq(a.primary, p.primary) &&
+    eq(a.accent, p.accent) &&
+    eq(a.background, p.background) &&
+    eq(a.text, p.text);
+  if (!paletteMatches) return false;
+  if (applied.theme_mode && preset.override.theme_mode) {
+    return applied.theme_mode === preset.override.theme_mode;
+  }
+  return true;
 }
 
 /**
