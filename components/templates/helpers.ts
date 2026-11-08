@@ -347,10 +347,11 @@ export const sectionTitleStyle: Record<string, string> = {
   fontFamily: "var(--dt-heading-font)",
 };
 
-export function loadCustomFont(fontFamily: string, fontUrl: string) {
-  if (typeof document === "undefined" || !fontFamily || !fontUrl) return;
+export function loadCustomFont(fontFamily: string, fontUrl: string, targetDoc?: Document) {
+  const doc = targetDoc || (typeof document !== "undefined" ? document : undefined);
+  if (!doc || !fontFamily || !fontUrl) return;
   const safeId = `dt-custom-font-${fontFamily.toLowerCase().replace(/[^a-z0-9]/g, "-")}`;
-  if (document.getElementById(safeId)) return;
+  if (doc.getElementById(safeId)) return;
 
   // 1. Link stylesheet (mis. Google Fonts, Bunny Fonts, Fontshare, Typekit)
   if (
@@ -360,16 +361,16 @@ export function loadCustomFont(fontFamily: string, fontUrl: string) {
     fontUrl.includes("fontshare.com") ||
     fontUrl.includes("typekit.net")
   ) {
-    const link = document.createElement("link");
+    const link = doc.createElement("link");
     link.id = safeId;
     link.rel = "stylesheet";
     link.href = fontUrl;
-    document.head.appendChild(link);
+    doc.head.appendChild(link);
     return;
   }
 
   // 2. Binary font (.woff2, .woff, .ttf, .otf, atau data URI)
-  const style = document.createElement("style");
+  const style = doc.createElement("style");
   style.id = safeId;
   let format = "";
   if (fontUrl.includes(".woff2") || fontUrl.startsWith("data:font/woff2") || fontUrl.startsWith("data:application/font-woff2")) {
@@ -390,23 +391,25 @@ export function loadCustomFont(fontFamily: string, fontUrl: string) {
       font-weight: 100 900;
     }
   `;
-  document.head.appendChild(style);
+  doc.head.appendChild(style);
 }
 
 export function loadGoogleFont(
   headingFont?: string,
   bodyFont?: string,
   headingFontUrl?: string,
-  bodyFontUrl?: string
+  bodyFontUrl?: string,
+  targetDoc?: Document
 ) {
-  if (typeof document === "undefined") return;
+  const doc = targetDoc || (typeof document !== "undefined" ? document : undefined);
+  if (!doc) return;
 
   // Muat custom font URL terlebih dahulu jika tersedia
   if (headingFont && headingFontUrl) {
-    loadCustomFont(headingFont, headingFontUrl);
+    loadCustomFont(headingFont, headingFontUrl, doc);
   }
   if (bodyFont && bodyFontUrl) {
-    loadCustomFont(bodyFont, bodyFontUrl);
+    loadCustomFont(bodyFont, bodyFontUrl, doc);
   }
 
   // Muat dari Google Fonts hanya jika font tersebut tidak memiliki custom URL
@@ -418,12 +421,12 @@ export function loadGoogleFont(
   if (!googleFonts.length) return;
   const famStr = googleFonts.map((f) => f!.replace(/ /g, "+")).join("&family=");
   const id = `dt-font-${famStr}`;
-  if (document.getElementById(id)) return;
-  const link = document.createElement("link");
+  if (doc.getElementById(id)) return;
+  const link = doc.createElement("link");
   link.id = id;
   link.rel = "stylesheet";
   link.href = `https://fonts.googleapis.com/css2?family=${famStr}:wght@400;500;600;700;800&display=swap`;
-  document.head.appendChild(link);
+  doc.head.appendChild(link);
 }
 
 export function getSectionVariant(dt: any, secKey: string): string | undefined {

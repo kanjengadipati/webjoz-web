@@ -139,7 +139,9 @@ import { WizardChatFooter } from "./chat/wizard-chat-footer";
 import { WizardChatInput } from "./chat/wizard-chat-input";
 import { BrandLogoWidget } from "./chat/brand-logo-widget";
 import { applyBrandPalette } from "@/lib/apply-brand-palette";
-import { uploadImageFile } from "@/components/file-upload";
+import { uploadImageFile, uploadFontFile } from "@/components/file-upload";
+import { clearCustomFontStorage, loadCustomFontStorage } from "@/lib/wizard-font-storage";
+import { FEATURE_FLAGS } from "@/lib/feature-flags";
 import { ThemePanel, ThemeSheet } from "./theme-panel";
 import { Palette as PaletteIcon } from "lucide-react";
 
@@ -300,6 +302,7 @@ export function SiteWizard({
     preview.resetPreview();
     themeDraft.hardReset();
     clearWizardSnapshot();
+    clearCustomFontStorage();
     setResumeDraft(null);
     if (device.isMobile) {
       device.setMobileScreen("chat");
@@ -851,8 +854,55 @@ export function SiteWizard({
           }
         }
 
+        // Unggah font kustom jika masih berupa data URL sebelum disimpan ke database
+        let finalDesignToken = preview.previewData.design_token;
+        if (finalDesignToken?.typography) {
+          let headingUrl = finalDesignToken.typography.heading_font_url;
+          let bodyUrl = finalDesignToken.typography.body_font_url;
+          let changed = false;
+
+          if (headingUrl?.startsWith("data:")) {
+            try {
+              const blob = await (await fetch(headingUrl)).blob();
+              const ext = headingUrl.includes("font/woff2") ? "woff2" : headingUrl.includes("font/ttf") ? "ttf" : "woff2";
+              headingUrl = await uploadFontFile(new File([blob], `heading-font.${ext}`, { type: blob.type }));
+              changed = true;
+            } catch (fontErr) {
+              console.error("[wizard] failed to upload heading font to storage before save", fontErr);
+              headingUrl = "";
+              changed = true;
+              pushToast("Gagal mengunggah font heading. Font kustom dikembalikan ke bawaan template.", "info");
+            }
+          }
+
+          if (bodyUrl?.startsWith("data:")) {
+            try {
+              const blob = await (await fetch(bodyUrl)).blob();
+              const ext = bodyUrl.includes("font/woff2") ? "woff2" : bodyUrl.includes("font/ttf") ? "ttf" : "woff2";
+              bodyUrl = await uploadFontFile(new File([blob], `body-font.${ext}`, { type: blob.type }));
+              changed = true;
+            } catch (fontErr) {
+              console.error("[wizard] failed to upload body font to storage before save", fontErr);
+              bodyUrl = "";
+              changed = true;
+              pushToast("Gagal mengunggah font body. Font kustom dikembalikan ke bawaan template.", "info");
+            }
+          }
+
+          if (changed) {
+            finalDesignToken = {
+              ...finalDesignToken,
+              typography: {
+                ...finalDesignToken.typography,
+                heading_font_url: headingUrl,
+                body_font_url: bodyUrl,
+              },
+            };
+          }
+        }
+
         const enrichedContent = buildFullContent(
-          { content: preview.previewData.content, design_token: preview.previewData.design_token, logo_url: logoForSave },
+          { content: preview.previewData.content, design_token: finalDesignToken, logo_url: logoForSave },
           chat.businessName, chat.businessSubType || chat.businessType, chat.description, chat.whatsapp
         );
         if (logoForSave && !logoForSave.startsWith("data:")) {
@@ -866,7 +916,7 @@ export function SiteWizard({
             headers: { "X-Tenant-ID": tenantId.toString() },
             body: JSON.stringify({
               content: enrichedContent,
-              design_token: preview.previewData.design_token,
+              design_token: finalDesignToken,
             }),
           },
           token
@@ -875,6 +925,7 @@ export function SiteWizard({
 
       localStorage.removeItem(PENDING_KEY);
       clearWizardSnapshot();
+      clearCustomFontStorage();
       router.push(`/dashboard/sites/${encodeSiteId(siteId)}`);
     } catch (err: any) {
       if (err.statusCode === 403 && err.code === "ERR_SITE_LIMIT") {
@@ -1004,7 +1055,23 @@ export function SiteWizard({
   const handleResume = () => {
     if (!resumeDraft) return;
     chat.hydrate(resumeDraft.chat);
-    themeDraft.rehydrate(resumeDraft.theme?.applied ?? {});
+    const restoredApplied = { ...(resumeDraft.theme?.applied ?? {}) };
+    // Pulihkan font data URL jika tersimpan di isolated storage
+    const savedCustomFonts = loadCustomFontStorage();
+    if (savedCustomFonts.heading || savedCustomFonts.body) {
+      restoredApplied.typography = {
+        ...(restoredApplied.typography || {}),
+      };
+      if (savedCustomFonts.heading) {
+        restoredApplied.typography.heading_font = savedCustomFonts.heading.name;
+        restoredApplied.typography.heading_font_url = savedCustomFonts.heading.dataUrl;
+      }
+      if (savedCustomFonts.body) {
+        restoredApplied.typography.body_font = savedCustomFonts.body.name;
+        restoredApplied.typography.body_font_url = savedCustomFonts.body.dataUrl;
+      }
+    }
+    themeDraft.rehydrate(restoredApplied);
     if (resumeDraft.preview) {
       const restoredPreview: PreviewData = {
         content: resumeDraft.preview.content,
@@ -1062,6 +1129,7 @@ export function SiteWizard({
 
   const handleStartFresh = () => {
     clearWizardSnapshot();
+    clearCustomFontStorage();
     setResumeDraft(null);
   };
 
@@ -2329,7 +2397,7 @@ export function SiteWizard({
           </div>
 
           {/* Theme Customize Button (Desktop left pane toggle) */}
-          {preview.previewState === "result" && !device.isMobile && (
+          {FEATURE_FLAGS.THEME_PANEL && preview.previewState === "result" && !device.isMobile && (
             <button
               type="button"
               onClick={() => setLeftPane((prev) => (prev === "theme" ? "chat" : "theme"))}
@@ -2515,18 +2583,20 @@ export function SiteWizard({
         device={device}
         onOpenSheet={() => { setShowLengkapiHint(false); setSheetOpen(true); }}
         onGoToEditor={() => { setShowEditPublishHint(false); handleGoToEditor(); }}
-        onOpenTheme={() => setThemeSheetOpen(true)}
+        onOpenTheme={FEATURE_FLAGS.THEME_PANEL ? () => setThemeSheetOpen(true) : undefined}
         showLengkapiHint={showLengkapiHint}
         showEditPublishHint={showEditPublishHint}
       />
 
-      <ThemeSheet
-        open={themeSheetOpen}
-        mood={chat.moodRef.current || chat.mood || "clean-modern"}
-        theme={themeDraft}
-        baseToken={baseThemeToken}
-        onClose={() => setThemeSheetOpen(false)}
-      />
+      {FEATURE_FLAGS.THEME_PANEL && (
+        <ThemeSheet
+          open={themeSheetOpen}
+          mood={chat.moodRef.current || chat.mood || "clean-modern"}
+          theme={themeDraft}
+          baseToken={baseThemeToken}
+          onClose={() => setThemeSheetOpen(false)}
+        />
+      )}
 
       <div className="md:hidden">
         <BusinessDetailsSheet
