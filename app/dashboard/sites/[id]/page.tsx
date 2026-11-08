@@ -77,6 +77,7 @@ const FEATURE_MARKER_OPTIONS = (t: (k: string) => string) => [
 
 import TypographyPairingPicker from "./components/TypographyPairingPicker";
 import ColorPatternPicker from "./components/ColorPatternPicker";
+import BrandLogoColorPicker from "./components/BrandLogoColorPicker";
 import CompactColorPicker from "./components/CompactColorPicker";
 import SiteStyleSelector from "./components/SiteStyleSelector";
 import BrandStylePicker from "./components/BrandStylePicker";
@@ -1399,6 +1400,27 @@ export default function SiteEditorPage() {
     });
   };
 
+  const applyBrandLogoPalette = (
+    palette: Record<string, string>,
+    themeMode?: "light" | "dark",
+    newLogoUrl?: string
+  ) => {
+    pushGlobalUndo({ force: true });
+    pushDesignUndo({ force: true });
+    setDesignToken((prev: any) => {
+      const next = { ...(prev || {}) };
+      next.palette = { ...(next.palette || {}), ...palette };
+      if (themeMode) {
+        next.theme_mode = themeMode;
+      }
+      return next;
+    });
+    if (newLogoUrl) {
+      updateField("header", "logo_url", newLogoUrl);
+      updateField("seo", "favicon_url", newLogoUrl);
+    }
+  };
+
   const applyIndustryPreset = (preset: IndustryPreset) => {
     const pairing = getEnabledTypographyPairings().find((p) => p.id === preset.pairing_id);
     const pattern = getEnabledColorPatterns().find((p) => p.id === preset.pattern_id);
@@ -1956,6 +1978,12 @@ export default function SiteEditorPage() {
 
                   {/* Palet Warna */}
                   <div className="space-y-3">
+                    <BrandLogoColorPicker
+                      designToken={designToken}
+                      currentLogoUrl={content?.header?.logo_url}
+                      onApplyPalette={applyBrandLogoPalette}
+                    />
+
                     <ColorPatternPicker
                       designToken={designToken}
                       aiDesignToken={latestAiDesignToken}
@@ -3316,6 +3344,13 @@ export default function SiteEditorPage() {
                   />
 
                   <div className="border-t border-border" />
+
+                  {/* Brand Logo Palette Extractor */}
+                  <BrandLogoColorPicker
+                    designToken={designToken}
+                    currentLogoUrl={content?.header?.logo_url}
+                    onApplyPalette={applyBrandLogoPalette}
+                  />
 
                   {/* ColorPatternPicker */}
                   <ColorPatternPicker

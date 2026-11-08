@@ -135,6 +135,7 @@ import { WizardStepProgressBar } from "./chat/wizard-step-progress";
 import { WizardResumeBanner } from "./chat/wizard-resume-banner";
 import { WizardChatFooter } from "./chat/wizard-chat-footer";
 import { WizardChatInput } from "./chat/wizard-chat-input";
+import { BrandLogoWidget } from "./chat/brand-logo-widget";
 
 // Skor kualitas minimal (dari SSE done event) sebelum hasil AI ditampilkan.
 // Di bawah ini dan konten masih dari AI murni (bukan mock fallback) → auto-retry.
@@ -309,8 +310,12 @@ export function SiteWizard({
       }
     },
     onSection: (section, data, sectionSource) => {
-      preview.streamedSectionsRef.current = { ...preview.streamedSectionsRef.current, [section]: data };
-      preview.setStreamedSections((prev) => ({ ...prev, [section]: data }));
+      let sectionData = data;
+      if (section === "header" && chat.brandLogoUrl) {
+        sectionData = { ...data, logo_url: chat.brandLogoUrl };
+      }
+      preview.streamedSectionsRef.current = { ...preview.streamedSectionsRef.current, [section]: sectionData };
+      preview.setStreamedSections((prev) => ({ ...prev, [section]: sectionData }));
       if (sectionSource) {
         preview.setSectionSources((prev) => ({ ...prev, [section]: String(sectionSource) }));
       }
@@ -346,10 +351,11 @@ export function SiteWizard({
       const finalContent = preview.streamedSectionsRef.current;
       const finalToken = preview.streamedTokenRef.current ?? {};
 
-      const basePreview: PreviewData = {
+      const basePreview: PreviewData & { logo_url?: string | null } = {
         content: Object.keys(finalContent).length > 0 ? finalContent : {},
         design_token: finalToken,
         template_id: templateId,
+        logo_url: chat.brandLogoUrl,
       };
 
       const enrichedContent = buildFullContent(
@@ -359,6 +365,11 @@ export function SiteWizard({
         chat.descriptionRef.current,
         chat.whatsappRef.current || ""
       );
+
+      if (chat.brandLogoUrl) {
+        if (enrichedContent.header) enrichedContent.header.logo_url = chat.brandLogoUrl;
+        if (enrichedContent.seo) enrichedContent.seo.favicon_url = chat.brandLogoUrl;
+      }
 
       const mergedPreview: PreviewData = {
         content: enrichedContent,
@@ -526,7 +537,7 @@ export function SiteWizard({
   const runGenerate = async (
     bName = chat.businessNameRef.current,
     bType = chat.businessTypeRef.current,
-    overrides: { businessSubType?: string; whatsapp?: string; serviceArea?: string; description?: string; mood?: string; language?: string } = {}
+    overrides: { businessSubType?: string; whatsapp?: string; serviceArea?: string; description?: string; mood?: string; language?: string; logoUrl?: string; brandPalette?: Record<string, string> } = {}
   ) => {
     const nextBusinessSubType = overrides.businessSubType ?? chat.businessSubTypeRef.current;
     // Guard taksonomi: hanya pasangan {type, subType} kanonis yang boleh
@@ -543,6 +554,8 @@ export function SiteWizard({
     const nextDescription = overrides.description ?? chat.descriptionRef.current;
     const nextMood = overrides.mood ?? chat.moodRef.current;
     const nextLanguage = overrides.language ?? chat.siteLanguageRef.current ?? chat.siteLanguage ?? "id";
+    const nextLogoUrl = overrides.logoUrl ?? chat.brandLogoUrl ?? undefined;
+    const nextBrandPalette = overrides.brandPalette ?? chat.brandLogoPalette ?? undefined;
 
     preview.setStreamedSections({});
     preview.setSectionSources({});
@@ -586,14 +599,21 @@ export function SiteWizard({
       description: nextDescription || "",
       whatsapp: nextWhatsapp || "", service_area: nextServiceArea || "", mood: nextMood || "",
       language: nextLanguage,
+      ...(nextLogoUrl ? { logo_url: nextLogoUrl } : {}),
     }));
+
+    // If brand palette was provided, build a merged design_token with it as seed
+    const brandSeedToken = nextBrandPalette
+      ? { ...(initialDesignTokenRef.current || {}), palette: { ...(initialDesignTokenRef.current?.palette || {}), ...nextBrandPalette } }
+      : (initialDesignTokenRef.current ?? undefined);
 
     await generate.startStream({
       business_name: bName, business_type: safeBusinessType, business_sub_type: safeBusinessSubType || undefined,
       whatsapp: nextWhatsapp || "", service_area: nextServiceArea || "",
       description: nextDescription || undefined, mood: nextMood || undefined,
       language: nextLanguage,
-      design_token: initialDesignTokenRef.current ?? undefined,
+      design_token: brandSeedToken,
+      logo_url: nextLogoUrl || undefined,
       story: nextDescription || undefined,
       tagline: undefined,
       proof: undefined,
@@ -616,7 +636,7 @@ export function SiteWizard({
   const handleGenerate = async (
     bName = chat.businessName,
     bType = chat.businessType,
-    overrides: { businessSubType?: string; whatsapp?: string; serviceArea?: string; description?: string; mood?: string; language?: string } = {}
+    overrides: { businessSubType?: string; whatsapp?: string; serviceArea?: string; description?: string; mood?: string; language?: string; logoUrl?: string; brandPalette?: Record<string, string> } = {}
   ) => {
     qualityRetryCountRef.current = 0;
     await runGenerate(bName, bType, overrides);
@@ -663,17 +683,21 @@ export function SiteWizard({
   };
 
   const handleSelectMood = (mood: string) => {
-    chat.handleSelectMood(mood, (name, type, overrides) => {
-      preview.setRegenCount(0);
-      preview.setHasUnsavedEdits(false);
-      generate.didGenerateRef.current = true;
-      // Clear any preset design token from the gallery — the user explicitly
-      // chose a mood in the wizard, so the AI should generate a fresh token
-      // based on the selected mood without being constrained by a gallery preset.
-      initialDesignTokenRef.current = null;
+    chat.handleSelectMood(mood, () => {
+      // onGenerate is deferred — called via handleStartGeneration after brand-logo step
+    });
+  };
+
+  const handleStartGeneration = () => {
+    preview.setRegenCount(0);
+    preview.setHasUnsavedEdits(false);
+    generate.didGenerateRef.current = true;
+    initialDesignTokenRef.current = null;
+    chat.handleStartGeneration((name, type, overrides) => {
       void handleGenerate(name, type, overrides);
     });
   };
+
   const handleConfirmInference = (confirmed: boolean) => {
     chat.handleConfirmInference(confirmed, (name, type, overrides) => {
       preview.setRegenCount(0);
@@ -751,9 +775,13 @@ export function SiteWizard({
 
       if (preview.previewData) {
         const enrichedContent = buildFullContent(
-          { content: preview.previewData.content, design_token: preview.previewData.design_token },
+          { content: preview.previewData.content, design_token: preview.previewData.design_token, logo_url: chat.brandLogoUrl },
           chat.businessName, chat.businessSubType || chat.businessType, chat.description, chat.whatsapp
         );
+        if (chat.brandLogoUrl) {
+          if (enrichedContent.header) enrichedContent.header.logo_url = chat.brandLogoUrl;
+          if (enrichedContent.seo) enrichedContent.seo.favicon_url = chat.brandLogoUrl;
+        }
         await request(
           `/sites/${siteId}/content`,
           {
@@ -1596,6 +1624,36 @@ export function SiteWizard({
                     <p className="text-[10px] text-slate-500 px-0.5">{t("dashboard.wizard.chooseMoodHint", "Pilih karakter visual yang cocok untuk brand Anda")}</p>
                   )}
                 </div>
+              );
+            }
+
+            if (m.widget === "brand-logo") {
+              const isLocked = chat.chatStage !== "brand-logo";
+              return (
+                <BrandLogoWidget
+                  key={m.id}
+                  isLocked={isLocked}
+                  logoUrl={chat.brandLogoUrl}
+                  palette={chat.brandLogoPalette as any}
+                  onLogoSelected={(url, extracted) => {
+                    const paletteMap: Record<string, string> = {
+                      primary: extracted.primary,
+                      accent: extracted.accent,
+                      background: extracted.background,
+                      surface: extracted.surface,
+                      text: extracted.text,
+                    };
+                    chat.setBrandLogo(url, paletteMap);
+                    preview.setStreamedDesignToken((prev: any) => ({
+                      ...(prev || {}),
+                      palette: { ...(prev?.palette || {}), ...paletteMap },
+                    }));
+                  }}
+                  onLogoRemoved={() => {
+                    chat.clearBrandLogo();
+                  }}
+                  onSubmit={handleStartGeneration}
+                />
               );
             }
 

@@ -3377,8 +3377,13 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
   };
 
   // Treat auto-generated SVG initials as fallback placeholder so the AI-selected
-  // Lucide icon takes visual priority. Real user uploads are secure HTTPS image URLs.
-  const isCustomLogo = Boolean(url && !url.startsWith("data:image/svg+xml"));
+  // Lucide icon takes visual priority. Real user uploads are data URLs or custom asset URLs.
+  // Unsplash stock photos should never be rendered as a logo.
+  const isCustomLogo = Boolean(
+    url &&
+    !url.includes("unsplash.com") &&
+    (!url.startsWith("data:image/svg+xml") || url.length > 500)
+  );
 
   if (isEditorMode && onUpdateField && section) {
     const hasLogo = isCustomLogo && !imgError;
@@ -3474,7 +3479,14 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
   }
 
   if (isCustomLogo && !imgError) {
-    return <img src={url} className={imgClass} alt="Logo" onError={() => setImgError(true)} />;
+    return (
+      <img
+        src={url}
+        className={imgClass || "h-8 sm:h-9 w-auto max-w-[140px] shrink-0 object-contain rounded-md"}
+        alt="Logo"
+        onError={() => setImgError(true)}
+      />
+    );
   }
   return (
     <div

@@ -98,7 +98,7 @@ export function buildFullContent(
       ...c.header,                                                  // ← keep ALL fields from AI (icon, tagline, etc.)
       brand_name: businessName,
       nav_cta_text: c.header?.nav_cta_text || "Hubungi Kami",
-      logo_url: c.header?.logo_url || "",
+      logo_url: data.logo_url || (c.header?.logo_url && !c.header.logo_url.includes("unsplash.com") ? c.header.logo_url : "") || "",
       icon: c.header?.icon || "Sparkles",
       tagline: c.header?.tagline || "",
     },
@@ -219,7 +219,7 @@ export function buildFullContent(
       ...c.seo,
       title: c.seo?.title || businessName,
       description: c.seo?.description || description,
-      favicon_url: c.seo?.favicon_url || logoUrl,
+      favicon_url: data.logo_url || (c.seo?.favicon_url && !c.seo.favicon_url.includes("unsplash.com") ? c.seo.favicon_url : "") || logoUrl,
       og_image_url: c.seo?.og_image_url || "",
       keywords: c.seo?.keywords ?? [],
       og_type: c.seo?.og_type || "website",
