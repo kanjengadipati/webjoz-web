@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { ArrowLeft, RotateCcw, Palette } from "lucide-react";
+import { RotateCcw, Palette } from "lucide-react";
 import { Button } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
 import type { UseThemeDraftReturn } from "../use-theme-draft";
@@ -18,12 +18,12 @@ interface ThemePanelProps {
   mood: string;
   theme: UseThemeDraftReturn;
   baseToken: Record<string, any> | null;
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 type SubView = "none" | "brand-color" | "custom-font";
 
-export function ThemePanel({ mood, theme, baseToken, onClose }: ThemePanelProps) {
+export function ThemePanel({ mood, theme, baseToken }: ThemePanelProps) {
   const { t } = useI18n();
   const [subView, setSubView] = useState<SubView>("none");
   const [toastLabel, setToastLabel] = useState<string | null>(null);
@@ -44,18 +44,9 @@ export function ThemePanel({ mood, theme, baseToken, onClose }: ThemePanelProps)
     <div className="flex h-full flex-col bg-[#111318] overflow-hidden relative">
       {/* ── Header ─────────────────────────────────────────────────────── */}
       <div
-        className="shrink-0 flex items-center gap-3 px-4 py-3"
+        className="shrink-0 flex items-center justify-between px-4 py-3"
         style={{ borderBottom: "1px solid rgba(255,255,255,0.09)" }}
       >
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label={t("dashboard.wizard.theme.back", "Kembali ke chat")}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-white/15 bg-white/[0.06] text-white transition-all hover:border-white/30 hover:bg-white/15 active:scale-95 cursor-pointer"
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </button>
-
         <div className="flex-1 min-w-0">
           <p className="text-sm font-bold text-white leading-tight">
             {t("dashboard.wizard.theme.panelTitle", "Sesuaikan Tema")}

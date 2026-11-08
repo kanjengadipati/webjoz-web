@@ -38,6 +38,7 @@ export interface WizardResumePreview {
   templateId?: string;
   content: Record<string, any>;
   designToken: Record<string, any>;
+  baseDesignToken?: Record<string, any>;
 }
 
 export interface WizardResumeTheme {
@@ -158,10 +159,14 @@ export function clearPendingUpgradeDraft(): void {
 }
 
 
-export function toResumePreview(preview: PreviewData): WizardResumePreview {
+export function toResumePreview(
+  preview: PreviewData,
+  baseToken?: Record<string, any> | null
+): WizardResumePreview {
   return {
     templateId: preview.template_id,
     content: preview.content,
     designToken: preview.design_token,
+    ...(baseToken ? { baseDesignToken: baseToken } : {}),
   };
 }

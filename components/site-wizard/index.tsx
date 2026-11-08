@@ -120,7 +120,12 @@ import { useWizardPreview } from "./use-wizard-preview";
 import { useWizardDevice } from "./use-wizard-device";
 import { useWizardGenerate } from "./use-wizard-generate";
 import { useThemeDraft } from "./use-theme-draft";
-import { stripHeavyOverrides, isEmptyOverrides } from "@/lib/theme-overrides";
+import {
+  stripHeavyOverrides,
+  isEmptyOverrides,
+  mergeThemeOverrides,
+  ensureReadableText,
+} from "@/lib/theme-overrides";
 import { PreviewCanvas } from "./preview-canvas";
 import { MobileActionBar } from "./mobile-action-bar";
 import { BusinessDetailsSheet } from "./business-details-sheet";
@@ -143,7 +148,6 @@ import { uploadImageFile, uploadFontFile } from "@/components/file-upload";
 import { clearCustomFontStorage, loadCustomFontStorage } from "@/lib/wizard-font-storage";
 import { FEATURE_FLAGS } from "@/lib/feature-flags";
 import { ThemePanel, ThemeSheet } from "./theme-panel";
-import { Palette as PaletteIcon } from "lucide-react";
 
 // Skor kualitas minimal (dari SSE done event) sebelum hasil AI ditampilkan.
 // Di bawah ini dan konten masih dari AI murni (bukan mock fallback) → auto-retry.
@@ -216,7 +220,6 @@ export function SiteWizard({
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   // Theme panel state
-  const [leftPane, setLeftPane] = useState<"chat" | "theme">("chat");
   const [themeSheetOpen, setThemeSheetOpen] = useState(false);
   const hasAutoOpenedThemeRef = React.useRef(false);
 
@@ -224,9 +227,7 @@ export function SiteWizard({
     if (preview.previewState === "result") {
       if (!hasAutoOpenedThemeRef.current && FEATURE_FLAGS.THEME_PANEL) {
         hasAutoOpenedThemeRef.current = true;
-        if (!device.isMobile) {
-          setLeftPane("theme");
-        } else {
+        if (device.isMobile) {
           setThemeSheetOpen(true);
         }
       }
@@ -320,7 +321,6 @@ export function SiteWizard({
     clearWizardSnapshot();
     clearCustomFontStorage();
     setResumeDraft(null);
-    setLeftPane("chat");
     setThemeSheetOpen(false);
     hasAutoOpenedThemeRef.current = false;
     if (device.isMobile) {
@@ -643,7 +643,6 @@ export function SiteWizard({
     }
     preview.streamDoneRef.current = false;
     preview.setPreviewState("loading");
-    setLeftPane("chat");
     preview.setLoadingStep(0);
     generate.didGenerateRef.current = true;
 
@@ -997,55 +996,57 @@ export function SiteWizard({
     Boolean(chat.businessName) ||
     Boolean(preview.previewData);
 
-  // Debounced autosave of the wizard session so a refresh/disconnect keeps progress.
-  React.useEffect(() => {
-    if (!resumeSnapshotProgress) return;
-    const timeoutId = setTimeout(() => {
-      const snapshot: WizardResumeSnapshot = {
-        version: 1,
-        savedAt: Date.now(),
+  const buildCurrentSnapshot = React.useCallback((): WizardResumeSnapshot | null => {
+    if (!resumeSnapshotProgress) return null;
+    const baseToken =
+      preview.previewHistory[0]?.design_token ??
+      baseThemeToken ??
+      preview.previewData?.design_token;
+
+    return {
+      version: 1,
+      savedAt: Date.now(),
+      businessName: chat.businessName,
+      chat: {
+        chatStage: chat.chatStage,
+        messages: chat.messages.filter((m) => m.id !== "typing"),
         businessName: chat.businessName,
-        chat: {
-          chatStage: chat.chatStage,
-          messages: chat.messages.filter((m) => m.id !== "typing"),
-          businessName: chat.businessName,
-          businessType: chat.businessType,
-          businessSubType: chat.businessSubType,
-          description: chat.description,
-          whatsapp: chat.whatsapp,
-          serviceArea: chat.serviceArea,
-          mood: chat.mood,
-          siteLanguage: chat.siteLanguageRef.current ?? chat.siteLanguage ?? null,
-          awaitingNameConfirm: chat.awaitingNameConfirm,
-          inferenceResult: chat.inferenceResult,
-          typeWasInferred: chat.typeWasInferred,
-          // v2
-          archetype: chat.archetype || undefined,
-          industryId: chat.industryId || undefined,
-          industryCustom: chat.industryCustom || undefined,
-          entity: chat.entity || undefined,
-          entitySource: chat.entitySource || undefined,
-          manualPicker: chat.manualPicker,
-          selectedBidang: chat.selectedBidang,
-          suggestedIndustryId: chat.suggestedIndustryId || undefined,
-          // Brand logo & palette
-          brandLogoUrl: chat.brandLogoUrl || undefined,
-          brandLogoPalette: chat.brandLogoPalette || undefined,
-          brandLogoThemeMode: chat.brandLogoThemeMode || undefined,
-        },
-        preview: preview.previewData ? toResumePreview(preview.previewData) : undefined,
-        theme: !isEmptyOverrides(themeDraft.applied)
-          ? { applied: stripHeavyOverrides(themeDraft.applied) }
-          : undefined,
-      };
-      saveWizardSnapshot(snapshot);
-    }, 600);
-    return () => clearTimeout(timeoutId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        businessType: chat.businessType,
+        businessSubType: chat.businessSubType,
+        description: chat.description,
+        whatsapp: chat.whatsapp,
+        serviceArea: chat.serviceArea,
+        mood: chat.mood,
+        siteLanguage: chat.siteLanguageRef.current ?? chat.siteLanguage ?? null,
+        awaitingNameConfirm: chat.awaitingNameConfirm,
+        inferenceResult: chat.inferenceResult,
+        typeWasInferred: chat.typeWasInferred,
+        // v2
+        archetype: chat.archetype || undefined,
+        industryId: chat.industryId || undefined,
+        industryCustom: chat.industryCustom || undefined,
+        entity: chat.entity || undefined,
+        entitySource: chat.entitySource || undefined,
+        manualPicker: chat.manualPicker,
+        selectedBidang: chat.selectedBidang,
+        suggestedIndustryId: chat.suggestedIndustryId || undefined,
+        // Brand logo & palette
+        brandLogoUrl: chat.brandLogoUrl || undefined,
+        brandLogoPalette: chat.brandLogoPalette || undefined,
+        brandLogoThemeMode: chat.brandLogoThemeMode || undefined,
+      },
+      preview: preview.previewData
+        ? toResumePreview(preview.previewData, baseToken)
+        : undefined,
+      theme: !isEmptyOverrides(themeDraft.applied)
+        ? { applied: stripHeavyOverrides(themeDraft.applied) }
+        : undefined,
+    };
   }, [
+    resumeSnapshotProgress,
+    chat.businessName,
     chat.chatStage,
     chat.messages,
-    chat.businessName,
     chat.businessType,
     chat.businessSubType,
     chat.description,
@@ -1067,9 +1068,55 @@ export function SiteWizard({
     chat.brandLogoPalette,
     chat.brandLogoThemeMode,
     preview.previewData,
-    resumeSnapshotProgress,
+    preview.previewHistory,
+    baseThemeToken,
     themeDraft.applied,
   ]);
+
+  // Debounced autosave for general chat typing / step progression
+  React.useEffect(() => {
+    if (!resumeSnapshotProgress) return;
+    const timeoutId = setTimeout(() => {
+      const snapshot = buildCurrentSnapshot();
+      if (snapshot) saveWizardSnapshot(snapshot);
+    }, 600);
+    return () => clearTimeout(timeoutId);
+  }, [resumeSnapshotProgress, buildCurrentSnapshot]);
+
+  // Immediate snapshot save on theme override change so selected palette/font
+  // is instantly persisted and never lost if user refreshes right away
+  const prevAppliedRef = React.useRef(themeDraft.applied);
+  React.useEffect(() => {
+    if (prevAppliedRef.current !== themeDraft.applied) {
+      prevAppliedRef.current = themeDraft.applied;
+      const snapshot = buildCurrentSnapshot();
+      if (snapshot) {
+        saveWizardSnapshot(snapshot);
+        // Also keep PENDING_KEY in sync with the applied design token
+        try {
+          const raw = localStorage.getItem(PENDING_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            const appliedToken = snapshot.preview?.designToken;
+            if (appliedToken) {
+              parsed.previewDesignToken = appliedToken;
+              localStorage.setItem(PENDING_KEY, JSON.stringify(parsed));
+            }
+          }
+        } catch {}
+      }
+    }
+  }, [themeDraft.applied, buildCurrentSnapshot]);
+
+  // Flush snapshot on beforeunload to prevent lost state on tab close or page reload
+  React.useEffect(() => {
+    const handleBeforeUnload = () => {
+      const snapshot = buildCurrentSnapshot();
+      if (snapshot) saveWizardSnapshot(snapshot);
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [buildCurrentSnapshot]);
 
   const handleResume = () => {
     if (!resumeDraft) return;
@@ -1092,18 +1139,32 @@ export function SiteWizard({
     }
     themeDraft.rehydrate(restoredApplied);
     if (resumeDraft.preview) {
-      const restoredPreview: PreviewData = {
+      const baseToken =
+        resumeDraft.preview.baseDesignToken ??
+        resumeDraft.preview.designToken ??
+        {};
+      const appliedToken = !isEmptyOverrides(restoredApplied)
+        ? ensureReadableText(mergeThemeOverrides(baseToken, restoredApplied))
+        : (resumeDraft.preview.designToken ?? baseToken);
+
+      const basePreview: PreviewData = {
         content: resumeDraft.preview.content,
-        design_token: resumeDraft.preview.designToken ?? {},
+        design_token: baseToken,
         template_id: resumeDraft.preview.templateId,
       };
-      preview.setPreviewData(restoredPreview);
-      preview.setPreviewHistory([restoredPreview]);
+      const activePreview: PreviewData = {
+        content: resumeDraft.preview.content,
+        design_token: appliedToken,
+        template_id: resumeDraft.preview.templateId,
+      };
+
+      preview.setPreviewData(activePreview);
+      preview.setPreviewHistory([basePreview]);
       preview.setHistoryIndex(0);
       preview.setStreamedSections(resumeDraft.preview.content);
       preview.streamedSectionsRef.current = resumeDraft.preview.content;
-      preview.setStreamedDesignToken(resumeDraft.preview.designToken ?? null);
-      preview.streamedTokenRef.current = resumeDraft.preview.designToken ?? null;
+      preview.setStreamedDesignToken(appliedToken);
+      preview.streamedTokenRef.current = appliedToken;
       preview.setStreamedTemplateId(resumeDraft.preview.templateId ?? "");
       preview.setPreviewState("result");
       preview.streamDoneRef.current = true;
@@ -1119,6 +1180,9 @@ export function SiteWizard({
       device.setMobilePreviewOpen(true);
       if (device.isMobileRef.current) {
         device.setMobileScreen("preview");
+        if (FEATURE_FLAGS.THEME_PANEL) {
+          setThemeSheetOpen(true);
+        }
       }
     } else if (resumeDraft.chat.chatStage === "done") {
       // Generation was interrupted — restart it
@@ -1227,12 +1291,11 @@ export function SiteWizard({
           }`}
         style={{ borderColor: "rgba(255,255,255,0.07)" }}
       >
-        {leftPane === "theme" && preview.previewState === "result" ? (
+        {FEATURE_FLAGS.THEME_PANEL && preview.previewState === "result" ? (
           <ThemePanel
             mood={chat.moodRef.current || chat.mood || "clean-modern"}
             theme={themeDraft}
             baseToken={baseThemeToken}
-            onClose={() => setLeftPane("chat")}
           />
         ) : (
           <>
@@ -1278,19 +1341,6 @@ export function SiteWizard({
                   className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/[0.06] border border-white/10 text-slate-200 text-[10px] font-bold transition-all active:scale-95 cursor-pointer"
                 >
                   Preview &rarr;
-                </button>
-              )}
-
-              {/* Re-open theme panel button if user closed it on desktop */}
-              {FEATURE_FLAGS.THEME_PANEL && preview.previewState === "result" && !device.isMobile && (
-                <button
-                  type="button"
-                  onClick={() => setLeftPane("theme")}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-cyan-400/30 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400/50 transition-all text-xs font-semibold cursor-pointer shadow-xs active:scale-95"
-                  title={t("dashboard.wizard.theme.customizeTheme", "Sesuaikan Tema")}
-                >
-                  <PaletteIcon size={13} />
-                  <span>{t("dashboard.wizard.theme.buttonLabel", "Tema")}</span>
                 </button>
               )}
 
