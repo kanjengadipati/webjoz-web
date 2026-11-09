@@ -138,7 +138,11 @@ export function PaletteSection({
     const pi = palettes.findIndex((p) => isPaletteApplied(p, theme.applied));
     return pi >= 0 ? pi + presetOffset : -1;
   })();
-  const [showAll, setShowAll] = React.useState(() => activeIndex >= INITIAL_VISIBLE);
+  // Turunan, bukan state awal: setelah ganti mood kartu aktif bisa jatuh di luar lipatan,
+  // dan daftar harus ikut terbuka supaya kartu "In use" tetap terlihat.
+  const activeBeyondFold = activeIndex >= INITIAL_VISIBLE;
+  const [showAllManual, setShowAll] = React.useState(false);
+  const showAll = showAllManual || activeBeyondFold;
 
   const visibleCount = showAll ? totalCards : Math.min(INITIAL_VISIBLE, totalCards);
   const hiddenCount = totalCards - visibleCount;
@@ -292,7 +296,7 @@ export function PaletteSection({
             : `Lihat semua ${totalCards} palet`}
         </button>
       )}
-      {showAll && totalCards > INITIAL_VISIBLE && (
+      {showAll && !activeBeyondFold && totalCards > INITIAL_VISIBLE && (
         <button
           type="button"
           onClick={() => setShowAll(false)}

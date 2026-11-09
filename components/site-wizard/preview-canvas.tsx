@@ -45,6 +45,11 @@ export function PreviewCanvas({ chat, preview, device, themeDraft }: PreviewCanv
   const hasPreviewData = isStreamingLive ? hasLiveData : !!previewData;
 
   const siteLang: "id" | "en" = (chat.siteLanguage || (locale === "en" ? "en" : "id")) as "id" | "en";
+  const previewBusinessName =
+    chat.businessName ||
+    previewData?.content?.header?.brand_name ||
+    previewData?.content?.header?.business_name ||
+    "";
 
   if (!hasLiveData && !hasPreviewData) {
     return (
@@ -81,7 +86,7 @@ export function PreviewCanvas({ chat, preview, device, themeDraft }: PreviewCanv
     // eslint-disable-next-line react-hooks/static-components
     <TemplateComponent
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      content={buildFullContent(displayData, chat.businessName, chat.businessSubType || chat.businessType, chat.description, chat.whatsapp) as any}
+      content={buildFullContent(displayData, previewBusinessName, chat.businessSubType || chat.businessType, chat.description, chat.whatsapp) as any}
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       design_token={liveToken as any}
       language={(chat.siteLanguage || "id") as any}

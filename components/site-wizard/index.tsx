@@ -101,7 +101,7 @@ import {
   nextEntityFromArchetype,
 } from "./entity";
 import { useTaxonomy, useTaxonomyV2 } from "@/hooks/use-taxonomy";
-import { selectTemplate, formatText, generateSubdomain, generateSlug, getTemplatePool, getDynamicDescriptionPlaceholder, generateDescriptionFromBusinessName } from "./helpers";
+import { selectTemplate, formatText, generateSubdomain, generateSlug, getTemplatePool, getDynamicDescriptionPlaceholder, generateDescriptionFromBusinessName, preloadTemplate } from "./helpers";
 import { sanitizeClassificationPair } from "./taxonomy";
 import { enrichGeneratePayloadV2 } from "./taxonomy-v2";
 import {
@@ -1179,15 +1179,31 @@ export function SiteWizard({
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [buildCurrentSnapshot]);
 
-  const handleResume = () => {
+  const handleResume = async () => {
     if (!resumeDraft) return;
+    // Sembunyikan banner segera (cegah klik ganda selama await di bawah).
+    setResumeDraft(null);
     chat.hydrate(resumeDraft.chat);
+    // Fallback: snapshot lama / parsial (mis. resume test) mungkin tidak membawa
+    // businessName; turunkan dari konten preview agar pratinjau tidak kosong.
+    const resumedName =
+      resumeDraft.chat?.businessName ||
+      resumeDraft.preview?.content?.header?.brand_name ||
+      resumeDraft.preview?.content?.header?.business_name ||
+      "";
+    if (resumedName && !resumeDraft.chat?.businessName) {
+      chat.setBusinessName(resumedName);
+      chat.businessNameRef.current = resumedName;
+    }
     const restoredApplied = restoreCustomFontUrls(
       { ...(resumeDraft.theme?.applied ?? {}) },
       loadCustomFontStorage()
     );
     themeDraft.rehydrate(restoredApplied);
     if (resumeDraft.preview) {
+      // Muat chunk template (fire-and-forget): mempercepat tampilan, tapi tidak memblokir
+      // pemulihan preview agar useThemeDraft/__themeDraft tersedia secepat mungkin.
+      void preloadTemplate(resumeDraft.preview.templateId);
       const baseToken =
         resumeDraft.preview.baseDesignToken ??
         resumeDraft.preview.designToken ??

@@ -2,49 +2,83 @@ import React from "react";
 import dynamic from "next/dynamic";
 import type { TemplateProps } from "@/components/templates/types";
 
+/**
+ * Ditampilkan selama chunk template dimuat. Tanpa ini next/dynamic merender null, dan di dalam
+ * iframe preview yang terlihat hanya latar hitam srcDoc (#0d0f14): "blank hitam" saat resume,
+ * karena chunk template baru dimuat setelah user menekan Lanjutkan (saat generate, chunk sudah
+ * termuat selagi streaming). Pakai inline style: komponen ini dirender di dalam iframe.
+ */
+function TemplateLoading() {
+  return (
+    <div
+      role="status"
+      aria-label="Loading preview"
+      style={{
+        minHeight: "100vh",
+        background: "#f8fafc",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <style>{"@keyframes wz-spin{to{transform:rotate(360deg)}}"}</style>
+      <div
+        style={{
+          width: 32,
+          height: 32,
+          borderRadius: "50%",
+          border: "3px solid #cbd5e1",
+          borderTopColor: "#475569",
+          animation: "wz-spin 0.8s linear infinite",
+        }}
+      />
+    </div>
+  );
+}
+
 const DynamicTemplateKuliner = dynamic(
   () => import("@/components/templates/kuliner").then((m) => m.TemplateKuliner),
-  { ssr: true }
+  { ssr: true, loading: TemplateLoading }
 );
 const DynamicTemplateJasa = dynamic(
   () => import("@/components/templates/jasa").then((m) => m.TemplateJasa),
-  { ssr: true }
+  { ssr: true, loading: TemplateLoading }
 );
 const DynamicTemplateProduk = dynamic(
   () => import("@/components/templates/produk").then((m) => m.TemplateProduk),
-  { ssr: true }
+  { ssr: true, loading: TemplateLoading }
 );
 const DynamicTemplateElegant = dynamic(
   () => import("@/components/templates/elegant").then((m) => m.TemplateElegant),
-  { ssr: true }
+  { ssr: true, loading: TemplateLoading }
 );
 const DynamicTemplateNatural = dynamic(
   () => import("@/components/templates/natural").then((m) => m.TemplateNatural),
-  { ssr: true }
+  { ssr: true, loading: TemplateLoading }
 );
 const DynamicTemplateColorful = dynamic(
   () => import("@/components/templates/colorful").then((m) => m.TemplateColorful),
-  { ssr: true }
+  { ssr: true, loading: TemplateLoading }
 );
 const DynamicTemplateMinimalist = dynamic(
   () => import("@/components/templates/minimalist").then((m) => m.TemplateMinimalist),
-  { ssr: true }
+  { ssr: true, loading: TemplateLoading }
 );
 const DynamicTemplateBold = dynamic(
   () => import("@/components/templates/bold").then((m) => m.TemplateBold),
-  { ssr: true }
+  { ssr: true, loading: TemplateLoading }
 );
 const DynamicTemplateRetro = dynamic(
   () => import("@/components/templates/retro").then((m) => m.TemplateRetro),
-  { ssr: true }
+  { ssr: true, loading: TemplateLoading }
 );
 const DynamicTemplateFuturistic = dynamic(
   () => import("@/components/templates/futuristic").then((m) => m.TemplateFuturistic),
-  { ssr: true }
+  { ssr: true, loading: TemplateLoading }
 );
 const DynamicTemplateDynamicWithCart = dynamic(
   () => import("@/components/templates/dynamic").then((m) => m.TemplateDynamicWithCart),
-  { ssr: true }
+  { ssr: true, loading: TemplateLoading }
 );
 
 export const BUSINESS_TEMPLATE_POOLS: Record<string, string[]> = {
@@ -62,6 +96,33 @@ export const BUSINESS_TEMPLATE_POOLS: Record<string, string[]> = {
 // so returning TEMPLATE_DYNAMIC here is safe and keeps this path simple.
 export function selectTemplate(_businessType: string): string {
   return "TEMPLATE_DYNAMIC";
+}
+
+/**
+ * Memuat chunk template lebih dulu (dipakai saat resume, supaya preview tidak tampil kosong
+ * selama chunk diunduh/dikompilasi). Memakai import() literal yang sama dengan dynamic() di
+ * atas, jadi webpack/turbopack berbagi chunk yang sama. Tidak pernah melempar galat dan
+ * dibatasi timeoutMs supaya resume tidak tertahan.
+ */
+export function preloadTemplate(templateId?: string, timeoutMs = 10000): Promise<void> {
+  let load: Promise<unknown>;
+  switch (templateId) {
+    case "TEMPLATE_KULINER01": load = import("@/components/templates/kuliner"); break;
+    case "TEMPLATE_JASA02": load = import("@/components/templates/jasa"); break;
+    case "TEMPLATE_PRODUK03": load = import("@/components/templates/produk"); break;
+    case "TEMPLATE_ELEGANT": load = import("@/components/templates/elegant"); break;
+    case "TEMPLATE_NATURAL": load = import("@/components/templates/natural"); break;
+    case "TEMPLATE_COLORFUL": load = import("@/components/templates/colorful"); break;
+    case "TEMPLATE_MINIMALIST": load = import("@/components/templates/minimalist"); break;
+    case "TEMPLATE_BOLD": load = import("@/components/templates/bold"); break;
+    case "TEMPLATE_RETRO": load = import("@/components/templates/retro"); break;
+    case "TEMPLATE_FUTURISTIC": load = import("@/components/templates/futuristic"); break;
+    default: load = import("@/components/templates/dynamic");
+  }
+  return Promise.race([
+    load.then(() => undefined, () => undefined),
+    new Promise<void>((resolve) => setTimeout(resolve, timeoutMs)),
+  ]);
 }
 
 export function getTemplateComponent(templateId: string): React.ComponentType<TemplateProps> {

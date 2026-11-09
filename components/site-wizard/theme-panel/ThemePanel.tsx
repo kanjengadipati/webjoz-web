@@ -86,7 +86,7 @@ export function ThemePanel({
     const mo = MOOD_OPTIONS.find((m) => m.value === newMood);
     const label = isIndonesian ? (mo?.label || newMood) : (mo?.labelEn || mo?.label || newMood);
     handleApplyPreset(t("dashboard.wizard.theme.moodApplied", 'Gaya "{mood}" diterapkan', { mood: label }));
-  }, [onSelectMood, handleApplyPreset, t]);
+  }, [onSelectMood, handleApplyPreset, t, isIndonesian]);
 
   const handleDismissToast = useCallback(() => {
     setToastLabel(null);

@@ -157,4 +157,51 @@ test.describe("Wizard Resume", () => {
     // Verify brand logo widget button is restored
     await expect(page.locator("text=/buat website saya/i").first()).toBeVisible({ timeout: 10000 });
   });
+  test("resume dengan preview tersimpan menampilkan situs, bukan layar kosong hitam", async ({ siteWizardPage }) => {
+    const { page } = siteWizardPage;
+    await siteWizardPage.goto();
+    await page.waitForLoadState("networkidle");
+
+    await seedSnapshot(
+      page,
+      makeSnapshot({
+        chat: {
+          chatStage: "done",
+          mood: "warm-earthy",
+          messages: [
+            { id: "ai-init", sender: "ai", text: "Halo! Siapa nama bisnis Anda?" },
+            { id: "u1", sender: "user", text: "Warung Kopi Test" },
+          ],
+        },
+        preview: {
+          templateId: "TEMPLATE_NATURAL",
+          content: {
+            header: { business_name: "Warung Kopi Test", nav_items: [] },
+            hero: { headline: "Kopi Terbaik di Kota", subheadline: "Diseduh dengan cinta" },
+          },
+          designToken: {
+            mood: "warm-earthy",
+            theme_mode: "light",
+            palette: { primary: "#2563eb", accent: "#f59e0b", background: "#ffffff", surface: "#f8fafc", text: "#0f172a" },
+          },
+        },
+      })
+    );
+
+    await page.reload();
+    await page.waitForLoadState("networkidle");
+    await page.waitForFunction(
+      () => document.body.innerText.includes("Lanjutkan") || document.body.innerText.includes("Continue"),
+      { timeout: 15000 }
+    );
+    await page.locator("text=/lanjutkan|continue/i").first().click();
+
+    // Isi iframe preview harus berupa situs (bukan body kosong #0d0f14 bawaan srcDoc) dalam batas wajar.
+    const frame = page.frameLocator('iframe[title="Preview desktop"]');
+    await expect(frame.getByText("Warung Kopi Test").first()).toBeVisible({ timeout: 20000 });
+    const bodyHasContent = await page
+      .locator('iframe[title="Preview desktop"]')
+      .evaluate((el: HTMLIFrameElement) => (el.contentDocument?.body.children.length ?? 0) > 0);
+    expect(bodyHasContent).toBe(true);
+  });
 });
