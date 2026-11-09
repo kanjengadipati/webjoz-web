@@ -6,8 +6,10 @@ import type { UseThemeDraftReturn } from "../use-theme-draft";
 import type { PalettePreset } from "@/lib/theme-presets";
 import { isPaletteApplied } from "@/lib/theme-presets";
 import { isColorDark } from "@/components/templates/helpers";
-import { Check, Palette } from "lucide-react";
+import { Check, ChevronDown, ChevronUp, Palette } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+const INITIAL_VISIBLE = 4;
 
 interface PaletteSectionProps {
   palettes: PalettePreset[];
@@ -123,6 +125,24 @@ export function PaletteSection({
     );
   });
 
+  // Collapsed/expanded state
+  // hasAiCard = true when AI palette is unique (not matching any preset)
+  const hasAiCard = matchingPresetIndex === -1 && Boolean(aiPalette.primary);
+  // Total cards before custom brand: AI card (0 or 1) + all presets
+  const totalCards = (hasAiCard ? 1 : 0) + palettes.length;
+
+  // Auto-expand if the active card is beyond INITIAL_VISIBLE
+  const activeIndex = (() => {
+    if (isAiActive && hasAiCard) return 0;
+    const presetOffset = hasAiCard ? 1 : 0;
+    const pi = palettes.findIndex((p) => isPaletteApplied(p, theme.applied));
+    return pi >= 0 ? pi + presetOffset : -1;
+  })();
+  const [showAll, setShowAll] = React.useState(() => activeIndex >= INITIAL_VISIBLE);
+
+  const visibleCount = showAll ? totalCards : Math.min(INITIAL_VISIBLE, totalCards);
+  const hiddenCount = totalCards - visibleCount;
+
   return (
     <div className="px-4 py-3 space-y-2.5">
       <div className="flex items-center justify-between">
@@ -134,7 +154,7 @@ export function PaletteSection({
       {/* 2-Column Palette Grid */}
       <div className="grid grid-cols-2 gap-2">
         {/* If AI palette is unique (doesn't match any preset), show it as the first card */}
-        {matchingPresetIndex === -1 && aiPalette.primary && (
+        {hasAiCard && visibleCount > 0 && (
           <button
             type="button"
             onClick={() => {
@@ -189,8 +209,8 @@ export function PaletteSection({
           </button>
         )}
 
-        {/* Preset Palettes */}
-        {palettes.map((preset, index) => {
+        {/* Preset Palettes — sliced to visibleCount */}
+        {palettes.slice(0, visibleCount - (hasAiCard && visibleCount > 0 ? 1 : 0)).map((preset, index) => {
           const isPresetMatchingAi = index === matchingPresetIndex;
           const isActive = isPresetMatchingAi
             ? isAiActive || isPaletteApplied(preset, theme.applied)
@@ -257,8 +277,34 @@ export function PaletteSection({
             </button>
           );
         })}
+      </div>
 
-        {/* Custom Brand Color in Grid */}
+      {/* Expand / Collapse toggle */}
+      {hiddenCount > 0 && (
+        <button
+          type="button"
+          onClick={() => setShowAll(true)}
+          className="w-full flex items-center justify-center gap-1 py-1 text-[10px] font-semibold text-primary hover:text-primary/80 transition-colors"
+        >
+          <ChevronDown className="h-3 w-3" />
+          {isEN
+            ? `See all ${totalCards} palettes`
+            : `Lihat semua ${totalCards} palet`}
+        </button>
+      )}
+      {showAll && totalCards > INITIAL_VISIBLE && (
+        <button
+          type="button"
+          onClick={() => setShowAll(false)}
+          className="w-full flex items-center justify-center gap-1 py-1 text-[10px] font-semibold text-sidebar-muted-foreground hover:text-sidebar-foreground transition-colors"
+        >
+          <ChevronUp className="h-3 w-3" />
+          {isEN ? "Show less" : "Tampilkan lebih sedikit"}
+        </button>
+      )}
+
+      {/* Custom Brand Color — always visible outside the collapsed grid */}
+      <div className="grid grid-cols-2 gap-2">
         {hasCustomBrandColor && activeCustom ? (
           <div
             onClick={() => {
