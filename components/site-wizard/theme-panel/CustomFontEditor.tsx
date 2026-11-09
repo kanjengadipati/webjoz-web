@@ -32,7 +32,7 @@ export function CustomFontEditor({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [tab, setTab] = useState<EditorTab>("upload");
-  const [slotTarget, setSlotTarget] = useState<FontTargetSlot>("heading");
+  const [slotTarget, setSlotTarget] = useState<FontTargetSlot>("both");
   const [urlInput, setUrlInput] = useState("");
   const [manualFamilyName, setManualFamilyName] = useState("");
   const [detectedFont, setDetectedFont] = useState<{ name: string; url: string } | null>(null);
@@ -196,6 +196,58 @@ export function CustomFontEditor({
         </button>
       </div>
 
+      {/* Fonts on this site summary — shown first as context */}
+      <div className="space-y-1.5 pb-1 border-b border-border/70">
+        <p className="text-[10px] font-semibold text-sidebar-subtle-foreground uppercase tracking-wide">
+          {t("dashboard.wizard.theme.fontsOnSite", "Font saat ini")}
+        </p>
+        <div className="grid grid-cols-2 gap-1.5">
+          {/* Heading Font */}
+          <div className="flex items-center justify-between p-2 rounded-lg bg-sidebar-muted/30 border border-border/50 text-xs">
+            <div className="min-w-0 flex-1">
+              <span className="text-[10px] uppercase font-bold text-sidebar-subtle-foreground block">
+                {t("dashboard.wizard.theme.slotHeading", "Judul")}
+              </span>
+              <span className="font-semibold text-sidebar-foreground truncate block text-[11px]">
+                {currentTypography.heading_font || baseHeading}
+              </span>
+            </div>
+            {currentTypography.heading_font && currentTypography.heading_font !== baseHeading && (
+              <button
+                type="button"
+                onClick={() => handleResetSlot("heading")}
+                className="flex items-center gap-0.5 text-[10px] text-sidebar-muted-foreground hover:text-primary transition-colors cursor-pointer ml-1 shrink-0"
+                title={t("dashboard.wizard.theme.resetToMoodDefault", "Reset")}
+              >
+                <RotateCcw className="h-3 w-3" />
+              </button>
+            )}
+          </div>
+
+          {/* Body Font */}
+          <div className="flex items-center justify-between p-2 rounded-lg bg-sidebar-muted/30 border border-border/50 text-xs">
+            <div className="min-w-0 flex-1">
+              <span className="text-[10px] uppercase font-bold text-sidebar-subtle-foreground block">
+                {t("dashboard.wizard.theme.slotBody", "Isi")}
+              </span>
+              <span className="font-semibold text-sidebar-foreground truncate block text-[11px]">
+                {currentTypography.body_font || baseBody}
+              </span>
+            </div>
+            {currentTypography.body_font && currentTypography.body_font !== baseBody && (
+              <button
+                type="button"
+                onClick={() => handleResetSlot("body")}
+                className="flex items-center gap-0.5 text-[10px] text-sidebar-muted-foreground hover:text-primary transition-colors cursor-pointer ml-1 shrink-0"
+                title={t("dashboard.wizard.theme.resetToMoodDefault", "Reset")}
+              >
+                <RotateCcw className="h-3 w-3" />
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Tabs */}
       <div className="flex gap-1 p-0.5 rounded-lg bg-sidebar-muted/60 border border-border">
         <button
@@ -211,7 +263,7 @@ export function CustomFontEditor({
           }`}
         >
           <Upload className="h-3.5 w-3.5" />
-          <span>{t("dashboard.wizard.theme.fontUploadTab", "Upload File (.woff2)")}</span>
+          <span>{t("dashboard.wizard.theme.fontUploadTab", "Upload File")}</span>
         </button>
         <button
           type="button"
@@ -249,7 +301,7 @@ export function CustomFontEditor({
               {t("dashboard.wizard.theme.fontUploadAction", "Pilih file font lokal")}
             </p>
             <p className="text-[10px] text-sidebar-muted-foreground mt-0.5">
-              .woff2, .woff, .ttf, .otf (Maks. 500 KB)
+              .woff2, .woff, .ttf, .otf · Maks. 500 KB
             </p>
           </div>
         </div>
@@ -294,7 +346,9 @@ export function CustomFontEditor({
             onClick={handleApplyUrl}
             className="w-full rounded-lg text-xs"
           >
-            {isProcessing ? "Memeriksa..." : t("dashboard.wizard.theme.apply", "Periksa & Terapkan")}
+            {isProcessing
+              ? t("dashboard.wizard.theme.fontChecking", "Memeriksa...")
+              : t("dashboard.wizard.theme.fontCheckAndApply", "Periksa & Terapkan")}
           </Button>
         </div>
       )}
@@ -307,129 +361,89 @@ export function CustomFontEditor({
         </div>
       )}
 
-      {/* Detected Font Badge */}
+      {/* Detected Font Badge + APPLY TO — only shown after font is detected */}
       {detectedFont && (
-        <div className="flex items-center gap-2 p-2.5 rounded-lg bg-primary/10 border border-primary/30 text-primary">
-          <Check className="h-4 w-4 shrink-0 stroke-[3]" />
-          <p className="text-xs font-semibold truncate">
+        <div className="space-y-3">
+          {/* Detected badge */}
+          <div className="flex items-center gap-2 p-2.5 rounded-lg bg-primary/10 border border-primary/30 text-primary">
+            <Check className="h-4 w-4 shrink-0 stroke-[3]" />
+            <p className="text-xs font-semibold truncate">
+              {t(
+                "dashboard.wizard.theme.fontDetected",
+                'Font "{family}" siap digunakan',
+                { family: detectedFont.name }
+              )}
+            </p>
+          </div>
+
+          {/* Use For Selector — only meaningful after font is detected */}
+          <div className="space-y-1.5">
+            <label className="block text-[10px] font-semibold text-sidebar-subtle-foreground uppercase tracking-wide">
+              {t("dashboard.wizard.theme.useFor", "Terapkan ke")}
+            </label>
+            <div className="grid grid-cols-3 gap-1.5">
+              {(
+                [
+                  { key: "heading", label: t("dashboard.wizard.theme.useForHeading", "Judul") },
+                  { key: "body", label: t("dashboard.wizard.theme.useForBody", "Isi") },
+                  { key: "both", label: t("dashboard.wizard.theme.useForBoth", "Keduanya") },
+                ] as const
+              ).map(({ key, label }) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => handleSlotTargetChange(key)}
+                  className={`rounded-lg py-1.5 px-2 text-xs font-semibold border transition-all cursor-pointer text-center ${
+                    slotTarget === key
+                      ? "bg-primary text-primary-foreground border-primary font-bold shadow-xs"
+                      : "bg-sidebar-muted/40 border-border text-sidebar-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-muted"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* License Note */}
+          <p className="text-[10px] text-sidebar-muted-foreground leading-normal italic">
             {t(
-              "dashboard.wizard.theme.fontDetected",
-              'Font "{family}" terdeteksi',
-              { family: detectedFont.name }
+              "dashboard.wizard.theme.licenseNote",
+              "Pastikan Anda memiliki lisensi penggunaan komersial untuk font yang diunggah."
             )}
           </p>
+
+          {/* Action Buttons — only shown when font is ready */}
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleCancel}
+              className="flex-1 border-border text-sidebar-foreground hover:bg-sidebar-muted rounded-lg"
+            >
+              {t("dashboard.wizard.theme.cancel", "Batal")}
+            </Button>
+            <Button
+              size="sm"
+              onClick={handleApply}
+              className="flex-1 rounded-lg bg-primary text-primary-foreground font-bold hover:bg-primary/90"
+            >
+              {t("dashboard.wizard.theme.applyFont", "Terapkan Font")}
+            </Button>
+          </div>
         </div>
       )}
 
-      {/* Use For Selector */}
-      <div className="space-y-1.5 pt-1">
-        <label className="block text-[10px] font-semibold text-sidebar-subtle-foreground uppercase tracking-wide">
-          {t("dashboard.wizard.theme.useFor", "Pakai untuk")}
-        </label>
-        <div className="grid grid-cols-3 gap-1.5">
-          {(
-            [
-              { key: "heading", label: t("dashboard.wizard.theme.useForHeading", "Judul") },
-              { key: "body", label: t("dashboard.wizard.theme.useForBody", "Isi") },
-              { key: "both", label: t("dashboard.wizard.theme.useForBoth", "Keduanya") },
-            ] as const
-          ).map(({ key, label }) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => handleSlotTargetChange(key)}
-              className={`rounded-lg py-1.5 px-2 text-xs font-semibold border transition-all cursor-pointer text-center ${
-                slotTarget === key
-                  ? "bg-primary text-primary-foreground border-primary font-bold shadow-xs"
-                  : "bg-sidebar-muted/40 border-border text-sidebar-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-muted"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Fonts on this site summary */}
-      <div className="space-y-2 pt-2 border-t border-border/70">
-        <p className="text-[10px] font-semibold text-sidebar-subtle-foreground uppercase tracking-wide">
-          {t("dashboard.wizard.theme.fontsOnSite", "Font di website ini")}
-        </p>
-
-        {/* Heading Font Row */}
-        <div className="flex items-center justify-between p-2 rounded-lg bg-sidebar-muted/30 border border-border/50 text-xs">
-          <div className="min-w-0">
-            <span className="text-[10px] uppercase font-bold text-sidebar-subtle-foreground block">
-              {t("dashboard.wizard.theme.slotHeading", "Judul")}
-            </span>
-            <span className="font-semibold text-sidebar-foreground truncate block">
-              {currentTypography.heading_font || baseHeading}
-            </span>
-          </div>
-          {currentTypography.heading_font && currentTypography.heading_font !== baseHeading && (
-            <button
-              type="button"
-              onClick={() => handleResetSlot("heading")}
-              className="flex items-center gap-1 text-[10px] text-sidebar-muted-foreground hover:text-primary transition-colors cursor-pointer"
-              title={t("dashboard.wizard.theme.resetToMoodDefault", "Kembalikan ke font bawaan mood")}
-            >
-              <RotateCcw className="h-3 w-3" />
-              <span>Reset</span>
-            </button>
-          )}
-        </div>
-
-        {/* Body Font Row */}
-        <div className="flex items-center justify-between p-2 rounded-lg bg-sidebar-muted/30 border border-border/50 text-xs">
-          <div className="min-w-0">
-            <span className="text-[10px] uppercase font-bold text-sidebar-subtle-foreground block">
-              {t("dashboard.wizard.theme.slotBody", "Isi")}
-            </span>
-            <span className="font-semibold text-sidebar-foreground truncate block">
-              {currentTypography.body_font || baseBody}
-            </span>
-          </div>
-          {currentTypography.body_font && currentTypography.body_font !== baseBody && (
-            <button
-              type="button"
-              onClick={() => handleResetSlot("body")}
-              className="flex items-center gap-1 text-[10px] text-sidebar-muted-foreground hover:text-primary transition-colors cursor-pointer"
-              title={t("dashboard.wizard.theme.resetToMoodDefault", "Kembalikan ke font bawaan mood")}
-            >
-              <RotateCcw className="h-3 w-3" />
-              <span>Reset</span>
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* License Note */}
-      <p className="text-[10px] text-sidebar-muted-foreground leading-normal italic pt-1">
-        {t(
-          "dashboard.wizard.theme.licenseNote",
-          "Pastikan Anda memiliki lisensi penggunaan komersial untuk font yang diunggah."
-        )}
-      </p>
-
-      {/* Action Buttons */}
-      <div className="flex gap-2 pt-2">
-        <Button
-          variant="outline"
-          size="sm"
+      {/* Cancel only — shown when no font detected yet */}
+      {!detectedFont && (
+        <button
+          type="button"
           onClick={handleCancel}
-          className="flex-1 border-border text-sidebar-foreground hover:bg-sidebar-muted rounded-lg"
+          className="w-full text-center text-xs text-sidebar-muted-foreground hover:text-sidebar-foreground transition-colors cursor-pointer py-1"
         >
           {t("dashboard.wizard.theme.cancel", "Batal")}
-        </Button>
-        <Button
-          size="sm"
-          disabled={!theme.hasDraft && !detectedFont}
-          onClick={handleApply}
-          className="flex-1 rounded-lg bg-primary text-primary-foreground font-bold hover:bg-primary/90 disabled:opacity-50"
-        >
-          {t("dashboard.wizard.theme.apply", "Terapkan")}
-        </Button>
-      </div>
+        </button>
+      )}
     </div>
   );
 }
