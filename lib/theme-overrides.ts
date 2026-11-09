@@ -470,3 +470,24 @@ export function buildMoodOverrides(options: BuildMoodOverridesOptions): ThemeOve
     mood: newMood,
   };
 }
+
+const _isCustomFontUrl = (url?: string) =>
+  Boolean(url) && !/^https:\/\/fonts\.googleapis\.com\//.test(url as string);
+
+// Ekstrak hanya slot font kustom (URL bukan Google Fonts) dari typography.
+// Mengembalikan null bila tidak ada slot kustom.
+export function extractCustomFont(typography?: Record<string, any> | null): ThemeOverrides | null {
+  if (!typography) return null;
+  const result: Record<string, any> = {};
+  let hasAny = false;
+  for (const slot of ["heading", "body"] as const) {
+    const url = typography[`${slot}_font_url`];
+    if (_isCustomFontUrl(url)) {
+      result[`${slot}_font`] = typography[`${slot}_font`];
+      result[`${slot}_font_url`] = url;
+      hasAny = true;
+    }
+  }
+  if (!hasAny) return null;
+  return { typography: result } as ThemeOverrides;
+}

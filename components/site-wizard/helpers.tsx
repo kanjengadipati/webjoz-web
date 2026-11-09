@@ -125,6 +125,18 @@ export function preloadTemplate(templateId?: string, timeoutMs = 10000): Promise
   ]);
 }
 
+export function resolveBusinessName(
+  chatName?: string | null,
+  content?: { header?: { brand_name?: string | null; business_name?: string | null } } | null
+): string {
+  return (
+    (chatName && String(chatName).trim()) ||
+    (content?.header?.brand_name && String(content.header.brand_name).trim()) ||
+    (content?.header?.business_name && String(content.header.business_name).trim()) ||
+    ""
+  );
+}
+
 export function getTemplateComponent(templateId: string): React.ComponentType<TemplateProps> {
   switch (templateId) {
     case "TEMPLATE_KULINER01": return DynamicTemplateKuliner;
