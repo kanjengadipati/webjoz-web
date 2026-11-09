@@ -362,5 +362,112 @@ test.describe("Theme Draft Mechanism (useThemeDraft)", () => {
     expect(Object.keys(resetState.draft)).toHaveLength(0);
     expect(resetState.canUndo).toBe(false);
   });
+  test.describe("Ganti mood (Undo / Reset / warna brand)", () => {
+    const RETRO_PRESETS = {
+      palettes: [
+        {
+          override: {
+            palette: { primary: "#b45309", accent: "#0f766e", background: "#fef3c7", surface: "#fde68a", text: "#451a03" },
+            theme_mode: "light",
+          },
+        },
+      ],
+      fonts: [{ override: { typography: { heading_font: "Playfair Display", body_font: "Lora" } } }],
+    };
+    const DARK_PRESETS = {
+      palettes: [
+        {
+          override: {
+            palette: { primary: "#c9a227", accent: "#e5e7eb", background: "#0b0f17", surface: "#141c2b", text: "#f8fafc" },
+            theme_mode: "dark",
+          },
+        },
+      ],
+      fonts: [{ override: { typography: { heading_font: "Cormorant Garamond", body_font: "Inter" } } }],
+    };
+
+    async function openDoneWizard(siteWizardPage: any) {
+      const { page } = siteWizardPage;
+      await siteWizardPage.goto();
+      await page.waitForLoadState("networkidle");
+
+      const snap = makeDoneSnapshot();
+      snap.chat.mood = "clean-modern";
+      snap.preview.designToken.mood = "clean-modern";
+      await page.evaluate(
+        ([k, s]: [string, string]) => localStorage.setItem(k, s),
+        [KEY, JSON.stringify(snap)] as [string, string]
+      );
+      await page.reload();
+      await page.waitForLoadState("networkidle");
+
+      const resumeBtn = page.locator("text=/lanjutkan|continue/i").first();
+      if (await resumeBtn.isVisible({ timeout: 4000 }).catch(() => false)) {
+        await resumeBtn.click();
+      }
+      await page.waitForFunction(() => !!(window as any).__themeDraft, { timeout: 10000 });
+      return page;
+    }
+
+    const readToken = (page: any) =>
+      page.evaluate(() => {
+        const td = (window as any).__themeDraft;
+        return {
+          mood: td.previewToken?.mood,
+          themeMode: td.previewToken?.theme_mode,
+          primary: td.previewToken?.palette?.primary,
+          background: td.previewToken?.palette?.background,
+          canUndo: td.canUndo,
+        };
+      });
+
+    const readSnapshotMood = (page: any) =>
+      page.evaluate((k: string) => {
+        try { return JSON.parse(localStorage.getItem(k) || "null")?.chat?.mood ?? null; } catch { return null; }
+      }, KEY);
+
+    test("Undo mengembalikan mood awal (token dan chat.mood di snapshot)", async ({ siteWizardPage }) => {
+      const page = await openDoneWizard(siteWizardPage);
+
+      await page.evaluate((p: any) => (window as any).__themeDraft.applyMood("retro", p), RETRO_PRESETS);
+      await expect.poll(async () => (await readToken(page)).mood).toBe("retro");
+      expect((await readToken(page)).primary).toBe("#b45309");
+      await expect.poll(() => readSnapshotMood(page)).toBe("retro");
+
+      await page.evaluate(() => (window as any).__themeDraft.undo());
+      await expect.poll(async () => (await readToken(page)).mood).toBe("clean-modern");
+      expect((await readToken(page)).primary).toBe("#2563eb");
+      await expect.poll(() => readSnapshotMood(page)).toBe("clean-modern");
+    });
+
+    test("Reset tema mengembalikan mood awal dan mengosongkan Undo", async ({ siteWizardPage }) => {
+      const page = await openDoneWizard(siteWizardPage);
+
+      await page.evaluate((p: any) => (window as any).__themeDraft.applyMood("retro", p), RETRO_PRESETS);
+      await expect.poll(async () => (await readToken(page)).mood).toBe("retro");
+
+      await page.evaluate(() => (window as any).__themeDraft.resetAll());
+      await expect.poll(async () => (await readToken(page)).mood).toBe("clean-modern");
+      expect((await readToken(page)).canUndo).toBe(false);
+      await expect.poll(() => readSnapshotMood(page)).toBe("clean-modern");
+    });
+
+    test("warna brand terang + mood gelap: tema gelap penuh, hanya primary/accent dari brand", async ({ siteWizardPage }) => {
+      const page = await openDoneWizard(siteWizardPage);
+
+      await page.evaluate(
+        ([p, brand]: [any, any]) => (window as any).__themeDraft.applyMood("dark-premium", p, brand),
+        [
+          DARK_PRESETS,
+          { primary: "#0a7a3c", accent: "#f2c94c", background: "#f8fafc", surface: "#ffffff", text: "#0f172a" },
+        ] as [any, any]
+      );
+
+      await expect.poll(async () => (await readToken(page)).themeMode).toBe("dark");
+      const tok = await readToken(page);
+      expect(tok.primary).toBe("#0a7a3c");
+      expect(tok.background).toBe("#0b0f17"); // latar tetap dari mood, bukan dari logo
+    });
+  });
 });
 
