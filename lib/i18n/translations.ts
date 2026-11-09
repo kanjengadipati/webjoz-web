@@ -3705,6 +3705,9 @@ export interface Translations {
         fontsOnSite: string;
         licenseNote: string;
         resetToMoodDefault: string;
+        fontCheckAndApply: string;
+        fontChecking: string;
+        applyFont: string;
       };
     };
     linkAccount: {
@@ -8079,6 +8082,9 @@ export const translations: Record<Locale, Translations> = {
           fontsOnSite: "Font di website ini",
           licenseNote: "Pastikan Anda memiliki lisensi penggunaan komersial untuk font yang diunggah.",
           resetToMoodDefault: "Kembalikan ke font bawaan mood",
+          fontCheckAndApply: "Periksa & Terapkan",
+          fontChecking: "Memeriksa...",
+          applyFont: "Terapkan Font",
         },
       },
       linkAccount: {
@@ -12409,6 +12415,9 @@ export const translations: Record<Locale, Translations> = {
           fontsOnSite: "Fonts on this website",
           licenseNote: "Ensure you have commercial rights for uploaded custom fonts.",
           resetToMoodDefault: "Reset to mood default font",
+          fontCheckAndApply: "Check & Apply",
+          fontChecking: "Checking...",
+          applyFont: "Apply Font",
         },
       },
       linkAccount: {
