@@ -406,41 +406,61 @@ export interface BuildMoodOverridesOptions {
 
 /**
  * Builds a new ThemeOverrides object for a mood switch.
- * Preserves brand palette (if present) and custom uploaded/URL fonts.
- * Resets manual palette tweaks and preset fonts to the new mood defaults.
+ *
+ * Layers (low -> high priority):
+ *  1. Mood preset (palette, fonts, theme_mode)          -> replaced by the new mood
+ *  2. Manual color edits                                -> replaced by the new mood (Undo available)
+ *  3. Brand (from logo): ONLY primary + accent persist  -> background/surface/text and
+ *     theme_mode always follow the mood, so a light logo palette never breaks a dark mood.
+ *  4. Custom uploaded/URL fonts                         -> persist
  */
 export function buildMoodOverrides(options: BuildMoodOverridesOptions): ThemeOverrides {
   const { currentApplied, presets, newMood, brandPalette } = options;
   const firstPalette = presets.palettes[0];
   const firstFont = presets.fonts[0];
 
-  // 1. Determine target theme_mode
+  // 1. Target theme_mode always comes from the mood preset.
   const targetThemeMode =
     firstPalette?.override.theme_mode ??
     (newMood === "dark-premium" || newMood === "bold-dark" ? "dark" : "light");
 
-  // 2. Palette: brand palette wins over preset palette if present
+  // 2. Palette: preset first, then brand identity colors (primary + accent only).
   let nextPalette: ThemeOverrides["palette"] | undefined;
-  if (brandPalette && Object.keys(brandPalette).length > 0) {
-    nextPalette = { ...brandPalette };
-  } else if (firstPalette?.override.palette) {
+  if (firstPalette?.override.palette) {
     nextPalette = { ...firstPalette.override.palette };
   }
+  if (brandPalette) {
+    const brandKeys = ["primary", "accent"] as const;
+    for (const key of brandKeys) {
+      const val = brandPalette[key];
+      if (typeof val === "string" && val) {
+        nextPalette = { ...(nextPalette ?? {}), [key]: val };
+      }
+    }
+  }
 
-  // 3. Typography: custom fonts (upload/URL) persist! Preset fonts are replaced by firstFont
+  // 3. Typography: copy the WHOLE preset (name, weight, hero size, style, transform,
+  //    tracking) so the new font is not combined with the old mood's weight/tracking.
+  //    Custom uploaded/URL fonts persist per slot.
   const currentTypo = currentApplied.typography;
-  const hasCustomHeading = Boolean(currentTypo?.heading_font_url);
-  const hasCustomBody = Boolean(currentTypo?.body_font_url);
+  // A Google Fonts URL belongs to a preset; only uploads (data:/own URL, Cloudinary) are "custom".
+  const isCustomFontUrl = (url?: string) =>
+    Boolean(url) && !/^https:\/\/fonts\.googleapis\.com\//.test(url as string);
+  const hasCustomHeading = isCustomFontUrl(currentTypo?.heading_font_url);
+  const hasCustomBody = isCustomFontUrl(currentTypo?.body_font_url);
+  const presetTypo = firstFont?.override.typography ?? {};
 
   const nextTypography: NonNullable<ThemeOverrides["typography"]> = {
+    ...presetTypo,
     heading_font: hasCustomHeading
       ? (currentTypo?.heading_font || "Inter")
-      : (firstFont?.override.typography?.heading_font || "Inter"),
+      : (presetTypo.heading_font || "Inter"),
     body_font: hasCustomBody
       ? (currentTypo?.body_font || "Inter")
-      : (firstFont?.override.typography?.body_font || "Inter"),
-    heading_font_url: hasCustomHeading ? currentTypo?.heading_font_url : "",
-    body_font_url: hasCustomBody ? currentTypo?.body_font_url : "",
+      : (presetTypo.body_font || "Inter"),
+    // Non-custom slots keep the preset's own (Google Fonts) URL, or "" when it has none.
+    heading_font_url: hasCustomHeading ? currentTypo?.heading_font_url : (presetTypo.heading_font_url ?? ""),
+    body_font_url: hasCustomBody ? currentTypo?.body_font_url : (presetTypo.body_font_url ?? ""),
   };
 
   return {

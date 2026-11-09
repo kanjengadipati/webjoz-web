@@ -3656,6 +3656,7 @@ export interface Translations {
         moodSection: string;
         moodHint: string;
         moodApplied: string;
+        customColorTitle: string;
         back: string;
         resetAll: string;
         customizedStatus: string;
@@ -8029,6 +8030,7 @@ export const translations: Record<Locale, Translations> = {
           moodSection: "Gaya Tampilan",
           moodHint: "Mengubah tampilan, teks tetap",
           moodApplied: 'Gaya "{mood}" diterapkan',
+          customColorTitle: "Warna Kustom",
           back: "Kembali",
           resetAll: "Reset semua",
           customizedStatus: "Tema dimodifikasi",
@@ -12358,6 +12360,7 @@ export const translations: Record<Locale, Translations> = {
           moodSection: "Visual Style",
           moodHint: "Changes appearance, text remains",
           moodApplied: 'Style "{mood}" applied',
+          customColorTitle: "Custom Colors",
           back: "Back",
           resetAll: "Reset all",
           customizedStatus: "Theme customized",

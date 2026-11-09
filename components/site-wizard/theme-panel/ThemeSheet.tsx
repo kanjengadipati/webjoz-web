@@ -175,8 +175,6 @@ export function ThemeSheet({
             <BrandColorEditor
               theme={theme}
               baseToken={baseToken}
-              brandPalette={brandPalette}
-              brandThemeMode={brandThemeMode}
               onClose={() => setSubView("none")}
               onApply={() => handleApplyPreset(t("dashboard.wizard.theme.brandColorApplied", "Warna brand"))}
               onLogoApplied={onLogoApplied}

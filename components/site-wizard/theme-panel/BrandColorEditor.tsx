@@ -6,7 +6,7 @@ import { Button } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
 import type { UseThemeDraftReturn } from "../use-theme-draft";
 import { isColorDark } from "@/components/templates/helpers";
-import { deriveSurface } from "@/lib/theme-overrides";
+import { deriveSurface, mergeThemeOverrides } from "@/lib/theme-overrides";
 import { ContrastHint } from "./ContrastHint";
 import { extractBrandPalettes, type ExtractedBrandPalette } from "@/lib/brand-color-extractor";
 import { compressImage } from "@/components/file-upload";
@@ -16,8 +16,6 @@ type ColorSlot = "primary" | "accent" | "background" | "text";
 interface BrandColorEditorProps {
   theme: UseThemeDraftReturn;
   baseToken: Record<string, any> | null;
-  brandPalette?: Record<string, string> | null;
-  brandThemeMode?: "light" | "dark" | null;
   onClose: () => void;
   onApply: () => void;
   onLogoApplied?: (url: string, paletteMap: Record<string, string>, themeMode: "light" | "dark") => void;
@@ -39,8 +37,6 @@ const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 export function BrandColorEditor({
   theme,
   baseToken,
-  brandPalette,
-  brandThemeMode,
   onClose,
   onApply,
   onLogoApplied,
@@ -49,15 +45,14 @@ export function BrandColorEditor({
   const { t, isIndonesian } = useI18n();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Initial colors priority:
-  // 1. brandPalette (from chat state — set when user uploaded a logo)
-  // 2. baseToken.palette (AI-generated colors for the current mood)
-  // Never from theme.applied.palette (which may be a preset like "Hutan Pagi")
-  // Never from localStorage (which may be stale from a previous session)
-  const getInitial = (slot: ColorSlot): string => {
-    if (brandPalette?.[slot]) return brandPalette[slot];
-    return baseToken?.palette?.[slot] ?? "#888888";
-  };
+  // Initial colors = the palette that is ACTUALLY on screen right now: base token + applied
+  // overrides, using dark_palette when the site is in dark mode. Never from localStorage.
+  const effectivePalette: Record<string, string> = (() => {
+    const merged = mergeThemeOverrides(baseToken, theme.applied);
+    const darkActive = merged.theme_mode === "dark" && merged.dark_palette;
+    return { ...(merged.palette || {}), ...(darkActive ? merged.dark_palette : {}) };
+  })();
+  const getInitial = (slot: ColorSlot): string => effectivePalette[slot] ?? "#888888";
 
   const initialColorsRef = useRef<Record<ColorSlot, string>>({
     primary: getInitial("primary"),
@@ -191,13 +186,6 @@ export function BrandColorEditor({
         text: extractedPalette.text,
       };
 
-      try {
-        localStorage.setItem(
-          "webjoz_wizard_custom_palette",
-          JSON.stringify({ palette: paletteMap, theme_mode: mode })
-        );
-      } catch {}
-
       onLogoApplied?.(logoDataUrl, paletteMap, mode);
       onBrandColorApplied?.(paletteMap, mode);
       theme.applyNow(
@@ -212,11 +200,12 @@ export function BrandColorEditor({
       return;
     }
 
-    // Apply full brand palette based on localColors
+    // Manual edit = "warna kustom": masuk lapisan applied saja (bisa di-Undo, diganti saat ganti
+    // mood). TIDAK dijadikan warna brand: brand hanya berasal dari logo.
     const bg = localColors.background;
     const mode: "light" | "dark" = isColorDark(bg) ? "dark" : "light";
     const surface = deriveSurface(bg, localColors.text);
-    const fullBrandPalette: Record<string, string> = {
+    const customPalette: Record<string, string> = {
       primary: localColors.primary,
       accent: localColors.accent,
       background: localColors.background,
@@ -224,20 +213,12 @@ export function BrandColorEditor({
       text: localColors.text,
     };
 
-    try {
-      localStorage.setItem(
-        "webjoz_wizard_custom_palette",
-        JSON.stringify({ palette: fullBrandPalette, theme_mode: mode })
-      );
-    } catch {}
-
-    onBrandColorApplied?.(fullBrandPalette, mode);
     theme.applyNow(
       {
-        palette: fullBrandPalette,
+        palette: customPalette,
         theme_mode: mode,
       },
-      t("dashboard.wizard.theme.brandColorTitle", "Warna Brand Saya")
+      t("dashboard.wizard.theme.customColorTitle", "Warna Kustom")
     );
     onApply();
     onClose();

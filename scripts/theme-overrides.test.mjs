@@ -443,3 +443,77 @@ test("buildMoodOverrides preserves custom uploaded/URL fonts while updating pres
 
 
 
+
+test("buildMoodOverrides: brand keeps only primary+accent; background/surface/text/theme_mode follow the mood", () => {
+  const brandLight = { primary: "#0a7a3c", accent: "#f2c94c", background: "#f8fafc", surface: "#ffffff", text: "#0f172a" };
+  const presets = getPresets("dark-premium");
+  const o = buildMoodOverrides({ currentApplied: {}, presets, newMood: "dark-premium", brandPalette: brandLight });
+  const p0 = presets.palettes[0].override.palette;
+
+  assert.equal(o.theme_mode, "dark");
+  assert.equal(o.palette.primary, "#0a7a3c");
+  assert.equal(o.palette.accent, "#f2c94c");
+  assert.equal(o.palette.background, p0.background);
+  assert.equal(o.palette.surface, p0.surface);
+  assert.equal(o.palette.text, p0.text);
+
+  // Dark logo palette + light mood must not produce a dark background in light mode.
+  const brandDark = { primary: "#d4af37", accent: "#f5f0e8", background: "#0d0d0b", surface: "#1a1a17", text: "#f5f0e8" };
+  const lightPresets = getPresets("clean-modern");
+  const o2 = buildMoodOverrides({ currentApplied: {}, presets: lightPresets, newMood: "clean-modern", brandPalette: brandDark });
+  assert.equal(o2.theme_mode, "light");
+  assert.equal(o2.palette.background, lightPresets.palettes[0].override.palette.background);
+  assert.equal(o2.palette.primary, "#d4af37");
+});
+
+test("buildMoodOverrides: manual palette edits are replaced by the new mood (not treated as brand)", () => {
+  const presets = getPresets("retro");
+  const o = buildMoodOverrides({
+    currentApplied: { palette: { primary: "#ff0000", background: "#00ff00" } },
+    presets,
+    newMood: "retro",
+    brandPalette: null,
+  });
+  assert.deepEqual(o.palette, presets.palettes[0].override.palette);
+});
+
+test("buildMoodOverrides: copies the whole preset typography and keeps preset Google Fonts URLs", () => {
+  const presets = getPresets("warm-earthy");
+  const t0 = presets.fonts[0].override.typography;
+  const o = buildMoodOverrides({ currentApplied: {}, presets, newMood: "warm-earthy" });
+  for (const key of ["heading_font", "body_font", "heading_weight", "heading_size_hero", "heading_style", "heading_transform", "heading_tracking"]) {
+    if (t0[key] !== undefined) assert.equal(o.typography[key], t0[key], key);
+  }
+  assert.equal(o.typography.heading_font_url, t0.heading_font_url ?? "");
+});
+
+test("buildMoodOverrides: preset Google URL is not mistaken for a custom font on the next switch; uploads survive two switches", () => {
+  const first = buildMoodOverrides({ currentApplied: {}, presets: getPresets("warm-earthy"), newMood: "warm-earthy" });
+  const second = buildMoodOverrides({ currentApplied: first, presets: getPresets("retro"), newMood: "retro" });
+  assert.equal(second.typography.heading_font, getPresets("retro").fonts[0].override.typography.heading_font);
+
+  const withUpload = { typography: { heading_font: "MyFont", heading_font_url: "data:font/woff2;base64,AAA" } };
+  const s1 = buildMoodOverrides({ currentApplied: withUpload, presets: getPresets("retro"), newMood: "retro" });
+  const s2 = buildMoodOverrides({ currentApplied: s1, presets: getPresets("futuristic"), newMood: "futuristic" });
+  assert.equal(s2.typography.heading_font, "MyFont");
+  assert.equal(s2.typography.heading_font_url, "data:font/woff2;base64,AAA");
+});
+
+test("mood switch on a dark-mode token with dark_palette keeps the brand accent and the mood's dark background", () => {
+  const base = {
+    mood: "clean-modern",
+    theme_mode: "light",
+    palette: { primary: "#2563eb", accent: "#f59e0b", background: "#ffffff", surface: "#f8fafc", text: "#0f172a" },
+    dark_palette: { primary: "#60a5fa", accent: "#fbbf24", background: "#0b1020", surface: "#141a2e", text: "#e5e7eb" },
+  };
+  const presets = getPresets("dark-premium");
+  const o = buildMoodOverrides({
+    currentApplied: {}, presets, newMood: "dark-premium",
+    brandPalette: { primary: "#0a7a3c", accent: "#f2c94c", background: "#f8fafc", surface: "#fff", text: "#0f172a" },
+  });
+  const t = ensureReadableText(mergeThemeOverrides(base, o));
+  assert.equal(t.theme_mode, "dark");
+  assert.equal(t.dark_palette.background, presets.palettes[0].override.palette.background);
+  assert.equal(t.dark_palette.primary, "#0a7a3c");
+  assert.equal(t.mood, "dark-premium");
+});
