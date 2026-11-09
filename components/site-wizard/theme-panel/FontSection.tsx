@@ -48,6 +48,14 @@ export function FontSection({
     !fonts.some((f) => isFontApplied(f, theme.applied))
   );
 
+  // Cadangan font kustom yang mungkin sudah tertimpa preset, tapi masih bisa diterapkan ulang.
+  const customFontBackup = theme.customFontBackup;
+  const hasCustomBackup = Boolean(
+    customFontBackup?.typography && (customFontBackup.typography.heading_font || customFontBackup.typography.body_font)
+  );
+
+  const displayCustomFont = activeCustomFont ?? customFontBackup?.typography ?? null;
+
   const isCustomActive = Boolean(
     hasCustomFont &&
     activeCustomFont &&
@@ -208,20 +216,23 @@ export function FontSection({
         })}
 
         {/* Custom Font in Grid */}
-        {hasCustomFont && activeCustomFont ? (
+        {((hasCustomFont && activeCustomFont) || hasCustomBackup) ? (
           <div
             onClick={() => {
-              if (!isCustomActive && activeCustomFont) {
-                if (activeCustomFont.heading_font || activeCustomFont.body_font) {
+              const fontToApply = hasCustomFont && activeCustomFont ? activeCustomFont : (customFontBackup?.typography ?? null);
+              if (!fontToApply) return;
+              const isActive = hasCustomFont && isCustomActive;
+              if (!isActive) {
+                if (fontToApply.heading_font || fontToApply.body_font) {
                   loadGoogleFont(
-                    activeCustomFont.heading_font,
-                    activeCustomFont.body_font,
-                    activeCustomFont.heading_font_url,
-                    activeCustomFont.body_font_url
+                    fontToApply.heading_font,
+                    fontToApply.body_font,
+                    fontToApply.heading_font_url,
+                    fontToApply.body_font_url
                   );
                 }
                 theme.applyNow(
-                  { typography: activeCustomFont },
+                  { typography: fontToApply },
                   t("dashboard.wizard.theme.customFontTitle", "Font Kustom")
                 );
                 onApply(t("dashboard.wizard.theme.customFontTitle", "Font Kustom"));
@@ -238,7 +249,7 @@ export function FontSection({
               <div className="flex items-center justify-between mb-1.5 gap-1">
                 <div className="flex items-center gap-1.5 min-w-0">
                   <p className="text-[11px] font-bold text-sidebar-foreground truncate">
-                    {activeCustomFont.heading_font || activeCustomFont.body_font}
+                    {displayCustomFont?.heading_font || displayCustomFont?.body_font}
                   </p>
                   <span className="inline-flex shrink-0 items-center rounded px-1 py-0.2 text-[8px] font-bold bg-sidebar-muted text-sidebar-muted-foreground border border-border">
                     Custom
@@ -256,7 +267,7 @@ export function FontSection({
               <div className="space-y-0.5 pointer-events-none p-1.5 rounded-md bg-sidebar-muted/40 border border-border/40 mb-1.5">
                 <p
                   style={{
-                    fontFamily: `'${activeCustomFont.heading_font || "sans-serif"}', sans-serif`,
+                    fontFamily: `'${displayCustomFont?.heading_font || "sans-serif"}', sans-serif`,
                     fontWeight: "700",
                   }}
                   className="text-xs text-sidebar-foreground leading-tight"
@@ -265,7 +276,7 @@ export function FontSection({
                 </p>
                 <p
                   style={{
-                    fontFamily: `'${activeCustomFont.body_font || "sans-serif"}', sans-serif`,
+                    fontFamily: `'${displayCustomFont?.body_font || "sans-serif"}', sans-serif`,
                   }}
                   className="text-[9.5px] text-sidebar-muted-foreground leading-normal line-clamp-1"
                 >
@@ -276,7 +287,7 @@ export function FontSection({
 
             <div className="flex items-center justify-between mt-0.5">
               <p className="text-[9px] text-sidebar-muted-foreground truncate">
-                {activeCustomFont.heading_font || "Default"} / {activeCustomFont.body_font || "Default"}
+                {displayCustomFont?.heading_font || "Default"} / {displayCustomFont?.body_font || "Default"}
               </p>
               <button
                 type="button"

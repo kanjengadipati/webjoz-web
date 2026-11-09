@@ -10,6 +10,7 @@ import {
   ensureReadableText,
   stripHeavyOverrides,
   buildMoodOverrides,
+  extractCustomFont,
 } from "@/lib/theme-overrides";
 
 export interface UseThemeDraftArgs {
@@ -26,6 +27,7 @@ export interface UseThemeDraftReturn {
   hasDraft: boolean;
   draft: ThemeOverrides;
   applied: ThemeOverrides;
+  customFontBackup: ThemeOverrides | null;
 
   setDraft: (patch: ThemeOverrides) => void;
   clearDraft: () => void;
@@ -79,6 +81,7 @@ export function useThemeDraft({
   const [draft, setDraftState] = useState<ThemeOverrides>({});
   const [applied, setApplied] = useState<ThemeOverrides>({});
   const [undoStack, setUndoStack] = useState<ThemeOverrides[]>([]);
+  const [customFontBackup, setCustomFontBackup] = useState<ThemeOverrides | null>(null);
 
   // Single source of truth ref for closures (e.g. onDesignToken & onDone in useWizardGenerate)
   const appliedRef = useRef<ThemeOverrides>(applied);
@@ -144,6 +147,10 @@ export function useThemeDraft({
     // Push snapshot to undo stack (max 5 snapshots)
     setUndoStack((prev) => [...prev.slice(-4), applied]);
 
+    // Backup custom fonts that are about to be overwritten.
+    const prevCustom = extractCustomFont(applied.typography);
+    if (prevCustom) setCustomFontBackup(prevCustom);
+
     const nextApplied = mergeOverrides(applied, draft);
     appliedRef.current = nextApplied;
     setApplied(nextApplied);
@@ -164,6 +171,10 @@ export function useThemeDraft({
     if (!enabled || isEmptyOverrides(patch)) return;
 
     setUndoStack((prev) => [...prev.slice(-4), applied]);
+
+    // Backup custom fonts that are about to be overwritten.
+    const prevCustom = extractCustomFont(applied.typography);
+    if (prevCustom) setCustomFontBackup(prevCustom);
 
     const nextApplied = mergeOverrides(applied, patch);
     appliedRef.current = nextApplied;
@@ -190,6 +201,9 @@ export function useThemeDraft({
       if (!enabled) return;
 
       setUndoStack((prev) => [...prev.slice(-4), applied]);
+
+      const prevCustom = extractCustomFont(applied.typography);
+      if (prevCustom) setCustomFontBackup(prevCustom);
 
       const nextApplied = buildMoodOverrides({
         currentApplied: applied,
@@ -254,6 +268,7 @@ export function useThemeDraft({
     setDraftState({});
     setApplied({});
     setUndoStack([]);
+    setCustomFontBackup(null);
     onMoodChange?.(baseMood);
 
     setPreviewData((prev) => {
@@ -279,6 +294,7 @@ export function useThemeDraft({
     setDraftState({});
     setApplied({});
     setUndoStack([]);
+    setCustomFontBackup(null);
   }, []);
 
   // Dev helper: expose to window in development for testing before UI panel (Phase 3)
@@ -289,6 +305,7 @@ export function useThemeDraft({
         hasDraft,
         draft,
         applied,
+        customFontBackup,
         setDraft,
         clearDraft,
         commitDraft,
@@ -326,6 +343,7 @@ export function useThemeDraft({
     hasDraft,
     draft,
     applied,
+    customFontBackup,
     setDraft,
     clearDraft,
     commitDraft,

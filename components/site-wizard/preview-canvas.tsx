@@ -2,7 +2,7 @@
 
 import React from "react";
 import { PreviewData } from "./types";
-import { getTemplateComponent, getTemplatePool } from "./helpers";
+import { getTemplateComponent, getTemplatePool, resolveBusinessName } from "./helpers";
 import { buildFullContent } from "@/lib/build-full-content";
 import { DevicePreviewFrame } from "./device-frame";
 import { Wireframe } from "./wireframe";
@@ -45,11 +45,10 @@ export function PreviewCanvas({ chat, preview, device, themeDraft }: PreviewCanv
   const hasPreviewData = isStreamingLive ? hasLiveData : !!previewData;
 
   const siteLang: "id" | "en" = (chat.siteLanguage || (locale === "en" ? "en" : "id")) as "id" | "en";
-  const previewBusinessName =
-    chat.businessName ||
-    previewData?.content?.header?.brand_name ||
-    previewData?.content?.header?.business_name ||
-    "";
+  const previewBusinessName = resolveBusinessName(
+    chat.businessName,
+    previewData?.content
+  );
 
   if (!hasLiveData && !hasPreviewData) {
     return (

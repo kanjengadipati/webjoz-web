@@ -178,3 +178,38 @@ test("getPresets falls back to clean-modern for unknown mood", () => {
   const warm = getPresets("warm-earthy");
   assert.deepEqual(warm, THEME_PRESETS["warm-earthy"]);
 });
+
+const MOOD_RULES = {
+  "clean-modern": { mode: "light" },
+  "warm-earthy":  { mode: "light" },
+  "bold-vibrant": { mode: "light", bg: ["#FFFFFF", "#F8FAFC", "#FAFAFC"] },
+  "dark-premium": { mode: "dark" },
+  "bold-dark":    { mode: "dark" },
+  retro:          { mode: "light" },
+  futuristic:     { mode: "dark" },
+};
+
+test("Setiap preset mengikuti aturan mood backend", () => {
+  for (const [mood, rule] of Object.entries(MOOD_RULES)) {
+    for (const pal of THEME_PRESETS[mood].palettes) {
+      assert.equal(pal.override.theme_mode, rule.mode, `${pal.id}: theme_mode`);
+      if (rule.bg) {
+        assert.ok(rule.bg.includes(String(pal.override.palette.background).toUpperCase()),
+          `${pal.id}: latar ${pal.override.palette.background} tidak diizinkan untuk ${mood}`);
+      }
+    }
+  }
+});
+
+test("Primary terbaca di latar (>= 3:1), kecuali daftar pengecualian", () => {
+  // Pengecualian sementara: preset dari mockup (madu-sage, padi-emas) dan
+  // preset bold-vibrant dengan primary terang yang disengaja (keputusan desainer pending).
+  const EXCEPT = new Set(["madu-sage", "padi-emas", "bv-citrus", "bv-sunshine", "bv-lime"]);
+  for (const mood of EXPECTED_MOODS) {
+    for (const pal of THEME_PRESETS[mood].palettes) {
+      if (EXCEPT.has(pal.id)) continue;
+      const r = getContrastRatio(pal.override.palette.primary, pal.override.palette.background);
+      assert.ok(r >= 3, `${pal.id}: primary/latar ${r.toFixed(1)}:1`);
+    }
+  }
+});
