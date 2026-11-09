@@ -198,6 +198,26 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
       const decoder = new TextDecoder();
       let buffer = "";
       let isDoneReceived = false;
+      let hasReceivedData = false;
+      let lastTemplateId = req.template_id || "";
+
+      // Watchdog timeout (60s): cegah UI stuck jika stream backend terhenti tanpa event "done"
+      const watchdogTimer = setTimeout(() => {
+        if (isDoneReceived || controller.signal.aborted) return;
+        console.warn(`[generate_stream] req=${requestId} watchdog timeout triggered after 60s`);
+        isDoneReceived = true;
+        try {
+          reader.cancel();
+        } catch {
+          // ignore
+        }
+        if (hasReceivedData) {
+          console.info(`[generate_stream] req=${requestId} completing gracefully with received sections`);
+          onDoneRef.current(lastTemplateId || "TEMPLATE_DYNAMIC", 75, 1);
+        } else {
+          onErrorRef.current("Generasi website memakan waktu terlalu lama. Silakan coba lagi.");
+        }
+      }, 60000);
 
       try {
         while (!isDoneReceived) {
@@ -245,6 +265,10 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
             switch (event.type) {
               case "design_token":
                 if (event.data) {
+                  hasReceivedData = true;
+                  if (event.data.template_id) {
+                    lastTemplateId = event.data.template_id;
+                  }
                   markStage("design_token_received");
                   onDesignTokenRef.current(event.data);
                 }
@@ -253,6 +277,7 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
               case "section":
                 markStage(`section_received:${event.section}`);
                 if (event.section && event.data) {
+                  hasReceivedData = true;
                   onSectionRef.current(event.section, event.data, event.section_source);
                 }
                 break;
@@ -261,6 +286,7 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
                 markStage("done");
                 console.info(`[generate_stage] req=${requestId} stage=TOTAL elapsed=${((performance.now() - clientStart) / 1000).toFixed(2)}s`);
                 isDoneReceived = true;
+                clearTimeout(watchdogTimer);
                 onDoneRef.current(
                   event.template_id ?? "",
                   event.quality_score ?? 0,
@@ -272,6 +298,7 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
               case "error":
                 markStage("error");
                 isDoneReceived = true;
+                clearTimeout(watchdogTimer);
                 onErrorRef.current(event.error ?? "Terjadi kesalahan saat generate.");
                 break;
             }
@@ -281,16 +308,19 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
         if (!isDoneReceived) {
           markStage("error");
           isDoneReceived = true;
+          clearTimeout(watchdogTimer);
           onErrorRef.current("Koneksi terputus sebelum generasi website selesai.");
         }
       } catch (err: any) {
         if (err?.name === "AbortError") return;
         if (!isDoneReceived) {
+          clearTimeout(watchdogTimer);
           onErrorRef.current(err?.message || "Koneksi terputus.");
         } else {
           console.warn("Ignored stream read error after generation completed successfully:", err);
         }
       } finally {
+        clearTimeout(watchdogTimer);
         readerRef.current = null;
       }
     },

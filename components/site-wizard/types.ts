@@ -66,6 +66,7 @@ export type MoodItem = {
   value: string;
   emoji: string;
   label: string;
+  labelEn?: string;
   desc: string;
   palette: [string, string, string]; // [bg, primary, accent]
   font: string;

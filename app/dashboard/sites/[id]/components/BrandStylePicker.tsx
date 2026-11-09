@@ -15,17 +15,17 @@ interface Props {
 }
 
 const POPULAR_HEADING_FONTS = [
-  { id: "Inter", label: "Inter", sample: "Modern & Bersih" },
-  { id: "Poppins", label: "Poppins", sample: "Geometris & Ramah" },
-  { id: "Playfair Display", label: "Playfair Display", sample: "Klasik & Elegan" },
-  { id: "Plus Jakarta Sans", label: "Plus Jakarta Sans", sample: "Kontemporer & Tegas" },
+  { id: "Inter", label: "Inter", sample: "Modern & Bersih", sampleEn: "Modern & Clean" },
+  { id: "Poppins", label: "Poppins", sample: "Geometris & Ramah", sampleEn: "Geometric & Friendly" },
+  { id: "Playfair Display", label: "Playfair Display", sample: "Klasik & Elegan", sampleEn: "Classic & Elegant" },
+  { id: "Plus Jakarta Sans", label: "Plus Jakarta Sans", sample: "Kontemporer & Tegas", sampleEn: "Contemporary & Bold" },
 ];
 
 const POPULAR_BODY_FONTS = [
-  { id: "Inter", label: "Inter", sample: "Sangat mudah dibaca" },
-  { id: "Roboto", label: "Roboto", sample: "Standar global web" },
-  { id: "Open Sans", label: "Open Sans", sample: "Netral & nyaman" },
-  { id: "Plus Jakarta Sans", label: "Plus Jakarta Sans", sample: "Harmonis modern" },
+  { id: "Inter", label: "Inter", sample: "Sangat mudah dibaca", sampleEn: "Highly readable" },
+  { id: "Roboto", label: "Roboto", sample: "Standar global web", sampleEn: "Global web standard" },
+  { id: "Open Sans", label: "Open Sans", sample: "Netral & nyaman", sampleEn: "Neutral & comfortable" },
+  { id: "Plus Jakarta Sans", label: "Plus Jakarta Sans", sample: "Harmonis modern", sampleEn: "Modern harmony" },
 ];
 
 const POPULAR_ACCENT_COLORS = [
@@ -37,7 +37,7 @@ const POPULAR_ACCENT_COLORS = [
 ];
 
 export default function BrandStylePicker({ designToken, onUpdateField, locale = "id" }: Props) {
-  const { t } = useI18n();
+  const { t, isIndonesian } = useI18n();
   const colorInputRef = useRef<HTMLInputElement>(null);
   const fontFileInputRef = useRef<HTMLInputElement>(null);
 
@@ -249,7 +249,9 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
                   </span>
                   <span style={{ fontFamily: font.id }}>{font.label}</span>
                 </div>
-                <span className="text-[10px] text-sidebar-subtle-foreground font-normal">{font.sample}</span>
+                <span className="text-[10px] text-sidebar-subtle-foreground font-normal">
+                  {isIndonesian ? font.sample : (font.sampleEn || font.sample)}
+                </span>
               </label>
             );
           })}
@@ -342,7 +344,9 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
                   </span>
                   <span style={{ fontFamily: font.id }}>{font.label}</span>
                 </div>
-                <span className="text-[10px] text-sidebar-subtle-foreground font-normal">{font.sample}</span>
+                <span className="text-[10px] text-sidebar-subtle-foreground font-normal">
+                  {isIndonesian ? font.sample : (font.sampleEn || font.sample)}
+                </span>
               </label>
             );
           })}

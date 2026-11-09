@@ -2252,6 +2252,34 @@ export interface Translations {
       brandIdentitySettings: string;
       brandStyle: string;
       brandStyleSubtitle: string;
+      brandColorsCardTitle: string;
+      brandColorsCardSubtitle: string;
+      brandTypographyCardTitle: string;
+      brandTypographyCardSubtitle: string;
+      activeFontPairing: string;
+      quickPairingsLabel: string;
+      customizeFontButton: string;
+      customizeColorButton: string;
+      brandColorButton: string;
+      brandFontButton: string;
+      myBrandColorTitle: string;
+      brandFontTitle: string;
+      headingShort: string;
+      bodyShort: string;
+      popularAccentsLabel: string;
+      customAccentLabel: string;
+      closeCustomEditor: string;
+      typographyPairings: string;
+      restoreAi: string;
+      brandLogoColorTitle: string;
+      extractFromSiteLogo: string;
+      extractedPaletteReady: string;
+      changeLogoBtn: string;
+      lightMode: string;
+      darkMode: string;
+      useAsSiteLogoCheckbox: string;
+      paletteAppliedSuccess: string;
+      applyBrandPaletteBtn: string;
       testimonialsExampleBanner: string;
       testimonialsCollect: string;
       testimonialsConfirmReal: string;
@@ -3422,6 +3450,23 @@ export interface Translations {
       loadingChecklist3: string;
       loadingChecklist4: string;
       loadingChecklist5: string;
+      loadingChecklist6: string;
+      logoPrompt: string;
+      uploadLogoTitle: string;
+      uploadLogoHint: string;
+      brandLogoAlt: string;
+      brandColorsApplied: string;
+      changeLogo: string;
+      removeLogo: string;
+      extractedPalette: string;
+      extractingBrandColor: string;
+      btnCreateMyWebsite: string;
+      colorsFontEditableNotice: string;
+      colorExtractionFailed: string;
+      continueOrRetryHint: string;
+      imageFileSizeError: string;
+      svgFileSizeError: string;
+      invalidImageFormat: string;
       loadingCardChecklist0: string;
       loadingCardChecklist1: string;
       loadingCardChecklist2: string;
@@ -3434,6 +3479,10 @@ export interface Translations {
       inputPlaceholderName: string;
       inputPlaceholderDesc: string;
       inputPlaceholderGeneral: string;
+      inputDisabledBrandLogo: string;
+      wireframeDesignPreviewBanner: string;
+      wireframeGeneratingStatus: string;
+      yourBusinessFallback: string;
       sttListening: string;
       sttUseVoice: string;
       btnNext: string;
@@ -3598,6 +3647,65 @@ export interface Translations {
       timeMinutesAgo: string;
       timeHoursAgo: string;
       timeDaysAgo: string;
+      theme: {
+        buttonLabel: string;
+        customizeTheme: string;
+        backToChat: string;
+        panelTitle: string;
+        panelSubtitle: string;
+        moodSection: string;
+        moodHint: string;
+        moodApplied: string;
+        customColorTitle: string;
+        back: string;
+        resetAll: string;
+        customizedStatus: string;
+        paletteTitle: string;
+        fontTitle: string;
+        aiPaletteName: string;
+        aiFontName: string;
+        brandColorCard: string;
+        customFontCard: string;
+        brandColorTitle: string;
+        brandColorApplied: string;
+        customFontTitle: string;
+        customFontApplied: string;
+        draftBadge: string;
+        apply: string;
+        cancel: string;
+        preview: string;
+        tabColor: string;
+        tabFont: string;
+        contrastLow: string;
+        contrastDesc: string;
+        contrastFix: string;
+        toastApplied: string;
+        toastUndo: string;
+        fontHeading: string;
+        fontBody: string;
+        fontName: string;
+        fontUrl: string;
+        openGoogleFonts: string;
+        fontUploadTab: string;
+        fontUploadAction: string;
+        fontUploadFailed: string;
+        logoUploadFailed: string;
+        slotHeading: string;
+        slotBody: string;
+        moreActions: string;
+        confirmReset: string;
+        confirmResetYes: string;
+        openPanel: string;
+        fontVerifyFailed: string;
+        fontDetected: string;
+        useFor: string;
+        useForHeading: string;
+        useForBody: string;
+        useForBoth: string;
+        fontsOnSite: string;
+        licenseNote: string;
+        resetToMoodDefault: string;
+      };
     };
     linkAccount: {
       title: string;
@@ -6138,6 +6246,34 @@ export const translations: Record<Locale, Translations> = {
         brandIdentitySettings: "PENGATURAN IDENTITAS",
         brandStyle: "Gaya Brand (Brand style)",
         brandStyleSubtitle: "Jaga konsistensi font & warna di seluruh halaman",
+        brandColorsCardTitle: "Warna Brand",
+        brandColorsCardSubtitle: "Atur warna aksen utama website Anda",
+        brandTypographyCardTitle: "Tipografi Brand",
+        brandTypographyCardSubtitle: "Kombinasi font judul dan teks isi",
+        activeFontPairing: "Pasangan Font Aktif",
+        quickPairingsLabel: "Pilihan Pasangan Cepat",
+        customizeFontButton: "Kustomisasi Font",
+        customizeColorButton: "Sesuaikan Warna Brand",
+        brandColorButton: "Warna brand saya",
+        brandFontButton: "Font brand saya",
+        myBrandColorTitle: "Warna Brand Saya",
+        brandFontTitle: "Font Brand Saya",
+        headingShort: "Judul",
+        bodyShort: "Isi",
+        popularAccentsLabel: "Warna Populer",
+        customAccentLabel: "Warna Kustom",
+        closeCustomEditor: "Tutup",
+        typographyPairings: "Kombinasi Tipografi",
+        restoreAi: "Pulihkan AI",
+        brandLogoColorTitle: "Ekstrak Warna Logo",
+        extractFromSiteLogo: "Ekstrak dari logo situs aktif",
+        extractedPaletteReady: "Palet Warna Terdeteksi",
+        changeLogoBtn: "Ganti",
+        lightMode: "Tema Terang",
+        darkMode: "Tema Gelap",
+        useAsSiteLogoCheckbox: "Pasang juga logo ini di header website",
+        paletteAppliedSuccess: "Palet Berhasil Diterapkan!",
+        applyBrandPaletteBtn: "Terapkan Palet Logo Brand",
         testimonialsExampleBanner:
           "Contoh testimoni buatan AI. Tidak tampil di situs publik sampai Anda menggantinya dengan testimoni asli atau mengonfirmasinya.",
         testimonialsCollect: "Kumpulkan testimoni asli",
@@ -7501,7 +7637,24 @@ export const translations: Record<Locale, Translations> = {
         loadingChecklist2: "Menulis keunggulan & layanan",
         loadingChecklist3: "Menyiapkan testimoni & FAQ",
         loadingChecklist4: "Menyusun katalog & galeri",
-        loadingChecklist5: "Optimasi SEO & finalisasi",
+        loadingChecklist5: "Kurasi portofolio proyek",
+        loadingChecklist6: "Optimasi SEO & finalisasi",
+        logoPrompt: "Pilihan bagus! Punya logo brand? Upload supaya warna brandmu dipakai sejak awal. Kalau belum, lewati saja.",
+        uploadLogoTitle: "Upload logo",
+        uploadLogoHint: "PNG, JPG, atau SVG · warnanya jadi dasar tema",
+        brandLogoAlt: "Logo Brand",
+        brandColorsApplied: "Warna brand diterapkan",
+        changeLogo: "Ganti",
+        removeLogo: "Hapus logo",
+        extractedPalette: "Palet Terdeteksi",
+        extractingBrandColor: "Mengekstrak warna brand...",
+        btnCreateMyWebsite: "Buat website saya",
+        colorsFontEditableNotice: "Warna dan font bisa diubah kapan saja setelah website jadi.",
+        colorExtractionFailed: "Warna tidak terbaca, pakai warna bawaan mood",
+        continueOrRetryHint: "Anda dapat mencoba file lain atau melanjutkan dengan warna bawaan mood.",
+        imageFileSizeError: "Ukuran gambar maksimal 10 MB.",
+        svgFileSizeError: "Ukuran file SVG maksimal 512 KB.",
+        invalidImageFormat: "Format file tidak didukung. Gunakan PNG, JPG, WebP, atau SVG.",
         loadingCardChecklist0: "Analisis bisnis & target pasar",
         loadingCardChecklist1: "Menyusun struktur halaman",
         loadingCardChecklist2: "Menulis headline & copywriting",
@@ -7514,6 +7667,10 @@ export const translations: Record<Locale, Translations> = {
         inputPlaceholderName: "Masukkan nama bisnis Anda...",
         inputPlaceholderDesc: "Ceritakan singkat tentang bisnis Anda...",
         inputPlaceholderGeneral: "Ketik nama bisnis atau jawaban...",
+        inputDisabledBrandLogo: "Klik 'Buat website saya' di atas untuk melanjutkan...",
+        wireframeDesignPreviewBanner: "Pratinjau desain — hasil akhir sedang dibuat AI",
+        wireframeGeneratingStatus: "AI sedang menyusun tata letak & konten untuk {name}...",
+        yourBusinessFallback: "bisnis Anda",
         sttListening: "Mendengarkan...",
         sttUseVoice: "Gunakan Suara (STT)",
         btnNext: "Lanjut",
@@ -7864,6 +8021,65 @@ export const translations: Record<Locale, Translations> = {
         timeMinutesAgo: "{count} menit lalu",
         timeHoursAgo: "{count} jam lalu",
         timeDaysAgo: "{count} hari lalu",
+        theme: {
+          buttonLabel: "Tema",
+          customizeTheme: "Sesuaikan Tema",
+          backToChat: "Kembali ke Chat",
+          panelTitle: "Sesuaikan Tema",
+          panelSubtitle: "Ubah warna & font pratinjau",
+          moodSection: "Gaya Tampilan",
+          moodHint: "Mengubah tampilan, teks tetap",
+          moodApplied: 'Gaya "{mood}" diterapkan',
+          customColorTitle: "Warna Kustom",
+          back: "Kembali",
+          resetAll: "Reset semua",
+          customizedStatus: "Tema dimodifikasi",
+          paletteTitle: "Palet Warna",
+          fontTitle: "Font",
+          aiPaletteName: "Bawaan AI",
+          aiFontName: "Bawaan AI",
+          brandColorCard: "Warna brand saya",
+          customFontCard: "Font kustom",
+          brandColorTitle: "Warna Brand Saya",
+          brandColorApplied: "Warna brand",
+          customFontTitle: "Font Kustom",
+          customFontApplied: "Font kustom",
+          draftBadge: "Belum diterapkan",
+          apply: "Terapkan",
+          cancel: "Batal",
+          preview: "Preview",
+          tabColor: "Warna",
+          tabFont: "Font",
+          contrastLow: "Kontras teks rendah ({ratio}:1)",
+          contrastDesc: "Teks mungkin sulit dibaca di beberapa template.",
+          contrastFix: "Perbaiki otomatis",
+          toastApplied: "{label} diterapkan",
+          toastUndo: "Urungkan",
+          fontHeading: "Heading",
+          fontBody: "Body",
+          fontName: "Nama Font (Google Fonts)",
+          fontUrl: "URL CSS Google Fonts",
+          openGoogleFonts: "Buka Google Fonts",
+          fontUploadTab: "Upload File (.woff2)",
+          fontUploadAction: "Pilih file font lokal",
+          fontUploadFailed: "Font {slot} gagal diunggah dan dikembalikan ke font bawaan.",
+          logoUploadFailed: "Logo gagal diunggah ke penyimpanan dan dilewati.",
+          slotHeading: "judul",
+          slotBody: "isi",
+          moreActions: "Opsi lain",
+          confirmReset: "Mulai ulang dari awal? Hasil dan pilihan temamu akan dihapus.",
+          confirmResetYes: "Ya, mulai ulang",
+          openPanel: "Tema",
+          fontVerifyFailed: "Font tidak bisa dimuat. Periksa URL, atau coba file .woff2.",
+          fontDetected: 'Font "{family}" terdeteksi',
+          useFor: "Pakai untuk",
+          useForHeading: "Judul",
+          useForBody: "Isi",
+          useForBoth: "Keduanya",
+          fontsOnSite: "Font di website ini",
+          licenseNote: "Pastikan Anda memiliki lisensi penggunaan komersial untuk font yang diunggah.",
+          resetToMoodDefault: "Kembalikan ke font bawaan mood",
+        },
       },
       linkAccount: {
         title: "Akun Tertaut",
@@ -10389,6 +10605,34 @@ export const translations: Record<Locale, Translations> = {
         brandStyle: "Brand style",
         brandStyleSubtitle:
           "Keep your typography & color consistent across all pages",
+        brandColorsCardTitle: "Brand Colors",
+        brandColorsCardSubtitle: "Set the primary accent color for your website",
+        brandTypographyCardTitle: "Brand Typography",
+        brandTypographyCardSubtitle: "Heading and body font combination",
+        activeFontPairing: "Active Font Pairing",
+        quickPairingsLabel: "Quick Pairings",
+        customizeFontButton: "Customize Font",
+        customizeColorButton: "Customize Brand Color",
+        brandColorButton: "My brand color",
+        brandFontButton: "My brand font",
+        myBrandColorTitle: "My Brand Color",
+        brandFontTitle: "My Brand Font",
+        headingShort: "Heading",
+        bodyShort: "Body",
+        popularAccentsLabel: "Popular Colors",
+        customAccentLabel: "Custom Color",
+        closeCustomEditor: "Close",
+        typographyPairings: "Typography Pairings",
+        restoreAi: "Restore AI",
+        brandLogoColorTitle: "Logo Color Extraction",
+        extractFromSiteLogo: "Extract from active site logo",
+        extractedPaletteReady: "Detected Color Palette",
+        changeLogoBtn: "Change",
+        lightMode: "Light Theme",
+        darkMode: "Dark Theme",
+        useAsSiteLogoCheckbox: "Also use this logo in website header",
+        paletteAppliedSuccess: "Palette Successfully Applied!",
+        applyBrandPaletteBtn: "Apply Brand Logo Palette",
         testimonialsExampleBanner:
           "AI-generated example testimonials. They stay off the public site until you replace them with real ones or confirm them.",
         testimonialsCollect: "Collect real testimonials",
@@ -11748,7 +11992,24 @@ export const translations: Record<Locale, Translations> = {
         loadingChecklist2: "Crafting benefits & services",
         loadingChecklist3: "Preparing testimonials & FAQ",
         loadingChecklist4: "Setting up catalog & gallery",
-        loadingChecklist5: "SEO optimization & finalization",
+        loadingChecklist5: "Curating project portfolio",
+        loadingChecklist6: "SEO optimization & finalization",
+        logoPrompt: "Great choice! Have a brand logo? Upload it so your brand colors are used from the start. If not, feel free to skip.",
+        uploadLogoTitle: "Upload logo",
+        uploadLogoHint: "PNG, JPG, or SVG · colors become the theme foundation",
+        brandLogoAlt: "Brand Logo",
+        brandColorsApplied: "Brand colors applied",
+        changeLogo: "Change",
+        removeLogo: "Remove logo",
+        extractedPalette: "Extracted Palette",
+        extractingBrandColor: "Extracting brand colors...",
+        btnCreateMyWebsite: "Create my website",
+        colorsFontEditableNotice: "Colors and fonts can be changed anytime after the website is created.",
+        colorExtractionFailed: "Colors could not be detected, using default mood colors",
+        continueOrRetryHint: "You can try another file or continue with default mood colors.",
+        imageFileSizeError: "Image file size must be at most 10 MB.",
+        svgFileSizeError: "SVG file size must be at most 512 KB.",
+        invalidImageFormat: "Unsupported file format. Please use PNG, JPG, WebP, or SVG.",
         loadingCardChecklist0: "Analyzing business & target market",
         loadingCardChecklist1: "Structuring the page layout",
         loadingCardChecklist2: "Writing headlines & copy",
@@ -11761,6 +12022,10 @@ export const translations: Record<Locale, Translations> = {
         inputPlaceholderName: "Enter your business name...",
         inputPlaceholderDesc: "Briefly describe your business...",
         inputPlaceholderGeneral: "Type business name or answer...",
+        inputDisabledBrandLogo: "Click 'Create my website' above to continue...",
+        wireframeDesignPreviewBanner: "Design preview — final website is being generated by AI",
+        wireframeGeneratingStatus: "AI is crafting layout & content for {name}...",
+        yourBusinessFallback: "your business",
         sttListening: "Listening...",
         sttUseVoice: "Use Voice (STT)",
         btnNext: "Next",
@@ -12038,31 +12303,6 @@ export const translations: Record<Locale, Translations> = {
           "health.psychology": "Psychology & Counseling",
           "service.fitness": "Gym & Fitness",
           "shop.pharmacy_health": "Pharmacy & Health Supplies",
-          "shop.furniture": "Furniture",
-          "service.home_services": "Home Repair & Maintenance",
-          "service.laundry": "Laundry",
-          "shop.auto_parts": "Auto Parts & Accessories",
-          "service.motorcycle_repair": "Motorcycle Repair",
-          "service.car_repair": "Car Repair & Service",
-          "service.car_wash": "Car Wash & Detailing",
-          "service.vehicle_rental": "Vehicle Rental",
-          "shop.electronics": "Electronics & Gadgets",
-          "service.device_repair": "Phone & Electronics Repair",
-          "shop.agri": "Agriculture & Livestock Supplies",
-          "shop.pet": "Pet Shop & Supplies",
-          "service.pet_care": "Pet Grooming & Boarding",
-          "health.veterinary": "Veterinary",
-          "service.course": "Lessons & Courses",
-          "pro.coach_tutor": "Tutor & Life Coach",
-          "inst.school": "School & Educational Institution",
-          "inst.pesantren": "Islamic Boarding School",
-          "service.travel_agent": "Travel Agency & Tours",
-          "stay.hotel": "Hotel",
-          "stay.villa": "Villa & Holiday Rental",
-          "stay.homestay": "Homestay & Guesthouse",
-          "stay.kost": "Boarding House",
-          "dest.attraction": "Tourist Attraction",
-          "service.event_wedding": "Event & Wedding Planner",
           "creator.musician": "Musician & Entertainer",
           "creator.photographer": "Photographer",
           "creator.videographer": "Videographer",
@@ -12111,6 +12351,65 @@ export const translations: Record<Locale, Translations> = {
         timeMinutesAgo: "{count} min ago",
         timeHoursAgo: "{count} hr ago",
         timeDaysAgo: "{count} days ago",
+        theme: {
+          buttonLabel: "Theme",
+          customizeTheme: "Customize Theme",
+          backToChat: "Back to Chat",
+          panelTitle: "Customize Theme",
+          panelSubtitle: "Change preview colors & fonts",
+          moodSection: "Visual Style",
+          moodHint: "Changes appearance, text remains",
+          moodApplied: 'Style "{mood}" applied',
+          customColorTitle: "Custom Colors",
+          back: "Back",
+          resetAll: "Reset all",
+          customizedStatus: "Theme customized",
+          paletteTitle: "Color Palette",
+          fontTitle: "Typography",
+          aiPaletteName: "AI Original",
+          aiFontName: "AI Original",
+          brandColorCard: "My brand color",
+          customFontCard: "Custom font",
+          brandColorTitle: "My Brand Colors",
+          brandColorApplied: "Brand colors",
+          customFontTitle: "Custom Font",
+          customFontApplied: "Custom font",
+          draftBadge: "Not applied",
+          apply: "Apply",
+          cancel: "Cancel",
+          preview: "Preview",
+          tabColor: "Color",
+          tabFont: "Font",
+          contrastLow: "Low text contrast ({ratio}:1)",
+          contrastDesc: "Text might be hard to read on some templates.",
+          contrastFix: "Auto-fix",
+          toastApplied: "{label} applied",
+          toastUndo: "Undo",
+          fontHeading: "Heading",
+          fontBody: "Body",
+          fontName: "Font Name (Google Fonts)",
+          fontUrl: "Google Fonts CSS URL",
+          openGoogleFonts: "Open Google Fonts",
+          fontUploadTab: "Upload File (.woff2)",
+          fontUploadAction: "Choose local font file",
+          fontUploadFailed: "{slot} font failed to upload and was reverted to default.",
+          logoUploadFailed: "Failed to upload logo to storage; proceeding without logo.",
+          slotHeading: "heading",
+          slotBody: "body",
+          moreActions: "More actions",
+          confirmReset: "Restart from beginning? Your results and theme choices will be cleared.",
+          confirmResetYes: "Yes, restart",
+          openPanel: "Theme",
+          fontVerifyFailed: "Font could not be loaded. Check URL or try a .woff2 file.",
+          fontDetected: 'Font "{family}" detected',
+          useFor: "Apply to",
+          useForHeading: "Heading",
+          useForBody: "Body",
+          useForBoth: "Both",
+          fontsOnSite: "Fonts on this website",
+          licenseNote: "Ensure you have commercial rights for uploaded custom fonts.",
+          resetToMoodDefault: "Reset to mood default font",
+        },
       },
       linkAccount: {
         title: "Linked Accounts",

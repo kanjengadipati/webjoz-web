@@ -347,66 +347,126 @@ export const sectionTitleStyle: Record<string, string> = {
   fontFamily: "var(--dt-heading-font)",
 };
 
-export function loadCustomFont(fontFamily: string, fontUrl: string) {
-  if (typeof document === "undefined" || !fontFamily || !fontUrl) return;
-  const safeId = `dt-custom-font-${fontFamily.toLowerCase().replace(/[^a-z0-9]/g, "-")}`;
-  if (document.getElementById(safeId)) return;
+/** Sanitize a CSS font-family name: strip dangerous chars, limit length. */
+export function safeFamily(name: string): string {
+  return name.replace(/[^\p{L}\p{N}\s\-_.]/gu, "").trim().slice(0, 60);
+}
 
-  // 1. Link stylesheet (mis. Google Fonts, Bunny Fonts, Fontshare, Typekit)
-  if (
-    fontUrl.includes(".css") ||
-    fontUrl.includes("fonts.googleapis.com") ||
-    fontUrl.includes("fonts.bunny.net") ||
-    fontUrl.includes("fontshare.com") ||
-    fontUrl.includes("typekit.net")
-  ) {
-    const link = document.createElement("link");
+/** Validate and sanitize a font URL. Returns null if unsafe. */
+export function safeFontUrl(url: string): string | null {
+  if (url.startsWith("data:")) {
+    return /^data:font\/(woff2|woff|ttf|otf);base64,[A-Za-z0-9+/=]+$/.test(url) ? url : null;
+  }
+  try {
+    const u = new URL(url);
+    if (u.protocol !== "https:") return null;
+    return u.href.replace(/['"()\\]/g, (c) => "%" + c.charCodeAt(0).toString(16));
+  } catch {
+    return null;
+  }
+}
+
+/** Returns a fingerprint of a URL for cache-busting dedup. */
+export function fontFingerprint(s: string): string {
+  return `${s.length}:${s.slice(-32)}`;
+}
+
+/** Returns true if the font is actually loaded in the browser (times out after timeoutMs). */
+export async function verifyFontLoaded(family: string, timeoutMs = 4000): Promise<boolean> {
+  if (typeof document === "undefined" || !("fonts" in document)) return true;
+  const spec = `16px "${family.replace(/["\\]/g, "")}"`;
+  const timeout = new Promise<boolean>((resolve) => setTimeout(() => resolve(false), timeoutMs));
+  const load = document.fonts
+    .load(spec)
+    .then((faces) => faces.length > 0 && document.fonts.check(spec))
+    .catch(() => false);
+  return Promise.race([load, timeout]);
+}
+
+/** Parse Google Fonts URL to extract the font family name. */
+export function parseGoogleFontsUrl(href: string): { family: string } | null {
+  try {
+    const u = new URL(href);
+    if (u.hostname !== "fonts.googleapis.com") return null;
+    const first = u.searchParams.getAll("family")[0];
+    if (!first) return null;
+    return { family: first.split(":")[0].replace(/\+/g, " ").trim() };
+  } catch {
+    return null;
+  }
+}
+
+export function loadCustomFont(fontFamily: string, fontUrl: string, targetDoc?: Document) {
+  const doc = targetDoc || (typeof document !== "undefined" ? document : undefined);
+  if (!doc || !fontFamily || !fontUrl) return;
+
+  const family = safeFamily(fontFamily);
+  if (!family) return;
+
+  const safeId = `dt-custom-font-${family.toLowerCase().replace(/[^a-z0-9]/g, "-")}`;
+  const existing = doc.getElementById(safeId);
+  const fp = fontFingerprint(fontUrl);
+  if (existing) {
+    if (existing.getAttribute("data-src") === fp) return;
+    existing.remove();
+  }
+
+  // 1. Link stylesheet (hanya Google Fonts yang diizinkan sesuai CSP)
+  if (Boolean(parseGoogleFontsUrl(fontUrl))) {
+    const link = doc.createElement("link");
     link.id = safeId;
     link.rel = "stylesheet";
     link.href = fontUrl;
-    document.head.appendChild(link);
+    link.setAttribute("data-src", fp);
+    doc.head.appendChild(link);
     return;
   }
 
+  const url = safeFontUrl(fontUrl);
+  if (!url) return;
+
   // 2. Binary font (.woff2, .woff, .ttf, .otf, atau data URI)
-  const style = document.createElement("style");
+  const style = doc.createElement("style");
   style.id = safeId;
+  style.setAttribute("data-src", fp);
   let format = "";
-  if (fontUrl.includes(".woff2") || fontUrl.startsWith("data:font/woff2") || fontUrl.startsWith("data:application/font-woff2")) {
+  if (url.includes(".woff2") || url.startsWith("data:font/woff2") || url.startsWith("data:application/font-woff2")) {
     format = "woff2";
-  } else if (fontUrl.includes(".woff") || fontUrl.startsWith("data:font/woff")) {
+  } else if (url.includes(".woff") || url.startsWith("data:font/woff")) {
     format = "woff";
-  } else if (fontUrl.includes(".ttf") || fontUrl.startsWith("data:font/ttf") || fontUrl.startsWith("data:font/truetype")) {
+  } else if (url.includes(".ttf") || url.startsWith("data:font/ttf") || url.startsWith("data:font/truetype")) {
     format = "truetype";
-  } else if (fontUrl.includes(".otf") || fontUrl.startsWith("data:font/otf") || fontUrl.startsWith("data:font/opentype")) {
+  } else if (url.includes(".otf") || url.startsWith("data:font/otf") || url.startsWith("data:font/opentype")) {
     format = "opentype";
   }
   const formatClause = format ? ` format('${format}')` : "";
   style.textContent = `
     @font-face {
-      font-family: '${fontFamily}';
-      src: url('${fontUrl}')${formatClause};
+      font-family: '${family}';
+      src: url('${url}')${formatClause};
       font-display: swap;
       font-weight: 100 900;
     }
   `;
-  document.head.appendChild(style);
+  doc.head.appendChild(style);
 }
 
 export function loadGoogleFont(
   headingFont?: string,
   bodyFont?: string,
   headingFontUrl?: string,
-  bodyFontUrl?: string
+  bodyFontUrl?: string,
+  targetDoc?: Document
 ) {
-  if (typeof document === "undefined") return;
+  const doc = targetDoc || (typeof document !== "undefined" ? document : undefined);
+  if (!doc) return;
 
   // Muat custom font URL terlebih dahulu jika tersedia
   if (headingFont && headingFontUrl) {
-    loadCustomFont(headingFont, headingFontUrl);
+    loadCustomFont(headingFont, headingFontUrl, doc);
   }
   if (bodyFont && bodyFontUrl) {
-    loadCustomFont(bodyFont, bodyFontUrl);
+    loadCustomFont(bodyFont, bodyFontUrl, doc);
   }
 
   // Muat dari Google Fonts hanya jika font tersebut tidak memiliki custom URL
@@ -418,12 +478,12 @@ export function loadGoogleFont(
   if (!googleFonts.length) return;
   const famStr = googleFonts.map((f) => f!.replace(/ /g, "+")).join("&family=");
   const id = `dt-font-${famStr}`;
-  if (document.getElementById(id)) return;
-  const link = document.createElement("link");
+  if (doc.getElementById(id)) return;
+  const link = doc.createElement("link");
   link.id = id;
   link.rel = "stylesheet";
   link.href = `https://fonts.googleapis.com/css2?family=${famStr}:wght@400;500;600;700;800&display=swap`;
-  document.head.appendChild(link);
+  doc.head.appendChild(link);
 }
 
 export function getSectionVariant(dt: any, secKey: string): string | undefined {
