@@ -43,7 +43,7 @@ export function ThemeSheet({
   onBrandColorApplied,
   onSelectMood,
 }: ThemeSheetProps) {
-  const { t } = useI18n();
+  const { t, isIndonesian } = useI18n();
   const [tab, setTab] = useState<SheetTab>("warna");
   const [subView, setSubView] = useState<SubView>("none");
   const [toastLabel, setToastLabel] = useState<string | null>(null);
@@ -58,7 +58,7 @@ export function ThemeSheet({
   const handleSelectMood = useCallback((newMood: string) => {
     onSelectMood?.(newMood);
     const mo = MOOD_OPTIONS.find((m) => m.value === newMood);
-    const label = mo?.label || newMood;
+    const label = isIndonesian ? (mo?.label || newMood) : (mo?.labelEn || mo?.label || newMood);
     handleApplyPreset(t("dashboard.wizard.theme.moodApplied", 'Gaya "{mood}" diterapkan', { mood: label }));
   }, [onSelectMood, handleApplyPreset, t]);
 
