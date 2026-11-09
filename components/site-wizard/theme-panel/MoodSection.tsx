@@ -74,6 +74,7 @@ export function MoodSection({ mood, onSelectMood }: MoodSectionProps) {
             <button
               key={mo.value}
               type="button"
+              aria-pressed={isActive}
               onClick={() => {
                 if (!isActive) {
                   onSelectMood(mo.value);

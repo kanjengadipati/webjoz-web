@@ -43,7 +43,7 @@ export function ThemePanel({
   onBrandColorApplied,
   onSelectMood,
 }: ThemePanelProps) {
-  const { t } = useI18n();
+  const { t, isIndonesian } = useI18n();
   const [subView, setSubView] = useState<SubView>("none");
   const [toastLabel, setToastLabel] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -84,7 +84,7 @@ export function ThemePanel({
   const handleSelectMood = useCallback((newMood: string) => {
     onSelectMood?.(newMood);
     const mo = MOOD_OPTIONS.find((m) => m.value === newMood);
-    const label = mo?.label || newMood;
+    const label = isIndonesian ? (mo?.label || newMood) : (mo?.labelEn || mo?.label || newMood);
     handleApplyPreset(t("dashboard.wizard.theme.moodApplied", 'Gaya "{mood}" diterapkan', { mood: label }));
   }, [onSelectMood, handleApplyPreset, t]);
 
