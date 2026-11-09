@@ -1,4 +1,5 @@
 import type { ChatStage, InferenceResult, Message, PreviewData } from "./types";
+import type { ThemeOverrides } from "@/lib/theme-overrides";
 
 export const WIZARD_RESUME_KEY = "webjoz_wizard_resume_v1";
 /** v2 persistence key — stores archetype + industry_id alongside v1 fields */
@@ -37,6 +38,11 @@ export interface WizardResumePreview {
   templateId?: string;
   content: Record<string, any>;
   designToken: Record<string, any>;
+  baseDesignToken?: Record<string, any>;
+}
+
+export interface WizardResumeTheme {
+  applied: ThemeOverrides;
 }
 
 export interface WizardResumeSnapshot {
@@ -45,6 +51,7 @@ export interface WizardResumeSnapshot {
   businessName: string;
   chat: WizardResumeChat;
   preview?: WizardResumePreview;
+  theme?: WizardResumeTheme;
 }
 
 const VALID_STAGES: ChatStage[] = ["name", "description", "type", "language", "mood", "brand-logo", "done"];
@@ -81,6 +88,7 @@ export function loadWizardSnapshot(): WizardResumeSnapshot | null {
         messages: sanitizeMessages(parsed.chat.messages),
       },
       preview: parsed.preview && parsed.preview.content ? parsed.preview : undefined,
+      theme: parsed.theme?.applied ? { applied: parsed.theme.applied } : undefined,
     };
   } catch {
     return null;
@@ -90,8 +98,8 @@ export function loadWizardSnapshot(): WizardResumeSnapshot | null {
 export function saveWizardSnapshot(snapshot: WizardResumeSnapshot): void {
   try {
     window.localStorage.setItem(WIZARD_RESUME_KEY, JSON.stringify(snapshot));
-  } catch {
-    /* ignore quota errors */
+  } catch (e) {
+    console.warn("[wizard] saveWizardSnapshot failed (quota)", e);
   }
 }
 
@@ -151,10 +159,14 @@ export function clearPendingUpgradeDraft(): void {
 }
 
 
-export function toResumePreview(preview: PreviewData): WizardResumePreview {
+export function toResumePreview(
+  preview: PreviewData,
+  baseToken?: Record<string, any> | null
+): WizardResumePreview {
   return {
     templateId: preview.template_id,
     content: preview.content,
     designToken: preview.design_token,
+    ...(baseToken ? { baseDesignToken: baseToken } : {}),
   };
 }

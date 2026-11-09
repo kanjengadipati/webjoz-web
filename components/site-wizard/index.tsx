@@ -119,6 +119,13 @@ import { useWizardChat } from "./use-wizard-chat";
 import { useWizardPreview } from "./use-wizard-preview";
 import { useWizardDevice } from "./use-wizard-device";
 import { useWizardGenerate } from "./use-wizard-generate";
+import { useThemeDraft } from "./use-theme-draft";
+import {
+  stripHeavyOverrides,
+  isEmptyOverrides,
+  mergeThemeOverrides,
+  ensureReadableText,
+} from "@/lib/theme-overrides";
 import { PreviewCanvas } from "./preview-canvas";
 import { MobileActionBar } from "./mobile-action-bar";
 import { BusinessDetailsSheet } from "./business-details-sheet";
@@ -137,12 +144,53 @@ import { WizardChatFooter } from "./chat/wizard-chat-footer";
 import { WizardChatInput } from "./chat/wizard-chat-input";
 import { BrandLogoWidget } from "./chat/brand-logo-widget";
 import { applyBrandPalette } from "@/lib/apply-brand-palette";
-import { uploadImageFile } from "@/components/file-upload";
+import { uploadImageFile, uploadFontFile } from "@/components/file-upload";
+import {
+  clearCustomFontStorage,
+  loadCustomFontStorage,
+  syncCustomFontStorage,
+  restoreCustomFontUrls,
+  dataUrlToBlob,
+  fontExtFromMime,
+} from "@/lib/wizard-font-storage";
+import { FEATURE_FLAGS } from "@/lib/feature-flags";
+import { ThemePanel, ThemeSheet } from "./theme-panel";
+import { getPresets } from "@/lib/theme-presets";
 
 // Skor kualitas minimal (dari SSE done event) sebelum hasil AI ditampilkan.
 // Di bawah ini dan konten masih dari AI murni (bukan mock fallback) → auto-retry.
 const QUALITY_GATE_THRESHOLD = 70;
 const MAX_QUALITY_RETRIES = 1;
+
+async function persistCustomFonts(
+  typography: Record<string, any> | undefined,
+  baseTypography: Record<string, any> | undefined,
+  notifyFail: (slot: "heading" | "body") => void
+) {
+  if (!typography) return typography;
+  const next = { ...typography };
+  for (const slot of ["heading", "body"] as const) {
+    const urlKey = `${slot}_font_url`;
+    const nameKey = `${slot}_font`;
+    const url: string | undefined = next[urlKey];
+    if (!url?.startsWith("data:")) continue;
+    try {
+      const blob = dataUrlToBlob(url);
+      const ext = fontExtFromMime(blob.type);
+      next[urlKey] = await uploadFontFile(
+        new File([blob], `${slot}-font.${ext}`, { type: blob.type })
+      );
+    } catch (err) {
+      console.error(`[wizard] failed to upload ${slot} font before save`, err);
+      // Kembalikan NAMA font juga, bukan hanya URL, agar template tidak meminta
+      // nama font kustom itu ke Google Fonts.
+      next[urlKey] = "";
+      next[nameKey] = baseTypography?.[nameKey] ?? "Inter";
+      notifyFail(slot);
+    }
+  }
+  return next;
+}
 
 export function SiteWizard({
   mode,
@@ -162,6 +210,43 @@ export function SiteWizard({
   const chat = useWizardChat({ businessType: initialBusinessType, businessSubType: initialBusinessSubType });
   const preview = useWizardPreview();
   const device = useWizardDevice();
+
+  const baseThemeToken =
+    preview.previewHistory[preview.historyIndex]?.design_token ??
+    preview.previewData?.design_token ??
+    null;
+
+  // Dipanggil oleh useThemeDraft (applyMood, undo, resetAll). Hanya menyinkronkan state yang
+  // dibaca UI. JANGAN menulis mood ke previewHistory: entri riwayat adalah token MENTAH dan
+  // menjadi dasar Undo/Reset; mood pilihan user sudah ikut lewat applied.mood.
+  const handleThemeMoodChange = React.useCallback(
+    (newMood: string) => {
+      chat.setMood(newMood);
+      chat.moodRef.current = newMood;
+      preview.setStreamedDesignToken((prev: any) =>
+        prev ? { ...prev, mood: newMood } : prev
+      );
+    },
+    [chat, preview]
+  );
+
+  const themeDraft = useThemeDraft({
+    previewData: preview.previewData,
+    setPreviewData: preview.setPreviewData,
+    baseToken: baseThemeToken,
+    enabled: preview.previewState !== "loading" && !!preview.previewData,
+    resetKey: `${preview.regenCount}:${preview.historyIndex}`,
+    onMoodChange: handleThemeMoodChange,
+  });
+
+  const handleThemeMoodSelect = React.useCallback(
+    (newMood: string) => {
+      const presets = getPresets(newMood);
+      // applyMood sudah memanggil onMoodChange (handleThemeMoodChange) sekali.
+      themeDraft.applyMood(newMood, presets, chat.brandLogoPalette);
+    },
+    [themeDraft, chat.brandLogoPalette]
+  );
 
   const wizardLang = chat.siteLanguage || (locale === "en" ? "en" : "id");
   const uiLang = locale === "en" ? "en" : "id";
@@ -195,6 +280,9 @@ export function SiteWizard({
   const [sheetOpen, setSheetOpen] = useState(false);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
+  // Theme panel state (opened on demand via MobileActionBar button)
+  const [themeSheetOpen, setThemeSheetOpen] = useState(false);
 
   // One-time onboarding hint for "Coba rekomendasi lain" button
   const [showRekomendasiHint, setShowRekomendasiHint] = useState(false);
@@ -277,8 +365,11 @@ export function SiteWizard({
     }
     chat.resetChat();
     preview.resetPreview();
+    themeDraft.hardReset();
     clearWizardSnapshot();
+    clearCustomFontStorage();
     setResumeDraft(null);
+    setThemeSheetOpen(false);
     if (device.isMobile) {
       device.setMobileScreen("chat");
     }
@@ -305,9 +396,10 @@ export function SiteWizard({
 
   const generate = useWizardGenerate({
     onDesignToken: (token) => {
-      const mergedToken = chat.brandLogoPalette
+      const withBrand = chat.brandLogoPalette
         ? applyBrandPalette(token, chat.brandLogoPalette, chat.brandLogoThemeMode ?? undefined)
         : token;
+      const mergedToken = themeDraft.mergeApplied(withBrand);
       preview.setStreamedDesignToken(mergedToken);
       preview.streamedTokenRef.current = mergedToken;
       if (token.template_id) {
@@ -354,10 +446,16 @@ export function SiteWizard({
       preview.setTemplatePoolIndex(0);
 
       const finalContent = preview.streamedSectionsRef.current;
-      let finalToken = preview.streamedTokenRef.current ?? {};
+      let rawToken = preview.streamedTokenRef.current ?? {};
       if (chat.brandLogoPalette) {
-        finalToken = applyBrandPalette(finalToken, chat.brandLogoPalette, chat.brandLogoThemeMode ?? undefined);
+        rawToken = applyBrandPalette(rawToken, chat.brandLogoPalette, chat.brandLogoThemeMode ?? undefined);
       }
+      // Pastikan token mentah selalu punya mood asli: dipakai Undo/Reset ganti mood.
+      if (!rawToken.mood && chat.moodRef.current) {
+        rawToken = { ...rawToken, mood: chat.moodRef.current };
+      }
+      // Token yang ditampilkan dan disimpan: sudah memuat pilihan tema user.
+      const finalToken = themeDraft.mergeApplied(rawToken);
 
       const basePreview: PreviewData & { logo_url?: string | null } = {
         content: Object.keys(finalContent).length > 0 ? finalContent : {},
@@ -385,9 +483,12 @@ export function SiteWizard({
         template_id: templateId,
       };
 
+      // Riwayat menyimpan versi MENTAH supaya Reset dan resume punya dasar yang bersih.
+      const historyEntry: PreviewData = { ...mergedPreview, design_token: rawToken };
+
       preview.setPreviewHistory((prev) => {
         const base = prev.slice(0, preview.historyIndexRef.current + 1);
-        const next = [...base, mergedPreview].slice(-5);
+        const next = [...base, historyEntry].slice(-5);
         preview.setHistoryIndex(next.length - 1);
         return next;
       });
@@ -533,6 +634,38 @@ export function SiteWizard({
     router.push("/");
   };
 
+  const handleLogoApplied = (
+    url: string,
+    paletteMap: Record<string, string>,
+    themeMode: "light" | "dark"
+  ) => {
+    chat.setBrandLogo(url, paletteMap, themeMode);
+    preview.setPreviewData((prev) =>
+      prev
+        ? {
+            ...prev,
+            content: {
+              ...prev.content,
+              header: { ...(prev.content?.header ?? {}), logo_url: url },
+              seo: { ...(prev.content?.seo ?? {}), favicon_url: url },
+            },
+          }
+        : prev
+    );
+  };
+
+  const handleBrandColorApplied = (
+    paletteMap: Record<string, string>,
+    themeMode: "light" | "dark"
+  ) => {
+    chat.setBrandLogo(chat.brandLogoUrl || "", paletteMap, themeMode);
+    preview.setStreamedDesignToken((prev: any) => ({
+      ...(prev || {}),
+      palette: { ...(prev?.palette || {}), ...paletteMap },
+      theme_mode: themeMode,
+    }));
+  };
+
   const handleCancelGenerationError = () => {
     generate.handleCancelGenerationError();
     preview.setPreviewState("wireframe");
@@ -592,9 +725,6 @@ export function SiteWizard({
     preview.setArrivedSections([]);
     preview.setStreamedTemplateId("");
     preview.streamedSectionsRef.current = {};
-    if (!nextBrandPalette) {
-      preview.streamedTokenRef.current = null;
-    }
     preview.streamDoneRef.current = false;
     preview.setPreviewState("loading");
     preview.setLoadingStep(0);
@@ -815,7 +945,7 @@ export function SiteWizard({
         let logoForSave = chat.brandLogoUrl;
         if (logoForSave?.startsWith("data:")) {
           try {
-            const blob = await (await fetch(logoForSave)).blob();
+            const blob = dataUrlToBlob(logoForSave);
             logoForSave = await uploadImageFile(
               new File([blob], "brand-logo", { type: blob.type || "image/png" }),
               { maxWidth: 512, maxHeight: 512 }
@@ -823,11 +953,33 @@ export function SiteWizard({
           } catch (uploadErr) {
             console.error("[wizard] failed to upload logo to storage before save", uploadErr);
             logoForSave = null;
+            pushToast(
+              t(
+                "dashboard.wizard.theme.logoUploadFailed",
+                "Logo gagal diunggah ke penyimpanan dan dilewati."
+              ),
+              "info"
+            );
           }
         }
 
+        const baseTypo = preview.previewHistory[preview.historyIndex]?.design_token?.typography;
+        const typography = await persistCustomFonts(
+          preview.previewData.design_token?.typography,
+          baseTypo,
+          (slot) => pushToast(
+            t("dashboard.wizard.theme.fontUploadFailed",
+              "Font {slot} gagal diunggah dan dikembalikan ke font bawaan.",
+              { slot: slot === "heading" ? t("dashboard.wizard.theme.slotHeading", "judul") : t("dashboard.wizard.theme.slotBody", "isi") }),
+            "info"
+          )
+        );
+        const finalDesignToken = typography
+          ? { ...preview.previewData.design_token, typography }
+          : preview.previewData.design_token;
+
         const enrichedContent = buildFullContent(
-          { content: preview.previewData.content, design_token: preview.previewData.design_token, logo_url: logoForSave },
+          { content: preview.previewData.content, design_token: finalDesignToken, logo_url: logoForSave },
           chat.businessName, chat.businessSubType || chat.businessType, chat.description, chat.whatsapp
         );
         if (logoForSave && !logoForSave.startsWith("data:")) {
@@ -841,7 +993,7 @@ export function SiteWizard({
             headers: { "X-Tenant-ID": tenantId.toString() },
             body: JSON.stringify({
               content: enrichedContent,
-              design_token: preview.previewData.design_token,
+              design_token: finalDesignToken,
             }),
           },
           token
@@ -850,6 +1002,7 @@ export function SiteWizard({
 
       localStorage.removeItem(PENDING_KEY);
       clearWizardSnapshot();
+      clearCustomFontStorage();
       router.push(`/dashboard/sites/${encodeSiteId(siteId)}`);
     } catch (err: any) {
       if (err.statusCode === 403 && err.code === "ERR_SITE_LIMIT") {
@@ -902,52 +1055,57 @@ export function SiteWizard({
     Boolean(chat.businessName) ||
     Boolean(preview.previewData);
 
-  // Debounced autosave of the wizard session so a refresh/disconnect keeps progress.
-  React.useEffect(() => {
-    if (!resumeSnapshotProgress) return;
-    const timeoutId = setTimeout(() => {
-      const snapshot: WizardResumeSnapshot = {
-        version: 1,
-        savedAt: Date.now(),
+  const buildCurrentSnapshot = React.useCallback((): WizardResumeSnapshot | null => {
+    if (!resumeSnapshotProgress) return null;
+    const baseToken =
+      preview.previewHistory[preview.historyIndex]?.design_token ??
+      baseThemeToken ??
+      preview.previewData?.design_token;
+
+    return {
+      version: 1,
+      savedAt: Date.now(),
+      businessName: chat.businessName,
+      chat: {
+        chatStage: chat.chatStage,
+        messages: chat.messages.filter((m) => m.id !== "typing"),
         businessName: chat.businessName,
-        chat: {
-          chatStage: chat.chatStage,
-          messages: chat.messages.filter((m) => m.id !== "typing"),
-          businessName: chat.businessName,
-          businessType: chat.businessType,
-          businessSubType: chat.businessSubType,
-          description: chat.description,
-          whatsapp: chat.whatsapp,
-          serviceArea: chat.serviceArea,
-          mood: chat.mood,
-          siteLanguage: chat.siteLanguageRef.current ?? chat.siteLanguage ?? null,
-          awaitingNameConfirm: chat.awaitingNameConfirm,
-          inferenceResult: chat.inferenceResult,
-          typeWasInferred: chat.typeWasInferred,
-          // v2
-          archetype: chat.archetype || undefined,
-          industryId: chat.industryId || undefined,
-          industryCustom: chat.industryCustom || undefined,
-          entity: chat.entity || undefined,
-          entitySource: chat.entitySource || undefined,
-          manualPicker: chat.manualPicker,
-          selectedBidang: chat.selectedBidang,
-          suggestedIndustryId: chat.suggestedIndustryId || undefined,
-          // Brand logo & palette
-          brandLogoUrl: chat.brandLogoUrl || undefined,
-          brandLogoPalette: chat.brandLogoPalette || undefined,
-          brandLogoThemeMode: chat.brandLogoThemeMode || undefined,
-        },
-        preview: preview.previewData ? toResumePreview(preview.previewData) : undefined,
-      };
-      saveWizardSnapshot(snapshot);
-    }, 600);
-    return () => clearTimeout(timeoutId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        businessType: chat.businessType,
+        businessSubType: chat.businessSubType,
+        description: chat.description,
+        whatsapp: chat.whatsapp,
+        serviceArea: chat.serviceArea,
+        mood: chat.mood,
+        siteLanguage: chat.siteLanguageRef.current ?? chat.siteLanguage ?? null,
+        awaitingNameConfirm: chat.awaitingNameConfirm,
+        inferenceResult: chat.inferenceResult,
+        typeWasInferred: chat.typeWasInferred,
+        // v2
+        archetype: chat.archetype || undefined,
+        industryId: chat.industryId || undefined,
+        industryCustom: chat.industryCustom || undefined,
+        entity: chat.entity || undefined,
+        entitySource: chat.entitySource || undefined,
+        manualPicker: chat.manualPicker,
+        selectedBidang: chat.selectedBidang,
+        suggestedIndustryId: chat.suggestedIndustryId || undefined,
+        // Brand logo & palette
+        brandLogoUrl: chat.brandLogoUrl || undefined,
+        brandLogoPalette: chat.brandLogoPalette || undefined,
+        brandLogoThemeMode: chat.brandLogoThemeMode || undefined,
+      },
+      preview: preview.previewData
+        ? toResumePreview(preview.previewData, baseToken)
+        : undefined,
+      theme: !isEmptyOverrides(themeDraft.applied)
+        ? { applied: stripHeavyOverrides(themeDraft.applied) }
+        : undefined,
+    };
   }, [
+    resumeSnapshotProgress,
+    chat.businessName,
     chat.chatStage,
     chat.messages,
-    chat.businessName,
     chat.businessType,
     chat.businessSubType,
     chat.description,
@@ -969,25 +1127,93 @@ export function SiteWizard({
     chat.brandLogoPalette,
     chat.brandLogoThemeMode,
     preview.previewData,
-    resumeSnapshotProgress,
+    preview.previewHistory,
+    preview.historyIndex,
+    baseThemeToken,
+    themeDraft.applied,
   ]);
+
+  // Debounced autosave for general chat typing / step progression
+  React.useEffect(() => {
+    if (!resumeSnapshotProgress) return;
+    const timeoutId = setTimeout(() => {
+      const snapshot = buildCurrentSnapshot();
+      if (snapshot) saveWizardSnapshot(snapshot);
+    }, 600);
+    return () => clearTimeout(timeoutId);
+  }, [resumeSnapshotProgress, buildCurrentSnapshot]);
+
+  // Immediate snapshot save on theme override change so selected palette/font
+  // is instantly persisted and never lost if user refreshes right away
+  const prevAppliedRef = React.useRef(themeDraft.applied);
+  React.useEffect(() => {
+    if (prevAppliedRef.current !== themeDraft.applied) {
+      prevAppliedRef.current = themeDraft.applied;
+      syncCustomFontStorage(themeDraft.applied.typography);
+      const snapshot = buildCurrentSnapshot();
+      if (snapshot) {
+        saveWizardSnapshot(snapshot);
+        // Also keep PENDING_KEY in sync with the applied design token
+        try {
+          const raw = localStorage.getItem(PENDING_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            const appliedToken = snapshot.preview?.designToken;
+            if (appliedToken) {
+              parsed.previewDesignToken = appliedToken;
+              localStorage.setItem(PENDING_KEY, JSON.stringify(parsed));
+            }
+          }
+        } catch {}
+      }
+    }
+  }, [themeDraft.applied, buildCurrentSnapshot]);
+
+  // Flush snapshot on beforeunload to prevent lost state on tab close or page reload
+  React.useEffect(() => {
+    const handleBeforeUnload = () => {
+      const snapshot = buildCurrentSnapshot();
+      if (snapshot) saveWizardSnapshot(snapshot);
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [buildCurrentSnapshot]);
 
   const handleResume = () => {
     if (!resumeDraft) return;
     chat.hydrate(resumeDraft.chat);
+    const restoredApplied = restoreCustomFontUrls(
+      { ...(resumeDraft.theme?.applied ?? {}) },
+      loadCustomFontStorage()
+    );
+    themeDraft.rehydrate(restoredApplied);
     if (resumeDraft.preview) {
-      const restoredPreview: PreviewData = {
+      const baseToken =
+        resumeDraft.preview.baseDesignToken ??
+        resumeDraft.preview.designToken ??
+        {};
+      const appliedToken = !isEmptyOverrides(restoredApplied)
+        ? ensureReadableText(mergeThemeOverrides(baseToken, restoredApplied))
+        : (resumeDraft.preview.designToken ?? baseToken);
+
+      const basePreview: PreviewData = {
         content: resumeDraft.preview.content,
-        design_token: resumeDraft.preview.designToken ?? {},
+        design_token: baseToken,
         template_id: resumeDraft.preview.templateId,
       };
-      preview.setPreviewData(restoredPreview);
-      preview.setPreviewHistory([restoredPreview]);
+      const activePreview: PreviewData = {
+        content: resumeDraft.preview.content,
+        design_token: appliedToken,
+        template_id: resumeDraft.preview.templateId,
+      };
+
+      preview.setPreviewData(activePreview);
+      preview.setPreviewHistory([basePreview]);
       preview.setHistoryIndex(0);
       preview.setStreamedSections(resumeDraft.preview.content);
       preview.streamedSectionsRef.current = resumeDraft.preview.content;
-      preview.setStreamedDesignToken(resumeDraft.preview.designToken ?? null);
-      preview.streamedTokenRef.current = resumeDraft.preview.designToken ?? null;
+      preview.setStreamedDesignToken(appliedToken);
+      preview.streamedTokenRef.current = appliedToken;
       preview.setStreamedTemplateId(resumeDraft.preview.templateId ?? "");
       preview.setPreviewState("result");
       preview.streamDoneRef.current = true;
@@ -1032,6 +1258,7 @@ export function SiteWizard({
 
   const handleStartFresh = () => {
     clearWizardSnapshot();
+    clearCustomFontStorage();
     setResumeDraft(null);
   };
 
@@ -1104,13 +1331,27 @@ export function SiteWizard({
     >
       {/* ══ LEFT SIDEBAR: Chat Panel ══════════════════════════════════════════ */}
       <div
-        className={`absolute inset-0 z-20 flex h-full w-full shrink-0 flex-col overflow-hidden border-r bg-[#111318] shadow-xl transition-transform duration-300 ease-out md:relative md:inset-auto md:z-10 md:w-[410px] lg:w-[430px] md:translate-x-0 ${device.isMobile
+        className={`absolute inset-0 z-20 flex h-full w-full shrink-0 flex-col overflow-hidden border-r border-border bg-sidebar shadow-xl transition-transform duration-300 ease-out md:relative md:inset-auto md:z-10 md:w-[410px] lg:w-[430px] md:translate-x-0 ${device.isMobile
             ? device.mobileScreen === "chat" ? "translate-x-0" : "-translate-x-full"
             : device.mobilePreviewOpen ? "-translate-x-full" : "translate-x-0"
           }`}
-        style={{ borderColor: "rgba(255,255,255,0.07)" }}
       >
-        <div className="px-5 pt-4 pb-0 shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.09)", boxShadow: "0 1px 0 rgba(255,255,255,0.025)" }}>
+        {FEATURE_FLAGS.THEME_PANEL && preview.previewState === "result" ? (
+          <ThemePanel
+            mood={chat.moodRef.current || chat.mood || "clean-modern"}
+            theme={themeDraft}
+            baseToken={baseThemeToken}
+            brandPalette={chat.brandLogoPalette}
+            brandThemeMode={chat.brandLogoThemeMode}
+            onBack={handleBack}
+            onReset={handleResetChat}
+            onLogoApplied={handleLogoApplied}
+            onBrandColorApplied={handleBrandColorApplied}
+            onSelectMood={handleThemeMoodSelect}
+          />
+        ) : (
+          <>
+            <div className="px-5 pt-4 pb-0 shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.09)", boxShadow: "0 1px 0 rgba(255,255,255,0.025)" }}>
           <div className="flex items-center justify-between gap-3 mb-4">
             {/* Left: Back button + Avatar + Title & Subtitle */}
             <div className="flex items-center gap-3 min-w-0">
@@ -2186,6 +2427,8 @@ export function SiteWizard({
           handleResetChat={handleResetChat}
           t={t}
         />
+          </>
+        )}
       </div>
 
       {/* ══ RIGHT: Browser Preview ════════════════════════════════════════════ */}
@@ -2310,8 +2553,12 @@ export function SiteWizard({
           )}
         </div>
 
-        <div className="flex-1 overflow-hidden relative bg-background" ref={previewContainerRef}>
-          <PreviewCanvas chat={chat} preview={preview} device={device} />
+        <div
+          className="flex-1 overflow-hidden relative bg-background"
+          ref={previewContainerRef}
+          style={{ paddingBottom: device.isMobile && themeSheetOpen ? "45dvh" : undefined }}
+        >
+          <PreviewCanvas chat={chat} preview={preview} device={device} themeDraft={themeDraft} />
 
           {preview.previewState === "loading" && !device.isMobile && (
             <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/10">
@@ -2449,14 +2696,32 @@ export function SiteWizard({
         onRetry={handleRetryGeneration}
       />
 
-      <MobileActionBar
-        preview={preview}
-        device={device}
-        onOpenSheet={() => { setShowLengkapiHint(false); setSheetOpen(true); }}
-        onGoToEditor={() => { setShowEditPublishHint(false); handleGoToEditor(); }}
-        showLengkapiHint={showLengkapiHint}
-        showEditPublishHint={showEditPublishHint}
-      />
+      {!themeSheetOpen && (
+        <MobileActionBar
+          preview={preview}
+          device={device}
+          onOpenSheet={() => { setShowLengkapiHint(false); setSheetOpen(true); }}
+          onGoToEditor={() => { setShowEditPublishHint(false); handleGoToEditor(); }}
+          onOpenTheme={FEATURE_FLAGS.THEME_PANEL ? () => setThemeSheetOpen(true) : undefined}
+          showLengkapiHint={showLengkapiHint}
+          showEditPublishHint={showEditPublishHint}
+        />
+      )}
+
+      {FEATURE_FLAGS.THEME_PANEL && (
+        <ThemeSheet
+          open={themeSheetOpen}
+          mood={chat.moodRef.current || chat.mood || "clean-modern"}
+          theme={themeDraft}
+          baseToken={baseThemeToken}
+          brandPalette={chat.brandLogoPalette}
+          brandThemeMode={chat.brandLogoThemeMode}
+          onClose={() => setThemeSheetOpen(false)}
+          onLogoApplied={handleLogoApplied}
+          onBrandColorApplied={handleBrandColorApplied}
+          onSelectMood={handleThemeMoodSelect}
+        />
+      )}
 
       <div className="md:hidden">
         <BusinessDetailsSheet
