@@ -108,7 +108,11 @@ function PublicWizardContent() {
 
     // Acquire a cross-render save lock BEFORE any async work.
     // localStorage survives Suspense unmount/remount; useRef does not.
-    if (localStorage.getItem(SAVE_LOCK_KEY)) return;
+    // Jika lock lama tertinggal (mis. tab ditutup saat menyimpan), jangan biarkan
+    // layar loading berputar selamanya: bebaskan lock dan lanjutkan.
+    if (localStorage.getItem(SAVE_LOCK_KEY)) {
+      localStorage.removeItem(SAVE_LOCK_KEY);
+    }
     localStorage.setItem(SAVE_LOCK_KEY, "1");
 
     // Clean up the URL immediately so refresh doesn't re-trigger
