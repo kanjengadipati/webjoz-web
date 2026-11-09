@@ -216,30 +216,16 @@ export function SiteWizard({
     preview.previewData?.design_token ??
     null;
 
+  // Dipanggil oleh useThemeDraft (applyMood, undo, resetAll). Hanya menyinkronkan state yang
+  // dibaca UI. JANGAN menulis mood ke previewHistory: entri riwayat adalah token MENTAH dan
+  // menjadi dasar Undo/Reset; mood pilihan user sudah ikut lewat applied.mood.
   const handleThemeMoodChange = React.useCallback(
     (newMood: string) => {
       chat.setMood(newMood);
       chat.moodRef.current = newMood;
-
       preview.setStreamedDesignToken((prev: any) =>
         prev ? { ...prev, mood: newMood } : prev
       );
-
-      preview.setPreviewHistory((prev) => {
-        if (!prev || prev.length === 0) return prev;
-        const next = [...prev];
-        const activeIdx = preview.historyIndexRef.current;
-        if (next[activeIdx]) {
-          next[activeIdx] = {
-            ...next[activeIdx],
-            design_token: {
-              ...(next[activeIdx].design_token || {}),
-              mood: newMood,
-            },
-          };
-        }
-        return next;
-      });
     },
     [chat, preview]
   );
@@ -256,10 +242,10 @@ export function SiteWizard({
   const handleThemeMoodSelect = React.useCallback(
     (newMood: string) => {
       const presets = getPresets(newMood);
+      // applyMood sudah memanggil onMoodChange (handleThemeMoodChange) sekali.
       themeDraft.applyMood(newMood, presets, chat.brandLogoPalette);
-      handleThemeMoodChange(newMood);
     },
-    [themeDraft, chat.brandLogoPalette, handleThemeMoodChange]
+    [themeDraft, chat.brandLogoPalette]
   );
 
   const wizardLang = chat.siteLanguage || (locale === "en" ? "en" : "id");
@@ -463,6 +449,10 @@ export function SiteWizard({
       let rawToken = preview.streamedTokenRef.current ?? {};
       if (chat.brandLogoPalette) {
         rawToken = applyBrandPalette(rawToken, chat.brandLogoPalette, chat.brandLogoThemeMode ?? undefined);
+      }
+      // Pastikan token mentah selalu punya mood asli: dipakai Undo/Reset ganti mood.
+      if (!rawToken.mood && chat.moodRef.current) {
+        rawToken = { ...rawToken, mood: chat.moodRef.current };
       }
       // Token yang ditampilkan dan disimpan: sudah memuat pilihan tema user.
       const finalToken = themeDraft.mergeApplied(rawToken);
