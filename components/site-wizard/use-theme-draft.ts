@@ -45,7 +45,6 @@ export interface UseThemeDraftReturn {
   mergeApplied: (token: Record<string, any>) => Record<string, any>;
   rehydrate: (applied: ThemeOverrides) => void;
   hardReset: () => void;
-  lastCustomTypography: ThemeOverrides["typography"] | null;
 }
 
 function mergeOverrides(base: ThemeOverrides, patch: ThemeOverrides): ThemeOverrides {
@@ -80,15 +79,6 @@ export function useThemeDraft({
   const [draft, setDraftState] = useState<ThemeOverrides>({});
   const [applied, setApplied] = useState<ThemeOverrides>({});
   const [undoStack, setUndoStack] = useState<ThemeOverrides[]>([]);
-  const [lastCustomTypography, setLastCustomTypography] = useState<ThemeOverrides["typography"] | null>(() => {
-    if (typeof window === "undefined") return null;
-    try {
-      const raw = localStorage.getItem("webjoz_wizard_custom_typography");
-      return raw ? JSON.parse(raw) : null;
-    } catch {
-      return null;
-    }
-  });
 
   // Single source of truth ref for closures (e.g. onDesignToken & onDone in useWizardGenerate)
   const appliedRef = useRef<ThemeOverrides>(applied);
@@ -157,13 +147,6 @@ export function useThemeDraft({
     const nextApplied = mergeOverrides(applied, draft);
     appliedRef.current = nextApplied;
     setApplied(nextApplied);
-    const typo = nextApplied.typography;
-    if (typo && (typo.heading_font || typo.body_font)) {
-      setLastCustomTypography(typo);
-      try {
-        localStorage.setItem("webjoz_wizard_custom_typography", JSON.stringify(typo));
-      } catch {}
-    }
 
     setPreviewData((prev) => {
       if (!prev) return prev;
@@ -271,7 +254,6 @@ export function useThemeDraft({
     setDraftState({});
     setApplied({});
     setUndoStack([]);
-    setLastCustomTypography(null);
     onMoodChange?.(baseMood);
 
     setPreviewData((prev) => {
@@ -297,7 +279,6 @@ export function useThemeDraft({
     setDraftState({});
     setApplied({});
     setUndoStack([]);
-    setLastCustomTypography(null);
   }, []);
 
   // Dev helper: expose to window in development for testing before UI panel (Phase 3)
@@ -357,6 +338,5 @@ export function useThemeDraft({
     mergeApplied,
     rehydrate,
     hardReset,
-    lastCustomTypography,
   };
 }

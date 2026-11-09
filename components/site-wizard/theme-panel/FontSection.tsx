@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Check, Type } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import type { UseThemeDraftReturn } from "../use-theme-draft";
-import type { ThemeOverrides } from "@/lib/theme-overrides";
 import type { FontPreset } from "@/lib/theme-presets";
 import { isFontApplied } from "@/lib/theme-presets";
 import { loadGoogleFont } from "@/components/templates/helpers";
@@ -40,28 +39,13 @@ export function FontSection({
   const aiBody = baseToken?.typography?.body_font || "Inter";
   const isPresetActive = fonts.some((f) => isFontApplied(f, theme.applied));
 
-  const [savedCustomFont, setSavedCustomFont] = useState<ThemeOverrides["typography"] | null>(() => {
-    if (typeof window === "undefined") return null;
-    try {
-      const raw = localStorage.getItem("webjoz_wizard_custom_typography");
-      return raw ? JSON.parse(raw) : null;
-    } catch {
-      return null;
-    }
-  });
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem("webjoz_wizard_custom_typography");
-      if (raw) {
-        setSavedCustomFont(JSON.parse(raw));
-      }
-    } catch {}
-  }, [theme.applied]);
-
-  const activeCustomFont = savedCustomFont ?? theme.lastCustomTypography;
+  // Source of truth for custom font: theme.applied.typography (set by commitDraft/applyNow).
+  // No localStorage read here — wizard-font-storage.ts handles data-URL persistence separately.
+  const activeCustomFont = theme.applied.typography ?? null;
   const hasCustomFont = Boolean(
-    activeCustomFont && (activeCustomFont.heading_font || activeCustomFont.body_font)
+    activeCustomFont && (activeCustomFont.heading_font || activeCustomFont.body_font) &&
+    // Not a preset font — custom means it was explicitly set by user (not AI default)
+    !fonts.some((f) => isFontApplied(f, theme.applied))
   );
 
   const isCustomActive = Boolean(
