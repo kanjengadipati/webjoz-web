@@ -1,19 +1,55 @@
 "use client";
 
-import React, { useState, useRef, useCallback } from "react";
-import { Upload, Link2, Check, AlertCircle, X, RotateCcw } from "lucide-react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
+import { Upload, Link2, Check, AlertCircle, X, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
 import type { UseThemeDraftReturn } from "../use-theme-draft";
 import {
   loadCustomFont,
+  loadGoogleFont,
   verifyFontLoaded,
   parseGoogleFontsUrl,
 } from "@/components/templates/helpers";
 import { readFontFileDataUrl } from "@/lib/wizard-font-storage";
 
-type FontTargetSlot = "heading" | "body" | "both";
-type EditorTab = "upload" | "url";
+type FontSlot = "heading" | "body";
+type UploadTab = "upload" | "url";
+
+interface FontOption {
+  name: string;
+  desc: string;
+}
+
+// Curated Google Fonts library for heading
+const HEADING_FONTS: FontOption[] = [
+  { name: "Inter", desc: "Modern & Bersih" },
+  { name: "Poppins", desc: "Geometris & Ramah" },
+  { name: "Playfair Display", desc: "Klasik & Elegan" },
+  { name: "Plus Jakarta Sans", desc: "Kontemporer & Tegas" },
+  { name: "Montserrat", desc: "Bold & Modern" },
+  { name: "Raleway", desc: "Anggun & Tipis" },
+  { name: "Oswald", desc: "Kondensed & Kuat" },
+  { name: "Lora", desc: "Sastra & Halus" },
+  { name: "DM Serif Display", desc: "Premium & Display" },
+  { name: "Space Grotesk", desc: "Teknikal & Segar" },
+  { name: "Fraunces", desc: "Organik & Hangat" },
+  { name: "Cormorant Garamond", desc: "Mewah & Klasik" },
+];
+
+// Curated Google Fonts library for body
+const BODY_FONTS: FontOption[] = [
+  { name: "Inter", desc: "Sangat Readable" },
+  { name: "Roboto", desc: "Standar Web Global" },
+  { name: "Open Sans", desc: "Netral & Nyaman" },
+  { name: "Plus Jakarta Sans", desc: "Harmonis Modern" },
+  { name: "Lato", desc: "Hangat & Ramah" },
+  { name: "Nunito", desc: "Rounded & Approachable" },
+  { name: "DM Sans", desc: "Bersih & Versatile" },
+  { name: "Poppins", desc: "Geometris & Rapi" },
+  { name: "Source Sans 3", desc: "Legible & Clean" },
+  { name: "Mulish", desc: "Minimalis & Ringan" },
+];
 
 interface CustomFontEditorProps {
   theme: UseThemeDraftReturn;
@@ -31,75 +67,109 @@ export function CustomFontEditor({
   const { t } = useI18n();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [tab, setTab] = useState<EditorTab>("upload");
-  const [slotTarget, setSlotTarget] = useState<FontTargetSlot>("both");
-  const [urlInput, setUrlInput] = useState("");
-  const [manualFamilyName, setManualFamilyName] = useState("");
-  const [detectedFont, setDetectedFont] = useState<{ name: string; url: string } | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  // Current active typography from draft or applied or baseToken
   const currentTypography =
     theme.draft?.typography ?? theme.applied.typography ?? baseToken?.typography ?? {};
   const baseHeading = baseToken?.typography?.heading_font || "Inter";
   const baseBody = baseToken?.typography?.body_font || "Inter";
 
-  const applyTargetDraft = useCallback(
-    (target: FontTargetSlot, font: { name: string; url: string }) => {
-      const typoOverride: Record<string, string> = {};
-      if (target === "heading" || target === "both") {
-        typoOverride.heading_font = font.name;
-        typoOverride.heading_font_url = font.url;
-      }
-      if (target === "body" || target === "both") {
-        typoOverride.body_font = font.name;
-        typoOverride.body_font_url = font.url;
-      }
-      theme.setDraft({ typography: typoOverride });
+  // Selected font state (heading + body independent)
+  const [selectedHeading, setSelectedHeading] = useState<string>(
+    currentTypography.heading_font || baseHeading
+  );
+  const [selectedHeadingUrl, setSelectedHeadingUrl] = useState<string>(
+    currentTypography.heading_font_url || ""
+  );
+  const [selectedBody, setSelectedBody] = useState<string>(
+    currentTypography.body_font || baseBody
+  );
+  const [selectedBodyUrl, setSelectedBodyUrl] = useState<string>(
+    currentTypography.body_font_url || ""
+  );
+
+  // Upload accordion state
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [uploadSlot, setUploadSlot] = useState<FontSlot>("heading");
+  const [uploadTab, setUploadTab] = useState<UploadTab>("upload");
+  const [urlInput, setUrlInput] = useState("");
+  const [manualFamilyName, setManualFamilyName] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Preload all library fonts
+  useEffect(() => {
+    const allFonts = [...HEADING_FONTS, ...BODY_FONTS];
+    const unique = Array.from(new Set(allFonts.map((f) => f.name)));
+    // Batch them in pairs to reduce requests
+    for (let i = 0; i < unique.length; i += 2) {
+      loadGoogleFont(unique[i], unique[i + 1]);
+    }
+  }, []);
+
+  // Update draft for live preview whenever selection changes
+  const applyDraft = useCallback(
+    (hName: string, hUrl: string, bName: string, bUrl: string) => {
+      theme.setDraft({
+        typography: {
+          heading_font: hName,
+          heading_font_url: hUrl,
+          body_font: bName,
+          body_font_url: bUrl,
+        },
+      });
     },
     [theme]
   );
 
-  // File Upload handler
+  const handleSelectHeading = (name: string, url: string = "") => {
+    setSelectedHeading(name);
+    setSelectedHeadingUrl(url);
+    applyDraft(name, url, selectedBody, selectedBodyUrl);
+  };
+
+  const handleSelectBody = (name: string, url: string = "") => {
+    setSelectedBody(name);
+    setSelectedBodyUrl(url);
+    applyDraft(selectedHeading, selectedHeadingUrl, name, url);
+  };
+
+  // File upload handler
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     e.target.value = "";
     setErrorMessage(null);
     setIsProcessing(true);
-
     try {
       const { dataUrl, name } = await readFontFileDataUrl(file);
       loadCustomFont(name, dataUrl);
       const isLoaded = await verifyFontLoaded(name);
       if (!isLoaded) {
         setErrorMessage(
-          t(
-            "dashboard.wizard.theme.fontVerifyFailed",
-            "Font tidak bisa dimuat. Periksa URL, atau coba file .woff2."
-          )
+          t("dashboard.wizard.theme.fontVerifyFailed", "Font tidak bisa dimuat. Periksa URL, atau coba file .woff2.")
         );
         return;
       }
-
-      const fontObj = { name, url: dataUrl };
-      setDetectedFont(fontObj);
-      applyTargetDraft(slotTarget, fontObj);
+      if (uploadSlot === "heading") {
+        handleSelectHeading(name, dataUrl);
+      } else {
+        handleSelectBody(name, dataUrl);
+      }
+      setUploadOpen(false);
     } catch (err: any) {
-      setErrorMessage(err?.message || t("dashboard.wizard.theme.fontVerifyFailed", "Gagal memproses file font"));
+      setErrorMessage(
+        err?.message ?? t("dashboard.wizard.theme.fontVerifyFailed", "Gagal memproses file font")
+      );
     } finally {
       setIsProcessing(false);
     }
   };
 
-  // URL Apply handler
+  // URL apply handler
   const handleApplyUrl = async () => {
     const rawUrl = urlInput.trim();
     if (!rawUrl) return;
     setErrorMessage(null);
     setIsProcessing(true);
-
     try {
       let familyName = "";
       const parsed = parseGoogleFontsUrl(rawUrl);
@@ -108,63 +178,34 @@ export function CustomFontEditor({
       } else if (manualFamilyName.trim()) {
         familyName = manualFamilyName.trim();
       } else {
-        // Derive family name from filename if ends with font extension
         const urlObj = new URL(rawUrl);
         const filename = urlObj.pathname.split("/").pop() || "";
         familyName = filename.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ").trim();
       }
-
       if (!familyName) {
         setErrorMessage(t("dashboard.wizard.theme.fontNameRequired", "Masukkan nama font family"));
         return;
       }
-
       loadCustomFont(familyName, rawUrl);
       const isLoaded = await verifyFontLoaded(familyName);
       if (!isLoaded) {
         setErrorMessage(
-          t(
-            "dashboard.wizard.theme.fontVerifyFailed",
-            "Font tidak bisa dimuat. Periksa URL, atau coba file .woff2."
-          )
+          t("dashboard.wizard.theme.fontVerifyFailed", "Font tidak bisa dimuat. Periksa URL, atau coba file .woff2.")
         );
         return;
       }
-
-      const fontObj = { name: familyName, url: rawUrl };
-      setDetectedFont(fontObj);
-      applyTargetDraft(slotTarget, fontObj);
+      if (uploadSlot === "heading") {
+        handleSelectHeading(familyName, rawUrl);
+      } else {
+        handleSelectBody(familyName, rawUrl);
+      }
+      setUploadOpen(false);
     } catch (err: any) {
-      setErrorMessage(err?.message || t("dashboard.wizard.theme.fontVerifyFailed", "URL font tidak valid"));
+      setErrorMessage(
+        err?.message ?? t("dashboard.wizard.theme.fontVerifyFailed", "URL font tidak valid")
+      );
     } finally {
       setIsProcessing(false);
-    }
-  };
-
-  // When slotTarget changes, re-apply draft with detected font if present
-  const handleSlotTargetChange = (newTarget: FontTargetSlot) => {
-    setSlotTarget(newTarget);
-    if (detectedFont) {
-      applyTargetDraft(newTarget, detectedFont);
-    }
-  };
-
-  // Reset a specific slot back to baseToken default
-  const handleResetSlot = (slot: "heading" | "body") => {
-    if (slot === "heading") {
-      theme.setDraft({
-        typography: {
-          heading_font: baseHeading,
-          heading_font_url: "",
-        },
-      });
-    } else {
-      theme.setDraft({
-        typography: {
-          body_font: baseBody,
-          body_font_url: "",
-        },
-      });
     }
   };
 
@@ -179,271 +220,314 @@ export function CustomFontEditor({
     onClose();
   };
 
+  // Render a font row
+  const renderFontRow = (
+    name: string,
+    desc: string,
+    isSelected: boolean,
+    onSelect: () => void,
+    isCustom = false
+  ) => (
+    <button
+      key={name + desc}
+      type="button"
+      onClick={onSelect}
+      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+        isSelected
+          ? "border-primary/50 bg-sidebar-muted/60"
+          : "border-border/50 bg-sidebar hover:border-border hover:bg-sidebar-muted/30"
+      }`}
+    >
+      {/* Radio dot */}
+      <span
+        className={`flex-shrink-0 h-4 w-4 rounded-full border-2 flex items-center justify-center transition-all ${
+          isSelected ? "border-primary bg-primary" : "border-border/70"
+        }`}
+      >
+        {isSelected && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
+      </span>
+
+      {/* Font name rendered in its own face */}
+      <span
+        className={`flex-1 min-w-0 truncate text-[13px] text-sidebar-foreground ${
+          isSelected ? "font-bold" : "font-medium"
+        }`}
+        style={{ fontFamily: `'${name}', sans-serif` }}
+      >
+        {name}
+      </span>
+
+      {/* Description / badge */}
+      <span
+        className={`text-[10px] shrink-0 ${
+          isCustom
+            ? "font-semibold text-primary"
+            : isSelected
+            ? "font-semibold text-sidebar-foreground"
+            : "text-sidebar-muted-foreground"
+        }`}
+      >
+        {isCustom ? "Custom Font" : desc}
+      </span>
+    </button>
+  );
+
+  const headingInLibrary = HEADING_FONTS.some((f) => f.name === selectedHeading);
+  const bodyInLibrary = BODY_FONTS.some((f) => f.name === selectedBody);
+
   return (
-    <div className="p-4 space-y-4 bg-sidebar text-sidebar-foreground">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-bold text-sidebar-foreground">
-          {t("dashboard.wizard.theme.customFontTitle", "Font Kustom")}
-        </p>
+    <div className="flex flex-col h-full bg-sidebar text-sidebar-foreground">
+      {/* ── Header ──────────────────────────────────────────── */}
+      <div className="shrink-0 flex items-center gap-3 px-4 py-3 border-b border-border">
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-bold text-sidebar-foreground">
+            {t("dashboard.wizard.theme.customFontTitle", "Font Kustom")}
+          </p>
+          <p className="text-[11px] text-sidebar-muted-foreground truncate">
+            {t("dashboard.wizard.theme.customFontSubtitle", "Pilih font untuk heading & body")}
+          </p>
+        </div>
         <button
           type="button"
           onClick={handleCancel}
-          className="flex h-7 w-7 items-center justify-center rounded-lg text-sidebar-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-muted transition-all cursor-pointer"
+          className="flex h-7 w-7 items-center justify-center rounded-lg text-sidebar-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-muted transition-all cursor-pointer shrink-0"
           title={t("common.close", "Tutup")}
         >
           <X className="h-4 w-4" />
         </button>
       </div>
 
-      {/* Fonts on this site summary — shown first as context */}
-      <div className="space-y-1.5 pb-1 border-b border-border/70">
-        <p className="text-[10px] font-semibold text-sidebar-subtle-foreground uppercase tracking-wide">
-          {t("dashboard.wizard.theme.fontsOnSite", "Font saat ini")}
-        </p>
-        <div className="grid grid-cols-2 gap-1.5">
-          {/* Heading Font */}
-          <div className="flex items-center justify-between p-2 rounded-lg bg-sidebar-muted/30 border border-border/50 text-xs">
-            <div className="min-w-0 flex-1">
-              <span className="text-[10px] uppercase font-bold text-sidebar-subtle-foreground block">
-                {t("dashboard.wizard.theme.slotHeading", "Judul")}
-              </span>
-              <span className="font-semibold text-sidebar-foreground truncate block text-[11px]">
-                {currentTypography.heading_font || baseHeading}
-              </span>
-            </div>
-            {currentTypography.heading_font && currentTypography.heading_font !== baseHeading && (
-              <button
-                type="button"
-                onClick={() => handleResetSlot("heading")}
-                className="flex items-center gap-0.5 text-[10px] text-sidebar-muted-foreground hover:text-primary transition-colors cursor-pointer ml-1 shrink-0"
-                title={t("dashboard.wizard.theme.resetToMoodDefault", "Reset")}
-              >
-                <RotateCcw className="h-3 w-3" />
-              </button>
-            )}
-          </div>
+      {/* ── Scrollable content ──────────────────────────────── */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="p-4 space-y-5">
 
-          {/* Body Font */}
-          <div className="flex items-center justify-between p-2 rounded-lg bg-sidebar-muted/30 border border-border/50 text-xs">
-            <div className="min-w-0 flex-1">
-              <span className="text-[10px] uppercase font-bold text-sidebar-subtle-foreground block">
-                {t("dashboard.wizard.theme.slotBody", "Isi")}
-              </span>
-              <span className="font-semibold text-sidebar-foreground truncate block text-[11px]">
-                {currentTypography.body_font || baseBody}
-              </span>
-            </div>
-            {currentTypography.body_font && currentTypography.body_font !== baseBody && (
-              <button
-                type="button"
-                onClick={() => handleResetSlot("body")}
-                className="flex items-center gap-0.5 text-[10px] text-sidebar-muted-foreground hover:text-primary transition-colors cursor-pointer ml-1 shrink-0"
-                title={t("dashboard.wizard.theme.resetToMoodDefault", "Reset")}
-              >
-                <RotateCcw className="h-3 w-3" />
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <div className="flex gap-1 p-0.5 rounded-lg bg-sidebar-muted/60 border border-border">
-        <button
-          type="button"
-          onClick={() => {
-            setTab("upload");
-            setErrorMessage(null);
-          }}
-          className={`flex-1 flex items-center justify-center gap-1.5 rounded-md py-1.5 text-xs font-semibold transition-all cursor-pointer ${
-            tab === "upload"
-              ? "bg-sidebar text-sidebar-foreground shadow-xs font-bold"
-              : "text-sidebar-muted-foreground hover:text-sidebar-foreground"
-          }`}
-        >
-          <Upload className="h-3.5 w-3.5" />
-          <span>{t("dashboard.wizard.theme.fontUploadTab", "Upload File")}</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setTab("url");
-            setErrorMessage(null);
-          }}
-          className={`flex-1 flex items-center justify-center gap-1.5 rounded-md py-1.5 text-xs font-semibold transition-all cursor-pointer ${
-            tab === "url"
-              ? "bg-sidebar text-sidebar-foreground shadow-xs font-bold"
-              : "text-sidebar-muted-foreground hover:text-sidebar-foreground"
-          }`}
-        >
-          <Link2 className="h-3.5 w-3.5" />
-          <span>{t("dashboard.wizard.theme.fontUrl", "Tempel URL")}</span>
-        </button>
-      </div>
-
-      {/* Tab Content: Upload File */}
-      {tab === "upload" && (
-        <div className="space-y-2">
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".woff2,.woff,.ttf,.otf"
-            onChange={handleFileUpload}
-            className="sr-only"
-          />
-          <div
-            onClick={() => fileInputRef.current?.click()}
-            className="rounded-xl border border-dashed border-border hover:border-primary/60 bg-sidebar-muted/30 hover:bg-sidebar-muted/50 p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-all"
-          >
-            <Upload className="h-6 w-6 text-sidebar-muted-foreground mb-1.5" />
+          {/* Heading Font Section */}
+          <div className="space-y-2">
             <p className="text-xs font-bold text-sidebar-foreground">
-              {t("dashboard.wizard.theme.fontUploadAction", "Pilih file font lokal")}
+              {t("dashboard.wizard.theme.slotHeadingFull", "Heading font")}
             </p>
-            <p className="text-[10px] text-sidebar-muted-foreground mt-0.5">
-              .woff2, .woff, .ttf, .otf · Maks. 500 KB
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Tab Content: Paste URL */}
-      {tab === "url" && (
-        <div className="space-y-2.5">
-          <div>
-            <label className="block text-[10px] font-semibold text-sidebar-subtle-foreground mb-1 uppercase tracking-wide">
-              {t("dashboard.wizard.theme.fontUrl", "URL Font")}
-            </label>
-            <input
-              type="text"
-              value={urlInput}
-              onChange={(e) => setUrlInput(e.target.value)}
-              placeholder="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans..."
-              className="w-full rounded-lg bg-sidebar-input border border-border px-2.5 py-1.5 text-xs text-sidebar-foreground placeholder:text-sidebar-muted-foreground focus:border-primary focus:outline-none transition-all font-mono"
-            />
-          </div>
-
-          {/* Manual family name input if URL is not standard Google Fonts */}
-          {urlInput && !parseGoogleFontsUrl(urlInput) && (
-            <div>
-              <label className="block text-[10px] font-semibold text-sidebar-subtle-foreground mb-1 uppercase tracking-wide">
-                {t("dashboard.wizard.theme.fontName", "Nama Font Family")}
-              </label>
-              <input
-                type="text"
-                value={manualFamilyName}
-                onChange={(e) => setManualFamilyName(e.target.value)}
-                placeholder="Contoh: My Custom Sans"
-                className="w-full rounded-lg bg-sidebar-input border border-border px-2.5 py-1.5 text-xs text-sidebar-foreground placeholder:text-sidebar-muted-foreground focus:border-primary focus:outline-none transition-all"
-              />
-            </div>
-          )}
-
-          <Button
-            type="button"
-            size="sm"
-            disabled={!urlInput.trim() || isProcessing}
-            onClick={handleApplyUrl}
-            className="w-full rounded-lg text-xs"
-          >
-            {isProcessing
-              ? t("dashboard.wizard.theme.fontChecking", "Memeriksa...")
-              : t("dashboard.wizard.theme.fontCheckAndApply", "Periksa & Terapkan")}
-          </Button>
-        </div>
-      )}
-
-      {/* Error Message */}
-      {errorMessage && (
-        <div className="flex items-center gap-1.5 p-2 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-xs">
-          <AlertCircle className="h-4 w-4 shrink-0" />
-          <span className="line-clamp-2">{errorMessage}</span>
-        </div>
-      )}
-
-      {/* Detected Font Badge + APPLY TO — only shown after font is detected */}
-      {detectedFont && (
-        <div className="space-y-3">
-          {/* Detected badge */}
-          <div className="flex items-center gap-2 p-2.5 rounded-lg bg-primary/10 border border-primary/30 text-primary">
-            <Check className="h-4 w-4 shrink-0 stroke-[3]" />
-            <p className="text-xs font-semibold truncate">
-              {t(
-                "dashboard.wizard.theme.fontDetected",
-                'Font "{family}" siap digunakan',
-                { family: detectedFont.name }
+            <div className="space-y-1">
+              {HEADING_FONTS.map((f) =>
+                renderFontRow(
+                  f.name,
+                  f.desc,
+                  selectedHeading === f.name,
+                  () => handleSelectHeading(f.name)
+                )
               )}
-            </p>
-          </div>
-
-          {/* Use For Selector — only meaningful after font is detected */}
-          <div className="space-y-1.5">
-            <label className="block text-[10px] font-semibold text-sidebar-subtle-foreground uppercase tracking-wide">
-              {t("dashboard.wizard.theme.useFor", "Terapkan ke")}
-            </label>
-            <div className="grid grid-cols-3 gap-1.5">
-              {(
-                [
-                  { key: "heading", label: t("dashboard.wizard.theme.useForHeading", "Judul") },
-                  { key: "body", label: t("dashboard.wizard.theme.useForBody", "Isi") },
-                  { key: "both", label: t("dashboard.wizard.theme.useForBoth", "Keduanya") },
-                ] as const
-              ).map(({ key, label }) => (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => handleSlotTargetChange(key)}
-                  className={`rounded-lg py-1.5 px-2 text-xs font-semibold border transition-all cursor-pointer text-center ${
-                    slotTarget === key
-                      ? "bg-primary text-primary-foreground border-primary font-bold shadow-xs"
-                      : "bg-sidebar-muted/40 border-border text-sidebar-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-muted"
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
+              {/* Show custom heading if not in library */}
+              {!headingInLibrary && selectedHeading &&
+                renderFontRow(selectedHeading, "Custom Font", true, () => {}, true)}
             </div>
           </div>
 
-          {/* License Note */}
-          <p className="text-[10px] text-sidebar-muted-foreground leading-normal italic">
-            {t(
-              "dashboard.wizard.theme.licenseNote",
-              "Pastikan Anda memiliki lisensi penggunaan komersial untuk font yang diunggah."
-            )}
-          </p>
-
-          {/* Action Buttons — only shown when font is ready */}
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleCancel}
-              className="flex-1 border-border text-sidebar-foreground hover:bg-sidebar-muted rounded-lg"
-            >
-              {t("dashboard.wizard.theme.cancel", "Batal")}
-            </Button>
-            <Button
-              size="sm"
-              onClick={handleApply}
-              className="flex-1 rounded-lg bg-primary text-primary-foreground font-bold hover:bg-primary/90"
-            >
-              {t("dashboard.wizard.theme.applyFont", "Terapkan Font")}
-            </Button>
+          {/* Body Font Section */}
+          <div className="space-y-2">
+            <p className="text-xs font-bold text-sidebar-foreground">
+              {t("dashboard.wizard.theme.slotBodyFull", "Body font")}
+            </p>
+            <div className="space-y-1">
+              {BODY_FONTS.map((f) =>
+                renderFontRow(
+                  f.name,
+                  f.desc,
+                  selectedBody === f.name,
+                  () => handleSelectBody(f.name)
+                )
+              )}
+              {/* Show custom body if not in library */}
+              {!bodyInLibrary && selectedBody &&
+                renderFontRow(selectedBody, "Custom Font", true, () => {}, true)}
+            </div>
           </div>
-        </div>
-      )}
 
-      {/* Cancel only — shown when no font detected yet */}
-      {!detectedFont && (
-        <button
-          type="button"
+          {/* ── Upload custom font accordion ───────────────── */}
+          <div className="rounded-xl border border-border/70 overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setUploadOpen((v) => !v)}
+              className="w-full flex items-center gap-2 px-3 py-2.5 bg-sidebar-muted/40 hover:bg-sidebar-muted/70 transition-colors cursor-pointer text-left"
+            >
+              <Upload className="h-3.5 w-3.5 text-sidebar-foreground shrink-0" />
+              <span className="flex-1 text-xs font-semibold text-sidebar-foreground">
+                {t(
+                  "dashboard.wizard.theme.uploadCustomFontAccordion",
+                  "Upload font sendiri atau pakai URL font"
+                )}
+              </span>
+              {uploadOpen ? (
+                <ChevronUp className="h-4 w-4 text-sidebar-muted-foreground" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-sidebar-muted-foreground" />
+              )}
+            </button>
+
+            {uploadOpen && (
+              <div className="p-3 space-y-3 border-t border-border/50 bg-sidebar">
+                {/* TERAPKAN KE */}
+                <div className="space-y-1.5">
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-sidebar-subtle-foreground">
+                    {t("dashboard.wizard.theme.useFor", "Terapkan ke")}:
+                  </p>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {(["heading", "body"] as FontSlot[]).map((slot) => (
+                      <button
+                        key={slot}
+                        type="button"
+                        onClick={() => setUploadSlot(slot)}
+                        className={`rounded-lg py-2 px-2 text-xs font-semibold border transition-all cursor-pointer text-center ${
+                          uploadSlot === slot
+                            ? "bg-primary text-primary-foreground border-primary font-bold"
+                            : "bg-sidebar-muted/40 border-border text-sidebar-muted-foreground hover:bg-sidebar-muted"
+                        }`}
+                      >
+                        {slot === "heading"
+                          ? t("dashboard.wizard.theme.slotHeadingFull", "Font Judul (Heading)")
+                          : t("dashboard.wizard.theme.slotBodyFull", "Font Teks (Body)")}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Sub-tabs: Upload / URL */}
+                <div className="flex gap-4 border-b border-border/50 pb-2">
+                  {(["upload", "url"] as UploadTab[]).map((tab) => (
+                    <button
+                      key={tab}
+                      type="button"
+                      onClick={() => {
+                        setUploadTab(tab);
+                        setErrorMessage(null);
+                      }}
+                      className={`flex items-center gap-1.5 text-xs font-semibold pb-1 border-b-2 transition-all cursor-pointer ${
+                        uploadTab === tab
+                          ? "border-primary text-sidebar-foreground"
+                          : "border-transparent text-sidebar-muted-foreground hover:text-sidebar-foreground"
+                      }`}
+                    >
+                      {tab === "upload" ? (
+                        <>
+                          <Upload className="h-3 w-3" />
+                          {t("dashboard.wizard.theme.fontUploadTab", "Upload File (.woff2/.ttf)")}
+                        </>
+                      ) : (
+                        <>
+                          <Link2 className="h-3 w-3" />
+                          {t("dashboard.wizard.theme.fontUrlTab", "Input URL Font")}
+                        </>
+                      )}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Upload area */}
+                {uploadTab === "upload" && (
+                  <div className="space-y-2">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept=".woff2,.woff,.ttf,.otf"
+                      onChange={handleFileUpload}
+                      className="sr-only"
+                    />
+                    <div
+                      onClick={() => fileInputRef.current?.click()}
+                      className="rounded-xl border border-dashed border-border hover:border-primary/60 bg-sidebar-muted/20 hover:bg-sidebar-muted/40 p-5 flex flex-col items-center justify-center text-center cursor-pointer transition-all"
+                    >
+                      <Upload className="h-6 w-6 text-sidebar-muted-foreground mb-2" />
+                      <p className="text-xs font-bold text-sidebar-foreground">
+                        {t("dashboard.wizard.theme.fontUploadAction", "Pilih file font dari komputer")}
+                      </p>
+                      <p className="text-[10px] text-sidebar-muted-foreground mt-1">
+                        Format: .woff2 (rekomendasi), .ttf, .otf (Maks. 3 MB)
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* URL input */}
+                {uploadTab === "url" && (
+                  <div className="space-y-2.5">
+                    <div>
+                      <label className="block text-[10px] font-semibold text-sidebar-subtle-foreground mb-1 uppercase tracking-wide">
+                        URL Font
+                      </label>
+                      <input
+                        type="text"
+                        value={urlInput}
+                        onChange={(e) => setUrlInput(e.target.value)}
+                        placeholder="https://fonts.googleapis.com/css2?family=..."
+                        className="w-full rounded-lg bg-sidebar-input border border-border px-2.5 py-1.5 text-xs text-sidebar-foreground placeholder:text-sidebar-muted-foreground focus:border-primary focus:outline-none transition-all font-mono"
+                      />
+                    </div>
+                    {urlInput && !parseGoogleFontsUrl(urlInput) && (
+                      <div>
+                        <label className="block text-[10px] font-semibold text-sidebar-subtle-foreground mb-1 uppercase tracking-wide">
+                          {t("dashboard.wizard.theme.fontName", "Nama Font Family")}
+                        </label>
+                        <input
+                          type="text"
+                          value={manualFamilyName}
+                          onChange={(e) => setManualFamilyName(e.target.value)}
+                          placeholder="Contoh: My Custom Sans"
+                          className="w-full rounded-lg bg-sidebar-input border border-border px-2.5 py-1.5 text-xs text-sidebar-foreground placeholder:text-sidebar-muted-foreground focus:border-primary focus:outline-none transition-all"
+                        />
+                      </div>
+                    )}
+                    <Button
+                      type="button"
+                      size="sm"
+                      disabled={!urlInput.trim() || isProcessing}
+                      onClick={handleApplyUrl}
+                      className="w-full rounded-lg text-xs"
+                    >
+                      {isProcessing
+                        ? t("dashboard.wizard.theme.fontChecking", "Memeriksa...")
+                        : t("dashboard.wizard.theme.fontCheckAndApply", "Periksa & Terapkan")}
+                    </Button>
+                  </div>
+                )}
+
+                {/* Error */}
+                {errorMessage && (
+                  <div className="flex items-center gap-1.5 p-2 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-xs">
+                    <AlertCircle className="h-4 w-4 shrink-0" />
+                    <span className="line-clamp-2">{errorMessage}</span>
+                  </div>
+                )}
+
+                {/* License note */}
+                <p className="text-[10px] text-sidebar-muted-foreground leading-normal italic">
+                  {t(
+                    "dashboard.wizard.theme.licenseNote",
+                    "Pastikan Anda memiliki lisensi penggunaan komersial untuk font yang diunggah."
+                  )}
+                </p>
+              </div>
+            )}
+          </div>
+
+        </div>
+      </div>
+
+      {/* ── Footer buttons ──────────────────────────────────── */}
+      <div className="shrink-0 flex gap-2 p-4 border-t border-border bg-sidebar">
+        <Button
+          variant="outline"
+          size="sm"
           onClick={handleCancel}
-          className="w-full text-center text-xs text-sidebar-muted-foreground hover:text-sidebar-foreground transition-colors cursor-pointer py-1"
+          className="flex-1 border-border text-sidebar-foreground hover:bg-sidebar-muted rounded-lg"
         >
           {t("dashboard.wizard.theme.cancel", "Batal")}
-        </button>
-      )}
+        </Button>
+        <Button
+          size="sm"
+          onClick={handleApply}
+          className="flex-1 rounded-lg bg-primary text-primary-foreground font-bold hover:bg-primary/90"
+        >
+          {t("dashboard.wizard.theme.applyFont", "Terapkan Font")}
+        </Button>
+      </div>
     </div>
   );
 }
