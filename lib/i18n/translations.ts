@@ -3708,6 +3708,11 @@ export interface Translations {
         fontCheckAndApply: string;
         fontChecking: string;
         applyFont: string;
+        slotHeadingFull: string;
+        slotBodyFull: string;
+        uploadCustomFontAccordion: string;
+        customFontSubtitle: string;
+        fontUrlTab: string;
       };
     };
     linkAccount: {
@@ -8085,6 +8090,11 @@ export const translations: Record<Locale, Translations> = {
           fontCheckAndApply: "Periksa & Terapkan",
           fontChecking: "Memeriksa...",
           applyFont: "Terapkan Font",
+          slotHeadingFull: "Font Judul (Heading)",
+          slotBodyFull: "Font Teks Isi (Body)",
+          uploadCustomFontAccordion: "Upload font sendiri atau pakai URL font",
+          customFontSubtitle: "Pilih font untuk heading & body",
+          fontUrlTab: "Input URL Font",
         },
       },
       linkAccount: {
@@ -12418,6 +12428,11 @@ export const translations: Record<Locale, Translations> = {
           fontCheckAndApply: "Check & Apply",
           fontChecking: "Checking...",
           applyFont: "Apply Font",
+          slotHeadingFull: "Heading Font",
+          slotBodyFull: "Body Font",
+          uploadCustomFontAccordion: "Upload your own font or use a URL",
+          customFontSubtitle: "Choose fonts for heading & body",
+          fontUrlTab: "Input URL Font",
         },
       },
       linkAccount: {
