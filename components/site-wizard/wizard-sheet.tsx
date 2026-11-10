@@ -41,7 +41,7 @@ export function WizardSheet({
       <div
         role="dialog"
         aria-label={ariaLabel ?? (typeof title === "string" ? title : undefined)}
-        className="fixed inset-x-0 bottom-0 z-50 flex flex-col rounded-t-2xl bg-sidebar text-sidebar-foreground border-t border-border overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-300"
+        className="fixed inset-x-0 bottom-0 z-50 flex flex-col rounded-t-2xl bg-sidebar text-sidebar-foreground border-t border-border shadow-2xl animate-in slide-in-from-bottom duration-300"
         style={{ maxHeight, paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         {/* Handle bar — tap to close */}
