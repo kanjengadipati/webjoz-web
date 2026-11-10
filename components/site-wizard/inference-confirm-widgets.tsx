@@ -152,6 +152,7 @@ interface InferenceConfirmCardProps {
   taxonomyV2: any;
   wizardLang: string;
   uiLang: string;
+  onConfirm: (subType: string) => void;
   onChangeCategory: () => void;
   t: (key: string, fallback?: string) => string;
 }
@@ -161,6 +162,7 @@ export function InferenceConfirmCard({
   taxonomyV2,
   wizardLang,
   uiLang,
+  onConfirm,
   onChangeCategory,
   t,
 }: InferenceConfirmCardProps) {
@@ -272,9 +274,7 @@ export function InferenceConfirmCard({
     }
     const newSubType =
       draftIndustry && draftIndustry !== "__other__" && !draftIndustry.includes(".") ? draftIndustry : "";
-    const doInject = chat.inferenceAutoConfirmRef.current;
-    chat.inferenceAutoConfirmRef.current = null;
-    if (doInject) doInject(newSubType);
+    onConfirm(newSubType);
   };
 
   const Row = ({ label, value, onEdit }: { label: string; value: string; onEdit: () => void }) => (
