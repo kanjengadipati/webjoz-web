@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Phone, MapPin } from "lucide-react";
+import { Phone, MapPin, X } from "lucide-react";
 import { normalizeWhatsapp } from "./helpers";
 import { useI18n } from "@/lib/i18n/context";
 
@@ -52,7 +52,16 @@ export function BusinessDetailsSheet({
           <div className="h-1 w-10 rounded-full bg-sidebar-muted-foreground/30" />
         </div>
       )}
-      <p className="text-sm font-bold text-sidebar-foreground mb-1">{t("dashboard.wizard.businessDetailsTitle", "Detail Bisnis")}</p>
+      <div className="flex items-center justify-between mb-1">
+        <p className="text-sm font-bold text-sidebar-foreground">{t("dashboard.wizard.businessDetailsTitle", "Detail Bisnis")}</p>
+        <button
+          type="button"
+          onClick={onClose}
+          className="flex h-7 w-7 items-center justify-center rounded-full bg-sidebar-muted text-sidebar-muted-foreground hover:text-sidebar-foreground transition-all cursor-pointer"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      </div>
       <p className="text-xs text-sidebar-muted-foreground mb-4 leading-relaxed">{t("dashboard.wizard.businessDetailsSubtitle", "Dua data ini langsung dipakai AI untuk isi tombol kontak dan bikin copy yang lebih relevan.")}</p>
       <div className="flex gap-2 mb-3 flex-wrap">
         <span className="inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full border bg-sidebar-muted/40 text-sidebar-muted-foreground border-border">
