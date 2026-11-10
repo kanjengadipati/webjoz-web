@@ -60,26 +60,12 @@ export default function LogoWithCtaButton({
           )}
         </div>
       </div>
-      <div className="flex items-center gap-3">
-        <NavMenu
-          sectionOrder={sectionOrder}
-          hiddenSections={hiddenSections}
-          extraLinks={extraLinks}
-          language={language}
-          linkClass={navLinkClass || "text-[var(--dt-text-muted)] text-sm hidden sm:block"}
-          drawerStyle={drawerStyle || { background: "var(--dt-bg)", borderTop: "1px solid var(--dt-border)" }}
-          nav_labels={header?.nav_labels}
-          onUpdateField={onUpdateField}
-          isEditorMode={isEditorMode}
-          isSelected={isSelected}
-          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-          onEditingStateChange={onEditingStateChange}
-        />
+      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
         {!header?.nav_cta_hidden && (
           <a
             href={navCtaHref(header?.nav_cta_text, header?.nav_cta_href)}
             aria-label={`Hubungi ${header?.brand_name || "brand ini"}`}
-            className="shrink-0 px-5 py-2.5 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-sm font-semibold hover:opacity-85 transition-all shadow-sm inline-flex items-center focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-[var(--dt-bg)]"
+            className="order-1 md:order-2 shrink-0 px-2.5 py-1.5 sm:px-4 sm:py-2 md:px-5 md:py-2.5 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-xs sm:text-sm font-semibold hover:opacity-85 transition-all shadow-sm inline-flex items-center justify-center max-w-[125px] sm:max-w-none truncate focus:outline-none focus:ring-2 focus:ring-[var(--dt-primary)] focus:ring-offset-2 focus:ring-offset-[var(--dt-bg)]"
             style={{ color: "var(--dt-primary-foreground)" }}
           >
             <InlineText
@@ -92,9 +78,35 @@ export default function LogoWithCtaButton({
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
               onEditingStateChange={onEditingStateChange}
               as="span"
+              className="truncate"
             />
           </a>
         )}
+        <NavMenu
+          sectionOrder={sectionOrder}
+          hiddenSections={hiddenSections}
+          extraLinks={extraLinks}
+          language={language}
+          linkClass={navLinkClass || "text-[var(--dt-text-muted)] text-sm"}
+          drawerStyle={drawerStyle || { background: "var(--dt-bg)", borderTop: "1px solid var(--dt-border)" }}
+          nav_labels={header?.nav_labels}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+          ctaButton={
+            !header?.nav_cta_hidden ? (
+              <a
+                href={navCtaHref(header?.nav_cta_text, header?.nav_cta_href)}
+                className="w-full py-2.5 px-4 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-sm font-semibold text-center flex items-center justify-center hover:opacity-90 transition-all shadow-sm"
+                style={{ color: "var(--dt-primary-foreground)" }}
+              >
+                {header?.nav_cta_text || defaultCta}
+              </a>
+            ) : undefined
+          }
+        />
       </div>
     </header>
   );

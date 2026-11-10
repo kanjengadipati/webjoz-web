@@ -489,6 +489,7 @@ interface NavMenuProps {
   onEditingStateChange?: (isEditing: boolean) => void;
   containerClass?: string;
   containerStyle?: React.CSSProperties;
+  ctaButton?: React.ReactNode;
 }
 
 const NavMenu: React.FC<NavMenuProps> = ({
@@ -506,6 +507,7 @@ const NavMenu: React.FC<NavMenuProps> = ({
   onEditingStateChange,
   containerClass,
   containerStyle,
+  ctaButton,
 }) => {
   const [open, setOpen] = useState(false);
   const [drawerTop, setDrawerTop] = useState(0);
@@ -641,7 +643,7 @@ const NavMenu: React.FC<NavMenuProps> = ({
         ref={btnRef}
         type="button"
         onClick={handleToggle}
-        className={`md:hidden flex items-center justify-center w-9 h-9 rounded-lg cursor-pointer focus:outline-none ${linkClass}`}
+        className={`md:hidden flex items-center justify-center w-9 h-9 rounded-lg cursor-pointer focus:outline-none order-last shrink-0 ${linkClass}`}
         aria-label={open ? "Tutup menu" : "Buka menu"}
         aria-expanded={open}
       >
@@ -693,6 +695,14 @@ const NavMenu: React.FC<NavMenuProps> = ({
                 </button>
               );
             })}
+            {ctaButton && (
+              <div
+                className="px-5 pt-3 pb-2 border-t border-black/5 dark:border-white/10 mt-1"
+                onClick={() => setOpen(false)}
+              >
+                {ctaButton}
+              </div>
+            )}
           </div>
         </>
       )}

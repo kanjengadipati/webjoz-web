@@ -49,7 +49,7 @@ export default function CenteredLogo({
           <a
             href={navCtaHref(header?.nav_cta_text, header?.nav_cta_href)}
             aria-label={`Hubungi ${header?.brand_name || "brand ini"}`}
-            className="shrink-0 px-4 py-2 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-xs font-medium hover:opacity-85 transition-all shadow-sm inline-flex items-center sm:hidden"
+            className="shrink-0 px-2.5 py-1.5 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-xs font-semibold hover:opacity-85 transition-all shadow-sm inline-flex items-center justify-center sm:hidden max-w-[125px] truncate"
             style={{ color: "var(--dt-primary-foreground)" }}
           >
             <InlineText
@@ -62,6 +62,7 @@ export default function CenteredLogo({
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
               onEditingStateChange={onEditingStateChange}
               as="span"
+              className="truncate"
             />
           </a>
         )}
@@ -80,6 +81,17 @@ export default function CenteredLogo({
           isSelected={isSelected}
           collapseSheetForInlineEdit={collapseSheetForInlineEdit}
           onEditingStateChange={onEditingStateChange}
+          ctaButton={
+            !header?.nav_cta_hidden ? (
+              <a
+                href={navCtaHref(header?.nav_cta_text, header?.nav_cta_href)}
+                className="w-full py-2.5 px-4 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-sm font-semibold text-center flex items-center justify-center hover:opacity-90 transition-all shadow-sm"
+                style={{ color: "var(--dt-primary-foreground)" }}
+              >
+                {header?.nav_cta_text || defaultCta}
+              </a>
+            ) : undefined
+          }
         />
         {!header?.nav_cta_hidden && (
           <a
