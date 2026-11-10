@@ -93,7 +93,7 @@ export function ThemePanel({
   }, []);
 
   return (
-    <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground border-r border-border overflow-hidden relative">
+    <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground border-r border-border relative">
       {/* ── Header ─────────────────────────────────────────────────────── */}
       <div className="shrink-0 flex items-center gap-2 px-4 py-3 border-b border-border bg-sidebar">
         <button
@@ -205,10 +205,10 @@ export function ThemePanel({
       )}
 
       {/* ── Scrollable body ───────────────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden">
         {subView === "none" && (
           <>
-            {/* Mood section */}
+            {/* Mood section — needs its own scroll container unclipped by parent */}
             <div className="border-b border-border">
               <MoodSection mood={mood} onSelectMood={handleSelectMood} />
             </div>
