@@ -51,13 +51,10 @@ export function MoodSection({ mood, onSelectMood }: MoodSectionProps) {
 
   return (
     <div className="py-2 space-y-1.5">
-      <div className="flex items-baseline justify-between gap-2 px-4">
+      <div className="px-4">
         <p className="text-[10px] font-bold uppercase tracking-wider text-sidebar-subtle-foreground">
           {t("dashboard.wizard.theme.moodSection", "Gaya Tampilan")}
         </p>
-        <span className="text-[10px] text-sidebar-muted-foreground truncate">
-          {t("dashboard.wizard.theme.moodHint", "Mengubah tampilan, teks tetap")}
-        </span>
       </div>
 
       {/* Single-row horizontal scroll */}
@@ -69,7 +66,7 @@ export function MoodSection({ mood, onSelectMood }: MoodSectionProps) {
             ? t(`dashboard.wizard.moods.${moodKey}`, isIndonesian ? mo.label : (mo.labelEn || mo.label))
             : (isIndonesian ? mo.label : (mo.labelEn || mo.label));
           const cfg = MOOD_ICON_MAP[mo.value] ?? {
-            icon: <SparkleIcon className="w-3.5 h-3.5" />,
+            icon: <SparkleIcon className="w-3 h-3" />,
             bg: "bg-white/10",
             text: "text-slate-300",
             glow: "",
@@ -82,28 +79,28 @@ export function MoodSection({ mood, onSelectMood }: MoodSectionProps) {
               aria-pressed={isActive}
               onClick={() => { if (!isActive) onSelectMood(mo.value); }}
               className={cn(
-                "group relative flex items-center gap-2 rounded-xl border px-2.5 py-2 text-left transition-all cursor-pointer select-none shrink-0",
+                "group relative flex items-center gap-1.5 rounded-lg border px-2 py-1.5 text-left transition-all cursor-pointer select-none shrink-0",
                 isActive
-                  ? "border-primary bg-primary/10 ring-1 ring-primary/40 shadow-xs"
+                  ? "border-primary bg-primary/10 ring-1 ring-primary/40"
                   : "border-border/70 bg-sidebar hover:border-border hover:bg-sidebar-muted/60"
               )}
             >
               <div className={cn(
-                "w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow-2xs transition-transform duration-200",
+                "w-5 h-5 rounded-md flex items-center justify-center shrink-0 transition-transform duration-200",
                 cfg.bg, cfg.text,
                 isActive ? "scale-105" : "group-hover:scale-105"
               )}>
                 {cfg.icon}
               </div>
               <span className={cn(
-                "text-xs leading-tight whitespace-nowrap",
-                isActive ? "font-bold text-sidebar-foreground" : "font-medium text-sidebar-foreground/90 group-hover:text-sidebar-foreground"
+                "text-[11px] leading-tight whitespace-nowrap",
+                isActive ? "font-bold text-sidebar-foreground" : "font-medium text-sidebar-foreground/90"
               )}>
                 {label}
               </span>
               {isActive && (
-                <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-primary text-primary-foreground shrink-0 shadow-2xs">
-                  <Check className="h-2.5 w-2.5 stroke-[3]" />
+                <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-primary text-primary-foreground shrink-0">
+                  <Check className="h-2 w-2 stroke-[3]" />
                 </span>
               )}
             </button>
