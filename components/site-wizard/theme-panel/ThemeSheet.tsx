@@ -96,11 +96,14 @@ export function ThemeSheet({
       maxHeight="45dvh"
       ariaLabel={t("dashboard.wizard.theme.panelTitle", "Sesuaikan Tema")}
     >
-        {/* Tabs — only show when not in subview */}
+        {/* Mood — always at top, above tabs */}
         {subView === "none" && (
-          <div
-            className="flex gap-1 mx-4 mb-1 p-0.5 rounded-lg bg-sidebar-muted/60 border border-border shrink-0"
-          >
+          <MoodSection mood={mood} onSelectMood={handleSelectMood} />
+        )}
+
+        {/* Tabs — below mood, only when not in subview */}
+        {subView === "none" && (
+          <div className="flex gap-1 mx-4 mb-1 p-0.5 rounded-lg bg-sidebar-muted/60 border border-border shrink-0">
             {TABS.map(({ key, label }) => (
               <button
                 key={key}
@@ -125,12 +128,6 @@ export function ThemeSheet({
 
         {/* Scrollable content */}
         <div className="flex-1 overflow-y-auto relative">
-          {subView === "none" && (
-            <div className="border-b border-border">
-              <MoodSection mood={mood} onSelectMood={handleSelectMood} />
-            </div>
-          )}
-
           {subView === "none" && tab === "warna" && (
             <PaletteSection
               palettes={presets.palettes}
