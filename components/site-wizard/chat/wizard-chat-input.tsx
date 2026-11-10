@@ -58,6 +58,7 @@ export function WizardChatInput({
     chat.isAiTyping ||
     chat.isAnalyzingDescription ||
     chat.isProcessingAudio ||
+    chat.awaitingNameConfirm ||
     isBrandLogoStage;
 
   return (
