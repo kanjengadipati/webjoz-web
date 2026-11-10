@@ -950,8 +950,12 @@ export function SiteWizard({
         if (logoForSave?.startsWith("data:")) {
           try {
             const blob = dataUrlToBlob(logoForSave);
+            const ext = blob.type === "image/svg+xml" ? "svg"
+              : blob.type === "image/webp" ? "webp"
+              : blob.type === "image/jpeg" ? "jpg"
+              : "png";
             logoForSave = await uploadImageFile(
-              new File([blob], "brand-logo", { type: blob.type || "image/png" }),
+              new File([blob], `brand-logo.${ext}`, { type: blob.type || "image/png" }),
               { maxWidth: 512, maxHeight: 512 }
             );
           } catch (uploadErr) {
@@ -964,8 +968,7 @@ export function SiteWizard({
               ),
               "info"
             );
-          }
-        }
+          }        }
 
         const baseTypo = preview.previewHistory[preview.historyIndex]?.design_token?.typography;
         const typography = await persistCustomFonts(
