@@ -3337,6 +3337,7 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
   const { t } = useI18n();
   const [imgError, setImgError] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [isTouched, setIsTouched] = useState(false);
   const touchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -3363,13 +3364,17 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !onUpdateField || !section) return;
+    setUploadError(null);
     try {
       setUploading(true);
       const secureUrl = await uploadImageFile(file);
       onUpdateField(section, "logo_url", secureUrl);
       setImgError(false);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Logo upload error:", err);
+      setUploadError(err?.message || t("dashboard.sitesEditor.saveFailed", "Upload gagal"));
+      // Auto-dismiss error after 4s
+      setTimeout(() => setUploadError(null), 4000);
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -3474,6 +3479,13 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
           accept="image/*"
           className="hidden"
         />
+
+        {/* Upload error tooltip */}
+        {uploadError && (
+          <div className="absolute left-0 top-full mt-1.5 z-50 w-48 rounded-lg bg-destructive/90 text-white text-[10px] leading-tight px-2.5 py-1.5 shadow-xl pointer-events-none">
+            {uploadError}
+          </div>
+        )}
       </div>
     );
   }
