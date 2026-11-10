@@ -15,6 +15,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { useAuthToken, useAuthReady } from "@/lib/auth-store";
 import { API_BASE_URL } from "@/lib/config";
 import { getWhatsAppUrl } from "@/lib/site-config";
+import { BottomNavBar } from "@/components/bottom-nav-bar";
 
 const LandingTemplateShowcase = dynamic(
   () =>
@@ -749,39 +750,16 @@ export default function LandingPageClient() {
       </footer>
 
       {/* ── Sticky Mobile Bottom Navigation Bar ────────────────────────────── */}
-      <nav className="fixed bottom-0 inset-x-0 z-50 md:hidden bg-background/95 backdrop-blur-2xl border-t border-border px-2 py-1.5 pb-2.5 dark:bg-[#08080a]/95 dark:border-white/10">
-        <div className="flex items-center justify-around">
-          <Link href="/" className="flex flex-col items-center gap-0.5 text-foreground dark:text-white font-semibold text-[10px] min-w-[54px]">
-            <Home className="size-5 text-foreground dark:text-white" />
-            <span>{t("landing.bottomNavHome")}</span>
-          </Link>
-          <a href="#features" className="flex flex-col items-center gap-0.5 text-muted-foreground hover:text-foreground dark:text-white/60 dark:hover:text-white transition text-[10px] min-w-[54px]">
-            <Zap className="size-5" />
-            <span>{t("landing.bottomNavFeatures")}</span>
-          </a>
-
-          {/* Center Elevated Action: Create */}
-          <button
-            type="button"
-            onClick={() => startWizard()}
-            className="flex flex-col items-center -mt-5 group cursor-pointer active:scale-95 transition-transform"
-          >
-            <div className="size-12 rounded-full bg-primary text-primary-foreground dark:bg-white dark:text-black flex items-center justify-center shadow-lg ring-4 ring-background dark:ring-[#08080a] group-hover:scale-105 transition-all">
-              <Plus className="size-6 text-primary-foreground dark:text-black" strokeWidth={2.5} />
-            </div>
-            <span className="text-[10px] font-bold text-foreground dark:text-white mt-0.5">{t("landing.bottomNavCreate")}</span>
-          </button>
-
-          <a href="#pricing" className="flex flex-col items-center gap-0.5 text-muted-foreground hover:text-foreground dark:text-white/60 dark:hover:text-white transition text-[10px] min-w-[54px]">
-            <Tag className="size-5" />
-            <span>{t("landing.bottomNavPricing")}</span>
-          </a>
-          <Link href={isLoggedIn ? "/dashboard" : "/login"} className="flex flex-col items-center gap-0.5 text-muted-foreground hover:text-foreground dark:text-white/60 dark:hover:text-white transition text-[10px] min-w-[54px]">
-            <UserCircle className="size-5" />
-            <span>{t("landing.bottomNavAccount")}</span>
-          </Link>
-        </div>
-      </nav>
+      <BottomNavBar
+        centerLabel={t("landing.bottomNavCreate")}
+        onCenterPress={() => startWizard()}
+        items={[
+          { id: "home", href: "/", icon: Home, label: t("landing.bottomNavHome"), active: true },
+          { id: "features", href: "#features", icon: Zap, label: t("landing.bottomNavFeatures") },
+          { id: "pricing", href: "#pricing", icon: Tag, label: t("landing.bottomNavPricing") },
+          { id: "account", href: isLoggedIn ? "/dashboard" : "/login", icon: UserCircle, label: t("landing.bottomNavAccount") },
+        ]}
+      />
     </main>
   );
 }

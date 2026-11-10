@@ -19,6 +19,7 @@ import { useActiveTenant } from "@/lib/tenant-store";
 import { useI18n } from "@/lib/i18n/context";
 import { getWhatsAppUrl } from "@/lib/site-config";
 import { NotificationsBell } from "@/components/notifications-bell";
+import { BottomNavBar } from "@/components/bottom-nav-bar";
 
 const NAV_LABEL_KEYS: Record<string, string> = {
   overview: "dashboard.nav.overview",
@@ -199,100 +200,31 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
   return (
     <div className={cn("min-h-screen bg-background", !isFullscreenWorkspace && "lg:h-screen lg:overflow-hidden")}>
-      {/* Mobile Bottom Navigation (Full-width sticky bottom, Icon-Only) */}
-      {!isFullscreenWorkspace && (
-        <nav className="fixed bottom-0 inset-x-0 z-60 lg:hidden bg-card/95 dark:bg-background/90 backdrop-blur-2xl border-t border-border/60 py-2 pb-3 shadow-2xl shadow-black/20" aria-label={t("dashboard.mainNav")}>
-          <div className="flex items-center justify-around max-w-lg mx-auto px-2">
-            {/* Tab 1: Home (Overview) */}
-            {(() => {
-              const item = filteredNavItems.find(i => i.id === "overview");
-              if (!item) return null;
-              const active = pathname === item.href;
-              return (
-                <Link key="overview" href={item.href} aria-label={t(NAV_LABEL_KEYS[item.id] ?? "", item.label)} aria-current={active ? "page" : undefined}
-                  className={cn("relative flex items-center justify-center h-10 w-12 rounded-2xl transition-all duration-200",
-                    active ? "bg-primary/15 text-primary shadow-sm" : "text-muted-foreground hover:text-foreground hover:bg-muted/40")}>
-                  <Home className={cn("size-5 transition-transform duration-200", active ? "stroke-[2.25] scale-110" : "stroke-[1.75]")} aria-hidden="true" />
-                </Link>
-              );
-            })()}
-
-            {/* Tab 2: Sites */}
-            {(() => {
-              const item = filteredNavItems.find(i => i.id === "sites");
-              if (!item) return null;
-              const active = pathname === item.href;
-              const Icon = NAV_ICON_MAP[item.icon] ?? LayoutDashboard;
-              return (
-                <Link key="sites" href={item.href} aria-label={t(NAV_LABEL_KEYS[item.id] ?? "", item.label)} aria-current={active ? "page" : undefined}
-                  className={cn("relative flex items-center justify-center h-10 w-12 rounded-2xl transition-all duration-200",
-                    active ? "bg-primary/15 text-primary shadow-sm" : "text-muted-foreground hover:text-foreground hover:bg-muted/40")}>
-                  <Icon className={cn("size-5 transition-transform duration-200", active ? "stroke-[2.25] scale-110" : "stroke-[1.75]")} aria-hidden="true" />
-                </Link>
-              );
-            })()}
-
-            {/* Center Elevated Menu Button */}
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(prev => !prev)}
-              aria-label={mobileMenuOpen ? "Tutup Menu" : "Menu & Fitur"}
-              aria-expanded={mobileMenuOpen}
-              className="relative flex flex-col items-center -mt-5 group cursor-pointer active:scale-95 transition-transform"
-            >
-              <div className={cn(
-                "size-12 rounded-full flex items-center justify-center ring-4 ring-card dark:ring-background transition-all duration-200 group-hover:scale-105",
-                mobileMenuOpen
-                  ? "bg-primary text-primary-foreground shadow-[0_0_22px_rgba(0,0,0,0.40)] scale-105"
-                  : "bg-primary text-primary-foreground shadow-[0_4px_20px_rgba(0,0,0,0.30)]"
-              )}>
-                {mobileMenuOpen
-                  ? <ChevronDown className="size-6 stroke-[2] transition-transform duration-200" />
-                  : <LayoutGrid className="size-6 stroke-[1.75] transition-transform duration-200" />
-                }
-              </div>
-            </button>
-
-            {/* Tab 3: Leads */}
-            {(() => {
-              const item = filteredNavItems.find(i => i.id === "leads");
-              if (!item) return null;
-              const active = pathname === item.href;
-              const Icon = NAV_ICON_MAP[item.icon] ?? LayoutDashboard;
-              return (
-                <Link key="leads" href={item.href} aria-label={t(NAV_LABEL_KEYS[item.id] ?? "", item.label)} aria-current={active ? "page" : undefined}
-                  className={cn("relative flex items-center justify-center h-10 w-12 rounded-2xl transition-all duration-200",
-                    active ? "bg-primary/15 text-primary shadow-sm" : "text-muted-foreground hover:text-foreground hover:bg-muted/40")}>
-                  <Icon className={cn("size-5 transition-transform duration-200", active ? "stroke-[2.25] scale-110" : "stroke-[1.75]")} aria-hidden="true" />
-                </Link>
-              );
-            })()}
-
-            {/* Tab 4: Notifications */}
-            {(() => {
-              const item = filteredNavItems.find(i => i.id === "notifications");
-              if (!item) return null;
-              const active = pathname === item.href;
-              const Icon = NAV_ICON_MAP[item.icon] ?? LayoutDashboard;
-              const showBadge = unreadCount > 0;
-              return (
-                <Link key="notifications" href={item.href} aria-label={t(NAV_LABEL_KEYS[item.id] ?? "", item.label)} aria-current={active ? "page" : undefined}
-                  className={cn("relative flex items-center justify-center h-10 w-12 rounded-2xl transition-all duration-200",
-                    active ? "bg-primary/15 text-primary shadow-sm" : "text-muted-foreground hover:text-foreground hover:bg-muted/40")}>
-                  <div className="relative flex items-center justify-center">
-                    <Icon className={cn("size-5 transition-transform duration-200", active ? "stroke-[2.25] scale-110" : "stroke-[1.75]")} aria-hidden="true" />
-                    {showBadge && (
-                      <span className="absolute -top-1 -right-1.5 flex items-center justify-center min-w-[14px] h-3.5 px-0.5 rounded-full bg-primary text-primary-foreground text-[8px] font-bold leading-none shadow-md">
-                        {unreadCount > 9 ? "9+" : unreadCount}
-                      </span>
-                    )}
-                  </div>
-                </Link>
-              );
-            })()}
-          </div>
-        </nav>
-      )}
+      {/* Mobile Bottom Navigation */}
+      {!isFullscreenWorkspace && (() => {
+        const overviewItem = filteredNavItems.find(i => i.id === "overview");
+        const sitesItem = filteredNavItems.find(i => i.id === "sites");
+        const leadsItem = filteredNavItems.find(i => i.id === "leads");
+        const notifItem = filteredNavItems.find(i => i.id === "notifications");
+        if (!overviewItem || !sitesItem || !leadsItem || !notifItem) return null;
+        const OverviewIcon = Home;
+        const SitesIcon = NAV_ICON_MAP[sitesItem.icon] ?? LayoutDashboard;
+        const LeadsIcon = NAV_ICON_MAP[leadsItem.icon] ?? LayoutDashboard;
+        const NotifIcon = NAV_ICON_MAP[notifItem.icon] ?? LayoutDashboard;
+        return (
+          <BottomNavBar
+            centerLabel={t("dashboard.bottomNavCreate", "Buat")}
+            onCenterPress={() => setMobileMenuOpen(prev => !prev)}
+            centerActive={mobileMenuOpen}
+            items={[
+              { id: overviewItem.id, href: overviewItem.href, icon: OverviewIcon, label: t(NAV_LABEL_KEYS[overviewItem.id] ?? "", overviewItem.label), active: pathname === overviewItem.href },
+              { id: sitesItem.id, href: sitesItem.href, icon: SitesIcon, label: t(NAV_LABEL_KEYS[sitesItem.id] ?? "", sitesItem.label), active: pathname === sitesItem.href },
+              { id: leadsItem.id, href: leadsItem.href, icon: LeadsIcon, label: t(NAV_LABEL_KEYS[leadsItem.id] ?? "", leadsItem.label), active: pathname === leadsItem.href },
+              { id: notifItem.id, href: notifItem.href, icon: NotifIcon, label: t(NAV_LABEL_KEYS[notifItem.id] ?? "", notifItem.label), active: pathname === notifItem.href, badge: unreadCount },
+            ]}
+          />
+        );
+      })()}
 
       {/* Mobile Drawer Sheet */}
       {mobileMenuOpen && (
