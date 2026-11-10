@@ -84,9 +84,9 @@ export function ThemeSheet({
 
   return (
     <>
-      {/* Backdrop — tap to close */}
+      {/* Backdrop — tap to close, no dim */}
       <div
-        className="fixed inset-0 z-40 bg-black/40"
+        className="fixed inset-0 z-40"
         onClick={handleClose}
         aria-hidden="true"
       />

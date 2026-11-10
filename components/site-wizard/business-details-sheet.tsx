@@ -109,8 +109,8 @@ export function BusinessDetailsSheet({
   if (variant === "popover") {
     return (
       <>
-        {/* Fullscreen transparent/dim backdrop to dismiss on click outside */}
-        <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[1px]" onClick={onClose} />
+        {/* Backdrop to dismiss on click outside */}
+        <div className="fixed inset-0 z-40" onClick={onClose} />
 
         {/* Popover modal anchored with left edge directly above the button */}
         <div
@@ -125,7 +125,7 @@ export function BusinessDetailsSheet({
 
   // Mobile Bottom Sheet variant
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 md:hidden" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end justify-center md:hidden" onClick={onClose}>
       <div
         className="w-full rounded-t-2xl bg-[#111318] px-5 pb-8 pt-3 border-t border-white/10 animate-in fade-in slide-in-from-bottom-4 duration-300"
         onClick={(e) => e.stopPropagation()}
