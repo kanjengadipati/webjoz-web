@@ -352,6 +352,9 @@ export function SiteWizard({
     return () => clearInterval(id);
   }, []);
   const isSavingRef = React.useRef(false);
+  // Flag: set to true right before clearWizardSnapshot + router.push so the
+  // beforeunload handler does NOT re-write the snapshot after a successful save.
+  const savedAndNavigatingRef = React.useRef(false);
   // Hitung auto-retry karena kualitas rendah (per generasi pengguna).
   const qualityRetryCountRef = React.useRef(0);
   // Resume/state persistence: offer to restore an in-progress session on mount.
@@ -366,6 +369,7 @@ export function SiteWizard({
     chat.resetChat();
     preview.resetPreview();
     themeDraft.hardReset();
+    savedAndNavigatingRef.current = true;
     clearWizardSnapshot();
     clearCustomFontStorage();
     setResumeDraft(null);
@@ -1001,6 +1005,7 @@ export function SiteWizard({
       }
 
       localStorage.removeItem(PENDING_KEY);
+      savedAndNavigatingRef.current = true;
       clearWizardSnapshot();
       clearCustomFontStorage();
       router.push(`/dashboard/sites/${encodeSiteId(siteId)}`);
@@ -1172,6 +1177,9 @@ export function SiteWizard({
   // Flush snapshot on beforeunload to prevent lost state on tab close or page reload
   React.useEffect(() => {
     const handleBeforeUnload = () => {
+      // Do NOT re-save if we just successfully saved and are navigating away —
+      // that would put the snapshot back and cause the resume banner to reappear.
+      if (savedAndNavigatingRef.current) return;
       const snapshot = buildCurrentSnapshot();
       if (snapshot) saveWizardSnapshot(snapshot);
     };
