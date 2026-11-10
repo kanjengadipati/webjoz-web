@@ -64,8 +64,8 @@ export interface HeroStaticStrings {
 }
 
 const ID: HeroStaticStrings = {
-  availableForWork: "Tersedia untuk kerja",
-  trackRecord: "Jejak karier",
+  availableForWork: "Penerimaan Mahasiswa Baru",
+  trackRecord: "Profil kami",
   featuredWork: "Karya Unggulan",
   getDirections: "Rute ke lokasi",
   ourLocation: "Lokasi kami",
@@ -100,8 +100,8 @@ const ID: HeroStaticStrings = {
 };
 
 const EN: HeroStaticStrings = {
-  availableForWork: "Available for work",
-  trackRecord: "Track record",
+  availableForWork: "Now Enrolling",
+  trackRecord: "Our milestones",
   featuredWork: "Featured Work",
   getDirections: "Get directions",
   ourLocation: "Our location",
