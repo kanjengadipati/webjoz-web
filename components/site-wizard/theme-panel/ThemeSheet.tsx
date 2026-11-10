@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import type { UseThemeDraftReturn } from "../use-theme-draft";
 import { getPresets } from "@/lib/theme-presets";
@@ -14,6 +13,7 @@ import { ContrastHint } from "./ContrastHint";
 import { UndoToast } from "./UndoToast";
 import { MoodSection } from "./MoodSection";
 import { MOOD_OPTIONS } from "../constants";
+import { WizardSheet } from "../wizard-sheet";
 
 type SheetTab = "warna" | "font";
 type SubView = "none" | "brand-color" | "custom-font";
@@ -82,45 +82,20 @@ export function ThemeSheet({
     { key: "font", label: t("dashboard.wizard.theme.tabFont", "Font") },
   ];
 
+  const sheetTitle = subView === "brand-color"
+    ? t("dashboard.wizard.theme.brandColorTitle", "Warna Brand Saya")
+    : subView === "custom-font"
+    ? t("dashboard.wizard.theme.customFontTitle", "Font Kustom")
+    : t("dashboard.wizard.theme.panelTitle", "Sesuaikan Tema");
+
   return (
-    <>
-      {/* Backdrop — tap to close, no dim */}
-      <div
-        className="fixed inset-0 z-40"
-        onClick={handleClose}
-        aria-hidden="true"
-      />
-
-      {/* Sheet */}
-      <div
-        role="dialog"
-        aria-label={t("dashboard.wizard.theme.panelTitle", "Sesuaikan Tema")}
-        className="fixed inset-x-0 bottom-0 z-50 flex flex-col rounded-t-2xl bg-sidebar text-sidebar-foreground border-t border-border overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-300"
-        style={{ maxHeight: "45dvh", paddingBottom: "env(safe-area-inset-bottom)" }}
-      >
-        {/* Handle bar */}
-        <div className="flex justify-center pt-3 pb-1">
-          <div className="h-1 w-10 rounded-full bg-sidebar-muted-foreground/30" />
-        </div>
-
-        {/* Header */}
-        <div className="flex items-center justify-between px-4 py-2 shrink-0">
-          <p className="text-sm font-bold text-sidebar-foreground">
-            {subView === "brand-color"
-              ? t("dashboard.wizard.theme.brandColorTitle", "Warna Brand Saya")
-              : subView === "custom-font"
-              ? t("dashboard.wizard.theme.customFontTitle", "Font Kustom")
-              : t("dashboard.wizard.theme.panelTitle", "Sesuaikan Tema")}
-          </p>
-          <button
-            type="button"
-            onClick={handleClose}
-            className="flex h-7 w-7 items-center justify-center rounded-full bg-sidebar-muted text-sidebar-muted-foreground hover:text-sidebar-foreground transition-all cursor-pointer"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
-
+    <WizardSheet
+      open={open}
+      title={sheetTitle}
+      onClose={handleClose}
+      maxHeight="45dvh"
+      ariaLabel={t("dashboard.wizard.theme.panelTitle", "Sesuaikan Tema")}
+    >
         {/* Tabs — only show when not in subview */}
         {subView === "none" && (
           <div
@@ -205,8 +180,7 @@ export function ThemeSheet({
             onDismiss={handleDismissToast}
           />
         </div>
-      </div>
-    </>
+    </WizardSheet>
   );
 }
 
