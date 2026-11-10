@@ -60,7 +60,28 @@ export default function StackedLogoTagline({
           </span>
         )}
       </div>
-      <div className="flex items-center gap-4 w-full justify-center pt-1">
+      <div className="flex items-center gap-2 sm:gap-4 w-full justify-center pt-1">
+        {!header?.nav_cta_hidden && (
+          <a
+            href={navCtaHref(header?.nav_cta_text, header?.nav_cta_href)}
+            aria-label={`Hubungi ${header?.brand_name || "brand ini"}`}
+            className="order-1 md:order-2 shrink-0 px-2.5 py-1.5 sm:px-4 sm:py-1.5 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-xs font-medium hover:opacity-85 transition-all shadow-sm inline-flex items-center justify-center max-w-[125px] sm:max-w-none truncate"
+            style={{ color: "var(--dt-primary-foreground)" }}
+          >
+            <InlineText
+              section="header"
+              fieldKey="nav_cta_text"
+              value={header?.nav_cta_text || defaultCta}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="span"
+              className="truncate"
+            />
+          </a>
+        )}
         <NavMenu
           sectionOrder={sectionOrder}
           hiddenSections={hiddenSections}
@@ -74,27 +95,18 @@ export default function StackedLogoTagline({
           isSelected={isSelected}
           collapseSheetForInlineEdit={collapseSheetForInlineEdit}
           onEditingStateChange={onEditingStateChange}
+          ctaButton={
+            !header?.nav_cta_hidden ? (
+              <a
+                href={navCtaHref(header?.nav_cta_text, header?.nav_cta_href)}
+                className="w-full py-2.5 px-4 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-sm font-semibold text-center flex items-center justify-center hover:opacity-90 transition-all shadow-sm"
+                style={{ color: "var(--dt-primary-foreground)" }}
+              >
+                {header?.nav_cta_text || defaultCta}
+              </a>
+            ) : undefined
+          }
         />
-        {!header?.nav_cta_hidden && (
-          <a
-            href={navCtaHref(header?.nav_cta_text, header?.nav_cta_href)}
-            aria-label={`Hubungi ${header?.brand_name || "brand ini"}`}
-            className="shrink-0 px-4 py-1.5 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-xs font-medium hover:opacity-85 transition-all shadow-sm inline-flex items-center"
-            style={{ color: "var(--dt-primary-foreground)" }}
-          >
-            <InlineText
-              section="header"
-              fieldKey="nav_cta_text"
-              value={header?.nav_cta_text || defaultCta}
-              onUpdateField={onUpdateField}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
-              as="span"
-            />
-          </a>
-        )}
       </div>
     </header>
   );
