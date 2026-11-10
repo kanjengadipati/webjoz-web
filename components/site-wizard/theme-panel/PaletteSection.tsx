@@ -230,8 +230,8 @@ export function PaletteSection({
                   // already active AI recommendation
                   return;
                 }
-                theme.applyNow(preset.override, preset.name);
-                onApply(preset.name);
+                theme.applyNow(preset.override, isEN ? preset.nameEn : preset.name);
+                onApply(isEN ? preset.nameEn : preset.name);
               }}
               className={cn(
                 "p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between",
@@ -244,7 +244,7 @@ export function PaletteSection({
                 <div className="flex items-center justify-between mb-1.5 gap-1">
                   <div className="flex items-center gap-1 min-w-0">
                     <p className="text-[11px] font-bold text-sidebar-foreground truncate">
-                      {preset.name}
+                      {isEN ? preset.nameEn : preset.name}
                     </p>
                     {isPresetMatchingAi && (
                       <span className="inline-flex shrink-0 items-center rounded px-1 py-0.2 text-[8px] font-bold bg-sidebar-muted text-sidebar-foreground border border-border">

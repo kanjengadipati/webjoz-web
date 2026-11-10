@@ -2576,6 +2576,7 @@ export interface Translations {
       viewLiveSite: string;
       activeSectionTitle: string;
       activeBadge: string;
+      edit: string;
       orChoosePreset: string;
       pageSections: string;
       sizeLarge: string;
@@ -6600,6 +6601,7 @@ export const translations: Record<Locale, Translations> = {
         viewLiveSite: "Buka website live di tab baru",
         activeSectionTitle: "Bagian: {label}",
         activeBadge: "Dipakai",
+        edit: "Ubah",
         orChoosePreset: "— atau pilih paket tampilan favorit Anda —",
         pageSections: "Bagian Halaman",
         sizeLarge: "Besar",
@@ -10964,6 +10966,7 @@ export const translations: Record<Locale, Translations> = {
         viewLiveSite: "Open live website in a new tab",
         activeSectionTitle: "Section: {label}",
         activeBadge: "In use",
+        edit: "Edit",
         orChoosePreset: "— or choose your favorite preset —",
         pageSections: "Page Sections",
         sizeLarge: "Large",
