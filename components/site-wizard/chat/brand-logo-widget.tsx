@@ -126,7 +126,7 @@ export function BrandLogoWidget({
   }
 
   return (
-    <div className="w-full max-w-md rounded-2xl border border-white/10 bg-slate-900/80 backdrop-blur-md p-4 space-y-3.5 shadow-xl animate-in fade-in slide-in-from-bottom-2 duration-300">
+    <div className="w-full max-w-md space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
       <input
         ref={fileInputRef}
         type="file"

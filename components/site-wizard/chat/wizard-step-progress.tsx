@@ -12,6 +12,7 @@ const STEP_MAP: Record<string, number> = {
   type: 2,
   language: 3,
   mood: 4,
+  "brand-logo": 4,
 };
 
 const TOTAL_STEPS = 4;
