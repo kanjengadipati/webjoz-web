@@ -179,34 +179,30 @@ export default function HeroChronologyBadge({
             </p>
           </div>
         ) : (
-          <div
-            style={{
-              width: "100%",
-              maxWidth: "20rem",
-              aspectRatio: "1 / 1",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "0.75rem",
-              borderRadius: "1rem",
-              border: `2px dashed color-mix(in srgb, var(--dt-primary) 30%, transparent)`,
-              background: `color-mix(in srgb, var(--dt-primary) 6%, var(--dt-bg))`,
-              padding: "2rem",
-            }}
-          >
-            {/* Skeleton big number */}
-            <div style={{ width: "7rem", height: "5rem", borderRadius: "0.5rem", background: `color-mix(in srgb, var(--dt-primary) 15%, transparent)` }} />
-            {/* Skeleton rows */}
-            {[70, 55, 60].map((w, i) => (
-              <div key={i} style={{ width: `${w}%`, height: "0.6rem", borderRadius: "0.3rem", background: `color-mix(in srgb, var(--dt-primary) 10%, transparent)` }} />
-            ))}
-            {isEditorMode && (
-              <p style={{ fontSize: "0.65rem", color: "var(--dt-text-muted)", textAlign: "center", marginTop: "0.5rem", lineHeight: 1.4 }}>
-                {language === "en" ? "Add stats via Regen or editor" : "Tambah stats via Regen atau editor"}
+          isEditorMode ? (
+            <div
+              style={{
+                display: "inline-flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                gap: "0.5rem",
+                padding: "1rem 1.5rem",
+                borderRadius: "0.75rem",
+                border: `1.5px dashed color-mix(in srgb, var(--dt-primary) 35%, transparent)`,
+                background: `color-mix(in srgb, var(--dt-primary) 5%, var(--dt-bg))`,
+              }}
+            >
+              {/* Skeleton big number */}
+              <div style={{ width: "5rem", height: "3.5rem", borderRadius: "0.4rem", background: `color-mix(in srgb, var(--dt-primary) 18%, transparent)` }} />
+              {/* Skeleton rows */}
+              {[60, 48, 54].map((w, i) => (
+                <div key={i} style={{ width: `${w * 0.8}px`, height: "0.5rem", borderRadius: "0.25rem", background: `color-mix(in srgb, var(--dt-primary) 12%, transparent)` }} />
+              ))}
+              <p style={{ fontSize: "0.6rem", color: "var(--dt-text-muted)", marginTop: "0.25rem", lineHeight: 1.4 }}>
+                {language === "en" ? "Click Regen to fill stats" : "Klik Regen untuk isi stats"}
               </p>
-            )}
-          </div>
+            </div>
+          ) : null
         )}
         {/* Milestone rows (remaining stats) */}
         {milestones.length > 0 && (

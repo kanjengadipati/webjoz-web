@@ -37,9 +37,9 @@ export default function PhotoCredit({
   if (!credit?.name) {
     if (!isUnsplashUrl(src)) return null;
     return (
-      <p className={`text-[10px] text-current opacity-50 ${className}`}>
+      <p className={`text-[10px] ${className}`} style={{ color: "color-mix(in srgb, var(--dt-text) 55%, transparent)" }}>
         {fromLabel}{" "}
-        <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer" className="underline hover:opacity-80">
+        <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer" className="underline">
           Unsplash
         </a>
       </p>
@@ -47,9 +47,9 @@ export default function PhotoCredit({
   }
 
   return (
-    <p className={`text-[10px] text-current opacity-50 ${className}`}>
+    <p className={`text-[10px] ${className}`} style={{ color: "color-mix(in srgb, var(--dt-text) 55%, transparent)" }}>
       {byLabel}{" "}
-      <a href={credit.url} target="_blank" rel="noopener noreferrer" className="underline hover:opacity-80">
+      <a href={credit.url} target="_blank" rel="noopener noreferrer" className="underline">
         {canInline ? (
           <InlineText
             section={section}
@@ -66,7 +66,7 @@ export default function PhotoCredit({
         )}
       </a>{" "}
       {onLabel}{" "}
-      <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer" className="underline hover:opacity-80">
+      <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer" className="underline">
         Unsplash
       </a>
     </p>
