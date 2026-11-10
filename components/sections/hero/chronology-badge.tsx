@@ -184,9 +184,29 @@ export default function HeroChronologyBadge({
               width: "100%",
               maxWidth: "20rem",
               aspectRatio: "1 / 1",
-              background: `linear-gradient(160deg, color-mix(in srgb, var(--dt-primary) 30%, var(--dt-bg)), color-mix(in srgb, var(--dt-primary) 10%, var(--dt-bg)))`,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "0.75rem",
+              borderRadius: "1rem",
+              border: `2px dashed color-mix(in srgb, var(--dt-primary) 30%, transparent)`,
+              background: `color-mix(in srgb, var(--dt-primary) 6%, var(--dt-bg))`,
+              padding: "2rem",
             }}
-          />
+          >
+            {/* Skeleton big number */}
+            <div style={{ width: "7rem", height: "5rem", borderRadius: "0.5rem", background: `color-mix(in srgb, var(--dt-primary) 15%, transparent)` }} />
+            {/* Skeleton rows */}
+            {[70, 55, 60].map((w, i) => (
+              <div key={i} style={{ width: `${w}%`, height: "0.6rem", borderRadius: "0.3rem", background: `color-mix(in srgb, var(--dt-primary) 10%, transparent)` }} />
+            ))}
+            {isEditorMode && (
+              <p style={{ fontSize: "0.65rem", color: "var(--dt-text-muted)", textAlign: "center", marginTop: "0.5rem", lineHeight: 1.4 }}>
+                {language === "en" ? "Add stats via Regen or editor" : "Tambah stats via Regen atau editor"}
+              </p>
+            )}
+          </div>
         )}
         {/* Milestone rows (remaining stats) */}
         {milestones.length > 0 && (
