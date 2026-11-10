@@ -79,8 +79,12 @@ export function MobileActionBar({
 
       {/* Bar */}
       <div
-        className="flex items-center rounded-2xl overflow-hidden"
-        style={{ background: "#1c1c1e", height: "3.75rem" }}
+        className="grid rounded-2xl overflow-hidden"
+        style={{
+          background: "#1c1c1e",
+          height: "3.75rem",
+          gridTemplateColumns: onOpenTheme ? "72px 1px 1fr 1px 72px" : "1fr",
+        }}
       >
         {/* Tema */}
         {onOpenTheme && (
@@ -88,7 +92,7 @@ export function MobileActionBar({
             <button
               type="button"
               onClick={onOpenTheme}
-              className="flex h-full shrink-0 flex-col items-center justify-center gap-0.5 px-5 text-slate-300 active:bg-white/10 transition-colors cursor-pointer"
+              className="flex h-full flex-col items-center justify-center gap-0.5 text-slate-300 active:bg-white/10 transition-colors cursor-pointer"
             >
               <Palette className="h-5 w-5" />
               <span className="text-[10px] font-medium">
@@ -96,7 +100,7 @@ export function MobileActionBar({
               </span>
             </button>
             {/* Divider */}
-            <div className="w-px self-stretch my-3" style={{ background: "rgba(255,255,255,0.12)" }} />
+            <div className="self-stretch my-3" style={{ background: "rgba(255,255,255,0.12)" }} />
           </>
         )}
 
@@ -104,25 +108,27 @@ export function MobileActionBar({
         <button
           type="button"
           onClick={onGoToEditor}
-          className="flex flex-1 items-center justify-center gap-2 mx-3 h-10 rounded-full text-sm font-bold text-black active:scale-95 transition-all cursor-pointer whitespace-nowrap"
+          className="flex items-center justify-center gap-2 mx-2.5 my-2 rounded-full text-sm font-bold text-black active:scale-95 transition-all cursor-pointer"
           style={{ background: "#ffffff" }}
         >
           <Pencil className="h-4 w-4 shrink-0" />
-          <span className="truncate">{t("dashboard.wizard.btnEditPublish", "Edit & Publish")}</span>
+          <span className="whitespace-nowrap">
+            {t("dashboard.wizard.btnEditPublish", "Edit & Publish")}
+          </span>
         </button>
 
         {/* Divider */}
-        <div className="w-px self-stretch my-3" style={{ background: "rgba(255,255,255,0.12)" }} />
+        <div className="self-stretch my-3" style={{ background: "rgba(255,255,255,0.12)" }} />
 
         {/* Lengkapi Data */}
         <button
           type="button"
           onClick={onOpenSheet}
-          className="flex h-full shrink-0 flex-col items-center justify-center gap-0.5 px-5 text-slate-300 active:bg-white/10 transition-colors cursor-pointer"
+          className="flex h-full flex-col items-center justify-center gap-0.5 text-slate-300 active:bg-white/10 transition-colors cursor-pointer"
         >
           <Plus className="h-5 w-5" />
           <span className="text-[10px] font-medium">
-            {t("dashboard.wizard.btnCompleteData", "Lengkapi Data")}
+            {t("dashboard.wizard.btnCompleteData", "Lengkapi")}
           </span>
         </button>
       </div>
