@@ -120,7 +120,7 @@ const GUIDES_DATA: Record<"id" | "en", GuideItem[]> = {
       badge: "Desain & Gaya",
       timeEst: "3 Menit",
       title: "Menyesuaikan Warna, Huruf & Ikon Toko",
-      summary: "Atur palet warna brand, tipografi yang nyaman dibaca, serta bentuk ikon checklist keunggulan produk.",
+      summary: "Atur mood visual, palet warna brand, tipografi (termasuk font kustom), serta bentuk ikon checklist keunggulan produk.",
       illustration: "brand-style",
       steps: [
         {
@@ -128,8 +128,16 @@ const GUIDES_DATA: Record<"id" | "en", GuideItem[]> = {
           desc: "Pada bilah menu kiri editor, pilih tab 'Desain' untuk mengakses konfigurasi visual.",
         },
         {
-          title: "Pilih Warna Aksen Brand",
-          desc: "Tentukan warna identitas tokomu dari palet standar atau gunakan kode HEX kustom sesuai logo.",
+          title: "Pilih Mood (Gaya Tampilan)",
+          desc: "Pilih gaya visual seperti Modern & Bersih, Hangat & Alami, Bold & Energetic, dll. Palet dan font akan menyesuaikan otomatis.",
+        },
+        {
+          title: "Pilih Palet Warna",
+          desc: "Pilih salah satu palet rekomendasi AI atau unggah logo brand untuk mengekstrak warna brandmu. Kartu 'In use' menandai palet aktif.",
+        },
+        {
+          title: "Sesuaikan Tipografi",
+          desc: "Pilih pasangan font preset atau unggah font kustom (heading/body). Font kustom tetap tersimpan meskipun berganti preset.",
         },
         {
           title: "Pilih Bentuk Ikon Checklist",
@@ -140,7 +148,7 @@ const GUIDES_DATA: Record<"id" | "en", GuideItem[]> = {
           desc: "Sesuaikan nuansa website dengan Mode Terang (Light) atau Mode Gelap (Dark).",
         },
       ],
-      tip: "Pengaturan warna dan font di tab Desain berlaku konsisten di seluruh bagian website secara otomatis.",
+      tip: "Pengaturan warna dan font di tab Desain berlaku konsisten di seluruh bagian website secara otomatis. Gunakan Undo/Reset untuk membatalkan perubahan tema.",
       actionUrl: "/dashboard",
       actionLabel: "Atur Desain Toko",
       tags: ["warna", "font", "desain", "huruf", "ikon", "checklist", "dark mode", "mode gelap", "brand style"],
@@ -618,7 +626,7 @@ const GUIDES_DATA: Record<"id" | "en", GuideItem[]> = {
       badge: "Brand Style",
       timeEst: "3 Mins",
       title: "Customizing Colors, Typography & Icons",
-      summary: "Adjust accent colors, choose legible typography pairings, and select bullet markers for product features.",
+      summary: "Adjust mood, color palettes, typography (including custom fonts), and bullet markers for product features.",
       illustration: "brand-style",
       steps: [
         {
@@ -626,8 +634,16 @@ const GUIDES_DATA: Record<"id" | "en", GuideItem[]> = {
           desc: "In the editor sidebar, open the 'Design' tab to access visual controls.",
         },
         {
-          title: "Set Brand Accent Color",
-          desc: "Choose from standard color swatches or enter your custom HEX code.",
+          title: "Choose a Mood (Visual Style)",
+          desc: "Pick a visual style such as Modern & Clean, Warm & Earthy, Bold & Energetic, etc. Palettes and fonts adjust automatically.",
+        },
+        {
+          title: "Pick a Color Palette",
+          desc: "Choose an AI-recommended palette or upload your brand logo to extract brand colors. The 'In use' card marks the active palette.",
+        },
+        {
+          title: "Adjust Typography",
+          desc: "Select a preset font pairing or upload a custom font (heading/body). Custom fonts persist even when switching presets.",
         },
         {
           title: "Select Feature Marker Icon",
@@ -638,7 +654,7 @@ const GUIDES_DATA: Record<"id" | "en", GuideItem[]> = {
           desc: "Switch between Light Mode and Dark Mode based on your desired brand mood.",
         },
       ],
-      tip: "Typography and color settings in the Design tab apply universally across all sections.",
+      tip: "Typography and color settings in the Design tab apply universally across all sections. Use Undo/Reset to revert theme changes.",
       actionUrl: "/dashboard",
       actionLabel: "Customize Design",
       tags: ["colors", "fonts", "design", "typography", "icons", "checklist", "dark mode", "brand style"],
