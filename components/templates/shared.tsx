@@ -1207,6 +1207,8 @@ interface TestimonialsSectionProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: () => void;
+  isExample?: boolean;
+  locale?: string;
 }
 
 const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
@@ -1234,9 +1236,14 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   collapseSheetForInlineEdit,
   onEditingStateChange,
   onAddItem,
+  isExample,
+  locale,
 }) => {
   if (!testimonials) return null;
   if (!testimonials.items?.length && !(isEditorMode && onAddItem)) return null;
+
+  const examplePrefix = isExample ? (locale === "en" ? "(Example) " : "(Contoh) ") : "";
+  const withPrefix = (quote: string) => examplePrefix ? `${examplePrefix}${quote}` : quote;
 
   const resolvedDesignVariant = testimonials?.variant || designVariant || "standard";
 
@@ -1327,7 +1334,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                 >
                   {deleteButton}
                   <span className="text-4xl font-black text-black leading-none -mb-3 opacity-20 font-mono select-none">“</span>
-                  <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} placeholder="Tulis testimoni pelanggan di sini..." onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-bold leading-relaxed flex-1 ${quoteClass}`} style={{ color: "var(--dt-text)", ...quoteStyle }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                  <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={withPrefix(t.quote ?? "")} placeholder="Tulis testimoni pelanggan di sini..." onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-bold leading-relaxed flex-1 ${quoteClass}`} style={{ color: "var(--dt-text)", ...quoteStyle }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                   <div className="flex items-center gap-3 pt-3 border-t-2 border-black">
                     <div
                       className="w-10 h-10 rounded-full border-2 border-black flex items-center justify-center text-xs font-black flex-shrink-0"
@@ -1354,7 +1361,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                 >
                   {deleteButton}
                   <span className="text-5xl font-serif leading-none -mb-4 opacity-30 select-none" style={{ color: accentColor }}>“</span>
-                  <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} placeholder="Tulis testimoni pelanggan di sini..." onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm leading-relaxed flex-1 italic font-light ${quoteClass}`} style={quoteStyle} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                  <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={withPrefix(t.quote ?? "")} placeholder="Tulis testimoni pelanggan di sini..." onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm leading-relaxed flex-1 italic font-light ${quoteClass}`} style={quoteStyle} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                   <div className="flex items-center gap-3 pt-4 border-t border-stone-200/50">
                     <div
                       className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0"
@@ -1386,7 +1393,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                 >
                   {deleteButton}
                   <span className="text-4xl font-serif text-[var(--dt-primary)] leading-none -mb-4 opacity-40 select-none">“</span>
-                  <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} placeholder="Tulis testimoni pelanggan di sini..." onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm leading-relaxed flex-1 font-serif italic ${quoteClass}`} style={quoteStyle} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                  <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={withPrefix(t.quote ?? "")} placeholder="Tulis testimoni pelanggan di sini..." onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm leading-relaxed flex-1 font-serif italic ${quoteClass}`} style={quoteStyle} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                   <div className="flex items-center gap-4 pt-3 border-t" style={{ borderColor: "color-mix(in srgb, var(--dt-border) 20%, transparent)" }}>
                     <div
                       className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0 shadow-inner"
@@ -1417,7 +1424,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                 >
                   {deleteButton}
                   <span className="text-5xl font-mono text-cyan-400 leading-none -mb-5 opacity-40 select-none">“</span>
-                  <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} placeholder="Tulis testimoni pelanggan di sini..." onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm leading-relaxed flex-1 font-light tracking-wide ${quoteClass}`} style={quoteStyle} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                  <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={withPrefix(t.quote ?? "")} placeholder="Tulis testimoni pelanggan di sini..." onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm leading-relaxed flex-1 font-light tracking-wide ${quoteClass}`} style={quoteStyle} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                   <div className="flex items-center gap-3 pt-3 border-t border-white/10">
                     <div
                       className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 border border-cyan-400/30"
@@ -1522,7 +1529,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                     {/* Right Message Bubble (Client Testimonial) */}
                     <div className="bg-[#d9fdd3] text-gray-800 rounded-2xl rounded-tr-none p-3 shadow-sm max-w-[85%] self-end relative border border-[#c1e8ba]/40 flex flex-col gap-1">
                       <p className={`text-[11px] leading-normal font-normal ${quoteClass}`} style={quoteStyle}>
-                        <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} placeholder="Tulis testimoni pelanggan di sini..." onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                        <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={withPrefix(t.quote ?? "")} placeholder="Tulis testimoni pelanggan di sini..." onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                       </p>
                       <div className="flex items-center gap-1 self-end mt-0.5 leading-none">
                         <span className="text-[8px] text-gray-500">11:22 AM</span>
@@ -1579,7 +1586,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
             return (
               <div key={idx} className={cardClasses} style={cardStyle}>
                 {deleteButton}
-                <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={t.quote ?? ""} placeholder="Tulis testimoni pelanggan di sini..." onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={quoteClasses} style={{ color: "var(--dt-text)", ...quoteStyle }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={withPrefix(t.quote ?? "")} placeholder="Tulis testimoni pelanggan di sini..." onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={quoteClasses} style={{ color: "var(--dt-text)", ...quoteStyle }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                 <div className="flex items-center gap-3 pt-2" style={{ borderTop: `1px solid color-mix(in srgb, ${accentColor} 15%, transparent)` }}>
                   <div
                     className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
@@ -3337,7 +3344,6 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
   const { t } = useI18n();
   const [imgError, setImgError] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [uploadError, setUploadError] = useState<string | null>(null);
   const [isTouched, setIsTouched] = useState(false);
   const touchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -3364,17 +3370,13 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !onUpdateField || !section) return;
-    setUploadError(null);
     try {
       setUploading(true);
       const secureUrl = await uploadImageFile(file);
       onUpdateField(section, "logo_url", secureUrl);
       setImgError(false);
-    } catch (err: any) {
+    } catch (err) {
       console.error("Logo upload error:", err);
-      setUploadError(err?.message || t("dashboard.sitesEditor.saveFailed", "Upload gagal"));
-      // Auto-dismiss error after 4s
-      setTimeout(() => setUploadError(null), 4000);
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -3479,13 +3481,6 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
           accept="image/*"
           className="hidden"
         />
-
-        {/* Upload error tooltip */}
-        {uploadError && (
-          <div className="absolute left-0 top-full mt-1.5 z-50 w-48 rounded-lg bg-destructive/90 text-white text-[10px] leading-tight px-2.5 py-1.5 shadow-xl pointer-events-none">
-            {uploadError}
-          </div>
-        )}
       </div>
     );
   }

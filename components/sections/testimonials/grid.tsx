@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import { SharedTestimonialsSection } from "../../templates/shared";
 import type { TemplateProps, DesignToken } from "../../templates/types";
@@ -12,6 +11,8 @@ interface TestimonialsVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: () => void;
+  isExample?: boolean;
+  locale?: string;
 }
 
 export default function TestimonialsGrid({
@@ -22,6 +23,8 @@ export default function TestimonialsGrid({
   collapseSheetForInlineEdit,
   onEditingStateChange,
   onAddItem,
+  isExample,
+  locale,
 }: TestimonialsVariantProps) {
   return (
     <SharedTestimonialsSection
@@ -41,6 +44,8 @@ export default function TestimonialsGrid({
       collapseSheetForInlineEdit={collapseSheetForInlineEdit}
       onEditingStateChange={onEditingStateChange}
       onAddItem={onAddItem}
+      isExample={isExample}
+      locale={locale}
     />
   );
 }
