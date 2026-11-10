@@ -12,6 +12,8 @@ interface TestimonialsVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: () => void;
+  isExample?: boolean;
+  locale?: string;
 }
 
 export default function TestimonialsClassic({
@@ -22,6 +24,8 @@ export default function TestimonialsClassic({
   collapseSheetForInlineEdit,
   onEditingStateChange,
   onAddItem,
+  isExample,
+  locale,
 }: TestimonialsVariantProps) {
   return (
     <SharedTestimonialsSection
@@ -40,6 +44,8 @@ export default function TestimonialsClassic({
       collapseSheetForInlineEdit={collapseSheetForInlineEdit}
       onEditingStateChange={onEditingStateChange}
       onAddItem={onAddItem}
+      isExample={isExample}
+      locale={locale}
     />
   );
 }
