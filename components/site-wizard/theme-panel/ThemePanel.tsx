@@ -205,7 +205,7 @@ export function ThemePanel({
       )}
 
       {/* ── Scrollable body ───────────────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden">
+      <div className="flex-1 overflow-y-auto">
         {subView === "none" && (
           <>
             {/* Mood section — needs its own scroll container unclipped by parent */}
