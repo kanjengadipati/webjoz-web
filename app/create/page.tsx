@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense, useMemo } from "react";
+import React, { useEffect, useState, Suspense, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { useAuthToken, useAuthReady } from "@/lib/auth-store";
@@ -319,24 +319,7 @@ function PublicWizardContent() {
 
   // ── Auto-save loading screen ──────────────────────────────────────────────
   if (autoSaving) {
-    return (
-      <div
-        className="min-h-screen text-white flex flex-col relative"
-        style={{ background: "linear-gradient(160deg, #090d1f 0%, #05070f 100%)" }}
-      >
-        <div className="flex-1 flex flex-col items-center justify-center gap-8">
-          <div className="relative">
-            <div className="w-20 h-20 rounded-2xl bg-primary/20 border border-primary/30 flex items-center justify-center">
-              <Loader2 className="w-9 h-9 text-primary animate-spin" />
-            </div>
-            <div className="absolute -inset-2 rounded-3xl border border-primary/20 animate-ping opacity-30" />
-          </div>
-          <div className="text-center space-y-2">
-            <p className="text-white font-semibold text-lg">Menyimpan &amp; Mempublikasikan Website...</p>
-          </div>
-        </div>
-      </div>
-    );
+    return <AutoSaveScreen />;
   }
 
   // ── Error state after failed auto-save ───────────────────────────────────
@@ -428,5 +411,154 @@ export default function PublicWizardPage() {
     >
       <PublicWizardContent />
     </Suspense>
+  );
+}
+
+// ── AutoSaveScreen ────────────────────────────────────────────────────────────
+function AutoSaveScreen() {
+  const [step, setStep] = React.useState(0);
+  const [progress, setProgress] = React.useState(8);
+
+  // Step timing: step 0 starts immediately, step 1 after 1.2s, step 2 after 3.5s
+  React.useEffect(() => {
+    const t1 = setTimeout(() => setStep(1), 1200);
+    const t2 = setTimeout(() => setStep(2), 3500);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, []);
+
+  // Smooth progress bar: fast to 60%, slows down, never reaches 100 until done
+  React.useEffect(() => {
+    const targets = [60, 80, 92];
+    const target = targets[step] ?? 92;
+    let raf: number;
+    const tick = () => {
+      setProgress((prev) => {
+        const next = prev + (target - prev) * 0.06;
+        if (Math.abs(next - target) < 0.3) return target;
+        raf = requestAnimationFrame(tick);
+        return next;
+      });
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [step]);
+
+  const steps = [
+    "Konten website disiapkan",
+    "Menyimpan data website...",
+    "Menyelesaikan proses...",
+  ];
+
+  return (
+    <div className="min-h-screen bg-[#0a0a0a] text-white flex flex-col items-center justify-center px-6">
+      {/* Illustration */}
+      <div className="relative mb-10 flex items-end justify-center gap-3">
+        {/* Browser window */}
+        <div className="relative w-44 h-32 rounded-xl bg-[#1a1a1a] border border-white/10 shadow-2xl overflow-hidden">
+          {/* Title bar */}
+          <div className="flex items-center gap-1.5 px-3 py-2 border-b border-white/[0.07]">
+            <div className="w-2 h-2 rounded-full bg-white/20" />
+            <div className="w-2 h-2 rounded-full bg-white/20" />
+            <div className="w-2 h-2 rounded-full bg-white/20" />
+          </div>
+          {/* Content skeleton */}
+          <div className="p-3 space-y-2">
+            <div className="flex gap-2">
+              <div className="w-14 h-10 rounded-md bg-white/10 flex items-center justify-center shrink-0">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <rect x="1" y="1" width="14" height="14" rx="2" stroke="white" strokeOpacity="0.3" strokeWidth="1.2"/>
+                  <path d="M1 10l4-3 3 2.5 3-4 4 4.5" stroke="white" strokeOpacity="0.3" strokeWidth="1.2" strokeLinejoin="round"/>
+                  <circle cx="5" cy="5.5" r="1.5" fill="white" fillOpacity="0.3"/>
+                </svg>
+              </div>
+              <div className="flex-1 space-y-1.5 pt-0.5">
+                <div className="h-2 rounded-full bg-white/15 w-full" />
+                <div className="h-2 rounded-full bg-white/10 w-4/5" />
+                <div className="h-2 rounded-full bg-white/10 w-3/5" />
+              </div>
+            </div>
+            <div className="h-2 rounded-full bg-white/[0.07] w-full" />
+            <div className="h-2 rounded-full bg-white/[0.07] w-5/6" />
+          </div>
+          {/* Shimmer overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent animate-skeleton-shimmer" />
+        </div>
+
+        {/* Cloud upload icon */}
+        <div className="mb-2 w-14 h-14 rounded-2xl bg-[#1f1f1f] border border-white/10 shadow-xl flex items-center justify-center">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <path d="M20.5 18.5A5 5 0 0018 9h-1.26A8 8 0 104 17.74" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M14 14v8M11 17l3-3 3 3" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+
+        {/* Sparkles */}
+        <div className="absolute -top-2 left-8 text-white/30 text-xs animate-pulse">✦</div>
+        <div className="absolute top-0 right-6 text-white/20 text-[10px] animate-pulse delay-300">✦</div>
+      </div>
+
+      {/* Title */}
+      <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2 text-center">
+        Menyimpan website kamu
+      </h1>
+      <p className="text-sm text-white/50 mb-8 text-center">
+        Sebentar lagi. Kami sedang menyimpan semua perubahan.
+      </p>
+
+      {/* Progress bar */}
+      <div className="w-full max-w-sm mb-6">
+        <div className="h-1.5 w-full rounded-full bg-white/10 overflow-hidden">
+          <div
+            className="h-full rounded-full bg-white transition-all duration-500 ease-out"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Steps checklist */}
+      <div className="w-full max-w-sm rounded-2xl bg-white/[0.04] border border-white/[0.07] overflow-hidden mb-8">
+        {steps.map((label, i) => {
+          const done = i < step;
+          const active = i === step;
+          return (
+            <div
+              key={i}
+              className={`flex items-center gap-3 px-4 py-3 border-b border-white/[0.05] last:border-0 transition-all duration-300 ${
+                done ? "opacity-100" : active ? "opacity-100" : "opacity-35"
+              }`}
+            >
+              {/* Icon */}
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
+                done
+                  ? "bg-white"
+                  : active
+                  ? "border-2 border-white/60"
+                  : "border-2 border-white/20"
+              }`}>
+                {done ? (
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path d="M2 6l3 3 5-5" stroke="#0a0a0a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                ) : active ? (
+                  <div className="w-2 h-2 rounded-full bg-white/60 animate-pulse" />
+                ) : null}
+              </div>
+              <span className={`text-sm ${done ? "text-white/70" : active ? "text-white font-medium" : "text-white/40"}`}>
+                {label}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Footer note */}
+      <div className="flex items-center gap-1.5 text-white/30 text-xs">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <circle cx="7" cy="7" r="6" stroke="currentColor" strokeWidth="1.2"/>
+          <path d="M7 6.5v3.5M7 4.5v.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+        </svg>
+        Jangan tutup halaman ini.
+      </div>
+    </div>
   );
 }
