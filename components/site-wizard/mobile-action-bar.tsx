@@ -104,11 +104,11 @@ export function MobileActionBar({
         <button
           type="button"
           onClick={onGoToEditor}
-          className="flex flex-1 items-center justify-center gap-2 mx-3 h-10 rounded-full text-sm font-bold text-white active:scale-95 transition-all cursor-pointer"
-          style={{ background: "linear-gradient(135deg, #7c3aed, #6d28d9)" }}
+          className="flex flex-1 items-center justify-center gap-2 mx-3 h-10 rounded-full text-sm font-bold text-black active:scale-95 transition-all cursor-pointer whitespace-nowrap"
+          style={{ background: "#ffffff" }}
         >
-          <Pencil className="h-4 w-4" />
-          {t("dashboard.wizard.btnEditPublish", "Edit & Publish")}
+          <Pencil className="h-4 w-4 shrink-0" />
+          <span className="truncate">{t("dashboard.wizard.btnEditPublish", "Edit & Publish")}</span>
         </button>
 
         {/* Divider */}
