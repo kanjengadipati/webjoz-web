@@ -32,74 +32,100 @@ export function MobileActionBar({
   }
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 z-50 flex items-center gap-2 px-3 pb-6 pt-3" style={{ background: "linear-gradient(transparent, #0d0f14 30%)" }}>
-
-      {/* Tema (Pemicu Panel Kustomisasi) */}
-      {onOpenTheme && (
-        <button
-          type="button"
-          onClick={onOpenTheme}
-          className="flex h-11 shrink-0 items-center justify-center gap-1.5 rounded-full bg-white/10 border border-border px-3.5 text-xs font-bold text-slate-200 transition-all active:scale-95 backdrop-blur-sm cursor-pointer"
-        >
-          <Palette className="h-3.5 w-3.5 text-slate-400" />
-          <span>{t("dashboard.wizard.theme.openPanel", "Tema")}</span>
-        </button>
+    <div
+      className="absolute bottom-0 left-0 right-0 z-50 px-4 pb-7 pt-2"
+      style={{ background: "linear-gradient(transparent, #0d0f14 28%)" }}
+    >
+      {/* Tooltips — rendered above the bar */}
+      {(showLengkapiHint || showEditPublishHint) && (
+        <div className="relative flex items-end justify-around mb-2 px-2 pointer-events-none">
+          <div className="flex-1" />
+          <div className="flex-[2] flex justify-center">
+            {showEditPublishHint && (
+              <div className="animate-in fade-in slide-in-from-bottom-1 duration-300">
+                <div className="relative bg-[#1a2236] border border-white/20 rounded-xl px-3 py-2 shadow-lg whitespace-nowrap text-center">
+                  <p className="text-[11px] font-semibold text-white leading-snug">
+                    {t("dashboard.wizard.mobileEditPublishHintTitle", "✏️ Bebas atur & sesuaikan!")}
+                  </p>
+                  <p className="text-[10px] text-slate-400 mt-0.5 leading-snug">
+                    {t("dashboard.wizard.mobileEditPublishHintDesc", "Full edit, ubah, atau hapus section")}
+                  </p>
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0"
+                    style={{ borderLeft: "6px solid transparent", borderRight: "6px solid transparent", borderTop: "6px solid rgba(255,255,255,0.2)" }}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="flex-1 flex justify-end">
+            {showLengkapiHint && (
+              <div className="animate-in fade-in slide-in-from-bottom-1 duration-300">
+                <div className="relative bg-[#1a2236] border border-white/20 rounded-xl px-3 py-2 shadow-lg whitespace-nowrap text-center">
+                  <p className="text-[11px] font-semibold text-white leading-snug">
+                    {t("dashboard.wizard.mobileHintTitle", "📋 Tambah nomor WA & area")}
+                  </p>
+                  <p className="text-[10px] text-slate-400 mt-0.5 leading-snug">
+                    {t("dashboard.wizard.mobileHintDesc", "Supaya tombol kontak aktif")}
+                  </p>
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0"
+                    style={{ borderLeft: "6px solid transparent", borderRight: "6px solid transparent", borderTop: "6px solid rgba(255,255,255,0.2)" }}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       )}
 
-      {/* Lengkapi Data */}
-      <div className="relative flex-1">
-        {showLengkapiHint && (
-          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 z-50 pointer-events-none animate-in fade-in slide-in-from-bottom-1 duration-300">
-            <div className="relative bg-[#1a2236] border border-white/20 rounded-xl px-3 py-2 shadow-lg whitespace-nowrap text-center">
-              <p className="text-[11px] font-semibold text-white leading-snug">
-                {t("dashboard.wizard.mobileHintTitle", "📋 Tambah nomor WA & area")}
-              </p>
-              <p className="text-[10px] text-slate-400 mt-0.5 leading-snug">
-                {t("dashboard.wizard.mobileHintDesc", "Supaya tombol kontak aktif")}
-              </p>
-              <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0"
-                style={{ borderLeft: "6px solid transparent", borderRight: "6px solid transparent", borderTop: "6px solid rgba(255,255,255,0.2)" }}
-              />
-            </div>
-          </div>
+      {/* Bar */}
+      <div
+        className="flex items-center rounded-2xl overflow-hidden"
+        style={{ background: "#1c1c1e", height: "3.75rem" }}
+      >
+        {/* Tema */}
+        {onOpenTheme && (
+          <>
+            <button
+              type="button"
+              onClick={onOpenTheme}
+              className="flex h-full shrink-0 flex-col items-center justify-center gap-0.5 px-5 text-slate-300 active:bg-white/10 transition-colors cursor-pointer"
+            >
+              <Palette className="h-5 w-5" />
+              <span className="text-[10px] font-medium">
+                {t("dashboard.wizard.theme.openPanel", "Tema")}
+              </span>
+            </button>
+            {/* Divider */}
+            <div className="w-px self-stretch my-3" style={{ background: "rgba(255,255,255,0.12)" }} />
+          </>
         )}
-        <button
-          type="button"
-          onClick={onOpenSheet}
-          className="flex h-11 w-full items-center justify-center gap-1.5 rounded-full bg-white/10 border border-border px-5 text-xs font-extrabold text-slate-200 transition-all active:scale-95 backdrop-blur-sm"
-        >
-          <Plus className="h-3.5 w-3.5 text-slate-400" />
-          {t("dashboard.wizard.btnCompleteData", "Lengkapi Data")}
-        </button>
-      </div>
 
-      {/* Edit & Publikasikan */}
-      <div className="relative flex-1">
-        {showEditPublishHint && (
-          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 z-50 pointer-events-none animate-in fade-in slide-in-from-bottom-1 duration-300">
-            <div className="relative bg-[#1a2236] border border-white/20 rounded-xl px-3 py-2 shadow-lg whitespace-nowrap text-center">
-              <p className="text-[11px] font-semibold text-white leading-snug">
-                {t("dashboard.wizard.mobileEditPublishHintTitle", "✏️ Bebas atur & sesuaikan!")}
-              </p>
-              <p className="text-[10px] text-slate-400 mt-0.5 leading-snug">
-                {t("dashboard.wizard.mobileEditPublishHintDesc", "Full edit, ubah, atau hapus section")}
-              </p>
-              <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0"
-                style={{ borderLeft: "6px solid transparent", borderRight: "6px solid transparent", borderTop: "6px solid rgba(255,255,255,0.2)" }}
-              />
-            </div>
-          </div>
-        )}
+        {/* Edit & Publish — center, dominant */}
         <button
           type="button"
           onClick={onGoToEditor}
-          className="btn-primary flex h-11 w-full items-center justify-center gap-1.5 rounded-full px-5 text-xs font-extrabold shadow-[0_14px_30px_rgba(0,0,0,0.32)] transition-all active:scale-95"
+          className="flex flex-1 items-center justify-center gap-2 mx-3 h-10 rounded-full text-sm font-bold text-white active:scale-95 transition-all cursor-pointer"
+          style={{ background: "linear-gradient(135deg, #7c3aed, #6d28d9)" }}
         >
-          <Pencil className="h-3.5 w-3.5" />
-          {t("dashboard.wizard.btnEditPublish", "Edit & Publikasikan")}
+          <Pencil className="h-4 w-4" />
+          {t("dashboard.wizard.btnEditPublish", "Edit & Publish")}
+        </button>
+
+        {/* Divider */}
+        <div className="w-px self-stretch my-3" style={{ background: "rgba(255,255,255,0.12)" }} />
+
+        {/* Lengkapi Data */}
+        <button
+          type="button"
+          onClick={onOpenSheet}
+          className="flex h-full shrink-0 flex-col items-center justify-center gap-0.5 px-5 text-slate-300 active:bg-white/10 transition-colors cursor-pointer"
+        >
+          <Plus className="h-5 w-5" />
+          <span className="text-[10px] font-medium">
+            {t("dashboard.wizard.btnCompleteData", "Lengkapi Data")}
+          </span>
         </button>
       </div>
-
     </div>
   );
 }
