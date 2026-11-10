@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { Phone, MapPin, X } from "lucide-react";
+import { Phone, MapPin } from "lucide-react";
 import { normalizeWhatsapp } from "./helpers";
 import { useI18n } from "@/lib/i18n/context";
+import { WizardSheet } from "./wizard-sheet";
 
 interface BusinessDetailsSheetProps {
   isOpen: boolean;
@@ -45,25 +46,10 @@ export function BusinessDetailsSheet({
     onSave(finalWa, areaDraft);
   };
 
-  const renderContent = (isMobileSheet: boolean) => (
+  const renderContent = () => (
     <>
-      {isMobileSheet && (
-        <div className="flex justify-center pt-1 pb-3">
-          <div className="h-1 w-10 rounded-full bg-sidebar-muted-foreground/30" />
-        </div>
-      )}
-      <div className="flex items-center justify-between mb-1">
-        <p className="text-sm font-bold text-sidebar-foreground">{t("dashboard.wizard.businessDetailsTitle", "Detail Bisnis")}</p>
-        <button
-          type="button"
-          onClick={onClose}
-          className="flex h-7 w-7 items-center justify-center rounded-full bg-sidebar-muted text-sidebar-muted-foreground hover:text-sidebar-foreground transition-all cursor-pointer"
-        >
-          <X className="h-4 w-4" />
-        </button>
-      </div>
-      <p className="text-xs text-sidebar-muted-foreground mb-4 leading-relaxed">{t("dashboard.wizard.businessDetailsSubtitle", "Dua data ini langsung dipakai AI untuk isi tombol kontak dan bikin copy yang lebih relevan.")}</p>
-      <div className="flex gap-2 mb-3 flex-wrap">
+      <p className="text-xs text-sidebar-muted-foreground mb-4 leading-relaxed px-4">{t("dashboard.wizard.businessDetailsSubtitle", "Dua data ini langsung dipakai AI untuk isi tombol kontak dan bikin copy yang lebih relevan.")}</p>
+      <div className="flex gap-2 mb-3 flex-wrap px-4">
         <span className="inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full border bg-sidebar-muted/40 text-sidebar-muted-foreground border-border">
           <Phone className="w-3 h-3" />
           {waDraft ? t("dashboard.wizard.waSaved", "WA tersimpan") : t("dashboard.wizard.waEmpty", "WA belum diisi")}
@@ -73,7 +59,7 @@ export function BusinessDetailsSheet({
           {areaDraft ? areaDraft : t("dashboard.wizard.areaEmpty", "Area belum diisi")}
         </span>
       </div>
-      <div className="space-y-3 mb-4">
+      <div className="space-y-3 mb-4 px-4">
         <div>
           <label className="text-[10px] font-semibold uppercase tracking-wider text-sidebar-subtle-foreground mb-1 block">{t("dashboard.wizard.labelWhatsapp", "Nomor WhatsApp")}</label>
           <input
@@ -97,7 +83,7 @@ export function BusinessDetailsSheet({
           <p className="text-[10px] text-sidebar-muted-foreground mt-1">{t("dashboard.wizard.serviceAreaHint", "AI pakai ini untuk nulis copy yang lebih relevan")}</p>
         </div>
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-2 px-4 pb-2">
         <button
           type="button"
           onClick={onClose}
@@ -122,13 +108,11 @@ export function BusinessDetailsSheet({
       <>
         {/* Backdrop to dismiss on click outside */}
         <div className="fixed inset-0 z-40" onClick={onClose} />
-
-        {/* Popover modal anchored with left edge directly above the button */}
         <div
           className="absolute bottom-full left-0 mb-3 z-50 w-[360px] md:w-[380px] max-w-[calc(100vw-32px)] rounded-2xl bg-sidebar p-5 border border-border shadow-xl text-sidebar-foreground animate-in fade-in slide-in-from-bottom-2 duration-200"
           onClick={(e) => e.stopPropagation()}
         >
-          {renderContent(false)}
+          {renderContent()}
         </div>
       </>
     );
@@ -136,13 +120,15 @@ export function BusinessDetailsSheet({
 
   // Mobile Bottom Sheet variant
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center md:hidden" onClick={onClose}>
-      <div
-        className="w-full rounded-t-2xl bg-sidebar px-5 pb-8 pt-2 border-t border-border shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-300"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {renderContent(true)}
+    <WizardSheet
+      open={isOpen}
+      title={t("dashboard.wizard.businessDetailsTitle", "Detail Bisnis")}
+      onClose={onClose}
+      maxHeight="85dvh"
+    >
+      <div className="flex-1 overflow-y-auto">
+        {renderContent()}
       </div>
-    </div>
+    </WizardSheet>
   );
 }
