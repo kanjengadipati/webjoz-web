@@ -84,6 +84,13 @@ export function ThemeSheet({
 
   return (
     <>
+      {/* Backdrop — tap to close */}
+      <div
+        className="fixed inset-0 z-40 bg-black/40"
+        onClick={handleClose}
+        aria-hidden="true"
+      />
+
       {/* Sheet */}
       <div
         role="dialog"
