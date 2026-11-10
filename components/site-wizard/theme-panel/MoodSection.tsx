@@ -58,7 +58,7 @@ export function MoodSection({ mood, onSelectMood }: MoodSectionProps) {
       </div>
 
       {/* Single-row horizontal scroll */}
-      <div className="flex gap-1.5 overflow-x-auto px-4 pb-1 scrollbar-none" style={{ scrollbarWidth: "none" }}>
+      <div className="flex gap-1.5 overflow-x-auto px-4 pe-4 pb-1 scrollbar-none" style={{ scrollbarWidth: "none" }}>
         {sortedMoods.map((mo) => {
           const isActive = mo.value === mood;
           const moodKey = MOOD_KEY_MAP[mo.value];
