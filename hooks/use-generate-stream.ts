@@ -201,10 +201,12 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
       let hasReceivedData = false;
       let lastTemplateId = req.template_id || "";
 
-      // Watchdog timeout (60s): cegah UI stuck jika stream backend terhenti tanpa event "done"
+      // Watchdog timeout (150s): cegah UI stuck jika stream backend terhenti tanpa event "done".
+      // Harus lebih panjang dari AI_TIMEOUT_SECONDS (120s) di API agar semua retry provider
+      // (Gemini 503, rate limit, dsb.) sempat selesai sebelum frontend cancel request.
       const watchdogTimer = setTimeout(() => {
         if (isDoneReceived || controller.signal.aborted) return;
-        console.warn(`[generate_stream] req=${requestId} watchdog timeout triggered after 60s`);
+        console.warn(`[generate_stream] req=${requestId} watchdog timeout triggered after 150s`);
         isDoneReceived = true;
         try {
           reader.cancel();
@@ -217,7 +219,7 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
         } else {
           onErrorRef.current("Generasi website memakan waktu terlalu lama. Silakan coba lagi.");
         }
-      }, 60000);
+      }, 150000);
 
       try {
         while (!isDoneReceived) {
