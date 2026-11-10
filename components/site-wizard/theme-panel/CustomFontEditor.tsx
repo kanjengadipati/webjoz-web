@@ -19,36 +19,37 @@ type UploadTab = "upload" | "url";
 interface FontOption {
   name: string;
   desc: string;
+  descEn: string;
 }
 
 // Curated Google Fonts library for heading
 const HEADING_FONTS: FontOption[] = [
-  { name: "Inter", desc: "Modern & Bersih" },
-  { name: "Poppins", desc: "Geometris & Ramah" },
-  { name: "Playfair Display", desc: "Klasik & Elegan" },
-  { name: "Plus Jakarta Sans", desc: "Kontemporer & Tegas" },
-  { name: "Montserrat", desc: "Bold & Modern" },
-  { name: "Raleway", desc: "Anggun & Tipis" },
-  { name: "Oswald", desc: "Kondensed & Kuat" },
-  { name: "Lora", desc: "Sastra & Halus" },
-  { name: "DM Serif Display", desc: "Premium & Display" },
-  { name: "Space Grotesk", desc: "Teknikal & Segar" },
-  { name: "Fraunces", desc: "Organik & Hangat" },
-  { name: "Cormorant Garamond", desc: "Mewah & Klasik" },
+  { name: "Inter", desc: "Modern & Bersih", descEn: "Modern & Clean" },
+  { name: "Poppins", desc: "Geometris & Ramah", descEn: "Geometric & Friendly" },
+  { name: "Playfair Display", desc: "Klasik & Elegan", descEn: "Classic & Elegant" },
+  { name: "Plus Jakarta Sans", desc: "Kontemporer & Tegas", descEn: "Contemporary & Bold" },
+  { name: "Montserrat", desc: "Bold & Modern", descEn: "Bold & Modern" },
+  { name: "Raleway", desc: "Anggun & Tipis", descEn: "Graceful & Thin" },
+  { name: "Oswald", desc: "Kondensed & Kuat", descEn: "Condensed & Strong" },
+  { name: "Lora", desc: "Sastra & Halus", descEn: "Literary & Refined" },
+  { name: "DM Serif Display", desc: "Premium & Display", descEn: "Premium & Display" },
+  { name: "Space Grotesk", desc: "Teknikal & Segar", descEn: "Technical & Fresh" },
+  { name: "Fraunces", desc: "Organik & Hangat", descEn: "Organic & Warm" },
+  { name: "Cormorant Garamond", desc: "Mewah & Klasik", descEn: "Luxurious & Classic" },
 ];
 
 // Curated Google Fonts library for body
 const BODY_FONTS: FontOption[] = [
-  { name: "Inter", desc: "Sangat Readable" },
-  { name: "Roboto", desc: "Standar Web Global" },
-  { name: "Open Sans", desc: "Netral & Nyaman" },
-  { name: "Plus Jakarta Sans", desc: "Harmonis Modern" },
-  { name: "Lato", desc: "Hangat & Ramah" },
-  { name: "Nunito", desc: "Rounded & Approachable" },
-  { name: "DM Sans", desc: "Bersih & Versatile" },
-  { name: "Poppins", desc: "Geometris & Rapi" },
-  { name: "Source Sans 3", desc: "Legible & Clean" },
-  { name: "Mulish", desc: "Minimalis & Ringan" },
+  { name: "Inter", desc: "Sangat Readable", descEn: "Highly Readable" },
+  { name: "Roboto", desc: "Standar Web Global", descEn: "Global Web Standard" },
+  { name: "Open Sans", desc: "Netral & Nyaman", descEn: "Neutral & Comfortable" },
+  { name: "Plus Jakarta Sans", desc: "Harmonis Modern", descEn: "Modern Harmony" },
+  { name: "Lato", desc: "Hangat & Ramah", descEn: "Warm & Friendly" },
+  { name: "Nunito", desc: "Rounded & Approachable", descEn: "Rounded & Approachable" },
+  { name: "DM Sans", desc: "Bersih & Versatile", descEn: "Clean & Versatile" },
+  { name: "Poppins", desc: "Geometris & Rapi", descEn: "Geometric & Neat" },
+  { name: "Source Sans 3", desc: "Legible & Clean", descEn: "Legible & Clean" },
+  { name: "Mulish", desc: "Minimalis & Ringan", descEn: "Minimal & Light" },
 ];
 
 interface CustomFontEditorProps {
@@ -64,7 +65,8 @@ export function CustomFontEditor({
   onClose,
   onApply,
 }: CustomFontEditorProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const isEN = locale === "en";
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const currentTypography =
@@ -224,6 +226,7 @@ export function CustomFontEditor({
   const renderFontRow = (
     name: string,
     desc: string,
+    descEn: string,
     isSelected: boolean,
     onSelect: () => void,
     isCustom = false
@@ -267,7 +270,7 @@ export function CustomFontEditor({
             : "text-sidebar-muted-foreground"
         }`}
       >
-        {isCustom ? "Custom Font" : desc}
+        {isCustom ? t("dashboard.sitesEditor.customFontBadge", "Custom Font") : (isEN ? descEn : desc)}
       </span>
     </button>
   );
@@ -311,13 +314,14 @@ export function CustomFontEditor({
                 renderFontRow(
                   f.name,
                   f.desc,
+                  f.descEn,
                   selectedHeading === f.name,
                   () => handleSelectHeading(f.name)
                 )
               )}
               {/* Show custom heading if not in library */}
               {!headingInLibrary && selectedHeading &&
-                renderFontRow(selectedHeading, "Custom Font", true, () => {}, true)}
+                renderFontRow(selectedHeading, "Custom Font", "Custom Font", true, () => {}, true)}
             </div>
           </div>
 
@@ -331,13 +335,14 @@ export function CustomFontEditor({
                 renderFontRow(
                   f.name,
                   f.desc,
+                  f.descEn,
                   selectedBody === f.name,
                   () => handleSelectBody(f.name)
                 )
               )}
               {/* Show custom body if not in library */}
               {!bodyInLibrary && selectedBody &&
-                renderFontRow(selectedBody, "Custom Font", true, () => {}, true)}
+                renderFontRow(selectedBody, "Custom Font", "Custom Font", true, () => {}, true)}
             </div>
           </div>
 
@@ -439,7 +444,9 @@ export function CustomFontEditor({
                         {t("dashboard.wizard.theme.fontUploadAction", "Pilih file font dari komputer")}
                       </p>
                       <p className="text-[10px] text-sidebar-muted-foreground mt-1">
-                        Format: .woff2 (rekomendasi), .ttf, .otf (Maks. 3 MB)
+                        {isEN
+                          ? "Format: .woff2 (recommended), .ttf, .otf (Max 3 MB)"
+                          : "Format: .woff2 (rekomendasi), .ttf, .otf (Maks. 3 MB)"}
                       </p>
                     </div>
                   </div>
@@ -469,7 +476,7 @@ export function CustomFontEditor({
                           type="text"
                           value={manualFamilyName}
                           onChange={(e) => setManualFamilyName(e.target.value)}
-                          placeholder="Contoh: My Custom Sans"
+                          placeholder={isEN ? "e.g. My Custom Sans" : "Contoh: My Custom Sans"}
                           className="w-full rounded-lg bg-sidebar-input border border-border px-2.5 py-1.5 text-xs text-sidebar-foreground placeholder:text-sidebar-muted-foreground focus:border-primary focus:outline-none transition-all"
                         />
                       </div>
