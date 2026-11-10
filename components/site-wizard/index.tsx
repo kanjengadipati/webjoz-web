@@ -1485,6 +1485,19 @@ export function SiteWizard({
                   taxonomyV2={taxonomyV2}
                   wizardLang={wizardLang}
                   uiLang={uiLang}
+                  onConfirm={(selectedValue) => {
+                    if (selectedValue.includes(".")) {
+                      chat.setIndustryId(selectedValue);
+                      chat.industryIdRef.current = selectedValue;
+                    } else {
+                      chat.setBusinessSubType(selectedValue);
+                    }
+                    const doInject = chat.inferenceAutoConfirmRef.current;
+                    chat.inferenceAutoConfirmRef.current = null;
+                    if (doInject) {
+                      doInject(selectedValue.includes(".") ? "" : selectedValue);
+                    }
+                  }}
                   onChangeCategory={() => {
                     chat.setMessages((prev) => prev.filter((msg) => msg.id !== m.id));
                     chat.showManualPicker();
