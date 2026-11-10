@@ -28,6 +28,7 @@ interface WizardChatInputProps {
     isProcessingAudio: boolean;
     awaitingNameConfirm: boolean;
     chatStage: string;
+    messages: { widget?: string }[];
   };
   isKeyboardOpen: boolean;
   transcriptScrollRef: React.RefObject<HTMLDivElement | null>;
@@ -54,11 +55,15 @@ export function WizardChatInput({
   }
 
   const isBrandLogoStage = chat.chatStage === "brand-logo";
+  const hasActiveConfirmCard = chat.messages.some(
+    (m) => m.widget === "inference-confirm-card"
+  );
   const isInputDisabled =
     chat.isAiTyping ||
     chat.isAnalyzingDescription ||
     chat.isProcessingAudio ||
     chat.awaitingNameConfirm ||
+    hasActiveConfirmCard ||
     isBrandLogoStage;
 
   return (
