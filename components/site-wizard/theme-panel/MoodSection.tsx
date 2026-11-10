@@ -1,7 +1,6 @@
 "use client";
 
-import React from "react";
-import { Check, Leaf, Palette, Crown, Zap, Hourglass, Bot } from "lucide-react";
+import React from "react";import { Check, Leaf, Palette, Crown, Zap, Hourglass, Bot } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { useI18n } from "@/lib/i18n/context";
 import { MOOD_OPTIONS } from "../constants";
@@ -43,9 +42,16 @@ const MOOD_KEY_MAP: Record<string, string> = {
 export function MoodSection({ mood, onSelectMood }: MoodSectionProps) {
   const { t, isIndonesian } = useI18n();
 
+  // Put active mood first, rest follow in original order
+  const sortedMoods = React.useMemo(() => {
+    const active = MOOD_OPTIONS.filter(m => m.value === mood);
+    const rest = MOOD_OPTIONS.filter(m => m.value !== mood);
+    return [...active, ...rest];
+  }, [mood]);
+
   return (
-    <div className="px-4 py-3 space-y-2">
-      <div className="flex items-baseline justify-between gap-2">
+    <div className="py-2 space-y-1.5">
+      <div className="flex items-baseline justify-between gap-2 px-4">
         <p className="text-[10px] font-bold uppercase tracking-wider text-sidebar-subtle-foreground">
           {t("dashboard.wizard.theme.moodSection", "Gaya Tampilan")}
         </p>
@@ -54,15 +60,14 @@ export function MoodSection({ mood, onSelectMood }: MoodSectionProps) {
         </span>
       </div>
 
-      <div className="grid grid-cols-2 gap-1.5">
-        {MOOD_OPTIONS.map((mo, idx) => {
+      {/* Single-row horizontal scroll */}
+      <div className="flex gap-1.5 overflow-x-auto px-4 pb-1 scrollbar-none" style={{ scrollbarWidth: "none" }}>
+        {sortedMoods.map((mo) => {
           const isActive = mo.value === mood;
-          const isLast = idx === MOOD_OPTIONS.length - 1;
           const moodKey = MOOD_KEY_MAP[mo.value];
           const label = moodKey
             ? t(`dashboard.wizard.moods.${moodKey}`, isIndonesian ? mo.label : (mo.labelEn || mo.label))
             : (isIndonesian ? mo.label : (mo.labelEn || mo.label));
-
           const cfg = MOOD_ICON_MAP[mo.value] ?? {
             icon: <SparkleIcon className="w-3.5 h-3.5" />,
             bg: "bg-white/10",
@@ -75,44 +80,27 @@ export function MoodSection({ mood, onSelectMood }: MoodSectionProps) {
               key={mo.value}
               type="button"
               aria-pressed={isActive}
-              onClick={() => {
-                if (!isActive) {
-                  onSelectMood(mo.value);
-                }
-              }}
+              onClick={() => { if (!isActive) onSelectMood(mo.value); }}
               className={cn(
-                "group relative flex items-center gap-2 rounded-xl border px-2.5 py-2 text-left transition-all cursor-pointer select-none",
-                isLast && "col-span-2",
+                "group relative flex items-center gap-2 rounded-xl border px-2.5 py-2 text-left transition-all cursor-pointer select-none shrink-0",
                 isActive
                   ? "border-primary bg-primary/10 ring-1 ring-primary/40 shadow-xs"
                   : "border-border/70 bg-sidebar hover:border-border hover:bg-sidebar-muted/60"
               )}
             >
-              {/* Icon badge matching chat wizard */}
-              <div
-                className={cn(
-                  "w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow-2xs transition-transform duration-200",
-                  cfg.bg,
-                  cfg.text,
-                  isActive ? "scale-105" : "group-hover:scale-105"
-                )}
-              >
+              <div className={cn(
+                "w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow-2xs transition-transform duration-200",
+                cfg.bg, cfg.text,
+                isActive ? "scale-105" : "group-hover:scale-105"
+              )}>
                 {cfg.icon}
               </div>
-
-              {/* Mood label */}
-              <span
-                className={cn(
-                  "text-xs leading-tight truncate flex-1 min-w-0",
-                  isActive
-                    ? "font-bold text-sidebar-foreground"
-                    : "font-medium text-sidebar-foreground/90 group-hover:text-sidebar-foreground"
-                )}
-              >
+              <span className={cn(
+                "text-xs leading-tight whitespace-nowrap",
+                isActive ? "font-bold text-sidebar-foreground" : "font-medium text-sidebar-foreground/90 group-hover:text-sidebar-foreground"
+              )}>
                 {label}
               </span>
-
-              {/* Active check indicator */}
               {isActive && (
                 <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-primary text-primary-foreground shrink-0 shadow-2xs">
                   <Check className="h-2.5 w-2.5 stroke-[3]" />
