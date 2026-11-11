@@ -214,8 +214,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         return (
           <BottomNavBar
             centerLabel={t("dashboard.bottomNavCreate", "Buat")}
-            onCenterPress={() => setMobileMenuOpen(prev => !prev)}
-            centerActive={mobileMenuOpen}
+            onCenterPress={() => router.push("/create")}
+            centerActive={false}
             items={[
               { id: overviewItem.id, href: overviewItem.href, icon: OverviewIcon, label: t(NAV_LABEL_KEYS[overviewItem.id] ?? "", overviewItem.label), active: pathname === overviewItem.href },
               { id: sitesItem.id, href: sitesItem.href, icon: SitesIcon, label: t(NAV_LABEL_KEYS[sitesItem.id] ?? "", sitesItem.label), active: pathname === sitesItem.href },
