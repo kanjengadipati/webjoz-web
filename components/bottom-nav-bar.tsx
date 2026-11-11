@@ -92,7 +92,7 @@ export function BottomNavBar({
       aria-label={ariaLabel}
     >
       <div
-        className="flex items-center w-full rounded-t-2xl shadow-2xl [overflow:visible]"
+        className="flex items-center justify-around w-full rounded-t-2xl shadow-2xl [overflow:visible] px-2"
         style={{
           background: "#1c1c1e",
           height: "calc(3.75rem + env(safe-area-inset-bottom))",
