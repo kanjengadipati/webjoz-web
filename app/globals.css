@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* webjoz-ui ships raw .tsx source — Tailwind's automatic detection skips
+   node_modules (gitignored), so its unique utility classes would never be
+   generated. Register the package explicitly as a class source. */
+@source "../node_modules/webjoz-ui";
+
 /* Prevent white flash on hard refresh — hard-code dark background on html.dark
    before any CSS variable or Tailwind utility loads (light theme stays default) */
 .dark {
