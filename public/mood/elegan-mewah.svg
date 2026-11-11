@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+<defs><clipPath id="c"><rect x="16" y="16" width="224" height="224" rx="34"/></clipPath><linearGradient id="gold" x2="1" y2="1"><stop stop-color="#FFF0C9"/><stop offset=".5" stop-color="#C99A56"/><stop offset="1" stop-color="#F7D89A"/></linearGradient></defs>
+<g clip-path="url(#c)"><rect width="256" height="256" fill="#211D19"/>
+<path d="M16 16H240V240H16Z" fill="#191817"/>
+<path d="M16 18C105 37 159 95 171 167C176 195 169 222 154 250" fill="none" stroke="url(#gold)" stroke-width="5"/>
+<path d="M240 88C190 99 157 130 137 171C126 194 119 220 116 250" fill="none" stroke="url(#gold)" stroke-width="5"/>
+<path d="M170 16V240" stroke="#D9B77C" stroke-width="1.5" opacity=".65"/>
+<path d="M16 16L171 171" stroke="#D9B77C" stroke-width="1" opacity=".18"/>
+</g></svg>

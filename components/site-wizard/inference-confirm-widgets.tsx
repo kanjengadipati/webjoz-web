@@ -170,7 +170,7 @@ export function InferenceConfirmCard({
   const [draftName, setDraftName] = useState(chat.businessName || "");
   const [draftArea, setDraftArea] = useState(chat.serviceArea || "");
   const [draftIndustry, setDraftIndustry] = useState(chat.industryId || chat.businessSubType || "");
-  const isLocked = chat.chatStage === "language" || chat.chatStage === "mood" || chat.chatStage === "done";
+  const isLocked = chat.chatStage === "language" || chat.chatStage === "mood" || chat.chatStage === "brand-logo" || chat.chatStage === "done";
   const [draftBidang, setDraftBidang] = useState<string>("");
 
   // Once the wizard moves past the confirmation card, close any open editor.

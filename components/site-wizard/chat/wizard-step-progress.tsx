@@ -7,15 +7,15 @@ interface WizardStepProgressBarProps {
 }
 
 const STEP_MAP: Record<string, number> = {
-  name: 1,
-  description: 2,
-  type: 2,
-  language: 3,
-  mood: 4,
-  "brand-logo": 4,
+  name:         1,
+  description:  2,
+  type:         3,
+  language:     4,
+  mood:         5,
+  "brand-logo": 6,
 };
 
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 6;
 
 export function WizardStepProgressBar({ chatStage }: WizardStepProgressBarProps) {
   if (chatStage === "done") return null;

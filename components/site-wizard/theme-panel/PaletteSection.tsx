@@ -178,9 +178,6 @@ export function PaletteSection({
                   <p className="text-[11px] font-bold text-sidebar-foreground truncate">
                     {t("dashboard.wizard.theme.aiPaletteName", "AI Original")}
                   </p>
-                  <span className="inline-flex shrink-0 items-center rounded px-1 py-0.2 text-[8px] font-bold bg-sidebar-muted text-sidebar-foreground border border-border">
-                    AI Recom
-                  </span>
                 </div>
                 {isAiActive && (
                   <span className="inline-flex items-center gap-0.5 rounded-full bg-primary px-1.5 py-0.5 text-[8px] font-black text-primary-foreground shrink-0">
