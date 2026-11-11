@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+<defs><clipPath id="c"><rect x="16" y="16" width="224" height="224" rx="34"/></clipPath><radialGradient id="bg"><stop stop-color="#123E65"/><stop offset="1" stop-color="#101B2A"/></radialGradient></defs>
+<g clip-path="url(#c)"><rect width="256" height="256" fill="url(#bg)"/>
+<circle cx="148" cy="177" r="126" fill="none" stroke="#14C9F4" stroke-width="2" opacity=".85"/>
+<circle cx="148" cy="177" r="82" fill="none" stroke="#42D7FF" stroke-width="2"/>
+<circle cx="148" cy="177" r="38" fill="#1675A8" opacity=".55"/>
+<path d="M16 100C49 46 91 17 146 16M178 16V112M16 213H92" stroke="#35BFEF" stroke-width="2" fill="none" opacity=".85"/>
+<path d="M178 16V74M16 213H62" stroke="#B4F4FF" stroke-width="1" opacity=".8"/>
+</g></svg>

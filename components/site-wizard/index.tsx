@@ -133,6 +133,7 @@ import { LoadingModal } from "./loading-modal";
 import { WizardErrorModal } from "./error-modal";
 import { WizardSuccessToast } from "./success-toast";
 import { useI18n } from "@/lib/i18n/context";
+import { MoodCard, MoodBubbleIcon } from "./mood-card";
 
 export { type SiteWizardProps };
 import { SUB_TYPE_ICONS, BIDANG_ICONS } from "./icons-map";
@@ -1904,69 +1905,30 @@ export function SiteWizard({
               const isLocked = chat.chatStage !== "mood";
               // Ketika sudah dipilih (locked), sembunyikan widget — user bubble sudah cukup sebagai konfirmasi.
               if (isLocked && chat.mood) return null;
-              const visibleMoods = MOOD_OPTIONS;
+              const moodKeyMapChips: Record<string, string> = {
+                "clean-modern": "modernClean",
+                "warm-earthy":  "warmVintage",
+                "bold-vibrant": "playfulFun",
+                "dark-premium": "elegantLuxury",
+                "bold-dark":    "boldEnergetic",
+                "retro":        "retro",
+                "futuristic":   "futuristic",
+              };
               return (
                 <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-2">
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {visibleMoods.map((mo) => {
-                      const isSelected = chat.mood === mo.value;
-                      const moodKeyMap: Record<string, string> = {
-                        "clean-modern": "modernClean",
-                        "warm-earthy": "warmVintage",
-                        "bold-vibrant": "playfulFun",
-                        "dark-premium": "elegantLuxury",
-                        "bold-dark": "boldEnergetic",
-                        "retro": "retro",
-                        "futuristic": "futuristic",
-                      };
-                      const moodKey = moodKeyMap[mo.value];
-                      const translatedMoodLabel = moodKey ? t(`dashboard.wizard.moods.${moodKey}`, mo.label) : mo.label;
-
-                      const moodIconMap: Record<string, { icon: React.ReactNode; bg: string; text: string; glow: string }> = {
-                        "clean-modern":  { icon: <SparkleIcon  className="w-4 h-4" />, bg: "bg-blue-500/15",    text: "text-blue-400",    glow: "shadow-blue-500/20" },
-                        "warm-earthy":   { icon: <Leaf      className="w-4 h-4" />, bg: "bg-emerald-600/15", text: "text-emerald-400", glow: "shadow-emerald-500/20" },
-                        "bold-vibrant":  { icon: <Palette   className="w-4 h-4" />, bg: "bg-orange-500/15",  text: "text-orange-400",  glow: "shadow-orange-500/20" },
-                        "dark-premium":  { icon: <Crown     className="w-4 h-4" />, bg: "bg-yellow-500/15",  text: "text-yellow-400",  glow: "shadow-yellow-500/20" },
-                        "bold-dark":     { icon: <Zap       className="w-4 h-4" />, bg: "bg-red-500/15",     text: "text-red-400",     glow: "shadow-red-500/20" },
-                        "retro":         { icon: <Hourglass className="w-4 h-4" />, bg: "bg-amber-600/15",   text: "text-amber-400",   glow: "shadow-amber-600/20" },
-                        "futuristic":    { icon: <Bot       className="w-4 h-4" />, bg: "bg-cyan-500/15",    text: "text-cyan-400",    glow: "shadow-cyan-500/20" },
-                      };
-                      const cfg = moodIconMap[mo.value] ?? { icon: <SparkleIcon className="w-4 h-4" />, bg: "bg-white/10", text: "text-slate-300", glow: "" };
-
+                  <div className="grid grid-cols-2 gap-2">
+                    {MOOD_OPTIONS.map((mo) => {
+                      const moodKey = moodKeyMapChips[mo.value];
+                      const label = moodKey ? t(`dashboard.wizard.moods.${moodKey}`, mo.label) : mo.label;
                       return (
-                        <button
+                        <MoodCard
                           key={mo.value}
-                          type="button"
+                          value={mo.value}
+                          label={label}
+                          isSelected={chat.mood === mo.value}
+                          isLocked={isLocked}
                           onClick={() => !isLocked && handleSelectMood(mo.value)}
-                          disabled={isLocked}
-                          className={`group relative flex items-center gap-2.5 rounded-xl border px-3 py-2.5 sm:px-3.5 sm:py-3 text-left transition-all duration-200 focus:outline-none ${
-                            isSelected
-                              ? "border-primary bg-primary/10 ring-2 ring-primary/30 shadow-md shadow-primary/15"
-                              : isLocked
-                              ? "border-border/50 bg-muted/30 opacity-45 cursor-not-allowed"
-                              : "border-white/[0.08] bg-white/[0.04] hover:bg-white/[0.08] hover:border-white/20 cursor-pointer active:scale-[0.98]"
-                          }`}
-                          style={isSelected ? {} : { backdropFilter: "blur(4px)" }}
-                        >
-                          {/* Icon kiri dengan badge centang tepat di atas icon */}
-                          <div className="relative shrink-0">
-                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shadow ${cfg.bg} ${cfg.text} ${cfg.glow} transition-transform duration-200 ${isSelected ? "scale-105" : "group-hover:scale-105"}`}>
-                              {cfg.icon}
-                            </div>
-                            {isSelected && (
-                              <div className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-white flex items-center justify-center shadow-md ring-2 ring-[#16191E]">
-                                <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="#0f172a" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-                                  <polyline points="20 6 9 17 4 12" />
-                                </svg>
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Nama kanan */}
-                          <span className="text-[12px] sm:text-[13px] font-semibold text-white leading-snug flex-1 min-w-0">
-                            {translatedMoodLabel}
-                          </span>
-                        </button>
+                        />
                       );
                     })}
                   </div>
@@ -2275,17 +2237,8 @@ export function SiteWizard({
                 ? chat.initialMessageWords.slice(0, chat.initialWordCount).join(" ")
                 : m.text;
 
-            // Mood icon mapping — warna solid supaya kontras di atas bubble putih (bg-primary)
-            const moodIconMapMsg: Record<string, { icon: React.ReactNode; bg: string; text: string }> = {
-              "clean-modern": { icon: <SparkleIcon  className="w-3.5 h-3.5" />, bg: "bg-blue-500",    text: "text-white" },
-              "warm-earthy":  { icon: <Leaf      className="w-3.5 h-3.5" />, bg: "bg-emerald-600", text: "text-white" },
-              "bold-vibrant": { icon: <Palette   className="w-3.5 h-3.5" />, bg: "bg-orange-500",  text: "text-white" },
-              "dark-premium": { icon: <Crown     className="w-3.5 h-3.5" />, bg: "bg-yellow-500",  text: "text-white" },
-              "bold-dark":    { icon: <Zap       className="w-3.5 h-3.5" />, bg: "bg-red-500",     text: "text-white" },
-              "retro":        { icon: <Hourglass className="w-3.5 h-3.5" />, bg: "bg-amber-600",   text: "text-white" },
-              "futuristic":   { icon: <Bot       className="w-3.5 h-3.5" />, bg: "bg-cyan-500",    text: "text-white" },
-            };
-            const moodCfgMsg = m.moodValue ? moodIconMapMsg[m.moodValue] : null;
+            // Mood bubble icon — pakai SVG thumbnail dari public/mood/
+            const moodCfgMsg = m.moodValue || null;
 
             const isUser = m.sender === "user";
             // HANYA pesan refine deskripsi yang bisa diedit (bukan nama, bahasa, mood, dsb.)
@@ -2376,20 +2329,42 @@ export function SiteWizard({
                 )}
 
                 <div
-                  className={`max-w-[78%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
-                    isUser
-                      ? "bg-white text-slate-900 font-medium rounded-tr-sm shadow-xs"
-                      : "rounded-tl-sm text-slate-200"
+                  className={`max-w-[78%] rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
+                    moodCfgMsg
+                      ? "overflow-hidden"
+                      : isUser
+                      ? "px-3.5 py-2.5 bg-white text-slate-900 font-medium rounded-tr-sm shadow-xs"
+                      : "px-3.5 py-2.5 rounded-tl-sm text-slate-200"
                   }`}
-                  style={!isUser ? { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.07)" } : {}}
+                  style={!isUser && !moodCfgMsg ? { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.07)" } : {}}
                 >
                   {moodCfgMsg ? (
-                    <span className="flex items-center gap-2">
-                      <span className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 ${moodCfgMsg.bg} ${moodCfgMsg.text}`}>
-                        {moodCfgMsg.icon}
-                      </span>
-                      {formatText(messageText.replace(/^\S+\s/, ""), true)}
-                    </span>
+                    (() => {
+                      const moodItem = MOOD_OPTIONS.find((mo) => mo.value === moodCfgMsg);
+                      const moodKeyMapBubble: Record<string, string> = {
+                        "clean-modern": "modernClean",
+                        "warm-earthy":  "warmVintage",
+                        "bold-vibrant": "playfulFun",
+                        "dark-premium": "elegantLuxury",
+                        "bold-dark":    "boldEnergetic",
+                        "retro":        "retro",
+                        "futuristic":   "futuristic",
+                      };
+                      const moodKey = moodKeyMapBubble[moodCfgMsg];
+                      const moodLabel = moodKey
+                        ? t(`dashboard.wizard.moods.${moodKey}`, moodItem?.label ?? moodCfgMsg)
+                        : (moodItem?.label ?? moodCfgMsg);
+                      return (
+                        <MoodCard
+                          value={moodCfgMsg}
+                          label={moodLabel}
+                          isSelected={false}
+                          isLocked={false}
+                          onClick={() => {}}
+                          readOnly
+                        />
+                      );
+                    })()
                   ) : (
                     formatText(messageText, isUser)
                   )}
