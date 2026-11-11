@@ -16,7 +16,6 @@ export interface BottomNavItem {
 }
 
 interface BottomNavBarProps {
-  /** Exactly 4 items: [left1, left2, right1, right2] around the center FAB */
   items: [BottomNavItem, BottomNavItem, BottomNavItem, BottomNavItem];
   centerLabel: string;
   onCenterPress: () => void;
@@ -24,10 +23,6 @@ interface BottomNavBarProps {
   className?: string;
 }
 
-/**
- * Global bottom navigation bar.
- * Dark pill (#1c1c1e), elevated white circle FAB with ring, icon + label tabs.
- */
 export function BottomNavBar({
   items,
   centerLabel,
@@ -41,20 +36,20 @@ export function BottomNavBar({
     const Icon = item.icon;
     const isActive = item.active ?? false;
     const baseClass = cn(
-      "flex flex-col items-center justify-center gap-0.5 h-full flex-1 transition-colors cursor-pointer active:scale-95 text-white",
-      isActive ? "opacity-100 font-bold" : "opacity-50 hover:opacity-80"
+      "flex flex-col items-center justify-center gap-0.5 h-full flex-1 transition-colors cursor-pointer active:scale-95 text-white/60 hover:text-white",
+      isActive && "text-white font-bold"
     );
     const content = (
       <>
         <div className="relative">
-          <Icon className={cn("size-5 transition-all", isActive ? "stroke-[2.25]" : "stroke-[1.75]")} aria-hidden="true" />
+          <Icon className={cn("size-5", isActive ? "stroke-[2.25]" : "stroke-[1.75]")} aria-hidden="true" />
           {item.badge && item.badge > 0 ? (
             <span className="absolute -top-1 -right-1.5 flex items-center justify-center min-w-[14px] h-3.5 px-0.5 rounded-full bg-primary text-primary-foreground text-[8px] font-bold leading-none">
               {item.badge > 9 ? "9+" : item.badge}
             </span>
           ) : null}
         </div>
-        <span className={cn("text-[10px] leading-none", isActive ? "font-bold" : "font-medium")}>{item.label}</span>
+        <span className="text-[10px] leading-none">{item.label}</span>
       </>
     );
     if (item.onClick) {
@@ -69,19 +64,23 @@ export function BottomNavBar({
 
   return (
     <nav
-      className={cn("fixed bottom-0 inset-x-0 z-50 md:hidden bg-transparent pointer-events-none", className)}
-      style={{ paddingBottom: "max(env(safe-area-inset-bottom), 12px)" }}
+      className={cn("fixed bottom-0 inset-x-0 z-50 md:hidden", className)}
       aria-label="Navigation"
     >
+      {/* Bar — full width, sticks to bottom, overflow-visible for elevated FAB */}
       <div
-        className="flex items-center mx-3 mb-1 rounded-2xl relative shadow-2xl pointer-events-auto"
-        style={{ background: "#1c1c1e", height: "3.75rem", overflow: "visible" }}
+        className="flex items-center w-full shadow-2xl [overflow:visible]"
+        style={{
+          background: "#1c1c1e",
+          height: "calc(3.75rem + env(safe-area-inset-bottom))",
+          paddingBottom: "env(safe-area-inset-bottom)",
+        }}
       >
         <Tab item={left1} />
         <Tab item={left2} />
 
         {/* Center elevated FAB */}
-        <div className="flex flex-col items-center justify-center flex-1 relative -mt-7">
+        <div className="flex flex-col items-center justify-center flex-1 -mt-7">
           <button
             type="button"
             onClick={onCenterPress}
@@ -90,9 +89,7 @@ export function BottomNavBar({
           >
             <div className={cn(
               "size-12 rounded-full flex items-center justify-center shadow-lg ring-4 ring-[#1c1c1e] group-hover:scale-105 transition-all",
-              centerActive
-                ? "bg-primary text-primary-foreground"
-                : "bg-white text-black"
+              centerActive ? "bg-primary text-primary-foreground" : "bg-white text-black"
             )}>
               <Plus className="size-6" strokeWidth={2.5} />
             </div>
