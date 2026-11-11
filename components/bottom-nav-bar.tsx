@@ -42,7 +42,7 @@ export function BottomNavBar({
     const isActive = item.active ?? false;
     const baseClass = cn(
       "flex flex-col items-center gap-0.5 text-[10px] min-w-[54px] transition-colors cursor-pointer active:scale-95",
-      isActive ? "text-background font-bold" : "text-background/50 hover:text-background"
+      isActive ? "text-white font-bold" : "text-white/60 hover:text-white"
     );
     const content = (
       <>
@@ -69,12 +69,13 @@ export function BottomNavBar({
 
   return (
     <nav
-      className={cn("fixed bottom-0 inset-x-0 z-50 md:hidden bg-background", className)}
+      className={cn("fixed bottom-0 inset-x-0 z-50 md:hidden bg-transparent pointer-events-none", className)}
+      style={{ paddingBottom: "max(env(safe-area-inset-bottom), 12px)" }}
       aria-label="Navigation"
     >
       <div
-        className="flex items-center mx-3 mb-3 mt-2 rounded-2xl relative bg-foreground/90 dark:bg-[#1c1c1e]"
-        style={{ height: "3.75rem", overflow: "visible" }}
+        className="flex items-center mx-3 mb-1 rounded-2xl relative shadow-2xl pointer-events-auto"
+        style={{ background: "#1c1c1e", height: "3.75rem", overflow: "visible" }}
       >
         <Tab item={left1} />
         <Tab item={left2} />
@@ -88,14 +89,14 @@ export function BottomNavBar({
             className="flex flex-col items-center group cursor-pointer active:scale-95 transition-transform"
           >
             <div className={cn(
-              "size-12 rounded-full flex items-center justify-center shadow-lg ring-4 ring-background group-hover:scale-105 transition-all",
+              "size-12 rounded-full flex items-center justify-center shadow-lg ring-4 ring-[#1c1c1e] group-hover:scale-105 transition-all",
               centerActive
                 ? "bg-primary text-primary-foreground"
-                : "bg-background text-foreground"
+                : "bg-white text-black"
             )}>
               <Plus className="size-6" strokeWidth={2.5} />
             </div>
-            <span className="text-[10px] font-bold text-background mt-0.5 leading-none">{centerLabel}</span>
+            <span className="text-[10px] font-bold text-white mt-0.5 leading-none">{centerLabel}</span>
           </button>
         </div>
 
