@@ -89,6 +89,14 @@ export async function verifyEmail(token: string) {
   return request<null>(`/auth/verify?token=${encodeURIComponent(token)}`, { method: "GET" });
 }
 
+export async function unsubscribeEmail(token: string) {
+  return request<null>(`/auth/unsubscribe-email?token=${encodeURIComponent(token)}`, { method: "GET" });
+}
+
+export async function resubscribeEmail(token: string) {
+  return request<null>(`/auth/resubscribe-email?token=${encodeURIComponent(token)}`, { method: "GET" });
+}
+
 export async function forgotPassword(email: string) {
   return request<null>("/auth/forgot-password", {
     method: "POST",

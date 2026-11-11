@@ -311,6 +311,31 @@ export interface Translations {
     verifyStat2Label: string;
     verifyStat2Value: string;
     verifyStat2Helper: string;
+    unsubBadge: string;
+    unsubTitle: string;
+    unsubDesc: string;
+    unsubCardEyebrow: string;
+    unsubCardTitle: string;
+    unsubCardIdle: string;
+    unsubCardLoading: string;
+    unsubLoadingSpinner: string;
+    unsubSuccessTitle: string;
+    unsubDone: string;
+    unsubFailedTitle: string;
+    unsubNoToken: string;
+    errorUnsubFailed: string;
+    unsubNote: string;
+    unsubUndo: string;
+    unsubUndoing: string;
+    unsubUndoDone: string;
+    unsubUndoFailed: string;
+    unsubStat1Label: string;
+    unsubStat1Value: string;
+    unsubStat1Helper: string;
+    unsubStat2Label: string;
+    unsubStat2Value: string;
+    unsubStat2Helper: string;
+    unsubFooterHome: string;
     inviteProcessing: string;
     inviteSuccess: string;
     inviteSuccessDesc: string;
@@ -4143,6 +4168,40 @@ export const translations: Record<Locale, Translations> = {
       verifyStat2Label: "Status",
       verifyStat2Value: "Validasi Real-time",
       verifyStat2Helper: "Token divalidasi seketika saat halaman dimuat.",
+      unsubBadge: "Preferensi Email",
+      unsubTitle: "Berhenti berlangganan email.",
+      unsubDesc:
+        "Halaman ini menghentikan email non-esensial Webjoz (pengingat dan pemberitahuan paket) untuk akun Anda.",
+      unsubCardEyebrow: "Preferensi",
+      unsubCardTitle: "Berhenti Berlangganan",
+      unsubCardIdle: "Buka halaman ini dari link di email agar token disertakan di URL.",
+      unsubCardLoading: "Memproses permintaan berhenti berlangganan Anda...",
+      unsubLoadingSpinner: "Memproses permintaan Anda...",
+      unsubSuccessTitle: "Berhasil Berhenti Berlangganan",
+      unsubDone:
+        "Anda tidak akan lagi menerima email pengingat dan pemberitahuan paket. Notifikasi di dalam aplikasi tetap berjalan.",
+      unsubFailedTitle: "Permintaan Gagal",
+      unsubNoToken:
+        "Buka halaman ini dari link berhenti berlangganan di email Anda agar token disertakan di URL.",
+      errorUnsubFailed:
+        "Gagal memproses permintaan. Link mungkin kedaluwarsa atau tidak valid.",
+      unsubNote:
+        "Email penting seperti reset password, kode OTP, dan verifikasi tetap dikirim demi keamanan akun Anda.",
+      unsubUndo: "Batalkan (Berlangganan Lagi)",
+      unsubUndoing: "Memulihkan langganan...",
+      unsubUndoDone:
+        "Langganan email Anda telah dipulihkan. Anda akan kembali menerima pengingat dan pemberitahuan paket.",
+      unsubUndoFailed:
+        "Gagal memulihkan langganan. Coba lagi atau hubungi dukungan bila masalah berlanjut.",
+      unsubStat1Label: "Cakupan",
+      unsubStat1Value: "Email Non-Esensial",
+      unsubStat1Helper:
+        "Hanya pengingat dan pemberitahuan paket yang dihentikan.",
+      unsubStat2Label: "Keamanan",
+      unsubStat2Value: "Tetap Terkirim",
+      unsubStat2Helper:
+        "Email keamanan (reset password, OTP) tidak pernah diblokir.",
+      unsubFooterHome: "Kembali ke Beranda",
       inviteProcessing: "Memproses undangan...",
       inviteSuccess: "Berhasil bergabung ke tim!",
       inviteSuccessDesc: "Anda sekarang dapat mengakses tim di dashboard.",
@@ -8520,6 +8579,40 @@ export const translations: Record<Locale, Translations> = {
       verifyStat2Label: "Status",
       verifyStat2Value: "Real-time Validation",
       verifyStat2Helper: "Tokens are validated instantly upon page load.",
+      unsubBadge: "Email Preferences",
+      unsubTitle: "Unsubscribe from emails.",
+      unsubDesc:
+        "This page stops non-essential Webjoz emails (plan reminders and notices) for your account.",
+      unsubCardEyebrow: "Preferences",
+      unsubCardTitle: "Unsubscribe",
+      unsubCardIdle: "Open this page from the link in the email so the token is included in the URL.",
+      unsubCardLoading: "Processing your unsubscribe request...",
+      unsubLoadingSpinner: "Processing your request...",
+      unsubSuccessTitle: "Unsubscribed Successfully",
+      unsubDone:
+        "You will no longer receive plan reminder and notice emails. In-app notifications keep working.",
+      unsubFailedTitle: "Request Failed",
+      unsubNoToken:
+        "Open this page from the unsubscribe link in your email so the token is included in the URL.",
+      errorUnsubFailed:
+        "Failed to process the request. The link might be expired or invalid.",
+      unsubNote:
+        "Essential emails such as password resets, OTP codes, and verification are still delivered to keep your account secure.",
+      unsubUndo: "Undo (Resubscribe)",
+      unsubUndoing: "Restoring your subscription...",
+      unsubUndoDone:
+        "Your email subscription has been restored. You will receive plan reminders and notices again.",
+      unsubUndoFailed:
+        "Failed to restore the subscription. Try again or contact support if the problem persists.",
+      unsubStat1Label: "Scope",
+      unsubStat1Value: "Non-Essential Emails",
+      unsubStat1Helper:
+        "Only plan reminders and notices are stopped.",
+      unsubStat2Label: "Security",
+      unsubStat2Value: "Always Delivered",
+      unsubStat2Helper:
+        "Security emails (password reset, OTP) are never blocked.",
+      unsubFooterHome: "Back to Home",
       inviteProcessing: "Processing invitation...",
       inviteSuccess: "Successfully joined the team!",
       inviteSuccessDesc: "You can now access the team in the dashboard.",
