@@ -9,6 +9,7 @@ import { Button, Checkbox, Input, Label } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { SocialAuthButtons } from "@/components/social-auth-buttons";
 import { login, startPasswordless, verifyMagicLink, verifyOtp } from "@/lib/api";
+import { WHATSAPP_LOGIN_ENABLED } from "@/lib/config";
 import { persistAuthSession, useStoredEmail, useAuthToken, useAuthReady } from "@/lib/auth-store";
 import { FieldErrors, getApiFieldErrors, getFormErrorMessage, hasFieldErrors } from "@/lib/form-errors";
 import { AuthShell } from "@/components/auth-shell";
@@ -57,8 +58,8 @@ export default function LoginPage() {
   const storedEmail = useStoredEmail();
   const authReady = useAuthReady();
   const token = useAuthToken();
-  const [authMethod, setAuthMethod] = useState<AuthMethod>("whatsapp");
-  const [otpChannel, setOtpChannel] = useState<OTPChannel>("whatsapp");
+  const [authMethod, setAuthMethod] = useState<AuthMethod>(WHATSAPP_LOGIN_ENABLED ? "whatsapp" : "email");
+  const [otpChannel, setOtpChannel] = useState<OTPChannel>(WHATSAPP_LOGIN_ENABLED ? "whatsapp" : "email");
   const [passwordlessEmail, setPasswordlessEmail] = useState(storedEmail);
   const [passwordlessPhone, setPasswordlessPhone] = useState("");
   const [passwordEmail, setPasswordEmail] = useState(storedEmail);
@@ -590,7 +591,9 @@ export default function LoginPage() {
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/60">{t("auth.loginOtherOptions")}</p>
           <div className="grid grid-cols-2 gap-2">
             {[
-              { method: "whatsapp" as const, icon: <WhatsAppIcon size="sm" className="text-[#25D366]" />, label: t("auth.loginOptionWhatsapp") },
+              ...(WHATSAPP_LOGIN_ENABLED
+                ? [{ method: "whatsapp" as const, icon: <WhatsAppIcon size="sm" className="text-[#25D366]" />, label: t("auth.loginOptionWhatsapp") }]
+                : []),
               { method: "email" as const, icon: <MailIcon size="sm" />, label: t("auth.loginOptionEmail") },
               { method: "password" as const, icon: <LockIcon size="sm" />, label: t("auth.loginOptionPassword") },
             ]

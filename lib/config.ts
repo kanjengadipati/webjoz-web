@@ -86,3 +86,10 @@ export const MIDTRANS_SNAP_BASE_URL =
 
 export const PAYPAL_ENABLED = process.env.NEXT_PUBLIC_PAYPAL_ENABLED === "true";
 export const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "";
+
+/**
+ * When true, shows the WhatsApp OTP login option on the login page.
+ * Default is false (hidden). Only meaningful when the API WhatsApp provider
+ * (`WA_PROVIDER`) is enabled too — the API rejects WA OTP delivery otherwise.
+ */
+export const WHATSAPP_LOGIN_ENABLED = process.env.NEXT_PUBLIC_WHATSAPP_LOGIN_ENABLED === "true";
