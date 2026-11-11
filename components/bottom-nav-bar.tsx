@@ -28,12 +28,12 @@ interface BottomNavBarProps {
   onCenterPress: () => void;
   /**
    * Custom center content. If provided, replaces the default Plus FAB circle.
-   * Use for pill-shaped CTAs (e.g. wizard "Edit & Publish").
    */
   centerContent?: React.ReactNode;
   centerActive?: boolean;
+  /** Show text labels below icons. Default true. */
+  showLabels?: boolean;
   className?: string;
-  /** aria-label for the nav element */
   ariaLabel?: string;
 }
 
@@ -43,6 +43,7 @@ export function BottomNavBar({
   onCenterPress,
   centerContent,
   centerActive = false,
+  showLabels = true,
   className,
   ariaLabel = "Navigation",
 }: BottomNavBarProps) {
@@ -59,7 +60,6 @@ export function BottomNavBar({
     );
     const content = (
       <>
-        {/* Edu tooltip */}
         {item.tooltip && (
           <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 pointer-events-none z-10">
             {item.tooltip}
@@ -73,14 +73,14 @@ export function BottomNavBar({
             </span>
           ) : null}
         </div>
-        <span className="text-[10px] leading-none">{item.label}</span>
+        {showLabels && <span className="text-[10px] leading-none">{item.label}</span>}
       </>
     );
     if (item.onClick) {
-      return <button type="button" onClick={item.onClick} className={baseClass}>{content}</button>;
+      return <button type="button" aria-label={item.label} onClick={item.onClick} className={baseClass}>{content}</button>;
     }
     return (
-      <Link href={item.href ?? "#"} aria-current={isActive ? "page" : undefined} className={baseClass}>
+      <Link href={item.href ?? "#"} aria-label={item.label} aria-current={isActive ? "page" : undefined} className={baseClass}>
         {content}
       </Link>
     );
@@ -116,7 +116,7 @@ export function BottomNavBar({
               )}>
                 <Plus className="size-6" strokeWidth={2.5} />
               </div>
-              <span className="text-[10px] font-bold text-white mt-0.5 leading-none">{centerLabel}</span>
+              {showLabels && <span className="text-[10px] font-bold text-white mt-0.5 leading-none">{centerLabel}</span>}
             </button>
           )}
         </div>

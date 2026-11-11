@@ -213,6 +213,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         const NotifIcon = NAV_ICON_MAP[notifItem.icon] ?? LayoutDashboard;
         return (
           <BottomNavBar
+            showLabels={false}
             centerLabel={t("dashboard.bottomNavCreate", "Buat")}
             onCenterPress={() => router.push("/create")}
             centerActive={false}
