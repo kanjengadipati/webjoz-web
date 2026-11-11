@@ -15,7 +15,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { useAuthToken, useAuthReady } from "@/lib/auth-store";
 import { API_BASE_URL } from "@/lib/config";
 import { getWhatsAppUrl } from "@/lib/site-config";
-import { BottomNavBar } from "@/components/bottom-nav-bar";
+import { BottomNavBar } from "webjoz-ui";
 
 const LandingTemplateShowcase = dynamic(
   () =>
