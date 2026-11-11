@@ -41,20 +41,20 @@ export function BottomNavBar({
     const Icon = item.icon;
     const isActive = item.active ?? false;
     const baseClass = cn(
-      "flex flex-col items-center gap-0.5 text-[10px] min-w-[54px] transition-colors cursor-pointer active:scale-95",
+      "flex flex-col items-center justify-center gap-0.5 h-full flex-1 transition-colors cursor-pointer active:scale-95",
       isActive ? "text-white font-bold" : "text-white/60 hover:text-white"
     );
     const content = (
       <>
         <div className="relative">
-          <Icon className={cn("size-5", isActive ? "stroke-[2.25]" : "stroke-[1.75]")} aria-hidden="true" />
+          <Icon className={cn("size-5 transition-all", isActive ? "stroke-[2.25]" : "stroke-[1.75]")} aria-hidden="true" />
           {item.badge && item.badge > 0 ? (
             <span className="absolute -top-1 -right-1.5 flex items-center justify-center min-w-[14px] h-3.5 px-0.5 rounded-full bg-primary text-primary-foreground text-[8px] font-bold leading-none">
               {item.badge > 9 ? "9+" : item.badge}
             </span>
           ) : null}
         </div>
-        <span>{item.label}</span>
+        <span className={cn("text-[10px] leading-none", isActive ? "font-bold" : "font-medium")}>{item.label}</span>
       </>
     );
     if (item.onClick) {
