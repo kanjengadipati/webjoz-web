@@ -93,12 +93,14 @@ export function ThemeSheet({
       open={open}
       title={sheetTitle}
       onClose={handleClose}
-      maxHeight="45dvh"
+      maxHeight="50dvh"
       ariaLabel={t("dashboard.wizard.theme.panelTitle", "Sesuaikan Tema")}
     >
         {/* Mood — always at top, above tabs */}
         {subView === "none" && (
-          <MoodSection mood={mood} onSelectMood={handleSelectMood} />
+          <div className="shrink-0">
+            <MoodSection mood={mood} onSelectMood={handleSelectMood} />
+          </div>
         )}
 
         {/* Tabs — below mood, only when not in subview */}
@@ -123,11 +125,13 @@ export function ThemeSheet({
 
         {/* Contrast hint */}
         {subView === "none" && (
-          <ContrastHint token={theme.previewToken} theme={theme} />
+          <div className="shrink-0">
+            <ContrastHint token={theme.previewToken} theme={theme} />
+          </div>
         )}
 
         {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto relative">
+        <div className="flex-1 overflow-y-auto min-h-0 relative">
           {subView === "none" && tab === "warna" && (
             <PaletteSection
               palettes={presets.palettes}
