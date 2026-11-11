@@ -41,8 +41,8 @@ export function BottomNavBar({
     const Icon = item.icon;
     const isActive = item.active ?? false;
     const baseClass = cn(
-      "flex flex-col items-center justify-center gap-0.5 h-full flex-1 transition-colors cursor-pointer active:scale-95",
-      isActive ? "!text-white font-bold" : "!text-white/60 hover:!text-white"
+      "flex flex-col items-center justify-center gap-0.5 h-full flex-1 transition-colors cursor-pointer active:scale-95 text-white",
+      isActive ? "opacity-100 font-bold" : "opacity-50 hover:opacity-80"
     );
     const content = (
       <>
