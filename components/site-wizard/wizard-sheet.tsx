@@ -60,7 +60,9 @@ export function WizardSheet({
         </div>
 
         {/* Content */}
-        {children}
+        <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
+          {children}
+        </div>
       </div>
     </>
   );
