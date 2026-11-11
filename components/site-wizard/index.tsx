@@ -2552,10 +2552,11 @@ export function SiteWizard({
                   className="flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-semibold text-slate-200 border border-white/10 bg-white/[0.06] transition-all hover:bg-white/10 hover:border-white/20 hover:text-white active:scale-95 cursor-pointer"
                 >
                   <RefreshCw size={11} />
-                  {t("dashboard.wizard.btnTryOtherRecommendation", "Coba rekomendasi lain ({current}/{total})", {
+                  <span className="hidden sm:inline">{t("dashboard.wizard.btnTryOtherRecommendation", "Coba rekomendasi lain ({current}/{total})", {
                     current: String(preview.templatePoolIndex + 1),
                     total: String(preview.templatePool.length),
-                  })}
+                  })}</span>
+                  <span className="sm:hidden">{preview.templatePoolIndex + 1}/{preview.templatePool.length}</span>
                 </button>
               </div>
             )}
@@ -2565,7 +2566,7 @@ export function SiteWizard({
               <span className="ml-auto text-[10px] font-semibold text-slate-300 bg-white/5 border border-white/10 px-1.5 py-0.5 rounded-full w-fit block">Draft Preview</span>
             )}
             {preview.previewState === "result" && (
-              <span className="ml-auto text-[10px] font-semibold text-slate-200 bg-white/5 border border-white/10 px-1.5 py-0.5 rounded-full w-fit block">Live Preview</span>
+              <span className="hidden sm:block ml-auto text-[10px] font-semibold text-slate-200 bg-white/5 border border-white/10 px-1.5 py-0.5 rounded-full w-fit">Live Preview</span>
             )}
           </div>
 
@@ -2580,12 +2581,12 @@ export function SiteWizard({
               {fullPagePreviewOpen ? (
                 <>
                   <Minimize2 size={11} />
-                  <span>{t("dashboard.wizard.btnExitFullPagePreview", "Tutup Preview Penuh")}</span>
+                  <span className="hidden sm:inline">{t("dashboard.wizard.btnExitFullPagePreview", "Tutup Preview Penuh")}</span>
                 </>
               ) : (
                 <>
                   <Maximize2 size={11} />
-                  <span>{t("dashboard.wizard.btnFullPagePreview", "Preview Penuh")}</span>
+                  <span className="hidden sm:inline">{t("dashboard.wizard.btnFullPagePreview", "Preview Penuh")}</span>
                 </>
               )}
             </button>
