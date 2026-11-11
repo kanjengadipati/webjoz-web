@@ -29,18 +29,18 @@ export function WizardResumeBanner({
             <Clock className="w-4 h-4" />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1.5 leading-tight">
-              <span className="text-[10px] font-semibold text-primary uppercase tracking-wider">
-                {t("dashboard.wizard.resumeLastSession", "Draft Tersimpan")}
+            <div className="flex items-center gap-1.5 leading-tight flex-wrap">
+              <span className="text-[10px] font-semibold text-primary uppercase tracking-wider whitespace-nowrap">
+                {t("dashboard.wizard.resumeLastSession", "Sesi Terakhir")}
               </span>
-              <span className="text-[10px] text-slate-500">· {resumeSavedText}</span>
+              <span className="text-[10px] text-slate-500 whitespace-nowrap">· {resumeSavedText}</span>
             </div>
             <div className="flex items-center gap-1.5 mt-0.5 min-w-0">
               <p className="text-xs sm:text-[13px] font-bold text-white truncate leading-snug">
                 {resumeDraft.businessName || t("dashboard.wizard.untitledDraft", "Draft Tanpa Nama")}
               </p>
               {(resumeDraft.chat.businessSubType || resumeDraft.chat.industryCustom || resumeDraft.chat.businessType) && (
-                <span className="text-[11px] font-medium text-slate-400 truncate">
+                <span className="text-[11px] font-medium text-slate-400 truncate hidden xs:inline">
                   · {resumeDraft.chat.businessSubType || resumeDraft.chat.industryCustom || resumeDraft.chat.businessType}
                 </span>
               )}
@@ -52,9 +52,9 @@ export function WizardResumeBanner({
           <button
             type="button"
             onClick={handleResume}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-900 hover:bg-slate-100 active:scale-95 transition-all shadow-xs cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-900 hover:bg-slate-100 active:scale-95 transition-all shadow-xs cursor-pointer whitespace-nowrap"
           >
-            <span>{t("dashboard.wizard.resumeContinue", "Lanjutkan")}</span>
+            <span className="hidden xs:inline">{t("dashboard.wizard.resumeContinue", "Lanjutkan")}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
           <button
