@@ -3501,6 +3501,10 @@ export interface Translations {
       loadingCardChecklist5: string;
       resetChatBtn: string;
       resetChatTooltip: string;
+      retry: string;
+      optional: string;
+      temaHintTitle: string;
+      temaHintDesc: string;
       untitledDraft: string;
       inputPlaceholderName: string;
       inputPlaceholderDesc: string;
@@ -3739,6 +3743,12 @@ export interface Translations {
         uploadCustomFontAccordion: string;
         customFontSubtitle: string;
         fontUrlTab: string;
+        replaceLogo: string;
+        chooseLogo: string;
+        invalidHex: string;
+        fontNameRequired: string;
+        customFontDesc: string;
+        brandColorDesc: string;
       };
     };
     linkAccount: {
@@ -7732,6 +7742,10 @@ export const translations: Record<Locale, Translations> = {
         loadingCardChecklist5: "Website siap dipublish!",
         resetChatBtn: "Reset Chat",
         resetChatTooltip: "Mulai ulang chat dari awal",
+      retry: "Coba lagi",
+      optional: "opsional",
+      temaHintTitle: "🎨 Ganti warna & font",
+      temaHintDesc: "Sesuaikan tampilan website kamu",
         untitledDraft: "Draft Tanpa Nama",
         inputPlaceholderName: "Masukkan nama bisnis Anda...",
         inputPlaceholderDesc: "Ceritakan singkat tentang bisnis Anda...",
@@ -8156,6 +8170,12 @@ export const translations: Record<Locale, Translations> = {
           uploadCustomFontAccordion: "Upload font sendiri atau pakai URL font",
           customFontSubtitle: "Pilih font untuk heading & body",
           fontUrlTab: "Input URL Font",
+          replaceLogo: "Ganti",
+          chooseLogo: "Pilih",
+          invalidHex: "Format HEX tidak valid (contoh: #1A2B3C)",
+          fontNameRequired: "Masukkan nama font family",
+          customFontDesc: "Upload / Google Fonts",
+          brandColorDesc: "Upload logo / kustom",
         },
       },
       linkAccount: {
@@ -12130,6 +12150,10 @@ export const translations: Record<Locale, Translations> = {
         loadingCardChecklist5: "Website ready to publish!",
         resetChatBtn: "Reset Chat",
         resetChatTooltip: "Start the chat over from the beginning",
+      retry: "Try again",
+      optional: "optional",
+      temaHintTitle: "🎨 Change colors & fonts",
+      temaHintDesc: "Customize your website's look",
         untitledDraft: "Untitled Draft",
         inputPlaceholderName: "Enter your business name...",
         inputPlaceholderDesc: "Briefly describe your business...",
@@ -12528,7 +12552,13 @@ export const translations: Record<Locale, Translations> = {
           slotBodyFull: "Body Font",
           uploadCustomFontAccordion: "Upload your own font or use a URL",
           customFontSubtitle: "Choose fonts for heading & body",
-          fontUrlTab: "Input URL Font",
+          fontUrlTab: "Font URL Input",
+          replaceLogo: "Replace",
+          chooseLogo: "Choose",
+          invalidHex: "Invalid HEX format (e.g. #1A2B3C)",
+          fontNameRequired: "Enter a font family name",
+          customFontDesc: "Upload / Google Fonts",
+          brandColorDesc: "Upload logo / custom",
         },
       },
       linkAccount: {
