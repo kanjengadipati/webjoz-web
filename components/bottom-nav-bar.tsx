@@ -66,7 +66,7 @@ export function BottomNavBar({
           </div>
         )}
         <div className="relative">
-          <Icon className={cn("size-5", isActive ? "stroke-[2.25]" : "stroke-[1.75]")} aria-hidden="true" />
+          <Icon className={cn(showLabels ? "size-5" : "size-6", isActive ? "stroke-[2.25]" : "stroke-[1.75]")} aria-hidden="true" />
           {item.badge && item.badge > 0 ? (
             <span className="absolute -top-1 -right-1.5 flex items-center justify-center min-w-[14px] h-3.5 px-0.5 rounded-full bg-primary text-primary-foreground text-[8px] font-bold leading-none">
               {item.badge > 9 ? "9+" : item.badge}
