@@ -36,8 +36,8 @@ export function BottomNavBar({
     const Icon = item.icon;
     const isActive = item.active ?? false;
     const baseClass = cn(
-      "flex flex-col items-center justify-center gap-0.5 h-full flex-1 transition-colors cursor-pointer active:scale-95 text-white/60 hover:text-white",
-      isActive && "text-white font-bold"
+      "flex flex-col items-center justify-center gap-0.5 h-full flex-1 transition-colors cursor-pointer active:scale-95 !text-white/60 hover:!text-white",
+      isActive && "!text-white font-bold"
     );
     const content = (
       <>
