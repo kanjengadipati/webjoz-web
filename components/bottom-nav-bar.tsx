@@ -69,7 +69,7 @@ export function BottomNavBar({
     >
       {/* Bar — full width, sticks to bottom, overflow-visible for elevated FAB */}
       <div
-        className="flex items-center w-full shadow-2xl [overflow:visible]"
+        className="flex items-center w-full shadow-2xl rounded-t-2xl [overflow:visible]"
         style={{
           background: "#1c1c1e",
           height: "calc(3.75rem + env(safe-area-inset-bottom))",
