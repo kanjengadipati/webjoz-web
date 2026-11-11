@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Tag, ChevronDown } from "lucide-react";
 import { CustomSelect } from "webjoz-ui";
 import { SUB_TYPE_ICONS } from "./icons-map";
@@ -203,7 +203,7 @@ export function InferenceConfirmCard({
     return chat.businessSubType || "-";
   })();
 
-  const handleContinue = () => {
+  const handleContinue = useCallback(() => {
     const oldName = chat.businessName || "";
     const newName = draftName.trim();
     if (newName && newName !== oldName) {
@@ -275,7 +275,20 @@ export function InferenceConfirmCard({
     const newSubType =
       draftIndustry && draftIndustry !== "__other__" && !draftIndustry.includes(".") ? draftIndustry : "";
     onConfirm(newSubType);
-  };
+  }, [chat, draftName, draftArea, draftIndustry, draftBidang, taxonomyV2, wizardLang, onConfirm]);
+
+  // Press Enter (when not editing a field) to confirm
+  useEffect(() => {
+    if (isLocked) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Enter" && editing === null) {
+        e.preventDefault();
+        handleContinue();
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [isLocked, editing, handleContinue]);
 
   const Row = ({ label, value, onEdit }: { label: string; value: string; onEdit: () => void }) => (
     <div className="flex items-center justify-between gap-2 py-1.5 border-b border-white/[0.06] last:border-0">
