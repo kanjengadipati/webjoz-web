@@ -5,7 +5,7 @@ import { Plus, Palette, Pencil } from "lucide-react";
 import { useWizardPreview } from "./use-wizard-preview";
 import { useWizardDevice } from "./use-wizard-device";
 import { useI18n } from "@/lib/i18n/context";
-import { BottomNavBar } from "@/components/bottom-nav-bar";
+import { BottomNavBar } from "webjoz-ui";
 
 interface MobileActionBarProps {
   preview: ReturnType<typeof useWizardPreview>;

@@ -19,7 +19,7 @@ import { useActiveTenant } from "@/lib/tenant-store";
 import { useI18n } from "@/lib/i18n/context";
 import { getWhatsAppUrl } from "@/lib/site-config";
 import { NotificationsBell } from "@/components/notifications-bell";
-import { BottomNavBar } from "@/components/bottom-nav-bar";
+import { BottomNavBar } from "webjoz-ui";
 
 const NAV_LABEL_KEYS: Record<string, string> = {
   overview: "dashboard.nav.overview",
