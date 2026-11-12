@@ -5,12 +5,11 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode } from "react";
 import { Home, LogIn, UserPlus, KeyRound, ArrowLeft } from "lucide-react";
-import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, SubtleStat } from "webjoz-ui";
+import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, SubtleStat, BottomNavBar } from "webjoz-ui";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useAuthReady, useAuthToken } from "@/lib/auth-store";
 import { useI18n } from "@/lib/i18n/context";
-import { cn } from "@/lib/utils";
 
 type AuthShellProps = {
   badge: string;
@@ -221,57 +220,41 @@ export function AuthShell({
           </Card>
         </div>
 
-        {/* ── Mobile Bottom Navigation Bar — theme-aware ─────────────────────── */}
-        <nav className="fixed bottom-0 inset-x-0 z-50 md:hidden bg-background/95 backdrop-blur-2xl border-t border-border px-3 py-2 pb-3">
-          <div className="flex items-center justify-around max-w-md mx-auto">
-            <Link
-              href="/"
-              className="flex flex-col items-center gap-1 transition-all text-[11px] font-medium py-1 px-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-accent"
-            >
-              <Home className="size-4.5" />
-              <span>{t("landing.bottomNavHome")}</span>
-            </Link>
-
-            <Link
-              href="/login"
-              className={cn(
-                "flex flex-col items-center gap-1 transition-all text-[11px] font-medium py-1 px-3 rounded-xl",
-                pathname === "/login"
-                  ? "text-primary font-bold bg-primary/10"
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent"
-              )}
-            >
-              <LogIn className="size-4.5" />
-              <span>{isEn ? "Login" : "Masuk"}</span>
-            </Link>
-
-            <Link
-              href="/register"
-              className={cn(
-                "flex flex-col items-center gap-1 transition-all text-[11px] font-medium py-1 px-3 rounded-xl",
-                pathname === "/register"
-                  ? "text-primary font-bold bg-primary/10"
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent"
-              )}
-            >
-              <UserPlus className="size-4.5" />
-              <span>{isEn ? "Sign Up" : "Daftar"}</span>
-            </Link>
-
-            <Link
-              href="/forgot-password"
-              className={cn(
-                "flex flex-col items-center gap-1 transition-all text-[11px] font-medium py-1 px-2 rounded-xl",
-                pathname === "/forgot-password"
-                  ? "text-primary font-bold bg-primary/10"
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent"
-              )}
-            >
-              <KeyRound className="size-4.5" />
-              <span>{isEn ? "Forgot Pwd" : "Lupa Sandi"}</span>
-            </Link>
-          </div>
-        </nav>
+        {/* ── Mobile Bottom Navigation Bar ─────────────────────── */}
+        <BottomNavBar
+          hideCenterFab
+          ariaLabel="Auth navigation"
+          items={[
+            {
+              id: "home",
+              href: "/",
+              icon: Home,
+              label: t("landing.bottomNavHome"),
+              active: pathname === "/",
+            },
+            {
+              id: "login",
+              href: "/login",
+              icon: LogIn,
+              label: isEn ? "Login" : "Masuk",
+              active: pathname === "/login",
+            },
+            {
+              id: "register",
+              href: "/register",
+              icon: UserPlus,
+              label: isEn ? "Sign Up" : "Daftar",
+              active: pathname === "/register",
+            },
+            {
+              id: "forgot",
+              href: "/forgot-password",
+              icon: KeyRound,
+              label: isEn ? "Forgot Pwd" : "Lupa Sandi",
+              active: pathname === "/forgot-password",
+            },
+          ]}
+        />
       </div>
     </main>
   );
