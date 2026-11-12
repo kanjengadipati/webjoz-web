@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import type { UseThemeDraftReturn } from "../use-theme-draft";
 import { getPresets } from "@/lib/theme-presets";
@@ -13,7 +13,7 @@ import { ContrastHint } from "./ContrastHint";
 import { UndoToast } from "./UndoToast";
 import { MoodSection } from "./MoodSection";
 import { MOOD_OPTIONS } from "../constants";
-import { WizardSheet } from "../wizard-sheet";
+import { Drawer } from "webjoz-ui";
 
 type SheetTab = "warna" | "font";
 type SubView = "none" | "brand-color" | "custom-font";
@@ -48,6 +48,16 @@ export function ThemeSheet({
   const [subView, setSubView] = useState<SubView>("none");
   const [toastLabel, setToastLabel] = useState<string | null>(null);
 
+  // The Drawer stays mounted after closing so its slide animation can run
+  // (the old WizardSheet unmounted). Reset the local UI state on every open so
+  // a fresh sheet always starts on the "warna" tab, like it used to.
+  useEffect(() => {
+    if (!open) return;
+    setTab("warna");
+    setSubView("none");
+    setToastLabel(null);
+  }, [open]);
+
   const presets = getPresets(mood);
 
   const handleApplyPreset = useCallback((label: string) => {
@@ -75,8 +85,6 @@ export function ThemeSheet({
     onClose();
   }, [subView, theme, onClose]);
 
-  if (!open) return null;
-
   const TABS: { key: SheetTab; label: string }[] = [
     { key: "warna", label: t("dashboard.wizard.theme.tabColor", "Warna") },
     { key: "font", label: t("dashboard.wizard.theme.tabFont", "Font") },
@@ -89,12 +97,13 @@ export function ThemeSheet({
     : t("dashboard.wizard.theme.panelTitle", "Sesuaikan Tema");
 
   return (
-    <WizardSheet
+    <Drawer
       open={open}
       title={sheetTitle}
       onClose={handleClose}
       maxHeight="50dvh"
       ariaLabel={t("dashboard.wizard.theme.panelTitle", "Sesuaikan Tema")}
+      noPadding
     >
         {/* Mood — always at top, above tabs */}
         {subView === "none" && (
@@ -181,7 +190,7 @@ export function ThemeSheet({
             onDismiss={handleDismissToast}
           />
         </div>
-    </WizardSheet>
+    </Drawer>
   );
 }
 
