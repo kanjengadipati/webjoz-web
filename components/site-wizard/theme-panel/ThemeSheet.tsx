@@ -13,7 +13,7 @@ import { ContrastHint } from "./ContrastHint";
 import { UndoToast } from "./UndoToast";
 import { MoodSection } from "./MoodSection";
 import { MOOD_OPTIONS } from "../constants";
-import { Drawer } from "webjoz-ui";
+import { WizardSheet } from "../wizard-sheet";
 
 type SheetTab = "warna" | "font";
 type SubView = "none" | "brand-color" | "custom-font";
@@ -97,13 +97,12 @@ export function ThemeSheet({
     : t("dashboard.wizard.theme.panelTitle", "Sesuaikan Tema");
 
   return (
-    <Drawer
+    <WizardSheet
       open={open}
       title={sheetTitle}
       onClose={handleClose}
       maxHeight="50dvh"
       ariaLabel={t("dashboard.wizard.theme.panelTitle", "Sesuaikan Tema")}
-      noPadding
     >
         {/* Mood — always at top, above tabs */}
         {subView === "none" && (
@@ -190,7 +189,7 @@ export function ThemeSheet({
             onDismiss={handleDismissToast}
           />
         </div>
-    </Drawer>
+    </WizardSheet>
   );
 }
 
