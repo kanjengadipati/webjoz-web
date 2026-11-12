@@ -308,7 +308,7 @@ export default function LoginPage() {
   }
 
   const formContent = (
-    <div className="min-h-[18rem]">
+    <div className="min-h-[14rem]">
       {passwordlessStep === "delivery" ? (
         <div className="space-y-5">
           {authMethod === "whatsapp" ? (
