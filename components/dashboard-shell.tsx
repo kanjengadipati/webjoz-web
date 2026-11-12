@@ -621,7 +621,9 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   )}
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                  <NotificationsBell />
+                  <span className="hidden md:inline-flex">
+                    <NotificationsBell />
+                  </span>
                   {pathname === "/dashboard/sites" && (
                     <Link href="/dashboard/sites/new">
                       <button className="flex items-center gap-2 bg-primary text-primary-foreground hover:brightness-110 active:scale-98 transition-all px-4 py-2.5 rounded-full font-medium text-[13.5px] cursor-pointer shadow-lg shadow-primary/30">
