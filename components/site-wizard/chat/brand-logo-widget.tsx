@@ -2,7 +2,6 @@
 
 import React, { useRef, useState } from "react";
 import { Upload, Check, RefreshCw, X, AlertCircle } from "lucide-react";
-import { SparkleGenAI } from "@/components/sparkle-icon";
 import { useI18n } from "@/lib/i18n/context";
 import { extractBrandPalettes, type ExtractedBrandPalette } from "@/lib/brand-color-extractor";
 import { compressImage } from "@/components/file-upload";
@@ -267,17 +266,21 @@ export function BrandLogoWidget({
             type="button"
             onClick={onSubmit}
             disabled={isExtracting}
-            className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold text-xs sm:text-sm text-slate-950 bg-white hover:bg-slate-100 active:scale-[0.98] shadow-lg shadow-white/10 transition-all cursor-pointer border border-white disabled:opacity-60 disabled:cursor-wait"
+            className="w-full flex items-center justify-between gap-2 pl-5 pr-1.5 py-1.5 rounded-xl font-bold text-xs sm:text-sm text-slate-950 bg-white hover:bg-slate-100 active:scale-[0.98] shadow-lg shadow-white/10 transition-all cursor-pointer border border-white disabled:opacity-60 disabled:cursor-wait"
           >
             {isExtracting ? (
               <>
-                <RefreshCw className="w-4 h-4 animate-spin text-slate-950" />
-                <span>{t("dashboard.wizard.extractingBrandColor", "Mengekstrak warna brand...")}</span>
+                <span className="flex-1 text-center">{t("dashboard.wizard.extractingBrandColor", "Mengekstrak warna brand...")}</span>
+                <RefreshCw className="w-8 h-8 animate-spin text-slate-950 shrink-0" />
               </>
             ) : (
               <>
-                <SparkleGenAI className="w-4 h-4 text-slate-950" />
-                <span>{t("dashboard.wizard.btnCreateMyWebsite", "Buat website saya")}</span>
+                <span className="flex-1 text-center">{t("dashboard.wizard.btnCreateMyWebsite", "Buat website saya")}</span>
+                <span className="w-9 h-9 rounded-full bg-slate-950 flex items-center justify-center shrink-0">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M5 12h14M13 6l6 6-6 6"/>
+                  </svg>
+                </span>
               </>
             )}
           </button>
