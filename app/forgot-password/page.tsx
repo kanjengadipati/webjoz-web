@@ -45,7 +45,7 @@ export default function ForgotPasswordPage() {
       cardTitle={t("auth.forgotCardTitle")}
       cardDescription={t("auth.forgotCardDesc")}
       footer={
-        <div className="flex flex-wrap gap-x-4 gap-y-2">
+        <div className="hidden md:flex flex-wrap gap-x-4 gap-y-2">
           <Link href="/login" className="font-medium text-primary hover:opacity-80">{t("auth.forgotFooterLogin")}</Link>
           <Link href="/register" className="font-medium text-primary hover:opacity-80">{t("auth.forgotFooterRegister")}</Link>
         </div>

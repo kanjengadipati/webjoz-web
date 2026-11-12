@@ -627,7 +627,7 @@ export default function LoginPage() {
       cardTitle={t("auth.loginCardTitle")}
       cardDescription={t("auth.loginCardDesc")}
       footer={
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <div className="hidden md:flex flex-wrap items-center gap-x-4 gap-y-2">
           <Link href="/" className="font-medium text-primary hover:opacity-80">{t("auth.loginFooterHome")}</Link>
           <Link
             href={typeof window !== "undefined" && new URLSearchParams(window.location.search).get("redirect") ? `/register?redirect=${encodeURIComponent(new URLSearchParams(window.location.search).get("redirect")!)}` : "/register"}

@@ -53,7 +53,7 @@ export default function RegisterPage() {
       cardTitle={t("auth.registerCardTitle")}
       cardDescription={t("auth.registerCardDesc")}
       footer={
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <div className="hidden md:flex flex-wrap items-center gap-x-4 gap-y-2">
           <Link
             href={redirectParam ? `/login?redirect=${encodeURIComponent(redirectParam)}` : "/login"}
             className="font-medium text-primary hover:opacity-80"
