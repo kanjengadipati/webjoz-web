@@ -123,11 +123,10 @@ export function SectionHeader({
     <div className={wrapperClassName} style={wrapperStyle}>
       {eyebrow !== undefined &&
         (eyebrowWrapperStyle || eyebrowWrapperClassName ? (
-          <span className={eyebrowWrapperClassName} style={eyebrowWrapperStyle}>
+          <div className={eyebrowWrapperClassName} style={{ marginBottom: "0.85rem" }}>
             {eyebrowEl}
-          </span>
+          </div>
         ) : (
-          // Default: block wrapper so eyebrow sits above title, not inline with it
           <div style={{ marginBottom: "0.85rem" }}>{eyebrowEl}</div>
         ))}
       <InlineText
