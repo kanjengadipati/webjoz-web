@@ -97,7 +97,7 @@ export default function HeroFullBleed({
           position: "absolute",
           inset: 0,
           zIndex: 1,
-          background: `linear-gradient(to bottom, rgba(8, 10, 15, 0.6) 0%, transparent 20%, transparent 80%, var(--dt-bg, #0B0E17) 100%)`,
+          background: `linear-gradient(to bottom, rgba(8, 10, 15, 0.6) 0%, transparent 20%, transparent 80%, rgba(8, 10, 15, 0.92) 100%)`,
           pointerEvents: "none",
         }}
       />

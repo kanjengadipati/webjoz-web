@@ -193,7 +193,7 @@ export default function HeroImageCarousel({
           position: "absolute",
           inset: 0,
           zIndex: 1,
-          background: `linear-gradient(to bottom, rgba(8, 10, 15, 0.6) 0%, transparent 25%, transparent 75%, var(--dt-bg, #0B0E17) 100%)`,
+          background: `linear-gradient(to bottom, rgba(8, 10, 15, 0.6) 0%, transparent 25%, transparent 75%, rgba(8, 10, 15, 0.92) 100%)`,
           pointerEvents: "none",
         }}
       />
