@@ -2573,7 +2573,19 @@ export function SiteWizard({
           ref={previewContainerRef}
           style={{ paddingBottom: device.isMobile && themeSheetOpen ? "45dvh" : undefined }}
         >
-          <PreviewCanvas chat={chat} preview={preview} device={device} themeDraft={themeDraft} />
+          <PreviewCanvas chat={chat} preview={preview} device={device} themeDraft={themeDraft} fullPage={fullPagePreviewOpen} />
+
+          {/* Mobile-only floating close button for full page preview */}
+          {fullPagePreviewOpen && device.isMobile && (
+            <button
+              type="button"
+              onClick={() => setFullPagePreviewOpen(false)}
+              className="md:hidden absolute top-3 right-3 z-50 flex items-center justify-center w-10 h-10 rounded-full bg-black/60 text-white backdrop-blur-sm border border-white/20 shadow-lg active:scale-95 transition-all cursor-pointer"
+              aria-label={t("dashboard.wizard.btnExitFullPagePreview", "Tutup Preview Penuh")}
+            >
+              <Minimize2 size={16} />
+            </button>
+          )}
 
           {preview.previewState === "loading" && !device.isMobile && (
             <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/10">
@@ -2711,7 +2723,7 @@ export function SiteWizard({
         onRetry={handleRetryGeneration}
       />
 
-      {!themeSheetOpen && (
+      {!themeSheetOpen && !fullPagePreviewOpen && (
         <MobileActionBar
           preview={preview}
           device={device}

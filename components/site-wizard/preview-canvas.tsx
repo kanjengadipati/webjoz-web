@@ -17,9 +17,10 @@ interface PreviewCanvasProps {
   preview: ReturnType<typeof useWizardPreview>;
   device: ReturnType<typeof useWizardDevice>;
   themeDraft?: ReturnType<typeof useThemeDraft>;
+  fullPage?: boolean;
 }
 
-export function PreviewCanvas({ chat, preview, device, themeDraft }: PreviewCanvasProps) {
+export function PreviewCanvas({ chat, preview, device, themeDraft, fullPage }: PreviewCanvasProps) {
   const { locale } = useI18n();
   const {
     previewState,
@@ -112,7 +113,14 @@ export function PreviewCanvas({ chat, preview, device, themeDraft }: PreviewCanv
         filter: `blur(${previewBlurPx}px)`,
         transition: "filter 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s, transform 0.3s",
       }}>
-        {device.previewDevice === "mobile" ? (
+        {fullPage ? (
+          /* Full-page mode: render content directly, no device frame */
+          <div ref={previewScrollRef} className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-background" key={`fullpage-${regenCount}-${historyIndex}`}>
+            <DevicePreviewFrame device="desktop" iframeRef={previewIframeRef} typography={liveToken?.typography}>
+              {templatePreview}
+            </DevicePreviewFrame>
+          </div>
+        ) : device.previewDevice === "mobile" ? (
           <div className="flex-1 min-h-0 overflow-auto bg-background p-4" key={`mobile-${regenCount}-${historyIndex}`}>
             <div className="relative mx-auto my-3 h-[720px] w-[360px] max-w-full flex-shrink-0 rounded-[38px] border-[10px] border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800">
               <div className="absolute left-1/2 top-3 z-50 h-3.5 w-24 -translate-x-1/2 rounded-full bg-slate-900" />
