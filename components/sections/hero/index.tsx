@@ -34,6 +34,7 @@ const HeroCarouselFilmstrip = dynamic(() => import("./carousel-filmstrip"));
 const HeroVideoBg = dynamic(() => import("./video-bg"));
 const HeroBookingForm = dynamic(() => import("./booking-form"));
 const HeroLocationMap = dynamic(() => import("./location-map"));
+const HeroProductShowcase = dynamic(() => import("./product-showcase"));
 
 // Typed against HeroStyle (hero/meta.ts): adding a variant to the catalog without
 // registering its component here is a compile error. "carousel" is a legacy alias.
@@ -69,6 +70,8 @@ const variants: Record<HeroStyle | "carousel", ComponentType<HeroVariantProps>> 
   "video-bg": HeroVideoBg,
   "booking-form": HeroBookingForm,
   "location-map": HeroLocationMap,
+  // Tier 3 additions
+  "product-showcase": HeroProductShowcase,
 };
 
 export default function HeroSection({
