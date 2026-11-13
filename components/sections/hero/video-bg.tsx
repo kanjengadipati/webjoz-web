@@ -116,7 +116,7 @@ export default function HeroVideoBg({
           inset: 0,
           zIndex: 2,
           background:
-            "linear-gradient(to bottom, rgba(6,8,14,0.55) 0%, transparent 24%, transparent 74%, var(--dt-bg, #0B0E17) 100%)",
+            "linear-gradient(to bottom, rgba(6,8,14,0.55) 0%, transparent 24%, transparent 74%, rgba(6, 8, 14, 0.92) 100%)",
           pointerEvents: "none",
         }}
       />
