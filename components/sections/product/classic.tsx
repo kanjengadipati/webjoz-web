@@ -122,7 +122,7 @@ export default function ProductClassic({
                 <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, ${brandPrimary} 18%, transparent)` }} />
               </div>
               <div
-                className={isMenu ? undefined : "grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3 lg:grid-cols-4"}
+                className={isMenu ? undefined : "grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 md:grid-cols-3 lg:grid-cols-4"}
                 style={isMenu ? { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "1.25rem" } : undefined}
               >
                 {cat.filteredItems.map(({ item, originalCatIdx, originalItemIdx }) => (

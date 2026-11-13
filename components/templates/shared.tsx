@@ -2043,7 +2043,7 @@ function MenuCatalogCard({
       type="button"
       onClick={(e) => { e.stopPropagation(); e.preventDefault(); setQuickViewOpen(true); }}
       onPointerDown={(e) => e.stopPropagation()}
-      className={`absolute ${layout === "compact" || layout === "horizontal" ? "bottom-2.5 right-2.5" : isEditorMode ? "top-2.5 left-2.5" : "top-2.5 right-2.5"} z-40 w-9 h-9 rounded-full flex items-center justify-center bg-slate-900/70 text-white backdrop-blur-sm shadow-md border border-white/20 hover:bg-slate-900 transition-all cursor-pointer ${isEditorMode ? "opacity-100" : "opacity-0 group-hover:opacity-100"} pointer-coarse:opacity-100`}
+      className={`absolute ${layout === "compact" || layout === "horizontal" ? "bottom-2.5 right-2.5" : isEditorMode ? "top-2.5 left-2.5" : "top-2.5 right-2.5"} z-40 w-9 h-9 rounded-full flex items-center justify-center bg-slate-900/70 text-white backdrop-blur-sm shadow-md border border-white/20 hover:bg-slate-900 transition-all cursor-pointer ${isEditorMode ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
       aria-label={t("dashboard.sitesKatalog.quickView", "Lihat Detail")}
       title={t("dashboard.sitesKatalog.quickView", "Lihat Detail")}
     >
