@@ -2399,6 +2399,7 @@ export interface Translations {
       heroBookingForm: string;
       heroLocationMap: string;
       heroProductShowcase: string;
+      heroCinematic: string;
       variantProductTable: string;
       variantSpotlight: string;
       variantMenuCarousel: string;
@@ -6454,6 +6455,7 @@ export const translations: Record<Locale, Translations> = {
         heroBookingForm: "Hero: Formulir Pesanan",
         heroLocationMap: "Hero: Peta Lokasi",
         heroProductShowcase: "Hero: Showcase Produk",
+        heroCinematic: "Hero: Sinematik",
         variantProductTable: "Tabel Spesifikasi",
         variantSpotlight: "Sorotan Produk",
         variantMenuCarousel: "Carousel Horizontal",
@@ -10866,6 +10868,7 @@ export const translations: Record<Locale, Translations> = {
         heroBookingForm: "Hero: Booking Form",
         heroLocationMap: "Hero: Location Map",
         heroProductShowcase: "Hero: Product Showcase",
+        heroCinematic: "Hero: Cinematic",
         variantProductTable: "Spec Table",
         variantSpotlight: "Product Spotlight",
         variantMenuCarousel: "Horizontal Carousel",
