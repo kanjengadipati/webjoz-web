@@ -68,7 +68,7 @@ export default function ProductCards({
           eyebrow={data.eyebrow ?? eyebrowDefault}
           title={data.title}
           wrapperStyle={{ textAlign: "center", marginBottom: "2.5rem" }}
-          eyebrowWrapperStyle={pillEyebrowStyle(brandPrimary)}
+          eyebrowStyle={pillEyebrowStyle(brandPrimary)}
           titleStyle={headerTitleStyle(headingFont, headingWeight, brandText)}
           divider
           onUpdateField={onUpdateField}
