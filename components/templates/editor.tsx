@@ -8,6 +8,8 @@ import { useI18n } from "@/lib/i18n/context";
 import { getSectionLabel } from "@/app/dashboard/sites/[id]/editor-utils";
 import { useSectionDrop, SectionDragControls } from "./section-reorder";
 import { useSectionVisibility, SectionVisibilityButton, HiddenSectionNotice } from "./section-visibility";
+import { CustomSelect, type CustomSelectOption, VisualVariantPanel } from "webjoz-ui";
+import { VariantWireframe } from "@/app/dashboard/sites/[id]/components/SectionVariantWireframe";
 
 // ---------------------------------------------------------------------------
 // Shared mini SVG wireframe previews (canvas inline gallery)
@@ -600,7 +602,7 @@ export const PreviewSectionWrapper: React.FC<{
     const { t, locale } = useI18n();
     const displayLabel = getSectionLabel(section, locale) || label || section;
     const [isGalleryOpen, setIsGalleryOpen] = useState(false);
-    const [selectedGroup, setSelectedGroup] = useState<string>("ALL");
+    
     const panelRef = useRef<HTMLDivElement>(null);
 
     const editSectionShortcut = useContext(SectionShortcutContext);
@@ -623,17 +625,8 @@ export const PreviewSectionWrapper: React.FC<{
     const hasVariants = variants.length > 1 && Boolean(onUpdateVariant);
     const activeOpt = variants.find((v) => v.value === currentVariant) || variants[0];
 
-    // Groups for filter chips
-    const groups = useMemo(() => {
-      const list = new Set<string>();
-      variants.forEach((v) => { if (v.group) list.add(v.group); });
-      return Array.from(list);
-    }, [variants]);
-
-    const filteredVariants = useMemo(() => {
-      if (selectedGroup === "ALL") return variants;
-      return variants.filter((v) => v.group === selectedGroup);
-    }, [variants, selectedGroup]);
+    // Groups for filter chips — kept for reference but no longer used by the picker
+    
 
     if (!isEditorMode) {
       if (section === "header") {
@@ -711,7 +704,6 @@ export const PreviewSectionWrapper: React.FC<{
                         onSelectSection?.(section);
                       }
                       setIsGalleryOpen((prev) => !prev);
-                      if (!isGalleryOpen) setSelectedGroup("ALL");
                     }}
                     className={`h-full inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:pl-2 sm:pr-2.5 ${canEditSection ? "rounded-full sm:rounded-none" : "rounded-full sm:rounded-none sm:rounded-r-full"} text-[9px] sm:text-[9.5px] font-medium cursor-pointer transition-colors outline-none focus:outline-none focus-visible:outline-none select-none ${
                       isGalleryOpen ? "text-sky-300 bg-sky-500/10" : "text-slate-200 hover:text-white hover:bg-white/5"
@@ -751,120 +743,32 @@ export const PreviewSectionWrapper: React.FC<{
               )}
             </div>
 
-                  {/* Floating Visual Gallery Panel */}
+                  {/* Floating Visual Gallery Panel — powered by VisualVariantPanel from webjoz-ui */}
                   {isGalleryOpen && (
-                    <>
-                      {/* Fixed backdrop to prevent underlying sections from receiving hover events & handle dismiss */}
-                      <div
-                        className="fixed inset-0 z-40 bg-black/10"
-                        onClick={(e) => {
-                          e.stopPropagation();
+                    <div
+                      onClick={(e) => e.stopPropagation()}
+                      className="absolute top-full left-0 mt-1.5 z-50 w-[320px]"
+                      style={{ animation: "fadeInDown 0.15s ease-out" }}
+                    >
+                      <VisualVariantPanel
+                        value={currentVariant || variants[0]?.value || ""}
+                        onChange={(val) => {
+                          onUpdateVariant?.(section, val);
                           setIsGalleryOpen(false);
                         }}
+                        onClose={() => setIsGalleryOpen(false)}
+                        options={variants.map((v): CustomSelectOption => ({
+                          value: v.value,
+                          label: getVariantLabel(section, v.value, t),
+                          group: v.group ? getVariantGroupLabel(v.group, locale) : undefined,
+                          description: v.description,
+                          preview: <VariantWireframe section={section} variant={v.value} />,
+                        }))}
+                        allLabel={t("dashboard.sitesEditor.allVariants", "Semua")}
+                        hintText={t("dashboard.sitesEditor.variantPreviewHint", "Klik varian untuk pratinjau langsung di kanvas.")}
+                        doneLabel={t("dashboard.sitesEditor.done", "Selesai")}
                       />
-                      <div
-                        onClick={(e) => e.stopPropagation()}
-                        className="absolute top-full left-0 mt-1.5 w-72 rounded-2xl bg-slate-950/98 backdrop-blur-xl border border-white/15 p-3 shadow-2xl z-50 space-y-2.5"
-                        style={{ animation: "fadeInDown 0.15s ease-out" }}
-                      >
-                        {/* Header */}
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-1.5">
-                            <LayoutGrid className="w-3 h-3 text-sky-400" />
-                            <span className="text-[10px] font-bold text-slate-100 uppercase tracking-wider">
-                              {t("dashboard.sitesEditor.variantLabel")} {displayLabel}
-                            </span>
-                          </div>
-                          <span className="text-[9px] text-sky-400 font-bold">
-                            {variants.length} {t("dashboard.sitesEditor.optionsCount")}
-                          </span>
-                        </div>
-
-                        {/* Group Filter Chips */}
-                        {groups.length > 0 && (
-                          <div className="flex items-center gap-1 overflow-x-auto pb-0.5">
-                            <button
-                              type="button"
-                              onClick={() => setSelectedGroup("ALL")}
-                              className={`px-2 py-0.5 rounded-full text-[9px] transition whitespace-nowrap cursor-pointer shrink-0 ${
-                                selectedGroup === "ALL"
-                                  ? "bg-sky-500 text-slate-950 font-black shadow-xs"
-                                  : "bg-white/10 text-slate-300 hover:text-white hover:bg-white/20 font-medium"
-                              }`}
-                            >
-                              {t("dashboard.sitesEditor.allVariants")}
-                            </button>
-                            {groups.map((grp) => (
-                              <button
-                                key={grp}
-                                type="button"
-                                onClick={() => setSelectedGroup(grp)}
-                                className={`px-2 py-0.5 rounded-full text-[9px] transition whitespace-nowrap cursor-pointer shrink-0 ${
-                                  selectedGroup === grp
-                                    ? "bg-sky-500 text-slate-950 font-black shadow-xs"
-                                    : "bg-white/10 text-slate-300 hover:text-white hover:bg-white/20 font-medium"
-                                }`}
-                              >
-                                {getVariantGroupLabel(grp, locale)}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-
-                        {/* Visual Card Grid */}
-                        <div className="grid grid-cols-2 gap-1.5 max-h-64 overflow-y-auto pr-0.5">
-                          {filteredVariants.map((v) => {
-                            const isActive = v.value === (currentVariant || variants[0]?.value);
-                            return (
-                              <button
-                                key={v.value}
-                                type="button"
-                                onClick={() => {
-                                  onUpdateVariant?.(section, v.value);
-                                  setIsGalleryOpen(false);
-                                }}
-                                className={`group/card relative flex flex-col text-left p-1.5 rounded-xl border transition-all duration-150 cursor-pointer ${
-                                  isActive
-                                    ? "bg-sky-500/15 border-sky-400 ring-2 ring-sky-400/50 shadow-[0_0_12px_rgba(56,189,248,0.25)]"
-                                    : "bg-white/[0.06] border-white/15 hover:border-sky-400/50 hover:bg-white/[0.12]"
-                                }`}
-                              >
-                                {isActive && (
-                                  <div className="absolute top-1.5 right-1.5 z-10 w-4 h-4 rounded-full bg-sky-500 text-slate-950 flex items-center justify-center shadow-md font-bold">
-                                    <Check className="w-2.5 h-2.5 stroke-[3]" />
-                                  </div>
-                                )}
-                                <div className="mb-1.5">
-                                  <VariantWireframeSmall variant={v.value} section={section} />
-                                </div>
-                                <span className={`text-[10px] font-bold line-clamp-1 leading-tight ${isActive ? "text-sky-300 font-extrabold" : "text-slate-200 group-hover/card:text-white"}`}>
-                                  {getVariantLabel(section, v.value, t)}
-                                </span>
-                                {v.group && (
-                                  <span className={`text-[8px] mt-0.5 leading-none ${isActive ? "text-sky-400/80 font-medium" : "text-slate-400"}`}>
-                                    {getVariantGroupLabel(v.group, locale)}
-                                  </span>
-                                )}
-                              </button>
-                            );
-                          })}
-                        </div>
-
-                        {/* Footer hint */}
-                        <div className="flex items-center justify-between pt-1.5 border-t border-white/10">
-                          <span className="text-[9px] text-slate-400">
-                            {t("dashboard.sitesEditor.variantPreviewHint")}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => setIsGalleryOpen(false)}
-                            className="text-[10px] text-sky-400 hover:text-sky-300 hover:underline font-bold px-1.5 py-0.5 rounded cursor-pointer"
-                          >
-                            {t("dashboard.sitesEditor.done")}
-                          </button>
-                        </div>
-                      </div>
-                    </>
+                    </div>
                   )}
           </div>{/* end relative wrapper */}
         </div>{/* end outer absolute container */}
