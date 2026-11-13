@@ -1394,6 +1394,12 @@ export default function SiteEditorPage() {
       };
       if (section === "hero") {
         next.layout.hero_style = value;
+      } else {
+        // Tandai pilihan manual agar tidak tertimpa saat desain digenerate ulang.
+        next.layout.section_variants_manual = {
+          ...(next.layout?.section_variants_manual || {}),
+          [section]: true,
+        };
       }
       return next;
     });

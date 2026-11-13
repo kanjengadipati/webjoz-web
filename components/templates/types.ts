@@ -249,6 +249,8 @@ export interface DesignToken {
     hero_style?: HeroStyle;
     section_spacing?: "compact" | "normal" | "relaxed";
     corner_radius?: "sharp" | "soft" | "rounded";
+    /** Sections whose variant the user picked by hand; kept on design regenerate. */
+    section_variants_manual?: Record<string, boolean>;
     section_variants?: {
       hero?: HeroStyle;
       about?: "classic" | "split-image" | "stat-heavy" | "timeline" | "team-grid";
