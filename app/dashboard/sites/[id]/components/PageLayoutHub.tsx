@@ -16,7 +16,7 @@ import {
   Eye,
   Sliders,
 } from "lucide-react";
-import SectionVariantVisualPicker from "./SectionVariantVisualPicker";
+import { SectionVariantBridge } from "./SectionVariantBridge";
 import { SECTION_META, getSectionLabel } from "../editor-utils";
 import { useI18n } from "@/lib/i18n/context";
 
@@ -119,7 +119,7 @@ export default function PageLayoutHub({
               {isExpanded && (
                 <div className="p-2.5 pt-0 border-t border-sidebar-border">
                   <div className="pt-2">
-                    <SectionVariantVisualPicker
+                    <SectionVariantBridge
                       sectionKey={secKey}
                       designToken={designToken}
                       updateSectionVariant={updateSectionVariant}
