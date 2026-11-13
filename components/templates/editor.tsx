@@ -678,7 +678,7 @@ export const PreviewSectionWrapper: React.FC<{
         >
           {/* Relative wrapper lives OUTSIDE the pill so the gallery panel is not clipped */}
           <div className="relative">
-            <div className={`h-[22px] sm:h-[26px] inline-flex items-center bg-slate-950/90 backdrop-blur-md border shadow-sm rounded-full transition-all duration-150 ${isGalleryOpen ? "border-sky-400/80 ring-1 ring-sky-400/30 shadow-[0_0_10px_rgba(56,189,248,0.2)]" : "border-white/15"}`}>
+            <div className={`h-[22px] sm:h-[26px] inline-flex items-center bg-slate-950/90 backdrop-blur-md border shadow-sm rounded-2xl transition-all duration-150 ${isGalleryOpen ? "border-sky-400/80 ring-1 ring-sky-400/30 shadow-[0_0_10px_rgba(56,189,248,0.2)]" : "border-white/15"}`}>
               {canHide && <SectionVisibilityButton section={section} />}
               {canReorder && <SectionDragControls section={section} />}
               {/* Label segment */}
@@ -705,7 +705,7 @@ export const PreviewSectionWrapper: React.FC<{
                       }
                       setIsGalleryOpen((prev) => !prev);
                     }}
-                    className={`h-full inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:pl-2 sm:pr-2.5 ${canEditSection ? "rounded-full sm:rounded-none" : "rounded-full sm:rounded-none sm:rounded-r-full"} text-[9px] sm:text-[9.5px] font-medium cursor-pointer transition-colors outline-none focus:outline-none focus-visible:outline-none select-none ${
+                    className={`h-full inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:pl-2 sm:pr-2.5 ${canEditSection ? "rounded-2xl sm:rounded-none" : "rounded-2xl sm:rounded-none sm:rounded-r-2xl"} text-[9px] sm:text-[9.5px] font-medium cursor-pointer transition-colors outline-none focus:outline-none focus-visible:outline-none select-none ${
                       isGalleryOpen ? "text-sky-300 bg-sky-500/10" : "text-slate-200 hover:text-white hover:bg-white/5"
                     }`}
                   >
@@ -732,7 +732,7 @@ export const PreviewSectionWrapper: React.FC<{
                     }}
                     title={t("dashboard.sitesEditor.editSectionContent")}
                     aria-label={t("dashboard.sitesEditor.editSectionContent")}
-                    className="h-full inline-flex items-center gap-1 sm:gap-1.5 pl-1.5 sm:pl-2 pr-2 sm:pr-2.5 rounded-r-full text-[9px] sm:text-[9.5px] font-medium cursor-pointer text-slate-200 hover:text-white hover:bg-white/5 transition-colors outline-none focus:outline-none focus-visible:outline-none select-none"
+                    className="h-full inline-flex items-center gap-1 sm:gap-1.5 pl-1.5 sm:pl-2 pr-2 sm:pr-2.5 rounded-r-2xl text-[9px] sm:text-[9.5px] font-medium cursor-pointer text-slate-200 hover:text-white hover:bg-white/5 transition-colors outline-none focus:outline-none focus-visible:outline-none select-none"
                   >
                     <Pencil className="w-2.5 h-2.5 shrink-0" />
                     <span className="hidden sm:inline leading-none">
