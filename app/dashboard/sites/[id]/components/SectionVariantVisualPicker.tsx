@@ -878,8 +878,24 @@ export function VariantWireframe({ section, variant }: { section: string; varian
     );
   }
 
-  if (variant === "product-showcase") {
+  if (variant === "cinematic") {
     return (
+      <div className="w-full h-14 rounded-lg bg-[#111010] border border-white/5 overflow-hidden relative">
+        {/* scattered photo frames */}
+        <div className="absolute top-1 right-2 w-8 h-6 rounded bg-slate-700/70 border border-white/10" style={{ transform: "rotate(5deg)" }} />
+        <div className="absolute top-1.5 right-11 w-5 h-7 rounded bg-slate-600/60 border border-white/10" style={{ transform: "rotate(-4deg)" }} />
+        <div className="absolute bottom-1 left-1 w-6 h-7 rounded bg-slate-700/70 border border-white/10" style={{ transform: "rotate(-5deg)" }} />
+        {/* center headline */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5">
+          <div className="w-16 h-1.5 rounded-full bg-white/85" />
+          <div className="w-20 h-1.5 rounded-full bg-white/60" style={{ fontStyle: "italic" }} />
+          <div className="w-8 h-1 rounded-full bg-primary/70 mt-1" />
+        </div>
+      </div>
+    );
+  }
+
+  if (variant === "product-showcase") {    return (
       <div className="w-full h-14 rounded-lg overflow-hidden relative border border-white/5">
         {/* bg product photo simulation */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" />
