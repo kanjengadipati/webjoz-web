@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { API_BASE_URL } from "@/lib/config";
+import type { PublicSiteInitial } from "@/lib/public-site-data";
 import { Loader2, AlertCircle, ExternalLink } from "lucide-react";
 import { getTemplate } from "@/lib/template-registry";
 import SiteSuspended from "@/components/site-suspended";
@@ -12,6 +13,8 @@ interface PublicSiteProps {
   host?: string;
   siteId?: number;
   previewToken?: string;
+  /** Server-fetched payload so the first paint contains the real page. */
+  initial?: PublicSiteInitial;
 }
 
 interface PlanExpiredPayload {
@@ -42,14 +45,198 @@ const stripRegeneratedMarkers = (value: any): any => {
   return value;
 };
 
-export default function PublicSite({ subdomain, host, siteId, previewToken }: PublicSiteProps) {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [siteData, setSiteData] = useState<any>(null);
+// Applies SEO meta, favicon, tracking codes, and the pageview hit once the
+// site payload is available. Runs on the server-provided payload too, so the
+// pageview is still tracked when the first render already has content.
+async function applySiteEnhancements(data: any) {
+  const siteInfo = data?.site;
+  // Apply dynamic SEO meta from content
+  const seo = data?.content?.seo;
+  const siteName = siteInfo?.name || "";
+  const subdomain = siteInfo?.subdomain || "";
+  const templateId = data?.template_id || "";
+
+  // Favicon — update all rel variants so browser picks it up reliably
+  if (seo?.favicon_url) {
+    const faviconUrl = seo.favicon_url;
+    const isSvg = faviconUrl.startsWith("data:image/svg") || faviconUrl.endsWith(".svg");
+    const isIco = faviconUrl.endsWith(".ico");
+    const mimeType = isIco ? "image/x-icon" : isSvg ? "image/svg+xml" : "image/png";
+
+    const relVariants = ["icon", "shortcut icon", "apple-touch-icon"];
+    relVariants.forEach((rel) => {
+      // Try to find existing link with this rel
+      let link = document.querySelector(`link[rel="${rel}"]`) as HTMLLinkElement | null;
+      if (!link && rel === "icon") {
+        // Also check rel~='icon' (e.g. "shortcut icon" contains "icon")
+        link = document.querySelector("link[rel~='icon']:not([rel='shortcut icon'])") as HTMLLinkElement | null;
+      }
+      if (!link) {
+        link = document.createElement("link");
+        link.rel = rel;
+        document.head.appendChild(link);
+      }
+      link.type = mimeType;
+      // Force cache-bust only for external HTTP URLs; NEVER append to data URIs (it corrupts base64)
+      if (faviconUrl.startsWith("data:")) {
+        link.href = faviconUrl;
+      } else {
+        const separator = faviconUrl.includes("?") ? "&" : "?";
+        link.href = `${faviconUrl}${separator}_t=${Date.now()}`;
+      }
+    });
+  }
+
+  // Title
+  if (seo?.title) {
+    document.title = seo.title;
+  } else if (siteName) {
+    document.title = siteName;
+  }
+
+  // Meta description
+  const desc = seo?.description || "";
+  let metaDesc = document.querySelector('meta[name="description"]') as HTMLMetaElement;
+  if (!metaDesc) {
+    metaDesc = document.createElement("meta");
+    metaDesc.name = "description";
+    document.head.appendChild(metaDesc);
+  }
+  metaDesc.content = desc;
+
+  // OG tags
+  const setMeta = (prop: string, name: string, content: string) => {
+    if (!content) return;
+    let el = document.querySelector(`meta[${prop}="${name}"]`) as HTMLMetaElement;
+    if (!el) {
+      el = document.createElement("meta");
+      el.setAttribute(prop, name);
+      document.head.appendChild(el);
+    }
+    el.content = content;
+  };
+  setMeta("property", "og:title", seo?.title || siteName);
+  setMeta("property", "og:description", desc);
+  setMeta("property", "og:image", seo?.og_image_url || "");
+  setMeta("property", "og:type", seo?.og_type || "website");
+  setMeta("property", "og:locale", seo?.og_locale || "id_ID");
+  setMeta("property", "og:site_name", seo?.og_site_name || siteName);
+  setMeta("property", "og:url", window.location.href);
+
+  setMeta("name", "twitter:card", seo?.twitter_card || "summary_large_image");
+  setMeta("name", "twitter:title", seo?.title || siteName);
+  setMeta("name", "twitter:description", desc);
+  setMeta("name", "twitter:image", seo?.og_image_url || "");
+
+  // Robots
+  setMeta("name", "robots", seo?.robots || "index, follow");
+
+  // Canonical
+  let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+  const canonicalPath = seo?.canonical_path || "/";
+  if (canonical) {
+    canonical.href = window.location.origin + canonicalPath;
+  } else {
+    canonical = document.createElement("link");
+    canonical.rel = "canonical";
+    canonical.href = window.location.origin + canonicalPath;
+    document.head.appendChild(canonical);
+  }
+
+  // JSON-LD — already server-rendered in page.tsx; skip if present
+
+  // Inject Google Search Console verification meta tag
+  const trackingCodes = data?.tracking_codes;
+  if (trackingCodes?.gsc_verification) {
+    const gscMeta = 'meta[name="google-site-verification"]';
+    let el = document.querySelector(gscMeta) as HTMLMetaElement;
+    if (!el) {
+      el = document.createElement("meta");
+      el.name = "google-site-verification";
+      document.head.appendChild(el);
+    }
+    el.content = trackingCodes.gsc_verification;
+  }
+
+  // Inject GA4  script
+  if (trackingCodes?.ga4_id) {
+    if (!document.querySelector(`script[src*="gtag/js?id=${trackingCodes.ga4_id}"]`)) {
+      const gaScript = document.createElement("script");
+      gaScript.async = true;
+      gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${trackingCodes.ga4_id}`;
+      document.head.appendChild(gaScript);
+    }
+    if (!window.hasOwnProperty("gtag")) {
+      const inline = document.createElement("script");
+      inline.textContent = `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '${trackingCodes.ga4_id}');
+      `;
+      document.head.appendChild(inline);
+    }
+  }
+
+  // Inject Meta Pixel script
+  if (trackingCodes?.meta_pixel_id) {
+    if (!document.querySelector(`script[data-pixel-id="${trackingCodes.meta_pixel_id}"]`)) {
+      const pixelScript = document.createElement("script");
+      pixelScript.setAttribute("data-pixel-id", trackingCodes.meta_pixel_id);
+      pixelScript.textContent = `
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '${trackingCodes.meta_pixel_id}');
+        fbq('track', 'PageView');
+      `;
+      document.head.appendChild(pixelScript);
+    }
+  }
+
+  // Track pageview on success
+  try {
+    await fetch(`${API_BASE_URL}/public/pageview`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        site_id: data.site.id,
+        path: window.location.pathname,
+        referrer: document.referrer || "Direct",
+      }),
+    });
+  } catch (pvErr) {
+    console.warn("Failed to track pageview:", pvErr);
+  }
+}
+
+export default function PublicSite({ subdomain, host, siteId, previewToken, initial }: PublicSiteProps) {
+  // When the server already fetched the payload there is nothing to wait for:
+  // render the real page on the first paint instead of a loading screen.
+  const [loading, setLoading] = useState(initial === undefined);
+  const [error, setError] = useState<string | null>(
+    initial?.kind === "error" ? initial.message : null
+  );
+  const [siteData, setSiteData] = useState<any>(() => {
+    if (initial?.kind !== "ok") return null;
+    return {
+      ...initial.data,
+      content: stripRegeneratedMarkers(initial.data.content),
+    };
+  });
   // Set when the API parks the site for an expired plan (410 ERR_PLAN_EXPIRED).
-  const [suspended, setSuspended] = useState<PlanExpiredPayload | null>(null);
+  const [suspended, setSuspended] = useState<PlanExpiredPayload | null>(
+    initial?.kind === "suspended" ? initial.payload : null
+  );
   // Set when the API parks the site for an admin policy lock (403 ERR_SITE_LOCKED).
-  const [locked, setLocked] = useState<SiteLockedPayload | null>(null);
+  const [locked, setLocked] = useState<SiteLockedPayload | null>(
+    initial?.kind === "locked" ? initial.payload : null
+  );
 
   // Lead states
   const [leadSubmitting, setLeadSubmitting] = useState(false);
@@ -82,6 +269,12 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
   const targetHost = resolveHost();
 
   useEffect(() => {
+    if (initial !== undefined) {
+      // The server rendered this payload; only re-run the client-side effects
+      // (SEO meta, tracking pixels, pageview) that need the browser.
+      if (initial.kind === "ok") void applySiteEnhancements(initial.data);
+      return;
+    }
     if (!targetHost && !siteId) return;
 
     const fetchSite = async () => {
@@ -137,169 +330,7 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
         });
         setError(null);
 
-        // Apply dynamic SEO meta from content
-        const seo = envelope.data?.content?.seo;
-        const siteName = siteInfo?.name || "";
-        const subdomain = siteInfo?.subdomain || "";
-        const templateId = envelope.data?.template_id || "";
-
-        // Favicon — update all rel variants so browser picks it up reliably
-        if (seo?.favicon_url) {
-          const faviconUrl = seo.favicon_url;
-          const isSvg = faviconUrl.startsWith("data:image/svg") || faviconUrl.endsWith(".svg");
-          const isIco = faviconUrl.endsWith(".ico");
-          const mimeType = isIco ? "image/x-icon" : isSvg ? "image/svg+xml" : "image/png";
-
-          const relVariants = ["icon", "shortcut icon", "apple-touch-icon"];
-          relVariants.forEach((rel) => {
-            // Try to find existing link with this rel
-            let link = document.querySelector(`link[rel="${rel}"]`) as HTMLLinkElement | null;
-            if (!link && rel === "icon") {
-              // Also check rel~='icon' (e.g. "shortcut icon" contains "icon")
-              link = document.querySelector("link[rel~='icon']:not([rel='shortcut icon'])") as HTMLLinkElement | null;
-            }
-            if (!link) {
-              link = document.createElement("link");
-              link.rel = rel;
-              document.head.appendChild(link);
-            }
-            link.type = mimeType;
-            // Force cache-bust only for external HTTP URLs; NEVER append to data URIs (it corrupts base64)
-            if (faviconUrl.startsWith("data:")) {
-              link.href = faviconUrl;
-            } else {
-              const separator = faviconUrl.includes("?") ? "&" : "?";
-              link.href = `${faviconUrl}${separator}_t=${Date.now()}`;
-            }
-          });
-        }
-
-        // Title
-        if (seo?.title) {
-          document.title = seo.title;
-        } else if (siteName) {
-          document.title = siteName;
-        }
-
-        // Meta description
-        const desc = seo?.description || "";
-        let metaDesc = document.querySelector('meta[name="description"]') as HTMLMetaElement;
-        if (!metaDesc) {
-          metaDesc = document.createElement("meta");
-          metaDesc.name = "description";
-          document.head.appendChild(metaDesc);
-        }
-        metaDesc.content = desc;
-
-        // OG tags
-        const setMeta = (prop: string, name: string, content: string) => {
-          if (!content) return;
-          let el = document.querySelector(`meta[${prop}="${name}"]`) as HTMLMetaElement;
-          if (!el) {
-            el = document.createElement("meta");
-            el.setAttribute(prop, name);
-            document.head.appendChild(el);
-          }
-          el.content = content;
-        };
-        setMeta("property", "og:title", seo?.title || siteName);
-        setMeta("property", "og:description", desc);
-        setMeta("property", "og:image", seo?.og_image_url || "");
-        setMeta("property", "og:type", seo?.og_type || "website");
-        setMeta("property", "og:locale", seo?.og_locale || "id_ID");
-        setMeta("property", "og:site_name", seo?.og_site_name || siteName);
-        setMeta("property", "og:url", window.location.href);
-
-        setMeta("name", "twitter:card", seo?.twitter_card || "summary_large_image");
-        setMeta("name", "twitter:title", seo?.title || siteName);
-        setMeta("name", "twitter:description", desc);
-        setMeta("name", "twitter:image", seo?.og_image_url || "");
-
-        // Robots
-        setMeta("name", "robots", seo?.robots || "index, follow");
-
-        // Canonical
-        let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
-        const canonicalPath = seo?.canonical_path || "/";
-        if (canonical) {
-          canonical.href = window.location.origin + canonicalPath;
-        } else {
-          canonical = document.createElement("link");
-          canonical.rel = "canonical";
-          canonical.href = window.location.origin + canonicalPath;
-          document.head.appendChild(canonical);
-        }
-
-        // JSON-LD — already server-rendered in page.tsx; skip if present
-
-        // Inject Google Search Console verification meta tag
-        const trackingCodes = envelope.data?.tracking_codes;
-        if (trackingCodes?.gsc_verification) {
-          const gscMeta = 'meta[name="google-site-verification"]';
-          let el = document.querySelector(gscMeta) as HTMLMetaElement;
-          if (!el) {
-            el = document.createElement("meta");
-            el.name = "google-site-verification";
-            document.head.appendChild(el);
-          }
-          el.content = trackingCodes.gsc_verification;
-        }
-
-        // Inject GA4  script
-        if (trackingCodes?.ga4_id) {
-          if (!document.querySelector(`script[src*="gtag/js?id=${trackingCodes.ga4_id}"]`)) {
-            const gaScript = document.createElement("script");
-            gaScript.async = true;
-            gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${trackingCodes.ga4_id}`;
-            document.head.appendChild(gaScript);
-          }
-          if (!window.hasOwnProperty("gtag")) {
-            const inline = document.createElement("script");
-            inline.textContent = `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', '${trackingCodes.ga4_id}');
-            `;
-            document.head.appendChild(inline);
-          }
-        }
-
-        // Inject Meta Pixel script
-        if (trackingCodes?.meta_pixel_id) {
-          if (!document.querySelector(`script[data-pixel-id="${trackingCodes.meta_pixel_id}"]`)) {
-            const pixelScript = document.createElement("script");
-            pixelScript.setAttribute("data-pixel-id", trackingCodes.meta_pixel_id);
-            pixelScript.textContent = `
-              !function(f,b,e,v,n,t,s)
-              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-              n.queue=[];t=b.createElement(e);t.async=!0;
-              t.src=v;s=b.getElementsByTagName(e)[0];
-              s.parentNode.insertBefore(t,s)}(window, document,'script',
-              'https://connect.facebook.net/en_US/fbevents.js');
-              fbq('init', '${trackingCodes.meta_pixel_id}');
-              fbq('track', 'PageView');
-            `;
-            document.head.appendChild(pixelScript);
-          }
-        }
-
-        // Track pageview on success
-        try {
-          await fetch(`${API_BASE_URL}/public/pageview`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              site_id: envelope.data.site.id,
-              path: window.location.pathname,
-              referrer: document.referrer || "Direct",
-            }),
-          });
-        } catch (pvErr) {
-          console.warn("Failed to track pageview:", pvErr);
-        }
+        await applySiteEnhancements(envelope.data);
 
       } catch (err: any) {
         setError(err.message || "Terjadi kesalahan koneksi.");
@@ -309,7 +340,7 @@ export default function PublicSite({ subdomain, host, siteId, previewToken }: Pu
     };
 
     fetchSite();
-  }, [targetHost]);
+  }, [targetHost, initial]);
 
   useEffect(() => {
     if (siteData?.site?.language && typeof document !== "undefined") {

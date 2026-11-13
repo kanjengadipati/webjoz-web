@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import PublicSite from "@/components/public-site";
 import { fetchPublicSiteMetadata } from "@/lib/public-site-meta";
+import { fetchPublicSiteInitial } from "@/lib/public-site-data";
 
 interface PageProps {
   params: Promise<{
@@ -15,5 +16,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function SubdomainPathPage({ params }: PageProps) {
   const resolvedParams = await params;
-  return <PublicSite subdomain={resolvedParams.subdomain} />;
+  const initial = await fetchPublicSiteInitial(resolvedParams.subdomain);
+  return <PublicSite subdomain={resolvedParams.subdomain} initial={initial} />;
 }
