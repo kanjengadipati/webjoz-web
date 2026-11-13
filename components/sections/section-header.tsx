@@ -123,7 +123,7 @@ export function SectionHeader({
     <div className={wrapperClassName} style={wrapperStyle}>
       {eyebrow !== undefined &&
         (eyebrowWrapperStyle || eyebrowWrapperClassName ? (
-          <div className={eyebrowWrapperClassName} style={{ marginBottom: "0.85rem" }}>
+          <div className={eyebrowWrapperClassName} style={{ marginBottom: "0.85rem", ...eyebrowWrapperStyle }}>
             {eyebrowEl}
           </div>
         ) : (
