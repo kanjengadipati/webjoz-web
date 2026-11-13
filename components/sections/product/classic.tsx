@@ -42,8 +42,8 @@ export default function ProductClassic({
     : {
         className: "group transition-all duration-300",
         style: { background: brandBg, border: `1px solid color-mix(in srgb, ${brandPrimary} 14%, transparent)`, borderRadius: "16px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" },
-        image: { className: "w-full aspect-square object-cover transition-transform duration-500 group-hover:scale-105 sm:aspect-[4/5]" },
-        placeholder: { className: "w-full aspect-square flex flex-col items-center justify-center p-4 text-center transition-transform duration-500 group-hover:scale-105 sm:aspect-[4/5]", style: { background: `color-mix(in srgb, ${brandPrimary} 8%, transparent)` }, iconClassName: "w-12 h-12", iconStyle: { color: `color-mix(in srgb, ${brandPrimary} 30%, transparent)`, opacity: 0.6 } },
+        image: { className: "w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-105 sm:aspect-[3/4]" },
+        placeholder: { className: "w-full aspect-[4/3] flex flex-col items-center justify-center p-4 text-center transition-transform duration-500 group-hover:scale-105 sm:aspect-[3/4]", style: { background: `color-mix(in srgb, ${brandPrimary} 8%, transparent)` }, iconClassName: "w-12 h-12", iconStyle: { color: `color-mix(in srgb, ${brandPrimary} 30%, transparent)`, opacity: 0.6 } },
         content: { className: "p-4 flex flex-col flex-1 min-w-0" },
         header: { className: "flex flex-col gap-1.5 mb-2 min-w-0" },
         title: { className: "font-bold text-sm leading-tight line-clamp-2", style: { color: brandText, fontFamily: headingFont } },

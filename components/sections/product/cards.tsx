@@ -44,8 +44,8 @@ export default function ProductCards({
     : {
         className: "group transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl",
         style: { background: "var(--dt-surface, #fff)", border: `1px solid color-mix(in srgb, ${brandPrimary} 14%, transparent)`, borderRadius: "24px", overflow: "hidden", boxShadow: "0 10px 30px -5px rgba(0,0,0,0.06)", minWidth: 0 },
-        image: { className: "w-full aspect-[4/5] object-cover transition-transform duration-700 ease-out group-hover:scale-105" },
-        placeholder: { className: "w-full aspect-[4/5] flex flex-col items-center justify-center p-4 text-center transition-transform duration-700 ease-out group-hover:scale-105", style: placeholderStyle, iconClassName: "w-16 h-16", iconStyle: placeholderIconStyle },
+        image: { className: "w-full aspect-[4/3] object-cover transition-transform duration-700 ease-out group-hover:scale-105 sm:aspect-[4/5]" },
+        placeholder: { className: "w-full aspect-[4/3] flex flex-col items-center justify-center p-4 text-center transition-transform duration-700 ease-out group-hover:scale-105 sm:aspect-[4/5]", style: placeholderStyle, iconClassName: "w-16 h-16", iconStyle: placeholderIconStyle },
         content: { className: "p-5 flex flex-col flex-1 min-w-0" },
         header: { className: "flex flex-col gap-1.5 mb-2 min-w-0" },
         title: { className: "font-extrabold text-base leading-snug tracking-tight", style: { color: brandText, fontFamily: headingFont } },
