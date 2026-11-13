@@ -141,7 +141,7 @@ export default function HeroProductShowcase({
               fontFamily: "var(--dt-heading-font)",
               fontWeight: "var(--dt-heading-weight, 700)" as React.CSSProperties["fontWeight"],
               fontStyle: "var(--dt-heading-style, normal)" as React.CSSProperties["fontStyle"],
-              fontSize: "clamp(2.6rem, 5.5vw, 5.5rem)",
+              fontSize: "clamp(2rem, 3.8vw, 3.8rem)",
               lineHeight: 1.08,
               letterSpacing: "-0.025em",
               color: "#ffffff",
