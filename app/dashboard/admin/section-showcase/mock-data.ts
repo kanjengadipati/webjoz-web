@@ -1157,8 +1157,41 @@ const PORTRAIT_HERO_VARIANTS = new Set([
   "portrait-showcase",
 ]);
 
+// Product-focused images for product-showcase variant
+const PRODUCT_SHOWCASE_IMAGES = {
+  image_url: "https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=1200&auto=format&fit=crop&q=80",
+  eyebrow: "Premium · Pilihan · Terbaik",
+  headline: "Depth of Perfection",
+  subheadline: "Koleksi perawatan kulit premium dari bahan alami terpilih, diformulasikan untuk merawat kecantikan alami Anda.",
+  cta_text: "Lihat Koleksi",
+  cta_secondary_text: "Pelajari Lebih Lanjut",
+};
+
+// Creative/visual images for cinematic variant
+const CINEMATIC_IMAGES = {
+  image_url: "https://images.unsplash.com/photo-1536240478700-b869ad10a2eb?w=1200&auto=format&fit=crop&q=80",
+  images: [
+    "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1476041800959-2f6bb412c8ce?w=800&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&auto=format&fit=crop&q=80",
+  ],
+  eyebrow: "Sinematografi & Post",
+  headline: "Every frame earns its place.",
+  subheadline: "Weddings. Brand films. Event documentaries.\nShot and cut with intent.",
+  cta_text: "Let's Make Something",
+  cta_secondary_text: "Watch the Full Reel ↓",
+};
+
 export function getShowcaseHero(variantKey: string) {
   const hero = MOCK_SHOWCASE_DATA.hero;
+  if (variantKey === "product-showcase") {
+    return { ...hero, ...PRODUCT_SHOWCASE_IMAGES };
+  }
+  if (variantKey === "cinematic") {
+    return { ...hero, ...CINEMATIC_IMAGES };
+  }
   if (!PORTRAIT_HERO_VARIANTS.has(variantKey)) return hero;
   return { ...hero, image_url: hero.portrait_image_url };
 }
