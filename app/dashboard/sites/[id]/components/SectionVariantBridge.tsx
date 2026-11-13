@@ -10,7 +10,7 @@
  */
 
 import React, { useMemo } from "react";
-import { VariantPicker, type VariantOption } from "webjoz-ui";
+import { CustomSelect, type CustomSelectOption } from "webjoz-ui";
 import { SECTION_VARIANT_OPTIONS, getVariantGroupLabel } from "@/components/sections/variant-registry";
 import { getHeroStyle } from "@/components/sections/hero/meta";
 import { VariantWireframe } from "./SectionVariantWireframe";
@@ -53,7 +53,7 @@ export function SectionVariantBridge({
   }
 
   // Map to VariantOption[] for VariantPicker
-  const options: VariantOption[] = enabledOpts.map((opt) => {
+  const options: CustomSelectOption[] = enabledOpts.map((opt) => {
     const groupLabel = opt.group ? getVariantGroupLabel(opt.group, locale) : undefined;
     const label = opt.labelKey
       ? t(`dashboard.sitesEditor.${opt.labelKey}`, opt.label)
@@ -74,7 +74,8 @@ export function SectionVariantBridge({
   });
 
   return (
-    <VariantPicker
+    <CustomSelect
+      variant="visual"
       value={currentVal}
       onChange={(val) => updateSectionVariant(sectionKey, val)}
       options={options}
