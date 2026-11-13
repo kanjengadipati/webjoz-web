@@ -83,10 +83,11 @@ import SiteStyleSelector from "./components/SiteStyleSelector";
 import BrandStylePicker from "./components/BrandStylePicker";
 import IndustryPresetPicker from "./components/IndustryPresetPicker";
 import SectionVariantVisualPicker from "./components/SectionVariantVisualPicker";
+import { SectionVariantBridge } from "./components/SectionVariantBridge";
 import PageLayoutHub from "./components/PageLayoutHub";
 import EditorOnboardingModal, { useEditorOnboarding } from "@/components/editor-onboarding-modal";
 
-const SectionVariantPicker = SectionVariantVisualPicker;
+const SectionVariantPicker = SectionVariantBridge;
 
 // Immutably set a nested value in `obj` by a dotted path of segments where
 // numeric segments index into arrays (e.g. ["categories", "0", "name"]).

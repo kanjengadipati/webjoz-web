@@ -18,7 +18,7 @@ interface SectionVariantVisualPickerProps {
 }
 
 // Mini SVG wireframe illustrations for section layouts
-function VariantWireframe({ section, variant }: { section: string; variant: string }) {
+export function VariantWireframe({ section, variant }: { section: string; variant: string }) {
   // Preloader variants
   if (section === "preloader") {
     if (variant === "none") {
