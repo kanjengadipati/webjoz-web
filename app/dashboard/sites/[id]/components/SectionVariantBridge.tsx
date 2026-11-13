@@ -11,7 +11,7 @@
 
 import React, { useMemo } from "react";
 import { CustomSelect, type CustomSelectOption } from "webjoz-ui";
-import { SECTION_VARIANT_OPTIONS, getVariantGroupLabel } from "@/components/sections/variant-registry";
+import { SECTION_VARIANT_OPTIONS, getVariantGroupLabel, getVariantLabel } from "@/components/sections/variant-registry";
 import { getHeroStyle } from "@/components/sections/hero/meta";
 import { VariantWireframe } from "./SectionVariantWireframe";
 import { useI18n } from "@/lib/i18n/context";
@@ -55,9 +55,8 @@ export function SectionVariantBridge({
   // Map to VariantOption[] for VariantPicker
   const options: CustomSelectOption[] = enabledOpts.map((opt) => {
     const groupLabel = opt.group ? getVariantGroupLabel(opt.group, locale) : undefined;
-    const label = opt.labelKey
-      ? t(`dashboard.sitesEditor.${opt.labelKey}`, opt.label)
-      : opt.label;
+    // Same label rules as the old picker (strips the "Hero:" prefix, falls back to opt.label).
+    const label = getVariantLabel(sectionKey, opt.value, t);
     const description = opt.descriptionKey
       ? t(`dashboard.sitesEditor.${opt.descriptionKey}`, opt.description)
       : opt.description;
@@ -74,16 +73,18 @@ export function SectionVariantBridge({
   });
 
   return (
-    <CustomSelect
-      variant="visual"
-      value={currentVal}
-      onChange={(val) => updateSectionVariant(sectionKey, val)}
-      options={options}
-      allLabel={t("dashboard.sitesEditor.allVariants", "Semua")}
-      hintText={t("dashboard.sitesEditor.variantPickerHint", "Klik varian untuk pratinjau langsung di kanvas.")}
-      doneLabel={t("dashboard.sitesEditor.variantPickerDone", "Selesai")}
-      className="mb-2.5"
-    />
+    // data-edu: target of the editor onboarding tour (editor-onboarding-modal.tsx).
+    <div data-edu="variant-picker" className="mb-2.5">
+      <CustomSelect
+        variant="visual"
+        value={currentVal}
+        onChange={(val) => updateSectionVariant(sectionKey, val)}
+        options={options}
+        allLabel={t("dashboard.sitesEditor.allVariants", "Semua")}
+        hintText={t("dashboard.sitesEditor.variantPickerHint", "Klik varian untuk pratinjau langsung di kanvas.")}
+        doneLabel={t("dashboard.sitesEditor.variantPickerDone", "Selesai")}
+      />
+    </div>
   );
 }
 
