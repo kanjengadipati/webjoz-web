@@ -60,7 +60,8 @@ export default function HeroCinematic({
   const allImages = useMemo(() => {
     const seen = new Set<string>();
     const result: string[] = [];
-    const candidates = [h.image_url, ...(h.images ?? [])].filter(Boolean) as string[];
+    // images array first (they're meant as gallery), then image_url as fallback
+    const candidates = [...(h.images ?? []), h.image_url].filter(Boolean) as string[];
     for (const img of candidates) {
       if (!seen.has(img)) { seen.add(img); result.push(img); }
     }
@@ -78,7 +79,7 @@ export default function HeroCinematic({
         position: "relative",
         minHeight: "min(92vh, 860px)",
         overflow: "hidden",
-        background: h.background_color || "var(--dt-bg, #111010)",
+        background: h.background_color || "#111010",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
