@@ -127,7 +127,8 @@ export function SectionHeader({
             {eyebrowEl}
           </span>
         ) : (
-          eyebrowEl
+          // Default: block wrapper so eyebrow sits above title, not inline with it
+          <div style={{ marginBottom: "0.85rem" }}>{eyebrowEl}</div>
         ))}
       <InlineText
         section={section}
