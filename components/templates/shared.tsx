@@ -2121,7 +2121,7 @@ function MenuCatalogCard({
         )}
         {quickViewTrigger}
         <div className="flex items-start gap-3 h-full">
-          <div className="flex-shrink-0 w-24 sm:w-28">{imageNode}</div>
+          <div className="flex-shrink-0 w-20 sm:w-24">{imageNode}</div>
           <div className="min-w-0 flex-1 flex flex-col h-full" style={contentStyle}>
             {header}
             {descriptionElement}
@@ -2239,6 +2239,7 @@ function MenuCatalogCard({
   }
 
   // ── Magazine: asymmetric, large image left ~45%, stacked info right — editorial/premium ──
+  // On mobile: image stacks on top (full-width), content below. On sm+: side-by-side.
   if (layout === "magazine") {
     return (
       <div className={`relative group cursor-pointer ${className || ""}`} style={style} onClick={() => setQuickViewOpen(true)}>
@@ -2246,8 +2247,9 @@ function MenuCatalogCard({
           <InlineDeleteButton onDelete={onDelete} className="absolute top-2.5 right-2.5 z-40" />
         )}
         {quickViewTrigger}
-        <div className="flex h-full">
-          <div className="w-2/5 flex-shrink-0 overflow-hidden">{imageNode}</div>
+        <div className="flex flex-col sm:flex-row sm:h-full">
+          {/* Image: full-width on mobile, 40% on sm+ */}
+          <div className="w-full sm:w-2/5 sm:flex-shrink-0 overflow-hidden">{imageNode}</div>
           <div className="min-w-0 flex-1 flex flex-col" style={contentStyle}>
             {header}
             {descriptionElement}
@@ -2262,9 +2264,9 @@ function MenuCatalogCard({
               return (
                 <ul className="mt-2 flex flex-col gap-1">
                   {displayedFeatures.map((f, fi) => (
-                    <li key={fi} className="flex items-center gap-1.5 text-[11px] font-medium" style={{ color: "var(--dt-text)" }}>
-                      <FeatureMarkerIcon style={featureMarker} />
-                      <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".features." + fi : ""} value={f ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                    <li key={fi} className="flex items-start gap-1.5 text-[11px] font-medium min-w-0" style={{ color: "var(--dt-text)" }}>
+                      <FeatureMarkerIcon style={featureMarker} className="w-3 h-3 flex-shrink-0 pointer-events-none mt-[1px]" />
+                      <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".features." + fi : ""} value={f ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" className="line-clamp-2 min-w-0" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                     </li>
                   ))}
                 </ul>
