@@ -33,6 +33,15 @@ export const API_TIMEOUT_MS = parsePositiveInteger(
   process.env.NEXT_PUBLIC_API_TIMEOUT_MS,
   30_000,
 );
+
+// Watchdog untuk generate stream SSE: batas waktu tunggu event "done" sebelum
+// frontend membatalkan/menyelesaikan stream. Harus > AI_TIMEOUT_SECONDS (120s)
+// di API agar retry provider (Gemini 503, rate limit, dsb.) sempat selesai.
+export const GENERATE_STREAM_WATCHDOG_MS = parsePositiveInteger(
+  "NEXT_PUBLIC_GENERATE_STREAM_WATCHDOG_MS",
+  process.env.NEXT_PUBLIC_GENERATE_STREAM_WATCHDOG_MS,
+  150_000,
+);
 export const API_DEBUG = process.env.NEXT_PUBLIC_API_DEBUG === "true";
 
 /** When false, skips the dashboard GET /health probe on the landing page (useful when the API is not running locally). */

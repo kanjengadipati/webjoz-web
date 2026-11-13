@@ -7,7 +7,7 @@
 //   const { startStream, cancelStream } = useGenerateStream({ onSection, onDesignToken, onDone, onError });
 
 import { useRef, useCallback } from "react";
-import { API_BASE_URL } from "@/lib/config";
+import { API_BASE_URL, GENERATE_STREAM_WATCHDOG_MS } from "@/lib/config";
 
 const MAX_STREAM_RETRIES = 2;
 const STREAM_RETRY_DELAYS_MS = [700, 1600];
@@ -66,6 +66,8 @@ export interface GenerateStreamRequest {
 }
 
 export interface UseGenerateStreamOptions {
+  /** Override watchdog timeout (ms) untuk stream generate. Default: GENERATE_STREAM_WATCHDOG_MS (env NEXT_PUBLIC_GENERATE_STREAM_WATCHDOG_MS, default 150000). */
+  watchdogMs?: number;
   /** Dipanggil saat design token diterima (bisa dipanggil lebih dari sekali) */
   onDesignToken: (token: Record<string, any>) => void;
   /** Dipanggil setiap kali satu section konten diterima */
@@ -105,7 +107,11 @@ function retryDelay(attempt: number) {
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
 export function useGenerateStream(options: UseGenerateStreamOptions) {
-  const { onDesignToken, onSection, onDone, onError } = options;
+  const { onDesignToken, onSection, onDone, onError, watchdogMs } = options;
+
+  // Watchdog timeout bisa di-override per instance; fallback ke konfigurasi env.
+  const watchdogMsRef = useRef<number>(watchdogMs ?? GENERATE_STREAM_WATCHDOG_MS);
+  watchdogMsRef.current = watchdogMs ?? GENERATE_STREAM_WATCHDOG_MS;
 
   // Use refs for callbacks to avoid stale closures and unnecessary re-creation
   const onDesignTokenRef = useRef(onDesignToken);
@@ -201,12 +207,14 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
       let hasReceivedData = false;
       let lastTemplateId = req.template_id || "";
 
-      // Watchdog timeout (150s): cegah UI stuck jika stream backend terhenti tanpa event "done".
+      // Watchdog timeout (configurable): cegah UI stuck jika stream backend terhenti tanpa event "done".
+      // Default 150s; override via env NEXT_PUBLIC_GENERATE_STREAM_WATCHDOG_MS atau prop watchdogMs.
       // Harus lebih panjang dari AI_TIMEOUT_SECONDS (120s) di API agar semua retry provider
       // (Gemini 503, rate limit, dsb.) sempat selesai sebelum frontend cancel request.
+      const watchdogMs = watchdogMsRef.current;
       const watchdogTimer = setTimeout(() => {
         if (isDoneReceived || controller.signal.aborted) return;
-        console.warn(`[generate_stream] req=${requestId} watchdog timeout triggered after 150s`);
+        console.warn(`[generate_stream] req=${requestId} watchdog timeout triggered after ${watchdogMs}ms`);
         isDoneReceived = true;
         try {
           reader.cancel();
@@ -219,7 +227,7 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
         } else {
           onErrorRef.current("Generasi website memakan waktu terlalu lama. Silakan coba lagi.");
         }
-      }, 150000);
+      }, watchdogMs);
 
       try {
         while (!isDoneReceived) {
