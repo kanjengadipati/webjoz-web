@@ -878,6 +878,26 @@ export function VariantWireframe({ section, variant }: { section: string; varian
     );
   }
 
+  if (variant === "product-showcase") {
+    return (
+      <div className="w-full h-14 rounded-lg overflow-hidden relative border border-white/5">
+        {/* bg product photo simulation */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" />
+        <div className="absolute right-0 top-0 bottom-0 w-3/5 bg-gradient-to-l from-primary/15 to-transparent" />
+        {/* headline bottom-left */}
+        <div className="absolute left-2 bottom-2 space-y-0.5">
+          <div className="w-16 h-2 rounded-full bg-white/90" />
+          <div className="w-10 h-1.5 rounded-full bg-white/60" />
+          <div className="w-6 h-1 rounded-full bg-primary/80 mt-0.5" />
+        </div>
+        {/* stamp badge bottom-right */}
+        <div className="absolute right-2 bottom-2 w-7 h-7 rounded-full border border-white/30 flex items-center justify-center">
+          <div className="w-1 h-1 rounded-full bg-white/50" />
+        </div>
+      </div>
+    );
+  }
+
   if (variant === "whatsapp-direct") {
     return (
       <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex flex-col items-center justify-center gap-1 overflow-hidden">

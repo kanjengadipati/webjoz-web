@@ -54,6 +54,7 @@ export const HERO_VARIANTS = [
   { value: "video-bg", label: "Video Latar", labelKey: "heroVideoBg", group: "Visual Foto", description: "Video latar berulang otomatis dengan foto poster sebagai cadangan; sinematik dan hidup." , imageNeed: "required", minImages: 1 },
   { value: "booking-form", label: "Formulir Pesanan", labelKey: "heroBookingForm", group: "Konversi & Kontak", description: "Hero dua kolom dengan formulir pemesanan langsung; fokus pada konversi cepat." , imageNeed: "none", minImages: 0 },
   { value: "location-map", label: "Peta Lokasi", labelKey: "heroLocationMap", group: "Konversi & Kontak", description: "Hero dua kolom dengan peta lokasi langsung dari data kontak; cocok untuk bisnis lokal." , imageNeed: "none", minImages: 0 },
+  { value: "product-showcase", label: "Showcase Produk", labelKey: "heroProductShowcase", group: "Visual Foto", description: "Foto produk full-bleed dengan headline editorial besar dan badge stamp dekoratif; ideal untuk toko, brand produk, dan e-commerce." , imageNeed: "required", minImages: 1 },
 ] as const satisfies readonly HeroVariantMeta[];
 
 export type HeroStyle = (typeof HERO_VARIANTS)[number]["value"];
