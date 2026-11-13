@@ -52,7 +52,7 @@ export default function ProductCompact({
                 )}
               </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "0.5rem" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 320px), 1fr))", gap: "0.5rem" }}>
               {cat.items?.map((item, itemIdx) => (
                 <div key={item.id || itemIdx} className={isMenu ? "relative group cursor-pointer transition-colors hover:bg-[color-mix(in_srgb,var(--dt-primary)_6%,transparent)]" : "group cursor-pointer transition-colors hover:bg-[color-mix(in_srgb,var(--dt-primary)_6%,transparent)]"} onClick={() => setQuickView({ catIdx, itemIdx })} style={{ position: "relative", display: "flex", flexDirection: "column", gap: "0.125rem", padding: "0.5rem 0.75rem", borderRadius: "var(--dt-radius)", opacity: item.is_available === false ? 0.6 : 1 }}>
                   {isMenu && isEditorMode && onDeleteItem && (
