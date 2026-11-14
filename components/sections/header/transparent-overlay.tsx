@@ -148,6 +148,7 @@ export default function TransparentOverlay({
           isEditorMode={isEditorMode}
           isSelected={isSelected}
           collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          lightOnHero={lightOnHero}
         />
         <div className="min-w-0 flex flex-col justify-center">
           <InlineText
