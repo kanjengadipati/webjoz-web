@@ -115,6 +115,16 @@
     "minImages": 0
   },
   {
+    "name": "product-showcase",
+    "imageNeed": "required",
+    "minImages": 1
+  },
+  {
+    "name": "cinematic",
+    "imageNeed": "required",
+    "minImages": 3
+  },
+  {
     "name": "tech-saas",
     "imageNeed": "none",
     "minImages": 0
