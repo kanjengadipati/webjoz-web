@@ -43,7 +43,7 @@ export default function HeroProductShowcase({
       id="hero"
       style={{
         position: "relative",
-        minHeight: "min(90vh, 820px)",
+        minHeight: "min(92vh, 860px)",
         overflow: "hidden",
         background: h.background_color || "var(--dt-bg, #0f0f0f)",
         display: "flex",
@@ -96,8 +96,7 @@ export default function HeroProductShowcase({
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-end",
-          padding: "clamp(1.5rem, 5vw, 4rem) clamp(1.5rem, 6vw, 5rem)",
-          paddingTop: "clamp(4rem, 12vw, 8rem)",
+          padding: "clamp(2rem, 5vw, 4rem) clamp(1.5rem, 6vw, 5rem) clamp(3rem, 7vw, 5rem)",
         }}
       >
         {/* Eyebrow label */}
