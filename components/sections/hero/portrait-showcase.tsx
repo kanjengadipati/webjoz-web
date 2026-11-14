@@ -82,7 +82,7 @@ export default function HeroPortraitShowcase({
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
-                objectPosition: "top center",
+                objectPosition: (h as any).image_position || "center 20%",
                 display: "block",
               }}
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}

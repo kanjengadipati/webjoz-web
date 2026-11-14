@@ -156,7 +156,7 @@ export default function HeroImageCarousel({
                   width: "100%",
                   height: "100%",
                   objectFit: "cover",
-                  objectPosition: (h as any).image_position || "center top",
+                  objectPosition: (h as any).image_position || "center 20%",
                   display: "block",
                   opacity: slideList[safeIndex]?.hidden ? 0.45 : undefined,
                 }}

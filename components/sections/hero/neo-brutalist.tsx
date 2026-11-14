@@ -314,7 +314,7 @@ export default function HeroNeoBrutalist({
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
                   className="w-full h-full"
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: (h as any).image_position || "center 20%", display: "block" }}
                   collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                 />
                 <div style={{ position: "absolute", bottom: 8, right: 8, zIndex: 20 }}>

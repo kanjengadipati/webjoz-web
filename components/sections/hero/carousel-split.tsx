@@ -368,6 +368,7 @@ export default function HeroCarouselSplit({
                   width: "100%",
                   height: "100%",
                   objectFit: "cover",
+                  objectPosition: (h as any).image_position || "center 20%",
                   display: "block",
                 }}
                 collapseSheetForInlineEdit={collapseSheetForInlineEdit}
