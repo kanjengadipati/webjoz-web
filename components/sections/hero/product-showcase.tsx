@@ -36,7 +36,7 @@ export default function HeroProductShowcase({
   };
 
   // Rotary stamp text — fallback ke business-generic jika kosong
-  const stampText = h.eyebrow || (isEN ? "Premium · Quality · Original" : "Produk · Pilihan · Terbaik");
+  const stampText = h.eyebrow;
 
   return (
     <section
@@ -228,6 +228,7 @@ export default function HeroProductShowcase({
       </div>
 
       {/* ── Rotary stamp badge (bottom-right) ─────────────────────── */}
+      {stampText && (
       <motion.div
         initial={reduce ? false : { opacity: 0, rotate: -20, scale: 0.85 }}
         animate={{ opacity: 1, rotate: 0, scale: 1 }}
@@ -268,6 +269,8 @@ export default function HeroProductShowcase({
           <circle cx="60" cy="60" r="4" fill="rgba(255,255,255,0.5)" />
         </svg>
       </motion.div>
+
+      )}
 
       {/* ── Photo credit ──────────────────────────────────────────── */}
       {h.image_credit?.name && (
