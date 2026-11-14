@@ -6,7 +6,7 @@ import type { HeaderVariantProps } from "./types";
 
 export default function LeftLogoInlineNav({
   header, sectionOrder, hiddenSections,
-  navLinkClass = "", drawerStyle, extraLinks, language,
+  navLinkClass = "", drawerStyle, extraLinks, language, design_token,
   onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
 }: HeaderVariantProps) {
   const defaultCta = language === "en" ? "Get in Touch" : "Hubungi Kami";
@@ -23,13 +23,14 @@ export default function LeftLogoInlineNav({
           url={header?.logo_url}
           icon={header?.icon}
           defaultIcon={Globe}
-          iconClass="w-7 h-7 shrink-0 text-[var(--dt-primary)]"
+          iconClass={`w-7 h-7 shrink-0 ${design_token?.theme_mode === "dark" ? "text-white" : "text-[var(--dt-primary)]"}`}
           imgClass="h-10 w-auto max-w-[120px] shrink-0 object-contain"
           section="header"
           onUpdateField={onUpdateField}
           isEditorMode={isEditorMode}
           isSelected={isSelected}
           collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          lightOnHero={design_token?.theme_mode === "dark"}
         />
         <div className="min-w-0 flex flex-col justify-center">
           <InlineText

@@ -6,7 +6,7 @@ import type { HeaderVariantProps } from "./types";
 
 export default function StackedLogoTagline({
   header, sectionOrder, hiddenSections,
-  navLinkClass = "", drawerStyle, extraLinks, language,
+  navLinkClass = "", drawerStyle, extraLinks, language, design_token,
   onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
 }: HeaderVariantProps) {
   const defaultCta = language === "en" ? "Get in Touch" : "Hubungi Kami";
@@ -23,13 +23,14 @@ export default function StackedLogoTagline({
           url={header?.logo_url}
           icon={header?.icon}
           defaultIcon={Globe}
-          iconClass="w-7 h-7 shrink-0 text-[var(--dt-primary)]"
+          iconClass={`w-7 h-7 shrink-0 ${design_token?.theme_mode === "dark" ? "text-white" : "text-[var(--dt-primary)]"}`}
           imgClass="h-10 w-auto shrink-0 object-contain"
           section="header"
           onUpdateField={onUpdateField}
           isEditorMode={isEditorMode}
           isSelected={isSelected}
           collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          lightOnHero={design_token?.theme_mode === "dark"}
         />
         <span className="text-lg font-bold text-[var(--dt-text)] tracking-wide text-center">
           <InlineText
