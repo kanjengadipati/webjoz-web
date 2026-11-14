@@ -682,7 +682,7 @@ export const PreviewSectionWrapper: React.FC<{
               {canHide && <SectionVisibilityButton section={section} />}
               {canReorder && <SectionDragControls section={section} />}
               {/* Label segment */}
-              <span className={`${hasVariants ? "hidden sm:inline-flex" : "inline-flex"} items-center h-full px-2 sm:px-2.5 text-[8px] sm:text-[8.5px] font-bold tracking-[0.1em] text-slate-400 uppercase select-none`}>
+              <span className={`${hasVariants ? "hidden sm:inline-flex" : "inline-flex"} items-center h-full px-2 sm:px-2.5 text-[8px] sm:text-[8.5px] font-bold tracking-[0.1em] text-white/50 uppercase select-none`}>
                 {displayLabel}
               </span>
 
@@ -705,14 +705,14 @@ export const PreviewSectionWrapper: React.FC<{
                       }
                       setIsGalleryOpen((prev) => !prev);
                     }}
-                    className={`h-full inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:pl-2 sm:pr-2.5 ${canEditSection ? "rounded-2xl sm:rounded-none" : "rounded-2xl sm:rounded-none sm:rounded-r-2xl"} text-[9px] sm:text-[9.5px] font-medium cursor-pointer transition-colors outline-none focus:outline-none focus-visible:outline-none select-none ${
-                      isGalleryOpen ? "text-sky-300 bg-sky-500/10" : "text-slate-200 hover:text-white hover:bg-white/5"
+                    className={`h-full inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:pl-2 sm:pr-2.5 ${canEditSection ? "rounded-2xl sm:rounded-none" : "rounded-2xl sm:rounded-none sm:rounded-r-2xl"} text-[9px] sm:text-[9.5px] font-semibold cursor-pointer transition-colors outline-none focus:outline-none focus-visible:outline-none select-none ${
+                      isGalleryOpen ? "text-sky-300 bg-sky-500/10" : "text-white hover:text-white hover:bg-white/5"
                     }`}
                   >
                     <span className="max-w-[85px] sm:max-w-[150px] truncate leading-none">
                       {activeOpt ? getVariantLabel(section, activeOpt.value, t) : t("dashboard.sitesEditor.variantLabel")}
                     </span>
-                    <ChevronDown className={`w-2.5 h-2.5 shrink-0 transition-transform duration-200 ${isGalleryOpen ? "rotate-180 text-sky-400" : "text-slate-400"}`} />
+                    <ChevronDown className={`w-2.5 h-2.5 shrink-0 transition-transform duration-200 ${isGalleryOpen ? "rotate-180 text-sky-400" : "text-white/60"}`} />
                   </button>
                 </>
               )}

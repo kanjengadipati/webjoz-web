@@ -4,7 +4,7 @@ import { NavMenu, LogoImage, navCtaHref, InlineText } from "../../templates/shar
 import { Globe } from "lucide-react";
 import type { HeaderVariantProps } from "./types";
 
-const DARK_HEROES = new Set(["full-bleed", "image-carousel"]);
+const DARK_HEROES = new Set(["full-bleed", "image-carousel", "carousel-split", "carousel-filmstrip", "video-bg", "product-showcase", "cinematic", "bento-grid"]);
 const SPLIT_HEROES = new Set(["split", "split-editorial"]);
 
 export default function TransparentOverlay({
