@@ -497,7 +497,12 @@ export function filterEmptySections(sectionOrder: string[], content: any, isEdit
   if (isEditorMode) return sectionOrder;
   return sectionOrder.filter((key) => {
     if (key === "faq") return (content.faq?.items?.length ?? 0) > 0;
-    if (key === "testimonials") return (content.testimonials?.items?.length ?? 0) > 0;
+    if (key === "testimonials") {
+      // Example testimonials (injected placeholder copy) are hidden outside the
+      // editor by TestimonialsSection, so they must not keep the section or its
+      // nav link alive either.
+      return (content.testimonials?.items?.length ?? 0) > 0 && content.testimonials?._is_example !== true;
+    }
     if (key === "gallery") return (content.gallery?.items?.length ?? 0) > 0;
     if (key === "works") return (content.works?.items?.length ?? 0) > 0;
     if (key === "menu") return (content.menu?.categories?.length ?? 0) > 0;
