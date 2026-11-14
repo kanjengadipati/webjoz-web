@@ -72,7 +72,7 @@ export default function HeroWorkPreviewStrip({
             isSelected={isSelected}
             isBackground={true}
             className="w-full h-full"
-            style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.07, mixBlendMode: "luminosity" }}
+            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: (h as any).image_position || "center 20%", opacity: 0.07, mixBlendMode: "luminosity" }}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
           />
           <div style={{ position: "absolute", bottom: 4, right: 8, zIndex: 20 }}>

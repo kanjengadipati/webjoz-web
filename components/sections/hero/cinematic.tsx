@@ -114,7 +114,7 @@ export default function HeroCinematic({
                 src={src}
                 alt=""
                 aria-hidden
-                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: (h as any).image_position || "center 20%", display: "block" }}
               />
             ) : (
               <div style={{ width: "100%", height: "100%", background: "color-mix(in srgb, var(--dt-primary) 12%, #1a1a1a)" }} />

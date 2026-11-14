@@ -127,6 +127,7 @@ export default function HeroArchPortrait({
               src={h.image_url}
               alt={h.headline || s.heroImageAlt}
               className="h-full w-full object-cover"
+              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: (h as any).image_position || "center 20%", display: "block" }}
             />
           </div>
           <PhotoCredit

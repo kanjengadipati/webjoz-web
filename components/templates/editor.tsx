@@ -671,6 +671,10 @@ export const PreviewSectionWrapper: React.FC<{
           className={`absolute ${
             section === "hero" && hasHeaderOverlay
               ? "top-24 left-2.5"
+              : section === "header"
+              ? currentVariant === "centered-logo"
+                ? "top-2 left-2.5"
+                : "top-2 left-1/2 -translate-x-1/2"
               : "top-2 left-2.5"
           } ${isGalleryOpen ? "z-[90]" : "z-[70]"} transition-all duration-150 ${
             isSelected || isGalleryOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto"
@@ -747,7 +751,11 @@ export const PreviewSectionWrapper: React.FC<{
                   {isGalleryOpen && (
                     <div
                       onClick={(e) => e.stopPropagation()}
-                      className="absolute top-full left-0 mt-1.5 z-50 w-[320px]"
+                      className={`absolute top-full ${
+                        section === "header" && currentVariant !== "centered-logo"
+                          ? "left-1/2 -translate-x-1/2"
+                          : "left-0"
+                      } mt-1.5 z-50 w-[320px]`}
                       style={{ animation: "fadeInDown 0.15s ease-out" }}
                     >
                       <VisualVariantPanel

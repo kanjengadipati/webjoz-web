@@ -426,8 +426,20 @@ export function InlineImage({
 
   if (!isEditorMode || !onUpdateField) {
     if (!src) return null;
+    const resolvedPosition =
+      style?.objectPosition || (section === "hero" ? "center 20%" : undefined);
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={src} alt={alt} className={className} style={style} />;
+    return (
+      <img
+        src={src}
+        alt={alt}
+        className={className}
+        style={{
+          ...style,
+          ...(resolvedPosition ? { objectPosition: resolvedPosition } : {}),
+        }}
+      />
+    );
   }
 
   const handleTriggerUpload = (e: React.MouseEvent | React.TouchEvent) => {
@@ -512,7 +524,9 @@ export function InlineImage({
           className={`w-full h-full ${isCompact ? "object-contain" : "object-cover"}`}
           style={{
             objectFit: style?.objectFit,
-            objectPosition: style?.objectPosition,
+            objectPosition:
+              style?.objectPosition ||
+              (section === "hero" ? "center 20%" : undefined),
           }}
         />
       ) : isCompact ? (

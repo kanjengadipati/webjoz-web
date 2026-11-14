@@ -45,6 +45,7 @@ export default function HeroFloatingCard({
             isBackground
             creditPosition={{ position: "absolute", bottom: 12, right: 16, zIndex: 20 }}
             className="h-full w-full object-cover"
+            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: (h as any).image_position || "center 20%", display: "block" }}
           />
         </div>
 

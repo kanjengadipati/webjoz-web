@@ -224,7 +224,7 @@ export default function HeroBentoGrid({
                 credit={h.image_credit}
                 language={language}
                 className="w-full h-full"
-                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: (h as any).image_position || "center 20%", display: "block" }}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}

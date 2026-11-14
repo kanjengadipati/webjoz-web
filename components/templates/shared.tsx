@@ -3450,7 +3450,7 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
               flexShrink: 0,
             }}
           >
-            <DynamicIcon name={icon} defaultIcon={defaultIcon} className={iconClass || "w-5 h-5 text-white"} style={{ color: "#fff" }} />
+            <DynamicIcon name={icon} defaultIcon={defaultIcon} className={iconClass || "w-5 h-5"} style={{ color: isLight ? "#fff" : "var(--dt-cta-text, #fff)" }} />
             {/* Dashed highlight on hover / when selected */}
             <div
               className={`absolute -inset-1 rounded-xl border-2 border-dashed ${
@@ -3540,7 +3540,7 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
           : "0 2px 10px color-mix(in srgb, var(--dt-primary) 40%, transparent)",
       }}
     >
-      <DynamicIcon name={icon} defaultIcon={defaultIcon} className={iconClass || "w-5 h-5 text-white"} style={{ color: "#fff" }} />
+      <DynamicIcon name={icon} defaultIcon={defaultIcon} className={iconClass || "w-5 h-5"} style={{ color: isLight ? "#fff" : "var(--dt-cta-text, #fff)" }} />
     </div>
   );
 };
