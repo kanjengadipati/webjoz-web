@@ -65,7 +65,7 @@ export default function HeroVideoBg({
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            objectPosition: "center",
+            objectPosition: (h as any).image_position || "center top",
             display: "block",
           }}
         />
@@ -91,7 +91,7 @@ export default function HeroVideoBg({
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            objectPosition: "center",
+            objectPosition: (h as any).image_position || "center top",
             pointerEvents: "none",
           }}
         />

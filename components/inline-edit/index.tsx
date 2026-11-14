@@ -510,6 +510,10 @@ export function InlineImage({
           src={src}
           alt={alt}
           className={`w-full h-full ${isCompact ? "object-contain" : "object-cover"}`}
+          style={{
+            objectFit: style?.objectFit,
+            objectPosition: style?.objectPosition,
+          }}
         />
       ) : isCompact ? (
         <div

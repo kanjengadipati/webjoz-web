@@ -3350,15 +3350,17 @@ interface LogoImageProps {
   isEditorMode?: boolean;
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
+  lightOnHero?: boolean;
 }
 
-const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit }: LogoImageProps) => {
+const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, lightOnHero }: LogoImageProps) => {
   const { t } = useI18n();
   const [imgError, setImgError] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
   const touchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const isLight = Boolean(lightOnHero || (iconClass && iconClass.includes("text-white")));
 
   const handleTouchReveal = (e: React.TouchEvent) => {
     e.stopPropagation();
@@ -3434,24 +3436,35 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
               width: "2.5rem",
               height: "2.5rem",
               borderRadius: "var(--dt-radius, 0.75rem)",
-              background:
-                "linear-gradient(135deg, var(--dt-primary) 0%, color-mix(in srgb, var(--dt-primary) 65%, #000 35%) 100%)",
-              boxShadow:
-                "0 2px 10px color-mix(in srgb, var(--dt-primary) 40%, transparent)",
+              background: isLight
+                ? "rgba(255, 255, 255, 0.18)"
+                : "linear-gradient(135deg, var(--dt-primary) 0%, color-mix(in srgb, var(--dt-primary) 65%, #000 35%) 100%)",
+              backdropFilter: isLight ? "blur(12px) saturate(1.4)" : undefined,
+              WebkitBackdropFilter: isLight ? "blur(12px) saturate(1.4)" : undefined,
+              border: isLight
+                ? "1px solid rgba(255, 255, 255, 0.45)"
+                : "1px solid transparent",
+              boxShadow: isLight
+                ? "0 4px 16px rgba(0, 0, 0, 0.25)"
+                : "0 2px 10px color-mix(in srgb, var(--dt-primary) 40%, transparent)",
               flexShrink: 0,
             }}
           >
-            <DynamicIcon name={icon} defaultIcon={defaultIcon} className="w-5 h-5" style={{ color: "#fff" }} />
+            <DynamicIcon name={icon} defaultIcon={defaultIcon} className={iconClass || "w-5 h-5 text-white"} style={{ color: "#fff" }} />
             {/* Dashed highlight on hover / when selected */}
             <div
-              className={`absolute -inset-1 rounded-xl border-2 border-dashed border-primary/40 bg-primary/5 transition-opacity pointer-events-none ${
+              className={`absolute -inset-1 rounded-xl border-2 border-dashed ${
+                isLight ? "border-white/50 bg-white/10" : "border-primary/40 bg-primary/5"
+              } transition-opacity pointer-events-none ${
                 isSelected
                   ? "opacity-100"
                   : "opacity-0 group-hover/logo-ph:opacity-100"
               }`}
             />
             {/* Small camera badge — corner indicator that this is clickable to upload */}
-            <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-slate-900/90 border border-white/30 flex items-center justify-center shadow transition-transform group-hover/logo-ph:scale-110">
+            <span className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full ${
+              isLight ? "bg-white/25 border-white/60 text-white backdrop-blur-sm" : "bg-slate-900/90 border-white/30 text-white"
+            } border flex items-center justify-center shadow transition-transform group-hover/logo-ph:scale-110`}>
               <Camera className="w-2.5 h-2.5 text-white" />
             </span>
           </div>
@@ -3461,7 +3474,7 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
         {hasLogo && (
           <div
             className={`absolute inset-0 z-20 flex items-center justify-center bg-black/55 backdrop-blur-[1px] rounded transition-all duration-150 pointer-events-none ${
-              isSelected || isTouched
+              isTouched
                 ? "opacity-100 pointer-events-auto"
                 : "opacity-0 group-hover/logo:opacity-100 group-hover/logo:pointer-events-auto"
             }`}
@@ -3514,13 +3527,20 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
         width: "2.5rem",
         height: "2.5rem",
         borderRadius: "var(--dt-radius, 0.75rem)",
-        background:
-          "linear-gradient(135deg, var(--dt-primary) 0%, color-mix(in srgb, var(--dt-primary) 65%, #000 35%) 100%)",
-        boxShadow:
-          "0 2px 10px color-mix(in srgb, var(--dt-primary) 40%, transparent)",
+        background: isLight
+          ? "rgba(255, 255, 255, 0.18)"
+          : "linear-gradient(135deg, var(--dt-primary) 0%, color-mix(in srgb, var(--dt-primary) 65%, #000 35%) 100%)",
+        backdropFilter: isLight ? "blur(12px) saturate(1.4)" : undefined,
+        WebkitBackdropFilter: isLight ? "blur(12px) saturate(1.4)" : undefined,
+        border: isLight
+          ? "1px solid rgba(255, 255, 255, 0.45)"
+          : "1px solid transparent",
+        boxShadow: isLight
+          ? "0 4px 16px rgba(0, 0, 0, 0.25)"
+          : "0 2px 10px color-mix(in srgb, var(--dt-primary) 40%, transparent)",
       }}
     >
-      <DynamicIcon name={icon} defaultIcon={defaultIcon} className="w-5 h-5 text-white" />
+      <DynamicIcon name={icon} defaultIcon={defaultIcon} className={iconClass || "w-5 h-5 text-white"} style={{ color: "#fff" }} />
     </div>
   );
 };

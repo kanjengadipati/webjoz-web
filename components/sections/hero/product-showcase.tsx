@@ -62,7 +62,7 @@ export default function HeroProductShowcase({
             isEditorMode={isEditorMode}
             isSelected={isSelected}
             className="w-full h-full"
-            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }}
+            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: (h as any).image_position || "top center", display: "block" }}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
           />
         ) : (
