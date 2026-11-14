@@ -3361,6 +3361,9 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
   const touchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isLight = Boolean(lightOnHero || (iconClass && iconClass.includes("text-white")));
+  const logoImgStyle: React.CSSProperties | undefined = isLight
+    ? { filter: "brightness(0) invert(1) drop-shadow(0 1px 3px rgba(0,0,0,0.45))" }
+    : undefined;
 
   const handleTouchReveal = (e: React.TouchEvent) => {
     e.stopPropagation();
@@ -3423,6 +3426,7 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
             src={url}
             alt="Logo"
             className={imgClass || "h-8 w-auto object-contain"}
+            style={logoImgStyle}
             onError={() => setImgError(true)}
           />
         ) : (
@@ -3515,6 +3519,7 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
       <img
         src={url}
         className={imgClass || "h-8 sm:h-9 w-auto max-w-[140px] shrink-0 object-contain rounded-md"}
+        style={logoImgStyle}
         alt="Logo"
         onError={() => setImgError(true)}
       />
