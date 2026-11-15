@@ -262,7 +262,10 @@ function PublicWizardContent() {
           const draftMat = await materializeDraftMedia(pending.previewContent);
           // 2) Materialize blob URL preview lokal (jalur tanpa redirect) bila ada.
           const matResult = await materializeContentMedia(draftMat.content);
-          let contentForSave = matResult.error ? draftMat.content : matResult.content;
+          if (matResult.failed > 0) {
+            console.warn("[create] Beberapa gambar gagal di-upload, akan di-skip:", matResult.failed);
+          }
+          let contentForSave = matResult.content;
           // 3) Jangan biarkan sentinel/blob yang gagal diproses lolos ke server.
           contentForSave = stripPendingMedia(contentForSave);
 

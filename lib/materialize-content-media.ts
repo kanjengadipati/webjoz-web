@@ -86,6 +86,9 @@ export async function materializeContentMedia(content: any): Promise<Materialize
   const runOne = async (blobUrl: string) => {
     try {
       const res = await fetch(blobUrl);
+      if (!res.ok) {
+        throw new Error(`Fetch blob gagal: ${res.status}`);
+      }
       const blob = await res.blob();
       const ext =
         blob.type === "image/png" ? "png" :
@@ -97,6 +100,8 @@ export async function materializeContentMedia(content: any): Promise<Materialize
       uploaded++;
     } catch (err: any) {
       failed++;
+      console.warn("[materializeContentMedia] Gagal upload blob:", blobUrl, err?.message || err);
+      // Jangan hentikan save — strip blob ini nanti di replaceStrings.
       if (!firstError) firstError = err?.message || "Gagal mengunggah gambar.";
     }
   };

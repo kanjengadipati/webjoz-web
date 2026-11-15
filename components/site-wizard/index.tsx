@@ -998,8 +998,9 @@ export function SiteWizard({
 
         // Materialize blob URL preview lokal → Cloudinary secure_url (sekali).
         const matResult = await materializeContentMedia(preview.previewData.content);
-        if (matResult.error) {
-          throw new Error(matResult.error);
+        if (matResult.failed > 0) {
+          console.warn("[wizard] Beberapa gambar gagal di-upload, akan di-skip:", matResult.failed);
+          // Jangan throw — lanjut simpan dengan gambar yang berhasil.
         }
         const contentForSave = matResult.content;
 

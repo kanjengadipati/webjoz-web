@@ -169,6 +169,9 @@ export async function persistDraftMedia(content: any): Promise<PersistDraftMedia
     }
     try {
       const res = await fetch(blobUrl);
+      if (!res.ok) {
+        throw new Error(`Fetch blob gagal: ${res.status}`);
+      }
       const blob = await res.blob();
       const id = makeId();
       await putRecord(db, { id, blob });
@@ -253,7 +256,8 @@ export async function materializeDraftMedia(content: any): Promise<MaterializeDr
       await putRecord(db, { id, blob, url: secureUrl });
       map.set(sentinel, secureUrl);
       uploaded++;
-    } catch {
+    } catch (err) {
+      console.warn("[materializeDraftMedia] Gagal upload sentinel:", id, err);
       map.set(sentinel, "");
       failed++;
     }
