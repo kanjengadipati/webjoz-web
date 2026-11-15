@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useI18n } from "@/lib/i18n/context";
-import { Camera, Link2, Check, X, Loader2 } from "lucide-react";
+import { Camera, Link2, Check, X, Loader2, RefreshCw } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { compressImage, uploadImageFile } from "@/components/file-upload";
 import { useEditorChromeEnabled } from "@/components/sections/editor-chrome-context";
+import { useWizardRegen } from "@/components/sections/wizard-regen-context";
 
 // ─── Global AI Rewrite Singleton ─────────────────────────────────────────────
 // Set by the dashboard editor (page.tsx) so InlineText doesn't need to receive
@@ -63,6 +64,12 @@ export interface InlineTextProps {
    * Throw error jika gagal, InlineText akan handle toast-nya sendiri.
    */
   onAiRewrite?: (currentValue: string) => Promise<string>;
+  /**
+   * Callback regenerate untuk wizard preview (editorChrome=false).
+   * Jika disediakan, icon Refresh akan muncul saat focus/klik teks.
+   * Digunakan untuk memberi tahu user bahwa fitur AI regen butuh login.
+   */
+  onRegen?: () => void;
 }
 
 export function InlineText({
@@ -82,8 +89,11 @@ export function InlineText({
   placeholder,
   children,
   onAiRewrite,
+  onRegen: onRegenProp,
 }: InlineTextProps) {
   const { t } = useI18n();
+  const wizardRegen = useWizardRegen();
+  const onRegen = onRegenProp ?? wizardRegen ?? undefined;
   const elementRef = useRef<HTMLElement | null>(null);
   const wrapperRef = useRef<HTMLElement | null>(null);
   const isInteractingWithAiButtonRef = useRef(false);
@@ -108,6 +118,16 @@ export function InlineText({
   // Show AI button when: editor mode, ai rewrite available, field is multiline OR has enough words
   const wordCount = (currentDisplay || "").trim().split(/\s+/).filter(Boolean).length;
   const showAiButton = !!(isEditorMode && onUpdateField && resolvedOnAiRewrite && (multiline || wordCount >= AI_MIN_WORDS));
+
+  // Show Regen button (wizard preview): editor mode, onUpdateField, onRegen provided, NO AI rewrite
+  // This gives users a taste of the feature but gates it behind login.
+  const showRegenButton = !!(
+    isEditorMode &&
+    onUpdateField &&
+    onRegen &&
+    !resolvedOnAiRewrite &&
+    (multiline || wordCount >= AI_MIN_WORDS)
+  );
 
   // Keep DOM in sync when value changes from outside (e.g. undo, AI regen)
   useEffect(() => {
@@ -228,8 +248,8 @@ export function InlineText({
   };
 
   const isShowingPlaceholder = !hasValue && !!placeholder && !isFocused;
-  // Icon AI baru muncul saat user klik/fokus ke input text (atau saat AI sedang menulis)
-  const showAiBadge = showAiButton && (isFocused || aiWriting);
+  // Icon AI / Regen baru muncul saat user klik/fokus ke input text (atau saat AI sedang menulis)
+  const showAiBadge = (showAiButton || showRegenButton) && (isFocused || aiWriting);
 
   const editableEl = (
     <Comp
@@ -265,10 +285,10 @@ export function InlineText({
     </Comp>
   );
 
-  // If no AI button needed, render as before
-  if (!showAiButton) return editableEl;
+  // If neither AI nor Regen button, render as before
+  if (!showAiButton && !showRegenButton) return editableEl;
 
-  // With AI button: wrap in relative container so we can position the icon
+  // With AI or Regen button: wrap in relative container so we can position the icon
   return (
     <span
       ref={wrapperRef}
@@ -277,45 +297,84 @@ export function InlineText({
       {editableEl}
 
       {/* AI Sparkle Button — top-right corner, only appears when user clicks/focuses text */}
-      <button
-        type="button"
-        onPointerDown={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          isInteractingWithAiButtonRef.current = true;
-        }}
-        onMouseDown={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          isInteractingWithAiButtonRef.current = true;
-        }}
-        onTouchStart={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          isInteractingWithAiButtonRef.current = true;
-        }}
-        onClick={handleAiRewrite}
-        onTouchEnd={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          handleAiRewrite(e);
-        }}
-        disabled={aiWriting}
-        aria-label="Tulis ulang dengan AI"
-        title={aiWriting ? "AI sedang menulis..." : "Tulis ulang dengan AI"}
-        className={`absolute -top-3 -right-3 sm:-top-2.5 sm:-right-2.5 z-30 flex items-center justify-center w-7 h-7 sm:w-5 sm:h-5 rounded-full shadow-md border border-amber-400/70 transition-all duration-150 cursor-pointer
-          before:absolute before:-inset-2 before:content-['']
-          ${showAiBadge ? "opacity-100 scale-100" : "opacity-0 scale-75 pointer-events-none"}
-          ${aiWriting
-            ? "bg-amber-500 text-white cursor-wait"
-            : "bg-slate-900/90 hover:bg-amber-500 text-amber-400 hover:text-white hover:border-amber-500 hover:scale-110 active:scale-95"}
-        `}
-      >
-        {aiWriting
-          ? <Loader2 className="w-3.5 h-3.5 sm:w-3 sm:h-3 animate-spin" />
-          : <SparkleIcon className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
-        }
-      </button>
+      {showAiButton && (
+        <button
+          type="button"
+          onPointerDown={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            isInteractingWithAiButtonRef.current = true;
+          }}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            isInteractingWithAiButtonRef.current = true;
+          }}
+          onTouchStart={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            isInteractingWithAiButtonRef.current = true;
+          }}
+          onClick={handleAiRewrite}
+          onTouchEnd={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleAiRewrite(e);
+          }}
+          disabled={aiWriting}
+          aria-label="Tulis ulang dengan AI"
+          title={aiWriting ? "AI sedang menulis..." : "Tulis ulang dengan AI"}
+          className={`absolute -top-3 -right-3 sm:-top-2.5 sm:-right-2.5 z-30 flex items-center justify-center w-7 h-7 sm:w-5 sm:h-5 rounded-full shadow-md border border-amber-400/70 transition-all duration-150 cursor-pointer
+            before:absolute before:-inset-2 before:content-['']
+            ${showAiBadge ? "opacity-100 scale-100" : "opacity-0 scale-75 pointer-events-none"}
+            ${aiWriting
+              ? "bg-amber-500 text-white cursor-wait"
+              : "bg-slate-900/90 hover:bg-amber-500 text-amber-400 hover:text-white hover:border-amber-500 hover:scale-110 active:scale-95"}
+          `}
+        >
+          {aiWriting
+            ? <Loader2 className="w-3.5 h-3.5 sm:w-3 sm:h-3 animate-spin" />
+            : <SparkleIcon className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
+          }
+        </button>
+      )}
+
+      {/* Regen Button (wizard preview) — shows login-required toast */}
+      {showRegenButton && (
+        <button
+          type="button"
+          onPointerDown={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            isInteractingWithAiButtonRef.current = true;
+          }}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            isInteractingWithAiButtonRef.current = true;
+          }}
+          onTouchStart={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            isInteractingWithAiButtonRef.current = true;
+          }}
+          onClick={onRegen}
+          onTouchEnd={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onRegen?.();
+          }}
+          aria-label="Generate ulang dengan AI (butuh login)"
+          title="Generate ulang dengan AI — butuh login"
+          className={`absolute -top-3 -right-3 sm:-top-2.5 sm:-right-2.5 z-30 flex items-center justify-center w-7 h-7 sm:w-5 sm:h-5 rounded-full shadow-md border border-slate-600/70 transition-all duration-150 cursor-pointer
+            before:absolute before:-inset-2 before:content-['']
+            ${showAiBadge ? "opacity-100 scale-100" : "opacity-0 scale-75 pointer-events-none"}
+            bg-slate-900/90 hover:bg-blue-500 text-slate-400 hover:text-white hover:border-blue-500 hover:scale-110 active:scale-95
+          `}
+        >
+          <RefreshCw className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
+        </button>
+      )}
 
       {/* Error tooltip */}
       {aiError && (
