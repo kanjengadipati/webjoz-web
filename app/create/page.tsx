@@ -261,9 +261,11 @@ function PublicWizardContent() {
           //    user diarahkan login (blob URL tidak selamat melewati redirect).
           const draftMat = await materializeDraftMedia(pending.previewContent);
           // 2) Materialize blob URL preview lokal (jalur tanpa redirect) bila ada.
-          const matResult = await materializeContentMedia(draftMat.content);
+          //    Fallback ke gambar AI asli (previewDesignToken tidak punya content, tapi
+          //    pending.previewContent sebelum edit tidak tersimpan terpisah).
+          const matResult = await materializeContentMedia(draftMat.content, pending.previewContent);
           if (matResult.failed > 0) {
-            console.warn("[create] Beberapa gambar gagal di-upload, akan di-skip:", matResult.failed);
+            console.warn("[create] Beberapa gambar gagal di-upload, fallback ke gambar AI:", matResult.failed);
           }
           let contentForSave = matResult.content;
           // 3) Jangan biarkan sentinel/blob yang gagal diproses lolos ke server.

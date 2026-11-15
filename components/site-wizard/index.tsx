@@ -997,10 +997,10 @@ export function SiteWizard({
           : preview.previewData.design_token;
 
         // Materialize blob URL preview lokal → Cloudinary secure_url (sekali).
-        const matResult = await materializeContentMedia(preview.previewData.content);
+        // Fallback ke streamedSections (gambar AI asli) kalau upload gagal.
+        const matResult = await materializeContentMedia(preview.previewData.content, preview.streamedSections);
         if (matResult.failed > 0) {
-          console.warn("[wizard] Beberapa gambar gagal di-upload, akan di-skip:", matResult.failed);
-          // Jangan throw — lanjut simpan dengan gambar yang berhasil.
+          console.warn("[wizard] Beberapa gambar gagal di-upload, fallback ke gambar AI:", matResult.failed);
         }
         const contentForSave = matResult.content;
 

@@ -14,18 +14,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { uploadImageFile } from "@/components/file-upload";
 
-function walkStrings(node: any, cb: (v: string) => void): void {
+function collectBlobUrlsWithPaths(node: any, path: string[] = [], out: Map<string, string[]> = new Map()): Map<string, string[]> {
   if (typeof node === "string") {
-    cb(node);
-    return;
+    if (node.startsWith("blob:")) {
+      out.set(node, [...path]);
+    }
+    return out;
   }
   if (Array.isArray(node)) {
-    node.forEach((n) => walkStrings(n, cb));
-    return;
+    node.forEach((n, i) => collectBlobUrlsWithPaths(n, [...path, String(i)], out));
+    return out;
   }
   if (node && typeof node === "object") {
-    Object.values(node).forEach((v) => walkStrings(v, cb));
+    Object.entries(node).forEach(([k, v]) => collectBlobUrlsWithPaths(v, [...path, k], out));
+    return out;
   }
+  return out;
+}
+
+function getValueByPath(obj: any, path: string[]): any {
+  return path.reduce((acc, key) => acc?.[key], obj);
 }
 
 function replaceStrings(node: any, fn: (v: string) => string): any {
@@ -41,11 +49,7 @@ function replaceStrings(node: any, fn: (v: string) => string): any {
 
 /** Kumpulkan semua blob URL unik di dalam content. */
 export function collectBlobUrls(content: any): string[] {
-  const set = new Set<string>();
-  walkStrings(content, (v) => {
-    if (v.startsWith("blob:")) set.add(v);
-  });
-  return Array.from(set);
+  return Array.from(collectBlobUrlsWithPaths(content).keys());
 }
 
 /** Hapus blob URL (ganti "") supaya draft tidak menyimpan URL yang mati. */
@@ -63,10 +67,10 @@ export interface MaterializeResult {
 
 /**
  * Upload tiap blob URL unik sekali, ganti dengan secure_url.
- * Kalau ada yang gagal, content dikembalikan apa adanya + error (caller
- * sebaiknya menahan save).
+ * Kalau ada yang gagal, fallback ke originalContent (gambar AI asli) jika ada.
+ * Return content yang sudah di-process (gagal di-strip/jadi original).
  */
-export async function materializeContentMedia(content: any): Promise<MaterializeResult> {
+export async function materializeContentMedia(content: any, originalContent?: any): Promise<MaterializeResult> {
   if (!content || typeof content !== "object") {
     return { content, uploaded: 0, failed: 0 };
   }
@@ -115,14 +119,28 @@ export async function materializeContentMedia(content: any): Promise<Materialize
   });
   await Promise.all(workers);
 
-  if (failed > 0) {
-    return { content, uploaded, failed, error: firstError || "Gagal mengunggah gambar." };
+  // Build fallback map from originalContent for any blob that failed/wasn't uploaded
+  const fallbackMap = new Map<string, string>();
+  if (originalContent && failed > 0) {
+    const blobPaths = collectBlobUrlsWithPaths(content);
+    blobPaths.forEach((path, blobUrl) => {
+      if (!urlMap.has(blobUrl)) { // failed or not uploaded
+        const originalVal = getValueByPath(originalContent, path);
+        if (typeof originalVal === "string" && originalVal && !originalVal.startsWith("blob:")) {
+          fallbackMap.set(blobUrl, originalVal);
+        }
+      }
+    });
   }
 
   const newContent = replaceStrings(content, (v) => {
-    if (v.startsWith("blob:")) return urlMap.get(v) ?? v;
+    if (v.startsWith("blob:")) {
+      if (urlMap.has(v)) return urlMap.get(v)!;
+      if (fallbackMap.has(v)) return fallbackMap.get(v)!;
+      return ""; // strip if no fallback
+    }
     return v;
   });
 
-  return { content: newContent, uploaded, failed: 0 };
+  return { content: newContent, uploaded, failed, error: failed > 0 ? firstError || "Beberapa gambar gagal di-upload" : undefined };
 }
