@@ -792,7 +792,7 @@ export const PreviewSectionWrapper: React.FC<{
           }}
           className={`absolute ${
             section === "hero" && hasHeaderOverlay ? "top-24 right-2.5" : "top-2 right-2.5"
-          } z-[70] h-6 inline-flex items-center gap-1.5 bg-primary/90 backdrop-blur-md text-primary-foreground border border-primary/50 hover:bg-primary hover:border-primary text-[9px] font-bold px-2.5 rounded-full cursor-pointer transition-all active:scale-95 duration-150 focus:outline-none focus:ring-1 focus:ring-primary shadow-sm ${
+          } z-[70] h-6 inline-flex items-center gap-1.5 bg-slate-900/90 backdrop-blur-md text-slate-200 border border-white/20 hover:bg-white hover:text-slate-950 hover:border-white text-[9px] font-bold px-2.5 rounded-full cursor-pointer transition-all active:scale-95 duration-150 focus:outline-none focus:ring-1 focus:ring-white shadow-sm ${
             isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
           }`}
         >

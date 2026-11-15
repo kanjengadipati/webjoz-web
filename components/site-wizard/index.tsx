@@ -2827,12 +2827,12 @@ export function SiteWizard({
           </div>
         }
         footer={
-          <div className="flex w-full flex-col-reverse sm:flex-row sm:justify-end gap-2.5">
+          <div className="grid grid-cols-2 gap-2.5 w-full">
             <Button
               type="button"
               variant="secondary"
               onClick={() => setRegenModalOpen(false)}
-              className="w-full sm:w-auto h-11 sm:h-10 px-5 rounded-xl border border-white/10 bg-white/[0.06] hover:bg-white/10 text-slate-200 text-xs font-semibold transition-all active:scale-95"
+              className="w-full h-10 px-4 rounded-xl border border-white/10 bg-white/[0.06] hover:bg-white/10 text-slate-200 text-xs font-semibold transition-all active:scale-95"
             >
               {t("dashboard.wizard.regenModalCancel", "Nanti Saja")}
             </Button>
@@ -2842,9 +2842,9 @@ export function SiteWizard({
                 setRegenModalOpen(false);
                 handleGoToEditor();
               }}
-              className="w-full sm:w-auto h-11 sm:h-10 px-5 rounded-xl text-xs font-bold transition-all active:scale-95"
+              className="w-full h-10 px-4 rounded-xl text-xs font-bold transition-all active:scale-95"
             >
-              <Pencil className="h-3.5 w-3.5 mr-1.5" />
+              <Pencil className="h-3.5 w-3.5 mr-1.5 shrink-0" />
               {t("dashboard.wizard.btnEditPublish", "Edit & Publikasikan")}
             </Button>
           </div>

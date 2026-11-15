@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useI18n } from "@/lib/i18n/context";
-import { Camera, Link2, Check, X, Loader2, RefreshCw } from "lucide-react";
-import { SparkleIcon } from "@/components/sparkle-icon";
+import { Camera, Link2, Check, X, Loader2 } from "lucide-react";
+import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
 import { uploadImageFile } from "@/components/file-upload";
 import { createDeferredImageUrl } from "@/lib/deferred-image";
 import { useToast } from "@/components/toast-provider";
@@ -326,17 +326,17 @@ export function InlineText({
           disabled={aiWriting}
           aria-label={t("dashboard.sitesEditor.inlineAiRewrite")}
           title={aiWriting ? t("dashboard.sitesEditor.inlineAiWriting") : t("dashboard.sitesEditor.inlineAiRewrite")}
-          className={`absolute -top-3 -right-3 sm:-top-2.5 sm:-right-2.5 z-30 flex items-center justify-center w-7 h-7 sm:w-5 sm:h-5 rounded-full shadow-md border border-amber-400/70 transition-all duration-150 cursor-pointer
+          className={`absolute -top-3 -right-3 sm:-top-2.5 sm:-right-2.5 z-30 flex items-center justify-center w-7 h-7 sm:w-5 sm:h-5 rounded-full shadow-md border border-white/20 transition-all duration-150 cursor-pointer
             before:absolute before:-inset-2 before:content-['']
             ${showAiBadge ? "opacity-100 scale-100" : "opacity-0 scale-75 pointer-events-none"}
             ${aiWriting
-              ? "bg-amber-500 text-white cursor-wait"
-              : "bg-slate-900/90 hover:bg-amber-500 text-amber-400 hover:text-white hover:border-amber-500 hover:scale-110 active:scale-95"}
+              ? "bg-white text-slate-950 cursor-wait"
+              : "bg-slate-900/95 hover:bg-white text-slate-300 hover:text-slate-950 hover:border-white hover:scale-110 active:scale-95"}
           `}
         >
           {aiWriting
             ? <Loader2 className="w-3.5 h-3.5 sm:w-3 sm:h-3 animate-spin" />
-            : <SparkleIcon className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
+            : <SparkleGenAI className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
           }
         </button>
       )}
@@ -374,7 +374,7 @@ export function InlineText({
             bg-slate-900/95 hover:bg-white text-slate-300 hover:text-slate-950 hover:border-white hover:scale-110 active:scale-95
           `}
         >
-          <RefreshCw className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
+          <SparkleGenAI className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
         </button>
       )}
 
@@ -662,9 +662,9 @@ export function InlineImage({
               type="button"
               onClick={handleRandomPhoto}
               title="Foto acak (Unsplash)"
-              className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium bg-background/80 hover:bg-background border border-border shadow-xs text-amber-500 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium bg-background/80 hover:bg-background border border-border shadow-xs text-foreground transition-all hover:scale-105 active:scale-95 cursor-pointer"
             >
-              <SparkleIcon className="w-3 h-3 text-amber-500" />
+              <SparkleGenAI className="w-3 h-3 text-foreground" />
               <span>Acak</span>
             </button>
             <button
@@ -796,7 +796,7 @@ export function InlineImage({
                 </span>
               </button>
 
-              {/* Quick Random Photo Button with Webjoz SparkleIcon */}
+              {/* Quick Random Photo Button with Webjoz SparkleGenAI */}
               <button
                 type="button"
                 onClick={handleRandomPhoto}
@@ -804,9 +804,9 @@ export function InlineImage({
                 onTouchStart={(e) => e.stopPropagation()}
                 disabled={uploading}
                 title="Ganti foto acak (Unsplash)"
-                className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-900/90 text-amber-300 hover:text-amber-200 shadow-xl border border-white/20 hover:bg-slate-950 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50 backdrop-blur-md"
+                className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-900/90 text-slate-300 hover:text-white shadow-xl border border-white/20 hover:bg-slate-950 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50 backdrop-blur-md"
               >
-                <SparkleIcon className="w-3.5 h-3.5 text-amber-300" />
+                <SparkleGenAI className="w-3.5 h-3.5 text-slate-300" />
               </button>
 
               {/* Quick URL Input Button */}
