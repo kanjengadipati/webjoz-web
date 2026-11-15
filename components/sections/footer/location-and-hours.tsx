@@ -7,7 +7,7 @@ import { InlineText } from "../../templates/shared";
 export default function LocationAndHours({
   footer, brand_name, hasBlog, language,
   contactAddress, contactMapsUrl, contactOpeningHours,
-  onUpdateField, isEditorMode = false, isSelected = false,
+  onUpdateField, isEditorMode = false, editorChrome, isSelected = false,
   collapseSheetForInlineEdit, onEditingStateChange,
 }: FooterVariantProps) {
   const isEN = language === "en";
@@ -33,7 +33,7 @@ export default function LocationAndHours({
           {/* Brand + tagline */}
           <div>
             <p style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, fontSize: "0.95rem", color: "var(--dt-text)", margin: "0 0 0.5rem" }}>
-              <InlineText section="header" fieldKey="brand_name" value={displayBrand ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
+              <InlineText section="header" fieldKey="brand_name" value={displayBrand ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode && editorChrome !== false} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
             </p>
             {(displayTagline || isEditorMode) && (
               <p style={{ fontSize: "0.8rem", lineHeight: 1.5, margin: 0 }}>

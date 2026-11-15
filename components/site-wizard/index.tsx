@@ -91,6 +91,7 @@ import { MicOnboardingHint } from "./mic-onboarding-hint";
 import { AudioProcessingCard } from "./audio-processing-card";
 import { useToast } from "@/components/toast-provider";
 import { buildFullContent } from "@/lib/build-full-content";
+import { materializeContentMedia, sanitizeContentMedia } from "@/lib/materialize-content-media";
 import { SiteWizardProps, PreviewData } from "./types";
 import { PENDING_KEY, BUSINESS_TYPES, SUB_TYPES, MOOD_OPTIONS, INITIAL_MESSAGE } from "./constants";
 import {
@@ -882,7 +883,7 @@ export function SiteWizard({
 
     if (!token) {
       isSavingRef.current = false;
-      const contentToSave = preview.previewData?.content || preview.streamedSections;
+      const contentToSave = sanitizeContentMedia(preview.previewData?.content || preview.streamedSections);
       const tokenToSave = preview.previewData?.design_token || preview.streamedDesignToken;
       const templateIdToSave = preview.previewData?.template_id || preview.streamedTemplateId || (preview.streamedDesignToken as any)?.template_id || selectTemplate(chat.businessSubType || chat.businessType);
 
@@ -986,8 +987,15 @@ export function SiteWizard({
           ? { ...preview.previewData.design_token, typography }
           : preview.previewData.design_token;
 
+        // Materialize blob URL preview lokal → Cloudinary secure_url (sekali).
+        const matResult = await materializeContentMedia(preview.previewData.content);
+        if (matResult.error) {
+          throw new Error(matResult.error);
+        }
+        const contentForSave = matResult.content;
+
         const enrichedContent = buildFullContent(
-          { content: preview.previewData.content, design_token: finalDesignToken, logo_url: logoForSave },
+          { content: contentForSave, design_token: finalDesignToken, logo_url: logoForSave },
           chat.businessName, chat.businessSubType || chat.businessType, chat.description, chat.whatsapp
         );
         if (logoForSave && !logoForSave.startsWith("data:")) {

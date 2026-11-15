@@ -12,7 +12,7 @@ const BORDER_TOP = "var(--dt-border)";
 
 export default function MinimalBand({
   footer, brand_name, hasBlog,
-  onUpdateField, isEditorMode = false, isSelected = false,
+  onUpdateField, isEditorMode = false, editorChrome, isSelected = false,
   collapseSheetForInlineEdit, onEditingStateChange,
 }: FooterVariantProps) {
   const displayBrand = brand_name || "Bisnis Kami";
@@ -24,7 +24,7 @@ export default function MinimalBand({
       style={{ background: FOOTER_BG, color: TXT_BASE, borderTop: `1px solid ${BORDER_TOP}` }}
     >
       <p className="text-sm font-bold" style={{ color: TXT_HIGH }}>
-        <InlineText section="header" fieldKey="brand_name" value={displayBrand ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
+        <InlineText section="header" fieldKey="brand_name" value={displayBrand ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode && editorChrome !== false} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
       </p>
       {(displayTagline || isEditorMode) && (
         <p style={{ color: TXT_MED }}>

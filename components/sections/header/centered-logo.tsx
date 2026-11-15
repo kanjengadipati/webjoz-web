@@ -7,7 +7,7 @@ import type { HeaderVariantProps } from "./types";
 export default function CenteredLogo({
   header, sectionOrder, hiddenSections,
   navLinkClass = "", drawerStyle, extraLinks, language, design_token,
-  onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
+  onUpdateField, isEditorMode, editorChrome, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
 }: HeaderVariantProps) {
   const defaultCta = language === "en" ? "Get in Touch" : "Hubungi Kami";
   return (
@@ -38,7 +38,7 @@ export default function CenteredLogo({
             fieldKey="brand_name"
             value={header?.brand_name || "Brand Kami"}
             onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
+            isEditorMode={isEditorMode && editorChrome !== false}
             isSelected={isSelected}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
@@ -78,7 +78,7 @@ export default function CenteredLogo({
           drawerStyle={drawerStyle || { background: "var(--dt-bg)", borderTop: "1px solid var(--dt-border)" }}
           nav_labels={header?.nav_labels}
           onUpdateField={onUpdateField}
-          isEditorMode={isEditorMode}
+          isEditorMode={isEditorMode && editorChrome !== false}
           isSelected={isSelected}
           collapseSheetForInlineEdit={collapseSheetForInlineEdit}
           onEditingStateChange={onEditingStateChange}

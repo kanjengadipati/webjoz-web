@@ -18,6 +18,7 @@ type TestimonialVariantProps = {
   design_token?: DesignToken | null;
   onUpdateField?: (section: string, key: string, value: any) => void;
   isEditorMode?: boolean;
+  editorChrome?: boolean;
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
@@ -41,6 +42,7 @@ export default function TestimonialsSection({
   design_token,
   onUpdateField,
   isEditorMode,
+  editorChrome,
   isSelected,
   collapseSheetForInlineEdit,
   onEditingStateChange,
@@ -49,6 +51,7 @@ export default function TestimonialsSection({
   design_token?: DesignToken | null;
   onUpdateField?: (section: string, key: string, value: any) => void;
   isEditorMode?: boolean;
+  editorChrome?: boolean;
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
@@ -56,7 +59,7 @@ export default function TestimonialsSection({
   const { locale } = useI18n();
   const variant = design_token?.layout?.section_variants?.testimonials ?? "carousel";
   const Renderer = variants[variant] ?? TestimonialsClassic;
-  const isEditor = !!isEditorMode;
+  const isEditor = !!(isEditorMode && (editorChrome ?? true));
   const isExample = testimonials?._is_example === true;
 
   const onAddItem = useCallback(() => {
@@ -83,6 +86,7 @@ export default function TestimonialsSection({
         design_token={design_token}
         onUpdateField={onUpdateField}
         isEditorMode={isEditorMode}
+        editorChrome={editorChrome}
         isSelected={isSelected}
         collapseSheetForInlineEdit={collapseSheetForInlineEdit}
         onEditingStateChange={onEditingStateChange}

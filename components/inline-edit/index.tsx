@@ -4,7 +4,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import { Camera, Link2, Check, X, Loader2 } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
-import { uploadImageFile } from "@/components/file-upload";
+import { compressImage, uploadImageFile } from "@/components/file-upload";
+import { useEditorChromeEnabled } from "@/components/sections/editor-chrome-context";
 
 // ─── Global AI Rewrite Singleton ─────────────────────────────────────────────
 // Set by the dashboard editor (page.tsx) so InlineText doesn't need to receive
@@ -424,6 +425,17 @@ export function InlineImage({
       fieldKey.toLowerCase().includes("avatar") ||
       fieldKey.toLowerCase().includes("icon"));
 
+  // Catatan: blob URL yang dipakai preview TIDAK di-revoke saat unmount,
+  // karena nilainya tersimpan di `content` dan bisa dipakai lagi saat
+  // komponen remount (ganti device/template) atau saat materialize di akhir.
+  // Browser akan membersihkannya sendiri ketika dokumen ditutup.
+
+  // Wizard (editorChrome=false) menunda upload ke Cloudinary sampai "Buat
+  // Situs"; dashboard editor tetap upload langsung agar aman walau halaman
+  // ditutup sebelum menyimpan.
+  const chromeEnabled = useEditorChromeEnabled();
+  const deferUpload = !chromeEnabled;
+
   if (!isEditorMode || !onUpdateField) {
     if (!src) return null;
     const resolvedPosition =
@@ -490,15 +502,32 @@ export function InlineImage({
     setUrlInput("");
   };
 
+  // Wizard: defer-to-save — jangan upload ke Cloudinary saat file dipilih.
+  // Kompres lokal, tampilkan sebagai blob URL, dan biarkan upload terjadi
+  // sekali saat situs dibuat ("Buat Situs"). Dashboard: upload langsung.
+  // Blob URL TIDAK boleh dipersistensikan; save path wizard men-sanitize-nya.
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Reset input value so re-selecting the exact same file fires onChange again
+    // (dilakukan di finally, tapi set dulu supaya aman kalau proses gagal)
     try {
       setUploading(true);
-      const secureUrl = await uploadImageFile(file);
-      onUpdateField(section, fieldKey, secureUrl);
-    } catch (err: any) {
+      if (deferUpload) {
+        // Kompres lokal (tanpa jaringan) supaya blob URL kecil.
+        const processed = await compressImage(file, 1600, 1600, 0.8);
+        // Revoke blob URL lama kalau src sebelumnya adalah blob.
+        if (src && String(src).startsWith("blob:")) {
+          try { URL.revokeObjectURL(String(src)); } catch { /* ignore */ }
+        }
+        const blobUrl = URL.createObjectURL(processed as Blob);
+        onUpdateField(section, fieldKey, blobUrl);
+      } else {
+        const secureUrl = await uploadImageFile(file);
+        onUpdateField(section, fieldKey, secureUrl);
+      }
+    } catch (err) {
       console.error("Upload image error:", err);
     } finally {
       setUploading(false);

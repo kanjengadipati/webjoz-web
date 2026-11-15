@@ -10,8 +10,9 @@ import {
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/components/cart";
-import { uploadImageFile } from "@/components/file-upload";
+import { uploadImageFile, compressImage } from "@/components/file-upload";
 import { SparkleIcon } from "@/components/sparkle-icon";
+import { useEditorChromeEnabled } from "../sections/editor-chrome-context";
 
 import type { TestimonialItem, FaqItem, ImageCredit, BenefitItem, CatalogItem, MenuItem } from "./types";
 import PhotoCredit from "../sections/PhotoCredit";
@@ -723,6 +724,7 @@ const WhatsAppIconSvg: React.FC<{ className?: string }> = ({ className = "w-6 h-
 const WAFloatingButton: React.FC<{
   phone: string;
   isEditorMode?: boolean;
+  editorChrome?: boolean;
   onSubmitLead?: (data: { name: string; email: string; phone: string; message: string }) => Promise<string | void>;
   brandName?: string;
   /** true = premium chat widget; false = simple floating WA button */
@@ -738,7 +740,8 @@ const WAFloatingButton: React.FC<{
   floatingType?: "none" | "whatsapp" | "whatsapp_pill" | "chat_bubble" | "contact_link";
   /** Site language — "id" (default) or "en". Controls all visible & aria text. */
   language?: string;
-}> = ({ phone, isEditorMode, brandName = "Customer Support", isPremium = false, floatingType, language = "id" }) => {
+}> = ({ phone, isEditorMode, editorChrome, brandName = "Customer Support", isPremium = false, floatingType, language = "id" }) => {
+  const fullEditor = !!(isEditorMode && (editorChrome ?? true));
   const isEN = language === "en";
 
   const digits = phone ? phone.replace(/\D/g, "") : "";
@@ -768,7 +771,7 @@ const WAFloatingButton: React.FC<{
   // Mobile interactions for whatsapp_pill:
   // 1. Initial peek on mobile load: expand for 2.8s so visitors discover the WA support, then retract to edge tab
   useEffect(() => {
-    if (effectiveType !== "whatsapp_pill" || isEditorMode) return;
+    if (effectiveType !== "whatsapp_pill" || fullEditor) return;
     if (typeof window !== "undefined" && window.innerWidth < 768) {
       const peekTimer = setTimeout(() => {
         setIsMobileExpanded(true);
@@ -779,7 +782,7 @@ const WAFloatingButton: React.FC<{
       }, 900);
       return () => clearTimeout(peekTimer);
     }
-  }, [effectiveType, isEditorMode]);
+  }, [effectiveType, fullEditor]);
 
   // 2. Auto-collapse on scroll
   useEffect(() => {
@@ -802,8 +805,8 @@ const WAFloatingButton: React.FC<{
   if (effectiveType === "contact_link") {
     return (
       <a
-        href={isEditorMode ? "#" : "#contact"}
-        onClick={isEditorMode ? (e) => e.preventDefault() : undefined}
+        href={fullEditor ? "#" : "#contact"}
+        onClick={fullEditor ? (e) => e.preventDefault() : undefined}
         aria-label={isEN ? "Contact Us" : "Hubungi Kami"}
         className="fixed right-6 z-40 flex items-center justify-center w-14 h-14 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none"
         style={{ bottom: "var(--floating-bottom-desktop, var(--floating-bottom-mobile, 6rem))", background: "var(--dt-primary, #4F46E5)", color: "var(--dt-primary-foreground, #fff)" }}
@@ -1055,15 +1058,16 @@ const WAFloatingButton: React.FC<{
 
 // ─── Back To Top ──────────────────────────────────────────────────────────────
 
-const BackToTop: React.FC<{ isEditorMode?: boolean }> = ({ isEditorMode }) => {
+const BackToTop: React.FC<{ isEditorMode?: boolean; editorChrome?: boolean }> = ({ isEditorMode, editorChrome }) => {
+  const fullEditor = !!(isEditorMode && (editorChrome ?? true));
   const [visible, setVisible] = React.useState(false);
   React.useEffect(() => {
-    if (isEditorMode) return;
+    if (fullEditor) return;
     const onScroll = () => setVisible(window.scrollY > 400);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [isEditorMode]);
-  if (isEditorMode || !visible) return null;
+  }, [fullEditor]);
+  if (fullEditor || !visible) return null;
   return (
     <button
       type="button"
@@ -1213,6 +1217,7 @@ interface TestimonialsSectionProps {
   accentColor?: string;
   onUpdateField?: (section: string, key: string, value: any) => void;
   isEditorMode?: boolean;
+  editorChrome?: boolean;
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
@@ -1242,6 +1247,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   accentColor = "var(--dt-primary)",
   onUpdateField,
   isEditorMode,
+  editorChrome,
   isSelected,
   collapseSheetForInlineEdit,
   onEditingStateChange,
@@ -1250,7 +1256,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   locale,
 }) => {
   if (!testimonials) return null;
-  if (!testimonials.items?.length && !(isEditorMode && onAddItem)) return null;
+  if (!testimonials.items?.length && !(isEditorMode && (editorChrome ?? true) && onAddItem)) return null;
 
   const examplePrefix = isExample ? (locale === "en" ? "(Example) " : "(Contoh) ") : "";
   const withPrefix = (quote: string) => examplePrefix ? `${examplePrefix}${quote}` : quote;
@@ -1315,7 +1321,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                 .toUpperCase() ||
               "?";
 
-            const deleteButton = isEditorMode && onUpdateField && (
+            const deleteButton = isEditorMode && (editorChrome ?? true) && onUpdateField && (
               <button
                 type="button"
                 onClick={(e) => {
@@ -1612,7 +1618,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
               </div>
             );
           })}
-          {isEditorMode && onAddItem && (
+          {isEditorMode && (editorChrome ?? true) && onAddItem && (
             <InlineAddTile
               label="Tambah Testimoni"
               variant="card"
@@ -1693,6 +1699,7 @@ function MenuCatalogCard({
 }: MenuCatalogCardProps) {
   const featureMarker = useFeatureMarker(explicitFeatureMarker);
   const styles = stylesProp ?? {};
+  const deferUpload = !useEditorChromeEnabled();
   const {
     id: itemId, name: itemName, price: itemPrice, priceAmount: itemPriceAmount, priceDisplay: itemPriceDisplay,
     promoPriceAmount: itemPromoPriceAmount, promoPriceDisplay: itemPromoPriceDisplay, discountLabel,
@@ -1767,8 +1774,13 @@ function MenuCatalogCard({
 
     try {
       setUploadingImage(true);
-      const secureUrl = await uploadImageFile(file);
-      onUpdateField(editSection, `${pathBase}.image_url`, secureUrl);
+      if (deferUpload) {
+        const processed = await compressImage(file, 1600, 1600, 0.8);
+        onUpdateField(editSection, `${pathBase}.image_url`, URL.createObjectURL(processed as Blob));
+      } else {
+        const secureUrl = await uploadImageFile(file);
+        onUpdateField(editSection, `${pathBase}.image_url`, secureUrl);
+      }
     } catch (err: any) {
       console.error("Upload catalog/menu item image error:", err);
     } finally {
@@ -2529,6 +2541,7 @@ function ProductQuickViewInner({
   const [galleryUploading, setGalleryUploading] = useState(false);
   const [quickViewImgFailed, setQuickViewImgFailed] = useState(false);
   const galleryInputRef = useRef<HTMLInputElement>(null);
+  const deferUpload = !useEditorChromeEnabled();
 
   const itemId = item.id ?? item.name ?? "";
   const itemName = item.name ?? "";
@@ -2549,7 +2562,13 @@ function ProductQuickViewInner({
     if (!file || !canInline) return;
     try {
       setGalleryUploading(true);
-      const url = await uploadImageFile(file, { maxWidth: 1000, maxHeight: 1000, quality: 0.8 });
+      let url: string;
+      if (deferUpload) {
+        const processed = await compressImage(file, 1000, 1000, 0.8);
+        url = URL.createObjectURL(processed as Blob);
+      } else {
+        url = await uploadImageFile(file, { maxWidth: 1000, maxHeight: 1000, quality: 0.8 });
+      }
       if (url) {
         if (!imageUrl) onUpdateField!(editSection!, `${pathBase}.image_url`, url);
         else onUpdateField!(editSection!, `${pathBase}.image_urls`, [...extraImages, url]);

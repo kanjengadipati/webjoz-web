@@ -23,6 +23,7 @@ export interface HeaderVariantProps {
   language?: "id" | "en";
   onUpdateField?: (section: string, key: string, value: any) => void;
   isEditorMode?: boolean;
+  editorChrome?: boolean;
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;

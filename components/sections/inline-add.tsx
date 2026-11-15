@@ -1,6 +1,7 @@
 "use client";
 import React, { useCallback } from "react";
 import { Plus, Trash2 } from "lucide-react";
+import { useEditorChromeEnabled } from "./editor-chrome-context";
 
 const NANOID_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -46,6 +47,10 @@ export function InlineAddTile({
     },
     [onClick]
   );
+
+  // Structural "add item" chrome is not part of the wizard's inline-edit scope.
+  const chromeEnabled = useEditorChromeEnabled();
+  if (!chromeEnabled) return null;
 
   if (variant === "card" && !compact) {
     return (
@@ -154,6 +159,8 @@ export function CategoryAddButton({
   className?: string;
 }) {
   const label = isEN ? "Add Category" : "Tambah Kategori";
+  const chromeEnabled = useEditorChromeEnabled();
+  if (!chromeEnabled) return null;
   return (
     <div className={`inline-block ${className}`}>
       <button
@@ -198,6 +205,8 @@ export function InlineDeleteButton({
   compact?: boolean;
   style?: React.CSSProperties;
 }) {
+  const chromeEnabled = useEditorChromeEnabled();
+  if (!chromeEnabled) return null;
   return (
     <button
       type="button"

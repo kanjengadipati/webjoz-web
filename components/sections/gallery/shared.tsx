@@ -4,8 +4,9 @@ import { X, ChevronLeft, ChevronRight, Play, Camera, Link2, Loader2, Plus, Trash
 import type { GalleryItem, DesignToken } from "@/components/templates/types";
 import PhotoCredit from "../PhotoCredit";
 import { InlineText, DEFAULT_IMAGE_POOL } from "../../templates/shared";
-import { uploadImageFile } from "@/components/file-upload";
+import { uploadImageFile, compressImage } from "@/components/file-upload";
 import { SparkleIcon } from "@/components/sparkle-icon";
+import { useEditorChromeEnabled } from "../editor-chrome-context";
 
 export interface GalleryVariantProps {
   gallery: {
@@ -42,6 +43,7 @@ export function useGalleryUpload({
   const [showUrlInput, setShowUrlInput] = useState(false);
   const [urlInput, setUrlInput] = useState("");
   const urlInputRef = useRef<HTMLInputElement>(null);
+  const deferUpload = !useEditorChromeEnabled();
 
   const stop = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     e.stopPropagation();
@@ -58,7 +60,14 @@ export function useGalleryUpload({
       if (!file) return;
       try {
         setUploading(true);
-        const url = await uploadImageFile(file);
+        let url: string;
+        if (deferUpload) {
+          // Wizard: kompres lokal + blob URL, upload sekali saat "Buat Situs".
+          const processed = await compressImage(file, 1600, 1600, 0.8);
+          url = URL.createObjectURL(processed as Blob);
+        } else {
+          url = await uploadImageFile(file);
+        }
         onUrl(url);
       } catch (err) {
         console.error("Upload gallery image error:", err);
@@ -67,7 +76,7 @@ export function useGalleryUpload({
         if (fileInputRef.current) fileInputRef.current.value = "";
       }
     },
-    [onUrl]
+    [onUrl, deferUpload]
   );
 
   const random = useCallback(() => {
@@ -153,6 +162,8 @@ export function GalleryTileOverlay({
     onUrl: (url) => onReplace?.(idx, url),
     collapseSheetForInlineEdit,
   });
+
+  const chromeEnabled = useEditorChromeEnabled();
 
   return (
     <div
@@ -252,7 +263,7 @@ export function GalleryTileOverlay({
           </button>
         </div>
       )}
-      {(onRemove || onMove) && total > 1 && (
+      {(onRemove || onMove) && total > 1 && chromeEnabled && (
         <div className="flex items-center gap-1.5 p-1 bg-black/50 rounded-full backdrop-blur-sm">
           <button
             type="button"
@@ -322,6 +333,9 @@ export function GalleryAddTile({
     onUrl: (url) => onAdd?.(url),
     collapseSheetForInlineEdit,
   });
+
+  const chromeEnabled = useEditorChromeEnabled();
+  if (!chromeEnabled) return null;
 
   return (
     <div
@@ -489,6 +503,9 @@ export function GalleryAddButton({
     onUrl: (url) => onAdd?.(url),
     collapseSheetForInlineEdit,
   });
+
+  const chromeEnabled = useEditorChromeEnabled();
+  if (!chromeEnabled) return null;
 
   if (showUrlInput) {
     return (

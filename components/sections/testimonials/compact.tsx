@@ -7,6 +7,7 @@ interface TestimonialsVariantProps {
   design_token?: DesignToken | null;
   onUpdateField?: (section: string, key: string, value: any) => void;
   isEditorMode?: boolean;
+  editorChrome?: boolean;
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
@@ -19,6 +20,7 @@ export default function TestimonialsCompact({
   testimonials,
   onUpdateField,
   isEditorMode,
+  editorChrome,
   isSelected,
   collapseSheetForInlineEdit,
   onEditingStateChange,
@@ -45,6 +47,7 @@ export default function TestimonialsCompact({
       roleStyle={{ color: "var(--dt-text-muted)" }}
       onUpdateField={onUpdateField}
       isEditorMode={isEditorMode}
+      editorChrome={editorChrome}
       isSelected={isSelected}
       collapseSheetForInlineEdit={collapseSheetForInlineEdit}
       onEditingStateChange={onEditingStateChange}

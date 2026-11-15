@@ -9,6 +9,7 @@ import { useToast } from "@/components/toast-provider";
 import { SiteWizard } from "@/components/site-wizard";
 import { request } from "@/lib/api/client";
 import { buildFullContent } from "@/lib/build-full-content";
+import { materializeContentMedia } from "@/lib/materialize-content-media";
 import { decodeDesignTokenParam } from "@/lib/design-token-library";
 import { WIZARD_RESUME_KEY, loadWizardSnapshot } from "@/components/site-wizard/wizard-persistence";
 import { encodeSiteId } from "@/lib/sqids";
@@ -255,8 +256,12 @@ function PublicWizardContent() {
             }
           }
 
+          // Materialize blob URL preview lokal → Cloudinary (jika ada).
+          const matResult = await materializeContentMedia(pending.previewContent);
+          const contentForSave = matResult.error ? pending.previewContent : matResult.content;
+
           const enrichedContent = buildFullContent(
-            { content: pending.previewContent, design_token: pending.previewDesignToken, logo_url: logoForSave },
+            { content: contentForSave, design_token: pending.previewDesignToken, logo_url: logoForSave },
             pending.businessName,
             pending.businessSubType || pending.businessType,
             pending.description || "",

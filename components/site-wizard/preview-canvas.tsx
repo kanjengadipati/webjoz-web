@@ -11,6 +11,7 @@ import { useWizardPreview } from "./use-wizard-preview";
 import { useWizardDevice } from "./use-wizard-device";
 import { useI18n } from "@/lib/i18n/context";
 import type { useThemeDraft } from "./use-theme-draft";
+import { EditorChromeProvider } from "@/components/sections/editor-chrome-context";
 
 interface PreviewCanvasProps {
   chat: ReturnType<typeof useWizardChat>;
@@ -83,17 +84,21 @@ export function PreviewCanvas({ chat, preview, device, themeDraft, fullPage }: P
   };
 
   const templatePreview = TemplateComponent ? (
-    // eslint-disable-next-line react-hooks/static-components
+    <EditorChromeProvider value={false}>
+    {/* eslint-disable-next-line react-hooks/static-components */}
     <TemplateComponent
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       content={buildFullContent(displayData, previewBusinessName, chat.businessSubType || chat.businessType, chat.description, chat.whatsapp) as any}
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       design_token={liveToken as any}
       language={(chat.siteLanguage || "id") as any}
-      isEditorMode={false}
+      isEditorMode={previewState === "result"}
+      editorChrome={false}
+      onUpdateField={previewState === "result" ? preview.updateField : undefined}
       arrivedSections={isStreamingLive ? arrivedSections : undefined}
       onSubmitLead={async () => { }}
     />
+    </EditorChromeProvider>
   ) : (
     <Wireframe
       businessName={chat.businessName}

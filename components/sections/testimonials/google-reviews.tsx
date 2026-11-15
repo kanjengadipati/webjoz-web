@@ -10,6 +10,7 @@ interface Props {
   design_token?: DesignToken | null;
   onUpdateField?: (section: string, key: string, value: any) => void;
   isEditorMode?: boolean;
+  editorChrome?: boolean;
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;

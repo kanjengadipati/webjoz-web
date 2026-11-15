@@ -1,5 +1,6 @@
 import type { ChatStage, InferenceResult, Message, PreviewData } from "./types";
 import type { ThemeOverrides } from "@/lib/theme-overrides";
+import { sanitizeContentMedia } from "@/lib/materialize-content-media";
 
 export const WIZARD_RESUME_KEY = "webjoz_wizard_resume_v1";
 /** v2 persistence key — stores archetype + industry_id alongside v1 fields */
@@ -165,7 +166,9 @@ export function toResumePreview(
 ): WizardResumePreview {
   return {
     templateId: preview.template_id,
-    content: preview.content,
+    // Strip blob URL (preview lokal) supaya draft tidak menyimpan URL yang
+    // mati setelah reload. Teks & desain tetap selamat.
+    content: sanitizeContentMedia(preview.content),
     designToken: preview.design_token,
     ...(baseToken ? { baseDesignToken: baseToken } : {}),
   };

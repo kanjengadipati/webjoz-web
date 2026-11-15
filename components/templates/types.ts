@@ -525,6 +525,8 @@ export interface TemplateProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   isEditorMode?: boolean;
+  /** Chrome editor (outline, label, regen, visibility, reorder). Default = isEditorMode. Wizard set false. */
+  editorChrome?: boolean;
   /**
    * Daftar nama section yang sudah diterima dari SSE stream.
    * undefined → bukan mode streaming, semua section langsung dianggap "sudah ada"

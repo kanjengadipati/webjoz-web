@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useAuthToken } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
 import { isTenantSuspended } from "@/lib/plan-status";
+import { previewSetByPath } from "@/lib/preview-set-by-path";
 import { request } from "@/lib/api/client";
 import {
   Save, Loader2, Zap, Database,
@@ -91,27 +92,7 @@ const SectionVariantPicker = SectionVariantBridge;
 
 // Immutably set a nested value in `obj` by a dotted path of segments where
 // numeric segments index into arrays (e.g. ["categories", "0", "name"]).
-function previewSetByPath(obj: any, segments: string[], value: any): any {
-  if (segments.length === 0) return value;
-  const [head, ...rest] = segments;
-  const isIndex = /^\d+$/.test(head);
-  if (rest.length === 0) {
-    if (isIndex) {
-      const arr = Array.isArray(obj) ? obj.slice() : [];
-      arr[Number(head)] = value;
-      return arr;
-    }
-    return { ...(obj ?? {}), [head]: value };
-  }
-  const next = obj?.[head];
-  const child = previewSetByPath(next, rest, value);
-  if (isIndex) {
-    const arr = Array.isArray(obj) ? obj.slice() : [];
-    arr[Number(head)] = child;
-    return arr;
-  }
-  return { ...(obj ?? {}), [head]: child };
-}
+// previewSetByPath imported from @/lib/preview-set-by-path (single source of truth)
 
 export default function SiteEditorPage() {
   const params = useParams();

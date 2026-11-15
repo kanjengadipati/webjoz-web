@@ -69,7 +69,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
   content, design_token,
   onSubmitLead, leadSubmitting = false, leadSuccess = false, leadError = null,
   activeSection, onSelectSection, onRegenSection, onUpdateField, onUpdateSectionVariant, collapseSheetForInlineEdit, onEditingStateChange,
-  isEditorMode = false, arrivedSections, isPremium = false, language, tenantDomain
+  isEditorMode = false, editorChrome, arrivedSections, isPremium = false, language, tenantDomain
 }) => {
   const dt = design_token ?? null;
   const { header, footer, seo } = content;
@@ -102,9 +102,9 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
   const rawSections = normalizeContent(content, dt);
   const resolvedSections = React.useMemo(() => {
     const order = rawSections.map((s) => s.type);
-    const filteredOrder = filterEmptySections(order, content, isEditorMode);
+    const filteredOrder = filterEmptySections(order, content, editorChrome ?? isEditorMode);
     return rawSections.filter((s) => filteredOrder.includes(s.type));
-  }, [rawSections, content, isEditorMode]);
+  }, [rawSections, content, isEditorMode, editorChrome]);
   const sectionOrder = resolvedSections.map((s) => s.type);
 
   React.useEffect(() => {
@@ -166,7 +166,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       case "about": {
         const a = sec.data as TemplateProps["content"]["about"];
         return (
-          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={editorChrome ?? isEditorMode}>
             <MemoSectionContent content={{ about: a, dt }} render={(data) => {
               const { about: aa } = data;
               return (
@@ -187,7 +187,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       case "benefits": {
         const b = sec.data as TemplateProps["content"]["benefits"];
         return (
-          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={editorChrome ?? isEditorMode}>
             <MemoSectionContent content={{ benefits: b, dt }} render={(data) => {
               const { benefits: bb } = data;
               return (
@@ -209,7 +209,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       case "faq": {
         const f = sec.data as TemplateProps["content"]["faq"];
         return (
-          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={editorChrome ?? isEditorMode}>
             <MemoSectionContent content={{ faq: f, dt }} render={(data) => {
               const { faq: ff } = data;
               return (
@@ -231,7 +231,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       case "cta": {
         const c = sec.data as TemplateProps["content"]["cta"];
         return (
-          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={editorChrome ?? isEditorMode}>
             <MemoSectionContent content={{ cta: c, onSubmitLead, leadSubmitting, leadSuccess, leadError, dt }} render={(data) => {
               const { cta: cc, onSubmitLead: osl, leadSubmitting: ls, leadSuccess: lsc, leadError: le } = data;
               return (
@@ -257,7 +257,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       case "contact": {
         const c = sec.data as TemplateProps["content"]["contact"];
         return (
-          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={editorChrome ?? isEditorMode}>
             <MemoSectionContent content={{ contact: c, onSubmitLead, leadSubmitting, leadSuccess, leadError, dt }} render={(data) => {
               const { contact: cc, onSubmitLead: osl, leadSubmitting: ls, leadSuccess: lsc, leadError: le } = data;
               return (
@@ -283,7 +283,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       case "testimonials": {
         const t = sec.data as TemplateProps["content"]["testimonials"];
         return (
-          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={editorChrome ?? isEditorMode}>
             <MemoSectionContent content={{ testimonials: t, dt }} render={(data) => {
               const { testimonials: tt } = data;
               return (
@@ -304,7 +304,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       case "menu": {
         const m = sec.data as TemplateProps["content"]["menu"];
         return (
-          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={editorChrome ?? isEditorMode}>
             <MemoSectionContent content={{ menu: m, dt }} render={(data) => {
               const { menu: mm } = data;
               return (
@@ -326,7 +326,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       case "catalog": {
         const c = sec.data as TemplateProps["content"]["catalog"];
         return (
-          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={editorChrome ?? isEditorMode}>
             <MemoSectionContent content={{ catalog: c, dt }} render={(data) => {
               const { catalog: cc } = data;
               return (
@@ -348,7 +348,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       case "gallery": {
         const g = sec.data as TemplateProps["content"]["gallery"];
         return (
-          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={editorChrome ?? isEditorMode}>
             <MemoSectionContent content={{ gallery: g, dt }} render={(data) => {
               const { gallery: gg } = data;
               return gg ? <GallerySection gallery={gg} design_token={dt} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "gallery"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /> : null;
@@ -359,7 +359,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       case "works": {
         const w = sec.data as TemplateProps["content"]["works"];
         return w ? (
-          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={editorChrome ?? isEditorMode}>
             <MemoSectionContent content={{ works: w, dt }} render={(data) => {
               const { works: ww } = data;
               return <WorksSection works={ww} design_token={dt} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "works"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />;
@@ -370,7 +370,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       case "stats": {
         const s = sec.data as TemplateProps["content"]["stats"];
         return (
-          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={editorChrome ?? isEditorMode}>
             <MemoSectionContent content={{ stats: s, dt }} render={(data) => {
               const { stats: ss } = data;
               return (
@@ -392,7 +392,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       case "skills": {
         const sk = sec.data as TemplateProps["content"]["skills"];
         return (
-          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={editorChrome ?? isEditorMode}>
             <MemoSectionContent content={{ skills: sk, dt }} render={(data) => {
               const { skills: skk } = data;
               return (
@@ -414,7 +414,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       case "partners": {
         const p = sec.data as TemplateProps["content"]["partners"];
         return (
-          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={editorChrome ?? isEditorMode}>
             <MemoSectionContent content={{ partners: p, dt }} render={(data) => {
               const { partners: pp } = data;
               return (
@@ -436,7 +436,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
       case "pricing": {
         const pr = sec.data as TemplateProps["content"]["pricing"];
         return (
-          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
+          <MemoPreviewSectionWrapper key={key} section={key} label={label} activeSection={activeSection} currentVariant={secVariant} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={editorChrome ?? isEditorMode}>
             <MemoSectionContent content={{ pricing: pr, dt }} render={(data) => {
               const { pricing: ppr } = data;
               return (
@@ -482,8 +482,8 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           const renderedSectionOrder = renderedSections.map((sec) => sec.type);
           return (
             <>
-              <MemoPreviewSectionWrapper section="header"  activeSection={activeSection} currentVariant={getVariantFor("header")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
-                <HeaderSection header={header} design_token={dt} sectionOrder={withoutHidden(renderedSectionOrder, dt)} hiddenSections={dt?.layout?.hidden_sections} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "header"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+              <MemoPreviewSectionWrapper section="header"  activeSection={activeSection} currentVariant={getVariantFor("header")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={editorChrome ?? isEditorMode}>
+                <HeaderSection header={header} design_token={dt} sectionOrder={withoutHidden(renderedSectionOrder, dt)} hiddenSections={dt?.layout?.hidden_sections} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} editorChrome={editorChrome} isSelected={activeSection === "header"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
               </MemoPreviewSectionWrapper>
 
               {renderedSections.map((sec) => {
@@ -507,12 +507,12 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           );
         })()}
 
-        <MemoPreviewSectionWrapper section="footer"  activeSection={activeSection} currentVariant={getVariantFor("footer")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={isEditorMode}>
-          <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} language={language} hasBlog={!!(content.blog?.posts?.length)} contactAddress={content.contact?.address} contactMapsUrl={content.contact?.maps_url ?? undefined} contactOpeningHours={content.contact?.opening_hours} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={activeSection === "footer"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+        <MemoPreviewSectionWrapper section="footer"  activeSection={activeSection} currentVariant={getVariantFor("footer")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={editorChrome ?? isEditorMode}>
+          <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} language={language} hasBlog={!!(content.blog?.posts?.length)} contactAddress={content.contact?.address} contactMapsUrl={content.contact?.maps_url ?? undefined} contactOpeningHours={content.contact?.opening_hours} onUpdateField={onUpdateField} isEditorMode={isEditorMode} editorChrome={editorChrome} isSelected={activeSection === "footer"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
         </MemoPreviewSectionWrapper>
 
         {isEditorMode && (
-          <MemoPreviewSectionWrapper section="seo"  activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={isEditorMode}>
+          <MemoPreviewSectionWrapper section="seo"  activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={editorChrome ?? isEditorMode}>
             <MemoSectionContent content={{ seo, dt }} render={(data) => {
               const { seo: s } = data;
               return <SeoEditorPreview seo={s} domain={tenantDomain} />;
@@ -521,7 +521,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
         )}
         <CartFab />
         <WAFloatingButton phone={content?.contact?.phone} isEditorMode={isEditorMode} onSubmitLead={onSubmitLead} brandName={content?.header?.brand_name} isPremium={isPremium} floatingType={dt?.layout?.floating_button} language={language} />
-        <BackToTop isEditorMode={isEditorMode} />
+        <BackToTop isEditorMode={isEditorMode} editorChrome={editorChrome} />
       </div>
     </FeatureMarkerProvider>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { previewSetByPath } from "@/lib/preview-set-by-path";
 import { LOADING_STEPS_PERCENT, SECTION_STEP_MAP, TEMPLATE_NAMES } from "./constants";
 import { getTemplatePool } from "./helpers";
 import type { PreviewData, PreviewState } from "./types";
@@ -259,6 +260,19 @@ export function useWizardPreview() {
     }, 450);
   }, [templatePool, templatePoolIndex]);
 
+  // Inline edit write path: tulis nilai ke previewData.content[section].
+  // Mendukung dotted path + index array (mis. "items.0.quote") dan replace
+  // array utuh (dipakai hapus item). Hanya aktif saat previewData ada.
+  const updateField = useCallback((section: string, key: string, val: any) => {
+    setPreviewData((prev) => {
+      if (!prev) return prev;
+      const segs = key.includes(".") ? key.split(".") : [key];
+      const root = previewSetByPath(prev.content?.[section] ?? {}, segs, val);
+      setHasUnsavedEdits(true);
+      return { ...prev, content: { ...(prev.content ?? {}), [section]: root } };
+    });
+  }, []);
+
   const advanceLoadingStepFromSection = (section: string) => {
     const mappedStep = SECTION_STEP_MAP[section];
     if (mappedStep !== undefined) {
@@ -299,6 +313,7 @@ export function useWizardPreview() {
     setPreviewState,
     previewData,
     setPreviewData,
+    updateField,
     streamedSections,
     setStreamedSections,
     sectionSources,

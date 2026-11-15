@@ -16,7 +16,7 @@ export default function TransparentOverlay({
   extraLinks,
   language,
   design_token,
-  onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
+  onUpdateField, isEditorMode, editorChrome, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
 }: HeaderVariantProps) {
   const [scrolled, setScrolled] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -145,7 +145,7 @@ export default function TransparentOverlay({
           imgClass={`w-auto shrink-0 object-contain transition-all duration-300 ${top ? "h-9" : "h-7"}`}
           section="header"
           onUpdateField={onUpdateField}
-          isEditorMode={isEditorMode}
+          isEditorMode={isEditorMode && editorChrome !== false}
           isSelected={isSelected}
           collapseSheetForInlineEdit={collapseSheetForInlineEdit}
           lightOnHero={lightOnHero}
@@ -156,7 +156,7 @@ export default function TransparentOverlay({
             fieldKey="brand_name"
             value={header?.brand_name || "Brand Kami"}
             onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
+            isEditorMode={isEditorMode && editorChrome !== false}
             isSelected={isSelected}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
@@ -224,7 +224,7 @@ export default function TransparentOverlay({
           }
           nav_labels={header?.nav_labels}
           onUpdateField={onUpdateField}
-          isEditorMode={isEditorMode}
+          isEditorMode={isEditorMode && editorChrome !== false}
           isSelected={isSelected}
           collapseSheetForInlineEdit={collapseSheetForInlineEdit}
           onEditingStateChange={onEditingStateChange}
