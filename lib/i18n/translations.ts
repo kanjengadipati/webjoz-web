@@ -2462,6 +2462,9 @@ export interface Translations {
       inlineCancel: string;
       inlineSaved: string;
       inlineClickToEdit: string;
+      inlineAiRewrite: string;
+      inlineAiWriting: string;
+      inlineAiRegenLoginRequired: string;
       inlineShortcutSingle: string;
       inlineShortcutMulti: string;
       changePhoto: string;
@@ -3570,6 +3573,13 @@ export interface Translations {
       btnLater: string;
       btnCompleteData: string;
       btnEditPublish: string;
+      inlineRegenToast: string;
+      confirmDiscardEdits: string;
+      imageUploadFailed: string;
+      regenModalTitle: string;
+      regenModalDesc: string;
+      regenModalSubtext: string;
+      regenModalCancel: string;
       completeContactDataTitle: string;
       completeContactDataDesc: string;
       editPublishHintTitle: string;
@@ -6523,6 +6533,9 @@ export const translations: Record<Locale, Translations> = {
         inlineCancel: "Batal",
         inlineSaved: "Tersimpan",
         inlineClickToEdit: "Klik untuk mengedit teks",
+        inlineAiRewrite: "Tulis ulang dengan AI",
+        inlineAiWriting: "AI sedang menulis...",
+        inlineAiRegenLoginRequired: "Generate ulang dengan AI (perlu simpan)",
         inlineShortcutSingle: "↵ Simpan",
         inlineShortcutMulti: "Ctrl+↵ Simpan",
         changePhoto: "Ganti Foto",
@@ -7819,6 +7832,15 @@ export const translations: Record<Locale, Translations> = {
         btnLater: "Nanti saja",
         btnCompleteData: "Lengkapi Data",
         btnEditPublish: "Edit & Publikasikan",
+        inlineRegenToast: "Untuk generate ulang teks dengan AI, klik 'Edit & Publikasikan' untuk masuk ke Editor.",
+        confirmDiscardEdits: "Perubahan teks/gambar yang sudah kamu edit akan hilang saat dibuat ulang. Lanjutkan?",
+        imageUploadFailed: "{n} foto gagal diunggah dan diganti foto bawaan. Kamu bisa menggantinya lagi di editor.",
+        regenModalTitle: "Regenerate dengan AI",
+        regenModalDesc:
+          "Fitur tulis ulang teks dan regenerasi konten dengan AI tersedia di halaman Editor.",
+        regenModalSubtext:
+          "Buka Editor untuk menyesuaikan teks, foto, dan bagian website Anda secara leluasa.",
+        regenModalCancel: "Nanti Saja",
         completeContactDataTitle: "Lengkapi data kontak",
         completeContactDataDesc:
           "Tambah nomor WA supaya tombol kontak di website aktif.",
@@ -10936,6 +10958,9 @@ export const translations: Record<Locale, Translations> = {
         inlineCancel: "Cancel",
         inlineSaved: "Saved",
         inlineClickToEdit: "Click to edit text",
+        inlineAiRewrite: "Rewrite with AI",
+        inlineAiWriting: "AI is writing...",
+        inlineAiRegenLoginRequired: "Regenerate with AI (save required)",
         inlineShortcutSingle: "↵ Save",
         inlineShortcutMulti: "Ctrl+↵ Save",
         changePhoto: "Change Photo",
@@ -12229,6 +12254,15 @@ export const translations: Record<Locale, Translations> = {
         btnLater: "Later",
         btnCompleteData: "Complete Info",
         btnEditPublish: "Edit & Publish",
+        inlineRegenToast: "To regenerate text with AI, click 'Edit & Publish' to open the Editor.",
+        confirmDiscardEdits: "Edits you made to text/images will be lost when regenerating. Continue?",
+        imageUploadFailed: "{n} photo(s) failed to upload and were replaced with stock photos. You can swap them again in the editor.",
+        regenModalTitle: "Regenerate with AI",
+        regenModalDesc:
+          "The AI rewrite and section regeneration features are available in the Editor.",
+        regenModalSubtext:
+          "Open the Editor to freely customize text, photos, and sections of your website.",
+        regenModalCancel: "Not Now",
         completeContactDataTitle: "Complete contact info",
         completeContactDataDesc:
           "Add your WhatsApp number so contact buttons on the website work.",

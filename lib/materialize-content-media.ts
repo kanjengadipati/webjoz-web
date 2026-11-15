@@ -13,6 +13,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { uploadImageFile } from "@/components/file-upload";
+import { getMediaOriginal } from "@/lib/media-originals";
 
 function collectBlobUrlsWithPaths(node: any, path: string[] = [], out: Map<string, string[]> = new Map()): Map<string, string[]> {
   if (typeof node === "string") {
@@ -52,10 +53,13 @@ export function collectBlobUrls(content: any): string[] {
   return Array.from(collectBlobUrlsWithPaths(content).keys());
 }
 
-/** Hapus blob URL (ganti "") supaya draft tidak menyimpan URL yang mati. */
+/**
+ * Ganti blob URL dengan nilai asli yang tercatat (gambar AI) supaya draft tidak
+ * menyimpan URL yang mati; bila tidak ada catatan baru jadi "".
+ */
 export function sanitizeContentMedia<T = any>(content: T): T {
   if (!content) return content;
-  return replaceStrings(content, (v) => (v.startsWith("blob:") ? "" : v)) as T;
+  return replaceStrings(content, (v) => (v.startsWith("blob:") ? getMediaOriginal(v) : v)) as T;
 }
 
 export interface MaterializeResult {
@@ -120,11 +124,19 @@ export async function materializeContentMedia(content: any, originalContent?: an
   await Promise.all(workers);
 
   // Build fallback map from originalContent for any blob that failed/wasn't uploaded
+  // Urutan fallback: nilai asli yang dicatat saat edit (andal), lalu nilai di
+  // path yang sama pada originalContent (bentuknya bisa berbeda dari content).
   const fallbackMap = new Map<string, string>();
-  if (originalContent && failed > 0) {
+  if (failed > 0) {
     const blobPaths = collectBlobUrlsWithPaths(content);
     blobPaths.forEach((path, blobUrl) => {
-      if (!urlMap.has(blobUrl)) { // failed or not uploaded
+      if (urlMap.has(blobUrl)) return;
+      const recorded = getMediaOriginal(blobUrl);
+      if (recorded) {
+        fallbackMap.set(blobUrl, recorded);
+        return;
+      }
+      if (originalContent) {
         const originalVal = getValueByPath(originalContent, path);
         if (typeof originalVal === "string" && originalVal && !originalVal.startsWith("blob:")) {
           fallbackMap.set(blobUrl, originalVal);

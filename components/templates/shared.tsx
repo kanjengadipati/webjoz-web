@@ -10,7 +10,9 @@ import {
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/components/cart";
-import { uploadImageFile, compressImage } from "@/components/file-upload";
+import { uploadImageFile } from "@/components/file-upload";
+import { createDeferredImageUrl } from "@/lib/deferred-image";
+import { useToast } from "@/components/toast-provider";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { useEditorChromeEnabled } from "../sections/editor-chrome-context";
 
@@ -1700,6 +1702,7 @@ function MenuCatalogCard({
   const featureMarker = useFeatureMarker(explicitFeatureMarker);
   const styles = stylesProp ?? {};
   const deferUpload = !useEditorChromeEnabled();
+  const { pushToast } = useToast();
   const {
     id: itemId, name: itemName, price: itemPrice, priceAmount: itemPriceAmount, priceDisplay: itemPriceDisplay,
     promoPriceAmount: itemPromoPriceAmount, promoPriceDisplay: itemPromoPriceDisplay, discountLabel,
@@ -1775,14 +1778,15 @@ function MenuCatalogCard({
     try {
       setUploadingImage(true);
       if (deferUpload) {
-        const processed = await compressImage(file, 1600, 1600, 0.8);
-        onUpdateField(editSection, `${pathBase}.image_url`, URL.createObjectURL(processed as Blob));
+        const blobUrl = await createDeferredImageUrl(file, 1600, 0.8, item.image_url);
+        onUpdateField(editSection, `${pathBase}.image_url`, blobUrl);
       } else {
         const secureUrl = await uploadImageFile(file);
         onUpdateField(editSection, `${pathBase}.image_url`, secureUrl);
       }
     } catch (err: any) {
       console.error("Upload catalog/menu item image error:", err);
+      pushToast(err?.message || "Gagal memproses gambar.", "error");
     } finally {
       setUploadingImage(false);
       if (fileInputRef.current) {
@@ -2542,6 +2546,7 @@ function ProductQuickViewInner({
   const [quickViewImgFailed, setQuickViewImgFailed] = useState(false);
   const galleryInputRef = useRef<HTMLInputElement>(null);
   const deferUpload = !useEditorChromeEnabled();
+  const { pushToast } = useToast();
 
   const itemId = item.id ?? item.name ?? "";
   const itemName = item.name ?? "";
@@ -2564,8 +2569,7 @@ function ProductQuickViewInner({
       setGalleryUploading(true);
       let url: string;
       if (deferUpload) {
-        const processed = await compressImage(file, 1000, 1000, 0.8);
-        url = URL.createObjectURL(processed as Blob);
+        url = await createDeferredImageUrl(file, 1000, 0.8);
       } else {
         url = await uploadImageFile(file, { maxWidth: 1000, maxHeight: 1000, quality: 0.8 });
       }
@@ -2575,6 +2579,7 @@ function ProductQuickViewInner({
       }
     } catch (err) {
       console.error("Upload quick view gallery image error:", err);
+      pushToast((err as Error)?.message || "Gagal memproses gambar.", "error");
     } finally {
       setGalleryUploading(false);
       if (galleryInputRef.current) galleryInputRef.current.value = "";

@@ -264,8 +264,10 @@ function PublicWizardContent() {
           //    Fallback ke gambar AI asli (previewDesignToken tidak punya content, tapi
           //    pending.previewContent sebelum edit tidak tersimpan terpisah).
           const matResult = await materializeContentMedia(draftMat.content, pending.previewContent);
-          if (matResult.failed > 0) {
-            console.warn("[create] Beberapa gambar gagal di-upload, fallback ke gambar AI:", matResult.failed);
+          const failedImages = matResult.failed + draftMat.failed;
+          if (failedImages > 0) {
+            console.warn("[create] Beberapa gambar gagal di-upload, fallback ke gambar AI:", failedImages);
+            pushToast(`${failedImages} foto gagal diunggah dan diganti foto bawaan. Kamu bisa menggantinya lagi di editor.`, "info");
           }
           let contentForSave = matResult.content;
           // 3) Jangan biarkan sentinel/blob yang gagal diproses lolos ke server.

@@ -12,6 +12,7 @@ import { useWizardDevice } from "./use-wizard-device";
 import { useI18n } from "@/lib/i18n/context";
 import type { useThemeDraft } from "./use-theme-draft";
 import { EditorChromeProvider } from "@/components/sections/editor-chrome-context";
+import { WizardRegenProvider } from "@/components/sections/wizard-regen-context";
 
 interface PreviewCanvasProps {
   chat: ReturnType<typeof useWizardChat>;
@@ -19,10 +20,17 @@ interface PreviewCanvasProps {
   device: ReturnType<typeof useWizardDevice>;
   themeDraft?: ReturnType<typeof useThemeDraft>;
   fullPage?: boolean;
+  onGoToEditor?: () => void;
+  onRegenRequest?: () => void;
 }
 
-export function PreviewCanvas({ chat, preview, device, themeDraft, fullPage }: PreviewCanvasProps) {
+export function PreviewCanvas({ chat, preview, device, themeDraft, fullPage, onRegenRequest }: PreviewCanvasProps) {
   const { locale } = useI18n();
+
+  const handleInlineRegen = React.useCallback(() => {
+    onRegenRequest?.();
+  }, [onRegenRequest]);
+
   const {
     previewState,
     previewData,
@@ -85,6 +93,7 @@ export function PreviewCanvas({ chat, preview, device, themeDraft, fullPage }: P
 
   const templatePreview = TemplateComponent ? (
     <EditorChromeProvider value={false}>
+    <WizardRegenProvider value={{ onRegen: handleInlineRegen }}>
     {/* eslint-disable-next-line react-hooks/static-components */}
     <TemplateComponent
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -95,9 +104,11 @@ export function PreviewCanvas({ chat, preview, device, themeDraft, fullPage }: P
       isEditorMode={previewState === "result"}
       editorChrome={false}
       onUpdateField={previewState === "result" ? preview.updateField : undefined}
+      onRegenSection={previewState === "result" ? handleInlineRegen : undefined}
       arrivedSections={isStreamingLive ? arrivedSections : undefined}
       onSubmitLead={async () => { }}
     />
+    </WizardRegenProvider>
     </EditorChromeProvider>
   ) : (
     <Wireframe

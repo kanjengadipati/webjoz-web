@@ -268,9 +268,10 @@ export function useWizardPreview() {
       if (!prev) return prev;
       const segs = key.includes(".") ? key.split(".") : [key];
       const root = previewSetByPath(prev.content?.[section] ?? {}, segs, val);
-      setHasUnsavedEdits(true);
       return { ...prev, content: { ...(prev.content ?? {}), [section]: root } };
     });
+    // Di luar updater: updater harus murni (StrictMode memanggilnya dua kali).
+    setHasUnsavedEdits(true);
   }, []);
 
   const advanceLoadingStepFromSection = (section: string) => {

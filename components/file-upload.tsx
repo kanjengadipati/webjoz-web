@@ -20,6 +20,16 @@ interface FileUploadProps {
   objectFit?: "cover" | "contain";
 }
 
+export const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+
+/** Validasi ringan sebelum kompres/upload. Return pesan error atau null. */
+export function validateImageFile(file: File): string | null {
+  const isHeic = /hei[cf]/i.test(file.type) || /\.hei[cf]$/i.test(file.name);
+  if (!file.type.startsWith("image/") && !isHeic) return "File harus berupa gambar.";
+  if (file.size > MAX_IMAGE_BYTES) return "Ukuran gambar maksimal 10 MB.";
+  return null;
+}
+
 // Client-side image compression helper using Canvas
 // Preserves original format: PNG → PNG (transparency intact), JPEG → JPEG, others → WebP
 export function compressImage(

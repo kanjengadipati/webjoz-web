@@ -4,7 +4,9 @@ import { X, ChevronLeft, ChevronRight, Play, Camera, Link2, Loader2, Plus, Trash
 import type { GalleryItem, DesignToken } from "@/components/templates/types";
 import PhotoCredit from "../PhotoCredit";
 import { InlineText, DEFAULT_IMAGE_POOL } from "../../templates/shared";
-import { uploadImageFile, compressImage } from "@/components/file-upload";
+import { uploadImageFile } from "@/components/file-upload";
+import { createDeferredImageUrl } from "@/lib/deferred-image";
+import { useToast } from "@/components/toast-provider";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { useEditorChromeEnabled } from "../editor-chrome-context";
 
@@ -44,6 +46,7 @@ export function useGalleryUpload({
   const [urlInput, setUrlInput] = useState("");
   const urlInputRef = useRef<HTMLInputElement>(null);
   const deferUpload = !useEditorChromeEnabled();
+  const { pushToast } = useToast();
 
   const stop = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     e.stopPropagation();
@@ -63,20 +66,20 @@ export function useGalleryUpload({
         let url: string;
         if (deferUpload) {
           // Wizard: kompres lokal + blob URL, upload sekali saat "Buat Situs".
-          const processed = await compressImage(file, 1600, 1600, 0.8);
-          url = URL.createObjectURL(processed as Blob);
+          url = await createDeferredImageUrl(file, 1600, 0.8);
         } else {
           url = await uploadImageFile(file);
         }
         onUrl(url);
       } catch (err) {
         console.error("Upload gallery image error:", err);
+        pushToast((err as Error)?.message || "Gagal memproses gambar.", "error");
       } finally {
         setUploading(false);
         if (fileInputRef.current) fileInputRef.current.value = "";
       }
     },
-    [onUrl, deferUpload]
+    [onUrl, deferUpload, pushToast]
   );
 
   const random = useCallback(() => {

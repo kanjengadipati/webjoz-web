@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
+import { Dialog, Button } from "webjoz-ui";
 import { CheckCircle2, Eye, ArrowRight } from "lucide-react";
-import { SparkleIcon } from "@/components/sparkle-icon";
 import { useI18n } from "@/lib/i18n/context";
 
 interface WizardSuccessModalProps {
@@ -18,57 +18,52 @@ export function WizardSuccessModal({
 }: WizardSuccessModalProps) {
   const { t } = useI18n();
 
-  if (!open) return null;
-
   return (
-    <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/70 px-4 animate-in fade-in duration-300">
-      <div
-        className="w-full max-w-md rounded-3xl p-7 shadow-[0_20px_50px_rgba(0,0,0,0.4)] animate-in zoom-in-95 duration-400"
-        style={{
-          background: "linear-gradient(135deg, rgba(20,24,33,0.98) 0%, rgba(13,15,20,0.98) 100%)",
-          border: "1px solid rgba(255,255,255,0.08)",
-          boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)",
-        }}
-      >
-        <div className="flex flex-col items-center text-center">
-          {/* Decorative Icon */}
-          <div className="relative mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/[0.06] text-slate-300 border border-white/10">
-            <CheckCircle2 className="h-8 w-8" />
-            <SparkleIcon className="absolute -top-1.5 -right-1.5 h-6 w-6" />
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        if (!isOpen) onClose();
+      }}
+      title={
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <CheckCircle2 className="h-5 w-5" />
           </div>
-
-          {/* Title & Description */}
-          <h3 className="mb-3 text-lg font-extrabold text-white tracking-tight">
+          <span className="font-bold text-base text-foreground">
             {t("dashboard.wizard.successModalTitle", "Selamat! Website Anda Telah Siap")}
-          </h3>
-          <p className="mb-6 text-xs leading-relaxed text-slate-300">
-            {t(
-              "dashboard.wizard.successModalDesc",
-              "Website telah berhasil dibuat oleh AI. Silakan periksa hasil tampilannya terlebih dahulu. Jika ada bagian konten, gambar, warna, atau tata letak yang kurang pas, Anda bisa dengan mudah menyesuaikan semuanya di halaman Editor."
-            )}
-          </p>
-
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row w-full gap-3">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-white/[0.06] text-xs font-semibold text-slate-200 border border-border transition-all hover:bg-white/10 active:scale-98"
-            >
-              <Eye className="h-4 w-4" />
-              {t("dashboard.wizard.successModalBtnPreview", "Lihat Preview")}
-            </button>
-            <button
-              type="button"
-              onClick={onGoToEditor}
-              className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl text-xs font-bold bg-primary text-primary-foreground transition-all hover:brightness-110 active:scale-98 shadow-lg shadow-primary/25"
-            >
-              {t("dashboard.wizard.successModalBtnEdit", "Edit & Publikasikan")}
-              <ArrowRight className="h-4 w-4" />
-            </button>
-          </div>
+          </span>
         </div>
+      }
+      footer={
+        <div className="flex w-full flex-col-reverse sm:flex-row sm:justify-end gap-2.5">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            className="flex-1 sm:flex-none"
+          >
+            <Eye className="h-4 w-4 mr-1.5" />
+            {t("dashboard.wizard.successModalBtnPreview", "Lihat Preview")}
+          </Button>
+          <Button
+            type="button"
+            onClick={onGoToEditor}
+            className="flex-1 sm:flex-none font-bold"
+          >
+            {t("dashboard.wizard.successModalBtnEdit", "Edit & Publikasikan")}
+            <ArrowRight className="h-4 w-4 ml-1.5" />
+          </Button>
+        </div>
+      }
+    >
+      <div className="space-y-3 py-1 text-sm text-muted-foreground leading-relaxed">
+        <p>
+          {t(
+            "dashboard.wizard.successModalDesc",
+            "Website telah berhasil dibuat oleh AI. Silakan periksa hasil tampilannya terlebih dahulu. Jika ada bagian konten, gambar, warna, atau tata letak yang kurang pas, Anda bisa dengan mudah menyesuaikan semuanya di halaman Editor."
+          )}
+        </p>
       </div>
-    </div>
+    </Dialog>
   );
 }

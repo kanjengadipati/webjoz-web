@@ -3,7 +3,7 @@
 
 import React, { useState, useRef, useMemo, useEffect } from "react";
 import Link from "next/link";
-import { CustomSelect } from "webjoz-ui";
+import { CustomSelect, Dialog, Button } from "webjoz-ui";
 import { useRouter } from "next/navigation";
 import { request } from "@/lib/api/client";
 import {
@@ -283,6 +283,7 @@ export function SiteWizard({
   const [sheetOpen, setSheetOpen] = useState(false);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [regenModalOpen, setRegenModalOpen] = useState(false);
 
   // Theme panel state (opened on demand via MobileActionBar button)
   const [themeSheetOpen, setThemeSheetOpen] = useState(false);
@@ -810,6 +811,14 @@ export function SiteWizard({
     bType = chat.businessType,
     overrides: { businessSubType?: string; whatsapp?: string; serviceArea?: string; description?: string; mood?: string; language?: string; logoUrl?: string; brandPalette?: Record<string, string> } = {}
   ) => {
+    // Edit inline (teks/gambar) akan tertimpa hasil generate baru.
+    if (preview.previewState === "result" && preview.hasUnsavedEdits) {
+      const ok = typeof window === "undefined" || window.confirm(
+        t("dashboard.wizard.confirmDiscardEdits",
+          "Perubahan teks/gambar yang sudah kamu edit akan hilang saat dibuat ulang. Lanjutkan?")
+      );
+      if (!ok) return;
+    }
     qualityRetryCountRef.current = 0;
     await runGenerate(bName, bType, overrides);
   };
@@ -1001,6 +1010,12 @@ export function SiteWizard({
         const matResult = await materializeContentMedia(preview.previewData.content, preview.streamedSections);
         if (matResult.failed > 0) {
           console.warn("[wizard] Beberapa gambar gagal di-upload, fallback ke gambar AI:", matResult.failed);
+          pushToast(
+            t("dashboard.wizard.imageUploadFailed",
+              "{n} foto gagal diunggah dan diganti foto bawaan. Kamu bisa menggantinya lagi di editor.",
+              { n: String(matResult.failed) }),
+            "info"
+          );
         }
         const contentForSave = matResult.content;
 
@@ -2591,7 +2606,15 @@ export function SiteWizard({
           ref={previewContainerRef}
           style={{ paddingBottom: device.isMobile && themeSheetOpen ? "45dvh" : undefined }}
         >
-          <PreviewCanvas chat={chat} preview={preview} device={device} themeDraft={themeDraft} fullPage={fullPagePreviewOpen} />
+          <PreviewCanvas
+            chat={chat}
+            preview={preview}
+            device={device}
+            themeDraft={themeDraft}
+            fullPage={fullPagePreviewOpen}
+            onGoToEditor={handleGoToEditor}
+            onRegenRequest={() => setRegenModalOpen(true)}
+          />
 
           {/* Mobile-only floating close button for full page preview */}
           {fullPagePreviewOpen && device.isMobile && (
@@ -2784,6 +2807,64 @@ export function SiteWizard({
         businessName={chat.businessName}
         onUpgradeSuccess={handleGoToEditor}
       />
+
+      {/* AI Regen Modal — Standard webjoz-ui Dialog with medium size & bottom-right position */}
+      <Dialog
+        open={regenModalOpen}
+        onOpenChange={setRegenModalOpen}
+        position="bottom-right"
+        size="medium"
+        backdrop="subtle"
+        className={device.isMobile ? "bottom-[96px] right-4" : undefined}
+        title={
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground border border-border/60">
+              <SparkleGenAI className="h-4.5 w-4.5" />
+            </div>
+            <span className="font-bold text-base text-foreground">
+              {t("dashboard.wizard.regenModalTitle", "Regenerate dengan AI")}
+            </span>
+          </div>
+        }
+        footer={
+          <div className="flex w-full flex-col-reverse sm:flex-row sm:justify-end gap-2.5">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => setRegenModalOpen(false)}
+              className="w-full sm:w-auto h-11 sm:h-10 px-5 rounded-xl border border-white/10 bg-white/[0.06] hover:bg-white/10 text-slate-200 text-xs font-semibold transition-all active:scale-95"
+            >
+              {t("dashboard.wizard.regenModalCancel", "Nanti Saja")}
+            </Button>
+            <Button
+              type="button"
+              onClick={() => {
+                setRegenModalOpen(false);
+                handleGoToEditor();
+              }}
+              className="w-full sm:w-auto h-11 sm:h-10 px-5 rounded-xl text-xs font-bold transition-all active:scale-95"
+            >
+              <Pencil className="h-3.5 w-3.5 mr-1.5" />
+              {t("dashboard.wizard.btnEditPublish", "Edit & Publikasikan")}
+            </Button>
+          </div>
+        }
+      >
+        <div className="space-y-3 py-1 text-sm text-muted-foreground leading-relaxed">
+          <p>
+            {t(
+              "dashboard.wizard.regenModalDesc",
+              "Fitur tulis ulang teks dan regenerasi konten dengan AI tersedia di halaman Editor."
+            )}
+          </p>
+          <p className="text-xs text-muted-foreground/80">
+            {t(
+              "dashboard.wizard.regenModalSubtext",
+              "Buka Editor untuk menyesuaikan teks, foto, dan bagian website Anda secara leluasa."
+            )}
+          </p>
+        </div>
+      </Dialog>
     </div>
   );
 }

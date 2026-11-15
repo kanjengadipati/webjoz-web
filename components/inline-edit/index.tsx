@@ -4,7 +4,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import { Camera, Link2, Check, X, Loader2, RefreshCw } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
-import { compressImage, uploadImageFile } from "@/components/file-upload";
+import { uploadImageFile } from "@/components/file-upload";
+import { createDeferredImageUrl } from "@/lib/deferred-image";
+import { useToast } from "@/components/toast-provider";
 import { useEditorChromeEnabled } from "@/components/sections/editor-chrome-context";
 import { useWizardRegen } from "@/components/sections/wizard-regen-context";
 
@@ -322,8 +324,8 @@ export function InlineText({
             handleAiRewrite(e);
           }}
           disabled={aiWriting}
-          aria-label="Tulis ulang dengan AI"
-          title={aiWriting ? "AI sedang menulis..." : "Tulis ulang dengan AI"}
+          aria-label={t("dashboard.sitesEditor.inlineAiRewrite")}
+          title={aiWriting ? t("dashboard.sitesEditor.inlineAiWriting") : t("dashboard.sitesEditor.inlineAiRewrite")}
           className={`absolute -top-3 -right-3 sm:-top-2.5 sm:-right-2.5 z-30 flex items-center justify-center w-7 h-7 sm:w-5 sm:h-5 rounded-full shadow-md border border-amber-400/70 transition-all duration-150 cursor-pointer
             before:absolute before:-inset-2 before:content-['']
             ${showAiBadge ? "opacity-100 scale-100" : "opacity-0 scale-75 pointer-events-none"}
@@ -364,12 +366,12 @@ export function InlineText({
             e.stopPropagation();
             onRegen?.();
           }}
-          aria-label="Generate ulang dengan AI (butuh login)"
-          title="Generate ulang dengan AI — butuh login"
-          className={`absolute -top-3 -right-3 sm:-top-2.5 sm:-right-2.5 z-30 flex items-center justify-center w-7 h-7 sm:w-5 sm:h-5 rounded-full shadow-md border border-slate-600/70 transition-all duration-150 cursor-pointer
+          aria-label={t("dashboard.sitesEditor.inlineAiRegenLoginRequired")}
+          title={t("dashboard.sitesEditor.inlineAiRegenLoginRequired")}
+          className={`absolute -top-3 -right-3 sm:-top-2.5 sm:-right-2.5 z-30 flex items-center justify-center w-7 h-7 sm:w-5 sm:h-5 rounded-full shadow-md border border-white/20 transition-all duration-150 cursor-pointer
             before:absolute before:-inset-2 before:content-['']
             ${showAiBadge ? "opacity-100 scale-100" : "opacity-0 scale-75 pointer-events-none"}
-            bg-slate-900/90 hover:bg-blue-500 text-slate-400 hover:text-white hover:border-blue-500 hover:scale-110 active:scale-95
+            bg-slate-900/95 hover:bg-white text-slate-300 hover:text-slate-950 hover:border-white hover:scale-110 active:scale-95
           `}
         >
           <RefreshCw className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
@@ -494,6 +496,7 @@ export function InlineImage({
   // ditutup sebelum menyimpan.
   const chromeEnabled = useEditorChromeEnabled();
   const deferUpload = !chromeEnabled;
+  const { pushToast } = useToast();
 
   if (!isEditorMode || !onUpdateField) {
     if (!src) return null;
@@ -574,13 +577,9 @@ export function InlineImage({
     try {
       setUploading(true);
       if (deferUpload) {
-        // Kompres lokal (tanpa jaringan) supaya blob URL kecil.
-        const processed = await compressImage(file, 1600, 1600, 0.8);
-        // Revoke blob URL lama kalau src sebelumnya adalah blob.
-        if (src && String(src).startsWith("blob:")) {
-          try { URL.revokeObjectURL(String(src)); } catch { /* ignore */ }
-        }
-        const blobUrl = URL.createObjectURL(processed as Blob);
+        // Validasi + kompres lokal + blob URL; nilai lama (gambar AI) dicatat
+        // sebagai fallback dan blob lama di-revoke di dalam helper.
+        const blobUrl = await createDeferredImageUrl(file, 1600, 0.8, src);
         onUpdateField(section, fieldKey, blobUrl);
       } else {
         const secureUrl = await uploadImageFile(file);
@@ -588,6 +587,7 @@ export function InlineImage({
       }
     } catch (err) {
       console.error("Upload image error:", err);
+      pushToast((err as Error)?.message || "Gagal memproses gambar.", "error");
     } finally {
       setUploading(false);
       if (fileInputRef.current) {

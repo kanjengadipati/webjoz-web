@@ -15,6 +15,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { uploadImageFile } from "@/components/file-upload";
+import { getMediaOriginal } from "@/lib/media-originals";
 
 const DB_NAME = "webjoz_draft_media";
 const DB_VERSION = 1;
@@ -25,6 +26,8 @@ interface MediaRecord {
   id: string;
   blob?: Blob;
   url?: string;
+  /** Nilai asli (gambar AI) sebelum diganti; fallback bila upload gagal. */
+  original?: string;
 }
 
 function walkStrings(node: any, cb: (v: string) => void): void {
@@ -112,6 +115,15 @@ async function deleteRecords(db: IDBDatabase, ids: string[]): Promise<void> {
   await txDone(tx);
 }
 
+async function getAllKeys(db: IDBDatabase): Promise<string[]> {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, "readonly");
+    const req = tx.objectStore(STORE).getAllKeys();
+    req.onsuccess = () => resolve((req.result as IDBValidKey[]).map(String));
+    req.onerror = () => reject(req.error || new Error("Gagal membaca IndexedDB."));
+  });
+}
+
 /** Bersihkan semua media draft (mis. setelah simpan sukses atau mulai draft baru). */
 export async function clearAllDraftMedia(): Promise<void> {
   try {
@@ -147,9 +159,8 @@ export async function persistDraftMedia(content: any): Promise<PersistDraftMedia
   });
   if (blobs.size === 0) return { content, stored: 0, skipped: 0 };
 
-  // Mulai draft baru: buang media lama agar tidak menumpuk.
-  await clearAllDraftMedia();
-
+  // Tulis dulu, baru buang record lama (di bawah): bila penulisan gagal di
+  // tengah, draft sebelumnya tidak ikut hilang.
   let db: IDBDatabase | null = null;
   try {
     db = await openDb();
@@ -161,9 +172,13 @@ export async function persistDraftMedia(content: any): Promise<PersistDraftMedia
   let stored = 0;
   let skipped = 0;
 
+  const newIds = new Set<string>();
+
   for (const blobUrl of blobs) {
+    const original = getMediaOriginal(blobUrl);
     if (!db) {
-      map.set(blobUrl, "");
+      // Tanpa IndexedDB: kembali ke gambar asli, bukan kosong.
+      map.set(blobUrl, original);
       skipped++;
       continue;
     }
@@ -174,12 +189,23 @@ export async function persistDraftMedia(content: any): Promise<PersistDraftMedia
       }
       const blob = await res.blob();
       const id = makeId();
-      await putRecord(db, { id, blob });
+      await putRecord(db, { id, blob, original });
+      newIds.add(id);
       map.set(blobUrl, `${PENDING_MEDIA_PREFIX}${id}`);
       stored++;
     } catch {
-      map.set(blobUrl, "");
+      map.set(blobUrl, original);
       skipped++;
+    }
+  }
+
+  // Buang record dari draft sebelumnya yang tidak terpakai lagi.
+  if (db && newIds.size > 0) {
+    try {
+      const stale = (await getAllKeys(db)).filter((k) => !newIds.has(k));
+      await deleteRecords(db, stale);
+    } catch {
+      /* best effort */
     }
   }
 
@@ -225,24 +251,26 @@ export async function materializeDraftMedia(content: any): Promise<MaterializeDr
 
   for (const id of ids) {
     const sentinel = `${PENDING_MEDIA_PREFIX}${id}`;
+    let original = "";
     if (!db) {
-      map.set(sentinel, "");
+      map.set(sentinel, original);
       failed++;
       continue;
     }
     try {
       const record = await getRecord(db, id);
       if (!record) {
-        map.set(sentinel, "");
+        map.set(sentinel, original);
         failed++;
         continue;
       }
+      original = record.original ?? "";
       if (record.url) {
         map.set(sentinel, record.url);
         continue;
       }
       if (!record.blob) {
-        map.set(sentinel, "");
+        map.set(sentinel, original);
         failed++;
         continue;
       }
@@ -253,12 +281,12 @@ export async function materializeDraftMedia(content: any): Promise<MaterializeDr
         blob.type === "image/jpeg" ? "jpg" : "png";
       const file = new File([blob], `draft-image.${ext}`, { type: blob.type || "image/png" });
       const secureUrl = await uploadImageFile(file);
-      await putRecord(db, { id, blob, url: secureUrl });
+      await putRecord(db, { id, blob, url: secureUrl, original });
       map.set(sentinel, secureUrl);
       uploaded++;
     } catch (err) {
       console.warn("[materializeDraftMedia] Gagal upload sentinel:", id, err);
-      map.set(sentinel, "");
+      map.set(sentinel, original);
       failed++;
     }
   }
