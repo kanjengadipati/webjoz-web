@@ -10,6 +10,7 @@ import { SiteWizard } from "@/components/site-wizard";
 import { request } from "@/lib/api/client";
 import { buildFullContent } from "@/lib/build-full-content";
 import { materializeContentMedia } from "@/lib/materialize-content-media";
+import { materializeDraftMedia, stripPendingMedia, clearAllDraftMedia } from "@/lib/draft-media-store";
 import { decodeDesignTokenParam } from "@/lib/design-token-library";
 import { WIZARD_RESUME_KEY, loadWizardSnapshot } from "@/components/site-wizard/wizard-persistence";
 import { encodeSiteId } from "@/lib/sqids";
@@ -256,9 +257,14 @@ function PublicWizardContent() {
             }
           }
 
-          // Materialize blob URL preview lokal → Cloudinary (jika ada).
-          const matResult = await materializeContentMedia(pending.previewContent);
-          const contentForSave = matResult.error ? pending.previewContent : matResult.content;
+          // 1) Upload gambar draft yang sempat disimpan di IndexedDB sebelum
+          //    user diarahkan login (blob URL tidak selamat melewati redirect).
+          const draftMat = await materializeDraftMedia(pending.previewContent);
+          // 2) Materialize blob URL preview lokal (jalur tanpa redirect) bila ada.
+          const matResult = await materializeContentMedia(draftMat.content);
+          let contentForSave = matResult.error ? draftMat.content : matResult.content;
+          // 3) Jangan biarkan sentinel/blob yang gagal diproses lolos ke server.
+          contentForSave = stripPendingMedia(contentForSave);
 
           const enrichedContent = buildFullContent(
             { content: contentForSave, design_token: pending.previewDesignToken, logo_url: logoForSave },
@@ -289,6 +295,7 @@ function PublicWizardContent() {
         localStorage.removeItem(WIZARD_RESUME_KEY);
         localStorage.removeItem("webjoz_login_redirect");
         localStorage.removeItem(SAVE_LOCK_KEY); // release lock after successful save
+        void clearAllDraftMedia();
 
         // Redirect langsung ke editor website yang baru dibuat
         router.push(`/dashboard/sites/${encodeSiteId(siteId)}`);
@@ -305,6 +312,7 @@ function PublicWizardContent() {
         localStorage.removeItem(WIZARD_RESUME_KEY);
         localStorage.removeItem("webjoz_pending_upgrade_site");
         localStorage.removeItem("webjoz_login_redirect");
+        void clearAllDraftMedia();
       }
     };
 
@@ -346,6 +354,7 @@ function PublicWizardContent() {
               localStorage.removeItem(WIZARD_RESUME_KEY);
               localStorage.removeItem("webjoz_pending_upgrade_site");
               localStorage.removeItem("webjoz_login_redirect");
+              void clearAllDraftMedia();
               setAutoSaveError("");
               router.push("/create");
             }}
@@ -359,6 +368,7 @@ function PublicWizardContent() {
               localStorage.removeItem(WIZARD_RESUME_KEY);
               localStorage.removeItem("webjoz_pending_upgrade_site");
               localStorage.removeItem("webjoz_login_redirect");
+              void clearAllDraftMedia();
               router.push("/dashboard/sites");
             }}
             className="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-500 transition-all"

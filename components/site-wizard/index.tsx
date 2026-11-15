@@ -92,6 +92,7 @@ import { AudioProcessingCard } from "./audio-processing-card";
 import { useToast } from "@/components/toast-provider";
 import { buildFullContent } from "@/lib/build-full-content";
 import { materializeContentMedia, sanitizeContentMedia } from "@/lib/materialize-content-media";
+import { persistDraftMedia } from "@/lib/draft-media-store";
 import { SiteWizardProps, PreviewData } from "./types";
 import { PENDING_KEY, BUSINESS_TYPES, SUB_TYPES, MOOD_OPTIONS, INITIAL_MESSAGE } from "./constants";
 import {
@@ -883,7 +884,15 @@ export function SiteWizard({
 
     if (!token) {
       isSavingRef.current = false;
-      const contentToSave = sanitizeContentMedia(preview.previewData?.content || preview.streamedSections);
+      let contentToSave = preview.previewData?.content || preview.streamedSections;
+      // Simpan gambar hasil edit (blob) ke IndexedDB supaya tidak hilang saat
+      // redirect login. Kalau IndexedDB tidak tersedia, blob di-strip dan teks
+      // tetap tersimpan.
+      try {
+        contentToSave = (await persistDraftMedia(contentToSave)).content;
+      } catch {
+        contentToSave = sanitizeContentMedia(contentToSave);
+      }
       const tokenToSave = preview.previewData?.design_token || preview.streamedDesignToken;
       const templateIdToSave = preview.previewData?.template_id || preview.streamedTemplateId || (preview.streamedDesignToken as any)?.template_id || selectTemplate(chat.businessSubType || chat.businessType);
 
