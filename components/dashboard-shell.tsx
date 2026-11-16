@@ -191,7 +191,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     dollar: DollarSign,
     share: Share2,
     percent: Percent,
-    gauge: BarChart2,
+    gauge: Activity,
     "bar-chart": BarChart2,
     receipt: Receipt,
     cpu: Cpu,
