@@ -8,6 +8,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { getSectionLabel } from "@/app/dashboard/sites/[id]/editor-utils";
 import { useSectionDrop, SectionDragControls } from "./section-reorder";
 import { useSectionVisibility, SectionVisibilityButton, HiddenSectionNotice } from "./section-visibility";
+import { useEditorChromeEnabled } from "@/components/sections/editor-chrome-context";
 import { CustomSelect, type CustomSelectOption, VisualVariantPanel } from "webjoz-ui";
 import { VariantWireframe } from "@/app/dashboard/sites/[id]/components/SectionVariantWireframe";
 
@@ -600,6 +601,7 @@ export const PreviewSectionWrapper: React.FC<{
   hasHeaderOverlay = false,
 }) => {
     const { t, locale } = useI18n();
+    const chromeEnabled = useEditorChromeEnabled();
     const displayLabel = getSectionLabel(section, locale) || label || section;
     const [isGalleryOpen, setIsGalleryOpen] = useState(false);
     
@@ -665,6 +667,7 @@ export const PreviewSectionWrapper: React.FC<{
           }`}
       >
         {/* Section label + variant — fused button group */}
+        {chromeEnabled && (
         <div
           ref={panelRef}
           data-section-ui
@@ -778,11 +781,12 @@ export const PreviewSectionWrapper: React.FC<{
                       />
                     </div>
                   )}
-          </div>{/* end relative wrapper */}
-        </div>{/* end outer absolute container */}
+          </div>
+        </div>
+        )}
 
         {/* Section Action (Top Right) — Regen */}
-        {!isHidden && (
+        {chromeEnabled && !isHidden && (
         <button
           data-section-ui
           type="button"

@@ -28,3 +28,7 @@ export function SparkleIcon({ className, style }: { className?: string; style?: 
 export function SparkleGenAI({ className, style }: { className?: string; style?: React.CSSProperties }) {
   return <MaskIcon src="/sparkle-gen-ai.png" className={className} style={style} />;
 }
+
+export function AiRefreshIcon({ className, style }: { className?: string; style?: React.CSSProperties }) {
+  return <MaskIcon src="/sparkle-gen-ai.png" className={className} style={style} />;
+}
