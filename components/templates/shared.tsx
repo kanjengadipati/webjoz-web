@@ -1255,12 +1255,17 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   onEditingStateChange,
   onAddItem,
   isExample,
-  locale,
+  locale: localeProp,
 }) => {
+  const { locale: ctxLocale } = useI18n();
+  // Prefer context locale (always accurate); prop is fallback for SSR edge cases
+  const locale = ctxLocale || localeProp;
+
   if (!testimonials) return null;
   if (!testimonials.items?.length && !(isEditorMode && (editorChrome ?? true) && onAddItem)) return null;
 
   const examplePrefix = isExample ? (locale === "en" ? "(Example) " : "(Contoh) ") : "";
+  // withPrefix only used for display — never stored back to data
   const withPrefix = (quote: string) => examplePrefix ? `${examplePrefix}${quote}` : quote;
 
   const resolvedDesignVariant = testimonials?.variant || designVariant || "standard";
