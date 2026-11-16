@@ -269,7 +269,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             </div>
 
             {/* Role + Upgrade */}
-            <div className="flex flex-col items-end gap-1.5 shrink-0">
+            <div className="flex flex-col items-end justify-center gap-1.5 shrink-0 self-center h-12">
               <span className="text-[9px] font-extrabold uppercase tracking-widest px-2 py-1 rounded-full bg-foreground text-background leading-none">
                 {userRole || "Owner"}
               </span>
