@@ -260,26 +260,25 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               <span className="absolute bottom-0 right-0 size-3.5 rounded-full bg-emerald-500 ring-2 ring-background shadow-sm" aria-hidden="true" />
             </div>
 
-            {/* Text + Right column dibungkus bersama agar share height yang sama */}
-            <div className="flex items-stretch flex-1 min-w-0 gap-2">
-              {/* Name + Plan */}
-              <div className="flex flex-col justify-between min-w-0 flex-1">
-                <p className="font-bold text-sm text-foreground leading-none truncate">{userDisplayName}</p>
-                <p className="text-[11px] text-muted-foreground leading-none">
-                  {(activeTenant?.tenant?.plan || "free").charAt(0).toUpperCase() + (activeTenant?.tenant?.plan || "free").slice(1)} Plan
-                </p>
-              </div>
-
-              {/* Role + Upgrade — same height as text column */}
-              <div className="flex flex-col items-end justify-between shrink-0">
-                <span className="text-[9px] font-extrabold uppercase tracking-widest px-2 py-1 rounded-full bg-foreground text-background leading-none">
+            {/* Nama + OWNER satu baris, Plan + UPGRADE satu baris — dijamin sejajar */}
+            <div className="flex flex-col flex-1 min-w-0 gap-1.5">
+              {/* Baris 1: nama + role */}
+              <div className="flex items-center gap-2">
+                <p className="font-bold text-sm text-foreground leading-none truncate flex-1">{userDisplayName}</p>
+                <span className="text-[9px] font-extrabold uppercase tracking-widest px-2 py-1 rounded-full bg-foreground text-background leading-none shrink-0">
                   {userRole || "Owner"}
                 </span>
+              </div>
+              {/* Baris 2: plan + upgrade */}
+              <div className="flex items-center gap-2">
+                <p className="text-[11px] text-muted-foreground leading-none flex-1">
+                  {(activeTenant?.tenant?.plan || "free").charAt(0).toUpperCase() + (activeTenant?.tenant?.plan || "free").slice(1)} Plan
+                </p>
                 {!isPremiumPlan && (
                   <Link
                     href="/dashboard/billing"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="text-[9px] font-extrabold uppercase tracking-widest px-2 py-1 rounded-full border border-border text-foreground hover:bg-muted transition leading-none"
+                    className="text-[9px] font-extrabold uppercase tracking-widest px-2 py-1 rounded-full border border-border text-foreground hover:bg-muted transition leading-none shrink-0"
                   >
                     Upgrade
                   </Link>
