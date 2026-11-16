@@ -206,7 +206,13 @@ export default function DashboardOverviewPage() {
       if (profileRes.status === "fulfilled") setProfile(profileRes.value.data);
       if (statsRes.status === "fulfilled") setStats(statsRes.value.data);
       if (healthRes.status === "fulfilled") setHealth(healthRes.value.data);
-      if (tenantsRes.status === "fulfilled") setTenants((tenantsRes.value.data || []).slice(0, 5));
+      if (tenantsRes.status === "fulfilled") {
+        // Dedup by ID before slicing — guards against double-fetch races where
+        // the same tenant record may appear more than once in the response.
+        const raw = tenantsRes.value.data || [];
+        const deduped = [...new Map(raw.map((x) => [x.id, x])).values()];
+        setTenants(deduped.slice(0, 5));
+      }
       if (plansRes.status === "fulfilled") setPlanCount((plansRes.value.data || []).length);
     } else if (isSales) {
       const [profileRes, commRes, bonusRes, configRes, refRes] = await Promise.allSettled([
@@ -266,7 +272,11 @@ export default function DashboardOverviewPage() {
 
   useEffect(() => {
     if (!token) return;
-    setState(SectionState.IDLE);
+    // Only reset to IDLE when the key identity / role changes — not while a
+    // fetch is already in-flight (LOADING), to avoid double-fetch races.
+    setState((prev) =>
+      prev === SectionState.LOADING ? prev : SectionState.IDLE
+    );
   }, [token, isAdmin, isSales, activeTenantId]);
 
   const metrics = useMemo(() => {
