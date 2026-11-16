@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Loader2, Clock } from "lucide-react";
+import { Loader2, Clock, PenLine } from "lucide-react";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { LOADING_CHECKLIST, LOADING_STEPS_PERCENT } from "./constants";
 import { getInsight } from "./helpers";
@@ -108,8 +108,9 @@ export function LoadingModal({ loadingStep, progressPercent, businessType, busin
           </div>
 
           {!center && charCount !== undefined && charCount > 0 && (
-            <p className="text-[10px] text-slate-500 text-right pt-0.5">
-              {t("dashboard.wizard.loadingCharsWritten", undefined, { count: charCount.toLocaleString(locale === "id" ? "id-ID" : "en-US") })}
+            <p className="text-[10px] text-slate-400 text-right pt-0.5 flex items-center justify-end gap-1 font-mono">
+              <PenLine className="w-3 h-3 text-slate-400 shrink-0" />
+              <span>{t("dashboard.wizard.loadingCharsWritten", undefined, { count: charCount.toLocaleString(locale === "id" ? "id-ID" : "en-US") })}</span>
             </p>
           )}
         </div>
@@ -154,10 +155,10 @@ export function LoadingModal({ loadingStep, progressPercent, businessType, busin
 
         {/* AI Insight — only on desktop */}
         {!center && loadingStep >= 3 && (
-          <div className="rounded-2xl p-3.5 animate-in fade-in duration-500 bg-primary/10 border border-primary/20">
-            <div className="flex items-center gap-1.5 mb-1.5 text-primary">
+          <div className="rounded-2xl p-3.5 animate-in fade-in duration-500 bg-white/5 border border-white/10">
+            <div className="flex items-center gap-1.5 mb-1.5 text-slate-200">
               <SparkleIcon className="w-[18px] h-[18px]" />
-              <span className="text-[11px] font-bold text-primary">{t("dashboard.wizard.loadingAiInsight", "AI Insight")}</span>
+              <span className="text-[11px] font-bold text-white">{t("dashboard.wizard.loadingAiInsight", "AI Insight")}</span>
             </div>
             <p className="text-[11px] text-slate-400 leading-relaxed">{getInsight(businessType, locale)}</p>
           </div>
