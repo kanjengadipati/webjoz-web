@@ -165,6 +165,7 @@ export interface Translations {
     loginDesc: string;
     loginCardTitle: string;
     loginCardDesc: string;
+    loginCardDescNoWa: string;
     loginFooterHome: string;
     loginFooterRegister: string;
     loginFooterForgot: string;
@@ -4022,6 +4023,8 @@ export const translations: Record<Locale, Translations> = {
       loginCardTitle: "Login",
       loginCardDesc:
         "Gunakan WhatsApp, email OTP, atau password untuk mengakses dashboard.",
+      loginCardDescNoWa:
+        "Gunakan email OTP atau password untuk mengakses dashboard.",
       loginFooterHome: "Beranda",
       loginFooterRegister: "Buat akun",
       loginFooterForgot: "Lupa password",
@@ -8460,6 +8463,8 @@ export const translations: Record<Locale, Translations> = {
       loginCardTitle: "Login",
       loginCardDesc:
         "Use WhatsApp, email OTP, or password to access the dashboard.",
+      loginCardDescNoWa:
+        "Use email OTP or password to access the dashboard.",
       loginFooterHome: "Home",
       loginFooterRegister: "Create account",
       loginFooterForgot: "Forgot password",

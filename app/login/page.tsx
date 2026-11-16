@@ -625,7 +625,7 @@ export default function LoginPage() {
         { label: t("auth.loginStats2Label"), value: t("auth.loginStats2Value"), helper: t("auth.loginStats2Helper") },
       ]}
       cardTitle={t("auth.loginCardTitle")}
-      cardDescription={t("auth.loginCardDesc")}
+      cardDescription={WHATSAPP_LOGIN_ENABLED ? t("auth.loginCardDesc") : t("auth.loginCardDescNoWa")}
       footer={
         <div className="hidden md:flex flex-wrap items-center gap-x-4 gap-y-2">
           <Link href="/" className="font-medium text-primary hover:opacity-80">{t("auth.loginFooterHome")}</Link>
