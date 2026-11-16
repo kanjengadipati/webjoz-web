@@ -287,18 +287,22 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                           href={item.href}
                           onClick={() => setMobileMenuOpen(false)}
                           className={cn(
-                            "flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all border",
+                            "relative flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all border",
                             active
-                              ? "bg-primary text-primary-foreground border-primary shadow-sm font-bold"
+                              ? "border-primary bg-primary/12 text-primary shadow-inner font-bold"
                               : "bg-muted/30 border-border/40 text-muted-foreground hover:text-foreground hover:bg-muted/60"
                           )}
+                          aria-current={active ? "page" : undefined}
                         >
                           <Icon className="size-4 shrink-0" />
                           <span className="truncate">{label}</span>
                           {showBadge && (
-                            <span className="ml-auto flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-primary text-primary-foreground text-[9px] font-bold leading-none shadow-md shrink-0">
+                            <span className="ml-auto flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-primary/15 text-primary text-[9px] font-bold leading-none shrink-0">
                               {unreadCount > 99 ? "99+" : unreadCount}
                             </span>
+                          )}
+                          {active && !showBadge && (
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2 size-1.5 rounded-full bg-primary shadow-[0_0_8px_currentColor]" aria-hidden="true" />
                           )}
                         </Link>
                       );
