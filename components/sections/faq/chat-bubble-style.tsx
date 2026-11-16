@@ -38,102 +38,104 @@ export default function FaqChatBubbleStyle({
   };
 
   return (
-    <section id="faq" style={{ ...py, padding: "var(--dt-spacing) 1.5rem", maxWidth: "48rem", margin: "0 auto" }}>
-      <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-        <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>{isEN ? "Questions" : "Pertanyaan"}</span>
-        <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>
-          {isEditorMode ? (
-            <InlineText
-              section="faq"
-              fieldKey="title"
-              value={faq.title}
-              onUpdateField={onUpdateField}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
-              as="span"
+    <section id="faq" style={{ ...py, padding: "var(--dt-spacing) 1.5rem", background: "var(--dt-bg)" }}>
+      <div style={{ maxWidth: "48rem", margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+          <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>{isEN ? "Questions" : "Pertanyaan"}</span>
+          <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>
+            {isEditorMode ? (
+              <InlineText
+                section="faq"
+                fieldKey="title"
+                value={faq.title}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+                as="span"
+              />
+            ) : faq.title}
+          </h2>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          {faq.items?.map((item, idx) => {
+            const isEven = idx % 2 === 0;
+            return (
+              <React.Fragment key={idx}>
+                {/* Question bubble — right-aligned */}
+                <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-start", gap: "0.5rem" }}>
+                  {isEditorMode && onDeleteItem && (
+                    <InlineDeleteButton onDelete={() => onDeleteItem(idx)} compact className="mt-1 flex-shrink-0" />
+                  )}
+                  <div
+                    style={{
+                      maxWidth: "80%",
+                      padding: "0.75rem 1.25rem",
+                      borderRadius: "1rem 1rem 0.25rem 1rem",
+                      background: "color-mix(in srgb, var(--dt-primary) 12%, var(--dt-surface))",
+                      border: "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)",
+                    }}
+                  >
+                    <p style={{ fontFamily: "var(--dt-body-font)", color: "var(--dt-text)", fontWeight: 600, fontSize: "0.9rem", margin: 0, lineHeight: 1.5 }}>
+                      {isEditorMode ? (
+                        <InlineText
+                          section="faq"
+                          fieldKey={`items.${idx}.question`}
+                          value={item.question}
+                          onUpdateField={(_, __, val) => handleUpdateItem(idx, "question", val)}
+                          isEditorMode={isEditorMode}
+                          isSelected={isSelected}
+                          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                          onEditingStateChange={onEditingStateChange}
+                          as="span"
+                        />
+                      ) : item.question}
+                    </p>
+                  </div>
+                </div>
+                {/* Answer bubble — left-aligned */}
+                <div style={{ display: "flex", justifyContent: "flex-start" }}>
+                  <div
+                    style={{
+                      maxWidth: "80%",
+                      padding: "0.75rem 1.25rem",
+                      borderRadius: "1rem 1rem 1rem 0.25rem",
+                      background: "var(--dt-primary)",
+                      color: "var(--dt-primary-foreground)",
+                    }}
+                  >
+                    <p style={{ fontSize: "0.875rem", lineHeight: 1.7, margin: 0 }}>
+                      {isEditorMode ? (
+                        <InlineText
+                          section="faq"
+                          fieldKey={`items.${idx}.answer`}
+                          value={item.answer}
+                          onUpdateField={(_, __, val) => handleUpdateItem(idx, "answer", val)}
+                          isEditorMode={isEditorMode}
+                          isSelected={isSelected}
+                          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                          onEditingStateChange={onEditingStateChange}
+                          multiline
+                          as="span"
+                        />
+                      ) : item.answer}
+                    </p>
+                  </div>
+                </div>
+              </React.Fragment>
+            );
+          })}
+          {isEditorMode && onAddItem && (
+            <InlineAddTile
+              label={isEN ? "Add question" : "Tambah Pertanyaan"}
+              variant="bar"
+              onClick={onAddItem}
+              className="w-full"
+              style={{ borderRadius: "1rem", color: "var(--dt-text)" }}
             />
-          ) : faq.title}
-        </h2>
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-        {faq.items?.map((item, idx) => {
-          const isEven = idx % 2 === 0;
-          return (
-            <React.Fragment key={idx}>
-              {/* Question bubble — right-aligned */}
-              <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-start", gap: "0.5rem" }}>
-                {isEditorMode && onDeleteItem && (
-                  <InlineDeleteButton onDelete={() => onDeleteItem(idx)} compact className="mt-1 flex-shrink-0" />
-                )}
-                <div
-                  style={{
-                    maxWidth: "80%",
-                    padding: "0.75rem 1.25rem",
-                    borderRadius: "1rem 1rem 0.25rem 1rem",
-                    background: "color-mix(in srgb, var(--dt-primary) 12%, var(--dt-surface))",
-                    border: "1px solid color-mix(in srgb, var(--dt-primary) 15%, transparent)",
-                  }}
-                >
-                  <p style={{ fontFamily: "var(--dt-body-font)", color: "var(--dt-text)", fontWeight: 600, fontSize: "0.9rem", margin: 0, lineHeight: 1.5 }}>
-                    {isEditorMode ? (
-                      <InlineText
-                        section="faq"
-                        fieldKey={`items.${idx}.question`}
-                        value={item.question}
-                        onUpdateField={(_, __, val) => handleUpdateItem(idx, "question", val)}
-                        isEditorMode={isEditorMode}
-                        isSelected={isSelected}
-                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                        onEditingStateChange={onEditingStateChange}
-                        as="span"
-                      />
-                    ) : item.question}
-                  </p>
-                </div>
-              </div>
-              {/* Answer bubble — left-aligned */}
-              <div style={{ display: "flex", justifyContent: "flex-start" }}>
-                <div
-                  style={{
-                    maxWidth: "80%",
-                    padding: "0.75rem 1.25rem",
-                    borderRadius: "1rem 1rem 1rem 0.25rem",
-                    background: "var(--dt-primary)",
-                    color: "var(--dt-primary-foreground)",
-                  }}
-                >
-                  <p style={{ fontSize: "0.875rem", lineHeight: 1.7, margin: 0 }}>
-                    {isEditorMode ? (
-                      <InlineText
-                        section="faq"
-                        fieldKey={`items.${idx}.answer`}
-                        value={item.answer}
-                        onUpdateField={(_, __, val) => handleUpdateItem(idx, "answer", val)}
-                        isEditorMode={isEditorMode}
-                        isSelected={isSelected}
-                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                        onEditingStateChange={onEditingStateChange}
-                        multiline
-                        as="span"
-                      />
-                    ) : item.answer}
-                  </p>
-                </div>
-              </div>
-            </React.Fragment>
-          );
-        })}
-        {isEditorMode && onAddItem && (
-          <InlineAddTile
-            label={isEN ? "Add question" : "Tambah Pertanyaan"}
-            variant="bar"
-            onClick={onAddItem}
-            className="w-full"
-            style={{ borderRadius: "1rem", color: "var(--dt-text)" }}
-          />
-        )}
+          )}
+        </div>
       </div>
     </section>
   );

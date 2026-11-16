@@ -50,6 +50,7 @@ export default function LeftLogoInlineNav({
               section="header"
               fieldKey="tagline"
               value={header.tagline}
+              placeholder={language === "en" ? "+ Add tagline" : "+ Tambah tagline"}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}

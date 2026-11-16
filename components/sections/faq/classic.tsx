@@ -29,6 +29,7 @@ const DynamicFaqAccordion: React.FC<{
       style={{
         border: "1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)",
         borderRadius: "var(--dt-radius)",
+        background: "color-mix(in srgb, var(--dt-primary) 3%, var(--dt-bg))",
         overflow: "hidden",
         position: "relative",
         transition: "box-shadow 0.2s ease",
@@ -156,49 +157,51 @@ export default function FaqClassic({
   };
 
   return (
-    <section id="faq" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, maxWidth: "52rem", margin: "0 auto" }}>
-      <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-        <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>{isEN ? "Questions" : "Pertanyaan"}</span>
-        <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>
-          {isEditorMode ? (
-            <InlineText
+    <section id="faq" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, background: "var(--dt-bg)" }}>
+      <div style={{ maxWidth: "52rem", margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+          <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>{isEN ? "Questions" : "Pertanyaan"}</span>
+          <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>
+            {isEditorMode ? (
+              <InlineText
+                section="faq"
+                fieldKey="title"
+                value={faq.title}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+                as="span"
+              />
+            ) : faq.title}
+          </h2>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+          {faq.items?.map((item, idx) => (
+            <DynamicFaqAccordion
+              key={idx}
+              item={item}
+              index={idx}
+              onUpdateItem={handleUpdateItem}
+              onDelete={onDeleteItem ? () => onDeleteItem(idx) : undefined}
               section="faq"
-              fieldKey="title"
-              value={faq.title}
-              onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
               onEditingStateChange={onEditingStateChange}
-              as="span"
             />
-          ) : faq.title}
-        </h2>
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-        {faq.items?.map((item, idx) => (
-          <DynamicFaqAccordion
-            key={idx}
-            item={item}
-            index={idx}
-            onUpdateItem={handleUpdateItem}
-            onDelete={onDeleteItem ? () => onDeleteItem(idx) : undefined}
-            section="faq"
-            isEditorMode={isEditorMode}
-            isSelected={isSelected}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-          />
-        ))}
-        {isEditorMode && onAddItem && (
-          <InlineAddTile
-            label={isEN ? "Add question" : "Tambah Pertanyaan"}
-            variant="bar"
-            onClick={onAddItem}
-            className="w-full"
-            style={{ borderRadius: "var(--dt-radius)", color: "var(--dt-text)" }}
-          />
-        )}
+          ))}
+          {isEditorMode && onAddItem && (
+            <InlineAddTile
+              label={isEN ? "Add question" : "Tambah Pertanyaan"}
+              variant="bar"
+              onClick={onAddItem}
+              className="w-full"
+              style={{ borderRadius: "var(--dt-radius)", color: "var(--dt-text)" }}
+            />
+          )}
+        </div>
       </div>
     </section>
   );

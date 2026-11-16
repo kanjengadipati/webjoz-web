@@ -220,7 +220,20 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
 
   return (
     <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={computePrimaryFg(dt?.palette?.primary ?? "#4F46E5")} language={language} payments={content.payments}>
-    <div style={{ ...cssVars, background: bg, color: "#e0f0ff", fontFamily: "var(--dt-body-font)", minHeight: "100vh", overflowX: "hidden", containerType: "inline-size" }}>
+    <div style={{
+      ...cssVars,
+      "--dt-bg": bg,
+      "--dt-surface": surface,
+      "--dt-card": card,
+      "--dt-text": "#e0f0ff",
+      "--dt-text-muted": "rgba(224, 240, 255, 0.7)",
+      background: bg,
+      color: "#e0f0ff",
+      fontFamily: "var(--dt-body-font)",
+      minHeight: "100vh",
+      overflowX: "hidden",
+      containerType: "inline-size",
+    } as React.CSSProperties}>
       {(() => {
         const renderedSectionOrder = filterEmptySections(sectionOrder, content, editorChrome ?? isEditorMode)
           .filter(k => isEditorMode || !(dt?.layout?.hidden_sections ?? []).includes(k))

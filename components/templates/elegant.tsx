@@ -224,7 +224,20 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
 
   return (
     <CartProvider waPhone={contact?.phone ?? ""} brandName={header?.brand_name} previewMode={isEditorMode} onSubmitLead={onSubmitLead} primaryColor={dt?.palette?.primary ?? "#4F46E5"} primaryFg={computePrimaryFg(dt?.palette?.primary ?? "#4F46E5")} language={language} payments={content.payments}>
-    <div style={{ ...cssVars, background: darkBg, color: "#f5e6c0", fontFamily: "var(--dt-body-font)", minHeight: "100vh", overflowX: "hidden", containerType: "inline-size" }}>
+    <div style={{
+      ...cssVars,
+      "--dt-bg": darkBg,
+      "--dt-surface": darkSurface,
+      "--dt-card": darkCard,
+      "--dt-text": "#f5e6c0",
+      "--dt-text-muted": "rgba(245, 230, 192, 0.7)",
+      background: darkBg,
+      color: "#f5e6c0",
+      fontFamily: "var(--dt-body-font)",
+      minHeight: "100vh",
+      overflowX: "hidden",
+      containerType: "inline-size",
+    } as React.CSSProperties}>
       <div className="py-2 text-center text-[10px] uppercase tracking-widest  " style={{ background: "#0d0c08", borderBottom: `1px solid ${gold}20`, color: gold }}>
         {header?.tagline || "Layanan Eksklusif · Kualitas Premium · Kepuasan Terjamin"}
       </div>

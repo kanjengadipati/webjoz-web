@@ -42,7 +42,7 @@ function DynamicFaqItem({
   const [isOpen, setIsOpen] = useState(false);
   const Header = isEditorMode ? "div" : "button";
   return (
-    <div style={{ border: `1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)`, borderRadius: "var(--dt-radius)", overflow: "hidden", position: "relative" }}>
+    <div style={{ border: `1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)`, background: "color-mix(in srgb, var(--dt-primary) 3%, var(--dt-bg))", borderRadius: "var(--dt-radius)", overflow: "hidden", position: "relative" }}>
       <Header
         {...(isEditorMode
           ? { role: "button", tabIndex: 0, onKeyDown: (e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") setIsOpen(!isOpen); } }
@@ -131,80 +131,82 @@ export default function FaqSidebarCategory({
     onUpdateField("faq", "items", nextItems);
   };
   return (
-    <section id="faq" style={{ padding: `var(--dt-spacing) 1.5rem`, maxWidth: "72rem", margin: "0 auto" }}>
-      <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-        <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>{isEN ? "Questions" : "Pertanyaan"}</span>
-        <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>
-          {isEditorMode ? (
-            <InlineText
-              section="faq"
-              fieldKey="title"
-              value={faq.title}
-              onUpdateField={onUpdateField}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
-              as="span"
-            />
-          ) : faq.title}
-        </h2>
-      </div>
-      {categories.length > 0 && (
-        <div style={{ display: "flex", gap: "0.5rem", marginBottom: "2rem", flexWrap: "wrap", justifyContent: "center" }}>
-          {categories.map(cat => {
-            const catIdx = items.findIndex(i => i.category === cat);
+    <section id="faq" style={{ padding: `var(--dt-spacing) 1.5rem`, background: "var(--dt-bg)" }}>
+      <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+          <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>{isEN ? "Questions" : "Pertanyaan"}</span>
+          <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>
+            {isEditorMode ? (
+              <InlineText
+                section="faq"
+                fieldKey="title"
+                value={faq.title}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+                as="span"
+              />
+            ) : faq.title}
+          </h2>
+        </div>
+        {categories.length > 0 && (
+          <div style={{ display: "flex", gap: "0.5rem", marginBottom: "2rem", flexWrap: "wrap", justifyContent: "center" }}>
+            {categories.map(cat => {
+              const catIdx = items.findIndex(i => i.category === cat);
+              return (
+                <button key={cat} onClick={() => setActiveCat(cat)}
+                  style={{ padding: "0.4rem 1rem", borderRadius: "2rem", fontSize: "0.8rem", fontWeight: 600, border: `1px solid ${activeCat === cat ? "var(--dt-primary)" : "color-mix(in srgb, var(--dt-text) 18%, transparent)"}`, background: activeCat === cat ? "var(--dt-primary)" : "color-mix(in srgb, var(--dt-text) 6%, transparent)", color: activeCat === cat ? "var(--dt-cta-text, #fff)" : "var(--dt-text)", cursor: "pointer", transition: "all 0.2s" }}>
+                  {isEditorMode ? (
+                    <InlineText
+                      section="faq"
+                      fieldKey={`items.${catIdx}.category`}
+                      value={cat}
+                      onUpdateField={(_, __, val) => {
+                        handleUpdateItem(catIdx, "category", val);
+                        if (activeCat === cat) setActiveCat(val);
+                      }}
+                      isEditorMode={isEditorMode}
+                      isSelected={isSelected}
+                      as="span"
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      onEditingStateChange={onEditingStateChange}
+                    />
+                  ) : cat}
+                </button>
+              );
+            })}
+          </div>
+        )}
+        <div style={{ maxWidth: "48rem", margin: "0 auto", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+          {items.map((item, idx) => {
+            if (activeCat && item.category && item.category !== activeCat) return null;
             return (
-              <button key={cat} onClick={() => setActiveCat(cat)}
-                style={{ padding: "0.4rem 1rem", borderRadius: "2rem", fontSize: "0.8rem", fontWeight: 600, border: `1px solid ${activeCat === cat ? "var(--dt-primary)" : "color-mix(in srgb, var(--dt-primary) 20%, transparent)"}`, background: activeCat === cat ? "var(--dt-primary)" : "transparent", color: activeCat === cat ? "var(--dt-cta-text, #fff)" : "var(--dt-text)", cursor: "pointer", transition: "all 0.2s" }}>
-                {isEditorMode ? (
-                  <InlineText
-                    section="faq"
-                    fieldKey={`items.${catIdx}.category`}
-                    value={cat}
-                    onUpdateField={(_, __, val) => {
-                      handleUpdateItem(catIdx, "category", val);
-                      if (activeCat === cat) setActiveCat(val);
-                    }}
-                    isEditorMode={isEditorMode}
-                    isSelected={isSelected}
-                    as="span"
-                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                    onEditingStateChange={onEditingStateChange}
-                  />
-                ) : cat}
-              </button>
+              <DynamicFaqItem
+                key={idx}
+                item={item}
+                index={idx}
+                onUpdateItem={handleUpdateItem}
+                onDelete={onDeleteItem ? () => onDeleteItem(idx) : undefined}
+                section="faq"
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
             );
           })}
-        </div>
-      )}
-      <div style={{ maxWidth: "48rem", margin: "0 auto", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-        {items.map((item, idx) => {
-          if (activeCat && item.category && item.category !== activeCat) return null;
-          return (
-            <DynamicFaqItem
-              key={idx}
-              item={item}
-              index={idx}
-              onUpdateItem={handleUpdateItem}
-              onDelete={onDeleteItem ? () => onDeleteItem(idx) : undefined}
-              section="faq"
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
+          {isEditorMode && onAddItem && (
+            <InlineAddTile
+              label={isEN ? "Add question" : "Tambah Pertanyaan"}
+              variant="bar"
+              onClick={handleAddItem}
+              className="w-full"
+              style={{ borderRadius: "var(--dt-radius)", color: "var(--dt-text)" }}
             />
-          );
-        })}
-        {isEditorMode && onAddItem && (
-          <InlineAddTile
-            label={isEN ? "Add question" : "Tambah Pertanyaan"}
-            variant="bar"
-            onClick={handleAddItem}
-            className="w-full"
-            style={{ borderRadius: "var(--dt-radius)", color: "var(--dt-text)" }}
-          />
-        )}
+          )}
+        </div>
       </div>
     </section>
   );

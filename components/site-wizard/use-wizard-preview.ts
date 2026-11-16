@@ -293,24 +293,27 @@ export function useWizardPreview() {
       if (!prev) return prev;
       const targetDefault = TEMPLATE_DEFAULT_DESIGN_TOKENS[nextTemplateId];
       const nextHeroStyle = targetDefault?.layout?.hero_style;
-      if (nextHeroStyle && prev.design_token?.layout) {
-        return {
-          ...prev,
-          template_id: nextTemplateId,
-          design_token: {
-            ...prev.design_token,
-            layout: {
-              ...prev.design_token.layout,
-              hero_style: nextHeroStyle,
-              section_variants: {
-                ...(prev.design_token.layout.section_variants as any),
-                hero: nextHeroStyle,
-              },
-            },
+      const nextLayout = prev.design_token?.layout ? {
+        ...prev.design_token.layout,
+        ...(nextHeroStyle ? {
+          hero_style: nextHeroStyle,
+          section_variants: {
+            ...(prev.design_token.layout.section_variants as any),
+            hero: nextHeroStyle,
           },
-        };
-      }
-      return { ...prev, template_id: nextTemplateId };
+        } : {}),
+      } : prev.design_token?.layout;
+
+      return {
+        ...prev,
+        template_id: nextTemplateId,
+        design_token: prev.design_token ? {
+          ...prev.design_token,
+          ...(targetDefault?.palette ? { palette: { ...prev.design_token.palette, ...targetDefault.palette } } : {}),
+          ...(targetDefault?.theme_mode ? { theme_mode: targetDefault.theme_mode } : {}),
+          ...(nextLayout ? { layout: nextLayout } : {}),
+        } : prev.design_token,
+      };
     });
     setTimeout(() => {
       setIsSwitchingTemplate(false);
