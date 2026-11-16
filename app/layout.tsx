@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { cookies, headers } from "next/headers";
 import { VercelAnalytics } from "@/components/analytics";
+import { CookieBanner } from "@/components/cookie-banner";
 import { Geist, Geist_Mono } from "next/font/google";
 import type { Locale } from "@/lib/i18n/translations";
 import { LOCALE_STORAGE_KEY } from "@/lib/i18n/context";
@@ -98,6 +99,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           </div>
         </Providers>
         <VercelAnalytics />
+        <CookieBanner />
         <SupportWidget />
       </body>
     </html>
