@@ -250,29 +250,39 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         }
       >
         <div className="overflow-y-auto space-y-5 px-5 pb-2">
-          {/* Custom Header — avatar + nama + plan */}
-          <div className="flex items-center justify-between pt-1 pb-3 border-b border-border/40">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="relative shrink-0">
-                <div className="size-12 rounded-full bg-muted border border-border/40 flex items-center justify-center text-foreground font-bold text-lg shadow-md">
-                  {userInitial}
-                </div>
-                <span className="absolute bottom-0 right-0 size-3.5 rounded-full bg-emerald-500 ring-2 ring-background shadow-sm" aria-hidden="true" />
+          {/* Custom Header — avatar + nama + plan + role + upgrade */}
+          <div className="flex items-center gap-3 pt-1 pb-3 border-b border-border/40">
+            {/* Avatar with status dot */}
+            <div className="relative shrink-0">
+              <div className="size-12 rounded-full bg-muted border border-border/40 flex items-center justify-center text-foreground font-bold text-lg shadow-md">
+                {userInitial}
               </div>
-              <div className="flex flex-col justify-center min-w-0 gap-1">
-                <p className="font-bold text-sm text-foreground leading-none truncate">{userDisplayName}</p>
-                <p className="text-[11px] text-muted-foreground leading-none">
-                  {(activeTenant?.tenant?.plan || "free").charAt(0).toUpperCase() + (activeTenant?.tenant?.plan || "free").slice(1)} Plan
-                </p>
-              </div>
+              <span className="absolute bottom-0 right-0 size-3.5 rounded-full bg-emerald-500 ring-2 ring-background shadow-sm" aria-hidden="true" />
             </div>
-            <button
-              onClick={() => setMobileMenuOpen(false)}
-              className="size-8 rounded-full bg-muted/60 border border-border/40 text-muted-foreground hover:text-foreground hover:bg-muted flex items-center justify-center transition cursor-pointer shrink-0 ml-2"
-              aria-label="Close menu"
-            >
-              <X className="size-3.5" />
-            </button>
+
+            {/* Name + Plan */}
+            <div className="flex flex-col justify-center min-w-0 gap-1 flex-1">
+              <p className="font-bold text-sm text-foreground leading-none truncate">{userDisplayName}</p>
+              <p className="text-[11px] text-muted-foreground leading-none">
+                {(activeTenant?.tenant?.plan || "free").charAt(0).toUpperCase() + (activeTenant?.tenant?.plan || "free").slice(1)} Plan
+              </p>
+            </div>
+
+            {/* Role + Upgrade */}
+            <div className="flex flex-col items-end gap-1.5 shrink-0">
+              <span className="text-[9px] font-extrabold uppercase tracking-widest px-2 py-1 rounded-full bg-foreground text-background leading-none">
+                {userRole || "Owner"}
+              </span>
+              {!isPremiumPlan && (
+                <Link
+                  href="/dashboard/billing"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-[9px] font-extrabold uppercase tracking-widest px-2 py-1 rounded-full border border-border text-foreground hover:bg-muted transition leading-none"
+                >
+                  Upgrade
+                </Link>
+              )}
+            </div>
           </div>
           {/* Navigation Groups */}
           <div className="space-y-4">
