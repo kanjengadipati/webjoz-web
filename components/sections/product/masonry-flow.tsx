@@ -35,18 +35,24 @@ export default function ProductMasonryFlow({
   const getMasonryCardStyles = (index: number): MenuCatalogCardStyles => {
     const aspect = MASONRY_ASPECTS[index % MASONRY_ASPECTS.length];
     return {
-      className: "h-full transition-all duration-300 flex flex-col",
+      // flex-col ensures image on top, content below — matches masonry vertical flow
+      className: "transition-all duration-300 flex flex-col",
       style: { background: "var(--dt-surface)", border: "none", overflow: "hidden" },
-      image: { className: `w-full ${aspect} object-cover transition-transform duration-500 group-hover:scale-105` },
+      // On mobile (single col), cap image height so very tall aspects don't dominate.
+      // On sm+ (multi-col), natural aspect ratio creates the masonry stagger effect.
+      image: {
+        className: `w-full ${aspect} object-cover transition-transform duration-500 group-hover:scale-105`,
+        style: { maxHeight: "280px" } as React.CSSProperties,
+      },
       placeholder: {
-        className: `w-full ${aspect} flex items-center justify-center transition-transform duration-500 group-hover:scale-105`,
-        style: { background: `color-mix(in srgb, ${brandPrimary} 8%, transparent)` },
+        className: `w-full ${aspect} flex items-center justify-center`,
+        style: { background: `color-mix(in srgb, ${brandPrimary} 8%, transparent)`, maxHeight: "280px" } as React.CSSProperties,
         iconClassName: "w-10 h-10",
         iconStyle: { color: `color-mix(in srgb, ${brandPrimary} 35%, transparent)` },
       },
-      content: { className: "flex flex-col gap-2 p-4 flex-grow" },
+      content: { className: "flex flex-col gap-2 p-4" },
       header: { className: "flex flex-col gap-1.5 mb-1" },
-      title: { className: "font-bold text-base leading-tight", style: { color: brandText, fontFamily: headingFont } },
+      title: { className: "font-bold text-sm md:text-base leading-snug", style: { color: brandText, fontFamily: headingFont } },
       description: { className: "text-xs leading-relaxed line-clamp-3", style: { color: `color-mix(in srgb, ${brandText} 70%, transparent)` } },
       price: { className: "text-xs font-bold px-2.5 py-1 rounded-full self-start", style: { background: `color-mix(in srgb, ${brandPrimary} 12%, transparent)`, color: brandPrimary } },
       badge: { className: "inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap", style: { background: brandPrimary, color: "var(--dt-cta-text, #fff)" } },
@@ -60,31 +66,35 @@ export default function ProductMasonryFlow({
   return (
     <section
       id={kind}
-      className="py-16 px-4 md:px-8 max-w-7xl mx-auto"
       style={{
         backgroundColor: brandBg,
         color: brandText,
         fontFamily: "var(--dt-body-font, sans-serif)",
-        paddingTop: "var(--dt-spacing)",
-        paddingBottom: "var(--dt-spacing)",
       }}
     >
+      <div
+        className="py-12 md:py-16 px-4 md:px-8 max-w-7xl mx-auto"
+        style={{
+          paddingTop: "var(--dt-spacing)",
+          paddingBottom: "var(--dt-spacing)",
+        }}
+      >
       {/* Header */}
       <SectionHeader
         section={kind}
         eyebrow={(data.eyebrow || isEditorMode) ? (data.eyebrow ?? eyebrowDefault) : undefined}
         title={data.title}
         subtitle={(data.subtitle || isEditorMode) ? (data.subtitle ?? "") : undefined}
-        wrapperClassName="mb-16 text-center max-w-2xl mx-auto"
+        wrapperClassName="mb-8 md:mb-16 text-center max-w-2xl mx-auto"
         eyebrowClassName="text-xs uppercase tracking-widest font-semibold block mb-2"
         eyebrowStyle={{ color: brandPrimary, fontFamily: headingFont }}
-        titleClassName="text-3xl md:text-4xl font-normal tracking-tight mb-4"
+        titleClassName="text-2xl md:text-4xl font-normal tracking-tight mb-3 md:mb-4"
         titleStyle={{
           color: brandText,
           fontFamily: headingFont,
           fontWeight: headingWeight as React.CSSProperties["fontWeight"],
         }}
-        subtitleClassName="text-base font-light leading-relaxed"
+        subtitleClassName="text-sm md:text-base font-light leading-relaxed"
         subtitleStyle={{ color: "var(--dt-text-muted)" }}
         onUpdateField={onUpdateField}
         isEditorMode={isEditorMode}
@@ -94,7 +104,7 @@ export default function ProductMasonryFlow({
       />
 
       {/* Categories */}
-      <div className="space-y-24">
+      <div className="space-y-12 md:space-y-24">
         {categories.map((category, catIdx) => (
           <div key={catIdx} className="space-y-8">
             <div
@@ -124,23 +134,23 @@ export default function ProductMasonryFlow({
             </div>
 
             {/* Vertical CSS Masonry Columns */}
-            <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-6 [column-fill:_balance]">
+            <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 md:gap-6 [column-fill:_balance]">
               {category.items?.map((item, index) => {
                 const cardKey = item.id || `${kind}-mf-${catIdx}-${index}`;
                 return (
                   <div
                     key={cardKey}
-                    className="break-inside-avoid mb-6 flex flex-col group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                    className="break-inside-avoid mb-4 md:mb-6 group relative transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
                     style={{
-                      borderColor: "var(--dt-border)",
                       backgroundColor: "var(--dt-surface)",
                       borderRadius: dtRadius,
                       border: `1px solid color-mix(in srgb, ${brandPrimary} 12%, transparent)`,
                       boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+                      overflow: "hidden",
                     }}
                   >
                     <MenuCatalogCard
-                      layout={design_token?.layout?.card_style ?? "grid"}
+                      layout="grid"
                       item={{
                         id: cardKey,
                         name: item.name,
@@ -196,6 +206,7 @@ export default function ProductMasonryFlow({
             />
           </div>
         )}
+      </div>
       </div>
     </section>
   );
