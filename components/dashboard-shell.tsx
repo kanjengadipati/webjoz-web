@@ -4,8 +4,8 @@ import React, { ReactNode, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, LayoutGrid, Home, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, ChevronDown, Plus, Palette, Users, DollarSign, Share2, Percent, Menu, X, Receipt, Cpu, Shield, Sparkles } from "lucide-react";
-import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator, MoonIcon, SunIcon, MOTION } from "webjoz-ui";
+import { LayoutDashboard, LayoutGrid, Home, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, ChevronDown, Plus, Palette, Users, DollarSign, Share2, Percent, Menu, Receipt, Cpu, Shield, Sparkles } from "lucide-react";
+import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator, MoonIcon, SunIcon, MOTION, Drawer } from "webjoz-ui";
 import { clearAuthSession, useAuthReady, useAuthToken, useStoredEmail } from "@/lib/auth-store";
 import { ENV_NAME } from "@/lib/config";
 import { DASHBOARD_NAVIGATION } from "@/lib/navigation";
@@ -233,165 +233,138 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         );
       })()}
 
-      {/* Mobile Drawer Sheet */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-[60] lg:hidden flex flex-col justify-end">
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200"
-            onClick={() => setMobileMenuOpen(false)}
-          />
-
-          {/* Sheet Panel */}
-          <div className="relative z-10 w-full max-h-[85vh] overflow-y-auto bg-background border-t border-border/50 rounded-t-3xl shadow-2xl animate-in slide-in-from-bottom duration-300">
-
-            {/* ── Header ── */}
-            <div className="relative overflow-hidden rounded-t-3xl px-5 pt-5 pb-6 border-b border-border/40">
-              {/* Subtle monochrome gradient */}
-              <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent dark:from-white/[0.03]" />
-
-              {/* Content */}
-              <div className="relative flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  {/* Avatar */}
-                  <div className="relative">
-                    <div className="size-12 rounded-2xl bg-muted border border-border/60 flex items-center justify-center text-foreground font-bold text-lg shadow-sm">
-                      {userInitial}
-                    </div>
-                  </div>
-
-                  <div className="space-y-0.5">
-                    <p className="font-bold text-[15px] text-foreground leading-tight">{userDisplayName}</p>
-                    {/* Plan badge — monochrome */}
-                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-muted border border-border/60 text-muted-foreground">
-                      <span className="size-1.5 rounded-full bg-emerald-500 inline-block" />
-                      {(activeTenant?.tenant?.plan || "free").charAt(0).toUpperCase() + (activeTenant?.tenant?.plan || "free").slice(1)} Plan
-                    </span>
+      {/* Mobile Drawer Sheet — pakai Drawer dari webjoz-ui */}
+      <Drawer
+        open={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        side="bottom"
+        maxHeight="85dvh"
+        mobileOnly={true}
+        noPadding
+        title={
+          <div className="flex items-center gap-3 w-full">
+            {/* Avatar */}
+            <div className="size-10 rounded-2xl bg-muted border border-border/60 flex items-center justify-center text-foreground font-bold text-base shadow-sm shrink-0">
+              {userInitial}
+            </div>
+            <div className="space-y-0.5 min-w-0">
+              <p className="font-bold text-sm text-foreground leading-tight truncate">{userDisplayName}</p>
+              <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-muted border border-border/60 text-muted-foreground">
+                <span className="size-1.5 rounded-full bg-emerald-500 inline-block" />
+                {(activeTenant?.tenant?.plan || "free").charAt(0).toUpperCase() + (activeTenant?.tenant?.plan || "free").slice(1)} Plan
+              </span>
+            </div>
+          </div>
+        }
+        footer={
+          isAuthenticated ? (
+            <Button variant="secondary" className="w-full rounded-xl text-xs font-semibold" onClick={() => void handleLogout()}>
+              {t("dashboard.logout")}
+            </Button>
+          ) : undefined
+        }
+      >
+        <div className="overflow-y-auto space-y-5 pb-2">
+          {/* Navigation Groups */}
+          <div className="space-y-4">
+            {Array.from(new Set(filteredNavItems.map(item => item.section))).map((sectionName) => {
+              const sectionItems = filteredNavItems.filter(item => item.section === sectionName);
+              if (sectionItems.length === 0) return null;
+              return (
+                <div key={sectionName} className="space-y-1.5">
+                  <h4 className="text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground/70 px-1">
+                    {t(NAV_SECTION_KEYS[sectionName] ?? "", sectionName)}
+                  </h4>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {sectionItems.map((item) => {
+                      const active = pathname === item.href;
+                      const Icon = NAV_ICON_MAP[item.icon] ?? LayoutDashboard;
+                      const label = t(NAV_LABEL_KEYS[item.id] ?? "", item.label);
+                      const showBadge = item.id === "notifications" && unreadCount > 0;
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className={cn(
+                            "flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all border",
+                            active
+                              ? "bg-primary text-primary-foreground border-primary shadow-sm font-bold"
+                              : "bg-muted/30 border-border/40 text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                          )}
+                        >
+                          <Icon className="size-4 shrink-0" />
+                          <span className="truncate">{label}</span>
+                          {showBadge && (
+                            <span className="ml-auto flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-primary text-primary-foreground text-[9px] font-bold leading-none shadow-md shrink-0">
+                              {unreadCount > 99 ? "99+" : unreadCount}
+                            </span>
+                          )}
+                        </Link>
+                      );
+                    })}
                   </div>
                 </div>
+              );
+            })}
+          </div>
 
-                <button
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="size-8 rounded-full bg-muted/60 border border-border/40 text-muted-foreground hover:text-foreground hover:bg-muted flex items-center justify-center transition cursor-pointer"
-                  aria-label="Close menu"
+          {/* Settings & Appearance Dock */}
+          <div className="pt-2 border-t border-border/40 space-y-3">
+            <div className="flex items-center justify-between rounded-2xl border border-border/50 bg-background/60 p-2 shadow-inner">
+              <div className="flex items-center gap-1.5">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-9 rounded-xl border border-border/40 bg-card/60 hover:bg-primary/10 transition-all cursor-pointer"
+                  aria-label={isMonochrome ? t("dashboard.switchAccentBlue") : t("dashboard.switchAccentMonochrome")}
+                  aria-pressed={!isMonochrome}
+                  onClick={toggleAccent}
                 >
-                  <X className="size-3.5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Rest of content with padding */}
-            <div className="px-5 pb-8 pt-4 space-y-5">
-
-            {/* Navigation Groups */}
-            <div className="space-y-4">
-              {Array.from(new Set(filteredNavItems.map(item => item.section))).map((sectionName) => {
-                const sectionItems = filteredNavItems.filter(item => item.section === sectionName);
-                if (sectionItems.length === 0) return null;
-
-                return (
-                  <div key={sectionName} className="space-y-1.5">
-                    <h4 className="text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground/70 px-1">
-                      {t(NAV_SECTION_KEYS[sectionName] ?? "", sectionName)}
-                    </h4>
-                    <div className="grid grid-cols-2 gap-1.5">
-                      {sectionItems.map((item) => {
-                        const active = pathname === item.href;
-                        const Icon = NAV_ICON_MAP[item.icon] ?? LayoutDashboard;
-                        const label = t(NAV_LABEL_KEYS[item.id] ?? "", item.label);
-                        const showBadge = item.id === "notifications" && unreadCount > 0;
-                        return (
-                          <Link
-                            key={item.href}
-                            href={item.href}
-                            onClick={() => setMobileMenuOpen(false)}
-                            className={cn(
-                              "flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all border",
-                              active
-                                ? "bg-primary text-primary-foreground border-primary shadow-sm font-bold"
-                                : "bg-muted/30 border-border/40 text-muted-foreground hover:text-foreground hover:bg-muted/60"
-                            )}
-                          >
-                            <Icon className="size-4 shrink-0" />
-                            <span className="truncate">{label}</span>
-                            {showBadge && (
-                              <span className="ml-auto flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-primary text-primary-foreground text-[9px] font-bold leading-none shadow-md shrink-0">
-                                {unreadCount > 99 ? "99+" : unreadCount}
-                              </span>
-                            )}
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Settings & Appearance Dock */}
-            <div className="pt-2 border-t border-border/40 space-y-3">
-              <div className="flex items-center justify-between rounded-2xl border border-border/50 bg-background/60 p-2 shadow-inner">
-                <div className="flex items-center gap-1.5">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="size-9 rounded-xl border border-border/40 bg-card/60 hover:bg-primary/10 transition-all cursor-pointer"
-                    aria-label={isMonochrome ? t("dashboard.switchAccentBlue") : t("dashboard.switchAccentMonochrome")}
-                    aria-pressed={!isMonochrome}
-                    onClick={toggleAccent}
-                  >
-                    <div className={cn(
-                      "size-4 rounded-full border-2",
-                      MOTION.slow,
-                      accent === "monochrome" ? "bg-slate-500 border-slate-300" : "bg-primary border-primary/80 shadow-[0_0_8px_color-mix(in_srgb,var(--primary)_50%,transparent)]"
-                    )} aria-hidden="true" />
-                  </Button>
-
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="size-9 rounded-xl border border-border/40 bg-card/60 hover:bg-primary/10 transition-all cursor-pointer"
-                    aria-label={theme === "dark" ? t("dashboard.switchLight") : t("dashboard.switchDark")}
-                    aria-pressed={theme === "dark"}
-                    onClick={toggleTheme}
-                  >
-                    <ThemeIcon mode={theme} />
-                  </Button>
-                </div>
-
-                <div className="h-6 w-px bg-border/50 mx-1 shrink-0" aria-hidden="true" />
-
-                <div className="inline-flex items-center rounded-full border border-border/60 bg-card/60 p-0.5 text-[11px] font-semibold shadow-inner">
-                  {(["id", "en"] as const).map((code) => (
-                    <button
-                      key={code}
-                      type="button"
-                      aria-label={`Switch language to ${code === "id" ? "Bahasa Indonesia" : "English"}`}
-                      aria-pressed={locale === code}
-                      onClick={() => setLocale(code)}
-                      className={cn(
-                        "rounded-full px-3 py-1 transition-all cursor-pointer font-bold",
-                        locale === code
-                          ? "bg-primary text-primary-foreground shadow-sm"
-                          : "text-muted-foreground hover:text-foreground"
-                      )}
-                    >
-                      {code === "id" ? "ID" : "EN"}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {isAuthenticated && (
-                <Button variant="secondary" className="w-full rounded-xl text-xs font-semibold" onClick={() => void handleLogout()}>
-                  {t("dashboard.logout")}
+                  <div className={cn(
+                    "size-4 rounded-full border-2",
+                    MOTION.slow,
+                    accent === "monochrome" ? "bg-slate-500 border-slate-300" : "bg-primary border-primary/80 shadow-[0_0_8px_color-mix(in_srgb,var(--primary)_50%,transparent)]"
+                  )} aria-hidden="true" />
                 </Button>
-              )}
-            </div>
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-9 rounded-xl border border-border/40 bg-card/60 hover:bg-primary/10 transition-all cursor-pointer"
+                  aria-label={theme === "dark" ? t("dashboard.switchLight") : t("dashboard.switchDark")}
+                  aria-pressed={theme === "dark"}
+                  onClick={toggleTheme}
+                >
+                  <ThemeIcon mode={theme} />
+                </Button>
+              </div>
+
+              <div className="h-6 w-px bg-border/50 mx-1 shrink-0" aria-hidden="true" />
+
+              <div className="inline-flex items-center rounded-full border border-border/60 bg-card/60 p-0.5 text-[11px] font-semibold shadow-inner">
+                {(["id", "en"] as const).map((code) => (
+                  <button
+                    key={code}
+                    type="button"
+                    aria-label={`Switch language to ${code === "id" ? "Bahasa Indonesia" : "English"}`}
+                    aria-pressed={locale === code}
+                    onClick={() => setLocale(code)}
+                    className={cn(
+                      "rounded-full px-3 py-1 transition-all cursor-pointer font-bold",
+                      locale === code
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    {code === "id" ? "ID" : "EN"}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      )}
+      </Drawer>
 
       <div className={cn(
         "mx-auto grid min-h-screen",
