@@ -222,7 +222,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               { id: leadsItem.id, href: leadsItem.href, icon: LeadsIcon, label: t(NAV_LABEL_KEYS[leadsItem.id] ?? "", leadsItem.label), active: pathname === leadsItem.href && !mobileMenuOpen },
               {
                 id: "menu",
-                icon: Menu,
+                icon: LayoutGrid,
                 label: t("common.menu", "Menu"),
                 active: mobileMenuOpen || isOtherPageActive,
                 badge: unreadCount,
