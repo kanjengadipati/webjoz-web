@@ -222,8 +222,9 @@ export function AuthShell({
 
         {/* ── Mobile Bottom Navigation Bar ─────────────────────── */}
         <BottomNavBar
-          hideCenterFab
           ariaLabel="Auth navigation"
+          centerLabel={isEn ? "Create" : "Buat"}
+          onCenterPress={() => router.push("/create")}
           items={[
             {
               id: "home",
