@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import type { ComponentType } from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 import { genId } from "../inline-add";
+import { useEditorChromeEnabled } from "../editor-chrome-context";
 
 const CatalogClassic = dynamic(() => import("./classic"));
 const CatalogCompact = dynamic(() => import("./compact"));
@@ -76,7 +77,8 @@ export default function CatalogSection({
   const variant = design_token?.layout?.section_variants?.catalog ?? "grid";
   const Renderer = variants[variant] ?? CatalogClassic;
 
-  const isEditor = !!isEditorMode;
+  const chromeEnabled = useEditorChromeEnabled();
+  const isEditor = !!isEditorMode && chromeEnabled;
 
   const onAddItem = useCallback(
     (catIdx: number) => {

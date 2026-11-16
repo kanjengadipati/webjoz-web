@@ -30,26 +30,85 @@ export function DevicePreviewFrame({
     if (externalRef) externalRef.current = iframeRef.current;
   });
 
+  const copyParentStyles = () => {
+    const doc = iframeRef.current?.contentDocument;
+    if (!doc?.head) return;
+
+    document
+      .querySelectorAll<HTMLLinkElement | HTMLStyleElement>('link[rel="stylesheet"], style')
+      .forEach((node) => {
+        if (node.tagName === "LINK") {
+          const linkNode = node as HTMLLinkElement;
+          const absoluteHref = linkNode.href;
+          if (!absoluteHref) return;
+          const existing = doc.head.querySelector(`link[href="${absoluteHref}"]`);
+          if (!existing) {
+            const link = doc.createElement("link");
+            link.rel = "stylesheet";
+            link.href = absoluteHref;
+            doc.head.appendChild(link);
+          }
+        } else if (node.tagName === "STYLE") {
+          const content = node.textContent || "";
+          if (!content) return;
+          // Avoid duplicate styles
+          const styles = doc.head.querySelectorAll("style");
+          let exists = false;
+          for (let i = 0; i < styles.length; i++) {
+            if (styles[i].textContent === content) {
+              exists = true;
+              break;
+            }
+          }
+          if (!exists) {
+            const style = doc.createElement("style");
+            style.textContent = content;
+            doc.head.appendChild(style);
+          }
+        }
+      });
+
+    // Synchronize adoptedStyleSheets (used by Tailwind v4 runtime / Turbopack)
+    try {
+      if (document.adoptedStyleSheets && doc.adoptedStyleSheets) {
+        doc.adoptedStyleSheets = [...document.adoptedStyleSheets];
+      }
+    } catch {
+      // Cross-document adoptedStyleSheets may be restricted in some browsers
+    }
+  };
+
   const syncFrameDocument = () => {
     const doc = iframeRef.current?.contentDocument;
     if (!doc?.head) return;
 
     doc.head.innerHTML = "";
+
+    // Set base href to parent origin so all relative chunks/assets resolve correctly
+    if (typeof window !== "undefined") {
+      const base = doc.createElement("base");
+      base.href = `${window.location.origin}/`;
+      doc.head.appendChild(base);
+    }
+
     const viewport = doc.createElement("meta");
     viewport.name = "viewport";
     viewport.content = "width=device-width, initial-scale=1";
     doc.head.appendChild(viewport);
 
     const baseStyle = doc.createElement("style");
-    baseStyle.textContent = "html,body{margin:0;padding:0;width:100%;min-height:100%} html{overflow-y:auto;height:100%;scroll-behavior:smooth} body{overflow:visible} [id^=\"section-\"], section[id], div[id^=\"section-preview-\"] { scroll-margin-top: 80px; }";
+    baseStyle.textContent = `
+      html,body{margin:0;padding:0;width:100%;min-height:100%}
+      html{overflow-y:auto;height:100%;scroll-behavior:smooth}
+      body{overflow:visible}
+      [id^="section-"], section[id], div[id^="section-preview-"] { scroll-margin-top: 80px; }
+      input[type="file"].hidden, .hidden { display: none !important; }
+      svg:not([class*="size-"]):not([class*="w-"]) { max-width: 100%; }
+    `;
     doc.head.appendChild(baseStyle);
 
-    // Copy all parent stylesheets (fonts, Tailwind utilities, etc.)
-    document
-      .querySelectorAll<HTMLLinkElement | HTMLStyleElement>('link[rel="stylesheet"], style')
-      .forEach((node) => {
-        doc.head.appendChild(node.cloneNode(true));
-      });
+    // Copy all parent stylesheets (fonts, Tailwind utilities, dynamic chunks)
+    copyParentStyles();
 
     // Override dark-mode CSS variables so the template palette renders correctly.
     // The wizard page uses `.dark` on <html> which injects dark --background, --foreground etc.
@@ -89,6 +148,22 @@ export function DevicePreviewFrame({
       );
     }
   };
+
+  // Watch for dynamic stylesheet additions in parent window (Next.js dynamic chunks loaded during scroll)
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      copyParentStyles();
+    });
+
+    observer.observe(document.head, {
+      childList: true,
+      subtree: true,
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     syncFrameDocument();

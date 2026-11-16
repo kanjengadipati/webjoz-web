@@ -1706,7 +1706,8 @@ function MenuCatalogCard({
 }: MenuCatalogCardProps) {
   const featureMarker = useFeatureMarker(explicitFeatureMarker);
   const styles = stylesProp ?? {};
-  const deferUpload = !useEditorChromeEnabled();
+  const chromeEnabled = useEditorChromeEnabled();
+  const deferUpload = !chromeEnabled;
   const { pushToast } = useToast();
   const {
     id: itemId, name: itemName, price: itemPrice, priceAmount: itemPriceAmount, priceDisplay: itemPriceDisplay,
@@ -1867,7 +1868,7 @@ function MenuCatalogCard({
       )}
 
       {/* Inline photo upload overlay in editor mode */}
-      {isEditorMode && onUpdateField && editSection && pathBase && (
+      {chromeEnabled && isEditorMode && onUpdateField && editSection && pathBase && (
         <>
           <input
             type="file"
@@ -1928,7 +1929,7 @@ function MenuCatalogCard({
       )}
 
       {/* Inline photo upload button on placeholder in editor mode */}
-      {isEditorMode && onUpdateField && editSection && pathBase && (
+      {chromeEnabled && isEditorMode && onUpdateField && editSection && pathBase && (
         <>
           <input
             type="file"
@@ -3437,6 +3438,7 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
     !url.includes("unsplash.com") &&
     (!url.startsWith("data:image/svg+xml") || url.length > 500)
   );
+  const chromeEnabled = useEditorChromeEnabled();
 
   if (isEditorMode && onUpdateField && section) {
     const hasLogo = isCustomLogo && !imgError;
@@ -3485,21 +3487,25 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
           >
             <DynamicIcon name={icon} defaultIcon={defaultIcon} className={iconClass || "w-5 h-5"} style={{ color: isLight ? "#fff" : "var(--dt-cta-text, #fff)" }} />
             {/* Dashed highlight on hover / when selected */}
-            <div
-              className={`absolute -inset-1 rounded-xl border-2 border-dashed ${
-                isLight ? "border-white/50 bg-white/10" : "border-primary/40 bg-primary/5"
-              } transition-opacity pointer-events-none ${
-                isSelected
-                  ? "opacity-100"
-                  : "opacity-0 group-hover/logo-ph:opacity-100"
-              }`}
-            />
+            {chromeEnabled && (
+              <div
+                className={`absolute -inset-1 rounded-xl border-2 border-dashed ${
+                  isLight ? "border-white/50 bg-white/10" : "border-primary/40 bg-primary/5"
+                } transition-opacity pointer-events-none ${
+                  isSelected
+                    ? "opacity-100"
+                    : "opacity-0 group-hover/logo-ph:opacity-100"
+                }`}
+              />
+            )}
             {/* Small camera badge — corner indicator that this is clickable to upload */}
-            <span className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full ${
-              isLight ? "bg-white/25 border-white/60 text-white backdrop-blur-sm" : "bg-slate-900/90 border-white/30 text-white"
-            } border flex items-center justify-center shadow transition-transform group-hover/logo-ph:scale-110`}>
-              <Camera className="w-2.5 h-2.5 text-white" />
-            </span>
+            {chromeEnabled && (
+              <span className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full ${
+                isLight ? "bg-white/25 border-white/60 text-white backdrop-blur-sm" : "bg-slate-900/90 border-white/30 text-white"
+              } border flex items-center justify-center shadow transition-transform group-hover/logo-ph:scale-110`}>
+                <Camera className="w-2.5 h-2.5 text-white" />
+              </span>
+            )}
           </div>
         )}
 

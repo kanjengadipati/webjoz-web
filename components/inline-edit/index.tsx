@@ -104,9 +104,10 @@ export function InlineText({
   const [justSaved, setJustSaved] = useState(false);
   const [aiWriting, setAiWriting] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
-  // Touch devices: pensil hanya muncul setelah teks di-tap (bukan saat scroll)
+  // Touch devices: pensil hanya muncul setelah teks di-tap murni (bukan saat scroll)
   const [badgeRevealed, setBadgeRevealed] = useState(false);
   const badgeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const touchCoordsRef = useRef<{ startX: number; startY: number } | null>(null);
   const isTouchScrollingRef = useRef(false);
 
   useEffect(() => {
@@ -119,8 +120,8 @@ export function InlineText({
   useEffect(() => {
     if (!badgeRevealed) return;
     const handleDismiss = () => setBadgeRevealed(false);
-    window.addEventListener("scroll", handleDismiss, { passive: true });
-    return () => window.removeEventListener("scroll", handleDismiss);
+    window.addEventListener("scroll", handleDismiss, { passive: true, capture: true });
+    return () => window.removeEventListener("scroll", handleDismiss, { capture: true });
   }, [badgeRevealed]);
 
   const hasValue =
@@ -368,17 +369,43 @@ export function InlineText({
     <span
       ref={wrapperRef}
       className={`relative group/inline ${multiline ? "block" : "inline-block"} max-w-full`}
-      onTouchStart={() => {
+      onTouchStart={(e) => {
         isTouchScrollingRef.current = false;
+        const touch = e.touches[0];
+        if (touch) {
+          touchCoordsRef.current = { startX: touch.clientX, startY: touch.clientY };
+        }
       }}
-      onTouchMove={() => {
-        isTouchScrollingRef.current = true;
+      onTouchMove={(e) => {
+        const touch = e.touches[0];
+        const coords = touchCoordsRef.current;
+        if (touch && coords) {
+          if (
+            Math.abs(touch.clientX - coords.startX) > 8 ||
+            Math.abs(touch.clientY - coords.startY) > 8
+          ) {
+            isTouchScrollingRef.current = true;
+          }
+        } else {
+          isTouchScrollingRef.current = true;
+        }
       }}
-      onTouchEnd={() => {
+      onTouchEnd={(e) => {
+        const coords = touchCoordsRef.current;
+        touchCoordsRef.current = null;
         if (isTouchScrollingRef.current) return;
+        const touch = e.changedTouches[0];
+        if (touch && coords) {
+          if (
+            Math.abs(touch.clientX - coords.startX) > 8 ||
+            Math.abs(touch.clientY - coords.startY) > 8
+          ) {
+            return; // Jari bergeser, ini gesture scroll, abaikan
+          }
+        }
         setBadgeRevealed(true);
         if (badgeTimerRef.current) clearTimeout(badgeTimerRef.current);
-        badgeTimerRef.current = setTimeout(() => setBadgeRevealed(false), 4000);
+        badgeTimerRef.current = setTimeout(() => setBadgeRevealed(false), 3500);
       }}
     >
       {editableEl}
@@ -450,6 +477,9 @@ export function InlineText({
               : t("dashboard.sitesEditor.inlineClickToSave", "Selesai")
             : t("dashboard.sitesEditor.inlineClickToEdit", "Edit teks")
         }
+        style={{
+          borderRadius: "9999px",
+        }}
         className={`absolute -top-3 -right-3 sm:-top-2.5 sm:-right-2.5 z-30 flex items-center justify-center w-7 h-7 sm:w-5 sm:h-5 rounded-full shadow-md border transition-all duration-150 cursor-pointer
           before:absolute before:-inset-2 before:content-['']
           ${
@@ -466,17 +496,17 @@ export function InlineText({
         `}
       >
         {justSaved ? (
-          <Check className="w-3.5 h-3.5 sm:w-3 sm:h-3 text-white stroke-[3] animate-in zoom-in-75 duration-150" />
+          <Check className="w-3.5 h-3.5 sm:w-3 sm:h-3 text-white stroke-[3] animate-in zoom-in-75 duration-150" style={{ width: 14, height: 14 }} />
         ) : aiWriting ? (
-          <Loader2 className="w-3.5 h-3.5 sm:w-3 sm:h-3 animate-spin text-white" />
+          <Loader2 className="w-3.5 h-3.5 sm:w-3 sm:h-3 animate-spin text-white" style={{ width: 14, height: 14 }} />
         ) : isFocused ? (
           showAiButton || showRegenButton ? (
-            <AiRefreshIcon className="w-3.5 h-3.5 sm:w-3 sm:h-3 text-white animate-in zoom-in-75 duration-150" />
+            <AiRefreshIcon className="w-3.5 h-3.5 sm:w-3 sm:h-3 text-white animate-in zoom-in-75 duration-150" style={{ width: 14, height: 14 }} />
           ) : (
-            <Check className="w-3.5 h-3.5 sm:w-3 sm:h-3 text-white stroke-[2.5]" />
+            <Check className="w-3.5 h-3.5 sm:w-3 sm:h-3 text-white stroke-[2.5]" style={{ width: 14, height: 14 }} />
           )
         ) : (
-          <Pencil className="w-3.5 h-3.5 sm:w-2.5 sm:h-2.5 text-white stroke-[2.2]" />
+          <Pencil className="w-3.5 h-3.5 sm:w-2.5 sm:h-2.5 text-white stroke-[2.2]" style={{ width: 14, height: 14 }} />
         )}
       </button>
 
