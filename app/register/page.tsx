@@ -66,11 +66,11 @@ export default function RegisterPage() {
       <form className="space-y-4" onSubmit={handleRegister}>
         <div className="space-y-2">
           <Label htmlFor="reg-name">{t("auth.registerFullName")}</Label>
-          <Input id="reg-name" value={name} onChange={(e) => setName(e.target.value)} required />
+          <Input id="reg-name" value={name} onChange={(e) => setName(e.target.value)} placeholder={t("auth.registerFullNamePlaceholder")} required />
         </div>
         <div className="space-y-2">
           <Label htmlFor="reg-email">{t("auth.registerEmail")}</Label>
-          <Input id="reg-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <Input id="reg-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t("auth.registerEmailPlaceholder")} required />
         </div>
         <div className="space-y-2">
           <Label htmlFor="reg-phone">{t("auth.registerWhatsapp")}</Label>
@@ -78,7 +78,7 @@ export default function RegisterPage() {
         </div>
         <div className="space-y-2">
           <Label htmlFor="reg-password">{t("auth.registerPassword")}</Label>
-          <Input id="reg-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <Input id="reg-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder={t("auth.registerPasswordPlaceholder")} required />
         </div>
         
         {errorMessage && (

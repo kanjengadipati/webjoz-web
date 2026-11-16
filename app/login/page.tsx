@@ -450,7 +450,7 @@ export default function LoginPage() {
                       setPasswordlessFieldErrors((current) => ({ ...current, email: undefined }));
                       setErrorMessage("");
                     }}
-                    placeholder="nama@email.com"
+                    placeholder="you@example.com"
                     className="h-11 text-base bg-background"
                   />
                 </div>

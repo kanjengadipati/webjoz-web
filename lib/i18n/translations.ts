@@ -239,6 +239,9 @@ export interface Translations {
     registerEmail: string;
     registerWhatsapp: string;
     registerPassword: string;
+    registerFullNamePlaceholder: string;
+    registerEmailPlaceholder: string;
+    registerPasswordPlaceholder: string;
     registerLoading: string;
     registerSubmit: string;
     registerSuccess: string;
@@ -4043,7 +4046,7 @@ export const translations: Record<Locale, Translations> = {
       loginOrContinueWith: "atau lanjutkan dengan",
       loginOrEmail: "atau masuk dengan email",
       loginEmailLabel: "Alamat email",
-      loginEmailPlaceholder: "Alamat email kamu",
+      loginEmailPlaceholder: "you@example.com",
       loginEmailHint:
         "Link atau kode OTP dikirim via email. Email baru? Akun otomatis dibuat.",
       loginSendCodeWhatsapp: "Kirim Kode OTP via WhatsApp",
@@ -4105,6 +4108,9 @@ export const translations: Record<Locale, Translations> = {
       registerEmail: "Email",
       registerWhatsapp: "Nomor WhatsApp",
       registerPassword: "Password",
+      registerFullNamePlaceholder: "Nama lengkap Anda",
+      registerEmailPlaceholder: "you@example.com",
+      registerPasswordPlaceholder: "Buat password",
       registerLoading: "Mendaftar...",
       registerSubmit: "Buat Akun",
       registerSuccess: "Akun berhasil dibuat. Silakan login.",
@@ -4120,7 +4126,7 @@ export const translations: Record<Locale, Translations> = {
       forgotFooterLogin: "Kembali ke Login",
       forgotFooterRegister: "Buat Akun",
       forgotEmail: "Email",
-      forgotEmailPlaceholder: "kamu@email.com",
+      forgotEmailPlaceholder: "you@example.com",
       forgotSending: "Mengirim link...",
       forgotSubmit: "Kirim Link Reset",
       forgotSentSuccess:
@@ -4634,7 +4640,7 @@ export const translations: Record<Locale, Translations> = {
         inviteLinkCopied: "Link undangan disalin",
         noMembers: "Belum ada anggota tim.",
         inviteTitle: "Undang Anggota Baru",
-        emailPlaceholder: "email@contoh.com",
+        emailPlaceholder: "you@example.com",
         sendInvite: "Kirim Undangan",
         inviteHint:
           "Anggota dengan role editor bisa mengedit konten situs. Viewer hanya bisa melihat.",
@@ -8211,7 +8217,7 @@ export const translations: Record<Locale, Translations> = {
         title: "Akun Tertaut",
         emailLabel: "Email",
         systemGenerated: "Dibuat sistem",
-        emailPlaceholder: "email-nyata-anda@contoh.com",
+        emailPlaceholder: "you@example.com",
         update: "Perbarui",
         phoneLabel: "Telepon (WhatsApp)",
         passwordLabel: "Kata Sandi",
@@ -8482,7 +8488,7 @@ export const translations: Record<Locale, Translations> = {
       loginOrContinueWith: "or continue with",
       loginOrEmail: "or log in with email",
       loginEmailLabel: "Email address",
-      loginEmailPlaceholder: "Your email address",
+      loginEmailPlaceholder: "you@example.com",
       loginEmailHint:
         "A link or OTP code is sent via email. New email? An account is created automatically.",
       loginSendCodeWhatsapp: "Send OTP via WhatsApp",
@@ -8544,6 +8550,9 @@ export const translations: Record<Locale, Translations> = {
       registerEmail: "Email",
       registerWhatsapp: "WhatsApp Number",
       registerPassword: "Password",
+      registerFullNamePlaceholder: "Your full name",
+      registerEmailPlaceholder: "you@example.com",
+      registerPasswordPlaceholder: "Create a password",
       registerLoading: "Signing up...",
       registerSubmit: "Create Account",
       registerSuccess: "Account created successfully. Please log in.",
@@ -8559,7 +8568,7 @@ export const translations: Record<Locale, Translations> = {
       forgotFooterLogin: "Back to login",
       forgotFooterRegister: "Create account",
       forgotEmail: "Email",
-      forgotEmailPlaceholder: "you@mail.com",
+      forgotEmailPlaceholder: "you@example.com",
       forgotSending: "Sending link...",
       forgotSubmit: "Send Reset Link",
       forgotSentSuccess:
@@ -9070,7 +9079,7 @@ export const translations: Record<Locale, Translations> = {
         inviteLinkCopied: "Invitation link copied",
         noMembers: "No team members yet.",
         inviteTitle: "Invite New Member",
-        emailPlaceholder: "email@example.com",
+        emailPlaceholder: "you@example.com",
         sendInvite: "Send Invitation",
         inviteHint:
           "Members with the editor role can edit site content. Viewers can only view.",
@@ -12610,7 +12619,7 @@ export const translations: Record<Locale, Translations> = {
         title: "Linked Accounts",
         emailLabel: "Email",
         systemGenerated: "System-generated",
-        emailPlaceholder: "your-real-email@example.com",
+        emailPlaceholder: "you@example.com",
         update: "Update",
         phoneLabel: "Phone (WhatsApp)",
         passwordLabel: "Password",
