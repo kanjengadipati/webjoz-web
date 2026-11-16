@@ -253,8 +253,11 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           {/* Custom Header — avatar + nama + plan */}
           <div className="flex items-center justify-between pt-1 pb-3 border-b border-border/40">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="size-10 rounded-2xl bg-muted border border-border/60 flex items-center justify-center text-foreground font-bold text-base shadow-sm shrink-0">
-                {userInitial}
+              <div className="relative shrink-0">
+                <div className="size-12 rounded-full bg-muted border border-border/40 flex items-center justify-center text-foreground font-bold text-lg shadow-md">
+                  {userInitial}
+                </div>
+                <span className="absolute bottom-0 right-0 size-3.5 rounded-full bg-emerald-500 ring-2 ring-background shadow-sm" aria-hidden="true" />
               </div>
               <div className="flex flex-col justify-center min-w-0 gap-1">
                 <p className="font-bold text-sm text-foreground leading-none truncate">{userDisplayName}</p>
