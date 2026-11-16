@@ -6,15 +6,7 @@ import { useI18n } from "@/lib/i18n/context";
 
 const CONSENT_KEY = "webjoz_cookie_consent";
 
-// Routes where cookie banner should never appear (interactive builders, dashboards, site previews)
-const EXCLUDED_PREFIXES = [
-  "/dashboard",
-  "/create",
-  "/preview",
-  "/site",
-  "/s/",
-  "/sp/",
-];
+const EXCLUDED_PREFIXES = ["/dashboard", "/create", "/preview", "/site", "/s/", "/sp/"];
 
 export function CookieBanner() {
   const { locale } = useI18n();
@@ -25,10 +17,10 @@ export function CookieBanner() {
   const isExcluded =
     !pathname ||
     EXCLUDED_PREFIXES.some(
-      (prefix) =>
-        pathname.startsWith(prefix) ||
-        pathname.startsWith(`/en${prefix}`) ||
-        pathname.startsWith(`/id${prefix}`)
+      (p) =>
+        pathname.startsWith(p) ||
+        pathname.startsWith(`/en${p}`) ||
+        pathname.startsWith(`/id${p}`)
     );
 
   useEffect(() => {
@@ -51,26 +43,32 @@ export function CookieBanner() {
     <div
       role="dialog"
       aria-label={isEN ? "Cookie notice" : "Pemberitahuan cookie"}
-      className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[9999] w-[calc(100%-2rem)] max-w-2xl pointer-events-auto"
+      className="fixed bottom-4 left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:w-[calc(100%-2rem)] sm:max-w-2xl z-[9999]"
       style={{ animation: "cookieBannerIn 0.35s cubic-bezier(0.16,1,0.3,1) both" }}
     >
       <style>{`
         @keyframes cookieBannerIn {
-          from { opacity: 0; transform: translate(-50%, 12px); }
-          to   { opacity: 1; transform: translate(-50%, 0); }
+          from { opacity: 0; transform: translateY(12px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @media (min-width: 640px) {
+          @keyframes cookieBannerIn {
+            from { opacity: 0; transform: translate(-50%, 12px); }
+            to   { opacity: 1; transform: translate(-50%, 0); }
+          }
         }
       `}</style>
 
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-6 rounded-2xl border border-border/70 bg-card/95 backdrop-blur-md px-4 py-3 sm:px-5 sm:py-4 shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
-        <p className="flex-1 text-xs sm:text-sm text-foreground/85 leading-relaxed">
+      <div className="flex items-center gap-3 rounded-2xl border border-border/70 bg-card/95 backdrop-blur-md px-4 py-3 shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
+        <p className="flex-1 text-xs sm:text-sm text-foreground/80 leading-relaxed">
           {isEN
             ? "We use cookies to keep the site working and improve your experience."
-            : "Kami menggunakan cookie untuk menjaga website tetap berfungsi dan meningkatkan pengalaman Anda."}
+            : "Kami menggunakan cookie agar website berfungsi dengan baik."}
         </p>
         <button
           type="button"
           onClick={dismiss}
-          className="shrink-0 self-end sm:self-auto inline-flex h-8 sm:h-9 items-center rounded-full bg-foreground px-4 sm:px-5 text-xs sm:text-sm font-semibold text-background transition-all hover:opacity-90 active:scale-95 cursor-pointer shadow-sm"
+          className="shrink-0 inline-flex h-9 items-center rounded-full bg-foreground px-4 text-xs font-semibold text-background transition-all hover:opacity-90 active:scale-95 cursor-pointer"
         >
           {isEN ? "Got it" : "Mengerti"}
         </button>
