@@ -1,85 +1,18 @@
 import React from "react";
-import dynamic from "next/dynamic";
 import type { TemplateProps } from "@/components/templates/types";
-
-/**
- * Ditampilkan selama chunk template dimuat. Tanpa ini next/dynamic merender null, dan di dalam
- * iframe preview yang terlihat hanya latar hitam srcDoc (#0d0f14): "blank hitam" saat resume,
- * karena chunk template baru dimuat setelah user menekan Lanjutkan (saat generate, chunk sudah
- * termuat selagi streaming). Pakai inline style: komponen ini dirender di dalam iframe.
- */
-function TemplateLoading() {
-  return (
-    <div
-      role="status"
-      aria-label="Loading preview"
-      style={{
-        minHeight: "100vh",
-        background: "#f8fafc",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <style>{"@keyframes wz-spin{to{transform:rotate(360deg)}}"}</style>
-      <div
-        style={{
-          width: 32,
-          height: 32,
-          borderRadius: "50%",
-          border: "3px solid #cbd5e1",
-          borderTopColor: "#475569",
-          animation: "wz-spin 0.8s linear infinite",
-        }}
-      />
-    </div>
-  );
-}
-
-const DynamicTemplateKuliner = dynamic(
-  () => import("@/components/templates/kuliner").then((m) => m.TemplateKuliner),
-  { ssr: true, loading: TemplateLoading }
-);
-const DynamicTemplateJasa = dynamic(
-  () => import("@/components/templates/jasa").then((m) => m.TemplateJasa),
-  { ssr: true, loading: TemplateLoading }
-);
-const DynamicTemplateProduk = dynamic(
-  () => import("@/components/templates/produk").then((m) => m.TemplateProduk),
-  { ssr: true, loading: TemplateLoading }
-);
-const DynamicTemplateElegant = dynamic(
-  () => import("@/components/templates/elegant").then((m) => m.TemplateElegant),
-  { ssr: true, loading: TemplateLoading }
-);
-const DynamicTemplateNatural = dynamic(
-  () => import("@/components/templates/natural").then((m) => m.TemplateNatural),
-  { ssr: true, loading: TemplateLoading }
-);
-const DynamicTemplateColorful = dynamic(
-  () => import("@/components/templates/colorful").then((m) => m.TemplateColorful),
-  { ssr: true, loading: TemplateLoading }
-);
-const DynamicTemplateMinimalist = dynamic(
-  () => import("@/components/templates/minimalist").then((m) => m.TemplateMinimalist),
-  { ssr: true, loading: TemplateLoading }
-);
-const DynamicTemplateBold = dynamic(
-  () => import("@/components/templates/bold").then((m) => m.TemplateBold),
-  { ssr: true, loading: TemplateLoading }
-);
-const DynamicTemplateRetro = dynamic(
-  () => import("@/components/templates/retro").then((m) => m.TemplateRetro),
-  { ssr: true, loading: TemplateLoading }
-);
-const DynamicTemplateFuturistic = dynamic(
-  () => import("@/components/templates/futuristic").then((m) => m.TemplateFuturistic),
-  { ssr: true, loading: TemplateLoading }
-);
-const DynamicTemplateDynamicWithCart = dynamic(
-  () => import("@/components/templates/dynamic").then((m) => m.TemplateDynamicWithCart),
-  { ssr: true, loading: TemplateLoading }
-);
+import {
+  TemplateKuliner,
+  TemplateJasa,
+  TemplateProduk,
+  TemplateElegant,
+  TemplateNatural,
+  TemplateColorful,
+  TemplateMinimalist,
+  TemplateBold,
+  TemplateRetro,
+  TemplateFuturistic,
+  TemplateDynamicWithCart,
+} from "@/components/templates";
 
 export const BUSINESS_TEMPLATE_POOLS: Record<string, string[]> = {
   kuliner:  ["TEMPLATE_DYNAMIC", "TEMPLATE_KULINER01", "TEMPLATE_COLORFUL", "TEMPLATE_NATURAL", "TEMPLATE_ELEGANT", "TEMPLATE_RETRO", "TEMPLATE_BOLD"],
@@ -139,17 +72,17 @@ export function resolveBusinessName(
 
 export function getTemplateComponent(templateId: string): React.ComponentType<TemplateProps> {
   switch (templateId) {
-    case "TEMPLATE_KULINER01": return DynamicTemplateKuliner;
-    case "TEMPLATE_JASA02": return DynamicTemplateJasa;
-    case "TEMPLATE_PRODUK03": return DynamicTemplateProduk;
-    case "TEMPLATE_ELEGANT": return DynamicTemplateElegant;
-    case "TEMPLATE_NATURAL": return DynamicTemplateNatural;
-    case "TEMPLATE_COLORFUL": return DynamicTemplateColorful;
-    case "TEMPLATE_MINIMALIST": return DynamicTemplateMinimalist;
-    case "TEMPLATE_BOLD": return DynamicTemplateBold;
-    case "TEMPLATE_RETRO": return DynamicTemplateRetro;
-    case "TEMPLATE_FUTURISTIC": return DynamicTemplateFuturistic;
-    default: return DynamicTemplateDynamicWithCart;
+    case "TEMPLATE_KULINER01": return TemplateKuliner;
+    case "TEMPLATE_JASA02": return TemplateJasa;
+    case "TEMPLATE_PRODUK03": return TemplateProduk;
+    case "TEMPLATE_ELEGANT": return TemplateElegant;
+    case "TEMPLATE_NATURAL": return TemplateNatural;
+    case "TEMPLATE_COLORFUL": return TemplateColorful;
+    case "TEMPLATE_MINIMALIST": return TemplateMinimalist;
+    case "TEMPLATE_BOLD": return TemplateBold;
+    case "TEMPLATE_RETRO": return TemplateRetro;
+    case "TEMPLATE_FUTURISTIC": return TemplateFuturistic;
+    default: return TemplateDynamicWithCart;
   }
 }
 
