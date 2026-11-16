@@ -260,28 +260,31 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               <span className="absolute bottom-0 right-0 size-3.5 rounded-full bg-emerald-500 ring-2 ring-background shadow-sm" aria-hidden="true" />
             </div>
 
-            {/* Name + Plan */}
-            <div className="flex flex-col justify-center min-w-0 gap-1 flex-1">
-              <p className="font-bold text-sm text-foreground leading-none truncate">{userDisplayName}</p>
-              <p className="text-[11px] text-muted-foreground leading-none">
-                {(activeTenant?.tenant?.plan || "free").charAt(0).toUpperCase() + (activeTenant?.tenant?.plan || "free").slice(1)} Plan
-              </p>
-            </div>
+            {/* Text + Right column dibungkus bersama agar share height yang sama */}
+            <div className="flex items-stretch flex-1 min-w-0 gap-2">
+              {/* Name + Plan */}
+              <div className="flex flex-col justify-between min-w-0 flex-1">
+                <p className="font-bold text-sm text-foreground leading-none truncate">{userDisplayName}</p>
+                <p className="text-[11px] text-muted-foreground leading-none">
+                  {(activeTenant?.tenant?.plan || "free").charAt(0).toUpperCase() + (activeTenant?.tenant?.plan || "free").slice(1)} Plan
+                </p>
+              </div>
 
-            {/* Role + Upgrade */}
-            <div className="flex flex-col items-end justify-between shrink-0 self-stretch py-0.5">
-              <span className="text-[9px] font-extrabold uppercase tracking-widest px-2 py-1 rounded-full bg-foreground text-background leading-none">
-                {userRole || "Owner"}
-              </span>
-              {!isPremiumPlan && (
-                <Link
-                  href="/dashboard/billing"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-[9px] font-extrabold uppercase tracking-widest px-2 py-1 rounded-full border border-border text-foreground hover:bg-muted transition leading-none"
-                >
-                  Upgrade
-                </Link>
-              )}
+              {/* Role + Upgrade — same height as text column */}
+              <div className="flex flex-col items-end justify-between shrink-0">
+                <span className="text-[9px] font-extrabold uppercase tracking-widest px-2 py-1 rounded-full bg-foreground text-background leading-none">
+                  {userRole || "Owner"}
+                </span>
+                {!isPremiumPlan && (
+                  <Link
+                    href="/dashboard/billing"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-[9px] font-extrabold uppercase tracking-widest px-2 py-1 rounded-full border border-border text-foreground hover:bg-muted transition leading-none"
+                  >
+                    Upgrade
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
           {/* Navigation Groups */}
