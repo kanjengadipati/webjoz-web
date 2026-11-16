@@ -241,6 +241,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         maxHeight="85dvh"
         mobileOnly={true}
         noPadding
+        className="overflow-hidden"
         footer={
           isAuthenticated ? (
             <Button variant="secondary" className="w-full rounded-xl text-xs font-semibold" onClick={() => void handleLogout()}>
