@@ -54,7 +54,7 @@ export function WizardResumeBanner({
             onClick={handleResume}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-900 hover:bg-slate-100 active:scale-95 transition-all shadow-xs cursor-pointer whitespace-nowrap"
           >
-            <span className="hidden xs:inline">{t("dashboard.wizard.resumeContinue", "Lanjutkan")}</span>
+            <span>{t("dashboard.wizard.resumeContinue", "Lanjutkan")}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
           <button
