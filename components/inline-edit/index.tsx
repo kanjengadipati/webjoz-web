@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useI18n } from "@/lib/i18n/context";
-import { Camera, Link2, Check, X, Loader2 } from "lucide-react";
-import { SparkleIcon, SparkleGenAI } from "@/components/sparkle-icon";
+import { Camera, Link2, Check, X, Loader2, Pencil } from "lucide-react";
+import { AiRefreshIcon, SparkleGenAI } from "webjoz-ui";
 import { uploadImageFile } from "@/components/file-upload";
 import { createDeferredImageUrl } from "@/lib/deferred-image";
 import { useToast } from "@/components/toast-provider";
@@ -99,7 +99,9 @@ export function InlineText({
   const elementRef = useRef<HTMLElement | null>(null);
   const wrapperRef = useRef<HTMLElement | null>(null);
   const isInteractingWithAiButtonRef = useRef(false);
+  const savedTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [isFocused, setIsFocused] = useState(false);
+  const [justSaved, setJustSaved] = useState(false);
   const [aiWriting, setAiWriting] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
 
@@ -145,6 +147,38 @@ export function InlineText({
     return () => clearTimeout(t);
   }, [aiError]);
 
+  // Clean up auto-save flash timer
+  useEffect(() => {
+    return () => {
+      if (savedTimerRef.current) clearTimeout(savedTimerRef.current);
+    };
+  }, []);
+
+  const triggerJustSaved = () => {
+    setJustSaved(true);
+    if (savedTimerRef.current) clearTimeout(savedTimerRef.current);
+    savedTimerRef.current = setTimeout(() => {
+      setJustSaved(false);
+    }, 1500);
+  };
+
+  // Auto-focus and place cursor at end when isFocused transitions to true
+  useEffect(() => {
+    if (isFocused && elementRef.current) {
+      elementRef.current.focus();
+      try {
+        const range = document.createRange();
+        const sel = window.getSelection();
+        range.selectNodeContents(elementRef.current);
+        range.collapse(false);
+        sel?.removeAllRanges();
+        sel?.addRange(range);
+      } catch {
+        // fallback
+      }
+    }
+  }, [isFocused]);
+
   const Comp = (Component || "span") as React.ElementType;
 
   if (!isEditorMode || !onUpdateField) {
@@ -156,6 +190,7 @@ export function InlineText({
   }
 
   const handleFocus = () => {
+    setJustSaved(false);
     setIsFocused(true);
     collapseSheetForInlineEdit?.();
     onEditingStateChange?.(true);
@@ -172,15 +207,18 @@ export function InlineText({
     setIsFocused(false);
     onEditingStateChange?.(false);
     const newText = e.currentTarget.innerText.trim();
+    const oldText = (value || "").trim();
     if (newText === "") {
       if (hasValue) {
         onUpdateField(section, fieldKey, "");
+        triggerJustSaved();
       }
       if (placeholder && elementRef.current) {
         elementRef.current.innerText = placeholder;
       }
-    } else if (newText !== (value || "").trim()) {
+    } else if (newText !== oldText) {
       onUpdateField(section, fieldKey, newText);
+      triggerJustSaved();
     }
   };
 
@@ -198,27 +236,47 @@ export function InlineText({
   };
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    const parentInteractive = (e.target as HTMLElement)?.closest("a, button");
-    if (parentInteractive && !(e.metaKey || e.ctrlKey)) {
-      e.preventDefault();
-      elementRef.current?.focus();
+    // If already in edit mode, allow placing text cursor
+    if (isFocused) {
+      e.stopPropagation();
+      return;
     }
+    // When not focused: do NOT activate text pointer on tap
+    // Text editing must ONLY activate when user clicks the pencil icon
+    e.preventDefault();
+    e.stopPropagation();
   };
 
   const handlePointerDown = (e: React.PointerEvent<HTMLElement>) => {
-    e.stopPropagation();
+    if (isFocused) {
+      e.stopPropagation();
+    }
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
+    if (isFocused) {
+      e.stopPropagation();
+    }
   };
 
   const handleTouchStart = (e: React.TouchEvent<HTMLElement>) => {
+    // If already editing, allow touching inside text to reposition cursor
+    if (isFocused) {
+      e.stopPropagation();
+      return;
+    }
+    // When not focused: do nothing so user can scroll naturally without triggering text pointer
+  };
+
+  const handlePencilClick = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
     e.stopPropagation();
-    // On mobile touch, ensure the editable element focuses immediately
-    if (!isFocused && elementRef.current) {
-      elementRef.current.focus();
+    if (isFocused) return;
+    setIsFocused(true);
+    collapseSheetForInlineEdit?.();
+    onEditingStateChange?.(true);
+    if (!hasValue && placeholder && elementRef.current) {
+      elementRef.current.innerText = "";
     }
   };
 
@@ -236,6 +294,7 @@ export function InlineText({
       if (typeof result === "string" && result.trim()) {
         result = cleanAiText(result);
         onUpdateField(section, fieldKey, result);
+        triggerJustSaved();
         // Sync DOM immediately
         if (elementRef.current) {
           elementRef.current.innerText = result;
@@ -250,14 +309,12 @@ export function InlineText({
   };
 
   const isShowingPlaceholder = !hasValue && !!placeholder && !isFocused;
-  // Icon AI / Regen baru muncul saat user klik/fokus ke input text (atau saat AI sedang menulis)
-  const showAiBadge = (showAiButton || showRegenButton) && (isFocused || aiWriting);
 
   const editableEl = (
     <Comp
       id={id}
       ref={elementRef}
-      contentEditable={true}
+      contentEditable={isFocused}
       suppressContentEditableWarning={true}
       onClick={handleClick}
       onPointerDown={handlePointerDown}
@@ -266,13 +323,15 @@ export function InlineText({
       onFocus={handleFocus}
       onBlur={handleBlur}
       onKeyDown={handleKeyDown}
-      className={`outline-none transition-all cursor-text select-text ${
+      className={`outline-none transition-all ${
         isFocused
-          ? "ring-1 ring-primary/70 rounded-[2px]"
-          : "hover:outline-dashed hover:outline-1 hover:outline-primary/50 hover:bg-primary/[0.03] rounded-[2px]"
-      } ${isShowingPlaceholder ? "opacity-50 italic" : ""} ${showAiButton ? "" : ""} ${className}`}
+          ? "ring-1 ring-primary/70 rounded-[2px] cursor-text select-text"
+          : "cursor-default select-none"
+      } ${isShowingPlaceholder ? "opacity-50 italic" : ""} ${className}`}
       style={{
         ...style,
+        touchAction: "manipulation",
+        WebkitUserSelect: isFocused ? "text" : "none",
         ...(!currentDisplay
           ? {
               minWidth: "1.5rem",
@@ -281,102 +340,132 @@ export function InlineText({
             }
           : {}),
       }}
-      title={t("dashboard.sitesEditor.inlineClickToEdit")}
+      title={isFocused ? undefined : t("dashboard.sitesEditor.inlineClickToEdit")}
     >
       {currentDisplay}
     </Comp>
   );
 
-  // If neither AI nor Regen button, render as before
-  if (!showAiButton && !showRegenButton) return editableEl;
-
-  // With AI or Regen button: wrap in relative container so we can position the icon
   return (
     <span
       ref={wrapperRef}
-      className={`relative ${multiline ? "block" : "inline-block"} max-w-full`}
+      className={`relative group/inline ${multiline ? "block" : "inline-block"} max-w-full`}
     >
       {editableEl}
 
-      {/* AI Sparkle Button — top-right corner, only appears when user clicks/focuses text */}
-      {showAiButton && (
-        <button
-          type="button"
-          onPointerDown={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
+      {/* Dynamic Corner Action Button:
+          - Idle on Mobile: Always visible Pencil icon [✏️]
+          - Idle on Desktop: Subtle Pencil shown on hover
+          - When Focused: Morphs into high-contrast glowing AI Regen [✨] (or Check [✓] for short text)
+          - When Saved: Morphs into green Check [✓] for 1.5s (Auto-save confirmation)
+      */}
+      <button
+        type="button"
+        onPointerDown={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (isFocused && (showAiButton || showRegenButton)) {
             isInteractingWithAiButtonRef.current = true;
-          }}
-          onMouseDown={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            isInteractingWithAiButtonRef.current = true;
-          }}
-          onTouchStart={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            isInteractingWithAiButtonRef.current = true;
-          }}
-          onClick={handleAiRewrite}
-          onTouchEnd={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            handleAiRewrite(e);
-          }}
-          disabled={aiWriting}
-          aria-label={t("dashboard.sitesEditor.inlineAiRewrite")}
-          title={aiWriting ? t("dashboard.sitesEditor.inlineAiWriting") : t("dashboard.sitesEditor.inlineAiRewrite")}
-          className={`absolute -top-3 -right-3 sm:-top-2.5 sm:-right-2.5 z-30 flex items-center justify-center w-7 h-7 sm:w-5 sm:h-5 rounded-full shadow-md border border-white/20 transition-all duration-150 cursor-pointer
-            before:absolute before:-inset-2 before:content-['']
-            ${showAiBadge ? "opacity-100 scale-100" : "opacity-0 scale-75 pointer-events-none"}
-            ${aiWriting
-              ? "bg-white text-slate-950 cursor-wait"
-              : "bg-slate-900/95 hover:bg-white text-slate-300 hover:text-slate-950 hover:border-white hover:scale-110 active:scale-95"}
-          `}
-        >
-          {aiWriting
-            ? <Loader2 className="w-3.5 h-3.5 sm:w-3 sm:h-3 animate-spin" />
-            : <SparkleGenAI className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
           }
-        </button>
-      )}
-
-      {/* Regen Button (wizard preview) — shows login-required toast */}
-      {showRegenButton && (
-        <button
-          type="button"
-          onPointerDown={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
+        }}
+        onMouseDown={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (isFocused && (showAiButton || showRegenButton)) {
             isInteractingWithAiButtonRef.current = true;
-          }}
-          onMouseDown={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
+          }
+        }}
+        onTouchStart={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (isFocused && (showAiButton || showRegenButton)) {
             isInteractingWithAiButtonRef.current = true;
-          }}
-          onTouchStart={(e) => {
+          }
+        }}
+        onClick={(e) => {
+          if (justSaved || aiWriting) return;
+          if (isFocused) {
+            if (showAiButton) {
+              handleAiRewrite(e);
+            } else if (showRegenButton) {
+              onRegen?.();
+            } else {
+              elementRef.current?.blur();
+            }
+          } else {
+            handlePencilClick(e);
+          }
+        }}
+        onTouchEnd={(e) => {
+          if (justSaved || aiWriting) return;
+          if (isFocused) {
+            if (showAiButton) {
+              e.preventDefault();
+              e.stopPropagation();
+              handleAiRewrite(e);
+            } else if (showRegenButton) {
+              e.preventDefault();
+              e.stopPropagation();
+              onRegen?.();
+            }
+          } else {
             e.preventDefault();
             e.stopPropagation();
-            isInteractingWithAiButtonRef.current = true;
-          }}
-          onClick={onRegen}
-          onTouchEnd={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            onRegen?.();
-          }}
-          aria-label={t("dashboard.sitesEditor.inlineAiRegenLoginRequired")}
-          title={t("dashboard.sitesEditor.inlineAiRegenLoginRequired")}
-          className={`absolute -top-3 -right-3 sm:-top-2.5 sm:-right-2.5 z-30 flex items-center justify-center w-7 h-7 sm:w-5 sm:h-5 rounded-full shadow-md border border-white/20 transition-all duration-150 cursor-pointer
-            before:absolute before:-inset-2 before:content-['']
-            ${showAiBadge ? "opacity-100 scale-100" : "opacity-0 scale-75 pointer-events-none"}
-            bg-slate-900/95 hover:bg-white text-slate-300 hover:text-slate-950 hover:border-white hover:scale-110 active:scale-95
-          `}
-        >
-          <SparkleGenAI className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
-        </button>
-      )}
+            handlePencilClick(e);
+          }
+        }}
+        disabled={aiWriting}
+        aria-label={
+          justSaved
+            ? t("dashboard.sitesEditor.inlineSaved", "Tersimpan")
+            : isFocused
+            ? showAiButton
+              ? t("dashboard.sitesEditor.inlineAiRewrite")
+              : showRegenButton
+              ? t("dashboard.sitesEditor.inlineAiRegenLoginRequired")
+              : t("dashboard.sitesEditor.inlineClickToSave", "Selesai")
+            : t("dashboard.sitesEditor.inlineClickToEdit", "Edit teks")
+        }
+        title={
+          justSaved
+            ? t("dashboard.sitesEditor.inlineSaved", "Tersimpan")
+            : aiWriting
+            ? t("dashboard.sitesEditor.inlineAiWriting")
+            : isFocused
+            ? showAiButton
+              ? t("dashboard.sitesEditor.inlineAiRewrite")
+              : showRegenButton
+              ? t("dashboard.sitesEditor.inlineAiRegenLoginRequired")
+              : t("dashboard.sitesEditor.inlineClickToSave", "Selesai")
+            : t("dashboard.sitesEditor.inlineClickToEdit", "Edit teks")
+        }
+        className={`absolute -top-3 -right-3 sm:-top-2.5 sm:-right-2.5 z-30 flex items-center justify-center w-7 h-7 sm:w-5 sm:h-5 rounded-full shadow-md border transition-all duration-150 cursor-pointer
+          before:absolute before:-inset-2 before:content-['']
+          ${
+            justSaved
+              ? "bg-emerald-600 border-emerald-400 text-white opacity-100 scale-105 shadow-emerald-950/40"
+              : aiWriting
+              ? "bg-white text-slate-950 border-white/20 cursor-wait opacity-100 scale-100"
+              : isFocused
+              ? "bg-slate-900/95 text-white border-white/40 shadow-lg shadow-black/50 ring-2 ring-white/20 opacity-100 scale-110"
+              : "bg-slate-900/90 text-white border-white/30 opacity-90 hover:opacity-100 hover:scale-110 active:scale-95 sm:opacity-0 sm:group-hover/inline:opacity-100"
+          }
+        `}
+      >
+        {justSaved ? (
+          <Check className="w-3.5 h-3.5 sm:w-3 sm:h-3 text-white stroke-[3] animate-in zoom-in-75 duration-150" />
+        ) : aiWriting ? (
+          <Loader2 className="w-3.5 h-3.5 sm:w-3 sm:h-3 animate-spin text-white" />
+        ) : isFocused ? (
+          showAiButton || showRegenButton ? (
+            <AiRefreshIcon className="w-3.5 h-3.5 sm:w-3 sm:h-3 text-white animate-in zoom-in-75 duration-150" />
+          ) : (
+            <Check className="w-3.5 h-3.5 sm:w-3 sm:h-3 text-white stroke-[2.5]" />
+          )
+        ) : (
+          <Pencil className="w-3.5 h-3.5 sm:w-2.5 sm:h-2.5 text-white stroke-[2.2]" />
+        )}
+      </button>
 
       {/* Error tooltip */}
       {aiError && (

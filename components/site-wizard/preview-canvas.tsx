@@ -22,9 +22,10 @@ interface PreviewCanvasProps {
   fullPage?: boolean;
   onGoToEditor?: () => void;
   onRegenRequest?: () => void;
+  onEditingStateChange?: (isEditing: boolean) => void;
 }
 
-export function PreviewCanvas({ chat, preview, device, themeDraft, fullPage, onRegenRequest }: PreviewCanvasProps) {
+export function PreviewCanvas({ chat, preview, device, themeDraft, fullPage, onRegenRequest, onEditingStateChange }: PreviewCanvasProps) {
   const { locale } = useI18n();
 
   const handleInlineRegen = React.useCallback(() => {
@@ -105,6 +106,7 @@ export function PreviewCanvas({ chat, preview, device, themeDraft, fullPage, onR
       editorChrome={false}
       onUpdateField={previewState === "result" ? preview.updateField : undefined}
       onRegenSection={previewState === "result" ? handleInlineRegen : undefined}
+      onEditingStateChange={onEditingStateChange}
       arrivedSections={isStreamingLive ? arrivedSections : undefined}
       onSubmitLead={async () => { }}
     />

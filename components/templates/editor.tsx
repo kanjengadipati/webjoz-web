@@ -661,9 +661,11 @@ export const PreviewSectionWrapper: React.FC<{
           isHidden ? "[&>*:not([data-section-ui])]:opacity-40 [&>*:not([data-section-ui])]:grayscale [&>*:not([data-section-ui])]:pointer-events-none" : ""
         } ${
           isGalleryOpen ? "z-[80]" : section === "header" ? (isSelected ? "z-40" : "z-30") : (isSelected ? "z-20" : "z-10")
-        } ${isSelected
-          ? "outline outline-2 outline-primary/60 outline-offset-[-2px]"
-          : "hover:outline hover:outline-1 hover:outline-slate-300/40 hover:outline-offset-[-1px]"
+        } ${chromeEnabled
+          ? isSelected
+            ? "outline outline-2 outline-primary/60 outline-offset-[-2px]"
+            : "hover:outline hover:outline-1 hover:outline-slate-300/40 hover:outline-offset-[-1px]"
+          : ""
           }`}
       >
         {/* Section label + variant — fused button group */}

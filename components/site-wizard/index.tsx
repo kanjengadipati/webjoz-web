@@ -291,6 +291,9 @@ export function SiteWizard({
   // Theme panel state (opened on demand via MobileActionBar button)
   const [themeSheetOpen, setThemeSheetOpen] = useState(false);
 
+  // Inline editing state inside preview canvas (hides mobile action bar to avoid keyboard collision)
+  const [isInlineEditing, setIsInlineEditing] = useState(false);
+
   // One-time onboarding hint for "Coba rekomendasi lain" button
   const [showRekomendasiHint, setShowRekomendasiHint] = useState(false);
 
@@ -2627,6 +2630,7 @@ export function SiteWizard({
             fullPage={fullPagePreviewOpen}
             onGoToEditor={handleGoToEditor}
             onRegenRequest={() => setRegenModalOpen(true)}
+            onEditingStateChange={setIsInlineEditing}
           />
 
           {/* Mobile-only floating close button for full page preview */}
@@ -2786,6 +2790,7 @@ export function SiteWizard({
           onOpenTheme={FEATURE_FLAGS.THEME_PANEL ? () => setThemeSheetOpen(true) : undefined}
           showLengkapiHint={showLengkapiHint}
           showEditPublishHint={showEditPublishHint}
+          isInlineEditing={isInlineEditing}
         />
       )}
 

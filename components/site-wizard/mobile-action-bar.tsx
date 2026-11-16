@@ -15,6 +15,7 @@ interface MobileActionBarProps {
   onOpenTheme?: () => void;
   showLengkapiHint?: boolean;
   showEditPublishHint?: boolean;
+  isInlineEditing?: boolean;
 }
 
 /** Tooltip bubble — reused for both edu tooltip and hints */
@@ -41,6 +42,7 @@ export function MobileActionBar({
   onOpenTheme,
   showLengkapiHint = false,
   showEditPublishHint = false,
+  isInlineEditing = false,
 }: MobileActionBarProps) {
   const { t } = useI18n();
 
@@ -114,7 +116,11 @@ export function MobileActionBar({
   );
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 z-50">
+    <div
+      className={`absolute bottom-0 left-0 right-0 z-50 transition-all duration-300 ease-out ${
+        isInlineEditing ? "translate-y-full opacity-0 pointer-events-none" : "translate-y-0 opacity-100"
+      }`}
+    >
       <BottomNavBar
         className="relative inset-auto"
         ariaLabel="Wizard actions"
