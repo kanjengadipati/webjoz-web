@@ -258,10 +258,9 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               </div>
               <div className="flex flex-col justify-center min-w-0 gap-1">
                 <p className="font-bold text-sm text-foreground leading-none truncate">{userDisplayName}</p>
-                <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-muted border border-border/60 text-muted-foreground w-fit">
-                  <span className="size-1.5 rounded-full bg-emerald-500 inline-block shrink-0" />
+                <p className="text-[11px] text-muted-foreground leading-none">
                   {(activeTenant?.tenant?.plan || "free").charAt(0).toUpperCase() + (activeTenant?.tenant?.plan || "free").slice(1)} Plan
-                </span>
+                </p>
               </div>
             </div>
             <button
