@@ -104,6 +104,7 @@ export function DevicePreviewFrame({
       [id^="section-"], section[id], div[id^="section-preview-"] { scroll-margin-top: 80px; }
       input[type="file"].hidden, .hidden { display: none !important; }
       svg:not([class*="size-"]):not([class*="w-"]) { max-width: 100%; }
+      body.inline-editing-active { padding-bottom: 50vh !important; scroll-behavior: smooth; }
     `;
     doc.head.appendChild(baseStyle);
 

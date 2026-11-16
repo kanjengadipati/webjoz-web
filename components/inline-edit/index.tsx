@@ -181,20 +181,46 @@ export function InlineText({
     }, 1500);
   };
 
-  // Auto-focus and place cursor at end when isFocused transitions to true
+  // Auto-focus, place cursor at end, and scroll into view when isFocused transitions to true
   useEffect(() => {
     if (isFocused && elementRef.current) {
-      elementRef.current.focus();
+      const el = elementRef.current;
+      const doc = el.ownerDocument;
+      if (doc?.body) {
+        doc.body.classList.add("inline-editing-active");
+      }
+
+      el.focus();
       try {
         const range = document.createRange();
         const sel = window.getSelection();
-        range.selectNodeContents(elementRef.current);
+        range.selectNodeContents(el);
         range.collapse(false);
         sel?.removeAllRanges();
         sel?.addRange(range);
       } catch {
         // fallback
       }
+
+      const scrollToActiveText = () => {
+        if (!el.isConnected) return;
+        el.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+      };
+
+      // Immediate scroll
+      scrollToActiveText();
+
+      // Scroll again after soft keyboard slides up on mobile (typically 200-350ms)
+      const t1 = setTimeout(scrollToActiveText, 150);
+      const t2 = setTimeout(scrollToActiveText, 350);
+
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+        if (doc?.body) {
+          doc.body.classList.remove("inline-editing-active");
+        }
+      };
     }
   }, [isFocused]);
 
