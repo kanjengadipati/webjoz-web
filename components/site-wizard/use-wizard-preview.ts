@@ -5,7 +5,7 @@ import { previewSetByPath } from "@/lib/preview-set-by-path";
 import { LOADING_STEPS_PERCENT, SECTION_STEP_MAP, TEMPLATE_NAMES } from "./constants";
 import { getTemplatePool } from "./helpers";
 import type { PreviewData, PreviewState } from "./types";
-import type { StreamSection } from "@/hooks/use-generate-stream";
+import type { StreamSection, LayoutAlternative } from "@/hooks/use-generate-stream";
 import { TEMPLATE_DEFAULT_DESIGN_TOKENS } from "@/lib/template-defaults";
 
 export function useWizardPreview() {
@@ -18,6 +18,11 @@ export function useWizardPreview() {
   const [arrivedSections, setArrivedSections] = useState<StreamSection[]>([]);
   const [templatePool, setTemplatePool] = useState<string[]>([]);
   const [templatePoolIndex, setTemplatePoolIndex] = useState(0);
+  // Alternatif layout dari server (opsi 2..N, TEMPLATE_DYNAMIC, konten dipakai ulang).
+  // Opsi 1 (indeks 0) adalah layout hasil generate, disimpan di layoutBaseRef.
+  const [layoutAlternatives, setLayoutAlternativesState] = useState<LayoutAlternative[]>([]);
+  const [layoutIndex, setLayoutIndex] = useState(0);
+  const layoutBaseRef = useRef<{ hero_style?: string; section_variants: Record<string, any> } | null>(null);
   const [regenCount, setRegenCount] = useState(0);
   const [hasUnsavedEdits, setHasUnsavedEdits] = useState(false);
   const [previewHistory, setPreviewHistory] = useState<PreviewData[]>([]);
@@ -226,7 +231,59 @@ export function useWizardPreview() {
     return Math.max(blur, 1.5);
   }, [previewState, smoothProgress, resultClear]);
 
+  const setLayoutAlternatives = useCallback((alts: LayoutAlternative[], baseLayout?: Record<string, any> | null) => {
+    const sv = baseLayout?.section_variants;
+    if (!alts.length || !sv || typeof sv !== "object") {
+      setLayoutAlternativesState([]);
+      layoutBaseRef.current = null;
+      setLayoutIndex(0);
+      return;
+    }
+    layoutBaseRef.current = { hero_style: baseLayout?.hero_style, section_variants: { ...sv } };
+    setLayoutAlternativesState(alts);
+    setLayoutIndex(0);
+  }, []);
+
+  // Alternatif layout hanya berlaku di TEMPLATE_DYNAMIC; selain itu tombol memakai pool template lama.
+  const usingLayoutAlternatives =
+    layoutAlternatives.length > 0 && layoutBaseRef.current !== null && previewData?.template_id === "TEMPLATE_DYNAMIC";
+  const layoutOptionCount = usingLayoutAlternatives ? layoutAlternatives.length + 1 : templatePool.length;
+  const layoutOptionIndex = usingLayoutAlternatives ? layoutIndex : templatePoolIndex;
+
   const handleSwitchTemplate = useCallback(() => {
+    const base = layoutBaseRef.current;
+    if (layoutAlternatives.length > 0 && base && previewData?.template_id === "TEMPLATE_DYNAMIC") {
+      setIsSwitchingTemplate(true);
+      const nextIndex = (layoutIndex + 1) % (layoutAlternatives.length + 1);
+      const alt = nextIndex === 0 ? null : layoutAlternatives[nextIndex - 1];
+      setLayoutIndex(nextIndex);
+      setPreviewData(prev => {
+        const layout = prev?.design_token?.layout;
+        if (!prev || !layout) return prev;
+        const manual: Record<string, boolean> = (layout as any).section_variants_manual ?? {};
+        const nextSv: Record<string, any> = { ...(layout.section_variants as any) };
+        // Kembali ke layout asli lalu timpa dengan opsi terpilih; pilihan manual user tidak disentuh.
+        for (const [k, v] of Object.entries(base.section_variants)) {
+          if (!manual[k]) nextSv[k] = v;
+        }
+        if (alt) {
+          for (const [k, v] of Object.entries(alt.section_variants)) {
+            if (!manual[k]) nextSv[k] = v;
+          }
+        }
+        const hero = alt?.hero_style ?? base.hero_style ?? (layout as any).hero_style;
+        if (hero) nextSv.hero = hero;
+        return {
+          ...prev,
+          design_token: {
+            ...prev.design_token,
+            layout: { ...layout, ...(hero ? { hero_style: hero } : {}), section_variants: nextSv },
+          },
+        };
+      });
+      setTimeout(() => setIsSwitchingTemplate(false), 450);
+      return;
+    }
     if (templatePool.length <= 1) return;
     setIsSwitchingTemplate(true);
     const nextIndex = (templatePoolIndex + 1) % templatePool.length;
@@ -258,7 +315,7 @@ export function useWizardPreview() {
     setTimeout(() => {
       setIsSwitchingTemplate(false);
     }, 450);
-  }, [templatePool, templatePoolIndex]);
+  }, [templatePool, templatePoolIndex, layoutAlternatives, layoutIndex, previewData?.template_id]);
 
   // Inline edit write path: tulis nilai ke previewData.content[section].
   // Mendukung dotted path + index array (mis. "items.0.quote") dan replace
@@ -291,6 +348,9 @@ export function useWizardPreview() {
     setArrivedSections([]);
     setTemplatePool([]);
     setTemplatePoolIndex(0);
+    setLayoutAlternativesState([]);
+    setLayoutIndex(0);
+    layoutBaseRef.current = null;
     setRegenCount(0);
     setHasUnsavedEdits(false);
     setPreviewHistory([]);
@@ -329,6 +389,9 @@ export function useWizardPreview() {
     setTemplatePool,
     templatePoolIndex,
     setTemplatePoolIndex,
+    setLayoutAlternatives,
+    layoutOptionCount,
+    layoutOptionIndex,
     regenCount,
     setRegenCount,
     hasUnsavedEdits,

@@ -215,6 +215,9 @@ export function SiteWizard({
   const device = useWizardDevice();
 
   const baseThemeToken =
+    (preview.layoutOptionIndex > 0 && (preview.layoutOptionCount ?? 0) > 1
+      ? preview.previewData?.design_token
+      : null) ??
     preview.previewHistory[preview.historyIndex]?.design_token ??
     preview.previewData?.design_token ??
     null;
@@ -427,7 +430,7 @@ export function SiteWizard({
       preview.setArrivedSections((prev) => prev.includes(section) ? prev : [...prev, section]);
       preview.advanceLoadingStepFromSection(section);
     },
-    onDone: (templateId, qualityScore, generationSource, _qualityIssues) => {
+    onDone: (templateId, qualityScore, generationSource, _qualityIssues, layoutAlternatives) => {
       // Quality gate (lapisan terakhir): backend sudah meng-gate per-grup dan
       // menandai konten sebagai mock_fallback saat ada grup yang jatuh ke mock.
       // Kalau konten masih AI murni tapi skornya rendah, auto-retry sekali —
@@ -452,6 +455,7 @@ export function SiteWizard({
       const pool = getTemplatePool(chat.businessType, mood);
       preview.setTemplatePool(pool);
       preview.setTemplatePoolIndex(0);
+      preview.setLayoutAlternatives([], null);
 
       const finalContent = preview.streamedSectionsRef.current;
       let rawToken = preview.streamedTokenRef.current ?? {};
@@ -464,6 +468,9 @@ export function SiteWizard({
       }
       // Token yang ditampilkan dan disimpan: sudah memuat pilihan tema user.
       const finalToken = themeDraft.mergeApplied(rawToken);
+      // Alternatif layout dari server (kosong bila flag mati): tombol "Coba rekomendasi lain"
+      // memakainya alih-alih menukar template.
+      preview.setLayoutAlternatives(layoutAlternatives ?? [], rawToken.layout);
 
       const basePreview: PreviewData & { logo_url?: string | null } = {
         content: Object.keys(finalContent).length > 0 ? finalContent : {},
@@ -1286,6 +1293,7 @@ export function SiteWizard({
       const pool = getTemplatePool(restoredPair.businessType || restoredPair.businessSubType, mood);
       preview.setTemplatePool(pool);
       preview.setTemplatePoolIndex(0);
+      preview.setLayoutAlternatives([], null);
       device.setMobilePreviewOpen(true);
       if (device.isMobileRef.current) {
         device.setMobileScreen("preview");
@@ -1368,7 +1376,7 @@ export function SiteWizard({
   // agar popup tidak muncul saat layar chat masih aktif.
   React.useEffect(() => {
     if (preview.previewState !== "result") return;
-    if (preview.templatePool.length <= 1) return;
+    if (preview.layoutOptionCount <= 1) return;
     if (device.isMobile && device.mobileScreen !== "preview") return;
     try {
       if (!localStorage.getItem("wiz_rekomendasi_hint_seen")) {
@@ -1382,7 +1390,7 @@ export function SiteWizard({
         return () => clearTimeout(hintTimer);
       }
     } catch { /* localStorage unavailable */ }
-  }, [preview.previewState, preview.templatePool.length, device.isMobile, device.mobileScreen]);
+  }, [preview.previewState, preview.layoutOptionCount, device.isMobile, device.mobileScreen]);
 
   return (
     <div
@@ -2522,7 +2530,7 @@ export function SiteWizard({
             </button>
           </div>
 
-          {preview.templatePool.length > 1 && preview.previewState === "result" && (
+          {preview.layoutOptionCount > 1 && preview.previewState === "result" && (
             <div className="relative shrink-0">
               {showRekomendasiHint && (
                   <div className="absolute top-full left-0 mt-2 z-50 pointer-events-auto animate-in fade-in slide-in-from-top-2 duration-300 w-[240px]">
@@ -2540,7 +2548,7 @@ export function SiteWizard({
                         </div>
                         <div className="space-y-1 pr-3">
                           <p className="text-xs font-bold text-slate-100 leading-tight">
-                            {t("dashboard.wizard.recommendationHintTitle", "Ada {count} rekomendasi desain!", { count: String(preview.templatePool.length) })}
+                            {t("dashboard.wizard.recommendationHintTitle", "Ada {count} rekomendasi desain!", { count: String(preview.layoutOptionCount) })}
                           </p>
                           <p className="text-[11px] text-slate-400 leading-snug">
                             {t("dashboard.wizard.recommendationHintDesc", "Klik untuk lihat pilihan tampilan lain.")}
@@ -2561,10 +2569,10 @@ export function SiteWizard({
                 >
                   <RefreshCw size={11} />
                   <span className="hidden sm:inline">{t("dashboard.wizard.btnTryOtherRecommendation", "Coba rekomendasi lain ({current}/{total})", {
-                    current: String(preview.templatePoolIndex + 1),
-                    total: String(preview.templatePool.length),
+                    current: String(preview.layoutOptionIndex + 1),
+                    total: String(preview.layoutOptionCount),
                   })}</span>
-                  <span className="sm:hidden">{preview.templatePoolIndex + 1}/{preview.templatePool.length}</span>
+                  <span className="sm:hidden">{preview.layoutOptionIndex + 1}/{preview.layoutOptionCount}</span>
                 </button>
               </div>
             )}

@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { useGenerateStream, StreamSection, FieldIssue } from "@/hooks/use-generate-stream";
+import { useGenerateStream, StreamSection, FieldIssue, LayoutAlternative } from "@/hooks/use-generate-stream";
 import { PENDING_KEY } from "./constants";
 
 export interface GenerateCallbacks {
   onDesignToken: (token: Record<string, any>) => void;
   onSection: (section: StreamSection, data: Record<string, any>, sectionSource?: number) => void;
-  onDone: (templateId: string, qualityScore: number, generationSource: number, qualityIssues?: FieldIssue[]) => void;
+  onDone: (templateId: string, qualityScore: number, generationSource: number, qualityIssues?: FieldIssue[], layoutAlternatives?: LayoutAlternative[]) => void;
   onError: (message: string) => void;
 }
 

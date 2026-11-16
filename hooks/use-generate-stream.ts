@@ -24,6 +24,13 @@ export interface FieldIssue {
   reason: "empty" | "placeholder" | "too_short" | "cliche";
 }
 
+/** Alternatif layout (opsi 2..N) atas konten yang sama — hanya selisih terhadap layout hasil generate. */
+export interface LayoutAlternative {
+  rank: number;
+  hero_style?: string;
+  section_variants: Record<string, string>;
+}
+
 export interface StreamEvent {
   type: "started" | "design_token" | "section" | "done" | "error";
   section?: StreamSection;
@@ -33,6 +40,7 @@ export interface StreamEvent {
   generation_source?: number;
   quality_score?: number;
   quality_issues?: FieldIssue[];
+  layout_alternatives?: LayoutAlternative[];
   error?: string;
 }
 
@@ -73,7 +81,7 @@ export interface UseGenerateStreamOptions {
   /** Dipanggil setiap kali satu section konten diterima */
   onSection: (section: StreamSection, data: Record<string, any>, sectionSource?: number) => void;
   /** Dipanggil saat semua section sudah dikirim */
-  onDone: (templateId: string, qualityScore: number, generationSource: number, qualityIssues?: FieldIssue[]) => void;
+  onDone: (templateId: string, qualityScore: number, generationSource: number, qualityIssues?: FieldIssue[], layoutAlternatives?: LayoutAlternative[]) => void;
   /** Dipanggil jika terjadi error */
   onError: (message: string) => void;
 }
@@ -302,6 +310,7 @@ export function useGenerateStream(options: UseGenerateStreamOptions) {
                   event.quality_score ?? 0,
                   event.generation_source ?? 1,
                   event.quality_issues,
+                  event.layout_alternatives,
                 );
                 break;
 
