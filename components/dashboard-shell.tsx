@@ -342,7 +342,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="size-7 rounded-lg border border-border/40 bg-card/60 hover:bg-primary/10 transition-all cursor-pointer"
+                  className="size-7 rounded-lg bg-card/60 hover:bg-primary/10 transition-all cursor-pointer"
                   aria-label={isMonochrome ? t("dashboard.switchAccentBlue") : t("dashboard.switchAccentMonochrome")}
                   aria-pressed={!isMonochrome}
                   onClick={toggleAccent}
@@ -357,7 +357,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="size-7 rounded-lg border border-border/40 bg-card/60 hover:bg-primary/10 transition-all cursor-pointer"
+                  className="size-7 rounded-lg bg-card/60 hover:bg-primary/10 transition-all cursor-pointer"
                   aria-label={theme === "dark" ? t("dashboard.switchLight") : t("dashboard.switchDark")}
                   aria-pressed={theme === "dark"}
                   onClick={toggleTheme}
