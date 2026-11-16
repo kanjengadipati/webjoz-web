@@ -87,7 +87,7 @@ export default function RegisterPage() {
           </div>
         )}
 
-        <Button type="submit" disabled={loading} className="w-full h-12">
+        <Button type="submit" variant="floating-arrow-right" size="hero" disabled={loading} className="w-full">
           {loading ? t("auth.registerLoading") : t("auth.registerSubmit")}
         </Button>
       </form>

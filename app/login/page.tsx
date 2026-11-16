@@ -334,8 +334,10 @@ export default function LoginPage() {
 
                 <Button
                   type="submit"
+                  variant="floating-arrow-right"
+                  size="hero"
                   disabled={state === "loading"}
-                  className="w-full h-12 flex items-center justify-center gap-2 rounded-lg font-semibold shadow-md"
+                  className="w-full"
                 >
                   <WhatsAppIcon size="md" className="fill-current" />
                   {state === "loading" ? (
@@ -412,8 +414,10 @@ export default function LoginPage() {
 
                 <Button
                   type="submit"
+                  variant="floating-arrow-right"
+                  size="hero"
                   disabled={state === "loading"}
-                  className="w-full h-12 flex items-center justify-center gap-2 rounded-lg font-semibold shadow-md"
+                  className="w-full"
                 >
                   <MailIcon size="md" />
                   {state === "loading" ? (
@@ -485,7 +489,7 @@ export default function LoginPage() {
                     </button>
                   </div>
                 </div>
-                <Button type="submit" disabled={state === "loading"} className="h-12 w-full rounded-lg font-semibold shadow-md">
+                <Button type="submit" variant="floating-arrow-right" size="hero" disabled={state === "loading"} className="w-full">
                   {state === "loading" ? (
                     <LoginLoadingIndicator label={t("auth.loginSigningIn")} />
                   ) : (
@@ -540,7 +544,7 @@ export default function LoginPage() {
             >
               {t("auth.loginBack")}
             </Button>
-            <Button type="submit" disabled={state === "loading"} className="w-full">
+            <Button type="submit" variant="floating-arrow-right" size="hero" disabled={state === "loading"} className="w-full">
               {state === "loading" ? <LoginLoadingIndicator label={t("auth.loginVerifying")} /> : t("auth.loginVerifyOtp")}
             </Button>
           </div>
