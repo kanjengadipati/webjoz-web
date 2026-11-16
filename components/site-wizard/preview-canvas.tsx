@@ -139,21 +139,21 @@ export function PreviewCanvas({ chat, preview, device, themeDraft, fullPage, onR
             </DevicePreviewFrame>
           </div>
         ) : device.previewDevice === "mobile" ? (
-          <div className="flex-1 min-h-0 overflow-auto bg-background p-4" key={`mobile-${regenCount}-${historyIndex}`}>
-            <div className="relative mx-auto my-3 h-[720px] w-[360px] max-w-full flex-shrink-0 rounded-[38px] border-[10px] border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800">
-              <div className="absolute left-1/2 top-3 z-50 h-3.5 w-24 -translate-x-1/2 rounded-full bg-slate-900" />
-              <div className="relative z-10 h-full w-full overflow-hidden rounded-[28px] bg-white">
+          <div className="flex-1 min-h-0 overflow-auto bg-background p-4 flex items-center justify-center" key={`mobile-${regenCount}-${historyIndex}`}>
+            <div className="relative mx-auto my-auto h-[840px] w-[412px] max-w-full flex-shrink-0 rounded-[44px] border-[10px] border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800">
+              <div className="absolute left-1/2 top-3 z-50 h-4 w-28 -translate-x-1/2 rounded-full bg-slate-900" />
+              <div className="relative z-10 h-full w-full overflow-hidden rounded-[34px] bg-white">
                 <DevicePreviewFrame device="mobile" iframeRef={previewIframeRef} typography={liveToken?.typography}>
                   {templatePreview}
                 </DevicePreviewFrame>
               </div>
-              <div className="absolute bottom-2 left-1/2 z-50 h-1 w-24 -translate-x-1/2 rounded-full bg-slate-700" />
+              <div className="absolute bottom-2 left-1/2 z-50 h-1.5 w-28 -translate-x-1/2 rounded-full bg-slate-700" />
             </div>
           </div>
         ) : device.previewDevice === "tablet" ? (
-          <div className="flex-1 min-h-0 overflow-auto bg-background p-4" key={`tablet-${regenCount}-${historyIndex}`}>
-            <div className="relative mx-auto my-3 h-[820px] w-[540px] max-w-full flex-shrink-0 rounded-[20px] border-8 border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800">
-              <div className="relative z-10 h-full w-full overflow-hidden rounded-[12px] bg-white">
+          <div className="flex-1 min-h-0 overflow-auto bg-background p-4 flex items-center justify-center" key={`tablet-${regenCount}-${historyIndex}`}>
+            <div className="relative mx-auto my-auto h-[880px] w-[640px] max-w-full flex-shrink-0 rounded-[24px] border-8 border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800">
+              <div className="relative z-10 h-full w-full overflow-hidden rounded-[16px] bg-white">
                 <DevicePreviewFrame device="tablet" iframeRef={previewIframeRef} typography={liveToken?.typography}>
                   {templatePreview}
                 </DevicePreviewFrame>
