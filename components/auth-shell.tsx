@@ -81,7 +81,7 @@ function LandingHeader() {
               <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
               <path d="M12 17h.01" />
             </svg>
-            <span className="hidden xs:inline">{t("landing.navHelp")}</span>
+            <span className="hidden sm:inline">{t("landing.navHelp")}</span>
           </Link>
 
           {authReady && (
@@ -169,7 +169,7 @@ export function AuthShell({
                 <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
                 <path d="M12 17h.01" />
               </svg>
-              <span>{t("landing.navHelp")}</span>
+              <span className="hidden sm:inline">{t("landing.navHelp")}</span>
             </Link>
             <div className="h-3 w-px bg-border/60" />
             <LanguageSwitcher />
