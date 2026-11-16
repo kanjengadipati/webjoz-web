@@ -104,6 +104,16 @@ export function InlineText({
   const [justSaved, setJustSaved] = useState(false);
   const [aiWriting, setAiWriting] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
+  // Touch devices: pensil hanya muncul setelah teks di-tap (bukan saat scroll)
+  const [badgeRevealed, setBadgeRevealed] = useState(false);
+  const badgeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (badgeTimerRef.current) clearTimeout(badgeTimerRef.current);
+    };
+  }, []);
 
   const hasValue =
     (value !== undefined && value !== null && value !== "") ||
@@ -323,10 +333,10 @@ export function InlineText({
       onFocus={handleFocus}
       onBlur={handleBlur}
       onKeyDown={handleKeyDown}
-      className={`outline-none transition-all ${
+      className={`${
         isFocused
-          ? "ring-1 ring-primary/70 rounded-[2px] cursor-text select-text"
-          : "cursor-default select-none"
+          ? "outline outline-2 outline-primary/70 outline-offset-2 rounded-[2px] cursor-text select-text"
+          : "outline-none cursor-default select-none"
       } ${isShowingPlaceholder ? "opacity-50 italic" : ""} ${className}`}
       style={{
         ...style,
@@ -350,11 +360,24 @@ export function InlineText({
     <span
       ref={wrapperRef}
       className={`relative group/inline ${multiline ? "block" : "inline-block"} max-w-full`}
+      onTouchStart={(e) => {
+        touchStartYRef.current = e.touches[0]?.clientY ?? null;
+      }}
+      onTouchEnd={(e) => {
+        const startY = touchStartYRef.current;
+        touchStartYRef.current = null;
+        const endY = e.changedTouches[0]?.clientY;
+        // Abaikan kalau jari bergeser (scroll) — hanya tap murni yang memunculkan pensil
+        if (startY == null || endY == null || Math.abs(endY - startY) > 8) return;
+        setBadgeRevealed(true);
+        if (badgeTimerRef.current) clearTimeout(badgeTimerRef.current);
+        badgeTimerRef.current = setTimeout(() => setBadgeRevealed(false), 3000);
+      }}
     >
       {editableEl}
 
       {/* Dynamic Corner Action Button:
-          - Idle on Mobile: Always visible Pencil icon [✏️]
+          - Idle on Mobile: Reveals Pencil icon after tap (not scroll)
           - Idle on Desktop: Subtle Pencil shown on hover
           - When Focused: Morphs into high-contrast glowing AI Regen [✨] (or Check [✓] for short text)
           - When Saved: Morphs into green Check [✓] for 1.5s (Auto-save confirmation)
@@ -376,7 +399,8 @@ export function InlineText({
           }
         }}
         onTouchStart={(e) => {
-          e.preventDefault();
+          // Tanpa preventDefault: listener touch bersifat passive & jangan blok scroll.
+          // onPointerDown di atas sudah menjaga fokus contentEditable.
           e.stopPropagation();
           if (isFocused && (showAiButton || showRegenButton)) {
             isInteractingWithAiButtonRef.current = true;
@@ -393,24 +417,6 @@ export function InlineText({
               elementRef.current?.blur();
             }
           } else {
-            handlePencilClick(e);
-          }
-        }}
-        onTouchEnd={(e) => {
-          if (justSaved || aiWriting) return;
-          if (isFocused) {
-            if (showAiButton) {
-              e.preventDefault();
-              e.stopPropagation();
-              handleAiRewrite(e);
-            } else if (showRegenButton) {
-              e.preventDefault();
-              e.stopPropagation();
-              onRegen?.();
-            }
-          } else {
-            e.preventDefault();
-            e.stopPropagation();
             handlePencilClick(e);
           }
         }}
@@ -448,7 +454,9 @@ export function InlineText({
               ? "bg-white text-slate-950 border-white/20 cursor-wait opacity-100 scale-100"
               : isFocused
               ? "bg-slate-900/95 text-white border-white/40 shadow-lg shadow-black/50 ring-2 ring-white/20 opacity-100 scale-110"
-              : "bg-slate-900/90 text-white border-white/30 opacity-90 hover:opacity-100 hover:scale-110 active:scale-95 sm:opacity-0 sm:group-hover/inline:opacity-100"
+              : badgeRevealed
+              ? "bg-slate-900/90 text-white border-white/30 opacity-100"
+              : "bg-slate-900/90 text-white border-white/30 opacity-0 pointer-events-none [@media(hover:hover)]:pointer-events-auto [@media(hover:hover)]:hover:opacity-100 [@media(hover:hover)]:group-hover/inline:opacity-100 active:scale-95"
           }
         `}
       >
