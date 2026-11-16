@@ -205,12 +205,11 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         const overviewItem = filteredNavItems.find(i => i.id === "overview");
         const sitesItem = filteredNavItems.find(i => i.id === "sites");
         const leadsItem = filteredNavItems.find(i => i.id === "leads");
-        const notifItem = filteredNavItems.find(i => i.id === "notifications");
-        if (!overviewItem || !sitesItem || !leadsItem || !notifItem) return null;
+        if (!overviewItem || !sitesItem || !leadsItem) return null;
         const OverviewIcon = Home;
         const SitesIcon = NAV_ICON_MAP[sitesItem.icon] ?? LayoutDashboard;
         const LeadsIcon = NAV_ICON_MAP[leadsItem.icon] ?? LayoutDashboard;
-        const NotifIcon = NAV_ICON_MAP[notifItem.icon] ?? LayoutDashboard;
+        const isOtherPageActive = pathname !== overviewItem.href && pathname !== sitesItem.href && pathname !== leadsItem.href;
         return (
           <BottomNavBar
             showLabels={false}
@@ -218,10 +217,17 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             onCenterPress={() => router.push("/create")}
             centerActive={false}
             items={[
-              { id: overviewItem.id, href: overviewItem.href, icon: OverviewIcon, label: t(NAV_LABEL_KEYS[overviewItem.id] ?? "", overviewItem.label), active: pathname === overviewItem.href },
-              { id: sitesItem.id, href: sitesItem.href, icon: SitesIcon, label: t(NAV_LABEL_KEYS[sitesItem.id] ?? "", sitesItem.label), active: pathname === sitesItem.href },
-              { id: leadsItem.id, href: leadsItem.href, icon: LeadsIcon, label: t(NAV_LABEL_KEYS[leadsItem.id] ?? "", leadsItem.label), active: pathname === leadsItem.href },
-              { id: notifItem.id, href: notifItem.href, icon: NotifIcon, label: t(NAV_LABEL_KEYS[notifItem.id] ?? "", notifItem.label), active: pathname === notifItem.href, badge: unreadCount },
+              { id: overviewItem.id, href: overviewItem.href, icon: OverviewIcon, label: t(NAV_LABEL_KEYS[overviewItem.id] ?? "", overviewItem.label), active: pathname === overviewItem.href && !mobileMenuOpen },
+              { id: sitesItem.id, href: sitesItem.href, icon: SitesIcon, label: t(NAV_LABEL_KEYS[sitesItem.id] ?? "", sitesItem.label), active: pathname === sitesItem.href && !mobileMenuOpen },
+              { id: leadsItem.id, href: leadsItem.href, icon: LeadsIcon, label: t(NAV_LABEL_KEYS[leadsItem.id] ?? "", leadsItem.label), active: pathname === leadsItem.href && !mobileMenuOpen },
+              {
+                id: "menu",
+                icon: Menu,
+                label: t("common.menu", "Menu"),
+                active: mobileMenuOpen || isOtherPageActive,
+                badge: unreadCount,
+                onClick: () => setMobileMenuOpen(prev => !prev),
+              },
             ]}
           />
         );
@@ -229,10 +235,10 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
       {/* Mobile Drawer Sheet */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden flex flex-col justify-end">
+        <div className="fixed inset-0 z-[60] lg:hidden flex flex-col justify-end">
           {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200"
             onClick={() => setMobileMenuOpen(false)}
           />
 
