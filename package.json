@@ -43,7 +43,7 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "sqids": "^0.3.0",
-    "webjoz-ui": "github:kanjengadipati/webjoz-ui"
+    "webjoz-ui": "github:kanjengadipati/webjoz-ui#79d61e1"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",
