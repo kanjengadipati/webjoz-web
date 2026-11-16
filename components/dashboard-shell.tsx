@@ -4,7 +4,7 @@ import React, { ReactNode, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, LayoutGrid, Home, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, ChevronDown, Plus, Palette, Users, DollarSign, Share2, Percent, Menu, Receipt, Cpu, Shield, Sparkles } from "lucide-react";
+import { LayoutDashboard, LayoutGrid, Home, Bell, Globe, Link2, Inbox, BarChart2, Settings, CreditCard, Activity, Megaphone, Building2, ChevronLeft, ChevronDown, Plus, Palette, Users, DollarSign, Share2, Percent, Menu, X, Receipt, Cpu, Shield, Sparkles } from "lucide-react";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Separator, MoonIcon, SunIcon, MOTION, Drawer } from "webjoz-ui";
 import { clearAuthSession, useAuthReady, useAuthToken, useStoredEmail } from "@/lib/auth-store";
 import { ENV_NAME } from "@/lib/config";
@@ -241,21 +241,6 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         maxHeight="85dvh"
         mobileOnly={true}
         noPadding
-        title={
-          <div className="flex items-center gap-3 w-full">
-            {/* Avatar */}
-            <div className="size-10 rounded-2xl bg-muted border border-border/60 flex items-center justify-center text-foreground font-bold text-base shadow-sm shrink-0">
-              {userInitial}
-            </div>
-            <div className="space-y-0.5 min-w-0">
-              <p className="font-bold text-sm text-foreground leading-tight truncate">{userDisplayName}</p>
-              <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-muted border border-border/60 text-muted-foreground">
-                <span className="size-1.5 rounded-full bg-emerald-500 inline-block" />
-                {(activeTenant?.tenant?.plan || "free").charAt(0).toUpperCase() + (activeTenant?.tenant?.plan || "free").slice(1)} Plan
-              </span>
-            </div>
-          </div>
-        }
         footer={
           isAuthenticated ? (
             <Button variant="secondary" className="w-full rounded-xl text-xs font-semibold" onClick={() => void handleLogout()}>
@@ -264,7 +249,29 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           ) : undefined
         }
       >
-        <div className="overflow-y-auto space-y-5 pb-2">
+        <div className="overflow-y-auto space-y-5 px-5 pb-2">
+          {/* Custom Header — avatar + nama + plan */}
+          <div className="flex items-center justify-between pt-1 pb-3 border-b border-border/40">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="size-10 rounded-2xl bg-muted border border-border/60 flex items-center justify-center text-foreground font-bold text-base shadow-sm shrink-0">
+                {userInitial}
+              </div>
+              <div className="flex flex-col justify-center min-w-0 gap-1">
+                <p className="font-bold text-sm text-foreground leading-none truncate">{userDisplayName}</p>
+                <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-muted border border-border/60 text-muted-foreground w-fit">
+                  <span className="size-1.5 rounded-full bg-emerald-500 inline-block shrink-0" />
+                  {(activeTenant?.tenant?.plan || "free").charAt(0).toUpperCase() + (activeTenant?.tenant?.plan || "free").slice(1)} Plan
+                </span>
+              </div>
+            </div>
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="size-8 rounded-full bg-muted/60 border border-border/40 text-muted-foreground hover:text-foreground hover:bg-muted flex items-center justify-center transition cursor-pointer shrink-0 ml-2"
+              aria-label="Close menu"
+            >
+              <X className="size-3.5" />
+            </button>
+          </div>
           {/* Navigation Groups */}
           <div className="space-y-4">
             {Array.from(new Set(filteredNavItems.map(item => item.section))).map((sectionName) => {
