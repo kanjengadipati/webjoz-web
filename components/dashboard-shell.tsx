@@ -591,7 +591,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
         <div ref={contentScrollRef} className={cn("flex min-w-0 flex-col gap-6", !isFullscreenWorkspace && "lg:h-full lg:min-h-0 lg:overflow-y-auto lg:overflow-x-hidden")}>
           {!isFullscreenWorkspace && (
-            <header className="sticky top-0 z-20 rounded-3xl border border-border/80 bg-card/90 px-6 py-4 backdrop-blur-xl shadow-lg shadow-slate-900/10 dark:border-border/40 dark:bg-background/60 dark:shadow-black/5">
+            <header className="sticky top-0 z-20 rounded-3xl border border-border/80 bg-card/90 px-4 py-4 lg:px-6 backdrop-blur-xl shadow-lg shadow-slate-900/10 dark:border-border/40 dark:bg-background/60 dark:shadow-black/5">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-2 text-2xl font-bold tracking-tighter">
