@@ -898,6 +898,11 @@ export function SiteWizard({
     if (isSavingRef.current) return; // prevent double-click / race condition
     isSavingRef.current = true;
 
+    // Simpan token yang sama persis dengan yang dirender preview.
+    const renderedToken: Record<string, any> | null | undefined =
+      (preview.previewState === "result" ? themeDraft.previewToken : null) ??
+      preview.previewData?.design_token;
+
     if (!token) {
       isSavingRef.current = false;
       let contentToSave = preview.previewData?.content || preview.streamedSections;
@@ -909,7 +914,7 @@ export function SiteWizard({
       } catch {
         contentToSave = sanitizeContentMedia(contentToSave);
       }
-      const tokenToSave = preview.previewData?.design_token || preview.streamedDesignToken;
+      const tokenToSave = renderedToken || preview.streamedDesignToken;
       const templateIdToSave = preview.previewData?.template_id || preview.streamedTemplateId || (preview.streamedDesignToken as any)?.template_id || selectTemplate(chat.businessSubType || chat.businessType);
 
       try {
@@ -999,7 +1004,7 @@ export function SiteWizard({
 
         const baseTypo = preview.previewHistory[preview.historyIndex]?.design_token?.typography;
         const typography = await persistCustomFonts(
-          preview.previewData.design_token?.typography,
+          renderedToken?.typography,
           baseTypo,
           (slot) => pushToast(
             t("dashboard.wizard.theme.fontUploadFailed",
@@ -1009,8 +1014,8 @@ export function SiteWizard({
           )
         );
         const finalDesignToken = typography
-          ? { ...preview.previewData.design_token, typography }
-          : preview.previewData.design_token;
+          ? { ...renderedToken, typography }
+          : renderedToken;
 
         // Materialize blob URL preview lokal → Cloudinary secure_url (sekali).
         // Fallback ke streamedSections (gambar AI asli) kalau upload gagal.
@@ -1066,7 +1071,7 @@ export function SiteWizard({
           mood: chat.mood,
           templateId: preview.previewData?.template_id || "TEMPLATE_DYNAMIC",
           previewContent: preview.previewData?.content,
-          previewDesignToken: preview.previewData?.design_token,
+          previewDesignToken: renderedToken,
           savedAt: Date.now(),
         });
         isSavingRef.current = false;

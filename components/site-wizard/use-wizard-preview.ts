@@ -22,6 +22,8 @@ export function useWizardPreview() {
   // Opsi 1 (indeks 0) adalah layout hasil generate, disimpan di layoutBaseRef.
   const [layoutAlternatives, setLayoutAlternativesState] = useState<LayoutAlternative[]>([]);
   const [layoutIndex, setLayoutIndex] = useState(0);
+  // Snapshot token asli (palet/mode/hero) sebelum alur pool template menimpanya dengan default template.
+  const poolBaseRef = useRef<{ palette?: any; theme_mode?: any; hero_style?: any; hero?: any } | null>(null);
   const layoutBaseRef = useRef<{ hero_style?: string; section_variants: Record<string, any> } | null>(null);
   const [regenCount, setRegenCount] = useState(0);
   const [hasUnsavedEdits, setHasUnsavedEdits] = useState(false);
@@ -288,31 +290,44 @@ export function useWizardPreview() {
     setIsSwitchingTemplate(true);
     const nextIndex = (templatePoolIndex + 1) % templatePool.length;
     const nextTemplateId = templatePool[nextIndex];
+    const wasIndex = templatePoolIndex;
     setTemplatePoolIndex(nextIndex);
     setPreviewData(prev => {
       if (!prev) return prev;
-      const targetDefault = TEMPLATE_DEFAULT_DESIGN_TOKENS[nextTemplateId];
-      const nextHeroStyle = targetDefault?.layout?.hero_style;
-      const nextLayout = prev.design_token?.layout ? {
-        ...prev.design_token.layout,
-        ...(nextHeroStyle ? {
-          hero_style: nextHeroStyle,
-          section_variants: {
-            ...(prev.design_token.layout.section_variants as any),
-            hero: nextHeroStyle,
-          },
+      const tok = prev.design_token;
+      // Di indeks 0 token masih asli hasil AI: simpan sebagai basis.
+      if (wasIndex === 0 || !poolBaseRef.current) {
+        poolBaseRef.current = {
+          palette: tok?.palette,
+          theme_mode: tok?.theme_mode,
+          hero_style: tok?.layout?.hero_style,
+          hero: (tok?.layout?.section_variants as any)?.hero,
+        };
+      }
+      const base = poolBaseRef.current;
+      const targetDefault = nextIndex === 0 ? undefined : TEMPLATE_DEFAULT_DESIGN_TOKENS[nextTemplateId];
+      const nextHeroStyle = nextIndex === 0 ? base.hero_style : targetDefault?.layout?.hero_style;
+      const nextHeroVariant = nextIndex === 0 ? base.hero : targetDefault?.layout?.hero_style;
+      const nextLayout = tok?.layout ? {
+        ...tok.layout,
+        ...(nextHeroStyle ? { hero_style: nextHeroStyle } : {}),
+        ...(nextHeroVariant ? {
+          section_variants: { ...(tok.layout.section_variants as any), hero: nextHeroVariant },
         } : {}),
-      } : prev.design_token?.layout;
+      } : tok?.layout;
+      // Indeks 0 = kembali persis ke token asli; selain itu default template di atas token asli.
+      const palette = nextIndex === 0 ? base.palette : targetDefault?.palette ? { ...base.palette, ...targetDefault.palette } : tok?.palette;
+      const themeMode = nextIndex === 0 ? base.theme_mode : targetDefault?.theme_mode ?? tok?.theme_mode;
 
       return {
         ...prev,
         template_id: nextTemplateId,
-        design_token: prev.design_token ? {
-          ...prev.design_token,
-          ...(targetDefault?.palette ? { palette: { ...prev.design_token.palette, ...targetDefault.palette } } : {}),
-          ...(targetDefault?.theme_mode ? { theme_mode: targetDefault.theme_mode } : {}),
+        design_token: tok ? {
+          ...tok,
+          ...(palette ? { palette } : {}),
+          ...(themeMode ? { theme_mode: themeMode } : {}),
           ...(nextLayout ? { layout: nextLayout } : {}),
-        } : prev.design_token,
+        } : tok,
       };
     });
     setTimeout(() => {
@@ -351,6 +366,7 @@ export function useWizardPreview() {
     setArrivedSections([]);
     setTemplatePool([]);
     setTemplatePoolIndex(0);
+    poolBaseRef.current = null;
     setLayoutAlternativesState([]);
     setLayoutIndex(0);
     layoutBaseRef.current = null;

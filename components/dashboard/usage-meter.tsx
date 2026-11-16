@@ -43,10 +43,10 @@ function remainingText(used: number, max: number, unlimitedLabel: string) {
 }
 
 const METERS = [
-  { key: "sites", icon: Globe, color: "bg-primary", textColor: "text-primary" } as const,
-  { key: "generates", icon: SparkleIcon, color: "bg-amber-500", textColor: "text-amber-500" } as const,
-  { key: "sectionRegens", icon: Wand2, color: "bg-violet-500", textColor: "text-violet-500" } as const,
-  { key: "designRegens", icon: Palette, color: "bg-cyan-500", textColor: "text-cyan-500" } as const,
+  { key: "sites", icon: Globe, color: "bg-foreground/70", textColor: "text-foreground/60" } as const,
+  { key: "generates", icon: SparkleIcon, color: "bg-foreground/70", textColor: "text-foreground/60" } as const,
+  { key: "sectionRegens", icon: Wand2, color: "bg-foreground/70", textColor: "text-foreground/60" } as const,
+  { key: "designRegens", icon: Palette, color: "bg-foreground/70", textColor: "text-foreground/60" } as const,
 ] as const;
 
 const LABEL_KEYS = {
