@@ -569,6 +569,14 @@ export interface Translations {
       variantShown: string;
       evalDone: string;
       evalFailed: string;
+      websiteSavedToPro: string;
+      paypalLoadFailed: string;
+      googleClientIdMissing: string;
+      facebookAppIdMissing: string;
+      facebookSdkFailed: string;
+      facebookSuccess: string;
+      facebookCancelled: string;
+      imageProcessingFailed: string;
       loadTransactionsFailed: string;
       loadInvoiceFailed: string;
       refundRequestFailed: string;
@@ -4516,6 +4524,14 @@ export const translations: Record<Locale, Translations> = {
         variantShown: 'Varian "{variant}" berhasil diaktifkan kembali.',
         evalDone: "Evaluasi selesai: Skor {score}/100 (Tier {tier}).",
         evalFailed: "Gagal mengevaluasi varian",
+        websiteSavedToPro: "Website berhasil disimpan ke paket Pro Anda!",
+        paypalLoadFailed: "Failed to load PayPal",
+        googleClientIdMissing: "Google Client ID is missing. Please check your .env file.",
+        facebookAppIdMissing: "Facebook App ID is missing. Please check your .env file.",
+        facebookSdkFailed: "Facebook SDK failed to load.",
+        facebookSuccess: "Welcome! Facebook {mode} successful.",
+        facebookCancelled: "Facebook login was cancelled.",
+        imageProcessingFailed: "Gagal memproses gambar.",
         loadTransactionsFailed: "Gagal memuat transaksi",
         loadInvoiceFailed: "Gagal memuat invoice",
         refundRequestFailed: "Gagal mengajukan refund",
@@ -9002,6 +9018,14 @@ export const translations: Record<Locale, Translations> = {
         variantShown: 'Variant "{variant}" re-enabled successfully.',
         evalDone: "Evaluation complete: Score {score}/100 (Tier {tier}).",
         evalFailed: "Failed to evaluate variant",
+        websiteSavedToPro: "Website successfully saved to your Pro plan!",
+        paypalLoadFailed: "Failed to load PayPal",
+        googleClientIdMissing: "Google Client ID is missing. Please check your .env file.",
+        facebookAppIdMissing: "Facebook App ID is missing. Please check your .env file.",
+        facebookSdkFailed: "Facebook SDK failed to load.",
+        facebookSuccess: "Welcome! Facebook {mode} successful.",
+        facebookCancelled: "Facebook login was cancelled.",
+        imageProcessingFailed: "Failed to process image.",
         loadTransactionsFailed: "Failed to load transactions",
         loadInvoiceFailed: "Failed to load invoice",
         refundRequestFailed: "Failed to submit refund request",

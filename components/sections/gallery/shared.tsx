@@ -7,6 +7,7 @@ import { InlineText, DEFAULT_IMAGE_POOL } from "../../templates/shared";
 import { uploadImageFile } from "@/components/file-upload";
 import { createDeferredImageUrl } from "@/lib/deferred-image";
 import { useToast } from "@/components/toast-provider";
+import { useI18n } from "@/lib/i18n/context";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { useEditorChromeEnabled } from "../editor-chrome-context";
 
@@ -47,6 +48,7 @@ export function useGalleryUpload({
   const urlInputRef = useRef<HTMLInputElement>(null);
   const deferUpload = !useEditorChromeEnabled();
   const { pushToast } = useToast();
+  const { t } = useI18n();
 
   const stop = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     e.stopPropagation();
@@ -73,7 +75,7 @@ export function useGalleryUpload({
         onUrl(url);
       } catch (err) {
         console.error("Upload gallery image error:", err);
-        pushToast((err as Error)?.message || "Gagal memproses gambar.", "error");
+        pushToast((err as Error)?.message || t("dashboard.toast.imageProcessingFailed"), "error");
       } finally {
         setUploading(false);
         if (fileInputRef.current) fileInputRef.current.value = "";

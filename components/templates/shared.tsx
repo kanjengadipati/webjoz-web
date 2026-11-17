@@ -1792,7 +1792,7 @@ function MenuCatalogCard({
       }
     } catch (err: any) {
       console.error("Upload catalog/menu item image error:", err);
-      pushToast(err?.message || "Gagal memproses gambar.", "error");
+      pushToast(err?.message || t("dashboard.toast.imageProcessingFailed"), "error");
     } finally {
       setUploadingImage(false);
       if (fileInputRef.current) {
@@ -2585,7 +2585,7 @@ function ProductQuickViewInner({
       }
     } catch (err) {
       console.error("Upload quick view gallery image error:", err);
-      pushToast((err as Error)?.message || "Gagal memproses gambar.", "error");
+      pushToast((err as Error)?.message || t("dashboard.toast.imageProcessingFailed"), "error");
     } finally {
       setGalleryUploading(false);
       if (galleryInputRef.current) galleryInputRef.current.value = "";

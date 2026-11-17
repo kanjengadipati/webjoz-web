@@ -107,7 +107,7 @@ export default function PaymentSuccessPage() {
 
       // 3. Clear draft and navigate to editor
       clearPendingUpgradeDraft();
-      pushToast("Website berhasil disimpan ke paket Pro Anda!", "success");
+      pushToast(t("dashboard.toast.websiteSavedToPro"), "success");
       router.push(`/dashboard/sites/${encodeSiteId(siteId)}`);
     } catch (err: any) {
       pushToast(err.message || "Gagal menyimpan website otomatis. Silakan coba lagi.", "error");

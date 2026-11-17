@@ -226,7 +226,7 @@ export default function UpgradePage() {
       } catch (err) {
         console.error("[PayPal] Error:", err);
         if (!cancelled) {
-          pushToast("Failed to load PayPal", "error");
+          pushToast(t("dashboard.toast.paypalLoadFailed"), "error");
           setPaypalModal(false);
           setPaying(null);
         }

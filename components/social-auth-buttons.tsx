@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 import { useToast } from "@/components/toast-provider";
+import { useI18n } from "@/lib/i18n/context";
 import { socialLogin } from "@/lib/api";
 import { persistAuthSession } from "@/lib/auth-store";
 import { FACEBOOK_CLIENT_ID, GOOGLE_CLIENT_ID, SOCIAL_ACTIVE_PROVIDERS } from "@/lib/config";
@@ -67,6 +68,7 @@ export function SocialAuthButtons({
 }: SocialAuthButtonsProps) {
   const router = useRouter();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const [loading, setLoading] = useState(false);
 
   const setLocalLoading = useCallback((isLoading: boolean) => {
@@ -98,7 +100,7 @@ export function SocialAuthButtons({
   // 3. providers.tsx picks up id_token on load and calls socialLogin API
   const handleGoogleClick = useCallback(() => {
     if (!GOOGLE_CLIENT_ID) {
-      pushToast("Google Client ID is missing. Please check your .env file.", "error");
+      pushToast(t("dashboard.toast.googleClientIdMissing"), "error");
       return;
     }
 
@@ -129,7 +131,7 @@ export function SocialAuthButtons({
   // ─── Facebook ────────────────────────────────────────────────────────────────
   const handleFacebookClick = () => {
     if (!FACEBOOK_CLIENT_ID) {
-      pushToast("Facebook App ID is missing. Please check your .env file.", "error");
+      pushToast(t("dashboard.toast.facebookAppIdMissing"), "error");
       return;
     }
 
@@ -140,7 +142,7 @@ export function SocialAuthButtons({
       const fb = window.FB;
       if (!fb) {
         setLocalLoading(false);
-        pushToast("Facebook SDK failed to load.", "error");
+        pushToast(t("dashboard.toast.facebookSdkFailed"), "error");
         return;
       }
 
@@ -150,7 +152,7 @@ export function SocialAuthButtons({
             socialLogin("facebook", response.authResponse.accessToken)
               .then((apiResponse) => {
                 persistAuthSession("", apiResponse.data.access_token);
-                pushToast(`Welcome! Facebook ${mode === "login" ? "login" : "signup"} successful.`, "success");
+                pushToast(t("dashboard.toast.facebookSuccess", undefined, { mode: mode === "login" ? "login" : "signup" }), "success");
 
                 const redirectParam = new URLSearchParams(window.location.search).get("redirect");
                 if (redirectParam) {
@@ -167,7 +169,7 @@ export function SocialAuthButtons({
               });
           } else {
             setLocalLoading(false);
-            pushToast("Facebook login was cancelled.", "info");
+            pushToast(t("dashboard.toast.facebookCancelled"), "info");
           }
         },
         { scope: "public_profile,email" }

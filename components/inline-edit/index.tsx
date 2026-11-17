@@ -745,7 +745,7 @@ export function InlineImage({
       }
     } catch (err) {
       console.error("Upload image error:", err);
-      pushToast((err as Error)?.message || "Gagal memproses gambar.", "error");
+      pushToast((err as Error)?.message || t("dashboard.toast.imageProcessingFailed"), "error");
     } finally {
       setUploading(false);
       if (fileInputRef.current) {
