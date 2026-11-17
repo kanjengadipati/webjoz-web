@@ -149,6 +149,7 @@ export function GalleryTileOverlay({
   onMove?: (idx: number, dir: -1 | 1) => void;
   collapseSheetForInlineEdit?: () => void;
 }) {
+  const isEN = useI18n().locale === "en";
   const {
     fileInputRef,
     uploading,
@@ -215,7 +216,7 @@ export function GalleryTileOverlay({
             onClick={(e) => { stop(e); submitUrl(); }}
             onPointerDown={stop}
             onTouchStart={stop}
-            title="Simpan URL"
+            title={isEN ? "Save URL" : "Simpan URL"}
             className="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shrink-0 transition-colors active:scale-95 cursor-pointer shadow-sm"
           >
             <Check className="w-3.5 h-3.5" />
@@ -225,7 +226,7 @@ export function GalleryTileOverlay({
             onClick={(e) => { stop(e); cancelUrl(); }}
             onPointerDown={stop}
             onTouchStart={stop}
-            title="Batal"
+            title={isEN ? "Cancel" : "Batal"}
             className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white shrink-0 transition-colors active:scale-95 cursor-pointer"
           >
             <X className="w-3.5 h-3.5" />
@@ -249,8 +250,8 @@ export function GalleryTileOverlay({
             onClick={(e) => { stop(e); random(); }}
             onPointerDown={stop}
             onTouchStart={stop}
-            title="Ganti foto acak (Unsplash)"
-            aria-label="Ganti foto acak"
+            title={isEN ? "Replace with random photo (Unsplash)" : "Ganti foto acak (Unsplash)"}
+            aria-label={isEN ? "Replace with random photo" : "Ganti foto acak"}
             className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-900/90 text-amber-300 hover:text-amber-200 shadow-xl border border-white/20 hover:bg-slate-950 active:scale-95 transition-all cursor-pointer backdrop-blur-sm"
           >
             <SparkleIcon className="w-3.5 h-3.5 text-amber-300" />
@@ -260,8 +261,8 @@ export function GalleryTileOverlay({
             onClick={(e) => { stop(e); openUrlInput(); }}
             onPointerDown={stop}
             onTouchStart={stop}
-            title="Masukkan URL foto"
-            aria-label="Masukkan URL foto"
+            title={isEN ? "Enter photo URL" : "Masukkan URL foto"}
+            aria-label={isEN ? "Enter photo URL" : "Masukkan URL foto"}
             className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-900/90 text-white/90 hover:text-white shadow-xl border border-white/20 hover:bg-slate-950 active:scale-95 transition-all cursor-pointer backdrop-blur-sm"
           >
             <Link2 className="w-3.5 h-3.5" />
@@ -276,8 +277,8 @@ export function GalleryTileOverlay({
             onClick={(e) => { stop(e); onMove?.(idx, -1); }}
             onPointerDown={stop}
             onTouchStart={stop}
-            title="Geser ke kiri"
-            aria-label="Geser ke kiri"
+            title={isEN ? "Move left" : "Geser ke kiri"}
+            aria-label={isEN ? "Move left" : "Geser ke kiri"}
             className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-white/80 hover:bg-white/20 transition-colors cursor-pointer disabled:opacity-30"
           >
             <ChevronLeft className="w-3.5 h-3.5" />
@@ -287,8 +288,8 @@ export function GalleryTileOverlay({
             onClick={(e) => { stop(e); onRemove?.(idx); }}
             onPointerDown={stop}
             onTouchStart={stop}
-            title="Hapus foto"
-            aria-label="Hapus foto"
+            title={isEN ? "Delete photo" : "Hapus foto"}
+            aria-label={isEN ? "Delete photo" : "Hapus foto"}
             className="flex items-center justify-center w-6 h-6 rounded-full bg-rose-500/80 text-white hover:bg-rose-500 transition-colors cursor-pointer"
           >
             <Trash2 className="w-3 h-3" />
@@ -299,8 +300,8 @@ export function GalleryTileOverlay({
             onClick={(e) => { stop(e); onMove?.(idx, 1); }}
             onPointerDown={stop}
             onTouchStart={stop}
-            title="Geser ke kanan"
-            aria-label="Geser ke kanan"
+            title={isEN ? "Move right" : "Geser ke kanan"}
+            aria-label={isEN ? "Move right" : "Geser ke kanan"}
             className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-white/80 hover:bg-white/20 transition-colors cursor-pointer disabled:opacity-30"
           >
             <ChevronRight className="w-3.5 h-3.5" />
@@ -320,6 +321,7 @@ export function GalleryAddTile({
   collapseSheetForInlineEdit?: () => void;
   style?: React.CSSProperties;
 }) {
+  const isEN = useI18n().locale === "en";
   const {
     fileInputRef,
     uploading,
@@ -415,7 +417,7 @@ export function GalleryAddTile({
             onClick={(e) => { stop(e); submitUrl(); }}
             onPointerDown={stop}
             onTouchStart={stop}
-            title="Simpan URL"
+            title={isEN ? "Save URL" : "Simpan URL"}
             className="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shrink-0 transition-colors active:scale-95 cursor-pointer shadow-sm"
           >
             <Check className="w-3.5 h-3.5" />
@@ -425,7 +427,7 @@ export function GalleryAddTile({
             onClick={(e) => { stop(e); cancelUrl(); }}
             onPointerDown={stop}
             onTouchStart={stop}
-            title="Batal"
+            title={isEN ? "Cancel" : "Batal"}
             className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white shrink-0 transition-colors active:scale-95 cursor-pointer"
           >
             <X className="w-3.5 h-3.5" />
@@ -453,7 +455,7 @@ export function GalleryAddTile({
             onClick={(e) => { stop(e); openUrlInput(); }}
             onPointerDown={stop}
             onTouchStart={stop}
-            title="Masukkan URL foto"
+            title={isEN ? "Enter photo URL" : "Masukkan URL foto"}
             className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-xs"
             style={{
               background: "color-mix(in srgb, var(--dt-text, currentColor) 10%, rgba(100, 116, 139, 0.08))",
@@ -469,7 +471,7 @@ export function GalleryAddTile({
             onClick={(e) => { stop(e); random(); }}
             onPointerDown={stop}
             onTouchStart={stop}
-            title="Foto acak (Unsplash)"
+            title={isEN ? "Random photo (Unsplash)" : "Foto acak (Unsplash)"}
             className="flex items-center justify-center w-7 h-6 rounded-full text-amber-500 dark:text-amber-400 transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-xs"
             style={{
               background: "color-mix(in srgb, var(--dt-text, currentColor) 10%, rgba(100, 116, 139, 0.08))",
@@ -491,6 +493,7 @@ export function GalleryAddButton({
   onAdd?: (url: string) => void;
   collapseSheetForInlineEdit?: () => void;
 }) {
+  const isEN = useI18n().locale === "en";
   const {
     fileInputRef,
     uploading,
@@ -547,7 +550,7 @@ export function GalleryAddButton({
           onClick={(e) => { stop(e); submitUrl(); }}
           onPointerDown={stop}
           onTouchStart={stop}
-          title="Simpan URL"
+          title={isEN ? "Save URL" : "Simpan URL"}
           className="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shrink-0 transition-colors active:scale-95 cursor-pointer shadow-sm"
         >
           <Check className="w-3.5 h-3.5" />
@@ -557,7 +560,7 @@ export function GalleryAddButton({
           onClick={(e) => { stop(e); cancelUrl(); }}
           onPointerDown={stop}
           onTouchStart={stop}
-          title="Batal"
+          title={isEN ? "Cancel" : "Batal"}
           className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white shrink-0 transition-colors active:scale-95 cursor-pointer"
         >
           <X className="w-3.5 h-3.5" />
@@ -594,8 +597,8 @@ export function GalleryAddButton({
         onClick={(e) => { stop(e); openUrlInput(); }}
         onPointerDown={stop}
         onTouchStart={stop}
-        title="Masukkan URL foto"
-        aria-label="Masukkan URL foto"
+        title={isEN ? "Enter photo URL" : "Masukkan URL foto"}
+        aria-label={isEN ? "Enter photo URL" : "Masukkan URL foto"}
         className="hover:opacity-80 transition-opacity cursor-pointer"
         style={{ color: "var(--dt-primary, currentColor)" }}
       >
@@ -694,6 +697,7 @@ export function Lightbox({
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
 }) {
+  const isEN = useI18n().locale === "en";
   const [current, setCurrent] = useState(index);
 
   const prev = useCallback(() => setCurrent((i) => (i > 0 ? i - 1 : items.length - 1)), [items.length]);
@@ -721,13 +725,13 @@ export function Lightbox({
       onClick={onClose}
       role="dialog"
       aria-modal="true"
-      aria-label="Preview gambar"
+      aria-label={isEN ? "Preview image" : "Preview gambar"}
     >
       <button
         type="button"
         onClick={onClose}
         className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/40 text-white hover:bg-black/60 transition-colors cursor-pointer"
-        aria-label="Tutup"
+        aria-label={isEN ? "Close" : "Tutup"}
       >
         <X className="w-6 h-6" />
       </button>
@@ -738,7 +742,7 @@ export function Lightbox({
             type="button"
             onClick={(e) => { e.stopPropagation(); prev(); }}
             className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/40 text-white hover:bg-black/60 transition-colors cursor-pointer z-10"
-            aria-label="Sebelumnya"
+            aria-label={isEN ? "Previous" : "Sebelumnya"}
           >
             <ChevronLeft className="w-8 h-8" />
           </button>
@@ -746,7 +750,7 @@ export function Lightbox({
             type="button"
             onClick={(e) => { e.stopPropagation(); next(); }}
             className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/40 text-white hover:bg-black/60 transition-colors cursor-pointer z-10"
-            aria-label="Berikutnya"
+            aria-label={isEN ? "Next" : "Berikutnya"}
           >
             <ChevronRight className="w-8 h-8" />
           </button>
