@@ -299,7 +299,7 @@ export function AiImageButton({
   businessType?: string;
   onSelect: (url: string) => void;
 }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const handleClick = () => {
     const randomUrl = DEFAULT_UNSPLASH_POOL[Math.floor(Math.random() * DEFAULT_UNSPLASH_POOL.length)];
     onSelect(randomUrl);
@@ -312,7 +312,7 @@ export function AiImageButton({
       className="flex items-center gap-1 px-2 h-7 rounded-md bg-sidebar-muted text-sidebar-foreground hover:bg-sidebar-border hover:text-sidebar-foreground text-[10px] font-semibold transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-slate-400 border border-border"
     >
       <RefreshCw className="w-3 h-3" />
-      Random foto
+      {locale === "en" ? "Random photo" : "Random foto"}
     </button>
   );
 }

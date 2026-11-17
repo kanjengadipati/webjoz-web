@@ -13,7 +13,7 @@ export function PreloaderSectionForm({
   updateField,
   designToken,
 }: BaseSectionFormProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [testPreloaderKey, setTestPreloaderKey] = useState<number | null>(null);
 
   return (
@@ -184,7 +184,7 @@ export function PreloaderSectionForm({
             onClick={() => setTestPreloaderKey(null)}
             className="fixed top-4 right-4 z-[100000] px-3.5 py-1.5 rounded-full bg-black/60 hover:bg-black/80 text-white text-xs border border-white/20 transition-all cursor-pointer shadow-lg backdrop-blur"
           >
-            Tutup Preview ✕
+            {locale === "en" ? "Close Preview ✕" : "Tutup Preview ✕"}
           </button>
         </div>
       )}

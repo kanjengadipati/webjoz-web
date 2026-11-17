@@ -34,7 +34,7 @@ export function ContactSectionForm({
   undoField,
   token,
 }: BaseSectionFormProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [showLocationPicker, setShowLocationPicker] = useState(false);
   const [resolvingMaps, setResolvingMaps] = useState(false);
   const [resolveError, setResolveError] = useState<string | null>(null);
@@ -217,7 +217,7 @@ export function ContactSectionForm({
               updateField("contact", "maps_url", e.target.value);
               setResolveError(null);
             }}
-            placeholder="https://www.google.com/maps/embed?pb=... atau share link Google Maps"
+            placeholder={locale === "en" ? "https://www.google.com/maps/embed?pb=... or a Google Maps share link" : "https://www.google.com/maps/embed?pb=... atau share link Google Maps"}
             className="flex-1 w-full px-2.5 py-1.5 border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground placeholder-sidebar-subtle-foreground"
           />
           <button

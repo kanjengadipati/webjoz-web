@@ -13,14 +13,14 @@ export function StatsSectionForm({
   fieldUndoStacks,
   undoField,
 }: BaseSectionFormProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   return (
     <div className="space-y-4">
       <div className="rounded-xl border border-primary/20 bg-primary/10 px-3 py-2.5 text-[12px] leading-relaxed text-primary">
-        <p className="font-semibold text-primary">📈 Section Statistik & Pencapaian</p>
+        <p className="font-semibold text-primary">{locale === "en" ? "📈 Stats & Achievements Section" : "📈 Section Statistik & Pencapaian"}</p>
         <p className="mt-1 text-primary/80">
-          Tampilkan angka pencapaian, jumlah subscriber, kepuasan klien, atau metrik kunci untuk membangun kredibilitas instan.
+          {locale === "en" ? "Showcase achievement numbers, subscriber counts, client satisfaction, or key metrics to build instant credibility." : "Tampilkan angka pencapaian, jumlah subscriber, kepuasan klien, atau metrik kunci untuk membangun kredibilitas instan."}
         </p>
       </div>
 
@@ -135,7 +135,7 @@ export function StatsSectionForm({
                 />
               </div>
               <div>
-                <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">Keterangan (Opsional)</label>
+                <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">{locale === "en" ? "Description (Optional)" : "Keterangan (Opsional)"}</label>
                 <input
                   type="text"
                   value={item.description || ""}

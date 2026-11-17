@@ -10,14 +10,14 @@ export function PartnersSectionForm({
   content,
   updateField,
 }: BaseSectionFormProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   return (
     <div className="space-y-4">
       <div className="rounded-xl border border-primary/20 bg-primary/10 px-3 py-2.5 text-[12px] leading-relaxed text-primary">
-        <p className="font-semibold text-primary">🤝 Section Mitra & Klien</p>
+        <p className="font-semibold text-primary">{locale === "en" ? "🤝 Partners & Clients Section" : "🤝 Section Mitra & Klien"}</p>
         <p className="mt-1 text-primary/80">
-          Tampilkan logo atau nama brand yang pernah bekerja sama, klien utama, atau media yang meliput.
+          {locale === "en" ? "Showcase logos or names of brands you have worked with, key clients, or media coverage." : "Tampilkan logo atau nama brand yang pernah bekerja sama, klien utama, atau media yang meliput."}
         </p>
       </div>
 
@@ -33,7 +33,7 @@ export function PartnersSectionForm({
           />
         </div>
         <div className="space-y-1">
-          <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Judul Section</label>
+          <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{locale === "en" ? "Section Title" : "Judul Section"}</label>
           <input
             type="text"
             value={content.partners?.title || ""}
@@ -43,7 +43,7 @@ export function PartnersSectionForm({
           />
         </div>
         <div className="space-y-1">
-          <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">Subjudul (Opsional)</label>
+          <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">{locale === "en" ? "Subtitle (Optional)" : "Subjudul (Opsional)"}</label>
           <input
             type="text"
             value={content.partners?.subtitle || ""}
@@ -89,7 +89,7 @@ export function PartnersSectionForm({
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">Nama Brand / Mitra</label>
+                <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">{locale === "en" ? "Brand / Partner Name" : "Nama Brand / Mitra"}</label>
                 <input
                   type="text"
                   value={partner.name || ""}
@@ -103,7 +103,7 @@ export function PartnersSectionForm({
                 />
               </div>
               <div>
-                <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">Kategori / Industri</label>
+                <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">{locale === "en" ? "Category / Industry" : "Kategori / Industri"}</label>
                 <input
                   type="text"
                   value={partner.category || ""}
@@ -118,7 +118,7 @@ export function PartnersSectionForm({
               </div>
             </div>
             <div>
-              <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">Tautan Website (Opsional)</label>
+              <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">{locale === "en" ? "Website Link (Optional)" : "Tautan Website (Opsional)"}</label>
               <input
                 type="text"
                 value={partner.url || ""}

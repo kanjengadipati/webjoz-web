@@ -19,7 +19,7 @@ export function AboutSectionForm({
   businessType,
   handleAiImage,
 }: BaseSectionFormProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   if (!content.about) return null;
 
@@ -182,12 +182,12 @@ export function AboutSectionForm({
           />
         </div>
         <div className="space-y-1">
-          <label className="text-[10px] text-sidebar-muted-foreground block">Teks Tombol (Default: Unduh CV / Resume)</label>
+          <label className="text-[10px] text-sidebar-muted-foreground block">{locale === "en" ? "Button Text (Default: Download CV / Resume)" : "Teks Tombol (Default: Unduh CV / Resume)"}</label>
           <input
             type="text"
             value={content.about?.cv_label || ""}
             onChange={(e) => updateField("about", "cv_label", e.target.value)}
-            placeholder="Unduh CV / Resume"
+            placeholder={locale === "en" ? "Download CV / Resume" : "Unduh CV / Resume"}
             className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
           />
         </div>

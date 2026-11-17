@@ -221,7 +221,7 @@ interface AiImageButtonProps {
 }
 
 function AiImageButton({ businessType, onSelect }: AiImageButtonProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const pool = getUnsplashPool(businessType);
   const handleClick = () => {
     const randomUrl = pool[Math.floor(Math.random() * pool.length)];
@@ -235,7 +235,7 @@ function AiImageButton({ businessType, onSelect }: AiImageButtonProps) {
       className="flex items-center gap-1 px-2 h-7 rounded-md bg-sidebar-muted text-sidebar-foreground hover:bg-sidebar-border hover:text-sidebar-foreground text-[10px] font-semibold transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-slate-400 border border-border"
     >
       <RefreshCw className="w-3 h-3" />
-      Random foto
+      {locale === "en" ? "Random photo" : "Random foto"}
     </button>
   );
 }
@@ -1316,13 +1316,13 @@ export default function SectionForms({
               />
             </div>
             <div className="space-y-1">
-              <label className="text-[10px] text-sidebar-muted-foreground block">Teks Tombol (Default: Unduh CV)</label>
+              <label className="text-[10px] text-sidebar-muted-foreground block">{locale === "en" ? "Button Text (Default: Download CV)" : "Teks Tombol (Default: Unduh CV)"}</label>
               <input
                 id="field-hero.cv_label"
                 type="text"
                 value={content.hero?.cv_label || ""}
                 onChange={(e) => updateField("hero", "cv_label", e.target.value)}
-                placeholder="Unduh CV"
+                placeholder={locale === "en" ? "Download CV" : "Unduh CV"}
                 className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
               />
             </div>
@@ -1342,7 +1342,7 @@ export default function SectionForms({
               placeholder={t("dashboard.sitesEditor.phBadgeText")}
               className={`${SIDEBAR_FIELD_CLASS} border-border text-sidebar-foreground placeholder-sidebar-subtle-foreground`}
             />
-            <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">Teks kecil yang muncul di bawah tombol CTA (jam buka, info singkat, dll).</p>
+            <p className="text-[10px] text-sidebar-subtle-foreground leading-relaxed">{locale === "en" ? "Small text shown below the CTA button (opening hours, brief info, etc.)." : "Teks kecil yang muncul di bawah tombol CTA (jam buka, info singkat, dll)."}</p>
           </div>
           )}
           {/* Opening hours (opsional, dipakai oleh beberapa varian) */}
@@ -1529,10 +1529,13 @@ export default function SectionForms({
       {activeTab === "menu" && (
         <>
           <div className="rounded-xl border border-primary/20 bg-primary/10 px-3 py-2.5 text-[12px] leading-relaxed text-primary mb-1">
-            <p className="font-semibold text-primary">📋 Section Menu</p>
+            <p className="font-semibold text-primary">{locale === "en" ? "📋 Menu Section" : "📋 Section Menu"}</p>
             <p className="mt-1 text-primary/80">
-              Tambah kategori dan item di sini. Setiap item bisa dilengkapi foto, nama, deskripsi, dan harga.
-              Pengunjung website bisa klik <strong>+ Tambah</strong> untuk memasukkan ke keranjang dan pesan via WhatsApp.
+              {locale === "en" ? (
+                <>Add categories and items here. Each item can include a photo, name, description, and price. Website visitors can click <strong>+ Add</strong> to add it to the cart and order via WhatsApp.</>
+              ) : (
+                <>Tambah kategori dan item di sini. Setiap item bisa dilengkapi foto, nama, deskripsi, dan harga. Pengunjung website bisa klik <strong>+ Tambah</strong> untuk memasukkan ke keranjang dan pesan via WhatsApp.</>
+              )}
             </p>
           </div>
           <MenuCatalogForm
@@ -1589,10 +1592,13 @@ export default function SectionForms({
       {activeTab === "catalog" && (
         <>
           <div className="rounded-xl border border-primary/20 bg-primary/10 px-3 py-2.5 text-[12px] leading-relaxed text-primary mb-1">
-            <p className="font-semibold text-primary">🛍️ Section Katalog Produk</p>
+            <p className="font-semibold text-primary">{locale === "en" ? "🛍️ Product Catalog Section" : "🛍️ Section Katalog Produk"}</p>
             <p className="mt-1 text-primary/80">
-              Tambah kategori dan produk di sini. Setiap produk bisa dilengkapi foto, nama, deskripsi, harga, dan badge (cth: Best Seller, Baru, Promo — item dengan badge otomatis dijadikan unggulan di tampilan showcase).
-              Pengunjung website bisa klik <strong>+ Tambah</strong> untuk memasukkan ke keranjang dan pesan via WhatsApp.
+              {locale === "en" ? (
+                <>Add categories and products here. Each product can include a photo, name, description, price, and badge (e.g. Best Seller, New, Promo — items with a badge are automatically featured in the showcase view). Website visitors can click <strong>+ Add</strong> to add it to the cart and order via WhatsApp.</>
+              ) : (
+                <>Tambah kategori dan produk di sini. Setiap produk bisa dilengkapi foto, nama, deskripsi, harga, dan badge (cth: Best Seller, Baru, Promo — item dengan badge otomatis dijadikan unggulan di tampilan showcase). Pengunjung website bisa klik <strong>+ Tambah</strong> untuk memasukkan ke keranjang dan pesan via WhatsApp.</>
+              )}
             </p>
           </div>
           <MenuCatalogForm
@@ -1927,6 +1933,8 @@ function HeroDashboardWidgetEditor({
   widget: any;
   onChange: (widget: any) => void;
 }) {
+  const { locale } = useI18n();
+  const isEN = locale === "en";
   const isHidden = widget?.hidden === true;
   const setField = (key: string, val: any) => {
     onChange({
@@ -1944,7 +1952,7 @@ function HeroDashboardWidgetEditor({
         <div className="flex items-center gap-2">
           <BarChart2 className="w-4 h-4 text-primary shrink-0" />
           <span className="text-[11px] font-bold uppercase tracking-wider text-sidebar-foreground">
-            Widget Dashboard Hero
+            {isEN ? "Hero Dashboard Widget" : "Widget Dashboard Hero"}
           </span>
         </div>
         <button
@@ -1955,17 +1963,17 @@ function HeroDashboardWidgetEditor({
               ? "border-sidebar-border bg-sidebar-muted text-sidebar-muted-foreground hover:text-sidebar-foreground"
               : "border-primary/30 bg-primary/10 text-primary hover:bg-primary/20"
           }`}
-          title={isHidden ? "Tampilkan widget" : "Sembunyikan widget"}
+          title={isHidden ? (isEN ? "Show widget" : "Tampilkan widget") : (isEN ? "Hide widget" : "Sembunyikan widget")}
         >
           {isHidden ? (
             <>
               <EyeOff className="w-3.5 h-3.5" />
-              <span>Tersembunyi</span>
+              <span>{isEN ? "Hidden" : "Tersembunyi"}</span>
             </>
           ) : (
             <>
               <Eye className="w-3.5 h-3.5" />
-              <span>Tampil</span>
+              <span>{isEN ? "Visible" : "Tampil"}</span>
             </>
           )}
         </button>
@@ -1974,13 +1982,13 @@ function HeroDashboardWidgetEditor({
       {!isHidden && (
         <div className="space-y-3 pt-2 border-t border-border/40">
           <p className="text-[11px] text-sidebar-muted-foreground leading-relaxed">
-            Sesuaikan nama tab dan metrik dashboard ilustrasi hero. Teks juga bisa diklik dan diedit langsung di kanvas.
+            {isEN ? "Customize the tab names and metrics of the hero illustration dashboard. Text can also be clicked and edited directly on the canvas." : "Sesuaikan nama tab dan metrik dashboard ilustrasi hero. Teks juga bisa diklik dan diedit langsung di kanvas."}
           </p>
 
           {/* Tab labels */}
           <div className="space-y-1.5">
             <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground">
-              Nama Tab (Analytics, Deploy, Monitor)
+              {isEN ? "Tab Names (Analytics, Deploy, Monitor)" : "Nama Tab (Analytics, Deploy, Monitor)"}
             </label>
             <div className="grid grid-cols-3 gap-2">
               <div>
@@ -2019,7 +2027,7 @@ function HeroDashboardWidgetEditor({
           {/* Metrik Monitor */}
           <div className="space-y-1.5">
             <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground">
-              Metrik Tab Monitor (Nilai & Label)
+              {isEN ? "Monitor Tab Metrics (Value & Label)" : "Metrik Tab Monitor (Nilai & Label)"}
             </label>
             <div className="grid grid-cols-3 gap-2">
               <div className="space-y-1">
@@ -2076,7 +2084,7 @@ function HeroDashboardWidgetEditor({
           {/* Langkah Deploy */}
           <div className="space-y-1.5">
             <label className="text-[10px] uppercase tracking-wide font-semibold text-sidebar-subtle-foreground">
-              Langkah Tab Deploy
+              {isEN ? "Deploy Tab Steps" : "Langkah Tab Deploy"}
             </label>
             <div className="grid grid-cols-3 gap-2">
               <input

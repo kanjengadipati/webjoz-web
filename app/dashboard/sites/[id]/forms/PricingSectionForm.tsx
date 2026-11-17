@@ -12,14 +12,14 @@ export function PricingSectionForm({
   fieldUndoStacks,
   undoField,
 }: BaseSectionFormProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   return (
     <div className="space-y-4">
       <div className="rounded-xl border border-primary/20 bg-primary/10 px-3 py-2.5 text-[12px] leading-relaxed text-primary">
-        <p className="font-semibold text-primary">💳 Section Paket Harga & Rate Card</p>
+        <p className="font-semibold text-primary">{locale === "en" ? "💳 Pricing Plans & Rate Card Section" : "💳 Section Paket Harga & Rate Card"}</p>
         <p className="mt-1 text-primary/80">
-          Atur paket layanan, rate card kolaborasi, atau tier langganan dengan perbandingan fitur yang jelas.
+          {locale === "en" ? "Set up service packages, collaboration rate cards, or subscription tiers with a clear feature comparison." : "Atur paket layanan, rate card kolaborasi, atau tier langganan dengan perbandingan fitur yang jelas."}
         </p>
       </div>
 
@@ -37,7 +37,7 @@ export function PricingSectionForm({
         <SidebarField
           section="pricing"
           fieldKey="title"
-          label="Judul Section"
+          label={locale === "en" ? "Section Title" : "Judul Section"}
           value={content.pricing?.title || ""}
           onChange={(val) => updateField("pricing", "title", val)}
           placeholder={t("dashboard.sitesEditor.phPricingSectionTitle")}
@@ -47,7 +47,7 @@ export function PricingSectionForm({
         <SidebarField
           section="pricing"
           fieldKey="subtitle"
-          label="Subjudul (Opsional)"
+          label={locale === "en" ? "Subtitle (Optional)" : "Subjudul (Opsional)"}
           value={content.pricing?.subtitle || ""}
           onChange={(val) => updateField("pricing", "subtitle", val)}
           placeholder={t("dashboard.sitesEditor.phPricingSubtitle")}
@@ -59,7 +59,7 @@ export function PricingSectionForm({
       <div className="space-y-4 pt-2">
         <div className="flex items-center justify-between">
           <label className="text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
-            Daftar Paket
+            {locale === "en" ? "Plan List" : "Daftar Paket"}
           </label>
           <button
             type="button"
@@ -113,7 +113,7 @@ export function PricingSectionForm({
 
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">Nama Paket</label>
+                <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">{locale === "en" ? "Plan Name" : "Nama Paket"}</label>
                 <input
                   type="text"
                   value={plan.name || ""}
@@ -127,7 +127,7 @@ export function PricingSectionForm({
                 />
               </div>
               <div>
-                <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">Badge (cth. Terpopuler)</label>
+                <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">{locale === "en" ? "Badge (e.g. Most Popular)" : "Badge (cth. Terpopuler)"}</label>
                 <input
                   type="text"
                   value={plan.badge || ""}
@@ -144,7 +144,7 @@ export function PricingSectionForm({
 
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">Harga</label>
+                <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">{locale === "en" ? "Price" : "Harga"}</label>
                 <input
                   type="text"
                   value={plan.price || ""}
@@ -158,7 +158,7 @@ export function PricingSectionForm({
                 />
               </div>
               <div>
-                <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">Periode / Satuan</label>
+                <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">{locale === "en" ? "Period / Unit" : "Periode / Satuan"}</label>
                 <input
                   type="text"
                   value={plan.period || ""}
@@ -174,7 +174,7 @@ export function PricingSectionForm({
             </div>
 
             <div>
-              <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">Deskripsi Singkat</label>
+              <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">{locale === "en" ? "Short Description" : "Deskripsi Singkat"}</label>
               <input
                 type="text"
                 value={plan.description || ""}
@@ -191,7 +191,7 @@ export function PricingSectionForm({
             {/* Features list */}
             <div className="space-y-1.5">
               <label className="text-[10px] text-sidebar-muted-foreground block">
-                Daftar Fitur / Fasilitas (1 baris per fitur)
+                {locale === "en" ? "Feature / Facility List (one per line)" : "Daftar Fitur / Fasilitas (1 baris per fitur)"}
               </label>
               <textarea
                 rows={3}
@@ -202,14 +202,14 @@ export function PricingSectionForm({
                   plans[idx] = { ...plans[idx], features: lines };
                   updateField("pricing", "plans", plans);
                 }}
-                placeholder="1 Video TikTok/Reels&#10;Termasuk Hak Cipta 3 Bulan&#10;2x Revisi Video"
+                placeholder={locale === "en" ? "1 TikTok/Reels Video&#10;Includes 3 Months Copyright&#10;2 Video Revisions" : "1 Video TikTok/Reels&#10;Termasuk Hak Cipta 3 Bulan&#10;2x Revisi Video"}
                 className="w-full px-2.5 py-1.5 border border-border rounded-md text-[12px] outline-none focus:border-primary/60 bg-transparent text-sidebar-foreground resize-none font-mono"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">Teks Tombol CTA</label>
+                <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">{locale === "en" ? "CTA Button Text" : "Teks Tombol CTA"}</label>
                 <input
                   type="text"
                   value={plan.cta_text || ""}
@@ -223,7 +223,7 @@ export function PricingSectionForm({
                 />
               </div>
               <div>
-                <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">URL Tombol CTA</label>
+                <label className="text-[10px] text-sidebar-muted-foreground mb-0.5 block">{locale === "en" ? "CTA Button URL" : "URL Tombol CTA"}</label>
                 <input
                   type="text"
                   value={plan.cta_url || ""}
