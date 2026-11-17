@@ -139,12 +139,12 @@ export default function CongratsModal({
               {copied ? (
                 <>
                   <Check className="w-3.5 h-3.5 text-white" />
-                  <span className="text-[11px] font-sans">Tersalin</span>
+                  <span className="text-[11px] font-sans">{t("dashboard.sites.copied")}</span>
                 </>
               ) : (
                 <>
                   <Copy className="w-3.5 h-3.5 text-zinc-400" />
-                  <span className="text-[11px] font-sans">Salin</span>
+                  <span className="text-[11px] font-sans">{t("dashboard.sites.copy")}</span>
                 </>
               )}
             </button>

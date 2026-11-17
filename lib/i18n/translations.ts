@@ -699,6 +699,8 @@ export interface Translations {
       congratsClose: string;
       openWebsite: string;
       copyLinkTitle: string;
+      copied: string;
+      copy: string;
       checkTip: string;
       done: string;
       continueEditing: string;
@@ -4671,6 +4673,8 @@ export const translations: Record<Locale, Translations> = {
         congratsClose: "Tutup",
         openWebsite: "Buka Website",
         copyLinkTitle: "Salin Link",
+        copied: "Tersalin",
+        copy: "Salin",
         checkTip:
           "💡 Ingin mengecek? Klik link di atas untuk membuka website live Anda di tab baru.",
         done: "Selesai",
@@ -9163,6 +9167,8 @@ export const translations: Record<Locale, Translations> = {
         congratsClose: "Close",
         openWebsite: "Open Website",
         copyLinkTitle: "Copy Link",
+        copied: "Copied",
+        copy: "Copy",
         checkTip:
           "💡 Want to check? Click the link above to open your live website in a new tab.",
         done: "Done",
