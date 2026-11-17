@@ -44,8 +44,12 @@ export default function HeroProfileCutout({
         background: h.background_color || "var(--dt-bg)",
         overflow: "visible",
         minHeight: "88vh",
+        // Kompensasi header transparent-overlay yang sticky (H=88px).
+        // Header memakai marginBottom:-H sehingga tidak memakan ruang layout,
+        // akibatnya konten hero tanpa padding-top akan tertimpa header.
+        paddingTop: "calc(88px + 2rem)",
       }}
-      className="flex flex-col justify-center py-12 sm:py-16 lg:py-20"
+      className="flex flex-col justify-center pb-12 sm:pb-16 lg:pb-20"
     >
       {/* Subtle ambient glow behind the portrait figure */}
       <div
