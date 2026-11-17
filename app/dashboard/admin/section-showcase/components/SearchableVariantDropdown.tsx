@@ -126,7 +126,7 @@ export function SearchableVariantDropdown({
             ? "bg-background border-primary shadow-xs text-foreground ring-1 ring-primary/40"
             : "bg-muted/40 hover:bg-muted/70 border-border/70 text-foreground"
         }`}
-        title="Buka pilihan varian dan cari dengan cepat"
+        title={isEN ? "Open variant options and search quickly" : "Buka pilihan varian dan cari dengan cepat"}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
       >

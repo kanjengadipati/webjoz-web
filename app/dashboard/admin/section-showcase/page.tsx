@@ -178,7 +178,7 @@ export default function SectionShowcasePage() {
       const critiqueKey = `${sectionKey}:${variantValue}`;
       if (!authToken) {
         if (!silent) pushToast(t("dashboard.toast.tokenRequired"), "error");
-        return { ok: false, error: "Token tidak tersedia" };
+        return { ok: false, error: locale === "en" ? "Token not available" : "Token tidak tersedia" };
       }
       setCritiquingVariant({ key: critiqueKey, method: "dom" });
       try {

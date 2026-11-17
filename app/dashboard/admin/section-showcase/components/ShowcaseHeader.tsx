@@ -2,6 +2,7 @@
 
 import React from "react";
 import { SparkleIcon } from "@/components/sparkle-icon";
+import { useI18n } from "@/lib/i18n/context";
 import {
   Monitor,
   Tablet,
@@ -47,6 +48,8 @@ export function ShowcaseHeader({
   onChangeCardStyle,
   availableVariantsCount,
 }: ShowcaseHeaderProps) {
+  const { locale } = useI18n();
+  const isEN = locale === "en";
   return (
     <header className="sticky top-0 z-40 bg-card/90 backdrop-blur-md border-b border-border/80 px-4 lg:px-6 py-2.5">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -182,7 +185,7 @@ export function ShowcaseHeader({
                   ? "bg-amber-500/15 border-amber-500/40 text-amber-600 dark:text-amber-400 font-semibold"
                   : "bg-muted/40 border-border/60 text-muted-foreground hover:text-foreground"
               }`}
-              title="Preview dengan data kosong"
+              title={isEN ? "Preview with empty data" : "Preview dengan data kosong"}
             >
               <AlertTriangle className="size-3" />
               <span>Zero-state</span>

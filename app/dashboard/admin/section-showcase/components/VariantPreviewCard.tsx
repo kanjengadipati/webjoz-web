@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useRef } from "react";
 import { SparkleIcon } from "@/components/sparkle-icon";
+import { useI18n } from "@/lib/i18n/context";
 import {
   Copy,
   Check,
@@ -58,6 +59,8 @@ export function VariantPreviewCard({
   onCritique,
   onCritiqueServer,
 }: VariantPreviewCardProps) {
+  const { locale } = useI18n();
+  const isEN = locale === "en";
   const previewCardRef = useRef<HTMLDivElement>(null);
   const [showCritiqueModal, setShowCritiqueModal] = useState<boolean>(false);
 
@@ -195,7 +198,7 @@ export function VariantPreviewCard({
                 ? "text-destructive bg-destructive/10 hover:bg-destructive/20"
                 : "text-muted-foreground hover:text-foreground hover:bg-muted"
             }`}
-            title={isHidden ? "Tampilkan kembali varian" : "Sembunyikan varian dari AI & Editor"}
+            title={isHidden ? (isEN ? "Show variant again" : "Tampilkan kembali varian") : (isEN ? "Hide variant from AI & Editor" : "Sembunyikan varian dari AI & Editor")}
           >
             {isHidden ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
           </button>

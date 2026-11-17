@@ -419,7 +419,7 @@ export default function AdminPromosPage() {
             <Input
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
-              placeholder="Diskon Welcome 20%"
+              placeholder={locale === "en" ? "Welcome Discount 20%" : "Diskon Welcome 20%"}
             />
           </FormField>
 

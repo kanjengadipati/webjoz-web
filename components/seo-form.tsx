@@ -9,6 +9,7 @@ import { AiFieldButton } from "@/components/menu-catalog-form";
 import FileUpload from "@/components/file-upload";
 import { GoogleSnippetPreview } from "@/components/google-snippet-preview";
 import { request } from "@/lib/api/client";
+import { useI18n } from "@/lib/i18n/context";
 
 // ─── generateFieldText ────────────────────────────────────────────────────────
 // Calls AI regenerate-section and plucks back the specific field value.
@@ -50,6 +51,8 @@ interface KeywordsInputProps {
 export function KeywordsInput({
   keywords, onChange, aiLoading, onAiGenerate, isPremium, onUpgradeRequired, renderFieldActions,
 }: KeywordsInputProps) {
+  const { locale } = useI18n();
+  const isEN = locale === "en";
   const [input, setInput] = useState("");
 
   const addKeyword = (kw: string) => {
@@ -77,7 +80,7 @@ export function KeywordsInput({
             <AiFieldButton
               loading={!!aiLoading}
               onGenerate={onAiGenerate}
-              title="AI: generate keywords"
+              title={isEN ? "AI: generate keywords" : "AI: buat keyword"}
               onUpgradeRequired={onUpgradeRequired}
               isPremium={isPremium}
             />
@@ -86,7 +89,7 @@ export function KeywordsInput({
           <AiFieldButton
             loading={!!aiLoading}
             onGenerate={onAiGenerate}
-            title="AI: generate keywords"
+            title={isEN ? "AI: generate keywords" : "AI: buat keyword"}
             onUpgradeRequired={onUpgradeRequired}
             isPremium={isPremium}
           />
@@ -107,7 +110,7 @@ export function KeywordsInput({
           type="text" value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={keywords.length === 0 ? "Ketik keyword lalu Enter..." : "Tambah keyword..."}
+          placeholder={keywords.length === 0 ? (isEN ? "Type a keyword then press Enter..." : "Ketik keyword lalu Enter...") : (isEN ? "Add keyword..." : "Tambah keyword...")}
           className="flex-1 min-w-[120px] bg-transparent outline-none text-[12px] text-slate-200 placeholder-slate-600"
         />
       </div>
@@ -128,6 +131,8 @@ interface SeoPreviewProps {
 }
 
 export function SeoPreview({ seo, subdomain = "namabisnis.webjoz.com" }: SeoPreviewProps) {
+  const { locale } = useI18n();
+  const isEN = locale === "en";
   const [tab, setTab] = useState<PreviewTab>("google");
 
   const title    = seo?.title       || "";
@@ -179,12 +184,12 @@ export function SeoPreview({ seo, subdomain = "namabisnis.webjoz.com" }: SeoPrev
             <p className={`text-[16px] font-medium leading-snug hover:underline cursor-pointer ${
               title ? "text-[#8ab4f8]" : "text-slate-600 italic"
             }`}>
-              {title || "Judul SEO belum diisi"}
+              {title || (isEN ? "SEO title is empty" : "Judul SEO belum diisi")}
             </p>
             <p className={`text-[13px] leading-relaxed line-clamp-2 ${
               desc ? "text-[#bdc1c6]" : "text-slate-600 italic"
             }`}>
-              {desc || "Deskripsi SEO belum diisi"}
+              {desc || (isEN ? "SEO description is empty" : "Deskripsi SEO belum diisi")}
             </p>
           </div>
           {/* Char counters */}
@@ -221,10 +226,10 @@ export function SeoPreview({ seo, subdomain = "namabisnis.webjoz.com" }: SeoPrev
                 <p className="text-[9px] text-slate-500 truncate uppercase tracking-wide">{subdomain}</p>
                 <p className={`text-[12px] font-semibold leading-snug line-clamp-2 ${
                   title ? "text-slate-100" : "text-slate-600 italic"
-                }`}>{title || "Judul belum diisi"}</p>
+                }`}>{title || (isEN ? "Title is empty" : "Judul belum diisi")}</p>
                 <p className={`text-[10px] line-clamp-2 leading-tight ${
                   desc ? "text-slate-400" : "text-slate-600 italic"
-                }`}>{desc || "Deskripsi belum diisi"}</p>
+                }`}>{desc || (isEN ? "Description is empty" : "Deskripsi belum diisi")}</p>
               </div>
             </div>
           </div>
@@ -240,7 +245,7 @@ export function SeoPreview({ seo, subdomain = "namabisnis.webjoz.com" }: SeoPrev
               ) : (
                 <div className="w-full h-full flex flex-col items-center justify-center gap-1.5">
                   <span className="text-3xl opacity-20">🖼️</span>
-                  <p className="text-[10px] text-slate-600 italic">Upload OG Image (1200×630)</p>
+                  <p className="text-[10px] text-slate-600 italic">{isEN ? "Upload OG Image (1200×630)" : "Unggah OG Image (1200×630)"}</p>
                 </div>
               )}
             </div>
@@ -248,10 +253,10 @@ export function SeoPreview({ seo, subdomain = "namabisnis.webjoz.com" }: SeoPrev
               <p className="text-[9px] uppercase tracking-widest text-slate-500">{subdomain}</p>
               <p className={`text-[12px] font-bold leading-snug line-clamp-2 ${
                 title ? "text-slate-100" : "text-slate-600 italic"
-              }`}>{title || "Judul belum diisi"}</p>
+              }`}>{title || (isEN ? "Title is empty" : "Judul belum diisi")}</p>
               <p className={`text-[10px] line-clamp-2 leading-snug ${
                 desc ? "text-slate-400" : "text-slate-600 italic"
-              }`}>{desc || "Deskripsi belum diisi"}</p>
+              }`}>{desc || (isEN ? "Description is empty" : "Deskripsi belum diisi")}</p>
             </div>
           </div>
 
@@ -273,13 +278,13 @@ export function SeoPreview({ seo, subdomain = "namabisnis.webjoz.com" }: SeoPrev
               <div className="absolute bottom-0 left-0 right-0 px-3 py-1.5 bg-black/65 backdrop-blur-sm">
                 <p className={`text-[12px] font-semibold leading-tight truncate ${
                   title ? "text-white" : "text-slate-500 italic"
-                }`}>{title || "Judul belum diisi"}</p>
+                }`}>{title || (isEN ? "Title is empty" : "Judul belum diisi")}</p>
                 <p className="text-[10px] text-slate-400 truncate">{subdomain}</p>
               </div>
             </div>
           </div>
 
-          <p className="text-[10px] text-slate-600 text-center">Preview diperbarui otomatis saat Anda mengisi Title, Deskripsi, &amp; OG Image.</p>
+          <p className="text-[10px] text-slate-600 text-center">{isEN ? "Preview updates automatically as you fill in Title, Description, & OG Image." : "Preview diperbarui otomatis saat Anda mengisi Title, Deskripsi, & OG Image."}</p>
         </div>
       )}
     </div>
@@ -310,6 +315,8 @@ export function SeoForm({
   seo, updateField, isPremium, onUpgradeRequired, aiLoadingField, onAiText, subdomain,
   gscVerification, onGscSave, fieldUndoStacks, undoField,
 }: SeoFormProps) {
+  const { locale } = useI18n();
+  const isEN = locale === "en";
   const titleLen = (seo?.title?.length || 0);
   const descLen  = (seo?.description?.length || 0);
   const [gscInput, setGscInput]     = useState(gscVerification || "");
@@ -345,7 +352,7 @@ export function SeoForm({
             type="button"
             onClick={() => undoField?.("seo", key)}
             className="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-md bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition-all cursor-pointer focus:outline-none"
-            title={`Undo perubahan field ini (${stack.length} kali)`}
+            title={isEN ? `Undo changes to this field (${stack.length} times)` : `Undo perubahan field ini (${stack.length} kali)`}
           >
             <RotateCcw className="w-3.5 h-3.5" />
           </button>
@@ -360,7 +367,7 @@ export function SeoForm({
 
       {/* Info banner */}
       <div className="rounded-lg border border-cyan-400/20 bg-cyan-400/10 px-3 py-2.5 text-[12px] leading-relaxed text-cyan-100">
-        <p className="font-semibold text-cyan-50">SEO tidak tampil di halaman publik — hanya dibaca mesin pencari &amp; saat link dibagikan.</p>
+        <p className="font-semibold text-cyan-50">{isEN ? "SEO is not shown on the public page — it is only read by search engines and when the link is shared." : "SEO tidak tampil di halaman publik — hanya dibaca mesin pencari & saat link dibagikan."}</p>
       </div>
 
       {/* Meta Title */}
@@ -371,7 +378,7 @@ export function SeoForm({
           label="Meta Title"
           value={seo?.title || ""}
           onChange={(val) => updateField("seo", "title", val)}
-          placeholder="cth. Toko Bangunan Maju — Bahan Bangunan Berkualitas di Surabaya"
+          placeholder={isEN ? "e.g. Maju Building Store — Quality Building Materials in Surabaya" : "cth. Toko Bangunan Maju — Bahan Bangunan Berkualitas di Surabaya"}
           undoCount={fieldUndoStacks?.["seo.title"]?.length ?? fieldUndoStacks?.["title"]?.length}
           onUndo={() => undoField?.("seo", "title")}
         />
@@ -390,7 +397,7 @@ export function SeoForm({
           label="Meta Description"
           value={seo?.description || ""}
           onChange={(val) => updateField("seo", "description", val)}
-          placeholder="cth. Dapatkan bahan bangunan terlengkap dan terpercaya di Surabaya. Harga grosir, pengiriman cepat."
+          placeholder={isEN ? "e.g. Get the most complete and trusted building materials in Surabaya. Wholesale prices, fast delivery." : "cth. Dapatkan bahan bangunan terlengkap dan terpercaya di Surabaya. Harga grosir, pengiriman cepat."}
           undoCount={fieldUndoStacks?.["seo.description"]?.length ?? fieldUndoStacks?.["description"]?.length}
           onUndo={() => undoField?.("seo", "description")}
         />
@@ -405,7 +412,7 @@ export function SeoForm({
           keywords={seo?.keywords || []}
           onChange={(kws) => updateField("seo", "keywords", kws)}
           aiLoading={aiLoadingField === "seo.keywords"}
-          onAiGenerate={onAiText && isPremium ? () => onAiText("keywords", "Generate 3-8 keyword SEO yang relevan untuk bisnis ini, fokus pada produk, layanan, dan lokasi.", "Keywords SEO") : undefined}
+          onAiGenerate={onAiText && isPremium ? () => onAiText("keywords", isEN ? "Generate 3-8 relevant SEO keywords for this business, focusing on products, services, and location." : "Generate 3-8 keyword SEO yang relevan untuk bisnis ini, fokus pada produk, layanan, dan lokasi.", "Keywords SEO") : undefined}
           isPremium={isPremium} onUpgradeRequired={onUpgradeRequired}
           renderFieldActions={renderFieldActions}
         />
@@ -506,9 +513,9 @@ export function SeoForm({
           >
             <div className="flex items-center gap-2 text-amber-400 font-semibold mb-1">
               <Lock className="w-3 h-3" />
-              Kustomisasi robots.txt untuk situs Anda
+              {isEN ? "Customize robots.txt for your site" : "Kustomisasi robots.txt untuk situs Anda"}
             </div>
-            <p>Kontrol halaman mana yang di-index Google, blok AI crawler, dan atur sitemap rules.</p>
+            <p>{isEN ? "Control which pages Google indexes, block AI crawlers, and set sitemap rules." : "Kontrol halaman mana yang di-index Google, blok AI crawler, dan atur sitemap rules."}</p>
           </div>
         )}
       </div>
@@ -529,7 +536,7 @@ export function SeoForm({
         label="OG Site Name"
         value={seo?.og_site_name || ""}
         onChange={(val) => updateField("seo", "og_site_name", val)}
-        placeholder="Nama bisnis"
+        placeholder={isEN ? "Business name" : "Nama bisnis"}
         undoCount={fieldUndoStacks?.["seo.og_site_name"]?.length ?? fieldUndoStacks?.["og_site_name"]?.length}
         onUndo={() => undoField?.("seo", "og_site_name")}
       />
@@ -551,16 +558,16 @@ export function SeoForm({
         <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-2.5 text-[12px] leading-relaxed">
           <div className="flex items-center gap-2 font-semibold text-emerald-400">
             <CheckCircle className="w-4 h-4" />
-            SEO Booster Aktif
+            {isEN ? "SEO Booster Active" : "SEO Booster Aktif"}
           </div>
           <p className="mt-1 text-emerald-200/80">
-            Structured data rich snippet otomatis dipasang di situs Anda. Google akan menampilkan rating, harga, dan informasi bisnis langsung di hasil pencarian.
+            {isEN ? "Structured data rich snippets are automatically installed on your site. Google will show ratings, prices, and business info directly in search results." : "Structured data rich snippet otomatis dipasang di situs Anda. Google akan menampilkan rating, harga, dan informasi bisnis langsung di hasil pencarian."}
           </p>
         </div>
       ) : (() => {
-        const siteTitle = seo?.title || "Nama Bisnis — Layanan";
-        const siteDesc = seo?.description || "Deskripsi singkat bisnis dan layanan.";
-        const siteName = siteTitle.split(/[-—|]/)[0].trim() || "Nama Bisnis";
+        const siteTitle = seo?.title || (isEN ? "Business Name — Services" : "Nama Bisnis — Layanan");
+        const siteDesc = seo?.description || (isEN ? "Brief description of the business and services." : "Deskripsi singkat bisnis dan layanan.");
+        const siteName = siteTitle.split(/[-—|]/)[0].trim() || (isEN ? "Business Name" : "Nama Bisnis");
         const cleanSubdomain = (subdomain || "namabisnis.webjoz.com").split(".")[0] || "namabisnis";
 
         const demoBusiness = {
@@ -588,7 +595,7 @@ export function SeoForm({
 
             <div className="grid grid-cols-2 gap-4 p-5">
               <div>
-                <p className="text-xs font-bold text-slate-500 mb-2">TANPA SEO BOOSTER</p>
+                <p className="text-xs font-bold text-slate-500 mb-2">{isEN ? "WITHOUT SEO BOOSTER" : "TANPA SEO BOOSTER"}</p>
                 <div className="opacity-60 grayscale-[30%]">
                   <GoogleSnippetPreview variant="plain" business={demoBusiness} />
                 </div>
@@ -597,14 +604,14 @@ export function SeoForm({
                 <div className="absolute -top-2 -right-2 bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
                   ✨ Rich Result
                 </div>
-                <p className="text-xs font-bold text-emerald-400 mb-2">DENGAN SEO BOOSTER</p>
+                <p className="text-xs font-bold text-emerald-400 mb-2">{isEN ? "WITH SEO BOOSTER" : "DENGAN SEO BOOSTER"}</p>
                 <GoogleSnippetPreview variant="rich" business={demoBusiness} />
               </div>
             </div>
 
             <div className="px-5 pb-5">
               <p className="text-xs text-amber-200/70 text-center mb-2">
-                Kompetitor Anda mungkin sudah tampil seperti contoh kanan di pencarian Google.
+                {isEN ? "Your competitors may already appear like the right example in Google search." : "Kompetitor Anda mungkin sudah tampil seperti contoh kanan di pencarian Google."}
               </p>
               <button
                 type="button"
@@ -612,7 +619,7 @@ export function SeoForm({
                 className="w-full bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Lock className="w-3.5 h-3.5" />
-                🔓 Upgrade ke Pro — Tampil Lebih Menonjol di Google
+                {isEN ? "🔓 Upgrade to Pro — Stand Out More on Google" : "🔓 Upgrade ke Pro — Tampil Lebih Menonjol di Google"}
               </button>
             </div>
           </div>
@@ -635,7 +642,7 @@ export function SeoForm({
               </div>
               <div>
                 <p className="text-[13px] font-bold text-slate-100">Google Search Console</p>
-                <p className="text-[11px] text-slate-500">Verifikasi kepemilikan domain Anda di GSC</p>
+                <p className="text-[11px] text-slate-500">{isEN ? "Verify your domain ownership in GSC" : "Verifikasi kepemilikan domain Anda di GSC"}</p>
               </div>
             </div>
             {!isPremium && (
@@ -645,13 +652,13 @@ export function SeoForm({
 
           {/* How-to steps */}
           <div className="rounded-lg bg-muted/40 border border-white/5 px-3 py-2.5 space-y-1.5 text-[11px] text-slate-400">
-            <p className="font-semibold text-slate-300">Cara mendapatkan kode verifikasi:</p>
+            <p className="font-semibold text-slate-300">{isEN ? "How to get the verification code:" : "Cara mendapatkan kode verifikasi:"}</p>
             <ol className="space-y-1 list-decimal list-inside">
-              <li>Buka <a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Google Search Console</a></li>
-              <li>Klik <strong className="text-slate-200">Tambah properti</strong> → pilih <strong className="text-slate-200">Awalan URL</strong></li>
-              <li>Masukkan URL website Anda, lalu pilih metode <strong className="text-slate-200">Tag HTML</strong></li>
-              <li>Salin nilai <code className="bg-white/5 px-1 rounded text-slate-300">content</code> dari meta tag yang diberikan</li>
-              <li>Tempel di field di bawah, lalu klik Simpan &amp; Verifikasi</li>
+              <li>{isEN ? "Open" : "Buka"} <a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Google Search Console</a></li>
+              <li>{isEN ? <>Click <strong className="text-slate-200">Add property</strong> → select <strong className="text-slate-200">URL prefix</strong></> : <>Klik <strong className="text-slate-200">Tambah properti</strong> → pilih <strong className="text-slate-200">Awalan URL</strong></>}</li>
+              <li>{isEN ? <>Enter your website URL, then choose the <strong className="text-slate-200">HTML tag</strong> method</> : <>Masukkan URL website Anda, lalu pilih metode <strong className="text-slate-200">Tag HTML</strong></>}</li>
+              <li>{isEN ? <>Copy the <code className="bg-white/5 px-1 rounded text-slate-300">content</code> value from the provided meta tag</> : <>Salin nilai <code className="bg-white/5 px-1 rounded text-slate-300">content</code> dari meta tag yang diberikan</>}</li>
+              <li>{isEN ? "Paste it in the field below, then click Save & Verify" : "Tempel di field di bawah, lalu klik Simpan & Verifikasi"}</li>
             </ol>
           </div>
 
@@ -668,7 +675,7 @@ export function SeoForm({
               type="text"
               value={gscInput}
               onChange={(e) => setGscInput(e.target.value)}
-              placeholder="Tempel kode verifikasi di sini..."
+              placeholder={isEN ? "Paste the verification code here..." : "Tempel kode verifikasi di sini..."}
               className="flex-1 px-2.5 py-1.5 border border-white/10 rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600"
             />
             <button
@@ -681,11 +688,11 @@ export function SeoForm({
               className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-[12px] font-semibold hover:bg-primary/90 disabled:opacity-50 transition-colors"
             >
               {gscSaving ? (
-                <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Menyimpan...</>
+                <><Loader2 className="w-3.5 h-3.5 animate-spin" /> {isEN ? "Saving..." : "Menyimpan..."}</>
               ) : gscSaved ? (
-                <><Check className="w-3.5 h-3.5" /> Tersimpan</>
+                <><Check className="w-3.5 h-3.5" /> {isEN ? "Saved" : "Tersimpan"}</>
               ) : (
-                "Simpan & Verifikasi"
+                isEN ? "Save & Verify" : "Simpan & Verifikasi"
               )}
             </button>
           </div>

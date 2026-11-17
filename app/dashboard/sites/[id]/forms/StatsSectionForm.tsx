@@ -48,7 +48,7 @@ export function StatsSectionForm({
         <SidebarField
           section="stats"
           fieldKey="subtitle"
-          label="Subjudul (Opsional)"
+          label={locale === "en" ? "Subtitle (Optional)" : "Subjudul (Opsional)"}
           value={content.stats?.subtitle || ""}
           onChange={(val) => updateField("stats", "subtitle", val)}
           placeholder={t("dashboard.sitesEditor.phStatsSubtitle")}

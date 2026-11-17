@@ -1241,7 +1241,7 @@ function FontSourceToggle({
 }
 
 function AddPairingForm({ onAdd, onCancel }: { onAdd: (p: TypographyPairing) => void; onCancel: () => void }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [form, setForm] = useState({ ...EMPTY_PAIRING });
   const [headingMode, setHeadingMode] = useState<"google" | "custom">("google");
   const [bodyMode, setBodyMode] = useState<"google" | "custom">("google");
@@ -1274,11 +1274,11 @@ function AddPairingForm({ onAdd, onCancel }: { onAdd: (p: TypographyPairing) => 
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1">
             <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.name")}</label>
-            <Input value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="cth. Startup Bold" className="h-8 text-xs" />
+            <Input value={form.name} onChange={(e) => set("name", e.target.value)} placeholder={locale === "en" ? "e.g. Startup Bold" : "cth. Startup Bold"} className="h-8 text-xs" />
           </div>
           <div className="space-y-1">
             <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.description")}</label>
-            <Input value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="Singkat, 1 kalimat" className="h-8 text-xs" />
+            <Input value={form.description} onChange={(e) => set("description", e.target.value)} placeholder={locale === "en" ? "Short, 1 sentence" : "Singkat, 1 kalimat"} className="h-8 text-xs" />
           </div>
 
           {/* ── Heading Font ── */}
@@ -1491,7 +1491,7 @@ function PairingsTab({
 const EMPTY_PATTERN_PALETTE = { primary: "#4F46E5", accent: "#7C3AED", background: "#F8FAFC", surface: "#FFFFFF", text: "#0F172A" };
 
 function AddPatternForm({ onAdd, onCancel }: { onAdd: (p: ColorPattern) => void; onCancel: () => void }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [themeMode, setThemeMode] = useState<"light" | "dark">("light");
@@ -1510,11 +1510,11 @@ function AddPatternForm({ onAdd, onCancel }: { onAdd: (p: ColorPattern) => void;
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1">
             <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.name")}</label>
-            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="cth. Laut Biru" className="h-8 text-xs" />
+            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={locale === "en" ? "e.g. Ocean Blue" : "cth. Laut Biru"} className="h-8 text-xs" />
           </div>
           <div className="space-y-1">
             <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.description")}</label>
-            <Input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Singkat, 1 kalimat" className="h-8 text-xs" />
+            <Input value={description} onChange={(e) => setDescription(e.target.value)} placeholder={locale === "en" ? "Short, 1 sentence" : "Singkat, 1 kalimat"} className="h-8 text-xs" />
           </div>
         </div>
         <div className="grid gap-2 sm:grid-cols-5">
@@ -1684,7 +1684,7 @@ function AddPresetForm({
   enabledPairingIds: string[];
   enabledPatternIds: string[];
 }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [icon, setIcon] = useState("💼");
@@ -1703,11 +1703,11 @@ function AddPresetForm({
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1">
             <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.name")}</label>
-            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="cth. Apotek Modern" className="h-8 text-xs" />
+            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={locale === "en" ? "e.g. Modern Pharmacy" : "cth. Apotek Modern"} className="h-8 text-xs" />
           </div>
           <div className="space-y-1">
             <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.description")}</label>
-            <Input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Singkat, 1 kalimat" className="h-8 text-xs" />
+            <Input value={description} onChange={(e) => setDescription(e.target.value)} placeholder={locale === "en" ? "Short, 1 sentence" : "Singkat, 1 kalimat"} className="h-8 text-xs" />
           </div>
           <div className="space-y-1">
             <label className="text-[10px] font-semibold uppercase text-muted-foreground">{t("dashboard.adminDesignAssets.emojiIcon")}</label>

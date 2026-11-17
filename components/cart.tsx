@@ -335,6 +335,8 @@ export function AddToCartButton({
   className, style, variant = "dynamic", disabled = false, variant_groups,
 }: AddToCartButtonProps) {
   const { items, add, increment, decrement } = useCart();
+  const { language } = useSitePayments();
+  const isEN = language === "en";
   const [selectorOpen, setSelectorOpen] = useState(false);
 
   const hasVariants = Boolean(variant_groups && variant_groups.length > 0);
@@ -359,10 +361,10 @@ export function AddToCartButton({
         disabled
         className={`${className ?? ""} opacity-50 cursor-not-allowed`}
         style={style}
-        aria-label={`${itemName} tidak tersedia`}
-        title="Item tidak tersedia"
+        aria-label={`${itemName} ${isEN ? "unavailable" : "tidak tersedia"}`}
+        title={isEN ? "Item unavailable" : "Item tidak tersedia"}
       >
-        <span>Habis</span>
+        <span>{isEN ? "Out of stock" : "Habis"}</span>
       </button>
     );
   }
@@ -376,10 +378,10 @@ export function AddToCartButton({
           onClick={() => setSelectorOpen(true)}
           className={className ?? ""}
           style={style}
-          aria-label={`Pilih opsi untuk ${itemName}`}
+          aria-label={`${isEN ? "Choose options for" : "Pilih opsi untuk"} ${itemName}`}
         >
           <Plus className="w-3.5 h-3.5" />
-          <span>{totalItemQty > 0 ? `Pilih Opsi (${totalItemQty})` : "Pilih Opsi"}</span>
+          <span>{totalItemQty > 0 ? `${isEN ? "Choose Options" : "Pilih Opsi"} (${totalItemQty})` : (isEN ? "Choose Options" : "Pilih Opsi")}</span>
         </button>
         {selectorOpen && (
           <VariantSelectorModal
@@ -419,22 +421,22 @@ export function AddToCartButton({
         })}
         className={className ?? ""}
         style={style}
-        aria-label={`Tambah ${itemName} ke keranjang`}
+        aria-label={`${isEN ? "Add" : "Tambah"} ${itemName} ${isEN ? "to cart" : "ke keranjang"}`}
       >
         <Plus className="w-3.5 h-3.5" />
-        <span>Tambah</span>
+        <span>{isEN ? "Add" : "Tambah"}</span>
       </button>
     );
   }
 
   return (
-    <div className={`${className ?? "w-full flex items-center rounded-xl"} !justify-between !gap-0 !px-0`} role="group" aria-label={`Jumlah ${itemName}`} style={style}>
+    <div className={`${className ?? "w-full flex items-center rounded-xl"} !justify-between !gap-0 !px-0`} role="group" aria-label={`${isEN ? "Quantity" : "Jumlah"} ${itemName}`} style={style}>
       <button
         type="button"
         onClick={() => decrement(itemId)}
         className="flex-shrink-0 w-10 h-full flex items-center justify-center cursor-pointer transition-all hover:opacity-80 active:scale-90 focus:outline-none"
         style={{ color: style?.color ?? "inherit" }}
-        aria-label="Kurangi"
+        aria-label={isEN ? "Decrease" : "Kurangi"}
       >
         <Minus className="w-4 h-4" />
       </button>
@@ -447,7 +449,7 @@ export function AddToCartButton({
         onClick={() => increment(itemId)}
         className="flex-shrink-0 w-10 h-full flex items-center justify-center cursor-pointer transition-all hover:opacity-80 active:scale-90 focus:outline-none"
         style={{ color: style?.color ?? "inherit" }}
-        aria-label="Tambah"
+        aria-label={isEN ? "Increase" : "Tambah"}
       >
         <Plus className="w-4 h-4" />
       </button>
@@ -477,6 +479,8 @@ export function VariantSelectorModal({
   variant_groups, onClose,
 }: VariantSelectorModalProps) {
   const { add, primaryColor, primaryFg } = useCart();
+  const { language } = useSitePayments();
+  const isEN = language === "en";
   const [qty, setQty] = useState(1);
 
   // Initialize selected options map: groupId -> optionId[]
@@ -587,7 +591,7 @@ export function VariantSelectorModal({
       onClick={onClose}
       role="dialog"
       aria-modal
-      aria-label={`Pilih varian ${itemName}`}
+      aria-label={`${isEN ? "Choose variants for" : "Pilih varian"} ${itemName}`}
     >
       <div
         className="w-full max-w-md max-h-[85vh] flex flex-col rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150"
@@ -618,7 +622,7 @@ export function VariantSelectorModal({
             type="button"
             onClick={onClose}
             className="p-1 rounded-full hover:opacity-70 cursor-pointer transition-opacity"
-            aria-label="Tutup"
+            aria-label={isEN ? "Close" : "Tutup"}
           >
             <X className="w-4 h-4" />
           </button>
@@ -631,15 +635,15 @@ export function VariantSelectorModal({
             const bounds = variantGroupBounds(grp);
             let hint: string;
             if (grp.type === "single") {
-              hint = bounds.min >= 1 ? "Pilih 1 (Wajib)" : "Pilih 1 (Opsional)";
+              hint = bounds.min >= 1 ? (isEN ? "Select 1 (Required)" : "Pilih 1 (Wajib)") : (isEN ? "Select 1 (Optional)" : "Pilih 1 (Opsional)");
             } else if (bounds.min >= 1 && bounds.max < grp.options.length) {
-              hint = `Pilih ${bounds.min}–${bounds.max}`;
+              hint = isEN ? `Select ${bounds.min}–${bounds.max}` : `Pilih ${bounds.min}–${bounds.max}`;
             } else if (bounds.min >= 1) {
-              hint = `Pilih min. ${bounds.min}`;
+              hint = isEN ? `Select min. ${bounds.min}` : `Pilih min. ${bounds.min}`;
             } else if (bounds.max < grp.options.length) {
-              hint = `Maks. ${bounds.max}`;
+              hint = isEN ? `Max. ${bounds.max}` : `Maks. ${bounds.max}`;
             } else {
-              hint = "Boleh Pilih Banyak";
+              hint = isEN ? "Multiple Selection Allowed" : "Boleh Pilih Banyak";
             }
             return (
               <div key={grp.id} className="space-y-2">
@@ -681,7 +685,7 @@ export function VariantSelectorModal({
                       >
                         <span className={`truncate mr-1 ${soldOut ? "line-through" : ""}`}>{opt.name}</span>
                         {soldOut ? (
-                          <span className="text-[10px] font-bold uppercase tracking-wide opacity-70 shrink-0">Habis</span>
+                          <span className="text-[10px] font-bold uppercase tracking-wide opacity-70 shrink-0">{isEN ? "Sold out" : "Habis"}</span>
                         ) : opt.price_display || (typeof opt.price_delta === "number" && opt.price_delta !== 0) ? (
                           <span className={`text-[10px] font-bold opacity-80 shrink-0 ${typeof opt.price_delta === "number" && opt.price_delta < 0 ? "text-emerald-600 dark:text-emerald-400" : ""}`}>
                             {opt.price_display || (opt.price_delta! > 0 ? `+${formatIdNumber(opt.price_delta!)}` : `-${formatIdNumber(Math.abs(opt.price_delta!))}`)}
@@ -700,14 +704,14 @@ export function VariantSelectorModal({
         <div className="p-4 border-t shrink-0 space-y-3" style={{ borderColor: "color-mix(in srgb, var(--dt-text, #1e293b) 10%, transparent)" }}>
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold">Jumlah</span>
+              <span className="text-xs font-bold">{isEN ? "Quantity" : "Jumlah"}</span>
               <div className="flex items-center rounded-xl border overflow-hidden" style={{ borderColor: "color-mix(in srgb, var(--dt-text, #1e293b) 15%, transparent)" }}>
                 <button
                   type="button"
                   onClick={() => setQty((q) => Math.max(1, q - 1))}
                   disabled={qty <= 1}
                   className="w-8 h-8 flex items-center justify-center cursor-pointer transition-colors hover:bg-black/5 disabled:opacity-40 disabled:cursor-not-allowed"
-                  aria-label="Kurangi jumlah"
+                  aria-label={isEN ? "Decrease quantity" : "Kurangi jumlah"}
                 >
                   <Minus className="w-3.5 h-3.5" />
                 </button>
@@ -716,7 +720,7 @@ export function VariantSelectorModal({
                   type="button"
                   onClick={() => setQty((q) => q + 1)}
                   className="w-8 h-8 flex items-center justify-center cursor-pointer transition-colors hover:bg-black/5"
-                  aria-label="Tambah jumlah"
+                  aria-label={isEN ? "Increase quantity" : "Tambah jumlah"}
                 >
                   <Plus className="w-3.5 h-3.5" />
                 </button>
@@ -744,7 +748,7 @@ export function VariantSelectorModal({
             }}
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>{qty > 1 ? `Tambah ${qty}` : "Tambah"}</span>
+            <span>{qty > 1 ? `${isEN ? "Add" : "Tambah"} ${qty}` : (isEN ? "Add" : "Tambah")}</span>
           </button>
         </div>
       </div>
@@ -1001,7 +1005,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
       className="fixed top-20 right-4 z-[400] w-80 max-h-[85vh] flex flex-col shadow-2xl transition-all duration-300"
       role="dialog"
       aria-modal
-      aria-label="Keranjang Pesanan"
+      aria-label={isEN ? "Order Cart" : "Keranjang Pesanan"}
       style={{
         background: "var(--dt-bg, #fff)",
         color: "var(--dt-text, #1e293b)",
@@ -1022,16 +1026,16 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
             <CheckCircle className="w-8 h-8" />
           </div>
           <div className="space-y-1">
-            <h3 className="font-bold text-base">Pesanan Dikirim!</h3>
+            <h3 className="font-bold text-base">{isEN ? "Order Sent!" : "Pesanan Dikirim!"}</h3>
             {orderNo && (
               <div className="mx-auto mt-1 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold"
                 style={{ background: "color-mix(in srgb, var(--dt-primary, var(--primary, #4F46E5)) 12%, transparent)", color: "var(--dt-primary, var(--primary, #4F46E5))" }}
               >
-                No. Pesanan: {orderNo}
+                {isEN ? "Order No." : "No. Pesanan"}: {orderNo}
               </div>
             )}
             <p className="text-xs opacity-70 leading-relaxed">
-              Terima kasih, pesanan Anda telah tersimpan. Pemilik bisnis akan menghubungi Anda segera.
+              {isEN ? "Thank you, your order has been saved. The business owner will contact you shortly." : "Terima kasih, pesanan Anda telah tersimpan. Pemilik bisnis akan menghubungi Anda segera."}
             </p>
           </div>
           <button
@@ -1043,7 +1047,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
               color: primaryFg,
             }}
           >
-            Tutup
+            {isEN ? "Close" : "Tutup"}
           </button>
         </div>
       ) : showForm ? (
@@ -1057,12 +1061,12 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
               type="button"
               onClick={() => setShowForm(false)}
               className="p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer transition-colors"
-              aria-label="Kembali ke keranjang"
+              aria-label={isEN ? "Back to cart" : "Kembali ke keranjang"}
               style={{ color: "var(--dt-text, #1e293b)" }}
             >
               <ArrowLeft className="w-4 h-4" />
             </button>
-            <span className="font-semibold text-sm">Form Pemesanan</span>
+            <span className="font-semibold text-sm">{isEN ? "Order Form" : "Form Pemesanan"}</span>
           </div>
 
           {/* Form Body */}
@@ -1075,7 +1079,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
               }}
             >
               <span className="font-bold block opacity-80" style={{ color: "var(--dt-primary, var(--primary, #4F46E5))" }}>
-                Ringkasan Pesanan ({totalQty} item):
+                {isEN ? `Order Summary (${totalQty} items):` : `Ringkasan Pesanan (${totalQty} item):`}
               </span>
               <div className="space-y-1 max-h-[80px] overflow-y-auto pr-1">
                 {items.map((item) => (
@@ -1087,11 +1091,11 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
               </div>
             </div>
             <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wide mb-1 opacity-75">Nama Lengkap *</label>
+              <label className="block text-[11px] font-bold uppercase tracking-wide mb-1 opacity-75">{isEN ? "Full Name *" : "Nama Lengkap *"}</label>
               <input
                 type="text"
                 required
-                placeholder="Contoh: Budi Santoso"
+                placeholder={isEN ? "e.g. John Doe" : "Contoh: Budi Santoso"}
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
                 className="w-full px-3 py-2 text-xs rounded-lg border outline-none transition-all focus:ring-1 focus:ring-offset-0"
@@ -1103,11 +1107,11 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
               />
             </div>
             <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wide mb-1 opacity-75">Nomor WhatsApp *</label>
+              <label className="block text-[11px] font-bold uppercase tracking-wide mb-1 opacity-75">{isEN ? "WhatsApp Number *" : "Nomor WhatsApp *"}</label>
               <input
                 type="tel"
                 required
-                placeholder="Contoh: 08123456789"
+                placeholder={isEN ? "e.g. 08123456789" : "Contoh: 08123456789"}
                 value={customerPhone}
                 onChange={(e) => setCustomerPhone(e.target.value)}
                 className="w-full px-3 py-2 text-xs rounded-lg border outline-none transition-all focus:ring-1 focus:ring-offset-0"
@@ -1119,9 +1123,9 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
               />
             </div>
             <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wide mb-1 opacity-75">Alamat / Catatan Tambahan</label>
+              <label className="block text-[11px] font-bold uppercase tracking-wide mb-1 opacity-75">{isEN ? "Address / Additional Notes" : "Alamat / Catatan Tambahan"}</label>
               <textarea
-                placeholder="Tulis alamat pengiriman atau catatan khusus di sini..."
+                placeholder={isEN ? "Write your shipping address or special notes here..." : "Tulis alamat pengiriman atau catatan khusus di sini..."}
                 value={customerNotes}
                 onChange={(e) => setCustomerNotes(e.target.value)}
                 rows={3}
@@ -1160,7 +1164,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
               ) : (
                 <MessageSquare className="w-4 h-4" />
               )}
-              <span>{leadLoading ? "Mengirim..." : "Kirim Pesanan"}</span>
+              <span>{leadLoading ? (isEN ? "Sending..." : "Mengirim...") : (isEN ? "Send Order" : "Kirim Pesanan")}</span>
             </button>
           </div>
         </form>
@@ -1173,7 +1177,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
           >
             <div className="flex items-center gap-2">
               <ShoppingCart className="w-4 h-4" style={{ color: "var(--dt-primary, var(--primary))" }} />
-              <span className="font-semibold text-sm">Keranjang</span>
+              <span className="font-semibold text-sm">{isEN ? "Cart" : "Keranjang"}</span>
               <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
                 style={{
                   background: "color-mix(in srgb, var(--dt-primary, var(--primary)) 15%, transparent)",
@@ -1198,7 +1202,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
                 type="button"
                 onClick={() => setOpen(false)}
                 className="p-1 rounded-full cursor-pointer transition-colors hover:opacity-70"
-                aria-label="Tutup keranjang"
+                aria-label={isEN ? "Close cart" : "Tutup keranjang"}
                 style={{ color: "var(--dt-text, #1e293b)" }}
               >
                 <X className="w-3.5 h-3.5" />
@@ -1211,7 +1215,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
             {items.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-10 gap-2">
                 <ShoppingCart className="w-8 h-8 opacity-20" />
-                <p className="text-xs opacity-50">Keranjang masih kosong</p>
+                <p className="text-xs opacity-50">{isEN ? "Your cart is empty" : "Keranjang masih kosong"}</p>
               </div>
             ) : (
               items.map((item) => (
@@ -1257,7 +1261,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
                             style={{ color: "var(--dt-primary, var(--primary))" }}
                           >
                             <Plus className="w-2.5 h-2.5" />
-                            Catatan
+                            {isEN ? "Note" : "Catatan"}
                           </button>
                         );
                       }
@@ -1266,7 +1270,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
                           type="text"
                           value={item.note ?? ""}
                           onChange={(e) => setItemNote(item.id, e.target.value)}
-                          placeholder="Catatan (opsional)"
+                          placeholder={isEN ? "Note (optional)" : "Catatan (opsional)"}
                           className="mt-1 w-full px-1.5 py-1 text-[10px] rounded border outline-none"
                           style={{
                             background: "color-mix(in srgb, var(--dt-bg, #fff) 97%, var(--dt-text, #1e293b) 3%)",
@@ -1287,7 +1291,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
                         background: "color-mix(in srgb, var(--dt-primary, var(--primary)) 12%, transparent)",
                         color: "var(--dt-primary, var(--primary))",
                       }}
-                      aria-label="Kurangi"
+                      aria-label={isEN ? "Decrease" : "Kurangi"}
                     >
                       <Minus className="w-3 h-3" />
                     </button>
@@ -1300,7 +1304,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
                         background: "color-mix(in srgb, var(--dt-primary, var(--primary)) 12%, transparent)",
                         color: "var(--dt-primary, var(--primary))",
                       }}
-                      aria-label="Tambah"
+                      aria-label={isEN ? "Increase" : "Tambah"}
                     >
                       <Plus className="w-3 h-3" />
                     </button>
@@ -1333,14 +1337,14 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
                     <span className="opacity-70">Subtotal</span>
                     <span style={{ color: "var(--dt-primary, var(--primary))" }}>
                       {formatIdNumber(total)}
-                      {hasCustomPricing && <span className="font-normal opacity-60 ml-1 text-[10px]">+item lainnya</span>}
+                      {hasCustomPricing && <span className="font-normal opacity-60 ml-1 text-[10px]">{isEN ? "+other items" : "+item lainnya"}</span>}
                     </span>
                   </div>
                 );
                 return null;
               })()}
               <p className="text-[10px] text-center leading-relaxed opacity-50">
-                {!isWaEmpty ? "Pesanan dikirim ke WhatsApp untuk konfirmasi ketersediaan." : "Pesanan akan dikirim ke pemilik bisnis."}
+                {!isWaEmpty ? (isEN ? "The order is sent to WhatsApp for availability confirmation." : "Pesanan dikirim ke WhatsApp untuk konfirmasi ketersediaan.") : (isEN ? "The order will be sent to the business owner." : "Pesanan akan dikirim ke pemilik bisnis.")}
               </p>
               {/* Payment & shipping info block (merchant-configured, display-only) */}
               {(() => {
@@ -1391,7 +1395,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
                                     className="w-20 h-20 object-contain rounded"
                                   />
                                 </div>
-                                <span className="text-[9.5px] opacity-50 tracking-tight">Scan QR untuk menyelesaikan pembayaran</span>
+                                <span className="text-[9.5px] opacity-50 tracking-tight">{language === "en" ? "Scan the QR code to complete payment" : "Scan QR untuk menyelesaikan pembayaran"}</span>
                               </div>
                             );
                           }
@@ -1464,7 +1468,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
                 ) : (
                   <MessageSquare className="w-4 h-4" />
                 )}
-                <span className="text-sm">{leadLoading ? "Mengirim..." : !isWaEmpty ? "Pesan via WhatsApp" : "Kirim Pesanan"}</span>
+                <span className="text-sm">{leadLoading ? (isEN ? "Sending..." : "Mengirim...") : !isWaEmpty ? (isEN ? "Order via WhatsApp" : "Pesan via WhatsApp") : (isEN ? "Send Order" : "Kirim Pesanan")}</span>
               </button>
             </div>
           )}

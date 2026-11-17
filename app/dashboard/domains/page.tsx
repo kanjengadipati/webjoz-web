@@ -23,7 +23,7 @@ import { MIDTRANS_CLIENT_KEY, MIDTRANS_SNAP_BASE_URL, PAYPAL_ENABLED, PAYPAL_CLI
 import type { Profile } from "@/lib/types";
 import { encodeSiteId } from "@/lib/sqids";
 
-function loadSnapScript(): Promise<void> {
+function loadSnapScript(isEN = false): Promise<void> {
   return new Promise((resolve, reject) => {
     if (typeof window !== "undefined" && (window as any).snap) {
       resolve();
@@ -35,7 +35,7 @@ function loadSnapScript(): Promise<void> {
       script.setAttribute("data-client-key", MIDTRANS_CLIENT_KEY);
     }
     script.onload = () => resolve();
-    script.onerror = () => reject(new Error("Gagal memuat Midtrans Snap"));
+    script.onerror = () => reject(new Error(isEN ? "Failed to load Midtrans Snap" : "Gagal memuat Midtrans Snap"));
     document.body.appendChild(script);
   });
 }
@@ -208,7 +208,7 @@ export default function DomainsPage() {
 
   useEffect(() => {
     if (!MIDTRANS_CLIENT_KEY) return;
-    loadSnapScript()
+    loadSnapScript(locale === "en")
       .then(() => setSnapReady(true))
       .catch(() => {});
   }, []);
@@ -531,7 +531,7 @@ export default function DomainsPage() {
         // Midtrans flow
         if (!snapReady) {
           try {
-            await loadSnapScript();
+            await loadSnapScript(locale === "en");
             setSnapReady(true);
           } catch {}
         }
