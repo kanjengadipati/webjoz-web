@@ -112,7 +112,7 @@ export default function ProductTabsByCategory({
               type="button"
               onClick={() => setSearchQuery("")}
               className="absolute right-3 p-1 rounded-full opacity-60 hover:opacity-100 cursor-pointer"
-              aria-label="Hapus pencarian"
+              aria-label={isEN ? "Clear search" : "Hapus pencarian"}
               style={{ color: text }}
             >
               <X className="w-3.5 h-3.5" />
