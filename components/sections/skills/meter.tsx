@@ -120,7 +120,7 @@ export default function SkillsMeter({
               fontSize: "0.875rem",
             }}
           >
-            Belum ada keahlian yang ditambahkan. Buka editor sidebar untuk menambah kategori &amp; skill.
+            {language.toLowerCase().startsWith("en") ? "No skills added yet. Open the sidebar editor to add categories & skills." : "Belum ada keahlian yang ditambahkan. Buka editor sidebar untuk menambah kategori & skill."}
           </div>
         ) : (
           <div

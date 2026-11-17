@@ -299,6 +299,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
           isSelected={activeSection === "testimonials"}
           collapseSheetForInlineEdit={collapseSheetForInlineEdit}
           onEditingStateChange={onEditingStateChange}
+          language={language}
         />
       </MemoPreviewSectionWrapper>
     ) : null,

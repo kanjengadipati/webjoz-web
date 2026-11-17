@@ -1539,13 +1539,13 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                   <div className="flex-1 p-4 flex flex-col gap-3 overflow-y-auto min-h-[220px]">
                     {/* Date Divider */}
                     <div className="mx-auto bg-white/70 backdrop-blur-sm px-2 py-0.5 rounded text-[9px] text-gray-500 font-semibold tracking-wide shadow-sm">
-                      HARI INI
+                      {isEN ? "TODAY" : "HARI INI"}
                     </div>
 
                     {/* Left Message Bubble (Business Prompt) */}
                     <div className="bg-white text-gray-800 rounded-2xl rounded-tl-none p-3 shadow-sm max-w-[85%] self-start relative border border-gray-200/50 flex flex-col gap-1">
                       <p className="text-[11px] leading-normal font-normal">
-                        Halo Kak {t.name || "Pelanggan"}, bagaimana kesan Kakak setelah menggunakan layanan kami? Kami sangat menghargai feedback Kakak! 😊
+                        {isEN ? `Hello ${t.name || "there"}, how was your experience with our services? We would love to hear your feedback! 😊` : `Halo Kak ${t.name || "Pelanggan"}, bagaimana kesan Kakak setelah menggunakan layanan kami? Kami sangat menghargai feedback Kakak! 😊`}
                       </p>
                       <span className="text-[8px] text-gray-400 self-end mt-0.5 leading-none">11:20 AM</span>
                     </div>
@@ -1553,7 +1553,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                     {/* Right Message Bubble (Client Testimonial) */}
                     <div className="bg-[#d9fdd3] text-gray-800 rounded-2xl rounded-tr-none p-3 shadow-sm max-w-[85%] self-end relative border border-[#c1e8ba]/40 flex flex-col gap-1">
                       <p className={`text-[11px] leading-normal font-normal ${quoteClass}`} style={quoteStyle}>
-                        <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={withPrefix(t.quote ?? "")} placeholder="Tulis testimoni pelanggan di sini..." onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                        <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={withPrefix(t.quote ?? "")} placeholder={isEN ? "Write client testimonial here..." : "Tulis testimoni pelanggan di sini..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                       </p>
                       <div className="flex items-center gap-1 self-end mt-0.5 leading-none">
                         <span className="text-[8px] text-gray-500">11:22 AM</span>
@@ -1576,7 +1576,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                         <line x1="15" y1="9" x2="15.01" y2="9"></line>
                       </svg>
                       {/* Input Placeholder */}
-                      <span className="text-[10px] text-gray-400 flex-1 truncate">Ketik pesan...</span>
+                      <span className="text-[10px] text-gray-400 flex-1 truncate">{isEN ? "Type a message..." : "Ketik pesan..."}</span>
                       {/* Attachment Icon */}
                       <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-gray-400 stroke-2 rotate-45 shrink-0">
                         <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
@@ -1610,7 +1610,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
             return (
               <div key={idx} className={cardClasses} style={cardStyle}>
                 {deleteButton}
-                <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={withPrefix(t.quote ?? "")} placeholder="Tulis testimoni pelanggan di sini..." onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={quoteClasses} style={{ color: "var(--dt-text)", ...quoteStyle }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                <InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={withPrefix(t.quote ?? "")} placeholder={isEN ? "Write client testimonial here..." : "Tulis testimoni pelanggan di sini..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={quoteClasses} style={{ color: "var(--dt-text)", ...quoteStyle }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                 <div className="flex items-center gap-3 pt-2" style={{ borderTop: `1px solid color-mix(in srgb, ${accentColor} 15%, transparent)` }}>
                   <div
                     className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
@@ -1619,8 +1619,8 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                     {initials}
                   </div>
                   <div className="min-w-0">
-                    <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} placeholder="Nama Pelanggan" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={nameClasses} style={{ color: "var(--dt-text)", ...nameStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-                    {(t.role || isEditorMode) && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} placeholder="Jabatan / Peran (cth. Pelanggan)" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={roleClasses} style={{ color: "var(--dt-text-muted)", ...roleStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
+                    <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} placeholder={isEN ? "Client Name" : "Nama Pelanggan"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={nameClasses} style={{ color: "var(--dt-text)", ...nameStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                    {(t.role || isEditorMode) && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} placeholder={isEN ? "Role / Position (e.g. Client)" : "Jabatan / Peran (cth. Pelanggan)"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={roleClasses} style={{ color: "var(--dt-text-muted)", ...roleStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
                   </div>
                 </div>
               </div>
@@ -1628,7 +1628,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
           })}
           {isEditorMode && (editorChrome ?? true) && onAddItem && (
             <InlineAddTile
-              label="Tambah Testimoni"
+              label={isEN ? "Add Testimonial" : "Tambah Testimoni"}
               variant="card"
               className={`rounded-2xl min-h-[200px] ${
                 variant === "carousel" ? "min-w-[280px] shrink-0 snap-start" : "w-full h-full"

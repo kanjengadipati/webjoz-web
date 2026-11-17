@@ -295,6 +295,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
                   isSelected={activeSection === "testimonials"}
                   collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                   onEditingStateChange={onEditingStateChange}
+                  language={language}
                 />
               );
             }} />

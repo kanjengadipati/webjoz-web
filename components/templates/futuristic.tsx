@@ -124,7 +124,7 @@ export const TemplateFuturistic: React.FC<TemplateProps> = ({
 
     testimonials: testimonials ? (
       <MemoPreviewSectionWrapper section="testimonials"  activeSection={activeSection} currentVariant={getSectionVariant(dt, "testimonials")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={editorChrome ?? isEditorMode}>
-        <TestimonialsSectionInner testimonials={testimonials} design_token={dt} onUpdateField={onUpdateField} isEditorMode={isEditorMode} editorChrome={editorChrome} isSelected={activeSection === "testimonials"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+        <TestimonialsSectionInner testimonials={testimonials} design_token={dt} onUpdateField={onUpdateField} isEditorMode={isEditorMode} editorChrome={editorChrome} isSelected={activeSection === "testimonials"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} language={language} />
       </MemoPreviewSectionWrapper>
     ) : null,
 
