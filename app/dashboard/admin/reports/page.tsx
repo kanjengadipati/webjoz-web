@@ -343,7 +343,8 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 export default function AdminReportsPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const isEN = locale === "en";
   const [report, setReport] = useState<RevenueReport | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -442,10 +443,10 @@ export default function AdminReportsPage() {
       {/* Summary cards — row 1 */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          label="MRR (Bulan Ini)"
+          label={isEN ? "MRR (This Month)" : "MRR (Bulan Ini)"}
           value={fmtIDR(s.mrr_idr)}
           trend={s.mrr_growth_pct}
-          trendLabel="vs bulan lalu"
+          trendLabel={isEN ? "vs last month" : "vs bulan lalu"}
           icon={TrendingUp}
           accent="violet"
           sparkValues={sparkDaily}
@@ -458,14 +459,14 @@ export default function AdminReportsPage() {
           accent="emerald"
         />
         <StatCard
-          label="Hari Ini"
+          label={isEN ? "Today" : "Hari Ini"}
           value={fmtIDR(s.today_revenue_idr)}
-          sub={`${s.today_transactions} transaksi`}
+          sub={`${s.today_transactions} ${isEN ? "transactions" : "transaksi"}`}
           icon={ArrowUpRight}
           accent="sky"
         />
         <StatCard
-          label="ARPU (Bulan Ini)"
+          label={isEN ? "ARPU (This Month)" : "ARPU (Bulan Ini)"}
           value={fmtIDR(s.arpu_idr)}
           sub={`Avg Tx: ${fmtIDR(s.avg_tx_value_idr)}`}
           icon={Users}
@@ -476,8 +477,8 @@ export default function AdminReportsPage() {
       {/* Summary cards — row 2 */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Total Transaksi", value: formatIdNumber(s.total_transactions), icon: CreditCard, accent: "violet" as const },
-          { label: "Berhasil", value: formatIdNumber(s.successful_transactions), icon: TrendingUp, accent: "emerald" as const },
+          { label: isEN ? "Total Transactions" : "Total Transaksi", value: formatIdNumber(s.total_transactions), icon: CreditCard, accent: "violet" as const },
+          { label: isEN ? "Successful" : "Berhasil", value: formatIdNumber(s.successful_transactions), icon: TrendingUp, accent: "emerald" as const },
           { label: "Pending", value: formatIdNumber(s.pending_transactions), icon: BarChart2, accent: "amber" as const },
           { label: "Refund", value: formatIdNumber(s.refunded_transactions), icon: TrendingDown, accent: "rose" as const },
         ].map((c) => (
@@ -486,9 +487,9 @@ export default function AdminReportsPage() {
       </div>
 
       {/* Daily revenue chart */}
-      <Section title="Pendapatan Harian — 30 Hari Terakhir">
+      <Section title={isEN ? "Daily Revenue — Last 30 Days" : "Pendapatan Harian — 30 Hari Terakhir"}>
         {dailyBars.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-8">Belum ada data.</p>
+          <p className="text-sm text-muted-foreground text-center py-8">{isEN ? "No data yet." : "Belum ada data."}</p>
         ) : (
           <>
             <BarChart bars={dailyBars} color="#8b5cf6" height={120} showLabels={false} />
@@ -503,9 +504,9 @@ export default function AdminReportsPage() {
       </Section>
 
       {/* Monthly revenue chart */}
-      <Section title="Pendapatan Bulanan — 12 Bulan Terakhir">
+      <Section title={isEN ? "Monthly Revenue — Last 12 Months" : "Pendapatan Bulanan — 12 Bulan Terakhir"}>
         {monthlyBars.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-8">Belum ada data.</p>
+          <p className="text-sm text-muted-foreground text-center py-8">{isEN ? "No data yet." : "Belum ada data."}</p>
         ) : (
           <div className="space-y-2">
             <BarChart bars={monthlyBars} color="#10b981" height={140} showLabels={true} />
@@ -514,7 +515,7 @@ export default function AdminReportsPage() {
               <table className="w-full text-xs">
                 <thead>
                   <tr className="border-b border-border/40">
-                    {["Bulan", "Revenue IDR", "Revenue USD", "Transaksi", "Tenant Baru"].map((h) => (
+                    {(isEN ? ["Month", "Revenue IDR", "Revenue USD", "Transactions", "New Tenants"] : ["Bulan", "Revenue IDR", "Revenue USD", "Transaksi", "Tenant Baru"]).map((h) => (
                       <th key={h} className="text-left px-3 py-2 text-muted-foreground font-semibold whitespace-nowrap">{h}</th>
                     ))}
                   </tr>
@@ -542,7 +543,7 @@ export default function AdminReportsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Section title="Gateway Split">
           {gatewaySegments.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-6">Belum ada data.</p>
+            <p className="text-sm text-muted-foreground text-center py-6">{isEN ? "No data yet." : "Belum ada data."}</p>
           ) : (
             <DonutChart segments={gatewaySegments} />
           )}
@@ -563,7 +564,7 @@ export default function AdminReportsPage() {
 
         <Section title="Revenue per Plan">
           {planSegments.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-6">Belum ada data.</p>
+            <p className="text-sm text-muted-foreground text-center py-6">{isEN ? "No data yet." : "Belum ada data."}</p>
           ) : (
             <DonutChart segments={planSegments} />
           )}
@@ -613,13 +614,13 @@ export default function AdminReportsPage() {
       {/* Top tenants */}
       <Section title="Top 10 Tenant by Revenue">
         {report.top_tenants.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-6">Belum ada data.</p>
+          <p className="text-sm text-muted-foreground text-center py-6">{isEN ? "No data yet." : "Belum ada data."}</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border/40">
-                  {["#", "Tenant", "Plan", "Revenue IDR", "Transaksi"].map((h) => (
+                  {(isEN ? ["#", "Tenant", "Plan", "Revenue IDR", "Transactions"] : ["#", "Tenant", "Plan", "Revenue IDR", "Transaksi"]).map((h) => (
                     <th key={h} className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground whitespace-nowrap">{h}</th>
                   ))}
                 </tr>

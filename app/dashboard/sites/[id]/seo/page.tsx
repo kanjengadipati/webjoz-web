@@ -23,7 +23,7 @@ export default function SeoManagerPage() {
   const token = useAuthToken();
   const { activeTenantId, activeTenant } = useActiveTenant();
   const { pushToast } = useToast();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const router = useRouter();
   const isPremium = activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise";
 
@@ -110,7 +110,7 @@ export default function SeoManagerPage() {
 
         const updated = res.data?.section !== undefined ? res.data.section : res.data;
         if (!updated) {
-          throw new Error("Tidak ada hasil dari AI.");
+          throw new Error(locale === "en" ? "No result from AI." : "Tidak ada hasil dari AI.");
         }
 
         const keys = fieldKey.split(".");
@@ -128,7 +128,7 @@ export default function SeoManagerPage() {
       } catch (err: any) {
         if (err?.code === "ERR_PLAN_LIMIT" || err?.code === "ERR_USAGE_LIMIT") {
           setUpgradeOpen(true);
-          throw new Error("Batas AI tercapai. Silakan upgrade paket.");
+          throw new Error(locale === "en" ? "AI limit reached. Please upgrade your plan." : "Batas AI tercapai. Silakan upgrade paket.");
         }
         throw err;
       }

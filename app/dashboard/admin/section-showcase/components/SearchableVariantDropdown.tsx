@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { Search, ChevronDown, Check, Sliders, X, EyeOff } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 
 export interface SearchableVariantDropdownProps {
   variants: Array<{ value: string; label: string; description?: string }>;
@@ -18,6 +19,8 @@ export function SearchableVariantDropdown({
   displayMode,
   hiddenVariantsSet,
 }: SearchableVariantDropdownProps) {
+  const { locale } = useI18n();
+  const isEN = locale === "en";
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [highlightedIndex, setHighlightedIndex] = useState(0);
@@ -157,7 +160,7 @@ export function SearchableVariantDropdown({
                   setSearchQuery(e.target.value);
                   setHighlightedIndex(0);
                 }}
-                placeholder="Cari varian (nama / id)..."
+                placeholder={isEN ? "Search variants (name / id)..." : "Cari varian (nama / id)..."}
                 className="w-full pl-8 pr-7 py-1 text-xs bg-background border border-border/70 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:ring-1 focus:ring-primary"
               />
               {searchQuery && (
@@ -172,7 +175,7 @@ export function SearchableVariantDropdown({
             </div>
             <div className="flex items-center justify-between text-[10px] text-muted-foreground px-1 mt-1.5">
               <span>{filteredVariants.length} varian ditemukan</span>
-              <span>↑↓ navigasi, ↵ pilih</span>
+              <span>{isEN ? "↑↓ navigate, ↵ select" : "↑↓ navigasi, ↵ pilih"}</span>
             </div>
           </div>
 

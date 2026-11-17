@@ -71,7 +71,7 @@ export default function SectionShowcasePage() {
   const isSuperAdmin = userRole === "superadmin";
   const authToken = useAuthToken();
   const { pushToast } = useToast();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   const [selectedSection, setSelectedSection] = useState<string>("hero");
   const [selectedVariant, setSelectedVariant] = useState<string>("");
@@ -633,7 +633,7 @@ export default function SectionShowcasePage() {
                   <div className="bg-card border border-border/80 rounded-xl p-10 text-center text-muted-foreground space-y-2">
                     <p className="text-sm font-medium">
                       {statusFilter === "hidden"
-                        ? "Tidak ada varian yang disembunyikan pada section ini."
+                        ? (locale === "en" ? "No variants are hidden in this section." : "Tidak ada varian yang disembunyikan pada section ini.")
                         : "Semua varian disembunyikan."}
                     </p>
                     <button

@@ -260,7 +260,7 @@ export default function OrdersPage() {
       <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Pesanan</h1>
-          <p className="text-sm opacity-60 mt-0.5">Kelola pesanan masuk dari website Anda.</p>
+          <p className="text-sm opacity-60 mt-0.5">{locale === "en" ? "Manage incoming orders from your website." : "Kelola pesanan masuk dari website Anda."}</p>
         </div>
         <button
           type="button"

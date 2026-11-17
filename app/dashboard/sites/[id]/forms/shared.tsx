@@ -246,6 +246,7 @@ export const ICON_OPTIONS: Array<{ name: string; icon: React.ComponentType<any> 
 ];
 
 export function IconPicker({ value, onChange }: { value?: string; onChange: (name: string) => void }) {
+  const { locale } = useI18n();
   const [open, setOpen] = useState(false);
   const selected = ICON_OPTIONS.find((o) => o.name === value);
   const SelectedIcon = selected?.icon ?? Star;
@@ -257,7 +258,7 @@ export function IconPicker({ value, onChange }: { value?: string; onChange: (nam
         className="flex items-center gap-2 px-2 py-1.5 border border-border rounded text-[11px] text-sidebar-foreground hover:bg-sidebar-muted transition-all w-full cursor-pointer"
       >
         <SelectedIcon className="w-4 h-4 text-primary shrink-0" />
-        <span className="flex-1 text-left truncate">{value || "Pilih icon"}</span>
+        <span className="flex-1 text-left truncate">{value || (locale === "en" ? "Choose icon" : "Pilih icon")}</span>
         <ChevronDown className="w-3 h-3 text-sidebar-subtle-foreground shrink-0" />
       </button>
       {open && (

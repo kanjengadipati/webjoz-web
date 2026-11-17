@@ -38,7 +38,7 @@ interface PromoValidationResponse {
   promo_label: string;
 }
 
-function loadSnapScript(): Promise<void> {
+function loadSnapScript(isEN = false): Promise<void> {
   return new Promise((resolve, reject) => {
     if ((window as any).snap) {
       resolve();
@@ -48,7 +48,7 @@ function loadSnapScript(): Promise<void> {
     script.src = `${MIDTRANS_SNAP_BASE_URL}/snap/snap.js`;
     script.setAttribute("data-client-key", MIDTRANS_CLIENT_KEY);
     script.onload = () => resolve();
-    script.onerror = () => reject(new Error("Gagal memuat Midtrans Snap"));
+    script.onerror = () => reject(new Error(isEN ? "Failed to load Midtrans Snap" : "Gagal memuat Midtrans Snap"));
     document.body.appendChild(script);
   });
 }
@@ -78,7 +78,7 @@ export default function UpgradePage() {
   const token = useAuthToken();
   const router = useRouter();
   const { pushToast } = useToast();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { activeTenant } = useActiveTenant();
 
   const [plans, setPlans] = useState<PlanItem[]>([]);
@@ -120,7 +120,7 @@ export default function UpgradePage() {
 
   useEffect(() => {
     if (!MIDTRANS_CLIENT_KEY) return;
-    loadSnapScript()
+    loadSnapScript(locale === "en")
       .then(() => setSnapReady(true))
       .catch(() => {});
   }, []);
@@ -166,7 +166,7 @@ export default function UpgradePage() {
         setPromoError(result.message || "Kode promo tidak valid");
       }
     } catch (err: any) {
-      setPromoError(err.message || "Gagal memvalidasi kode promo");
+      setPromoError(err.message || (locale === "en" ? "Failed to validate promo code" : "Gagal memvalidasi kode promo"));
       setPromoValidation(null);
     } finally {
       setPromoLoading(false);
@@ -290,7 +290,7 @@ export default function UpgradePage() {
         // Midtrans flow
         if (!snapReady) {
           try {
-            await loadSnapScript();
+            await loadSnapScript(locale === "en");
             setSnapReady(true);
           } catch {}
         }

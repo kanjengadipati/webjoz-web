@@ -1521,7 +1521,7 @@ export default function SiteEditorPage() {
 
         const updated = res.data?.section !== undefined ? res.data.section : res.data;
         if (!updated) {
-          throw new Error("Tidak ada hasil dari AI.");
+          throw new Error(locale === "en" ? "No result from AI." : "Tidak ada hasil dari AI.");
         }
 
         // Support nested keys, e.g. "items.0.quote" or simple "subtitle"
@@ -1533,7 +1533,7 @@ export default function SiteEditorPage() {
         }
 
         if (typeof result !== "string" || !result.trim()) {
-          throw new Error("Field tidak ditemukan dalam hasil AI.");
+          throw new Error(locale === "en" ? "Field not found in the AI result." : "Field tidak ditemukan dalam hasil AI.");
         }
 
         void refreshTenantUsage();

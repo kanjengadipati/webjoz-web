@@ -47,7 +47,7 @@ function fmtDate(iso: string) {
 export default function AdminPaymentsPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   const [payments, setPayments] = useState<PaymentResponse[]>([]);
   const [total, setTotal] = useState(0);
@@ -165,7 +165,7 @@ export default function AdminPaymentsPage() {
               value={draftSearch}
               onChange={e => setDraftSearch(e.target.value)}
               onKeyDown={e => e.key === "Enter" && applySearch()}
-              placeholder="Cari Order ID / Tenant ID..."
+              placeholder={locale === "en" ? "Search Order ID / Tenant ID..." : "Cari Order ID / Tenant ID..."}
               className="flex-1 px-3 py-1.5 rounded-xl border border-border/60 bg-card/60 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition"
             />
             <button onClick={applySearch} className="px-3 py-1.5 rounded-xl bg-primary/10 text-primary text-sm hover:bg-primary/20 transition">

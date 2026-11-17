@@ -110,7 +110,7 @@ export default function PaymentSuccessPage() {
       pushToast(t("dashboard.toast.websiteSavedToPro"), "success");
       router.push(`/dashboard/sites/${encodeSiteId(siteId)}`);
     } catch (err: any) {
-      pushToast(err.message || "Gagal menyimpan website otomatis. Silakan coba lagi.", "error");
+      pushToast(err.message || (locale === "en" ? "Failed to save the website automatically. Please try again." : "Gagal menyimpan website otomatis. Silakan coba lagi."), "error");
       setIsSavingSite(false);
     }
   };

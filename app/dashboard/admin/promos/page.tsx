@@ -197,7 +197,7 @@ export default function AdminPromosPage() {
     return (
       <div className="flex flex-col items-center justify-center h-80 text-muted-foreground gap-4">
         <Percent className="size-12 opacity-40" />
-        <p className="text-sm">Anda tidak memiliki akses ke halaman ini</p>
+        <p className="text-sm">{locale === "en" ? "You do not have access to this page" : "Anda tidak memiliki akses ke halaman ini"}</p>
       </div>
     );
   }

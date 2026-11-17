@@ -28,7 +28,7 @@ export default function KatalogManagerPage() {
   const token = useAuthToken();
   const { activeTenantId, activeTenant } = useActiveTenant();
   const { pushToast } = useToast();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const isPremium = activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise";
 
   const siteId = decodeSiteId(id as string);
@@ -155,7 +155,7 @@ export default function KatalogManagerPage() {
 
         const updated = res.data?.section !== undefined ? res.data.section : res.data;
         if (!updated) {
-          throw new Error("Tidak ada hasil dari AI.");
+          throw new Error(locale === "en" ? "No result from AI." : "Tidak ada hasil dari AI.");
         }
 
         const keys = fieldKey.split(".");

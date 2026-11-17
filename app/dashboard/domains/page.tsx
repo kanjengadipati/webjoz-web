@@ -117,9 +117,9 @@ function requiresVerification(domain: string): boolean {
   return VERIFY_TLDS.includes(tldFromDomain(domain));
 }
 
-function identityDocLabel(tld: string): string {
+function identityDocLabel(tld: string, isEN = false): string {
   if (tld === "co.id" || tld === "or.id") return "NPWP / NIB";
-  return "NIK KTP (16 digit)";
+  return isEN ? "ID Card Number (16 digits)" : "NIK KTP (16 digit)";
 }
 
 function identityDocType(tld: string): string {
@@ -453,7 +453,7 @@ export default function DomainsPage() {
         const tld = tldFromDomain(purchaserDomain);
         const minLen = (tld === "co.id" || tld === "or.id") ? 15 : 16;
         if (idVal.length < minLen) {
-          pushToast(t("dashboard.toast.identityDocMinLength", undefined, { label: identityDocLabel(tld), min: String(minLen) }), "error");
+          pushToast(t("dashboard.toast.identityDocMinLength", undefined, { label: identityDocLabel(tld, locale === "en"), min: String(minLen) }), "error");
           setIsConfirming(false);
           setBuyingDomain(null);
           return;
@@ -1299,7 +1299,7 @@ export default function DomainsPage() {
                 <div>
                   <label className="block text-[11px] font-semibold text-muted-foreground mb-1">
                     {t("dashboard.domains.purchaserIdDoc")} *
-                    <span className="text-[10px] text-primary ml-1">({identityDocLabel(tldFromDomain(purchaserDomain))})</span>
+                    <span className="text-[10px] text-primary ml-1">({identityDocLabel(tldFromDomain(purchaserDomain), locale === "en")})</span>
                   </label>
                   <input
                     value={purchaser.id_number}
@@ -1493,7 +1493,7 @@ export default function DomainsPage() {
             </div>
             <div className="p-3 bg-muted/30 border border-border rounded-2xl text-xs text-muted-foreground flex items-center justify-center gap-2">
               <SparkleIcon className="w-3.5 h-3.5 text-primary shrink-0" />
-              <span>Mohon jangan menutup atau merefresh halaman ini.</span>
+              <span>{locale === "en" ? "Please do not close or refresh this page." : "Mohon jangan menutup atau merefresh halaman ini."}</span>
             </div>
           </div>
         </div>
@@ -1525,17 +1525,17 @@ export default function DomainsPage() {
             {/* Title */}
             <div className="space-y-1.5">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 mb-1">
-                <SparkleIcon className="w-3.5 h-3.5" /> Pembelian & Registrasi Berhasil
+                <SparkleIcon className="w-3.5 h-3.5" /> {locale === "en" ? "Purchase & Registration Successful" : "Pembelian & Registrasi Berhasil"}
               </div>
               <h2 className="text-xl font-bold text-foreground tracking-tight">
                 {purchasedSuccessData.verificationStatus === "pending_verification"
-                  ? "Menunggu Verifikasi Identitas"
-                  : "Selamat! Domain Anda Siap Digunakan"}
+                  ? (locale === "en" ? "Waiting for Identity Verification" : "Menunggu Verifikasi Identitas")
+                  : (locale === "en" ? "Congratulations! Your Domain Is Ready to Use" : "Selamat! Domain Anda Siap Digunakan")}
               </h2>
               <p className="text-xs sm:text-sm text-muted-foreground">
                 {purchasedSuccessData.verificationStatus === "pending_verification"
-                  ? "Domain berhasil dipesan dan sedang diverifikasi oleh registrar. Domain akan aktif setelah verifikasi identitas selesai (1-3 hari kerja)."
-                  : "Domain telah berhasil didaftarkan dan diarahkan ke website Anda secara otomatis."}
+                  ? (locale === "en" ? "The domain has been ordered and is being verified by the registrar. It will be active once identity verification is complete (1-3 business days)." : "Domain berhasil dipesan dan sedang diverifikasi oleh registrar. Domain akan aktif setelah verifikasi identitas selesai (1-3 hari kerja).")
+                  : (locale === "en" ? "The domain has been successfully registered and automatically pointed to your website." : "Domain telah berhasil didaftarkan dan diarahkan ke website Anda secara otomatis.")}
               </p>
             </div>
 

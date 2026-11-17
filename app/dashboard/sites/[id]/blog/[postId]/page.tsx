@@ -224,7 +224,7 @@ export default function EditBlogPostPage() {
       });
       if (!res.ok) {
         const errBody = await res.json().catch(() => ({}));
-        throw new Error(errBody?.error?.message || "Gagal mengupload gambar ke Cloudinary.");
+        throw new Error(errBody?.error?.message || (locale === "en" ? "Failed to upload image to Cloudinary." : "Gagal mengupload gambar ke Cloudinary."));
       }
       const body = await res.json();
       if (!body.secure_url) throw new Error("Format respon Cloudinary tidak valid.");
@@ -246,7 +246,7 @@ export default function EditBlogPostPage() {
         markDirty();
       }
     } catch (err: any) {
-      pushToast(err.message || "Gagal mengupload gambar.", "error");
+      pushToast(err.message || (locale === "en" ? "Failed to upload image." : "Gagal mengupload gambar."), "error");
     }
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
