@@ -596,7 +596,8 @@ export function InlineImage({
   isBackground = false,
   overlayPosition: explicitOverlayPosition,
 }: InlineImageProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const isEN = locale === "en";
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [showUrlInput, setShowUrlInput] = useState(false);
@@ -892,7 +893,7 @@ export function InlineImage({
               <button
                 type="button"
                 onClick={handleSaveUrl}
-                title="Simpan URL"
+                title={isEN ? "Save URL" : "Simpan URL"}
                 className="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shrink-0 transition-colors active:scale-95 cursor-pointer shadow-sm"
               >
                 <Check className="w-3.5 h-3.5" />
@@ -900,7 +901,7 @@ export function InlineImage({
               <button
                 type="button"
                 onClick={handleCancelUrl}
-                title="Batal"
+                title={isEN ? "Cancel" : "Batal"}
                 className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white shrink-0 transition-colors active:scale-95 cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
