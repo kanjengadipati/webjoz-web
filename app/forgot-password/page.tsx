@@ -56,7 +56,7 @@ export default function ForgotPasswordPage() {
           <Label htmlFor="email">{t("auth.forgotEmail")}</Label>
           <Input id="email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder={t("auth.forgotEmailPlaceholder")} />
         </div>
-        <Button type="submit" variant="floating-arrow-right" disabled={state === "loading"} className="w-full">
+        <Button type="submit" variant="floating-arrow-right" size="lg" disabled={state === "loading"} className="w-full">
           {state === "loading" ? t("auth.forgotSending") : t("auth.forgotSubmit")}
         </Button>
       </form>
