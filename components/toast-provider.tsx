@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertIcon, CheckIcon, CloseIcon, InfoIcon, Button } from "webjoz-ui";
+import { AlertIcon, CheckIcon, CloseIcon, InfoIcon, Button, NotificationCard } from "webjoz-ui";
 
 import {
   createContext,
@@ -145,73 +145,58 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 }
 
 function ToastNotice({ toast, dismissToast }: { toast: Toast; dismissToast: (id: number) => void }) {
+  const tone: "success" | "error" | "info" = toast.tone === "success" ? "success" : toast.tone === "error" ? "error" : "info";
+
+  const action = toast.actionLabel
+    ? {
+        label: toast.actionLabel,
+        onClick: () => {
+          if (toast.actionHref) window.location.href = toast.actionHref;
+          dismissToast(toast.id);
+        },
+      }
+    : undefined;
+
   return (
-    <div
-      className={cn(
-        "pointer-events-auto flex w-full items-start gap-3 rounded-xl border px-4 py-3 text-sm shadow-lg backdrop-blur-xl",
-        TOAST_STYLES[toast.tone],
-      )}
-      role={toast.tone === "error" ? "alert" : "status"}
-      aria-live={toast.tone === "error" ? "assertive" : "polite"}
+    <NotificationCard
+      title={toast.title}
+      description={toast.message}
+      tone={tone}
+      duration={toast.autoClose ? 2800 : 0}
+      onClose={() => dismissToast(toast.id)}
+      action={action}
     >
-      <div className="mt-0.5">{toastIcon(toast.tone)}</div>
-      <div className="min-w-0 flex-1">
-        <div className="font-semibold leading-6 text-current">{toast.title}</div>
-        {toast.message ? <div className="mt-0.5 leading-5 text-current opacity-80">{toast.message}</div> : null}
-        {toast.aiDetails ? <div className="mt-1.5 rounded bg-current/5 px-2 py-1 text-xs leading-4 text-current opacity-70">{toast.aiDetails}</div> : null}
-        
-        {toast.suggestions && toast.suggestions.length > 0 ? (
-          <div className="mt-3 flex flex-wrap gap-2">
-            {toast.suggestions.map((suggestion, idx) => {
-              const isPrimary = suggestion.priority === "primary";
-              const btnClass = cn(
-                "h-8 border px-3 text-current transition-colors text-xs font-medium rounded-md flex items-center",
-                isPrimary 
-                  ? "border-current/30 bg-current/10 hover:bg-current/15" 
-                  : "border-transparent bg-transparent hover:bg-current/5"
-              );
-              
-              if (suggestion.url) {
-                return (
-                  <Link key={idx} href={suggestion.url} className={btnClass} onClick={() => dismissToast(toast.id)}>
-                    {suggestion.title}
-                  </Link>
-                );
-              }
-              
+      {toast.aiDetails ? (
+        <div className="rounded-lg bg-current/[0.06] px-2 py-1 text-[11px] leading-4 text-current opacity-80">
+          {toast.aiDetails}
+        </div>
+      ) : null}
+      {toast.suggestions && toast.suggestions.length > 0 ? (
+        <div className="flex flex-wrap gap-2">
+          {toast.suggestions.map((suggestion, idx) => {
+            const isPrimary = suggestion.priority === "primary";
+            const btnClass = cn(
+              "h-8 border px-3 text-current transition-colors text-xs font-medium rounded-md flex items-center",
+              isPrimary
+                ? "border-current/30 bg-current/10 hover:bg-current/15"
+                : "border-transparent bg-transparent hover:bg-current/5",
+            );
+            if (suggestion.url) {
               return (
-                <button key={idx} type="button" className={btnClass} onClick={() => dismissToast(toast.id)}>
+                <Link key={idx} href={suggestion.url} className={btnClass} onClick={() => dismissToast(toast.id)}>
                   {suggestion.title}
-                </button>
+                </Link>
               );
-            })}
-          </div>
-        ) : toast.actionLabel ? (
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="mt-3 h-8 border border-current/20 bg-current/8 px-3 text-current hover:bg-current/12 hover:text-current"
-            onClick={() => {
-              if (toast.actionHref) window.location.href = toast.actionHref;
-              dismissToast(toast.id);
-            }}
-          >
-            {toast.actionLabel}
-          </Button>
-        ) : null}
-      </div>
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        className="size-8 shrink-0 rounded-full text-current opacity-65 hover:bg-current/12 hover:text-current hover:opacity-100"
-        onClick={() => dismissToast(toast.id)}
-        aria-label="Dismiss notification"
-      >
-        <CloseIcon size="sm" />
-      </Button>
-    </div>
+            }
+            return (
+              <button key={idx} type="button" className={btnClass} onClick={() => dismissToast(toast.id)}>
+                {suggestion.title}
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
+    </NotificationCard>
   );
 }
 
