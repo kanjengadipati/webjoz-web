@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
+import { useI18n } from "@/lib/i18n/context";
 import { Plus, X, Trash2, Check, ExternalLink, Globe } from "lucide-react";
 import {
   SocialIcon,
@@ -40,6 +41,7 @@ export default function InlineSocialEditor({
   labelClass,
   containerClassName = "flex flex-wrap items-center gap-2.5",
 }: InlineSocialEditorProps) {
+  const isEN = useI18n().locale === "en";
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [editingPlatform, setEditingPlatform] = useState("");
@@ -325,7 +327,7 @@ export default function InlineSocialEditor({
                     }}
                     className="text-[11px] text-muted-foreground hover:text-foreground px-1.5 py-1"
                   >
-                    Batal
+                    {isEN ? "Cancel" : "Batal"}
                   </button>
                 </div>
               ) : (
@@ -382,10 +384,10 @@ export default function InlineSocialEditor({
                   type="button"
                   onClick={handleDelete}
                   className="inline-flex items-center gap-1 text-[11px] text-red-500 hover:text-red-400 py-1 px-1.5 rounded hover:bg-red-500/10 transition-colors cursor-pointer"
-                  title="Hapus media sosial ini"
+                  title={isEN ? "Delete this social media" : "Hapus media sosial ini"}
                 >
                   <Trash2 className="w-3 h-3" />
-                  Hapus
+                  {isEN ? "Delete" : "Hapus"}
                 </button>
               ) : (
                 <div />
@@ -397,14 +399,14 @@ export default function InlineSocialEditor({
                   onClick={closePopover}
                   className="px-2.5 py-1 text-[11px] rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
                 >
-                  Batal
+                  {isEN ? "Cancel" : "Batal"}
                 </button>
                 <button
                   type="submit"
                   className="inline-flex items-center gap-1 px-3 py-1 text-[11px] font-medium rounded-lg bg-primary text-primary-foreground hover:brightness-110 active:scale-95 transition-all cursor-pointer shadow-sm"
                 >
                   <Check className="w-3 h-3" />
-                  Simpan
+                  {isEN ? "Save" : "Simpan"}
                 </button>
               </div>
             </div>
