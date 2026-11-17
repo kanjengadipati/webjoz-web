@@ -16,7 +16,7 @@ interface TestimonialsVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: () => void;
-  language?: "id" | "en";
+  language?: string;
 }
 
 type WallItem = TestimonialItem & { video_url?: string | null };

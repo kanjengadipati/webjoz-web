@@ -25,6 +25,7 @@ type TestimonialVariantProps = {
   onAddItem?: () => void;
   isExample?: boolean;
   locale?: string;
+  language?: string;
 };
 
 const variants: Record<string, ComponentType<TestimonialVariantProps>> = {
@@ -46,6 +47,7 @@ export default function TestimonialsSection({
   isSelected,
   collapseSheetForInlineEdit,
   onEditingStateChange,
+  language,
 }: {
   testimonials: TemplateProps["content"]["testimonials"];
   design_token?: DesignToken | null;
@@ -55,8 +57,10 @@ export default function TestimonialsSection({
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  language?: string;
 }) {
   const { locale } = useI18n();
+  const effectiveLang = language || locale || "id";
   const variant = design_token?.layout?.section_variants?.testimonials ?? "carousel";
   const Renderer = variants[variant] ?? TestimonialsClassic;
   const isEditor = !!(isEditorMode && (editorChrome ?? true));
@@ -64,16 +68,19 @@ export default function TestimonialsSection({
 
   const onAddItem = useCallback(() => {
     if (!onUpdateField) return;
+    const isEN = effectiveLang.toLowerCase().startsWith("en");
     const items = [...(testimonials?.items ?? [])];
     items.push({
-      quote: "Pelayanan sangat ramah, profesional, dan hasil yang diberikan sangat memuaskan!",
-      name: "Nama Pelanggan",
-      role: "Pelanggan",
-      avatar_initials: "NP",
+      quote: isEN
+        ? "Very friendly and professional service, the results exceeded our expectations!"
+        : "Pelayanan sangat ramah, profesional, dan hasil yang diberikan sangat memuaskan!",
+      name: isEN ? "Client Name" : "Nama Pelanggan",
+      role: isEN ? "Client" : "Pelanggan",
+      avatar_initials: isEN ? "CN" : "NP",
       avatar_color: "var(--dt-primary)",
     });
     onUpdateField("testimonials", "items", items);
-  }, [testimonials?.items, onUpdateField]);
+  }, [testimonials?.items, onUpdateField, effectiveLang]);
 
 
   // Semua hook di atas; baru boleh return awal.
@@ -92,6 +99,7 @@ export default function TestimonialsSection({
         onEditingStateChange={onEditingStateChange}
         isExample={isExample}
         locale={locale}
+        language={effectiveLang}
         onAddItem={isEditor ? onAddItem : undefined}
       />
     </>

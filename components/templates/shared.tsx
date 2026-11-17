@@ -1260,6 +1260,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   const { locale: ctxLocale } = useI18n();
   // Prefer context locale (always accurate); prop is fallback for SSR edge cases
   const locale = ctxLocale || localeProp;
+  const isEN = (locale || "").toLowerCase().startsWith("en");
 
   if (!testimonials) return null;
   if (!testimonials.items?.length && !(isEditorMode && (editorChrome ?? true) && onAddItem)) return null;
@@ -1337,7 +1338,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                   onUpdateField("testimonials", "items", updated);
                 }}
                 className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white flex items-center justify-center opacity-70 group-hover:opacity-100 transition-all cursor-pointer z-20 shadow-sm border border-red-500/20"
-                title="Hapus testimoni"
+                title={locale === "en" ? "Delete testimonial" : "Hapus testimoni"}
               >
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
@@ -1488,7 +1489,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                         onUpdateField("testimonials", "items", updated);
                       }}
                       className="absolute top-2 right-12 w-7 h-7 rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center opacity-80 group-hover:opacity-100 transition-all cursor-pointer z-30 shadow-md"
-                      title="Hapus percakapan testimoni ini"
+                      title={locale === "en" ? "Delete this testimonial conversation" : "Hapus percakapan testimoni ini"}
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -2375,7 +2376,7 @@ function MenuCatalogCard({
                   {isEditorMode && onUpdateField && editSection && pathBase && (
                     <button
                       type="button"
-                      title="Hapus fitur"
+                      title={isEN ? "Delete feature" : "Hapus fitur"}
                       onClick={(e) => {
                         e.stopPropagation();
                         const nextFeatures = (features || []).filter((_, i) => i !== fi);
@@ -2915,6 +2916,7 @@ function CatalogMenuFilterBar({
   className,
   style,
 }: CatalogMenuFilterBarProps) {
+  const isEN = useI18n().locale === "en";
   const safeCategories = categories || [];
   const totalAllItems = safeCategories.reduce((acc, cat) => acc + (cat?.items?.length ?? 0), 0);
 
@@ -2948,7 +2950,7 @@ function CatalogMenuFilterBar({
             type="button"
             onClick={() => onSearchChange("")}
             className="absolute right-3.5 p-1 rounded-full opacity-60 hover:opacity-100 cursor-pointer transition-opacity"
-            aria-label="Hapus pencarian"
+            aria-label={isEN ? "Clear search" : "Hapus pencarian"}
             style={{ color: "var(--dt-text)" }}
           >
             <X className="w-4 h-4" />

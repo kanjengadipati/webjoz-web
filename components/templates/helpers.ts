@@ -493,8 +493,8 @@ export function getSectionVariant(dt: any, secKey: string): string | undefined {
   return (dt?.layout?.section_variants as any)?.[secKey];
 }
 
-export function filterEmptySections(sectionOrder: string[], content: any, isEditorMode: boolean): string[] {
-  if (isEditorMode) return sectionOrder;
+export function filterEmptySections(sectionOrder: string[], content: any, _isEditorMode?: boolean): string[] {
+  if (!content) return sectionOrder;
   return sectionOrder.filter((key) => {
     if (key === "faq") return (content.faq?.items?.length ?? 0) > 0;
     if (key === "testimonials") {
@@ -510,6 +510,7 @@ export function filterEmptySections(sectionOrder: string[], content: any, isEdit
     if (key === "stats") return (content.stats?.items?.length ?? 0) > 0;
     if (key === "partners") return (content.partners?.items?.length ?? 0) > 0;
     if (key === "pricing") return (content.pricing?.plans?.length ?? 0) > 0;
+    if (key === "skills") return (content.skills?.categories?.length ?? 0) > 0 || (content.skills?.groups?.length ?? 0) > 0;
     if (key === "blog") return (content.blog?.posts?.length ?? 0) > 0;
     return true;
   });
