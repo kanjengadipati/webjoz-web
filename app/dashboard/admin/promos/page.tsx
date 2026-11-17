@@ -7,6 +7,7 @@ import { usePermissions } from "@/hooks/use-permissions";
 import { Loader2, Plus, Pencil, Trash2, Percent, Tag, Calendar, Hash, Shield, Ban, CheckCircle, XCircle } from "lucide-react";
 import { Button, Card, CardContent, CardHeader, CardTitle, Dialog, FormField, Input, Textarea, Label, CustomSelect } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
+import { useI18n } from "@/lib/i18n/context";
 
 interface PromoCode {
   id: number;
@@ -64,6 +65,7 @@ const emptyForm: PromoForm = {
 export default function AdminPromosPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const { role } = usePermissions();
   const [promos, setPromos] = useState<PromoCode[]>([]);
   const [loading, setLoading] = useState(true);
@@ -93,7 +95,7 @@ export default function AdminPromosPage() {
       setPromos(res.data?.promos || []);
       setTotal(res.data?.total || 0);
     } catch (err: any) {
-      pushToast(err.message || "Gagal memuat kode promo", "error");
+      pushToast(err.message || t("dashboard.toast.promoLoadFailed"), "error");
     } finally {
       setLoading(false);
     }
@@ -145,18 +147,18 @@ export default function AdminPromosPage() {
           method: "PUT",
           body: JSON.stringify(payload),
         }, token);
-        pushToast("Kode promo berhasil diperbarui", "success");
+        pushToast(t("dashboard.toast.promoUpdated"), "success");
       } else {
         await request("/admin/promos", {
           method: "POST",
           body: JSON.stringify(payload),
         }, token);
-        pushToast("Kode promo berhasil dibuat", "success");
+        pushToast(t("dashboard.toast.promoCreated"), "success");
       }
       setDialogOpen(false);
       fetchPromos();
     } catch (err: any) {
-      pushToast(err.message || "Gagal menyimpan kode promo", "error");
+      pushToast(err.message || t("dashboard.toast.promoSaveFailed"), "error");
     } finally {
       setSaving(false);
     }
@@ -166,10 +168,10 @@ export default function AdminPromosPage() {
     if (!token || !confirm("Hapus kode promo ini?")) return;
     try {
       await request(`/admin/promos/${id}`, { method: "DELETE" }, token);
-      pushToast("Kode promo berhasil dihapus", "success");
+      pushToast(t("dashboard.toast.promoDeleted"), "success");
       fetchPromos();
     } catch (err: any) {
-      pushToast(err.message || "Gagal menghapus kode promo", "error");
+      pushToast(err.message || t("dashboard.toast.promoDeleteFailed"), "error");
     }
   }
 

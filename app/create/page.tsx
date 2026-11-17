@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import { useAuthToken, useAuthReady } from "@/lib/auth-store";
 import { useActiveTenant } from "@/lib/tenant-store";
 import { useToast } from "@/components/toast-provider";
+import { useI18n } from "@/lib/i18n/context";
 import { SiteWizard } from "@/components/site-wizard";
 import { request } from "@/lib/api/client";
 import { buildFullContent } from "@/lib/build-full-content";
@@ -23,6 +24,7 @@ function PublicWizardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const token = useAuthToken();
   const authReady = useAuthReady();
   const { activeTenantId, memberships, createTenant, resolveBusinessTenant, loading: tenantLoading } = useActiveTenant();
@@ -267,7 +269,7 @@ function PublicWizardContent() {
           const failedImages = matResult.failed + draftMat.failed;
           if (failedImages > 0) {
             console.warn("[create] Beberapa gambar gagal di-upload, fallback ke gambar AI:", failedImages);
-            pushToast(`${failedImages} foto gagal diunggah dan diganti foto bawaan. Kamu bisa menggantinya lagi di editor.`, "info");
+            pushToast(t("dashboard.toast.imagesUploadFailed", undefined, { count: String(failedImages) }), "info");
           }
           let contentForSave = matResult.content;
           // 3) Jangan biarkan sentinel/blob yang gagal diproses lolos ke server.
@@ -329,7 +331,7 @@ function PublicWizardContent() {
 
   // ── Auth redirect handler (called from wizard) ────────────────────────────
   const handleNeedAuth = () => {
-    pushToast("Daftar atau login dulu untuk menyimpan & edit website kamu.", "info");
+    pushToast(t("dashboard.toast.loginRequired"), "info");
     // Use window.location.replace (not router.push/replace) because Next.js App Router's
     // router.replace doesn't reliably replace native browser history entries.
     // window.location.replace() is guaranteed by the browser spec to remove /create

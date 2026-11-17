@@ -544,6 +544,32 @@ export interface Translations {
       upgrade: string;
       settings: string;
     };
+    toast: {
+      loginRequired: string;
+      imagesUploadFailed: string;
+      loadFailed: string;
+      statusUpdated: string;
+      statusUpdateFailed: string;
+      refundProcessed: string;
+      refundFailed: string;
+      promoLoadFailed: string;
+      promoUpdated: string;
+      promoCreated: string;
+      promoSaveFailed: string;
+      promoDeleted: string;
+      promoDeleteFailed: string;
+      reportLoadFailed: string;
+      cacheSaveFailed: string;
+      tokenRequired: string;
+      noActiveVariants: string;
+      rateLimitHit: string;
+      batchDone: string;
+      dataDownloaded: string;
+      variantHidden: string;
+      variantShown: string;
+      evalDone: string;
+      evalFailed: string;
+    };
     sites: {
       close: string;
       cancel: string;
@@ -4453,6 +4479,32 @@ export const translations: Record<Locale, Translations> = {
         billing: "Riwayat Tagihan",
         upgrade: "Upgrade Paket",
         settings: "Pengaturan",
+      },
+      toast: {
+        loginRequired: "Daftar atau login dulu untuk menyimpan & edit website kamu.",
+        imagesUploadFailed: "{count} foto gagal diunggah dan diganti foto bawaan. Kamu bisa menggantinya lagi di editor.",
+        loadFailed: "Gagal memuat data",
+        statusUpdated: "Status berhasil diupdate",
+        statusUpdateFailed: "Gagal update status",
+        refundProcessed: "Refund berhasil diproses",
+        refundFailed: "Gagal proses refund",
+        promoLoadFailed: "Gagal memuat kode promo",
+        promoUpdated: "Kode promo berhasil diperbarui",
+        promoCreated: "Kode promo berhasil dibuat",
+        promoSaveFailed: "Gagal menyimpan kode promo",
+        promoDeleted: "Kode promo berhasil dihapus",
+        promoDeleteFailed: "Gagal menghapus kode promo",
+        reportLoadFailed: "Gagal memuat laporan",
+        cacheSaveFailed: "Gagal menyimpan ke server, disimpan di cache browser.",
+        tokenRequired: "Token tidak tersedia. Harap login ulang.",
+        noActiveVariants: "Tidak ada varian aktif untuk dinilai.",
+        rateLimitHit: "Rate limit tercapai pada {label}. Menghentikan batch.",
+        batchDone: "Batch selesai: {success} berhasil, {fail} gagal/dibatalkan.",
+        dataDownloaded: "Data evaluasi berhasil diunduh.",
+        variantHidden: 'Varian "{variant}" berhasil disembunyikan.',
+        variantShown: 'Varian "{variant}" berhasil diaktifkan kembali.',
+        evalDone: "Evaluasi selesai: Skor {score}/100 (Tier {tier}).",
+        evalFailed: "Gagal mengevaluasi varian",
       },
       sites: {
         close: "Tutup",
@@ -8902,6 +8954,32 @@ export const translations: Record<Locale, Translations> = {
         billing: "Billing History",
         upgrade: "Upgrade Plan",
         settings: "Settings",
+      },
+      toast: {
+        loginRequired: "Please sign in or register first to save & edit your website.",
+        imagesUploadFailed: "{count} photos failed to upload and were replaced with defaults. You can change them again in the editor.",
+        loadFailed: "Failed to load data",
+        statusUpdated: "Status updated successfully",
+        statusUpdateFailed: "Failed to update status",
+        refundProcessed: "Refund processed successfully",
+        refundFailed: "Failed to process refund",
+        promoLoadFailed: "Failed to load promo codes",
+        promoUpdated: "Promo code updated successfully",
+        promoCreated: "Promo code created successfully",
+        promoSaveFailed: "Failed to save promo code",
+        promoDeleted: "Promo code deleted successfully",
+        promoDeleteFailed: "Failed to delete promo code",
+        reportLoadFailed: "Failed to load report",
+        cacheSaveFailed: "Failed to save to server, saved in browser cache.",
+        tokenRequired: "Token unavailable. Please sign in again.",
+        noActiveVariants: "No active variants to evaluate.",
+        rateLimitHit: "Rate limit reached on {label}. Stopping batch.",
+        batchDone: "Batch complete: {success} succeeded, {fail} failed/cancelled.",
+        dataDownloaded: "Evaluation data downloaded successfully.",
+        variantHidden: 'Variant "{variant}" hidden successfully.',
+        variantShown: 'Variant "{variant}" re-enabled successfully.',
+        evalDone: "Evaluation complete: Score {score}/100 (Tier {tier}).",
+        evalFailed: "Failed to evaluate variant",
       },
       sites: {
         close: "Close",

@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { useAuthToken } from "@/lib/auth-store";
 import { listPayments, forceUpdateStatus, processRefund, type PaymentResponse } from "@/lib/api/payments";
 import { useToast } from "@/components/toast-provider";
+import { useI18n } from "@/lib/i18n/context";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 const PAGE_SIZE = 20;
@@ -46,6 +47,7 @@ function fmtDate(iso: string) {
 export default function AdminPaymentsPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t } = useI18n();
 
   const [payments, setPayments] = useState<PaymentResponse[]>([]);
   const [total, setTotal] = useState(0);
@@ -84,7 +86,7 @@ export default function AdminPaymentsPage() {
       setPayments(res.data ?? []);
       setTotal((res.meta as any)?.total ?? 0);
     } catch (e: any) {
-      pushToast(e.message ?? "Gagal memuat data", "error");
+      pushToast(e.message ?? t("dashboard.toast.loadFailed"), "error");
     } finally {
       setLoading(false);
     }
@@ -102,11 +104,11 @@ export default function AdminPaymentsPage() {
     setForceLoading(true);
     try {
       await forceUpdateStatus(forceTarget.id, newStatus, forceReason || "Admin manual override");
-      pushToast("Status berhasil diupdate", "success");
+      pushToast(t("dashboard.toast.statusUpdated"), "success");
       setForceTarget(null);
       fetchPayments();
     } catch (e: any) {
-      pushToast(e.message ?? "Gagal update status", "error");
+      pushToast(e.message ?? t("dashboard.toast.statusUpdateFailed"), "error");
     } finally {
       setForceLoading(false);
     }
@@ -117,11 +119,11 @@ export default function AdminPaymentsPage() {
     setRefundLoading(true);
     try {
       await processRefund(refundTarget.id, refundReason || "Admin initiated refund");
-      pushToast("Refund berhasil diproses", "success");
+      pushToast(t("dashboard.toast.refundProcessed"), "success");
       setRefundTarget(null);
       fetchPayments();
     } catch (e: any) {
-      pushToast(e.message ?? "Gagal proses refund", "error");
+      pushToast(e.message ?? t("dashboard.toast.refundFailed"), "error");
     } finally {
       setRefundLoading(false);
     }

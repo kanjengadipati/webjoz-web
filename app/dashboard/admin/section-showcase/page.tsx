@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo, useCallback, useRef } from "react"
 import { usePermissions } from "@/hooks/use-permissions";
 import { useAuthToken } from "@/lib/auth-store";
 import { useToast } from "@/components/toast-provider";
+import { useI18n } from "@/lib/i18n/context";
 import {
   ShieldAlert,
   Eye,
@@ -70,6 +71,7 @@ export default function SectionShowcasePage() {
   const isSuperAdmin = userRole === "superadmin";
   const authToken = useAuthToken();
   const { pushToast } = useToast();
+  const { t } = useI18n();
 
   const [selectedSection, setSelectedSection] = useState<string>("hero");
   const [selectedVariant, setSelectedVariant] = useState<string>("");
@@ -148,8 +150,8 @@ export default function SectionShowcasePage() {
 
       pushToast(
         willHide
-          ? `Varian "${variant}" berhasil disembunyikan.`
-          : `Varian "${variant}" berhasil diaktifkan kembali.`,
+          ? t("dashboard.toast.variantHidden", undefined, { variant })
+          : t("dashboard.toast.variantShown", undefined, { variant }),
         willHide ? "info" : "success"
       );
 
@@ -157,7 +159,7 @@ export default function SectionShowcasePage() {
         try {
           await saveDesignAssetsConfig(updated, authToken);
         } catch {
-          pushToast("Gagal menyimpan ke server, disimpan di cache browser.", "error");
+          pushToast(t("dashboard.toast.cacheSaveFailed"), "error");
         }
       }
     },
@@ -175,7 +177,7 @@ export default function SectionShowcasePage() {
     ): Promise<{ ok: boolean; score?: number; rateLimited?: boolean; error?: string }> => {
       const critiqueKey = `${sectionKey}:${variantValue}`;
       if (!authToken) {
-        if (!silent) pushToast("Token tidak tersedia. Harap login ulang.", "error");
+        if (!silent) pushToast(t("dashboard.toast.tokenRequired"), "error");
         return { ok: false, error: "Token tidak tersedia" };
       }
       setCritiquingVariant({ key: critiqueKey, method: "dom" });
@@ -232,13 +234,13 @@ export default function SectionShowcasePage() {
 
         if (!silent) {
           pushToast(
-            `Evaluasi selesai: Skor ${result.score}/100 (Tier ${result.tier}).`,
+            t("dashboard.toast.evalDone", undefined, { score: String(result.score), tier: String(result.tier) }),
             result.tier === "S" || result.tier === "A" ? "success" : "info"
           );
         }
         return { ok: true, score: result.score };
       } catch (err: any) {
-        const errMsg = err?.message || "Gagal mengevaluasi varian";
+        const errMsg = err?.message || t("dashboard.toast.evalFailed");
         const isRateLimit = errMsg.includes("429") || errMsg.toLowerCase().includes("quota");
         if (!silent) pushToast(errMsg, "error");
         return { ok: false, rateLimited: isRateLimit, error: errMsg };
@@ -257,7 +259,7 @@ export default function SectionShowcasePage() {
   // Batch Critique All Variants in Section
   const handleBatchCritiqueSection = useCallback(async () => {
     if (!authToken) {
-      pushToast("Token tidak tersedia. Harap login ulang.", "error");
+      pushToast(t("dashboard.toast.tokenRequired"), "error");
       return;
     }
     const currentOptions = SECTION_VARIANT_OPTIONS[selectedSection] ?? [];
@@ -265,7 +267,7 @@ export default function SectionShowcasePage() {
     const activeVariants = currentOptions.filter((v) => !hiddenSet.has(v.value));
 
     if (activeVariants.length === 0) {
-      pushToast("Tidak ada varian aktif untuk dinilai.", "info");
+      pushToast(t("dashboard.toast.noActiveVariants"), "info");
       return;
     }
 
@@ -294,7 +296,7 @@ export default function SectionShowcasePage() {
       } else {
         failCount++;
         if (res.rateLimited) {
-          pushToast(`Rate limit tercapai pada ${v.label}. Menghentikan batch.`, "error");
+          pushToast(t("dashboard.toast.rateLimitHit", undefined, { label: v.label }), "error");
           break;
         }
       }
@@ -303,7 +305,7 @@ export default function SectionShowcasePage() {
 
     setBatchCritiquing(false);
     setBatchProgressText("");
-    pushToast(`Batch selesai: ${successCount} berhasil, ${failCount} gagal/dibatalkan.`, successCount > 0 ? "success" : "info");
+    pushToast(t("dashboard.toast.batchDone", undefined, { success: String(successCount), fail: String(failCount) }), successCount > 0 ? "success" : "info");
   }, [authToken, selectedSection, hiddenVariants, handleCritiqueVariant, pushToast]);
 
   // Export Critiques as JSON
@@ -315,7 +317,7 @@ export default function SectionShowcasePage() {
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
-    pushToast("Data evaluasi berhasil diunduh.", "success");
+    pushToast(t("dashboard.toast.dataDownloaded"), "success");
   }, [variantCritiques, pushToast]);
 
   // Copy variant value handler

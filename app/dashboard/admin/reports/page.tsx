@@ -6,6 +6,7 @@ import { cn, formatIdNumber } from "@/lib/utils";
 import { request } from "@/lib/api/client";
 import { useAuthToken } from "@/lib/auth-store";
 import { useToast } from "@/components/toast-provider";
+import { useI18n } from "@/lib/i18n/context";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -342,6 +343,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 export default function AdminReportsPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const { t } = useI18n();
   const [report, setReport] = useState<RevenueReport | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -355,7 +357,7 @@ export default function AdminReportsPage() {
       setReport(res.data);
       setLastUpdated(new Date());
     } catch (e: any) {
-      pushToast(e.message ?? "Gagal memuat laporan", "error");
+      pushToast(e.message ?? t("dashboard.toast.reportLoadFailed"), "error");
     } finally {
       isRefresh ? setRefreshing(false) : setLoading(false);
     }
