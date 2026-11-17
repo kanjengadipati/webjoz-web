@@ -531,7 +531,8 @@ function SortableCategoryRow({
   activeEmojiPicker, setActiveEmojiPicker,
   sensors, handleItemDragEnd, mode,
 }: any) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const isEN = locale === "en";
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: catId });
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
@@ -576,7 +577,7 @@ function SortableCategoryRow({
           type="button"
           onClick={() => removeCategory(catIdx)}
           className="text-red-500/60 hover:text-red-500 p-1.5 rounded-lg hover:bg-red-500/10 cursor-pointer transition-colors"
-          aria-label="Hapus kategori"
+          aria-label={isEN ? "Delete category" : "Hapus kategori"}
         >
           <Trash2 className="w-4 h-4" />
         </button>
@@ -642,7 +643,8 @@ function SortableItemRow({
   updateItem, updateItemMulti, removeItem, onAiDescription, aiLoadingDesc, isPremium,
   onUpgradeRequired, catName, activeEmojiPicker, setActiveEmojiPicker, mode, updateField,
 }: any) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const isEN = locale === "en";
   const itemSortId = item.id ?? item.name ?? String(itemIdx);
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: itemSortId });
   const style: React.CSSProperties = {
@@ -1035,7 +1037,7 @@ function SortableItemRow({
                         updateItem(catIdx, itemIdx, "delivery_platforms", next);
                       }}
                       className="text-red-500/60 hover:text-red-500 cursor-pointer p-1 rounded hover:bg-red-500/10 transition-colors"
-                      aria-label="Hapus platform"
+                      aria-label={isEN ? "Delete platform" : "Hapus platform"}
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -1223,7 +1225,8 @@ export function VariantGroupEditor({
   onChange: (groups: VGGroup[]) => void;
   mode?: "page" | "sidebar";
 }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const isEN = locale === "en";
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
 
   function updateGroup(gid: string, patch: Partial<VGGroup>) {
@@ -1296,7 +1299,7 @@ export function VariantGroupEditor({
                     type="button"
                     onClick={(e) => { e.stopPropagation(); removeGroup(group.id); }}
                     className="text-red-500/60 hover:text-red-500 p-1 rounded-lg hover:bg-red-500/10 cursor-pointer transition-colors"
-                    aria-label="Hapus grup"
+                    aria-label={isEN ? "Delete group" : "Hapus grup"}
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
@@ -1417,7 +1420,7 @@ export function VariantGroupEditor({
                             onClick={() => removeOption(group.id, opt.id)}
                             disabled={group.options.length <= 1}
                             className="text-red-500/60 hover:text-red-500 disabled:opacity-30 cursor-pointer p-1.5 rounded-lg hover:bg-red-500/10 transition-colors shrink-0"
-                            aria-label="Hapus opsi"
+                            aria-label={isEN ? "Delete option" : "Hapus opsi"}
                           >
                             <X className="w-4 h-4" />
                           </button>
