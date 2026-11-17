@@ -620,6 +620,78 @@ body.webjoz-wizard-active {
   background-color: oklch(0.12 0 0) !important;
   color: oklch(0.98 0 0) !important;
 }
+
+/* floating-arrow-right — same as floating-arrow but uses → arrow */
+.btn-floating-arrow-right {
+  background: linear-gradient(180deg,
+    oklch(0.98 0 0) 0%,
+    oklch(0.92 0 0) 100%
+  );
+  border: 1px solid oklch(0.7 0 0 / 0.3);
+  color: oklch(0.1 0 0);
+  justify-content: space-between;
+  padding-top: 0.25rem !important;
+  padding-bottom: 0.25rem !important;
+  padding-right: 0.25rem !important;
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.9),
+    inset 0 -1px 0 oklch(0 0 0 / 0.06),
+    0 2px 12px oklch(0 0 0 / 0.2),
+    0 6px 24px oklch(0 0 0 / 0.15),
+    0 1px 2px oklch(0 0 0 / 0.15);
+}
+.btn-floating-arrow-right:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.9),
+    inset 0 -1px 0 oklch(0 0 0 / 0.04),
+    0 4px 16px oklch(0 0 0 / 0.1),
+    0 10px 32px oklch(0 0 0 / 0.08);
+}
+.btn-floating-arrow-right:active:not(:disabled) {
+  transform: scale(0.98) translateY(0);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.7),
+    inset 0 2px 4px oklch(0 0 0 / 0.06),
+    0 1px 4px oklch(0 0 0 / 0.05);
+}
+.btn-floating-arrow-right span[class*="rounded-full"] {
+  background-color: oklch(0.12 0 0) !important;
+  color: oklch(0.98 0 0) !important;
+}
+
+/* Dark mode — both floating-arrow variants stay white on dark backgrounds */
+:where(.dark, .dark *) .btn-floating-arrow,
+:where(.dark, .dark *) .btn-floating-arrow-right {
+  background: linear-gradient(180deg,
+    oklch(0.98 0 0) 0%,
+    oklch(0.90 0 0) 100%
+  );
+  border: 1px solid oklch(0.6 0 0 / 0.4);
+  color: oklch(0.08 0 0);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.95),
+    inset 0 -1px 0 oklch(0 0 0 / 0.08),
+    0 2px 16px oklch(0 0 0 / 0.5),
+    0 6px 28px oklch(0 0 0 / 0.4);
+}
+:where(.dark, .dark *) .btn-floating-arrow:hover:not(:disabled),
+:where(.dark, .dark *) .btn-floating-arrow-right:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.95),
+    0 4px 20px oklch(0 0 0 / 0.5),
+    0 10px 36px oklch(0 0 0 / 0.35);
+}
+:where(.dark, .dark *) .btn-floating-arrow:active:not(:disabled),
+:where(.dark, .dark *) .btn-floating-arrow-right:active:not(:disabled) {
+  transform: scale(0.98) translateY(0);
+}
+:where(.dark, .dark *) .btn-floating-arrow span[class*="rounded-full"],
+:where(.dark, .dark *) .btn-floating-arrow-right span[class*="rounded-full"] {
+  background-color: oklch(0.1 0 0) !important;
+  color: oklch(0.98 0 0) !important;
+}
 /* ─────────────────────────────────────────────────────────────────── */
 
 .theme-blue {
