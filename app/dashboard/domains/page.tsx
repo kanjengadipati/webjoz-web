@@ -445,7 +445,7 @@ export default function DomainsPage() {
       if (requiresVerification(purchaserDomain)) {
         const idVal = purchaser.id_number.trim();
         if (!/^\d+$/.test(idVal)) {
-          pushToast("Nomor dokumen identitas harus berupa angka (NIK/NPWP/NIB).", "error");
+          pushToast(t("dashboard.toast.identityDocNumeric"), "error");
           setIsConfirming(false);
           setBuyingDomain(null);
           return;
@@ -453,7 +453,7 @@ export default function DomainsPage() {
         const tld = tldFromDomain(purchaserDomain);
         const minLen = (tld === "co.id" || tld === "or.id") ? 15 : 16;
         if (idVal.length < minLen) {
-          pushToast(`Panjang ${identityDocLabel(tld)} minimal ${minLen} karakter.`, "error");
+          pushToast(t("dashboard.toast.identityDocMinLength", undefined, { label: identityDocLabel(tld), min: String(minLen) }), "error");
           setIsConfirming(false);
           setBuyingDomain(null);
           return;
@@ -501,7 +501,7 @@ export default function DomainsPage() {
         }, token);
 
         if (!res.data?.approval_url) {
-          pushToast("PayPal order creation failed", "error");
+          pushToast(t("dashboard.toast.paypalOrderFailed"), "error");
           return;
         }
 
@@ -554,7 +554,7 @@ export default function DomainsPage() {
 
         const payment = res.data;
         if (!payment?.snap_token && !payment?.snap_redirect_url) {
-          pushToast("Midtrans payment creation failed", "error");
+          pushToast(t("dashboard.toast.midtransOrderFailed"), "error");
           return;
         }
 
@@ -583,10 +583,10 @@ export default function DomainsPage() {
             },
           });
         } else if (payment.snap_redirect_url) {
-          pushToast("Mengarahkan ke pembayaran...", "info");
+          pushToast(t("dashboard.toast.redirectingPayment"), "info");
           window.location.href = payment.snap_redirect_url;
         } else {
-          pushToast("Gagal membuka pembayaran", "error");
+          pushToast(t("dashboard.toast.openPaymentFailed"), "error");
         }
       }
     } catch (err: unknown) {

@@ -63,7 +63,7 @@ const fmtIDR = (n?: number | null) => {
 export default function OrdersPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
-  const { locale } = useI18n();
+  const { locale, t } = useI18n();
   const { activeTenantId } = useActiveTenant();
 
   const [orders, setOrders] = useState<Order[]>([]);
@@ -91,7 +91,7 @@ export default function OrdersPage() {
       }, token);
       setSites(sitesRes.data || []);
     } catch (err: any) {
-      pushToast(err.message || "Gagal memuat pesanan", "error");
+      pushToast(err.message || t("dashboard.toast.ordersLoadFailed"), "error");
     } finally {
       setLoading(false);
     }
@@ -155,9 +155,9 @@ export default function OrdersPage() {
       const updated = res.data;
       setOrders((prev) => prev.map((x) => (x.id === o.id ? updated : x)));
       if (activeOrder?.id === o.id) setActiveOrder(updated);
-      pushToast(`Status diperbarui menjadi "${STATUS_META[status].label}"`, "success");
+      pushToast(t("dashboard.toast.statusUpdated") + ": " + STATUS_META[status].label, "success");
     } catch (err: any) {
-      pushToast(err.message || "Gagal memperbarui status", "error");
+      pushToast(err.message || t("dashboard.toast.statusUpdateFailed"), "error");
     }
   };
 

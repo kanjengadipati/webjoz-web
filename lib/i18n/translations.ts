@@ -569,6 +569,17 @@ export interface Translations {
       variantShown: string;
       evalDone: string;
       evalFailed: string;
+      loadTransactionsFailed: string;
+      loadInvoiceFailed: string;
+      refundRequestFailed: string;
+      sendInvoiceFailed: string;
+      identityDocNumeric: string;
+      identityDocMinLength: string;
+      paypalOrderFailed: string;
+      midtransOrderFailed: string;
+      redirectingPayment: string;
+      openPaymentFailed: string;
+      ordersLoadFailed: string;
     };
     sites: {
       close: string;
@@ -4505,6 +4516,17 @@ export const translations: Record<Locale, Translations> = {
         variantShown: 'Varian "{variant}" berhasil diaktifkan kembali.',
         evalDone: "Evaluasi selesai: Skor {score}/100 (Tier {tier}).",
         evalFailed: "Gagal mengevaluasi varian",
+        loadTransactionsFailed: "Gagal memuat transaksi",
+        loadInvoiceFailed: "Gagal memuat invoice",
+        refundRequestFailed: "Gagal mengajukan refund",
+        sendInvoiceFailed: "Gagal mengirim invoice",
+        identityDocNumeric: "Nomor dokumen identitas harus berupa angka (NIK/NPWP/NIB).",
+        identityDocMinLength: "Panjang {label} minimal {min} karakter.",
+        paypalOrderFailed: "PayPal order creation failed",
+        midtransOrderFailed: "Midtrans payment creation failed",
+        redirectingPayment: "Mengarahkan ke pembayaran...",
+        openPaymentFailed: "Gagal membuka pembayaran",
+        ordersLoadFailed: "Gagal memuat pesanan",
       },
       sites: {
         close: "Tutup",
@@ -8980,6 +9002,17 @@ export const translations: Record<Locale, Translations> = {
         variantShown: 'Variant "{variant}" re-enabled successfully.',
         evalDone: "Evaluation complete: Score {score}/100 (Tier {tier}).",
         evalFailed: "Failed to evaluate variant",
+        loadTransactionsFailed: "Failed to load transactions",
+        loadInvoiceFailed: "Failed to load invoice",
+        refundRequestFailed: "Failed to submit refund request",
+        sendInvoiceFailed: "Failed to send invoice",
+        identityDocNumeric: "Identity document number must be numeric (NIK/NPWP/NIB).",
+        identityDocMinLength: "{label} must be at least {min} characters.",
+        paypalOrderFailed: "PayPal order creation failed",
+        midtransOrderFailed: "Midtrans payment creation failed",
+        redirectingPayment: "Redirecting to payment...",
+        openPaymentFailed: "Failed to open payment",
+        ordersLoadFailed: "Failed to load orders",
       },
       sites: {
         close: "Close",

@@ -65,7 +65,7 @@ export default function BillingPage() {
   const token = useAuthToken();
   const { activeTenant } = useActiveTenant();
   const { pushToast } = useToast();
-  const { locale } = useI18n();
+  const { locale, t: ti18n } = useI18n();
   const lang = locale === "en" ? "en" : "id" as "id" | "en";
 
   const [tab, setTab] = useState<Tab>("transactions");
@@ -105,7 +105,7 @@ export default function BillingPage() {
       setTxs(res.data ?? []);
       setTxTotal((res.meta as any)?.total ?? 0);
     } catch (e: any) {
-      pushToast(e.message ?? "Gagal memuat transaksi", "error");
+      pushToast(e.message ?? ti18n("dashboard.toast.loadTransactionsFailed"), "error");
     } finally {
       setTxLoad(false);
     }
@@ -123,7 +123,7 @@ export default function BillingPage() {
       setInvoices(res.data ?? []);
       setInvTotal((res.meta as any)?.total ?? 0);
     } catch (e: any) {
-      pushToast(e.message ?? "Gagal memuat invoice", "error");
+      pushToast(e.message ?? ti18n("dashboard.toast.loadInvoiceFailed"), "error");
     } finally {
       setInvLoad(false);
     }
@@ -147,7 +147,7 @@ export default function BillingPage() {
       setRefundReason("");
       fetchTransactions();
     } catch (e: any) {
-      pushToast(e.message ?? "Gagal mengajukan refund", "error");
+      pushToast(e.message ?? ti18n("dashboard.toast.refundRequestFailed"), "error");
     } finally {
       setRefundLoading(false);
     }
@@ -163,7 +163,7 @@ export default function BillingPage() {
         "success",
       );
     } catch (e: any) {
-      pushToast(e.message ?? "Gagal mengirim invoice", "error");
+      pushToast(e.message ?? ti18n("dashboard.toast.sendInvoiceFailed"), "error");
     } finally {
       setResendId(null);
     }
