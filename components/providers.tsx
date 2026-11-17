@@ -6,7 +6,7 @@ import { useAccentPreference, useThemePreference, persistAuthSession, resolveEff
 import { ToastProvider } from "@/components/toast-provider";
 import { NotificationProvider } from "webjoz-ui";
 import type { Locale } from "@/lib/i18n/translations";
-import { I18nProvider } from "@/lib/i18n/context";
+import { I18nProvider, useI18n } from "@/lib/i18n/context";
 import { socialLogin, linkGoogle } from "@/lib/api/auth";
 
 function GoogleOAuthHandler() {
@@ -120,13 +120,32 @@ export function Providers({ children, defaultLocale = "id", forcedLocale }: { ch
   }, []);
 
   return (
-    <ToastProvider>
-      <I18nProvider defaultLocale={defaultLocale} forcedLocale={forcedLocale}>
-        <GoogleOAuthHandler />
-        <NotificationProvider defaultPlacement="top-right">
+    <I18nProvider defaultLocale={defaultLocale} forcedLocale={forcedLocale}>
+      <LocalizedNotificationProvider>
+        <ToastProvider>
+          <GoogleOAuthHandler />
           {children}
-        </NotificationProvider>
-      </I18nProvider>
-    </ToastProvider>
+        </ToastProvider>
+      </LocalizedNotificationProvider>
+    </I18nProvider>
+  );
+}
+
+function LocalizedNotificationProvider({ children }: { children: ReactNode }) {
+  const { locale } = useI18n();
+  const isId = locale === "id";
+  const labels = isId
+    ? {
+        close: "Tutup",
+        tones: { default: "INFO", success: "SUKSES", error: "GAGAL", warning: "PERINGATAN", info: "INFO" },
+      }
+    : {
+        close: "Close",
+        tones: { default: "DEFAULT", success: "SUCCESS", error: "ERROR", warning: "WARNING", info: "INFO" },
+      };
+  return (
+    <NotificationProvider defaultPlacement="top-right" labels={labels}>
+      {children}
+    </NotificationProvider>
   );
 }

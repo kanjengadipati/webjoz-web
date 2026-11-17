@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertIcon, CheckIcon, CloseIcon, InfoIcon, Button, NotificationCard } from "webjoz-ui";
+import { useI18n } from "@/lib/i18n/context";
 
 import {
   createContext,
@@ -62,6 +63,10 @@ function generateToastId() {
 }
 
 export function ToastProvider({ children }: { children: ReactNode }) {
+  const { locale } = useI18n();
+  const toastLabels = locale === "id"
+    ? { close: "Tutup", tones: { default: "INFO" as const, success: "SUKSES" as const, error: "GAGAL" as const, warning: "PERINGATAN" as const, info: "INFO" as const } }
+    : { close: "Close", tones: { default: "DEFAULT" as const, success: "SUCCESS" as const, error: "ERROR" as const, warning: "WARNING" as const, info: "INFO" as const } };
   const [toasts, setToasts] = useState<Toast[]>([]);
   const timersRef = useRef<Map<number, number>>(new Map());
   const recentRef = useRef<Map<string, number>>(new Map());
@@ -132,19 +137,19 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {children}
       <div className="pointer-events-none fixed left-1/2 top-4 z-50 flex w-[min(calc(100%_-_2rem),30rem)] -translate-x-1/2 flex-col gap-2 sm:top-6">
         {toasts.filter((toast) => toast.position === "top-center").map((toast) => (
-          <ToastNotice key={toast.id} toast={toast} dismissToast={dismissToast} />
+          <ToastNotice key={toast.id} toast={toast} dismissToast={dismissToast} labels={toastLabels} />
         ))}
       </div>
       <div className="pointer-events-none fixed right-4 top-4 z-50 flex w-[min(calc(100%_-_2rem),24rem)] flex-col gap-2 sm:right-6 sm:top-6">
         {toasts.filter((toast) => toast.position === "top-right").map((toast) => (
-          <ToastNotice key={toast.id} toast={toast} dismissToast={dismissToast} />
+          <ToastNotice key={toast.id} toast={toast} dismissToast={dismissToast} labels={toastLabels} />
         ))}
       </div>
     </ToastContext.Provider>
   );
 }
 
-function ToastNotice({ toast, dismissToast }: { toast: Toast; dismissToast: (id: number) => void }) {
+function ToastNotice({ toast, dismissToast, labels }: { toast: Toast; dismissToast: (id: number) => void; labels: { close: string; tones: Record<"default"|"success"|"error"|"warning"|"info", string> } }) {
   const tone: "success" | "error" | "info" = toast.tone === "success" ? "success" : toast.tone === "error" ? "error" : "info";
 
   const action = toast.actionLabel
@@ -165,6 +170,7 @@ function ToastNotice({ toast, dismissToast }: { toast: Toast; dismissToast: (id:
       duration={toast.autoClose ? 2800 : 0}
       onClose={() => dismissToast(toast.id)}
       action={action}
+      labels={labels}
     >
       {toast.aiDetails ? (
         <div className="rounded-lg bg-current/[0.06] px-2 py-1 text-[11px] leading-4 text-current opacity-80">
