@@ -939,7 +939,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
         clear();
       } catch (err) {
         console.error("Failed to submit order lead:", err);
-        setOrderError(err instanceof Error ? err.message : "Gagal mengirim pesanan. Silakan coba lagi.");
+        setOrderError(err instanceof Error ? err.message : (isEN ? "Failed to send order. Please try again." : "Gagal mengirim pesanan. Silakan coba lagi."));
       } finally {
         setLeadLoading(false);
       }
@@ -1191,7 +1191,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
                   className="text-[10px] font-medium cursor-pointer transition-colors hover:opacity-70"
                   style={{ color: "var(--dt-text, #1e293b)" }}
                 >
-                  Hapus semua
+                  {isEN ? "Clear all" : "Hapus semua"}
                 </button>
               )}
               <button
@@ -1311,7 +1311,7 @@ function CartPopover({ waPhone, brandName, onSubmitLead, language, payments }: {
                     onClick={() => remove(item.id)}
                     className="p-1 cursor-pointer transition-colors hover:opacity-50"
                     style={{ color: "var(--dt-text, #1e293b)" }}
-                    aria-label={`Hapus ${item.name}`}
+                    aria-label={isEN ? `Delete ${item.name}` : `Hapus ${item.name}`}
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
