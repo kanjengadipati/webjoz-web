@@ -1103,6 +1103,7 @@ export interface Translations {
       monthly: string;
       customDomainCount: string;
       seoOptimized: string;
+      promoPlaceholder: string;
     };
     adminPlans: {
       noAccess: string;
@@ -5125,6 +5126,7 @@ export const translations: Record<Locale, Translations> = {
         customDomainFeature: "Custom Domain",
         customDomainSubtext: "tidak termasuk domain",
         seoOptimized: "SEO optimasi",
+        promoPlaceholder: "Masukkan kode promo",
       },
       adminPlans: {
         noAccess: "Anda tidak memiliki akses ke halaman ini.",
@@ -9615,6 +9617,7 @@ export const translations: Record<Locale, Translations> = {
         customDomainFeature: "Custom Domain",
         customDomainSubtext: "domain not included",
         seoOptimized: "SEO optimized",
+        promoPlaceholder: "Enter promo code",
       },
       adminPlans: {
         noAccess: "You do not have access to this page.",

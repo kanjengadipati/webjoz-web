@@ -239,12 +239,12 @@ export default function BlogManagerPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             <Input
-              placeholder="Judul postingan"
+              placeholder={locale === "en" ? "Post title" : "Judul postingan"}
               value={title}
               onChange={e => setTitle(e.target.value)}
             />
             <textarea
-              placeholder="Konten (Markdown)"
+              placeholder={locale === "en" ? "Content (Markdown)" : "Konten (Markdown)"}
               value={content}
               onChange={e => setContent(e.target.value)}
               rows={6}
@@ -273,7 +273,7 @@ export default function BlogManagerPage() {
           <CardContent>
             <div className="flex gap-2">
               <Input
-                placeholder="Topik: mis. 5 tips memilih jasa konsultasi pajak"
+                placeholder={locale === "en" ? "Topic: e.g. 5 tips for choosing a tax consulting service" : "Topik: mis. 5 tips memilih jasa konsultasi pajak"}
                 value={topic}
                 onChange={e => setTopic(e.target.value)}
                 className="flex-1"

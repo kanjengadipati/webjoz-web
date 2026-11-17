@@ -43,7 +43,7 @@ export default function TestimonialModerationPage() {
   const token = useAuthToken();
   const { activeTenantId } = useActiveTenant();
   const { pushToast } = useToast();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   const siteId = decodeSiteId(id as string);
   const tenantHeaders = { "X-Tenant-ID": activeTenantId?.toString() ?? "" };
@@ -249,11 +249,11 @@ export default function TestimonialModerationPage() {
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-1">
                 <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{t("dashboard.sitesTestimonials.labelName")} <span className="text-red-400">*</span></label>
-                <input type="text" value={manualName} onChange={(e) => setManualName(e.target.value)} placeholder="cth. Budi Santoso" className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600" />
+                <input type="text" value={manualName} onChange={(e) => setManualName(e.target.value)} placeholder={locale === "en" ? "e.g. John Doe" : "cth. Budi Santoso"} className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600" />
               </div>
               <div className="space-y-1">
                 <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{t("dashboard.sitesTestimonials.labelRole")}</label>
-                <input type="text" value={manualRole} onChange={(e) => setManualRole(e.target.value)} placeholder="cth. Pelanggan Setia" className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600" />
+                <input type="text" value={manualRole} onChange={(e) => setManualRole(e.target.value)} placeholder={locale === "en" ? "e.g. Loyal Customer" : "cth. Pelanggan Setia"} className="w-full px-2.5 py-1.5 border border-border rounded-md text-[13px] outline-none focus:border-primary/60 bg-transparent text-slate-200 placeholder-slate-600" />
               </div>
             </div>
 
@@ -276,7 +276,7 @@ export default function TestimonialModerationPage() {
               label={`${t("dashboard.sitesTestimonials.labelQuote")} *`}
               value={manualQuote}
               onChange={setManualQuote}
-              placeholder="Tulis atau salin teks ulasan..."
+              placeholder={locale === "en" ? "Write or paste the review text..." : "Tulis atau salin teks ulasan..."}
             />
 
             <div className="flex gap-2">

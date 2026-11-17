@@ -335,7 +335,7 @@ export default function EditBlogPostPage() {
             <Input
               value={title}
               onChange={e => { setTitle(e.target.value); markDirty(); }}
-              placeholder="Judul postingan"
+              placeholder={locale === "en" ? "Post title" : "Judul postingan"}
               className="text-lg font-bold border-0 bg-transparent px-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/40 truncate"
             />
           </div>
@@ -397,7 +397,7 @@ export default function EditBlogPostPage() {
             ref={textareaRef}
             value={content}
             onChange={e => { setContent(e.target.value); markDirty(); }}
-            placeholder="Tulis konten dalam Markdown..."
+            placeholder={locale === "en" ? "Write content in Markdown..." : "Tulis konten dalam Markdown..."}
             className="flex-1 w-full px-4 py-3 border rounded-xl text-sm outline-none focus:border-primary bg-background resize-none font-mono leading-relaxed"
           />
         </div>
@@ -428,7 +428,7 @@ export default function EditBlogPostPage() {
             label={`${t("dashboard.sitesBlogPost.excerpt")} (${excerpt.length}/500)`}
             value={excerpt}
             onChange={(val) => { setExcerpt(val); markDirty(); }}
-            placeholder="Ringkasan singkat artikel..."
+            placeholder={locale === "en" ? "Short article summary..." : "Ringkasan singkat artikel..."}
           />
         </div>
 
@@ -453,7 +453,7 @@ export default function EditBlogPostPage() {
               value={seoTitle}
               onChange={e => { setSeoTitle(e.target.value); markDirty(); }}
               maxLength={255}
-              placeholder="Judul untuk mesin pencari"
+              placeholder={locale === "en" ? "Title for search engines" : "Judul untuk mesin pencari"}
             />
           </div>
           <SidebarField
@@ -465,7 +465,7 @@ export default function EditBlogPostPage() {
             label={`${t("dashboard.sitesBlogPost.seoDescription")} (${seoDescription.length}/500)`}
             value={seoDescription}
             onChange={(val) => { setSeoDescription(val); markDirty(); }}
-            placeholder="Deskripsi untuk mesin pencari..."
+            placeholder={locale === "en" ? "Description for search engines..." : "Deskripsi untuk mesin pencari..."}
           />
           {/* Noindex toggle (Pro) */}
           <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 px-3 py-2.5">

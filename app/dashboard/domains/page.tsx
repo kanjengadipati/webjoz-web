@@ -131,7 +131,7 @@ export default function DomainsPage() {
   const token         = useAuthToken();
   const router        = useRouter();
   const { pushToast } = useToast();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { activeTenantId, activeTenant } = useActiveTenant();
   const isPremium = activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise";
   // A lapsed tenant (cron marker OR passed deadline) parks every host. The
@@ -1266,7 +1266,7 @@ export default function DomainsPage() {
                 <input
                   value={purchaser.name}
                   onChange={e => setPurchaser(p => ({ ...p, name: e.target.value }))}
-                  placeholder="Nama lengkap"
+                  placeholder={locale === "en" ? "Full name" : "Nama lengkap"}
                   className="w-full bg-muted/30 border border-border rounded-xl px-3 py-2 text-[13px] text-foreground outline-none focus:border-primary focus:bg-background transition-colors"
                 />
               </div>
@@ -1275,7 +1275,7 @@ export default function DomainsPage() {
                 <input
                   value={purchaser.company}
                   onChange={e => setPurchaser(p => ({ ...p, company: e.target.value }))}
-                  placeholder="Nama usaha (opsional)"
+                  placeholder={locale === "en" ? "Business name (optional)" : "Nama usaha (opsional)"}
                   className="w-full bg-muted/30 border border-border rounded-xl px-3 py-2 text-[13px] text-foreground outline-none focus:border-primary focus:bg-background transition-colors"
                 />
               </div>
@@ -1366,7 +1366,7 @@ export default function DomainsPage() {
               <input
                 value={purchaser.address}
                 onChange={e => setPurchaser(p => ({ ...p, address: e.target.value }))}
-                placeholder="Jl. Nama Jalan No. 1"
+                placeholder={locale === "en" ? "123 Main Street" : "Jl. Nama Jalan No. 1"}
                 className="w-full bg-muted/30 border border-border rounded-xl px-3 py-2 text-[13px] text-foreground outline-none focus:border-primary focus:bg-background transition-colors"
               />
             </div>
@@ -1404,7 +1404,7 @@ export default function DomainsPage() {
                 <input
                   value={purchaser.city}
                   onChange={e => setPurchaser(p => ({ ...p, city: e.target.value }))}
-                  placeholder="Kota / Kabupaten"
+                  placeholder={locale === "en" ? "City / Regency" : "Kota / Kabupaten"}
                   className="w-full bg-muted/30 border border-border rounded-xl px-3 py-2 text-[13px] text-foreground outline-none focus:border-primary focus:bg-background transition-colors"
                 />
               </div>
@@ -1413,7 +1413,7 @@ export default function DomainsPage() {
                 <input
                   value={purchaser.state}
                   onChange={e => setPurchaser(p => ({ ...p, state: e.target.value }))}
-                  placeholder="Provinsi"
+                  placeholder={locale === "en" ? "Province" : "Provinsi"}
                   className="w-full bg-muted/30 border border-border rounded-xl px-3 py-2 text-[13px] text-foreground outline-none focus:border-primary focus:bg-background transition-colors"
                 />
               </div>

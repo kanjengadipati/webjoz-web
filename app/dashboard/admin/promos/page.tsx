@@ -65,7 +65,7 @@ const emptyForm: PromoForm = {
 export default function AdminPromosPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { role } = usePermissions();
   const [promos, setPromos] = useState<PromoCode[]>([]);
   const [loading, setLoading] = useState(true);
@@ -165,7 +165,7 @@ export default function AdminPromosPage() {
   }
 
   async function handleDelete(id: number) {
-    if (!token || !confirm("Hapus kode promo ini?")) return;
+    if (!token || !confirm(locale === "en" ? "Delete this promo code?" : "Hapus kode promo ini?")) return;
     try {
       await request(`/admin/promos/${id}`, { method: "DELETE" }, token);
       pushToast(t("dashboard.toast.promoDeleted"), "success");

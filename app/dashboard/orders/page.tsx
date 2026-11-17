@@ -295,7 +295,7 @@ export default function OrdersPage() {
           <input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Cari no. pesanan, nama, atau telepon…"
+            placeholder={locale === "en" ? "Search order no., name, or phone…" : "Cari no. pesanan, nama, atau telepon…"}
             className="w-full rounded-lg border border-border bg-background py-2 pl-8 pr-3 text-sm"
           />
         </div>

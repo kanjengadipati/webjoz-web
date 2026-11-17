@@ -424,7 +424,7 @@ export default function UpgradePage() {
             type="text"
             value={promoCode}
             onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-            placeholder="Masukkan kode promo"
+            placeholder={t("dashboard.upgrade.promoPlaceholder")}
             className="flex-1 px-4 py-2 rounded-xl border border-border/60 bg-card/60 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition"
             disabled={promoLoading}
           />
