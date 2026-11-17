@@ -14,7 +14,8 @@ export function SkillsSectionForm({
   fieldUndoStacks,
   undoField,
 }: BaseSectionFormProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const isEN = locale === "en";
   const groups: SkillGroup[] = content.skills?.groups || [];
 
   const handleUpdateGroups = (nextGroups: SkillGroup[]) => {
@@ -188,7 +189,7 @@ export function SkillsSectionForm({
                           type="button"
                           onClick={() => handleRemoveItem(gIdx, iIdx)}
                           className="text-red-400 hover:text-red-300 p-1 cursor-pointer"
-                          title="Hapus skill"
+                          title={isEN ? "Delete skill" : "Hapus skill"}
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
