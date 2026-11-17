@@ -503,6 +503,14 @@ export default function SiteEditorPage() {
         setAppealed(false);
         return;
       }
+      if (apiErr.code === "ERR_SUBDOMAIN_TAKEN") {
+        pushToast(t("dashboard.sites.toastSubdomainTaken"), "error");
+        return;
+      }
+      if (apiErr.code === "ERR_SUBDOMAIN_RESERVED") {
+        pushToast(t("dashboard.sites.subdomainReservedHint"), "error");
+        return;
+      }
       pushToast(apiErr.message || t("dashboard.sitesEditor.publishFailed"), "error");
     } finally {
       setPublishing(false);
@@ -3583,6 +3591,7 @@ export default function SiteEditorPage() {
         {publishModalOpen && siteDetails && (
           <PublishModal
             site={siteDetails}
+            siteId={String(siteDetails.id)}
             onConfirm={handlePublishWithSubdomain}
             onCancel={() => {
               setPublishModalOpen(false);

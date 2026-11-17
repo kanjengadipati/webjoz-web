@@ -6,6 +6,15 @@ import { useI18n } from "@/lib/i18n/context";
 
 const CONSENT_KEY = "webjoz_cookie_consent";
 
+// Banner cookie hanya untuk situs marketing utama. Subdomain (app., stg., tenant),
+// preview Vercel, custom domain, dan localhost tidak boleh menampilkannya.
+const ALLOWED_HOSTS = new Set(["webjoz.com", "www.webjoz.com"]);
+
+function isAllowedHost() {
+  if (typeof window === "undefined") return false;
+  return ALLOWED_HOSTS.has(window.location.hostname.toLowerCase());
+}
+
 const EXCLUDED_PREFIXES = ["/dashboard", "/create", "/preview", "/site", "/s/", "/sp/"];
 
 export function CookieBanner() {
@@ -26,6 +35,7 @@ export function CookieBanner() {
   useEffect(() => {
     if (window.self !== window.top) return;
     if (isExcluded) return;
+    if (!isAllowedHost()) return;
     if (!localStorage.getItem(CONSENT_KEY)) {
       const id = setTimeout(() => setVisible(true), 600);
       return () => clearTimeout(id);

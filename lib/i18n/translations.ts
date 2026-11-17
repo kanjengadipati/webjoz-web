@@ -564,6 +564,9 @@ export interface Translations {
       subdomainAvailable: string;
       subdomainInvalidHint: string;
       subdomainReservedHint: string;
+      subdomainTakenHint: string;
+      subdomainChecking: string;
+      subdomainCheckFailed: string;
       subdomainHint: string;
       connectCustomDomain: string;
       customDomainDescPre: string;
@@ -594,6 +597,7 @@ export interface Translations {
       connectingWorkspace: string;
       toastPublished: string;
       toastPublishFailed: string;
+      toastSubdomainTaken: string;
       toastUnpublished: string;
       toastUnpublishFailed: string;
       toastRenamed: string;
@@ -4476,6 +4480,11 @@ export const translations: Record<Locale, Translations> = {
           "Gunakan huruf kecil, angka, atau tanda hubung (-)",
         subdomainReservedHint:
           "Subdomain ini dicadangkan untuk sistem dan tidak dapat digunakan",
+        subdomainTakenHint:
+          "Subdomain sudah digunakan. Coba nama lain.",
+        subdomainChecking: "Memeriksa ketersediaan...",
+        subdomainCheckFailed:
+          "Gagal memeriksa ketersediaan. Coba lagi.",
         subdomainHint:
           "Hanya huruf kecil, angka, dan tanda hubung. Subdomain tidak bisa diubah setelah dipublikasikan.",
         connectCustomDomain: "Hubungkan Custom Domain",
@@ -4510,6 +4519,8 @@ export const translations: Record<Locale, Translations> = {
         errorLoadSites: "Gagal memuat situs",
         connectingWorkspace: "Menghubungkan ke dashboard...",
         toastPublished: "Website berhasil dipublikasikan! 🚀",
+        toastSubdomainTaken:
+          "Subdomain sudah digunakan website lain. Coba nama lain.",
         toastPublishFailed: "Gagal mempublikasikan website",
         toastUnpublished: "Website berhasil di-draft kembali.",
         toastUnpublishFailed: "Gagal mengubah status publikasi",
@@ -8917,6 +8928,11 @@ export const translations: Record<Locale, Translations> = {
         subdomainInvalidHint: "Use lowercase letters, numbers, or hyphens (-)",
         subdomainReservedHint:
           "This subdomain is reserved for the system and cannot be used",
+        subdomainTakenHint:
+          "This subdomain is already taken. Try another name.",
+        subdomainChecking: "Checking availability...",
+        subdomainCheckFailed:
+          "Couldn't check availability. Please try again.",
         subdomainHint:
           "Only lowercase letters, numbers, and hyphens. Subdomain cannot be changed after publishing.",
         connectCustomDomain: "Connect Custom Domain",
@@ -8950,6 +8966,8 @@ export const translations: Record<Locale, Translations> = {
         errorLoadSites: "Failed to load sites",
         connectingWorkspace: "Connecting to dashboard...",
         toastPublished: "Website published successfully! 🚀",
+        toastSubdomainTaken:
+          "That subdomain is already used by another site. Try another name.",
         toastPublishFailed: "Failed to publish website",
         toastUnpublished: "Website has been set back to draft.",
         toastUnpublishFailed: "Failed to change publication status",

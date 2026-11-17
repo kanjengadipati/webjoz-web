@@ -1,10 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Rocket, Globe, Loader2 } from "lucide-react";
 import { Button, Dialog } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
+import { request } from "@/lib/api/client";
+import { isReservedSubdomain } from "@/lib/subdomain";
+import { BASE_DOMAIN } from "@/lib/site-config";
 import TermsAcceptance from "@/components/terms-acceptance";
 import ModerationBlock, { type ModerationViolation } from "@/components/moderation-block";
 
@@ -13,6 +16,8 @@ export interface PublishModalProps {
     name: string;
     subdomain: string;
   };
+  /** Hash ID of the site being published (lets the check ignore its own subdomain). */
+  siteId?: string;
   onConfirm: (subdomain: string) => void;
   onCancel: () => void;
   loading: boolean;
@@ -22,7 +27,15 @@ export interface PublishModalProps {
   appealDone?: boolean;
 }
 
-export default function PublishModal({ site, onConfirm, onCancel, loading, violations, onAppealSubmit, appealLoading, appealDone }: PublishModalProps) {
+type AvailabilityState = "idle" | "checking" | "available" | "taken" | "reserved" | "invalid" | "error";
+
+interface SubdomainAvailabilityResponse {
+  subdomain: string;
+  available: boolean;
+  reason: "ok" | "invalid" | "reserved" | "taken" | "error";
+}
+
+export default function PublishModal({ site, siteId, onConfirm, onCancel, loading, violations, onAppealSubmit, appealLoading, appealDone }: PublishModalProps) {
   const { t } = useI18n();
   const hasModerationBlock = !!violations && violations.length > 0;
   const [subdomain, setSubdomain] = useState(() => {
@@ -31,6 +44,12 @@ export default function PublishModal({ site, onConfirm, onCancel, loading, viola
   });
   const [agreed, setAgreed] = useState(false);
   const [submitAttempted, setSubmitAttempted] = useState(false);
+  // Hasil lookup server, disimpan bersama subdomain yang diperiksa agar hasil
+  // lama tidak dipakai untuk input baru.
+  const [remoteResult, setRemoteResult] = useState<{
+    subdomain: string;
+    state: Exclude<AvailabilityState, "idle" | "checking">;
+  } | null>(null);
 
   const subdomainRegex = /^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$/;
 
@@ -39,7 +58,63 @@ export default function PublishModal({ site, onConfirm, onCancel, loading, viola
     setSubdomain(cleaned);
   };
 
-  const isInputValid = subdomainRegex.test(subdomain);
+  const isFormatValid = subdomainRegex.test(subdomain);
+  const isReserved = isFormatValid && isReservedSubdomain(subdomain);
+  const isOwnSubdomain = !!site.subdomain && subdomain === site.subdomain;
+
+  // Cek ketersediaan ke server (debounced) supaya indikator "tersedia" tidak
+  // hanya berdasarkan format — duplikat/subdomain terpakai harus tertangkap
+  // sebelum user menekan tombol publish.
+  useEffect(() => {
+    if (!isFormatValid || isReserved || isOwnSubdomain) return;
+
+    let active = true;
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams({ subdomain });
+      if (siteId) params.set("exclude", siteId);
+      request<SubdomainAvailabilityResponse>(`/public/subdomain-availability?${params.toString()}`)
+        .then((res) => {
+          if (!active) return;
+          const data = res.data;
+          if (!data) {
+            setRemoteResult({ subdomain, state: "error" });
+            return;
+          }
+          if (data.available) {
+            setRemoteResult({ subdomain, state: "available" });
+          } else if (data.reason === "taken") {
+            setRemoteResult({ subdomain, state: "taken" });
+          } else if (data.reason === "reserved") {
+            setRemoteResult({ subdomain, state: "reserved" });
+          } else if (data.reason === "invalid") {
+            setRemoteResult({ subdomain, state: "invalid" });
+          } else {
+            setRemoteResult({ subdomain, state: "error" });
+          }
+        })
+        .catch(() => {
+          if (active) setRemoteResult({ subdomain, state: "error" });
+        });
+    }, 450);
+
+    return () => {
+      active = false;
+      clearTimeout(timer);
+    };
+  }, [subdomain, isFormatValid, isReserved, isOwnSubdomain, siteId]);
+
+  const availability: AvailabilityState = !isFormatValid
+    ? "idle"
+    : isReserved
+      ? "reserved"
+      : isOwnSubdomain
+        ? "available"
+        : remoteResult && remoteResult.subdomain === subdomain
+          ? remoteResult.state
+          : "checking";
+
+  const isAvailable = availability === "available";
+  const isInputValid = isFormatValid && !isReserved && isAvailable;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +125,30 @@ export default function PublishModal({ site, onConfirm, onCancel, loading, viola
     onConfirm(subdomain);
   };
 
-  const previewDomain = subdomain.trim() ? `${subdomain.trim().toLowerCase()}.webjoz.com` : "";
+  const previewDomain = subdomain.trim() ? `${subdomain.trim().toLowerCase()}.${BASE_DOMAIN}` : "";
+
+  const statusTone = isInputValid
+    ? "bg-[#3ddc84]/8 text-emerald-600 dark:text-[#5fe3a0] border border-[#3ddc84]/20"
+    : availability === "checking"
+      ? "bg-muted/40 text-muted-foreground border border-border"
+      : "bg-red-500/8 text-[#ff8a8a] border border-red-500/20";
+
+  let statusIcon = "⚠";
+  let statusText = t("dashboard.sites.subdomainInvalidHint");
+  if (availability === "available") {
+    statusIcon = "✓";
+    statusText = t("dashboard.sites.subdomainAvailable", undefined, { url: `https://${previewDomain}` });
+  } else if (availability === "checking") {
+    statusIcon = "…";
+    statusText = t("dashboard.sites.subdomainChecking");
+  } else if (availability === "taken") {
+    statusText = t("dashboard.sites.subdomainTakenHint");
+  } else if (availability === "reserved") {
+    statusText = t("dashboard.sites.subdomainReservedHint");
+  } else if (availability === "error") {
+    statusIcon = "!";
+    statusText = t("dashboard.sites.subdomainCheckFailed");
+  }
 
   return (
     <Dialog
@@ -120,7 +218,7 @@ export default function PublishModal({ site, onConfirm, onCancel, loading, viola
             className={`flex items-center bg-background border rounded-xl overflow-hidden transition-all duration-200 ${
               subdomain && !isInputValid
                 ? "border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.15)] bg-red-500/[0.01]"
-                : subdomain && isInputValid
+                : subdomain && isAvailable
                   ? "border-[#3ddc84]/50 shadow-[0_0_10px_rgba(61,220,132,0.15)] bg-[#3ddc84]/[0.01]"
                   : "border-border hover:border-border focus-within:border-primary/60 focus-within:shadow-[0_0_12px_color-mix(in_srgb,var(--primary)_20%,transparent)]"
             }`}
@@ -136,24 +234,14 @@ export default function PublishModal({ site, onConfirm, onCancel, loading, viola
               autoFocus
             />
             <span className="px-3 py-2.5 text-[13px] text-primary font-mono font-bold shrink-0 border-l border-border/70 bg-muted/30 select-none">
-              .webjoz.com
+              .{BASE_DOMAIN}
             </span>
           </div>
 
           {previewDomain && (
-            <div
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] font-mono transition-all ${
-                isInputValid
-                  ? "bg-[#3ddc84]/8 text-emerald-600 dark:text-[#5fe3a0] border border-[#3ddc84]/20"
-                  : "bg-red-500/8 text-[#ff8a8a] border border-red-500/20"
-              }`}
-            >
-              <span className="shrink-0 text-[14px]">{isInputValid ? "✓" : "⚠"}</span>
-              <span className="truncate leading-none">
-                {isInputValid
-                  ? t("dashboard.sites.subdomainAvailable", undefined, { url: `https://${previewDomain}` })
-                  : t("dashboard.sites.subdomainInvalidHint")}
-              </span>
+            <div className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] font-mono transition-all ${statusTone}`}>
+              <span className="shrink-0 text-[14px]">{statusIcon}</span>
+              <span className="truncate leading-none">{statusText}</span>
             </div>
           )}
 
