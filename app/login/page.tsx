@@ -335,11 +335,9 @@ export default function LoginPage() {
                 <Button
                   type="submit"
                   variant="floating-arrow-right"
-                  size="hero"
                   disabled={state === "loading"}
                   className="w-full"
                 >
-                  <WhatsAppIcon size="md" className="fill-current" />
                   {state === "loading" ? (
                     <LoginLoadingIndicator label={t("auth.loginSending")} />
                   ) : (
@@ -415,11 +413,9 @@ export default function LoginPage() {
                 <Button
                   type="submit"
                   variant="floating-arrow-right"
-                  size="hero"
                   disabled={state === "loading"}
                   className="w-full"
                 >
-                  <MailIcon size="md" />
                   {state === "loading" ? (
                     <LoginLoadingIndicator label={t("auth.loginSending")} />
                   ) : (
@@ -489,7 +485,7 @@ export default function LoginPage() {
                     </button>
                   </div>
                 </div>
-                <Button type="submit" variant="floating-arrow-right" size="hero" disabled={state === "loading"} className="w-full">
+                <Button type="submit" variant="floating-arrow-right" disabled={state === "loading"} className="w-full">
                   {state === "loading" ? (
                     <LoginLoadingIndicator label={t("auth.loginSigningIn")} />
                   ) : (
@@ -544,7 +540,7 @@ export default function LoginPage() {
             >
               {t("auth.loginBack")}
             </Button>
-            <Button type="submit" variant="floating-arrow-right" size="hero" disabled={state === "loading"} className="w-full">
+            <Button type="submit" variant="floating-arrow-right" disabled={state === "loading"} className="w-full">
               {state === "loading" ? <LoginLoadingIndicator label={t("auth.loginVerifying")} /> : t("auth.loginVerifyOtp")}
             </Button>
           </div>
