@@ -5,7 +5,7 @@ import { useAuthToken } from "@/lib/auth-store";
 import { usePermissions } from "@/hooks/use-permissions";
 import { fetchMyReferralCode, regenerateMyReferralCode, sendReferralEmail } from "@/lib/api/referral";
 import { getCommissionConfig, CommissionConfig } from "@/lib/api/commissions";
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Dialog } from "webjoz-ui";
+import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Dialog, useNotification } from "webjoz-ui";
 import { useToast } from "@/components/toast-provider";
 import { Share2, Copy, RefreshCw, Loader2, Check, ShieldAlert, Award, DollarSign, Zap, Gift, Target, MessageCircle, Mail, Send } from "lucide-react";
 import Link from "next/link";
@@ -14,6 +14,7 @@ import { useI18n } from "@/lib/i18n/context";
 export default function SalesReferralPage() {
   const token = useAuthToken();
   const { pushToast } = useToast();
+  const notify = useNotification();
   const { t, locale } = useI18n();
   const { hasPermission, role, loading: permLoading } = usePermissions();
 
@@ -70,7 +71,10 @@ export default function SalesReferralPage() {
     if (!shareableUrl) return;
     navigator.clipboard.writeText(shareableUrl);
     setCopiedLink(true);
-    pushToast(t("dashboard.sales.linkCopied"), "success");
+    notify.success(t("dashboard.sales.linkCopied"), {
+      description: t("dashboard.sales.linkCopiedDesc", "Tautan referral siap dibagikan."),
+      duration: 3500,
+    });
     setTimeout(() => setCopiedLink(false), 2000);
   };
 

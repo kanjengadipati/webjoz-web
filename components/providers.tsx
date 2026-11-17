@@ -4,6 +4,7 @@ import { ReactNode, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAccentPreference, useThemePreference, persistAuthSession, resolveEffectiveTheme } from "@/lib/auth-store";
 import { ToastProvider } from "@/components/toast-provider";
+import { NotificationProvider } from "webjoz-ui";
 import type { Locale } from "@/lib/i18n/translations";
 import { I18nProvider } from "@/lib/i18n/context";
 import { socialLogin, linkGoogle } from "@/lib/api/auth";
@@ -122,7 +123,9 @@ export function Providers({ children, defaultLocale = "id", forcedLocale }: { ch
     <ToastProvider>
       <I18nProvider defaultLocale={defaultLocale} forcedLocale={forcedLocale}>
         <GoogleOAuthHandler />
-        {children}
+        <NotificationProvider defaultPlacement="top-right">
+          {children}
+        </NotificationProvider>
       </I18nProvider>
     </ToastProvider>
   );
