@@ -130,7 +130,7 @@ export function VariantPreviewCard({
               type="button"
               onClick={() => setShowCritiqueModal(true)}
               className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold border transition-transform hover:scale-105 cursor-pointer ${tierBadgeStyle}`}
-              title="Lihat detail evaluasi AI Vision"
+              title={isEN ? "View AI Vision evaluation details" : "Lihat detail evaluasi AI Vision"}
             >
               <SparkleIcon className="size-3 text-current" />
               <span>{critiqueData.score}</span>
@@ -143,7 +143,7 @@ export function VariantPreviewCard({
                 disabled={isCritiquing}
                 onClick={() => previewCardRef.current && onCritique(previewCardRef.current)}
                 className="hidden sm:flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] text-muted-foreground hover:text-foreground hover:bg-muted border border-border/50 transition-all cursor-pointer disabled:opacity-50"
-                title="Evaluasi estetika dengan AI Vision"
+                title={isEN ? "Evaluate aesthetics with AI Vision" : "Evaluasi estetika dengan AI Vision"}
               >
                 {isCritiquing && critiqueMethod === "dom" ? (
                   <Loader2 className="size-3 animate-spin text-primary" />
@@ -168,7 +168,7 @@ export function VariantPreviewCard({
             type="button"
             onClick={() => onCopyVariant(variant.value)}
             className="size-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer"
-            title="Salin ID Varian"
+            title={isEN ? "Copy Variant ID" : "Salin ID Varian"}
           >
             {copiedVariant === variant.value ? (
               <Check className="size-3.5 text-emerald-500" />
@@ -183,7 +183,7 @@ export function VariantPreviewCard({
               type="button"
               onClick={onFullScreen}
               className="size-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer"
-              title="Full Screen Preview"
+              title={isEN ? "Full Screen Preview" : "Pratinjau Layar Penuh"}
             >
               <Expand className="size-3.5" />
             </button>

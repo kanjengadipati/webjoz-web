@@ -235,7 +235,7 @@ export default function AdminPaymentsPage() {
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-muted/60 hover:bg-muted text-xs font-medium transition"
-                              title="View Invoice"
+                              title={locale === "en" ? "View Invoice" : "Lihat Invoice"}
                             >
                               <FileText className="size-3"/> Invoice
                               <ExternalLink className="size-2.5 opacity-50"/>

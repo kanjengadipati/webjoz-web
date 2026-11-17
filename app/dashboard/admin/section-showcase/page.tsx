@@ -549,7 +549,7 @@ export default function SectionShowcasePage() {
                 type="button"
                 onClick={() => handleOpenFullscreenSection(selectedSection)}
                 className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-lg border border-border/60 hover:bg-muted text-muted-foreground hover:text-foreground transition-all cursor-pointer"
-                title="Buka semua varian dalam full screen"
+                title={locale === "en" ? "Open all variants in full screen" : "Buka semua varian dalam full screen"}
               >
                 <Expand className="size-3" />
                 <span className="hidden sm:inline">Full Screen</span>
@@ -562,7 +562,7 @@ export default function SectionShowcasePage() {
                   disabled={batchCritiquing}
                   onClick={handleBatchCritiqueSection}
                   className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-lg bg-primary/10 hover:bg-primary/20 text-primary border border-primary/25 transition-all cursor-pointer disabled:opacity-50"
-                  title="Evaluasi semua varian aktif dengan AI"
+                  title={locale === "en" ? "Evaluate all active variants with AI" : "Evaluasi semua varian aktif dengan AI"}
                 >
                   {batchCritiquing ? (
                     <>
@@ -583,7 +583,7 @@ export default function SectionShowcasePage() {
                 type="button"
                 onClick={handleExportCritiquesJSON}
                 className="size-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted border border-border/60 transition-all cursor-pointer"
-                title="Export JSON baseline data"
+                title={locale === "en" ? "Export JSON baseline data" : "Ekspor data baseline JSON"}
               >
                 <Copy className="size-3.5" />
               </button>
@@ -763,7 +763,7 @@ export default function SectionShowcasePage() {
                   type="button"
                   onClick={() => setFullscreenSection(null)}
                   className="size-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer"
-                  title="Tutup (Esc)"
+                  title={locale === "en" ? "Close (Esc)" : "Tutup (Esc)"}
                 >
                   <X className="size-4" />
                 </button>

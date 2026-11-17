@@ -33,7 +33,7 @@ export function KeywordsInput({
   onUpgradeRequired,
   renderFieldActions,
 }: KeywordsInputProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [input, setInput] = useState("");
 
   const addKeyword = (kw: string) => {
@@ -66,7 +66,7 @@ export function KeywordsInput({
               <AiFieldButton
                 loading={!!aiLoading}
                 onGenerate={onAiGenerate}
-                title="AI: generate keywords"
+                title={locale === "en" ? "AI: generate keywords" : "AI: buat keyword"}
                 onUpgradeRequired={onUpgradeRequired}
                 isPremium={isPremium}
               />
@@ -76,7 +76,7 @@ export function KeywordsInput({
           <AiFieldButton
             loading={!!aiLoading}
             onGenerate={onAiGenerate}
-            title="AI: generate keywords"
+            title={locale === "en" ? "AI: generate keywords" : "AI: buat keyword"}
             onUpgradeRequired={onUpgradeRequired}
             isPremium={isPremium}
           />

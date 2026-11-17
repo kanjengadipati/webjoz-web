@@ -1373,7 +1373,8 @@ function PairingsTab({
 }) {
   const [showAdd, setShowAdd] = useState(false);
   const [search, setSearch] = useState("");
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const isEN = locale === "en";
   const allPairings = [...getBuiltinTypographyPairings(), ...customPairings];
   const filtered = allPairings.filter((p) =>
     search === "" || p.name.toLowerCase().includes(search.toLowerCase()) || p.heading_font.toLowerCase().includes(search.toLowerCase())
@@ -1558,7 +1559,8 @@ function PatternsTab({
 }) {
   const [showAdd, setShowAdd] = useState(false);
   const [search, setSearch] = useState("");
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const isEN = locale === "en";
   const allPatterns = [...getBuiltinColorPatterns(), ...customPatterns];
   const filtered = allPatterns.filter((p) =>
     search === "" || p.name.toLowerCase().includes(search.toLowerCase()) || p.description.toLowerCase().includes(search.toLowerCase())
@@ -1627,10 +1629,10 @@ function PatternsTab({
 
                 {/* Bottom: 60-30-10 Balance Bar */}
                 <div className="flex h-1.5 w-full rounded-full overflow-hidden opacity-80 z-10 shadow-xs">
-                  <div style={{ width: "60%", background: pattern.palette.background }} title="60% Background / Base" />
-                  <div style={{ width: "30%", background: pattern.palette.surface }} title="30% Surface / Structure" />
-                  <div style={{ width: "7%", background: pattern.palette.primary }} title="7% Primary" />
-                  <div style={{ width: "3%", background: pattern.palette.accent }} title="3% Accent" />
+                  <div style={{ width: "60%", background: pattern.palette.background }} title={isEN ? "60% Background / Base" : "60% Background / Base"} />
+                  <div style={{ width: "30%", background: pattern.palette.surface }} title={isEN ? "30% Surface / Structure" : "30% Surface / Structure"} />
+                  <div style={{ width: "7%", background: pattern.palette.primary }} title={isEN ? "7% Primary" : "7% Primary"} />
+                  <div style={{ width: "3%", background: pattern.palette.accent }} title={isEN ? "3% Accent" : "3% Accent"} />
                 </div>
               </div>
 

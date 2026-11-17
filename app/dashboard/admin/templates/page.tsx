@@ -220,7 +220,7 @@ export default function TemplateGalleryPage() {
   const authToken = useAuthToken();
   const { role: userRole } = usePermissions();
   const { pushToast } = useToast();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   const isSuperAdmin = userRole === "superadmin";
 
@@ -614,7 +614,7 @@ export default function TemplateGalleryPage() {
                 type="button"
                 onClick={() => setSearchQuery("")}
                 className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer p-0.5"
-                aria-label="Clear search"
+                aria-label={locale === "en" ? "Clear search" : "Hapus pencarian"}
               >
                 <X className="size-3" />
               </button>

@@ -541,7 +541,7 @@ export default function AdminReportsPage() {
 
       {/* Split row: gateway + plan */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <Section title="Gateway Split">
+        <Section title={isEN ? "Gateway Split" : "Gateway Split"}>
           {gatewaySegments.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-6">{isEN ? "No data yet." : "Belum ada data."}</p>
           ) : (
@@ -562,7 +562,7 @@ export default function AdminReportsPage() {
           )}
         </Section>
 
-        <Section title="Revenue per Plan">
+        <Section title={isEN ? "Revenue per Plan" : "Pendapatan per Paket"}>
           {planSegments.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-6">{isEN ? "No data yet." : "Belum ada data."}</p>
           ) : (
@@ -585,7 +585,7 @@ export default function AdminReportsPage() {
       </div>
 
       {/* Status breakdown */}
-      <Section title="Status Breakdown (All-Time)">
+      <Section title={isEN ? "Status Breakdown (All-Time)" : "Rincian Status (Selamanya)"}>
         <div className="space-y-2">
           {report.status_breakdown.map((s) => {
             const pct = (s.count / statusTotal) * 100;
@@ -612,7 +612,7 @@ export default function AdminReportsPage() {
       </Section>
 
       {/* Top tenants */}
-      <Section title="Top 10 Tenant by Revenue">
+      <Section title={isEN ? "Top 10 Tenants by Revenue" : "10 Tenant Teratas Berdasarkan Pendapatan"}>
         {report.top_tenants.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-6">{isEN ? "No data yet." : "Belum ada data."}</p>
         ) : (

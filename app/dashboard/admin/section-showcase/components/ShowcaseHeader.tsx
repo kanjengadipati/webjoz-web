@@ -114,7 +114,7 @@ export function ShowcaseHeader({
                   ? "bg-background text-foreground shadow-xs"
                   : "text-muted-foreground hover:text-foreground"
               }`}
-              title="Light Mode"
+              title={isEN ? "Light Mode" : "Mode Terang"}
             >
               <Sun className="size-3.5" />
             </button>
@@ -126,7 +126,7 @@ export function ShowcaseHeader({
                   ? "bg-background text-foreground shadow-xs"
                   : "text-muted-foreground hover:text-foreground"
               }`}
-              title="Dark Mode"
+              title={isEN ? "Dark Mode" : "Mode Gelap"}
             >
               <Moon className="size-3.5" />
             </button>
@@ -142,7 +142,7 @@ export function ShowcaseHeader({
                   ? "bg-background text-foreground font-semibold shadow-xs"
                   : "text-muted-foreground hover:text-foreground"
               }`}
-              title="Desktop 100%"
+              title={isEN ? "Desktop 100%" : "Desktop 100%"}
             >
               <Monitor className="size-3.5" />
               <span className="hidden md:inline">Desktop</span>
@@ -155,7 +155,7 @@ export function ShowcaseHeader({
                   ? "bg-background text-foreground font-semibold shadow-xs"
                   : "text-muted-foreground hover:text-foreground"
               }`}
-              title="Tablet 768px"
+              title={isEN ? "Tablet 768px" : "Tablet 768px"}
             >
               <Tablet className="size-3.5" />
               <span className="hidden md:inline">768px</span>
@@ -168,7 +168,7 @@ export function ShowcaseHeader({
                   ? "bg-background text-foreground font-semibold shadow-xs"
                   : "text-muted-foreground hover:text-foreground"
               }`}
-              title="Mobile 390px"
+              title={isEN ? "Mobile 390px" : "Mobile 390px"}
             >
               <Smartphone className="size-3.5" />
               <span className="hidden md:inline">390px</span>

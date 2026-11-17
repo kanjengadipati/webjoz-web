@@ -230,7 +230,7 @@ export function SearchableVariantDropdown({
                         {isHidden && (
                           <span
                             className="inline-flex items-center gap-0.5 text-[9px] px-1 py-0.5 rounded bg-destructive/10 text-destructive border border-destructive/20 font-medium"
-                            title="Varian disembunyikan"
+                            title={isEN ? "Hidden variant" : "Varian disembunyikan"}
                           >
                             <EyeOff className="size-2.5" />
                             <span>Hidden</span>
