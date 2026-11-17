@@ -15,6 +15,9 @@ import { heroStrings } from "./hero-strings";
  * - Sisi Kanan: Foto figur/potret orang yang bottom-anchored, mendukung cutout PNG
  *   transparan maupun foto biasa dengan bottom fadeout mask.
  */
+export const DEFAULT_PROFILE_CUTOUT_IMAGE =
+  "https://res.cloudinary.com/dckbihkyp/image/upload/f_auto/q_auto/anonim-profesional_gmve0d.png";
+
 export default function HeroProfileCutout({
   hero: h,
   language,
@@ -30,6 +33,8 @@ export default function HeroProfileCutout({
 
   // Bio statement text: uses subheadline
   const bioText = h.subheadline || "";
+  const profileImage = h.image_url?.trim() ? h.image_url : DEFAULT_PROFILE_CUTOUT_IMAGE;
+  const isDefaultImage = !h.image_url?.trim();
 
   return (
     <section
@@ -40,14 +45,15 @@ export default function HeroProfileCutout({
         overflow: "visible",
         minHeight: "88vh",
       }}
-      className="flex flex-col justify-end"
+      className="flex flex-col justify-center py-12 sm:py-16 lg:py-20"
     >
       {/* Subtle ambient glow behind the portrait figure */}
       <div
         style={{
           position: "absolute",
-          top: "10%",
-          right: "5%",
+          top: "50%",
+          right: "8%",
+          transform: "translateY(-50%)",
           width: "min(500px, 45vw)",
           height: "min(500px, 45vw)",
           borderRadius: "50%",
@@ -74,15 +80,15 @@ export default function HeroProfileCutout({
       />
 
       <div
-        className="relative z-10 mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12 pt-16 sm:pt-20 lg:pt-24 flex flex-col lg:grid lg:grid-cols-12 lg:items-end gap-10 lg:gap-8"
-        style={{ minHeight: "85vh" }}
+        className="relative z-10 mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12 flex flex-col lg:grid lg:grid-cols-12 lg:items-center gap-10 lg:gap-8 my-auto"
+        style={{ minHeight: "80vh" }}
       >
         {/* Left Column: Personal Brand Info & Accent Bio Card (7 Cols on desktop) */}
         <motion.div
           initial={reduce ? false : { opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="lg:col-span-7 flex flex-col justify-center pb-6 sm:pb-12 lg:pb-16"
+          className="lg:col-span-7 flex flex-col justify-center"
         >
           {/* Eyebrow / Tagline */}
           {(h.eyebrow || isEditorMode) && (
@@ -278,63 +284,38 @@ export default function HeroProfileCutout({
           </div>
         </motion.div>
 
-        {/* Right Column: Bottom-Anchored Portrait / Cutout Person (5 Cols on desktop) */}
-        {/* Portrait slightly lifts upward so it can overlap the header area. */}
+        {/* Right Column: Centered Portrait / Cutout Person (5 Cols on desktop) */}
         <motion.div
           initial={reduce ? false : { opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.15 }}
-          className="lg:col-span-5 relative flex items-end justify-center self-end w-full"
-          style={{ minHeight: "420px", marginTop: "-48px" }}
+          className="lg:col-span-5 relative flex items-center justify-center self-center w-full"
+          style={{ minHeight: "380px" }}
         >
           <div
-            className="relative w-full max-w-[520px] lg:max-w-[600px] flex items-end justify-center"
+            className="relative w-full max-w-[500px] lg:max-w-[560px] flex items-center justify-center"
             style={{
               // Mask image fades the bottom gracefully so standard rectangular photos blend naturally
-              maskImage: "linear-gradient(to bottom, black 82%, transparent 100%)",
-              WebkitMaskImage: "linear-gradient(to bottom, black 82%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, black 85%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to bottom, black 85%, transparent 100%)",
               zIndex: isEditorMode ? 60 : 40,
-              marginBottom: isEditorMode ? "-1rem" : "-1rem",
               pointerEvents: isEditorMode ? "auto" : "none",
             }}
           >
-            {(h.image_url || isEditorMode) ? (
-              <HeroImage
-                section="hero"
-                fieldKey="image_url"
-                src={h.image_url}
-                alt={h.headline || "Foto Profil"}
-                credit={h.image_credit}
-                language={language}
-                creditPosition={{ position: "absolute", bottom: 20, right: 8, zIndex: 20 }}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={isSelected}
-                className="w-auto max-w-full max-h-[72vh] lg:max-h-[88vh] object-contain object-bottom drop-shadow-2xl"
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              />
-            ) : (
-              /* Fallback illustration placeholder when no image is loaded yet */
-              <div
-                className="w-64 h-80 rounded-t-3xl flex flex-col items-center justify-center p-6 text-center border-2 border-dashed"
-                style={{
-                  borderColor: "color-mix(in srgb, var(--dt-primary) 30%, transparent)",
-                  background: "color-mix(in srgb, var(--dt-primary) 8%, var(--dt-bg))",
-                }}
-              >
-                <div
-                  className="w-16 h-16 rounded-full mb-3 flex items-center justify-center text-white"
-                  style={{ background: "var(--dt-primary)" }}
-                >
-                  <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                </div>
-                <p className="text-xs font-semibold text-[var(--dt-text)]">
-                  {isEditorMode ? "Klik untuk mengunggah foto profil / cutout Anda" : "Foto Profil"}
-                </p>
-              </div>
-            )}
+            <HeroImage
+              section="hero"
+              fieldKey="image_url"
+              src={profileImage}
+              alt={h.headline || "Foto Profil"}
+              credit={isDefaultImage ? null : h.image_credit}
+              language={language}
+              creditPosition={{ position: "absolute", bottom: 12, right: 8, zIndex: 20 }}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              className="w-auto max-w-full max-h-[60vh] lg:max-h-[75vh] object-contain drop-shadow-2xl"
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            />
           </div>
         </motion.div>
       </div>
