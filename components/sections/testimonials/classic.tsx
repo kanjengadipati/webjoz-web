@@ -13,6 +13,7 @@ interface TestimonialsVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: () => void;
+  language?: string;
   isExample?: boolean;
   locale?: string;
 }
@@ -26,6 +27,7 @@ export default function TestimonialsClassic({
   collapseSheetForInlineEdit,
   onEditingStateChange,
   onAddItem,
+  language,
   isExample,
   locale,
 }: TestimonialsVariantProps) {

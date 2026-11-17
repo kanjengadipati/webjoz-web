@@ -14,6 +14,9 @@ interface TestimonialsVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: () => void;
+  isExample?: boolean;
+  locale?: string;
+  language?: string;
 }
 
 export default function TestimonialsLogoWall({
@@ -24,8 +27,11 @@ export default function TestimonialsLogoWall({
   collapseSheetForInlineEdit,
   onEditingStateChange,
   onAddItem,
+  locale,
+  language,
 }: TestimonialsVariantProps) {
   if (!t) return null;
+  const isEN = (language || locale || "").toLowerCase().startsWith("en");
   // Never invent testimonials/clients on the public site — only real payload data.
   const items = t.items ?? [];
   return (
@@ -100,13 +106,13 @@ export default function TestimonialsLogoWall({
         )}
         {isEditorMode && items.length === 0 && (
           <p style={{ textAlign: "center", color: "var(--dt-text-muted)", fontSize: "0.8rem", marginTop: "2rem" }}>
-            Belum ada testimoni. Tambahkan data testimoni asli.
+            {isEN ? "No testimonials yet. Add genuine customer feedback." : "Belum ada testimoni. Tambahkan data testimoni asli."}
           </p>
         )}
         {isEditorMode && onAddItem && (
           <div style={{ display: "flex", justifyContent: "center", marginTop: "2rem" }}>
             <InlineAddTile
-              label="Tambah Testimoni"
+              label={isEN ? "Add Testimonial" : "Tambah Testimoni"}
               variant="card"
               className="rounded-2xl min-h-[160px] w-full max-w-sm"
               style={{ borderRadius: "var(--dt-radius-lg)" }}
