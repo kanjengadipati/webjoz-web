@@ -25,6 +25,7 @@ const TAB_LABELS: Record<Tab, { id: string; en: string }> = {
  * Business filter: only used for tech/startup/digital businesses.
  */
 import { InlineText, InlineImage, HeroAccessory } from "../../templates/shared";
+import { useI18n } from "@/lib/i18n/context";
 import { HERO_HEADING_SIZE } from "./primitives";
 import { HeroCta } from "./primitives";
 
@@ -38,6 +39,8 @@ export default function HeroTechSaaS({
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: HeroVariantProps) {
+  const { locale } = useI18n();
+  const isEN = locale === "en";
   const [activeTab, setActiveTab] = useState<Tab>("analytics");
   const [isInlineEditing, setIsInlineEditing] = useState(false);
   const hasSecondary = Boolean(h.cta_secondary_text?.trim() && h.cta_secondary_url?.trim());
@@ -376,7 +379,7 @@ export default function HeroTechSaaS({
               <button
                 type="button"
                 onClick={() => onUpdateField("hero", "dashboard_widget.hidden", true)}
-                title="Sembunyikan widget dashboard ini"
+                title={isEN ? "Hide this dashboard widget" : "Sembunyikan widget dashboard ini"}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
