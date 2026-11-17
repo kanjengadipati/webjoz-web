@@ -6,6 +6,7 @@ import { InlineText, InlineImage } from "../../templates/shared";
 import { useGalleryUpload } from "../gallery/shared";
 import { SparkleIcon } from "@/components/sparkle-icon";
 import { safeHref, isExternalHref } from "@/lib/safe-url";
+import { useI18n } from "@/lib/i18n/context";
 
 export interface WorksVariantProps {
   works: {
@@ -155,6 +156,7 @@ export function WorksTileOverlay({
   onMove?: (idx: number, dir: -1 | 1) => void;
   collapseSheetForInlineEdit?: () => void;
 }) {
+  const isEN = useI18n().locale === "en";
   const {
     fileInputRef,
     uploading,
@@ -219,7 +221,7 @@ export function WorksTileOverlay({
             onClick={(e) => { stop(e); submitUrl(); }}
             onPointerDown={stop}
             onTouchStart={stop}
-            title="Simpan URL"
+            title={isEN ? "Save URL" : "Simpan URL"}
             className="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shrink-0 transition-colors active:scale-95 cursor-pointer shadow-sm"
           >
             <Check className="w-3.5 h-3.5" />
@@ -229,7 +231,7 @@ export function WorksTileOverlay({
             onClick={(e) => { stop(e); cancelUrl(); }}
             onPointerDown={stop}
             onTouchStart={stop}
-            title="Batal"
+            title={isEN ? "Cancel" : "Batal"}
             className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white shrink-0 transition-colors active:scale-95 cursor-pointer"
           >
             <X className="w-3.5 h-3.5" />
@@ -253,8 +255,8 @@ export function WorksTileOverlay({
             onClick={(e) => { stop(e); random(); }}
             onPointerDown={stop}
             onTouchStart={stop}
-            title="Ganti foto acak (Unsplash)"
-            aria-label="Ganti foto acak"
+            title={isEN ? "Replace with random photo (Unsplash)" : "Ganti foto acak (Unsplash)"}
+            aria-label={isEN ? "Replace with random photo" : "Ganti foto acak"}
             className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-900/90 text-amber-300 hover:text-amber-200 shadow-xl border border-white/20 hover:bg-slate-950 active:scale-95 transition-all cursor-pointer backdrop-blur-sm"
           >
             <SparkleIcon className="w-3.5 h-3.5 text-amber-300" />
@@ -264,8 +266,8 @@ export function WorksTileOverlay({
             onClick={(e) => { stop(e); openUrlInput(); }}
             onPointerDown={stop}
             onTouchStart={stop}
-            title="Masukkan URL foto"
-            aria-label="Masukkan URL foto"
+            title={isEN ? "Enter photo URL" : "Masukkan URL foto"}
+            aria-label={isEN ? "Enter photo URL" : "Masukkan URL foto"}
             className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-900/90 text-white/90 hover:text-white shadow-xl border border-white/20 hover:bg-slate-950 active:scale-95 transition-all cursor-pointer backdrop-blur-sm"
           >
             <Link2 className="w-3.5 h-3.5" />
@@ -280,8 +282,8 @@ export function WorksTileOverlay({
             onClick={(e) => { stop(e); onMove?.(idx, -1); }}
             onPointerDown={stop}
             onTouchStart={stop}
-            title="Geser ke kiri"
-            aria-label="Geser ke kiri"
+            title={isEN ? "Move left" : "Geser ke kiri"}
+            aria-label={isEN ? "Move left" : "Geser ke kiri"}
             className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-white/80 hover:bg-white/20 transition-colors cursor-pointer disabled:opacity-30"
           >
             <ChevronLeft className="w-3.5 h-3.5" />
@@ -291,8 +293,8 @@ export function WorksTileOverlay({
             onClick={(e) => { stop(e); onRemove?.(idx); }}
             onPointerDown={stop}
             onTouchStart={stop}
-            title="Hapus proyek"
-            aria-label="Hapus proyek"
+            title={isEN ? "Delete project" : "Hapus proyek"}
+            aria-label={isEN ? "Delete project" : "Hapus proyek"}
             className="flex items-center justify-center w-6 h-6 rounded-full bg-rose-500/80 text-white hover:bg-rose-500 transition-colors cursor-pointer"
           >
             <Trash2 className="w-3 h-3" />
@@ -303,8 +305,8 @@ export function WorksTileOverlay({
             onClick={(e) => { stop(e); onMove?.(idx, 1); }}
             onPointerDown={stop}
             onTouchStart={stop}
-            title="Geser ke kanan"
-            aria-label="Geser ke kanan"
+            title={isEN ? "Move right" : "Geser ke kanan"}
+            aria-label={isEN ? "Move right" : "Geser ke kanan"}
             className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-white/80 hover:bg-white/20 transition-colors cursor-pointer disabled:opacity-30"
           >
             <ChevronRight className="w-3.5 h-3.5" />
@@ -417,7 +419,7 @@ export function WorksAddTile({
             onClick={(e) => { stop(e); submitUrl(); }}
             onPointerDown={stop}
             onTouchStart={stop}
-            title="Simpan URL"
+            title={isEN ? "Save URL" : "Simpan URL"}
             className="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shrink-0 transition-colors active:scale-95 cursor-pointer shadow-sm"
           >
             <Check className="w-3.5 h-3.5" />
@@ -427,7 +429,7 @@ export function WorksAddTile({
             onClick={(e) => { stop(e); cancelUrl(); }}
             onPointerDown={stop}
             onTouchStart={stop}
-            title="Batal"
+            title={isEN ? "Cancel" : "Batal"}
             className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white shrink-0 transition-colors active:scale-95 cursor-pointer"
           >
             <X className="w-3.5 h-3.5" />
@@ -541,7 +543,7 @@ export function WorksAddButton({
             onClick={(e) => { stop(e); submitUrl(); }}
             onPointerDown={stop}
             onTouchStart={stop}
-            title="Simpan URL"
+            title={isEN ? "Save URL" : "Simpan URL"}
             className="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shrink-0 transition-colors active:scale-95 cursor-pointer shadow-sm"
           >
             <Check className="w-3.5 h-3.5" />
@@ -551,7 +553,7 @@ export function WorksAddButton({
             onClick={(e) => { stop(e); cancelUrl(); }}
             onPointerDown={stop}
             onTouchStart={stop}
-            title="Batal"
+            title={isEN ? "Cancel" : "Batal"}
             className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white shrink-0 transition-colors active:scale-95 cursor-pointer"
           >
             <X className="w-3.5 h-3.5" />
