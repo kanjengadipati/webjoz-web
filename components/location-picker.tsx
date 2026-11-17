@@ -39,7 +39,7 @@ const TILE_STYLES: Record<string, { url: string; labelKey: string }> = {
 };
 
 export default function LocationPicker({ open, onClose, currentUrl, tileStyle: initialTileStyle, onSave }: LocationPickerProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const mapRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const backdropDown = useRef(false);
@@ -331,7 +331,7 @@ export default function LocationPicker({ open, onClose, currentUrl, tileStyle: i
             <button
               onClick={onClose}
               className="text-neutral-400 hover:text-white p-1 rounded-md hover:bg-neutral-800 transition-colors"
-              aria-label="Tutup"
+              aria-label={locale === "en" ? "Close" : "Tutup"}
             >
               <X className="w-4 h-4" />
             </button>

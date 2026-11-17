@@ -811,7 +811,7 @@ export function InlineImage({
             {t("dashboard.sitesEditor.addPhoto")}
           </span>
           <span className="text-[10px] text-muted-foreground mt-0.5 mb-2">
-            Klik untuk unggah
+            {isEN ? "Click to upload" : "Klik untuk unggah"}
           </span>
           <div
             className="flex items-center gap-1.5"
@@ -820,16 +820,16 @@ export function InlineImage({
             <button
               type="button"
               onClick={handleRandomPhoto}
-              title="Foto acak (Unsplash)"
+              title={isEN ? "Random photo (Unsplash)" : "Foto acak (Unsplash)"}
               className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium bg-background/80 hover:bg-background border border-border shadow-xs text-foreground transition-all hover:scale-105 active:scale-95 cursor-pointer"
             >
               <SparkleGenAI className="w-3 h-3 text-foreground" />
-              <span>Acak</span>
+              <span>{isEN ? "Random" : "Acak"}</span>
             </button>
             <button
               type="button"
               onClick={handleOpenUrlInput}
-              title="Masukkan tautan URL foto"
+              title={isEN ? "Enter photo URL" : "Masukkan tautan URL foto"}
               className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium bg-background/80 hover:bg-background border border-border shadow-xs text-foreground transition-all hover:scale-105 active:scale-95 cursor-pointer"
             >
               <Link2 className="w-3 h-3 text-muted-foreground" />
@@ -962,7 +962,7 @@ export function InlineImage({
                 onPointerDown={(e) => e.stopPropagation()}
                 onTouchStart={(e) => e.stopPropagation()}
                 disabled={uploading}
-                title="Ganti foto acak (Unsplash)"
+                title={isEN ? "Change random photo (Unsplash)" : "Ganti foto acak (Unsplash)"}
                 className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-900/90 text-slate-300 hover:text-white shadow-xl border border-white/20 hover:bg-slate-950 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50 backdrop-blur-md"
               >
                 <SparkleGenAI className="w-3.5 h-3.5 text-slate-300" />
@@ -975,7 +975,7 @@ export function InlineImage({
                 onPointerDown={(e) => e.stopPropagation()}
                 onTouchStart={(e) => e.stopPropagation()}
                 disabled={uploading}
-                title="Masukkan Link URL Foto"
+                title={isEN ? "Enter Photo URL" : "Masukkan Link URL Foto"}
                 className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-900/90 text-white/90 hover:text-white shadow-xl border border-white/20 hover:bg-slate-950 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50 backdrop-blur-md"
               >
                 <Link2 className="w-3.5 h-3.5 text-slate-300" />

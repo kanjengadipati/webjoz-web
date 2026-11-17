@@ -12,7 +12,7 @@ interface MicOnboardingHintProps {
 const STORAGE_KEY = "webjoz_wizard_mic_hint_seen";
 
 export function MicOnboardingHint({ onDismiss, visible }: MicOnboardingHintProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [shouldShow, setShouldShow] = useState(false);
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export function MicOnboardingHint({ onDismiss, visible }: MicOnboardingHintProps
           type="button"
           onClick={handleDismiss}
           className="absolute top-2.5 right-2.5 text-slate-500 hover:text-white transition-colors p-0.5 rounded cursor-pointer"
-          aria-label="Tutup hint"
+          aria-label={locale === "en" ? "Close hint" : "Tutup hint"}
         >
           <X className="w-3.5 h-3.5" />
         </button>

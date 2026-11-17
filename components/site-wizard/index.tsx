@@ -1434,7 +1434,7 @@ export function SiteWizard({
               <button
                 type="button"
                 onClick={handleBack}
-                aria-label="Kembali"
+                aria-label={isIndonesian ? "Kembali" : "Back"}
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/15 bg-white/[0.06] text-white transition-all hover:border-white/30 hover:bg-white/15 active:scale-95 cursor-pointer shadow-xs"
               >
                 <ChevronLeft className="h-5 w-5 text-white" />
@@ -1479,7 +1479,7 @@ export function SiteWizard({
                 rel="noopener noreferrer"
                 className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/15 bg-white/[0.06] text-white hover:text-white hover:bg-white/15 hover:border-white/30 transition-all cursor-pointer shadow-xs active:scale-95"
                 title={t("landing.navHelp", "Pusat Bantuan")}
-                aria-label="Pusat Bantuan"
+                aria-label={isIndonesian ? "Pusat Bantuan" : "Help Center"}
               >
                 <HelpCircle className="h-[18px] w-[18px] text-white stroke-[2.2]" />
               </Link>
@@ -1888,7 +1888,7 @@ export function SiteWizard({
                         />
                         <button
                           type="button"
-                          aria-label="Submit"
+                          aria-label={isIndonesian ? "Kirim" : "Submit"}
                           onClick={() => {
                             const clean = customSubTextInput.replace(/<[^>]*>?/gm, "").trim().slice(0, 80);
                             if (clean) {
@@ -2249,7 +2249,7 @@ export function SiteWizard({
                             />
                             <button
                               type="button"
-                              aria-label="Submit"
+                              aria-label={isIndonesian ? "Kirim" : "Submit"}
                               onClick={() => {
                                 const clean = customSubTextInput.replace(/<[^>]*>?/gm, "").trim().slice(0, 60);
                                 if (clean) {
@@ -2516,7 +2516,7 @@ export function SiteWizard({
               type="button"
               onClick={() => device.setPreviewDevice("desktop")}
               className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-all cursor-pointer ${device.previewDevice === "desktop" ? "bg-white/20 text-white shadow-xs font-semibold" : "text-slate-400 hover:text-white hover:bg-white/[0.06]"}`}
-              aria-label="Preview desktop"
+              aria-label={isIndonesian ? "Pratinjau desktop" : "Desktop preview"}
             >
               <Monitor className="h-3.5 w-3.5" />
             </button>
@@ -2524,7 +2524,7 @@ export function SiteWizard({
               type="button"
               onClick={() => device.setPreviewDevice("tablet")}
               className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-all cursor-pointer ${device.previewDevice === "tablet" ? "bg-white/20 text-white shadow-xs font-semibold" : "text-slate-400 hover:text-white hover:bg-white/[0.06]"}`}
-              aria-label="Preview tablet"
+              aria-label={isIndonesian ? "Pratinjau tablet" : "Tablet preview"}
             >
               <Tablet className="h-3.5 w-3.5" />
             </button>
@@ -2532,7 +2532,7 @@ export function SiteWizard({
               type="button"
               onClick={() => device.setPreviewDevice("mobile")}
               className={`flex h-6 w-8 items-center justify-center rounded-md text-[12px] transition-all cursor-pointer ${device.previewDevice === "mobile" ? "bg-white/20 text-white shadow-xs font-semibold" : "text-slate-400 hover:text-white hover:bg-white/[0.06]"}`}
-              aria-label="Preview mobile"
+              aria-label={isIndonesian ? "Pratinjau mobile" : "Mobile preview"}
             >
               <Smartphone className="h-3.5 w-3.5" />
             </button>

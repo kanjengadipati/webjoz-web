@@ -262,10 +262,10 @@ export default function InlineSocialEditor({
           type="button"
           onClick={openAddNew}
           className="inline-flex items-center gap-1 px-2 py-1 text-[11px] rounded-md border border-dashed border-border/80 bg-background/60 text-muted-foreground hover:text-foreground hover:border-primary/70 hover:bg-primary/5 transition-all cursor-pointer"
-          title="Tambah Media Sosial"
+          title={isEN ? "Add Social Media" : "Tambah Media Sosial"}
         >
           <Plus className="w-3 h-3 text-primary" />
-          <span>{links.length === 0 ? "Tambah Media Sosial" : "Tambah"}</span>
+          <span>{links.length === 0 ? (isEN ? "Add Social Media" : "Tambah Media Sosial") : (isEN ? "Add" : "Tambah")}</span>
         </button>
       </div>
 
@@ -284,7 +284,7 @@ export default function InlineSocialEditor({
               {isAddingNew ? (
                 <>
                   <Plus className="w-3.5 h-3.5 text-primary" />
-                  Tambah Media Sosial
+                  {isEN ? "Add Social Media" : "Tambah Media Sosial"}
                 </>
               ) : (
                 <>
@@ -297,7 +297,7 @@ export default function InlineSocialEditor({
               type="button"
               onClick={closePopover}
               className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
-              title="Tutup"
+              title={isEN ? "Close" : "Tutup"}
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -315,7 +315,7 @@ export default function InlineSocialEditor({
                     type="text"
                     value={editingPlatform}
                     onChange={(e) => setEditingPlatform(e.target.value)}
-                    placeholder="Nama platform (cth. Threads)"
+                    placeholder={isEN ? "Platform name (e.g. Threads)" : "Nama platform (cth. Threads)"}
                     className="flex-1 px-2.5 py-1.5 text-xs rounded-lg border border-border bg-background outline-none focus:border-primary/80 focus:ring-1 focus:ring-primary/20"
                     autoFocus
                   />

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useI18n } from "@/lib/i18n/context";
 
 interface WizardSheetProps {
   open: boolean;
@@ -26,6 +27,7 @@ export function WizardSheet({
   maxHeight = "60dvh",
   ariaLabel,
 }: WizardSheetProps) {
+  const { locale } = useI18n();
   if (!open) return null;
 
   return (
@@ -49,7 +51,7 @@ export function WizardSheet({
           type="button"
           onClick={onClose}
           className="flex flex-col items-center justify-center pt-3 pb-2 w-full shrink-0 cursor-pointer group"
-          aria-label="Tutup"
+          aria-label={locale === "en" ? "Close" : "Tutup"}
         >
           <div className="h-1 w-10 rounded-full bg-sidebar-muted-foreground/30 group-active:bg-sidebar-muted-foreground/60 transition-colors" />
         </button>

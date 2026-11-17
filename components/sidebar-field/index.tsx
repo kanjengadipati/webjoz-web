@@ -86,7 +86,8 @@ export function SidebarField({
   rightAction,
   onAiRewrite,
 }: SidebarFieldProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const isEN = locale === "en";
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
   const isInteractingWithAiButtonRef = useRef(false);
 
@@ -234,8 +235,8 @@ export function SidebarField({
               handleAiRewrite(e);
             }}
             disabled={aiWriting || disabled}
-            aria-label="Tulis ulang dengan AI"
-            title={aiWriting ? "AI sedang menulis..." : "Tulis ulang dengan AI"}
+            aria-label={isEN ? "Rewrite with AI" : "Tulis ulang dengan AI"}
+            title={aiWriting ? (isEN ? "AI is writing..." : "AI sedang menulis...") : (isEN ? "Rewrite with AI" : "Tulis ulang dengan AI")}
             className={`absolute top-2 right-2 z-20 flex items-center justify-center w-6 h-6 sm:w-5 sm:h-5 rounded-full shadow-md border border-amber-400/70 transition-all duration-150 cursor-pointer
               before:absolute before:-inset-2 before:content-['']
               ${showAiBadge ? "opacity-100 scale-100" : "opacity-0 scale-75 pointer-events-none"}

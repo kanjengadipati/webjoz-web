@@ -549,7 +549,7 @@ function SortableCategoryRow({
         <button
           type="button"
           className="cursor-grab active:cursor-grabbing touch-none text-muted-foreground hover:text-foreground p-1 transition-colors rounded-lg hover:bg-muted"
-          aria-label="Geser kategori"
+          aria-label={isEN ? "Drag category" : "Geser kategori"}
           {...attributes}
           {...listeners}
         >
@@ -669,7 +669,7 @@ function SortableItemRow({
           <button
             type="button"
             className="cursor-grab active:cursor-grabbing touch-none text-muted-foreground hover:text-foreground transition-colors p-1 rounded-lg hover:bg-muted shrink-0"
-            aria-label="Geser item"
+            aria-label={isEN ? "Drag item" : "Geser item"}
             {...attributes}
             {...listeners}
           >
@@ -1064,7 +1064,7 @@ function SortableItemRow({
                 type="button"
                 onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n• " : "• ")); }}
                 className="px-2 py-1 rounded-lg bg-card hover:bg-muted text-muted-foreground hover:text-foreground text-[11px] font-semibold cursor-pointer border border-border/70 transition-colors shadow-2xs flex items-center gap-1"
-                title="Tambah List Bulat"
+                title={isEN ? "Add bulleted list" : "Tambah List Bulat"}
               >
                 <span>•</span> List
               </button>
@@ -1072,7 +1072,7 @@ function SortableItemRow({
                 type="button"
                 onClick={() => { const cur = item.description ?? ""; updateItem(catIdx, itemIdx, "description", cur + (cur ? "\n1. " : "1. ")); }}
                 className="px-2 py-1 rounded-lg bg-card hover:bg-muted text-muted-foreground hover:text-foreground text-[11px] font-semibold cursor-pointer border border-border/70 transition-colors shadow-2xs flex items-center gap-1"
-                title="Tambah List Angka"
+                title={isEN ? "Add numbered list" : "Tambah List Angka"}
               >
                 1. List
               </button>
