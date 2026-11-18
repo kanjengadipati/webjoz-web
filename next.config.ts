@@ -2,11 +2,24 @@ import type { NextConfig } from "next";
 import path from "path";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  // "standalone" is for Docker/self-hosted. Remove it on Vercel to avoid
+  // bundling source maps and unnecessary files into every serverless function.
+  // output: "standalone",
   devIndicators: false,
   transpilePackages: ["webjoz-ui"],
   turbopack: {
     root: path.resolve(__dirname, ".."),
+  },
+  // Exclude server-side source maps from the deployed function bundle.
+  // Source maps are only useful for local debugging, not on the edge/serverless runtime.
+  productionBrowserSourceMaps: false,
+  // Exclude source map files from the output file tracing (reduces Vercel function storage ~70%)
+  outputFileTracingExcludes: {
+    "*": [
+      "**/.next/server/chunks/ssr/*.map",
+      "**/.next/server/chunks/*.map",
+      "**/.next/server/app/**/*.map",
+    ],
   },
   async rewrites() {
     return [

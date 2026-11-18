@@ -1,0 +1,14 @@
+# Exclude source map files from Vercel deployment.
+# Source maps are only needed for local debugging, not production runtime.
+# This reduces Vercel Function Storage significantly (was ~69MB of maps per deploy).
+.next/server/**/*.map
+.next/static/**/*.map
+
+# Exclude standalone output (not needed on Vercel, which manages its own bundling)
+.next/standalone
+
+# Exclude test artifacts and dev scripts
+scripts/
+playwright-report/
+test-results/
+*.test.mjs
