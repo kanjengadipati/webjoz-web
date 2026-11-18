@@ -49,6 +49,7 @@ const SUB_TYPE_TO_V2: Record<string, [string, string]> = {
   "Klinik & Kesehatan":                 ["booking_service", "health.clinic"],
   "Gym & Olahraga":                     ["booking_service", "service.fitness"],
   "Event & Wedding Organizer":          ["booking_service", "service.event_wedding"],
+  "Grup Musik & Band":                 ["booking_service", "service.music_group"],
   "Bengkel Motor":                      ["booking_service", "service.motorcycle_repair"],
   "Bengkel Mobil & Otomotif":           ["booking_service", "service.car_repair"],
   "Laundry":                            ["booking_service", "service.laundry"],

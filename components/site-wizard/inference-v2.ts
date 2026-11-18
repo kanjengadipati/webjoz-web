@@ -25,6 +25,7 @@ export type ClassifyV2Fields = {
   confidence?: string;
   needs_choice?: boolean;
   suggested_industry_id?: string;
+  entity?: "individual" | "organization" | null;
 };
 
 /** Pre-inferred state from v1 classification (carried through skip/voice paths). */
@@ -35,6 +36,7 @@ export type PreInferred = {
   industryId?: string;
   industryCustom?: string;
   confidence?: string;
+  entity?: "individual" | "organization" | null;
   /** True bila teks deskripsi berasal dari AI (jalur skip/voice), bukan diketik pengguna. */
   descriptionFromAI?: boolean;
 };
@@ -51,6 +53,7 @@ export function preInferredFromClassify(
     industryId: d?.industry_id || undefined,
     industryCustom: d?.industry_custom || undefined,
     confidence: d?.confidence === "high" || d?.confidence === "medium" ? d?.confidence : "low",
+    entity: d?.entity || undefined,
   };
 }
 

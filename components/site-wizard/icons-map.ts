@@ -113,6 +113,7 @@ export const SUB_TYPE_ICONS: Record<string, React.ElementType> = {
   "Tutor & Life Coach": GraduationCap,
   "Public Speaker & Trainer": Mic,
   "Musisi & Entertainer": Music2,
+  "Grup Musik & Band": Music2,
   "Notaris & PPAT": Scale,
   // Company Profile
   "Properti & Real Estate": Home,
@@ -185,6 +186,7 @@ export const SUB_TYPE_ICONS: Record<string, React.ElementType> = {
   "dest.attraction": Bus,
   // Acara & Hiburan
   "service.event_wedding": Calendar,
+  "service.music_group": Music2,
   "creator.musician": Music2,
   // Kreatif & Media
   "creator.photographer": Camera,

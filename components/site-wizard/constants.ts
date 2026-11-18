@@ -152,6 +152,7 @@ const LAYANAN_SUB_TYPES: SubTypeItem[] = [
   { value: "Klinik & Kesehatan", emoji: "🏥", label: "Klinik & Kesehatan" },
   { value: "Gym & Olahraga", emoji: "🏋️", label: "Gym & Olahraga" },
   { value: "Event & Wedding Organizer", emoji: "🎉", label: "Event Organizer" },
+  { value: "Grup Musik & Band", emoji: "🎸", label: "Grup Musik & Band" },
   { value: "Bengkel Motor", emoji: "🏍️", label: "Bengkel Motor" },
   { value: "Bengkel Mobil & Otomotif", emoji: "🔧", label: "Bengkel Mobil & Servis" },
   { value: "Laundry", emoji: "🧺", label: "Laundry" },

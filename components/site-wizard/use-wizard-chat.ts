@@ -387,6 +387,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
             industry_id: res.data.industry_id,
             industry_custom: res.data.industry_custom,
             confidence: res.data.confidence,
+            entity: res.data.entity,
           };
         }
       }
@@ -929,7 +930,12 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
             setSuggestedIndustryId("");
             if (d.archetype) {
               setArchetype(d.archetype); archetypeRef.current = d.archetype;
-              setEntityState((prev) => nextEntityFromArchetype(prev, d.archetype));
+              // Prefer AI-inferred entity over archetype-derived inference
+              if (d.entity === "individual" || d.entity === "organization") {
+                setEntityState((prev) => prev.source === "user" ? prev : { value: d.entity as "individual" | "organization", source: "inferred" });
+              } else {
+                setEntityState((prev) => nextEntityFromArchetype(prev, d.archetype));
+              }
             }
             if (d.industry_id) { setIndustryId(d.industry_id); industryIdRef.current = d.industry_id; }
           } else {
@@ -1125,7 +1131,12 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
             setSuggestedIndustryId("");
             if (aiRes.data.archetype) {
               setArchetype(aiRes.data.archetype); archetypeRef.current = aiRes.data.archetype;
-              setEntityState((prev) => nextEntityFromArchetype(prev, aiRes.data.archetype));
+              // Prefer AI-inferred entity over archetype-derived inference
+              if (aiRes.data.entity === "individual" || aiRes.data.entity === "organization") {
+                setEntityState((prev) => prev.source === "user" ? prev : { value: aiRes.data.entity as "individual" | "organization", source: "inferred" });
+              } else {
+                setEntityState((prev) => nextEntityFromArchetype(prev, aiRes.data.archetype));
+              }
             }
             if (aiRes.data.industry_id) { setIndustryId(aiRes.data.industry_id); industryIdRef.current = aiRes.data.industry_id; }
           } else {

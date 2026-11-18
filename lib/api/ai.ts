@@ -23,6 +23,7 @@ export type ProcessBusinessDescriptionResult = {
   // needs_choice: true when FE should show picker instead of auto-confirming
   needs_choice?: boolean;
   suggested_industry_id?: string;
+  entity?: "individual" | "organization";
 };
 
 export async function processBusinessDescription(rawText: string, businessName?: string, language?: string) {
