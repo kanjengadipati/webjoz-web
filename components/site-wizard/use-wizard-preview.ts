@@ -109,19 +109,46 @@ export function useWizardPreview() {
     scrollPreviewToTop();
   }, [previewData?.template_id, streamedTemplateId, regenCount, historyIndex, scrollPreviewToTop]);
 
-  // Transition to result only when BOTH conditions are true in React's eyes:
-  // - streamDone is true (meaning onDone event has arrived and previewData is committed)
-  // - smoothProgress has reached 100% (the progress bar visually hits 100%)
+  // Transition to result when streamDone is true.
+  // When AI finishes in single-mode, smoothly push to 100% and transition directly to result.
   useEffect(() => {
-    if (previewState === "loading" && streamDone && !pendingResultRef.current) {
-      if (Math.round(smoothProgress) >= 100) {
-        pendingResultRef.current = true;
-        setTimeout(() => setPreviewState("result"), 450);
-      }
+    if (previewState !== "loading") return;
+
+    if (streamDone && !pendingResultRef.current) {
+      pendingResultRef.current = true;
+      setSmoothProgress(100);
+      setLoadingStep(6);
+      const timer = setTimeout(() => {
+        setPreviewState("result");
+      }, 400);
+      return () => clearTimeout(timer);
     }
-  }, [smoothProgress, previewState, streamDone]);
+  }, [previewState, streamDone]);
+
+  // Fallback safety watchdog: jika konten preview sudah tersedia dan loading sudah berjalan > 35 detik
+  useEffect(() => {
+    if (previewState !== "loading") return;
+
+    const hasContent = Object.keys(streamedSections).length > 0 || (previewData && Object.keys(previewData.content || {}).length > 0);
+    if (!hasContent) return;
+
+    const safetyTimer = setTimeout(() => {
+      if (!pendingResultRef.current) {
+        console.warn("[wizard] preview stuck watchdog triggered — auto-advancing to result");
+        pendingResultRef.current = true;
+        streamDoneRef.current = true;
+        setStreamDone(true);
+        setSmoothProgress(100);
+        setLoadingStep(6);
+        setTimeout(() => setPreviewState("result"), 300);
+      }
+    }, 25000);
+
+    return () => clearTimeout(safetyTimer);
+  }, [previewState, streamedSections, previewData]);
 
   // Smoothly interpolate progress bar and percentage value
+  // In single-mode, while AI is running, progress naturally advances up to 92% based on elapsed time.
   useEffect(() => {
     if (previewState !== "loading") {
       setSmoothProgress(0);
@@ -131,28 +158,27 @@ export function useWizardPreview() {
     const interval = setInterval(() => {
       setSmoothProgress((prev) => {
         const isDone = streamDoneRef.current;
-        const target = isDone ? 100 : (LOADING_STEPS_PERCENT[loadingStep] ?? 15);
+        if (isDone) return 100;
+
+        const target = LOADING_STEPS_PERCENT[loadingStepRef.current] ?? 15;
         if (prev >= target) {
-          if (!isDone && prev < 95 && loadingStep >= 4) {
-            // When waiting for a slow stream response, slowly creep up without hitting 100%
-            return Math.min(95, prev + 0.04);
+          if (prev < 94) {
+            // Pelan-pelan merayap naik saat menunggu AI menyelesaikan copywriting
+            return Math.min(94, prev + 0.08);
           }
-          return isDone ? 100 : prev;
+          return prev;
         }
         const diff = target - prev;
-        // Faster jump to 100% once done, natural easing during in-progress generation
-        const step = isDone
-          ? Math.max(1.5, diff * 0.25)
-          : Math.min(0.8, Math.max(0.15, diff * 0.04));
+        const step = Math.min(1.2, Math.max(0.2, diff * 0.08));
         const next = prev + step;
         return next >= target ? target : next;
       });
     }, 40);
 
     return () => clearInterval(interval);
-  }, [previewState, loadingStep]);
+  }, [previewState]);
 
-  // Handle loading steps, pacing, and safety timeout
+  // Handle loading steps, time pacing for single-mode and grouped-mode
   useEffect(() => {
     if (previewState !== "loading") return;
 
@@ -166,35 +192,40 @@ export function useWizardPreview() {
     stepStartTimesRef.current = [Date.now(), 0, 0, 0, 0, 0, 0];
     const startTime = Date.now();
 
+    // Di mode single, langkah checklist otomatis maju tiap ~3 detik agar UX hidup
     const interval = setInterval(() => {
       if (pendingResultRef.current) return;
 
       const now = Date.now();
-
       const currentStep = loadingStepRef.current;
 
-      // 2. Update ticking timer for the active step — only once per second (floor check)
+      // Update ticking timer for the active step
       const activeStart = stepStartTimesRef.current[currentStep];
       if (activeStart > 0) {
         const elapsed = Math.round((now - activeStart) / 1000);
         setStepElapsed((prev) => {
-          if (prev[currentStep] === elapsed) return prev; // skip if unchanged
+          if (prev[currentStep] === elapsed) return prev;
           const next = [...prev];
           next[currentStep] = elapsed;
           return next;
         });
       }
 
-      // 3. Advance loading step if needed (transition to result handled by useEffect)
       if (currentStep >= 6) return;
 
-      const targetStep = streamDoneRef.current ? 6 : desiredStepRef.current;
+      // Target step: jika stream sudah done -> lompat ke 6.
+      // Jika di mode single (tidak ada section bertahap), pacing waktu ~3.2s per step hingga step 5 (max sebelum done).
+      const elapsedSinceStart = now - startTime;
+      const simulatedStep = Math.min(5, Math.floor(elapsedSinceStart / 3200));
+      const targetStep = streamDoneRef.current
+        ? 6
+        : Math.max(desiredStepRef.current, simulatedStep);
+
       if (currentStep >= targetStep) return;
 
-      // Pacing: minimum 1.2s per step when stream is in flight
+      // Pacing antar step minimal 1.2 detik
       if (!streamDoneRef.current && now - lastStepTimeRef.current < 1200) return;
 
-      // Freeze elapsed for the step we're leaving, then advance
       const frozenElapsed = Math.round((now - stepStartTimesRef.current[currentStep]) / 1000);
       stepStartTimesRef.current[currentStep + 1] = now;
       lastStepTimeRef.current = now;
