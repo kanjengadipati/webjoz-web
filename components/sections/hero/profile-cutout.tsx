@@ -44,18 +44,16 @@ export default function HeroProfileCutout({
         background: h.background_color || "var(--dt-bg)",
         overflow: "visible",
         minHeight: "88vh",
-        // Kompensasi header transparent-overlay yang sticky (H=88px).
-        // Header memakai marginBottom:-H sehingga tidak memakan ruang layout,
-        // akibatnya konten hero tanpa padding-top akan tertimpa header.
-        paddingTop: "calc(88px + 2rem)",
+        // Kompensasi header transparent-overlay (H=88px) + offset 10px persis di bawah header
+        paddingTop: "calc(88px + 10px)",
       }}
-      className="flex flex-col justify-center pb-12 sm:pb-16 lg:pb-20"
+      className="flex flex-col justify-start pb-12 sm:pb-16 lg:pb-20"
     >
       {/* Subtle ambient glow behind the portrait figure */}
       <div
         style={{
           position: "absolute",
-          top: "45%",
+          top: "35%",
           right: "8%",
           transform: "translateY(-50%)",
           width: "min(500px, 45vw)",
@@ -84,15 +82,14 @@ export default function HeroProfileCutout({
       />
 
       <div
-        className="relative z-10 mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12 flex flex-col lg:grid lg:grid-cols-12 lg:items-center gap-10 lg:gap-8 my-auto"
-        style={{ minHeight: "80vh" }}
+        className="relative z-10 mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12 flex flex-col lg:grid lg:grid-cols-12 lg:items-start gap-10 lg:gap-8"
       >
         {/* Left Column: Personal Brand Info & Accent Bio Card (7 Cols on desktop) */}
         <motion.div
           initial={reduce ? false : { opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="lg:col-span-7 flex flex-col justify-center"
+          className="lg:col-span-7 flex flex-col justify-center pt-2 lg:pt-6"
         >
           {/* Eyebrow / Tagline */}
           {(h.eyebrow || isEditorMode) && (
@@ -293,7 +290,7 @@ export default function HeroProfileCutout({
           initial={reduce ? false : { opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.15 }}
-          className="lg:col-span-5 relative flex flex-col items-center justify-center self-center w-full lg:-mt-14 xl:-mt-20"
+          className="lg:col-span-5 relative flex flex-col items-center justify-start lg:self-start w-full pt-0"
           style={{ minHeight: "380px" }}
         >
           <div
@@ -317,7 +314,7 @@ export default function HeroProfileCutout({
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
-              className="w-auto max-w-full max-h-[60vh] lg:max-h-[75vh] object-contain object-top drop-shadow-2xl"
+              className="w-auto max-w-full max-h-[65vh] lg:max-h-[82vh] object-contain object-top drop-shadow-2xl"
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             />
           </div>
