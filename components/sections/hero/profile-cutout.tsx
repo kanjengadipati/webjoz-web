@@ -55,7 +55,7 @@ export default function HeroProfileCutout({
       <div
         style={{
           position: "absolute",
-          top: "50%",
+          top: "45%",
           right: "8%",
           transform: "translateY(-50%)",
           width: "min(500px, 45vw)",
@@ -200,7 +200,7 @@ export default function HeroProfileCutout({
 
           {/* Action CTAs */}
           <div className="mt-7 sm:mt-9 flex flex-wrap items-center gap-3 sm:gap-4">
-            {(h.cta_text || isEditorMode) && (
+            {Boolean(h.cta_text?.trim()) && (
               <HeroCta
                 href={h.cta_url}
                 label={h.cta_text}
@@ -219,7 +219,7 @@ export default function HeroProfileCutout({
               />
             )}
 
-            {(hasSecondary || isEditorMode) && (
+            {hasSecondary && (
               <HeroCta
                 href={h.cta_secondary_url}
                 label={h.cta_secondary_text}
@@ -293,15 +293,15 @@ export default function HeroProfileCutout({
           initial={reduce ? false : { opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.15 }}
-          className="lg:col-span-5 relative flex items-center justify-center self-center w-full"
+          className="lg:col-span-5 relative flex flex-col items-center justify-center self-center w-full lg:-mt-14 xl:-mt-20"
           style={{ minHeight: "380px" }}
         >
           <div
             className="relative w-full max-w-[500px] lg:max-w-[560px] flex items-center justify-center"
             style={{
               // Mask image fades the bottom gracefully so standard rectangular photos blend naturally
-              maskImage: "linear-gradient(to bottom, black 85%, transparent 100%)",
-              WebkitMaskImage: "linear-gradient(to bottom, black 85%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, black 75%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to bottom, black 75%, transparent 100%)",
               zIndex: isEditorMode ? 60 : 40,
               pointerEvents: isEditorMode ? "auto" : "none",
             }}
@@ -317,7 +317,7 @@ export default function HeroProfileCutout({
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
-              className="w-auto max-w-full max-h-[60vh] lg:max-h-[75vh] object-contain drop-shadow-2xl"
+              className="w-auto max-w-full max-h-[60vh] lg:max-h-[75vh] object-contain object-top drop-shadow-2xl"
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             />
           </div>
