@@ -205,7 +205,7 @@ export default function HeroProductShowcase({
             {(h.cta_secondary_text || isEditorMode) && (
               <HeroCta
                 href={h.cta_secondary_url}
-                label={h.cta_secondary_text}
+                label={h.cta_secondary_text || (isEN ? "Learn More" : "Selengkapnya")}
                 fieldKey="cta_secondary_text"
                 iconSize={15}
                 className="inline-flex items-center gap-2 px-5 py-3 font-semibold text-sm"
