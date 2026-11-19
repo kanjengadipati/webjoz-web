@@ -164,9 +164,19 @@ export default function HeroVisualMosaic({
             onEditingStateChange={handleEditingStateChange}
           />
 
-          <span className="text-[11px] text-muted-foreground uppercase tracking-widest font-mono">
-            {language === "en" ? "Curated Works & Projects" : "Karya Terkurasi"}
-          </span>
+          <InlineText
+            section="hero"
+            fieldKey="cta_secondary_text"
+            value={h.cta_secondary_text ?? ""}
+            placeholder={language === "en" ? "Curated Works & Projects" : "Karya Terkurasi"}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            as="span"
+            className="text-[11px] text-muted-foreground uppercase tracking-widest font-mono"
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={handleEditingStateChange}
+          />
         </div>
       </div>
 
