@@ -253,7 +253,7 @@ export default function LandingPageClient() {
             "@type": "Organization",
             "name": "Webjoz",
             "url": "https://www.webjoz.com",
-            "logo": "https://www.webjoz.com/logo2.png",
+            "logo": "https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067895/giwangan/logo2.png",
             "description": "Platform AI Website Builder untuk bisnis Indonesia. Buat website profesional dalam 5 menit tanpa coding.",
             "areaServed": "Indonesia",
             "contactPoint": {
@@ -299,7 +299,7 @@ export default function LandingPageClient() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
           <Link href="https://www.webjoz.com" className="flex items-center gap-2">
             <Image
-              src="/logo2.png"
+              src="https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067895/giwangan/logo2.png"
               alt="Webjoz"
               width={120}
               height={72}
@@ -726,7 +726,7 @@ export default function LandingPageClient() {
         <div className="mx-auto max-w-6xl flex flex-col gap-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">
-              <Image src="/logo2.png" alt="Webjoz" width={80} height={48} className="h-6 w-auto object-contain" />
+              <Image src="https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067895/giwangan/logo2.png" alt="Webjoz" width={80} height={48} className="h-6 w-auto object-contain" />
               <span className="text-sm font-semibold text-foreground dark:text-white">Webjoz</span>
             </div>
             <p className="text-xs text-muted-foreground dark:text-slate-400 text-center">

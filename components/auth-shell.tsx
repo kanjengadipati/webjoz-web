@@ -36,7 +36,7 @@ function LandingHeader() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
           <Image
-            src="/logo2.png"
+            src="https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067895/giwangan/logo2.png"
             alt="Webjoz"
             width={120}
             height={72}
@@ -149,7 +149,7 @@ export function AuthShell({
             </button>
             <Link href="/" className="flex items-center">
               <Image
-                src="/logo2.png"
+                src="https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067895/giwangan/logo2.png"
                 alt="Webjoz logo"
                 width={100}
                 height={60}

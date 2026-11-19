@@ -50,7 +50,7 @@ export default function BlogIndexPage() {
       <header className="border-b border-border">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/logo2.png" alt="Webjoz" width={80} height={48} className="h-6 w-auto object-contain" />
+            <Image src="https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067895/giwangan/logo2.png" alt="Webjoz" width={80} height={48} className="h-6 w-auto object-contain" />
             <span className="text-sm font-semibold tracking-tight">Webjoz</span>
           </Link>
           <div className="flex items-center gap-4">

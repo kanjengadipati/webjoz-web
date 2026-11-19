@@ -406,7 +406,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   <div className="space-y-1">
                     <div className="flex items-center gap-3">
                       <Image
-                        src="/logo2.png"
+                        src="https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067895/giwangan/logo2.png"
                         alt="Webjoz logo"
                         width={120}
                         height={72}
