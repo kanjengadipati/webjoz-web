@@ -24,6 +24,7 @@ const ESTIMATED_TOTAL_SECS = 22;
 export function LoadingModal({ loadingStep, progressPercent, businessType, businessName, charCount, sectionSnippet, center, stepElapsed, streamDone }: LoadingModalProps) {
   const { t, locale } = useI18n();
   const [elapsedSecs, setElapsedSecs] = useState(0);
+  const [insight, setInsight] = useState(() => getInsight(businessType, locale));
 
   useEffect(() => {
     const startTime = Date.now();
@@ -32,6 +33,14 @@ export function LoadingModal({ loadingStep, progressPercent, businessType, busin
     }, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  // Rotate insight every 7 seconds, not on every render
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setInsight(getInsight(businessType, locale));
+    }, 7000);
+    return () => clearInterval(interval);
+  }, [businessType, locale]);
 
   const formatTime = (secs: number) => {
     const m = Math.floor(secs / 60);
@@ -160,7 +169,7 @@ export function LoadingModal({ loadingStep, progressPercent, businessType, busin
               <SparkleIcon className="w-[18px] h-[18px]" />
               <span className="text-[11px] font-bold text-white">{t("dashboard.wizard.loadingAiInsight", "AI Insight")}</span>
             </div>
-            <p className="text-[11px] text-slate-400 leading-relaxed">{getInsight(businessType, locale)}</p>
+            <p className="text-[11px] text-slate-400 leading-relaxed">{insight}</p>
           </div>
         )}
       </div>
