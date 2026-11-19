@@ -163,7 +163,7 @@ export default function PortoPage() {
             <div className="p-4">
               <div className="overflow-hidden rounded-2xl border border-border/60 bg-background/70 shadow-sm">
                 <Image
-                  src="/heriyadi-cv-preview-latest.png"
+                  src="https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795068255/giwangan/heriyadi-cv-preview-latest.png"
                   alt="Preview of Heriyadi CV"
                   width={612}
                   height={792}
