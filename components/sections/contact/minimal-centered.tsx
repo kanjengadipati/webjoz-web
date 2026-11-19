@@ -25,32 +25,37 @@ export default function MinimalCentered({
 
   return (
     <section id="contact" style={{ padding: "var(--dt-spacing) 1.5rem", background: "color-mix(in srgb, var(--dt-primary) 4%, var(--dt-bg))", borderTop: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)" }}>
-      <div style={{ maxWidth: "32rem", margin: "0 auto", textAlign: "center" }}>
-        <InlineText
-          section="contact"
-          fieldKey="eyebrow"
-          value={c.eyebrow || defaultEyebrow}
-          placeholder={defaultEyebrow}
-          onUpdateField={onUpdateField}
-          isEditorMode={isEditorMode}
-          isSelected={isSelected}
-          as="span"
-          style={{ display: "inline-block", padding: "0.25rem 0.75rem", fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: "9999px", background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)", marginBottom: "1rem" }}
-          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-          onEditingStateChange={onEditingStateChange}
-        />
-        <InlineText
-          section="contact"
-          fieldKey="title"
-          value={c.title ?? ""}
-          onUpdateField={onUpdateField}
-          isEditorMode={isEditorMode}
-          isSelected={isSelected}
-          as="h2"
-          style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)", fontSize: "clamp(1.25rem, 4.5cqw, 2rem)", color: "var(--dt-text)", margin: "0 0 0.5rem" } as any}
-          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-          onEditingStateChange={onEditingStateChange}
-        />
+      <div style={{ maxWidth: "32rem", margin: "0 auto", textAlign: "center" }} className="flex flex-col items-center">
+        <div className="mb-3">
+          <InlineText
+            section="contact"
+            fieldKey="eyebrow"
+            value={c.eyebrow || defaultEyebrow}
+            placeholder={defaultEyebrow}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            as="span"
+            style={{ display: "inline-block", padding: "0.25rem 0.75rem", fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", borderRadius: "9999px", background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)" }}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
+        </div>
+        <div className="w-full">
+          <InlineText
+            section="contact"
+            fieldKey="title"
+            value={c.title ?? ""}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            as="h2"
+            multiline
+            style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)", fontSize: "clamp(1.25rem, 4.5cqw, 2rem)", color: "var(--dt-text)", margin: "0 0 0.5rem", display: "block" } as any}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
+        </div>
         <InlineText section="contact" fieldKey="subtitle" value={c.subtitle ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" multiline style={{ color: "var(--dt-text-muted)", fontSize: "0.875rem", maxWidth: "24rem", margin: "0 auto 2rem", lineHeight: 1.6 } as any} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
 
         {hasLeadForm && (

@@ -45,31 +45,68 @@ export default function WhatsAppDirect({
     >
       <div style={{ maxWidth: "68rem", margin: "0 auto" }}>
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider mb-3 bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/20">
-            <span className="w-2 h-2 rounded-full bg-[#25D366] animate-pulse" />
-            {isEN ? "Fast Response via WhatsApp" : "Respon Cepat via WhatsApp"}
+        <div className="text-center mb-10 flex flex-col items-center">
+          <div className="mb-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/20">
+              <span className="w-2 h-2 rounded-full bg-[#25D366] animate-pulse" />
+              <InlineText
+                section="contact"
+                fieldKey="eyebrow"
+                value={c.eyebrow || (isEN ? "Fast Response via WhatsApp" : "Respon Cepat via WhatsApp")}
+                placeholder={isEN ? "Fast Response via WhatsApp" : "Respon Cepat via WhatsApp"}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="span"
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
+            </div>
+          </div>
+
+          <div className="w-full">
+            <InlineText
+              section="contact"
+              fieldKey="title"
+              value={c.title ?? ""}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="h2"
+              multiline
+              className="block"
+              style={{
+                fontFamily: "var(--dt-heading-font)",
+                fontWeight: "var(--dt-heading-weight)" as any,
+                fontSize: "clamp(1.5rem, 4.5cqw, 2.35rem)",
+                color: "var(--dt-text)",
+                margin: "0 0 0.75rem",
+                display: "block",
+              }}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
           </div>
 
           <InlineText
             section="contact"
-            fieldKey="title"
-            value={c.title ?? ""}
+            fieldKey="subtitle"
+            value={c.subtitle ?? ""}
             onUpdateField={onUpdateField}
             isEditorMode={isEditorMode}
             isSelected={isSelected}
-            as="h2"
+            as="p"
+            multiline
             style={{
-              fontFamily: "var(--dt-heading-font)",
-              fontWeight: "var(--dt-heading-weight)" as any,
-              fontSize: "clamp(1.5rem, 4.5cqw, 2.35rem)",
-              color: "var(--dt-text)",
-              margin: "0 0 0.75rem",
-            }}
+              color: "var(--dt-text-muted)",
+              fontSize: "0.95rem",
+              maxWidth: "34rem",
+              margin: "0 auto",
+              lineHeight: 1.6,
+            } as any}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
           />
-          <InlineText section="contact" fieldKey="subtitle" value={c.subtitle ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" multiline style={{ color: "var(--dt-text-muted)", fontSize: "0.95rem", maxWidth: "34rem", margin: "0 auto", lineHeight: 1.6 } as any} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
         </div>
 
         {/* Main Grid: WhatsApp Hero Card + Optional Secondary Form/Info */}
