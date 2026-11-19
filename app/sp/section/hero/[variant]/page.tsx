@@ -5,8 +5,7 @@ import { useParams } from "next/navigation";
 import { buildCssVars, loadGoogleFont } from "@/components/templates/helpers";
 import type { DesignToken } from "@/components/templates/types";
 import HeroSection from "@/components/sections/hero";
-import { MOCK_SHOWCASE_DATA } from "@/app/dashboard/admin/section-showcase/mock-data";
-import { SHOWCASE_PRESETS } from "@/app/dashboard/admin/section-showcase/mock-data";
+import { MOCK_SHOWCASE_DATA, SHOWCASE_PRESETS, getShowcaseHero } from "@/app/dashboard/admin/section-showcase/mock-data";
 
 const PRESET_ID = "modern-tech";
 
@@ -59,7 +58,7 @@ export default function SectionVariantPreviewPage() {
         }}
       >
         <HeroSection
-          hero={MOCK_SHOWCASE_DATA.hero as any}
+          hero={getShowcaseHero(variant) as any}
           contact={MOCK_SHOWCASE_DATA.contact as any}
           onSubmitLead={() => Promise.resolve()}
           design_token={designToken}

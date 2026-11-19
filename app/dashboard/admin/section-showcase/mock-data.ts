@@ -1184,6 +1184,77 @@ const CINEMATIC_IMAGES = {
   cta_secondary_text: "Watch the Full Reel ↓",
 };
 
+// 01. Editorial Asymmetric Mock Data
+const EDITORIAL_ASYMMETRIC_IMAGES = {
+  image_url: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=1200&auto=format&fit=crop&q=80",
+  eyebrow: "Overview · Strategic Platform",
+  headline: "The Future of Decision - Making Made Simple",
+  subheadline: "Crafted for designers and developers alike, Spectra offers an unrivaled innovative analytics platform.",
+  cta_text: "See All Reviews",
+  cta_secondary_text: "Watch Video (1:24)",
+  cta_secondary_url: "#video",
+  badge_text: "Verified Delivery Standard | In Progress",
+};
+
+// 02. Floating Layers Mock Data
+const FLOATING_LAYERS_IMAGES = {
+  image_url: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&auto=format&fit=crop&q=80",
+  eyebrow: "Dynamic Platform · Cloud AI",
+  headline: "Ideas That Inspire, Designs That Connect.",
+  subheadline: "We create bespoke digital experiences that help brands scale and stand out with intelligent workflows.",
+  cta_text: "Start Free Trial",
+  cta_secondary_text: "Explore Architecture",
+  badge_text: "Trusted by 200+ clients worldwide",
+};
+
+// 04. Cinematic Immersive Mock Data
+const CINEMATIC_IMMERSIVE_IMAGES = {
+  image_url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&auto=format&fit=crop&q=85",
+  eyebrow: "Highland Retreat · Exclusive Sanctuary",
+  headline: "Master skills at true depth",
+  subheadline: "We help startups and teams turn complex AI ideas into clear, usable products that drive meaningful real-world impact.",
+  cta_text: "Get Started",
+  cta_secondary_text: "Explore Experience",
+  badge_text: "4.9/5 · 300+ Happy Guests",
+};
+
+// 05. Visual Mosaic Mock Data
+const VISUAL_MOSAIC_IMAGES = {
+  image_url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+  images: [
+    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&auto=format&fit=crop&q=80",
+  ],
+  eyebrow: "Brand · Womens · Mens · Spr22",
+  headline: "Kove",
+  subheadline: "High quality fabrics, designed & made in Iceland with sustainable architectural precision.",
+  cta_text: "Play Film",
+  badge_text: "KOVE 2026 ARCHIVE",
+};
+
+// 07. Bento Hero Mock Data
+const BENTO_HERO_IMAGES = {
+  image_url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&auto=format&fit=crop&q=80",
+  images: [
+    "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&auto=format&fit=crop&q=80",
+  ],
+  eyebrow: "Introducing Contemporary Focus",
+  headline: "Introducing our Intentions in Focus",
+  subheadline: "To deliver innovative solutions that enhance everyday life through user-centric design. To be a global leader in design, inspiring creativity and innovation.",
+  cta_text: "Get Started",
+  badge_text: "Modern Team & Infrastructure",
+  stats: [
+    { value: "100", label: "Dedication & Focus" },
+    { value: "35", label: "Team Members" },
+    { value: "500", label: "ROI Achieved" },
+  ],
+};
+
 export function getShowcaseHero(variantKey: string) {
   const hero = MOCK_SHOWCASE_DATA.hero;
   if (variantKey === "product-showcase") {
@@ -1191,6 +1262,21 @@ export function getShowcaseHero(variantKey: string) {
   }
   if (variantKey === "cinematic") {
     return { ...hero, ...CINEMATIC_IMAGES };
+  }
+  if (variantKey === "editorial-asymmetric") {
+    return { ...hero, ...EDITORIAL_ASYMMETRIC_IMAGES };
+  }
+  if (variantKey === "floating-layers") {
+    return { ...hero, ...FLOATING_LAYERS_IMAGES };
+  }
+  if (variantKey === "cinematic-immersive") {
+    return { ...hero, ...CINEMATIC_IMMERSIVE_IMAGES };
+  }
+  if (variantKey === "visual-mosaic") {
+    return { ...hero, ...VISUAL_MOSAIC_IMAGES };
+  }
+  if (variantKey === "bento-hero") {
+    return { ...hero, ...BENTO_HERO_IMAGES };
   }
   if (!PORTRAIT_HERO_VARIANTS.has(variantKey)) return hero;
   return { ...hero, image_url: hero.portrait_image_url };
