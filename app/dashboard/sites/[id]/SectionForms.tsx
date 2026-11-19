@@ -26,7 +26,19 @@ import LocationPicker from "@/components/location-picker";
 import LocationMapPreview from "@/components/location-map-preview";
 import { GoogleSnippetPreview } from "@/components/google-snippet-preview";
 import { isPlaceholderValue, getAiSuggestions } from "./editor-utils";
-import { getHeroStyle, getHeroImageNeed, getHeroMinImages } from "@/components/sections/hero/meta";
+import {
+  getHeroStyle,
+  getHeroImageNeed,
+  getHeroMinImages,
+  heroShowsImage,
+  heroSupportsEyebrow,
+  heroSupportsBadge,
+  heroSupportsSecondaryCta,
+  heroSupportsStats,
+  heroSupportsMultiImages,
+  heroSupportsOpeningHours,
+  heroSupportsDashboardWidget,
+} from "@/components/sections/hero/meta";
 import { setHeroSlide, removeHeroSlide, addHeroSlide, countDistinctHeroImages, writeHeroPatch, setPrimaryHeroImage, setHeroCaption, toggleHeroSlideHidden, moveHeroSlide } from "@/components/sections/hero/images";
 import { DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
@@ -612,8 +624,7 @@ export default function SectionForms({
   // Extract business type from seo title or brand context as best-effort
   const bType = content?.seo?.title?.split("-")?.[1]?.trim() || content?.contact?.address || "";
   const heroStyle = getHeroStyle(designToken);
-  const heroShowsImage = !heroStyle || !["tech-saas","booking-form","location-map"].includes(heroStyle);
-  const heroNeedsImage = heroShowsImage;
+  const heroNeedsImage = heroShowsImage(heroStyle);
   const heroIsVideo = heroStyle === "video-bg";
   const [heroImagesOpen, setHeroImagesOpen] = useState<boolean | null>(null);
   const [heroImageOpenIdx, setHeroImageOpenIdx] = useState<number | null>(null);
@@ -633,17 +644,6 @@ export default function SectionForms({
     if (from > to && o >= to && o < from) return o + 1;
     return o;
   };
-  // Optional hero fields are only relevant to a subset of variants.
-  // When the selected variant is unknown, keep everything visible (safe fallback).
-  const showIfVariant = (variants: string[]) =>
-    !heroStyle || variants.includes(heroStyle);
-  const HERO_EYEBROW_VARIANTS = ["arch-portrait","bento-grid","chronology-badge","floating-card","image-carousel","minimalist-elegant","neo-brutalist","personal-billboard","portrait-showcase","profile-cutout","proof-bar","split-editorial","tech-saas","video-bg","work-preview-strip","booking-form","location-map","editorial-asymmetric","floating-layers","cinematic-immersive","visual-mosaic","bento-hero"];
-  const HERO_OPENING_HOURS_VARIANTS = ["centered","minimal","split","carousel-split","full-bleed","image-carousel","natural-organic","proof-bar","video-bg","booking-form"];
-  const HERO_BADGE_VARIANTS = ["arch-portrait","bento-grid","image-carousel","carousel-split","carousel-filmstrip","minimalist-elegant","neo-brutalist","profile-cutout","tech-saas","editorial-asymmetric","floating-layers","cinematic-immersive","visual-mosaic","bento-hero"];
-  const HERO_SECONDARY_VARIANTS = ["bento-grid","carousel-filmstrip","carousel-split","chronology-badge","full-bleed","image-carousel","minimalist-elegant","natural-organic","neo-brutalist","personal-billboard","portrait-showcase","profile-cutout","split-editorial","tech-saas","video-bg","work-preview-strip","booking-form","editorial-asymmetric","floating-layers","cinematic-immersive","visual-mosaic"];
-  const HERO_STATS_VARIANTS = ["bento-grid","chronology-badge","personal-billboard","portrait-showcase","proof-bar","split-editorial","work-preview-strip","bento-hero"];
-  const HERO_IMAGES_ARRAY_VARIANTS = ["image-carousel","carousel-split","carousel-filmstrip","collage-mosaic","visual-mosaic","bento-hero"];
-  const HERO_DASHBOARD_WIDGET_VARIANTS = ["tech-saas"];
 
   const handleAiText = async (section: string, fieldKey: string, prompt: string, label: string) => {
     if (!token || !activeTenantId || !siteId) return;
@@ -924,7 +924,7 @@ export default function SectionForms({
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span className="flex items-center gap-1">
-                {heroStyle && HERO_IMAGES_ARRAY_VARIANTS.includes(heroStyle)
+                {heroSupportsMultiImages(heroStyle)
                   ? (t("dashboard.sitesEditor.heroCarouselMainSlide"))
                   : t("dashboard.sitesEditor.heroImageLabel")} {needsAttention("hero.image_url") && <span className="text-amber-300">⚠️</span>}
               </span>
@@ -947,7 +947,7 @@ export default function SectionForms({
           </div>
           )}
           {/* Gambar carousel / kolase (hero.images) */}
-          {showIfVariant(HERO_IMAGES_ARRAY_VARIANTS) && (() => {
+          {heroSupportsMultiImages(heroStyle) && (() => {
             const hero = content.hero ?? {};
             // Rows efektif: fallback ke image_url jika images kosong (data lama)
             const rows: string[] = Array.isArray(hero.images) && hero.images.length
@@ -1191,7 +1191,7 @@ export default function SectionForms({
           </div>
           )}
           {/* Eyebrow label (opsional, dipakai oleh beberapa varian) */}
-          {showIfVariant(HERO_EYEBROW_VARIANTS) && (
+          {heroSupportsEyebrow(heroStyle) && (
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>{t("dashboard.sitesEditor.heroEyebrow")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></span>
@@ -1263,7 +1263,7 @@ export default function SectionForms({
             suggestedHash={content.catalog ? "#catalog" : content.menu ? "#menu" : "#contact"}
           />
           {/* Secondary CTA (opsional, dipakai oleh beberapa varian) */}
-          {showIfVariant(HERO_SECONDARY_VARIANTS) && (
+          {heroSupportsSecondaryCta(heroStyle) && (
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>{t("dashboard.sitesEditor.heroCtaSecondaryText")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></span>
@@ -1281,7 +1281,7 @@ export default function SectionForms({
           </div>
           )}
           {/* Secondary CTA URL */}
-          {showIfVariant(HERO_SECONDARY_VARIANTS) && (
+          {heroSupportsSecondaryCta(heroStyle) && (
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>{t("dashboard.sitesEditor.heroCtaSecondaryUrl")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></span>
@@ -1328,7 +1328,7 @@ export default function SectionForms({
             </div>
           </div>
           {/* Badge text (opsional, dipakai oleh beberapa varian) */}
-          {showIfVariant(HERO_BADGE_VARIANTS) && (
+          {heroSupportsBadge(heroStyle) && (
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>{t("dashboard.sitesEditor.heroBadgeText")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></span>
@@ -1346,7 +1346,7 @@ export default function SectionForms({
           </div>
           )}
           {/* Opening hours (opsional, dipakai oleh beberapa varian) */}
-          {showIfVariant(HERO_OPENING_HOURS_VARIANTS) && (
+          {heroSupportsOpeningHours(heroStyle) && (
           <div className="space-y-1">
             <label className="flex items-center justify-between text-[11px] uppercase tracking-wide font-semibold text-sidebar-muted-foreground">
               <span>{t("dashboard.sitesEditor.heroOpeningHours")} <span className="text-sidebar-subtle-foreground font-normal normal-case">{t("dashboard.sitesEditor.commonOptional")}</span></span>
@@ -1370,7 +1370,7 @@ export default function SectionForms({
           />
 
           {/* Hero stats — baris angka di varian tertentu */}
-          {showIfVariant(HERO_STATS_VARIANTS) && (
+          {heroSupportsStats(heroStyle) && (
           <HeroStatsEditor
             stats={content.hero?.stats || null}
             onChange={(stats) => updateField("hero", "stats", stats)}
@@ -1379,7 +1379,7 @@ export default function SectionForms({
           )}
 
           {/* Dashboard Widget — preview widget untuk hero tech-saas */}
-          {showIfVariant(HERO_DASHBOARD_WIDGET_VARIANTS) && (
+          {heroSupportsDashboardWidget(heroStyle) && (
           <HeroDashboardWidgetEditor
             widget={content.hero?.dashboard_widget || null}
             onChange={(dw) => updateField("hero", "dashboard_widget", dw)}

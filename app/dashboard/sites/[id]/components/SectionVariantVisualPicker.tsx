@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import { SECTION_VARIANT_OPTIONS, getVariantLabel, getVariantGroupLabel } from "@/components/sections/variant-registry";
+import { SECTION_VARIANT_OPTIONS, getVariantLabel, getVariantGroupLabel, getVariantWireframeLayout } from "@/components/sections/variant-registry";
 import { getHeroStyle } from "@/components/sections/hero/meta";
 import { useI18n } from "@/lib/i18n/context";
 import {
@@ -15,6 +15,370 @@ interface SectionVariantVisualPickerProps {
   updateSectionVariant: (section: string, value: string) => void;
   getEnabledVariants: (section: string, variants: string[]) => string[];
   t: any;
+}
+
+function renderArchetypeWireframe(section: string, layout: string): React.ReactNode {
+  switch (layout) {
+    // Header archetypes
+    case "navbar-inline":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-2 flex items-center justify-between">
+          <div className="w-8 h-2 rounded-full bg-white/80" />
+          <div className="flex gap-1.5">
+            <div className="w-4 h-1 rounded-full bg-slate-500" />
+            <div className="w-5 h-1 rounded-full bg-slate-500" />
+            <div className="w-4 h-1 rounded-full bg-slate-500" />
+          </div>
+          <div className="w-6 h-2 rounded-full bg-primary" />
+        </div>
+      );
+    case "navbar-center":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-2 flex items-center justify-between">
+          <div className="flex gap-1.5">
+            <div className="w-4 h-1 rounded-full bg-slate-500" />
+            <div className="w-4 h-1 rounded-full bg-slate-500" />
+          </div>
+          <div className="w-10 h-2 rounded-full bg-white/90" />
+          <div className="w-6 h-2 rounded-full bg-primary" />
+        </div>
+      );
+    case "navbar-overlay":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#060910] border border-sky-400/30 p-2 flex items-center justify-between backdrop-blur-sm">
+          <div className="w-7 h-2 rounded-full bg-white/90" />
+          <div className="flex gap-1.5">
+            <div className="w-5 h-1 rounded-full bg-sky-200/80" />
+            <div className="w-5 h-1 rounded-full bg-sky-200/80" />
+          </div>
+          <div className="w-7 h-2 rounded-full bg-white/20 border border-white/40" />
+        </div>
+      );
+    case "navbar-cta":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-2 flex items-center justify-between">
+          <div className="w-8 h-2 rounded-full bg-white/80" />
+          <div className="w-8 h-1 rounded-full bg-slate-500" />
+          <div className="w-9 h-2.5 rounded-full bg-primary shadow-sm" />
+        </div>
+      );
+    case "navbar-stacked":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex flex-col items-center justify-center gap-1.5">
+          <div className="w-12 h-2 rounded-full bg-white/90" />
+          <div className="w-full border-t border-white/10 pt-1 flex justify-center gap-2">
+            <div className="w-5 h-1 rounded-full bg-slate-500" />
+            <div className="w-6 h-1 rounded-full bg-slate-500" />
+            <div className="w-5 h-1 rounded-full bg-slate-500" />
+          </div>
+        </div>
+      );
+
+    // Footer archetypes
+    case "footer-band":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-2 flex items-center justify-between">
+          <div className="w-8 h-2 rounded-full bg-white/70" />
+          <div className="w-12 h-1 rounded-full bg-slate-500" />
+          <div className="w-3 h-3 rounded-full bg-slate-700 flex items-center justify-center text-[7px] text-slate-400">↑</div>
+        </div>
+      );
+    case "footer-columns":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-2 grid grid-cols-4 gap-1 overflow-hidden">
+          <div className="space-y-1">
+            <div className="w-6 h-1.5 rounded-full bg-white/80" />
+            <div className="w-8 h-1 rounded-full bg-slate-600" />
+          </div>
+          {[1, 2, 3].map((col) => (
+            <div key={col} className="space-y-0.5">
+              <div className="w-4 h-1 rounded-full bg-slate-400" />
+              <div className="w-5 h-0.5 rounded-full bg-slate-600" />
+              <div className="w-4 h-0.5 rounded-full bg-slate-600" />
+            </div>
+          ))}
+        </div>
+      );
+    case "footer-social":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-2 flex items-center justify-between">
+          <div className="space-y-1">
+            <div className="w-8 h-2 rounded-full bg-white/80" />
+            <div className="w-10 h-1 rounded-full bg-slate-500" />
+          </div>
+          <div className="flex gap-1">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="w-3 h-3 rounded-full bg-slate-700 border border-white/10" />
+            ))}
+          </div>
+        </div>
+      );
+    case "footer-contrast":
+      return (
+        <div className="w-full h-14 rounded-lg bg-black border-t-2 border-primary p-2 flex items-center justify-between">
+          <div className="space-y-1">
+            <div className="w-10 h-2 rounded-full bg-white" />
+            <div className="w-12 h-1 rounded-full bg-slate-500" />
+          </div>
+          <div className="w-7 h-2 rounded-full bg-primary/80" />
+        </div>
+      );
+    case "footer-hours":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex items-center justify-between gap-1">
+          <div className="space-y-1">
+            <div className="w-7 h-2 rounded-full bg-white/80" />
+            <div className="w-10 h-1 rounded-full bg-slate-500" />
+          </div>
+          <div className="p-1 rounded bg-slate-800/80 border border-white/10 space-y-0.5">
+            <div className="w-6 h-1 rounded-full bg-emerald-400" />
+            <div className="w-8 h-0.5 rounded-full bg-slate-400" />
+          </div>
+        </div>
+      );
+
+    // FAQ archetypes
+    case "accordion":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 space-y-1 flex flex-col justify-center">
+          <div className="p-1 rounded bg-slate-800/80 border border-primary/30 flex items-center justify-between">
+            <div className="w-16 h-1 rounded-full bg-white/90" />
+            <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+          </div>
+          <div className="p-1 rounded bg-slate-900/60 border border-white/5 flex items-center justify-between">
+            <div className="w-12 h-1 rounded-full bg-slate-400" />
+            <div className="w-1 h-1 rounded-full bg-slate-600" />
+          </div>
+        </div>
+      );
+    case "chat-bubble":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex flex-col justify-between">
+          <div className="self-end max-w-[70%] p-1 rounded-md bg-primary/30 border border-primary/40">
+            <div className="w-12 h-1 rounded-full bg-primary-foreground" />
+          </div>
+          <div className="self-start max-w-[75%] p-1 rounded-md bg-slate-800 border border-white/10">
+            <div className="w-14 h-1 rounded-full bg-slate-300" />
+          </div>
+        </div>
+      );
+    case "columns":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 grid grid-cols-2 gap-1.5">
+          <div className="p-1 rounded bg-slate-800/60 border border-white/5 space-y-1">
+            <div className="w-8 h-1 rounded-full bg-white/80" />
+            <div className="w-10 h-0.5 rounded-full bg-slate-400" />
+          </div>
+          <div className="p-1 rounded bg-slate-800/60 border border-white/5 space-y-1">
+            <div className="w-8 h-1 rounded-full bg-white/80" />
+            <div className="w-10 h-0.5 rounded-full bg-slate-400" />
+          </div>
+        </div>
+      );
+    case "sidebar":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex gap-1.5">
+          <div className="w-1/3 space-y-1 border-r border-white/10 pr-1">
+            <div className="w-full h-2 rounded bg-primary/40" />
+            <div className="w-3/4 h-1.5 rounded bg-slate-800" />
+            <div className="w-4/5 h-1.5 rounded bg-slate-800" />
+          </div>
+          <div className="w-2/3 space-y-1">
+            <div className="w-full h-2.5 rounded bg-slate-800/80 p-0.5" />
+            <div className="w-full h-2.5 rounded bg-slate-800/80 p-0.5" />
+          </div>
+        </div>
+      );
+    case "simple-list":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 space-y-1 flex flex-col justify-center">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex items-center gap-1.5">
+              <div className="w-1 h-1 rounded-full bg-primary shrink-0" />
+              <div className="w-16 h-1 rounded-full bg-slate-300" />
+            </div>
+          ))}
+        </div>
+      );
+
+    // Benefits archetypes
+    case "icon-row":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex items-center justify-around">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="flex flex-col items-center gap-1">
+              <div className="w-4 h-4 rounded-full bg-primary/25 border border-primary/40 flex items-center justify-center">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+              </div>
+              <div className="w-4 h-0.5 rounded-full bg-slate-400" />
+            </div>
+          ))}
+        </div>
+      );
+    case "stat-grid":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 grid grid-cols-3 gap-1">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="p-1 rounded bg-slate-800/60 border border-white/5 flex flex-col items-center justify-center">
+              <div className="text-[9px] font-bold text-primary">99%</div>
+              <div className="w-4 h-0.5 rounded-full bg-slate-400" />
+            </div>
+          ))}
+        </div>
+      );
+    case "checklist":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-2 space-y-1 flex flex-col justify-center">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex items-center gap-1.5">
+              <div className="w-2.5 h-2.5 rounded bg-emerald-500/30 text-emerald-400 flex items-center justify-center text-[7px]">✓</div>
+              <div className="w-16 h-1 rounded-full bg-slate-300" />
+            </div>
+          ))}
+        </div>
+      );
+    case "comparison":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex flex-col justify-between">
+          <div className="grid grid-cols-3 gap-1 border-b border-white/10 pb-1">
+            <div className="w-6 h-1 rounded-full bg-slate-400" />
+            <div className="w-6 h-1 rounded-full bg-primary" />
+            <div className="w-6 h-1 rounded-full bg-slate-600" />
+          </div>
+          <div className="grid grid-cols-3 gap-1 text-[7px] text-center">
+            <span className="text-slate-400">Feature</span>
+            <span className="text-emerald-400">✓</span>
+            <span className="text-slate-600">✕</span>
+          </div>
+        </div>
+      );
+    case "steps":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex items-center justify-between px-3">
+          {[1, 2, 3].map((step, idx) => (
+            <React.Fragment key={step}>
+              <div className="flex flex-col items-center gap-0.5">
+                <div className="w-4 h-4 rounded-full bg-primary/30 border border-primary flex items-center justify-center text-[7px] font-bold text-primary">
+                  {step}
+                </div>
+                <div className="w-4 h-0.5 rounded-full bg-slate-400" />
+              </div>
+              {idx < 2 && <div className="h-0.5 flex-1 bg-white/20 mx-1 border-t border-dashed" />}
+            </React.Fragment>
+          ))}
+        </div>
+      );
+    case "featured-grid":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 grid grid-cols-3 gap-1">
+          <div className="col-span-2 rounded bg-primary/20 border border-primary/40 p-1 flex flex-col justify-between">
+            <div className="w-8 h-1 rounded-full bg-primary" />
+            <div className="w-12 h-0.5 rounded-full bg-white/70" />
+          </div>
+          <div className="rounded bg-slate-800/60 p-1 flex flex-col justify-between">
+            <div className="w-4 h-1 rounded-full bg-slate-300" />
+          </div>
+        </div>
+      );
+
+    // Testimonials archetypes
+    case "reviews":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex flex-col justify-between">
+          <div className="flex items-center gap-1">
+            {[1, 2, 3, 4, 5].map((s) => (
+              <span key={s} className="text-amber-400 text-[8px]">★</span>
+            ))}
+            <span className="text-[7px] text-slate-400 ml-1">5.0</span>
+          </div>
+          <div className="w-20 h-1 rounded-full bg-slate-300" />
+          <div className="flex items-center gap-1">
+            <div className="w-2.5 h-2.5 rounded-full bg-slate-600" />
+            <div className="w-10 h-0.5 rounded-full bg-slate-500" />
+          </div>
+        </div>
+      );
+    case "video-wall":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 grid grid-cols-2 gap-1">
+          {[1, 2].map((i) => (
+            <div key={i} className="rounded bg-slate-800 border border-white/10 flex items-center justify-center relative">
+              <div className="w-3.5 h-3.5 rounded-full bg-white/20 flex items-center justify-center text-[7px] text-white">▶</div>
+            </div>
+          ))}
+        </div>
+      );
+
+    // CTA archetypes
+    case "banner":
+      return (
+        <div className="w-full h-14 rounded-lg bg-gradient-to-r from-primary/80 to-primary p-2 flex items-center justify-between">
+          <div className="space-y-1">
+            <div className="w-12 h-1.5 rounded-full bg-white" />
+            <div className="w-8 h-1 rounded-full bg-white/70" />
+          </div>
+          <div className="w-8 h-3 rounded bg-white text-slate-900 flex items-center justify-center text-[7px] font-bold">CTA</div>
+        </div>
+      );
+    case "lead-form":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex items-center justify-between gap-1">
+          <div className="w-1/2 space-y-1">
+            <div className="w-10 h-1.5 rounded-full bg-white/90" />
+            <div className="w-8 h-0.5 rounded-full bg-slate-400" />
+          </div>
+          <div className="w-1/2 p-1 rounded bg-slate-800/80 border border-white/10 flex items-center gap-0.5">
+            <div className="w-8 h-2 rounded bg-slate-900 border border-white/5" />
+            <div className="w-4 h-2 rounded bg-primary" />
+          </div>
+        </div>
+      );
+
+    // Pricing archetypes
+    case "cards-3":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 grid grid-cols-3 gap-1">
+          <div className="rounded bg-slate-800/50 p-1 flex flex-col justify-between">
+            <div className="w-4 h-1 rounded-full bg-slate-400" />
+            <div className="w-5 h-1.5 rounded-full bg-white" />
+          </div>
+          <div className="rounded bg-primary/20 border border-primary/50 p-1 flex flex-col justify-between scale-105 shadow-sm">
+            <div className="w-4 h-0.5 rounded-full bg-primary" />
+            <div className="w-6 h-1.5 rounded-full bg-white" />
+          </div>
+          <div className="rounded bg-slate-800/50 p-1 flex flex-col justify-between">
+            <div className="w-4 h-1 rounded-full bg-slate-400" />
+            <div className="w-5 h-1.5 rounded-full bg-white" />
+          </div>
+        </div>
+      );
+    case "horizontal-rows":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 space-y-1 flex flex-col justify-center">
+          {[1, 2].map((i) => (
+            <div key={i} className="p-1 rounded bg-slate-800/60 border border-white/5 flex items-center justify-between">
+              <div className="w-10 h-1 rounded-full bg-white/80" />
+              <div className="w-6 h-1.5 rounded-full bg-primary" />
+            </div>
+          ))}
+        </div>
+      );
+    case "single-card":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex items-center justify-center">
+          <div className="w-4/5 h-full rounded bg-slate-800/80 border border-primary/40 p-1 flex items-center justify-between">
+            <div className="space-y-1">
+              <div className="w-10 h-1.5 rounded-full bg-white/90" />
+              <div className="w-8 h-1 rounded-full bg-slate-400" />
+            </div>
+            <div className="w-6 h-3 rounded bg-primary" />
+          </div>
+        </div>
+      );
+
+    default:
+      return null;
+  }
 }
 
 // Mini SVG wireframe illustrations for section layouts
@@ -1335,6 +1699,13 @@ export function VariantWireframe({ section, variant }: { section: string; varian
         </div>
       </div>
     );
+  }
+
+  // Automated Archetype Wireframe Resolution (Zero Double Work)
+  const archetypeLayout = getVariantWireframeLayout(section, variant);
+  const archetypePreview = renderArchetypeWireframe(section, archetypeLayout);
+  if (archetypePreview) {
+    return archetypePreview;
   }
 
   // Default Grid representation (for cards, grid, masonry, tabs, etc.)

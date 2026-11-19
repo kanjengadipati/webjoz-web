@@ -10,6 +10,7 @@ export interface VariantOption {
   description?: string;
   descriptionKey?: string;
   group?: string; // optional grouping label for dropdown submenu (e.g. "Dasar", "Visual Foto")
+  wireframeLayout?: string; // archetype wireframe identifier for automated previews
 }
 
 export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
@@ -228,3 +229,135 @@ export function getVariantValues(section: string): string[] {
 // Single source of truth for the hero_style choices exposed in the editor.
 // labelKey maps to a `dashboard.sitesEditor.*` i18n key so labels are localized.
 export const HERO_STYLE_OPTIONS: Array<{ value: string; labelKey: string }> = HERO_VARIANTS.map(({ value, labelKey }) => ({ value, labelKey }));
+
+/**
+ * Returns the archetype wireframe identifier for a given section variant.
+ * If the variant explicitly declares wireframeLayout, it is returned.
+ * Otherwise, the layout is intelligently inferred from section and variant name keywords.
+ * This guarantees zero double-work: any newly added variant automatically gets an accurate wireframe.
+ */
+export function getVariantWireframeLayout(section: string, value: string): string {
+  const opt = SECTION_VARIANT_OPTIONS[section]?.find((v) => v.value === value);
+  if (opt?.wireframeLayout) return opt.wireframeLayout;
+
+  const v = (value || "").toLowerCase();
+  switch (section) {
+    case "hero":
+      if (v.includes("bento")) return "bento";
+      if (v.includes("layer")) return "layers";
+      if (v.includes("mosaic") || v.includes("collage")) return "mosaic";
+      if (v.includes("editorial")) return "editorial";
+      if (v.includes("split")) return "split";
+      if (v.includes("carousel") || v.includes("filmstrip")) return "carousel";
+      if (v.includes("cinematic") || v.includes("full-bleed") || v.includes("video") || v.includes("immersive")) return "full-bleed";
+      if (v.includes("badge") || v.includes("chronology")) return "badge";
+      if (v.includes("minimal")) return "minimal";
+      return "split";
+
+    case "header":
+      if (v.includes("center")) return "navbar-center";
+      if (v.includes("transparent") || v.includes("overlay")) return "navbar-overlay";
+      if (v.includes("stacked") || v.includes("tagline")) return "navbar-stacked";
+      if (v.includes("cta") || v.includes("button")) return "navbar-cta";
+      return "navbar-inline";
+
+    case "footer":
+      if (v.includes("social")) return "footer-social";
+      if (v.includes("nav") || v.includes("column")) return "footer-columns";
+      if (v.includes("location") || v.includes("hour")) return "footer-hours";
+      if (v.includes("dark") || v.includes("contrast")) return "footer-contrast";
+      return "footer-band";
+
+    case "faq":
+      if (v.includes("accordion")) return "accordion";
+      if (v.includes("chat") || v.includes("bubble")) return "chat-bubble";
+      if (v.includes("column") || v.includes("grid")) return "columns";
+      if (v.includes("sidebar") || v.includes("category")) return "sidebar";
+      return "simple-list";
+
+    case "benefits":
+      if (v.includes("bento")) return "bento";
+      if (v.includes("icon") || v.includes("row")) return "icon-row";
+      if (v.includes("stat")) return "stat-grid";
+      if (v.includes("checklist")) return "checklist";
+      if (v.includes("table") || v.includes("comparison")) return "comparison";
+      if (v.includes("trust")) return "trust-bar";
+      if (v.includes("how") || v.includes("work") || v.includes("step")) return "steps";
+      if (v.includes("featured")) return "featured-grid";
+      return "grid";
+
+    case "testimonials":
+      if (v.includes("carousel")) return "carousel";
+      if (v.includes("compact")) return "compact";
+      if (v.includes("logo")) return "logo-wall";
+      if (v.includes("spotlight")) return "spotlight";
+      if (v.includes("review") || v.includes("google")) return "reviews";
+      if (v.includes("video")) return "video-wall";
+      return "grid";
+
+    case "cta":
+      if (v.includes("banner")) return "banner";
+      if (v.includes("card")) return "card";
+      if (v.includes("split") || v.includes("image")) return "split";
+      if (v.includes("form") || v.includes("lead")) return "lead-form";
+      return "centered";
+
+    case "contact":
+      if (v.includes("whatsapp")) return "whatsapp";
+      if (v.includes("bento")) return "bento";
+      if (v.includes("map") || v.includes("overlay")) return "map";
+      if (v.includes("dark")) return "dark-split";
+      if (v.includes("minimal") || v.includes("center")) return "centered";
+      return "split-form";
+
+    case "stats":
+      if (v.includes("counter") || v.includes("row")) return "counter-row";
+      if (v.includes("card")) return "card-grid";
+      if (v.includes("split")) return "split";
+      if (v.includes("big") || v.includes("spotlight")) return "big-number";
+      return "counter-row";
+
+    case "pricing":
+      if (v.includes("row") || v.includes("horizontal")) return "horizontal-rows";
+      if (v.includes("table") || v.includes("comparison")) return "comparison-table";
+      if (v.includes("single") || v.includes("highlight")) return "single-card";
+      return "cards-3";
+
+    case "gallery":
+    case "works":
+      if (v.includes("masonry")) return "masonry";
+      if (v.includes("carousel")) return "carousel";
+      if (v.includes("featured") || v.includes("showcase")) return "featured";
+      if (v.includes("before") || v.includes("slider")) return "before-after";
+      if (v.includes("video")) return "video-grid";
+      return "grid";
+
+    case "menu":
+    case "catalog":
+      if (v.includes("compact")) return "compact-list";
+      if (v.includes("cards")) return "cards";
+      if (v.includes("tab")) return "tabs";
+      if (v.includes("bento")) return "bento";
+      if (v.includes("hero") || v.includes("showcase")) return "showcase-hero";
+      if (v.includes("masonry")) return "masonry";
+      if (v.includes("table")) return "table";
+      if (v.includes("scrollspy") || v.includes("sidebar")) return "sidebar-scrollspy";
+      return "grid";
+
+    case "preloader":
+      if (v.includes("none")) return "none";
+      if (v.includes("top")) return "top-bar";
+      if (v.includes("fade")) return "fade";
+      if (v.includes("spinner")) return "spinner";
+      if (v.includes("counter")) return "counter";
+      if (v.includes("pulse")) return "pulse";
+      if (v.includes("orbit")) return "orbit";
+      if (v.includes("progress")) return "progress";
+      if (v.includes("shimmer")) return "shimmer";
+      if (v.includes("dot")) return "dots";
+      return "spinner";
+
+    default:
+      return "grid";
+  }
+}

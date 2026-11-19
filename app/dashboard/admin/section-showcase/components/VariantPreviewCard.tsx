@@ -11,6 +11,7 @@ import {
   Expand,
   Loader2,
   AlertTriangle,
+  ExternalLink,
 } from "lucide-react";
 import { buildCssVars } from "@/components/templates/helpers";
 import type { DesignToken } from "@/components/templates/types";
@@ -188,6 +189,17 @@ export function VariantPreviewCard({
               <Expand className="size-3.5" />
             </button>
           )}
+
+          {/* Action: Open in Isolated Route */}
+          <a
+            href={`/sp/section/${sectionKey}/${variant.value}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="size-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer"
+            title={isEN ? "Open isolated preview in new tab" : "Buka pratinjau terisolasi di tab baru"}
+          >
+            <ExternalLink className="size-3.5" />
+          </a>
 
           {/* Action: Toggle Visibility */}
           <button
