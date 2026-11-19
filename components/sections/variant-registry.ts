@@ -146,6 +146,9 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "transparent-overlay",    labelKey: "variantHeaderTransparentOverlay", label: "Transparan (Hero Overlay)",        descriptionKey: "variantHeaderTransparentOverlayDesc", description: "Menimpa hero (teks putih), mengecil dan menjadi kaca buram setelah scroll." },
     { value: "logo-with-cta-button",   labelKey: "variantHeaderLogoWithCtaButton", label: "Logo + CTA Tombol",               descriptionKey: "variantHeaderLogoWithCtaButtonDesc",  description: "Logo kiri, nav tengah, tombol CTA warna solid di kanan." },
     { value: "stacked-logo-tagline",   labelKey: "variantHeaderStackedLogoTagline",label: "Logo + Tagline Tumpuk",            descriptionKey: "variantHeaderStackedLogoTaglineDesc", description: "Logo dan tagline vertikal di tengah, nav tipis di bawah." },
+    { value: "floating-capsule",       labelKey: "variantHeaderFloatingCapsule",   label: "Kapsul Melayang",                 wireframeLayout: "navbar-capsule", descriptionKey: "variantHeaderFloatingCapsuleDesc",  description: "Navbar terbungkus dalam kapsul pill melayang dengan bayangan lembut; kesan premium dan modern. Cocok untuk SaaS, agensi, dan startup.", group: "Premium" },
+    { value: "split-utility",          labelKey: "variantHeaderSplitUtility",      label: "Split Utilitas (2 Baris)",        wireframeLayout: "navbar-split-utility", descriptionKey: "variantHeaderSplitUtilityDesc",    description: "Top bar tipis berisi info kontak (lokasi, email) di atas nav bar utama yang sticky; terlihat profesional. Cocok untuk bisnis lokal, klinik, dan properti.", group: "Profesional" },
+    { value: "brand-block-nav",        labelKey: "variantHeaderBrandBlockNav",     label: "Blok Brand + Rail Navigasi",      wireframeLayout: "navbar-brand-block", descriptionKey: "variantHeaderBrandBlockNavDesc",    description: "Blok warna solid di kiri untuk logo/brand, rail navigasi bersih di kanan; identitas brand sangat kuat. Cocok untuk agensi, firma, dan korporat.", group: "Profesional" },
   ],
   footer: [
     { value: "minimal-band",         labelKey: "variantFooterMinimalBand",        label: "Band Minimal",           descriptionKey: "variantFooterMinimalBandDesc",        description: "Brand + tagline + copyright dalam satu baris gelap bersih." },
@@ -255,6 +258,9 @@ export function getVariantWireframeLayout(section: string, value: string): strin
       return "split";
 
     case "header":
+      if (v.includes("capsule") || v.includes("pill") || v.includes("floating")) return "navbar-capsule";
+      if (v.includes("split") || v.includes("utility")) return "navbar-split-utility";
+      if (v.includes("brand-block") || v.includes("rail")) return "navbar-brand-block";
       if (v.includes("center")) return "navbar-center";
       if (v.includes("transparent") || v.includes("overlay")) return "navbar-overlay";
       if (v.includes("stacked") || v.includes("tagline")) return "navbar-stacked";

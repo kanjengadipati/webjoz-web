@@ -9,6 +9,9 @@ const CenteredLogo = dynamic(() => import("./centered-logo"));
 const TransparentOverlay = dynamic(() => import("./transparent-overlay"));
 const LogoWithCtaButton = dynamic(() => import("./logo-with-cta-button"));
 const StackedLogoTagline = dynamic(() => import("./stacked-logo-tagline"));
+const FloatingCapsule = dynamic(() => import("./floating-capsule"));
+const SplitUtility = dynamic(() => import("./split-utility"));
+const BrandBlockNav = dynamic(() => import("./brand-block-nav"));
 
 const variants: Record<string, ComponentType<HeaderVariantProps>> = {
   "left-logo-inline-nav": LeftLogoInlineNav,
@@ -16,6 +19,9 @@ const variants: Record<string, ComponentType<HeaderVariantProps>> = {
   "transparent-overlay": TransparentOverlay,
   "logo-with-cta-button": LogoWithCtaButton,
   "stacked-logo-tagline": StackedLogoTagline,
+  "floating-capsule": FloatingCapsule,
+  "split-utility": SplitUtility,
+  "brand-block-nav": BrandBlockNav,
 };
 
 export default function HeaderSection(props: HeaderVariantProps) {

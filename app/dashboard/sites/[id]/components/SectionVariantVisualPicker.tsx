@@ -73,6 +73,55 @@ function renderArchetypeWireframe(section: string, layout: string): React.ReactN
           </div>
         </div>
       );
+    case "navbar-capsule":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-2 flex items-center justify-center">
+          <div className="w-full h-8 rounded-full bg-slate-900 border border-white/10 shadow-lg px-2.5 flex items-center justify-between">
+            <div className="w-6 h-1.5 rounded-full bg-white/90" />
+            <div className="flex gap-1">
+              <div className="w-3 h-0.5 rounded-full bg-slate-500" />
+              <div className="w-3 h-0.5 rounded-full bg-slate-500" />
+            </div>
+            <div className="w-6 h-2 rounded-full bg-primary" />
+          </div>
+        </div>
+      );
+    case "navbar-split-utility":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1 flex flex-col justify-between overflow-hidden">
+          <div className="h-3.5 rounded-t bg-slate-800/80 border-b border-white/10 px-1.5 flex items-center justify-between">
+            <div className="flex gap-1 items-center">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary/80" />
+              <div className="w-8 h-0.5 rounded-full bg-slate-400" />
+            </div>
+            <div className="w-6 h-0.5 rounded-full bg-slate-500" />
+          </div>
+          <div className="h-6 px-1 flex items-center justify-between">
+            <div className="w-7 h-1.5 rounded-full bg-white/90" />
+            <div className="flex gap-1">
+              <div className="w-3 h-0.5 rounded-full bg-slate-500" />
+              <div className="w-3 h-0.5 rounded-full bg-slate-500" />
+            </div>
+            <div className="w-5 h-2 rounded-full bg-primary" />
+          </div>
+        </div>
+      );
+    case "navbar-brand-block":
+      return (
+        <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 flex overflow-hidden">
+          <div className="w-5/12 bg-primary p-1.5 flex items-center gap-1 rounded-br-lg">
+            <div className="w-2.5 h-2.5 rounded-full bg-white/30" />
+            <div className="w-8 h-1 rounded-full bg-white" />
+          </div>
+          <div className="w-7/12 p-1.5 flex items-center justify-end gap-1.5">
+            <div className="flex gap-1">
+              <div className="w-3 h-0.5 rounded-full bg-slate-500" />
+              <div className="w-3 h-0.5 rounded-full bg-slate-500" />
+            </div>
+            <div className="w-5 h-2 rounded-full bg-primary" />
+          </div>
+        </div>
+      );
 
     // Footer archetypes
     case "footer-band":

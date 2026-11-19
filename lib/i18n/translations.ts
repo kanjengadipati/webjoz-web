@@ -3329,6 +3329,12 @@ export interface Translations {
       variantHeaderLogoWithCtaButtonDesc: string;
       variantHeaderStackedLogoTagline: string;
       variantHeaderStackedLogoTaglineDesc: string;
+      variantHeaderFloatingCapsule: string;
+      variantHeaderFloatingCapsuleDesc: string;
+      variantHeaderSplitUtility: string;
+      variantHeaderSplitUtilityDesc: string;
+      variantHeaderBrandBlockNav: string;
+      variantHeaderBrandBlockNavDesc: string;
       // footer
       variantFooterMinimalBand: string;
       variantFooterMinimalBandDesc: string;
@@ -7596,6 +7602,15 @@ export const translations: Record<Locale, Translations> = {
         variantHeaderStackedLogoTagline: "Logo + Tagline Tumpuk",
         variantHeaderStackedLogoTaglineDesc:
           "Logo dan tagline vertikal di tengah, nav tipis di bawah.",
+        variantHeaderFloatingCapsule: "Kapsul Melayang",
+        variantHeaderFloatingCapsuleDesc:
+          "Navbar terbungkus dalam kapsul pill melayang dengan bayangan lembut; kesan premium dan modern.",
+        variantHeaderSplitUtility: "Split Utilitas (2 Baris)",
+        variantHeaderSplitUtilityDesc:
+          "Top bar tipis berisi info kontak di atas nav bar utama yang sticky; terlihat profesional.",
+        variantHeaderBrandBlockNav: "Blok Brand + Rail Navigasi",
+        variantHeaderBrandBlockNavDesc:
+          "Blok warna solid di kiri untuk brand, rail navigasi bersih di kanan; identitas brand sangat kuat.",
         // footer
         variantFooterMinimalBand: "Band Minimal",
         variantFooterMinimalBandDesc:
@@ -12081,6 +12096,15 @@ export const translations: Record<Locale, Translations> = {
         variantHeaderStackedLogoTagline: "Logo + Tagline Stacked",
         variantHeaderStackedLogoTaglineDesc:
           "Logo and tagline stacked vertically in the center, thin nav below.",
+        variantHeaderFloatingCapsule: "Floating Capsule",
+        variantHeaderFloatingCapsuleDesc:
+          "Navbar wrapped in a floating pill capsule with soft shadow; premium and modern look.",
+        variantHeaderSplitUtility: "Split Utility (2 Rows)",
+        variantHeaderSplitUtilityDesc:
+          "Slim top bar with contact info above sticky main nav bar; clean and professional.",
+        variantHeaderBrandBlockNav: "Brand Block + Nav Rail",
+        variantHeaderBrandBlockNavDesc:
+          "Solid color block on left for brand identity, clean nav rail on right; bold and modern.",
         // footer
         variantFooterMinimalBand: "Minimal Band",
         variantFooterMinimalBandDesc:
