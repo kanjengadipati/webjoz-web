@@ -90,6 +90,11 @@ jangan pernah selesai hanya karena render utama sudah jalan:
 >    (`SECTION_VARIANT_OPTIONS`), komponen section, dan — bila teks label/lokal — lokalisasi ID/EN.
 > 7. Tabel audit inline-edit: jika ragu apakah ada "text/elemen yang tidak bisa diedit", jalankan pencarian
 >    di file varian untuk teks hardcoded/jsx child yang tidak lewat `InlineText`/`InlineImage`.
+> 8. **Aturan Stacking Vertikal Eyebrow & Title**: Komponen `InlineText` dibungkus `<span className="inline-block ...">`
+>    secara default jika tidak diset `multiline`. DILARANG menaruh badge eyebrow (`inline-flex`) dan `InlineText as="h2"`
+>    bersisian langsung tanpa pemisah block/flex-col, karena akan berjejer ke samping di layar lebar. Selalu gunakan
+>    `flex flex-col` pada header container, bungkus Eyebrow dalam baris tersendiri (`<div className="mb-3">`), dan bungkus
+>    Title dalam `<div className="w-full">` dengan properti `multiline` serta `display: "block"`.
 
 <!-- END:feature-checklist -->
 
