@@ -96,7 +96,18 @@ export default function HeroCinematicImmersive({
         <div className="relative z-10 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/15 text-white text-xs font-medium">
             <Compass className="size-3.5 text-primary" style={{ color: "var(--dt-primary)" }} />
-            <span>{h.eyebrow || (language === "en" ? "Exclusive Experience" : "Pengalaman Eksklusif")}</span>
+            <InlineText
+              section="hero"
+              fieldKey="eyebrow"
+              value={h.eyebrow ?? ""}
+              placeholder={language === "en" ? "Exclusive Experience" : "Pengalaman Eksklusif"}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="span"
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={handleEditingStateChange}
+            />
           </div>
 
           {(h.cta_secondary_text || isEditorMode) && (
@@ -131,9 +142,19 @@ export default function HeroCinematicImmersive({
                 <div className="w-5 h-5 rounded-full bg-emerald-500 border border-black flex items-center justify-center text-[9px] font-bold">✓</div>
                 <div className="w-5 h-5 rounded-full bg-sky-500 border border-black flex items-center justify-center text-[9px] font-bold">♥</div>
               </div>
-              <span className="font-medium text-slate-200">
-                {h.badge_text || (language === "en" ? "4.9/5 · 300+ Happy Guests" : "4.9/5 · 300+ Pengunjung Puas")}
-              </span>
+              <InlineText
+                section="hero"
+                fieldKey="badge_text"
+                value={h.badge_text ?? ""}
+                placeholder={language === "en" ? "4.9/5 · 300+ Happy Guests" : "4.9/5 · 300+ Pengunjung Puas"}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="span"
+                className="font-medium text-slate-200"
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={handleEditingStateChange}
+              />
             </motion.div>
 
             {/* Monumental Headline */}

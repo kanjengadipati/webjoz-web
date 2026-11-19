@@ -311,9 +311,19 @@ export default function HeroFloatingLayers({
                       <div className="w-7 h-7 rounded-full bg-purple-500 border-2 border-background flex items-center justify-center text-[10px] text-white font-bold">B</div>
                       <div className="w-7 h-7 rounded-full bg-pink-500 border-2 border-background flex items-center justify-center text-[10px] text-white font-bold">C</div>
                     </div>
-                    <span className="text-xs font-semibold">
-                      {h.badge_text || (language === "en" ? "Trusted by 200+ clients" : "Dipercaya 200+ pelaku bisnis")}
-                    </span>
+                    <InlineText
+                      section="hero"
+                      fieldKey="badge_text"
+                      value={h.badge_text ?? ""}
+                      placeholder={language === "en" ? "Trusted by 200+ clients" : "Dipercaya 200+ pelaku bisnis"}
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={isSelected}
+                      as="span"
+                      className="text-xs font-semibold"
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      onEditingStateChange={handleEditingStateChange}
+                    />
                   </div>
                   <span className="text-xs font-mono text-primary font-bold">4.9/5.0</span>
                 </div>

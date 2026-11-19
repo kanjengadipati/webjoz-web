@@ -66,9 +66,33 @@ export default function HeroVisualMosaic({
         <div className="flex items-center justify-between text-[11px] uppercase tracking-widest text-muted-foreground font-mono">
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-            <span>{h.eyebrow || (language === "en" ? "EDITORIAL • ARCHIVE" : "PORTFOLIO • STUDIO")}</span>
+            <InlineText
+              section="hero"
+              fieldKey="eyebrow"
+              value={h.eyebrow ?? ""}
+              placeholder={language === "en" ? "EDITORIAL • ARCHIVE" : "PORTFOLIO • STUDIO"}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="span"
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={handleEditingStateChange}
+            />
           </div>
-          <span>{h.badge_text || "VOL. 2026"}</span>
+          <div>
+            <InlineText
+              section="hero"
+              fieldKey="badge_text"
+              value={h.badge_text ?? ""}
+              placeholder="VOL. 2026"
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="span"
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={handleEditingStateChange}
+            />
+          </div>
         </div>
 
         {/* Center / Massive Headline Display */}

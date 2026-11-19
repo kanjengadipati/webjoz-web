@@ -282,7 +282,19 @@ export default function HeroBentoHero({
               />
             ) : (
               <div className="w-full h-full p-4 flex items-center justify-between bg-muted/40 text-xs">
-                <span className="font-semibold">{h.badge_text || "Modern Innovation"}</span>
+                <InlineText
+                  section="hero"
+                  fieldKey="badge_text"
+                  value={h.badge_text ?? ""}
+                  placeholder="Modern Innovation"
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="span"
+                  className="font-semibold"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={handleEditingStateChange}
+                />
                 <Sparkles className="size-4 text-primary" />
               </div>
             )}

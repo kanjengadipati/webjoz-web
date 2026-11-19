@@ -219,9 +219,19 @@ export default function HeroEditorialAsymmetric({
               >
                 ★
               </div>
-              <span style={{ color: "var(--dt-text-muted)" }}>
-                {h.badge_text || (language === "en" ? "Curated by verified specialists" : "Teruji & direkomendasikan klien profesional")}
-              </span>
+              <InlineText
+                section="hero"
+                fieldKey="badge_text"
+                value={h.badge_text ?? ""}
+                placeholder={language === "en" ? "Curated by verified specialists" : "Teruji & direkomendasikan klien profesional"}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="span"
+                style={{ color: "var(--dt-text-muted)" }}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={handleEditingStateChange}
+              />
             </div>
           </div>
 
