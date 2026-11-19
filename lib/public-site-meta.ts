@@ -149,7 +149,7 @@ export async function fetchPublicSiteMetadata(hostOrSubdomain: string): Promise<
     const ogImage =
       seo.og_image_url?.trim() ||
       hero.image_url?.trim() ||
-      "https://www.webjoz.com/opengraph-image.png";
+      "https://www.webjoz.comhttps://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067989/giwangan/opengraph-image.png";
 
     const canonicalUrl = `https://${cleanHost}${seo.canonical_path || ""}`;
 

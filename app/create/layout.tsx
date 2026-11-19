@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     description: "Website bisnis profesional dalam 5 menit dengan AI. Tanpa coding, tanpa form panjang.",
     url: "https://www.webjoz.com/create",
     siteName: "Webjoz",
-    images: [{ url: "/opengraph-image.png", width: 1200, height: 630 }],
+    images: [{ url: "https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067989/giwangan/opengraph-image.png", width: 1200, height: 630 }],
     locale: "id_ID",
     type: "website",
   },
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Buat Website Gratis dengan AI — Webjoz",
     description: "Website bisnis profesional dalam 5 menit dengan AI. Tanpa coding.",
-    images: ["/opengraph-image.png"],
+    images: ["https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067989/giwangan/opengraph-image.png"],
   },
   robots: {
     index: false,

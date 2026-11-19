@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     description: "Build a professional business website in just 5 minutes with AI. No coding, no long forms.",
     url: siteUrl("/en"),
     siteName: "Webjoz",
-    images: [{ url: "/opengraph-image.png", width: 1200, height: 630 }],
+    images: [{ url: "https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067989/giwangan/opengraph-image.png", width: 1200, height: 630 }],
     locale: "en_US",
     alternateLocale: ["id_ID"],
     type: "website",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Webjoz | AI Website Builder for Indonesian Businesses",
     description: "Build a professional business website in just 5 minutes with AI. No coding, no long forms.",
-    images: ["/opengraph-image.png"],
+    images: ["https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067989/giwangan/opengraph-image.png"],
   },
   robots: {
     index: true,

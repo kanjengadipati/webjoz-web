@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     description: "Reset kata sandi akun Webjoz Anda. Masukkan email atau nomor WhatsApp untuk menerima tautan atau kode verifikasi.",
     url: siteUrl("/forgot-password"),
     siteName: "Webjoz",
-    images: [{ url: "/opengraph-image.png", width: 1200, height: 630 }],
+    images: [{ url: "https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067989/giwangan/opengraph-image.png", width: 1200, height: 630 }],
     locale: "id_ID",
     type: "website",
   },

@@ -29,7 +29,7 @@ export const metadata: Metadata = {
       "Artikel dan panduan untuk membantu UMKM Indonesia membuat website dan berkembang dengan AI.",
     url: siteUrl("/blog"),
     siteName: "Webjoz",
-    images: [{ url: "/opengraph-image.png", width: 1200, height: 630 }],
+    images: [{ url: "https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067989/giwangan/opengraph-image.png", width: 1200, height: 630 }],
     locale: "id_ID",
     type: "website",
   },
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     title: "Blog Webjoz — Tips Website Bisnis & UMKM Indonesia",
     description:
       "Artikel dan panduan untuk membantu UMKM Indonesia membuat website dan berkembang dengan AI.",
-    images: ["/opengraph-image.png"],
+    images: ["https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067989/giwangan/opengraph-image.png"],
   },
 };
 

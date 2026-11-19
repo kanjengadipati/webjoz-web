@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: post.description,
       url: canonical,
       siteName: "Webjoz",
-      images: [{ url: "/opengraph-image.png", width: 1200, height: 630 }],
+      images: [{ url: "https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067989/giwangan/opengraph-image.png", width: 1200, height: 630 }],
       locale: "id_ID",
       type: "article",
     },
@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       card: "summary_large_image",
       title: post.title,
       description: post.description,
-      images: ["/opengraph-image.png"],
+      images: ["https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067989/giwangan/opengraph-image.png"],
     },
   };
 }

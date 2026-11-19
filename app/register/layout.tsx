@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     description: "Daftar gratis dan buat website bisnis profesional dalam 5 menit dengan AI.",
     url: siteUrl("/register"),
     siteName: "Webjoz",
-    images: [{ url: "/opengraph-image.png", width: 1200, height: 630 }],
+    images: [{ url: "https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067989/giwangan/opengraph-image.png", width: 1200, height: 630 }],
     locale: "id_ID",
     type: "website",
   },
