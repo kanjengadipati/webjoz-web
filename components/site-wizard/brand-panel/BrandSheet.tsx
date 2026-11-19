@@ -31,7 +31,9 @@ interface ThemeSheetProps {
   onSelectMood?: (mood: string) => void;
 }
 
-export function ThemeSheet({
+export type BrandSheetProps = ThemeSheetProps;
+
+export function BrandSheet({
   open,
   mood,
   theme,
@@ -42,7 +44,7 @@ export function ThemeSheet({
   onLogoApplied,
   onBrandColorApplied,
   onSelectMood,
-}: ThemeSheetProps) {
+}: BrandSheetProps) {
   const { t, isIndonesian } = useI18n();
   const [tab, setTab] = useState<SheetTab>("warna");
   const [subView, setSubView] = useState<SubView>("none");
@@ -94,7 +96,7 @@ export function ThemeSheet({
     ? t("dashboard.wizard.theme.brandColorTitle", "Warna Brand Saya")
     : subView === "custom-font"
     ? t("dashboard.wizard.theme.customFontTitle", "Font Kustom")
-    : t("dashboard.wizard.theme.panelTitle", "Sesuaikan Tema");
+    : t("dashboard.wizard.theme.panelTitle", isIndonesian ? "Brand Website Anda" : "Brand Your Website");
 
   return (
     <WizardSheet
@@ -102,7 +104,7 @@ export function ThemeSheet({
       title={sheetTitle}
       onClose={handleClose}
       maxHeight="50dvh"
-      ariaLabel={t("dashboard.wizard.theme.panelTitle", "Sesuaikan Tema")}
+      ariaLabel={t("dashboard.wizard.theme.panelTitle", isIndonesian ? "Brand Website Anda" : "Brand Your Website")}
     >
         {/* Mood — always at top, above tabs */}
         {subView === "none" && (

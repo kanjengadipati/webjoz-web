@@ -69,7 +69,7 @@ export function MobileActionBar({
     return null;
   }
 
-  const temaLabel = t("dashboard.wizard.theme.openPanel", "Tema");
+  const temaLabel = t("dashboard.wizard.theme.openPanel", "Branding");
   const editLabel = t("dashboard.wizard.btnEditPublish", "Edit & Publish");
   const lengkapiLabel = t("dashboard.wizard.btnCompleteData", "Lengkapi");
 
@@ -88,11 +88,11 @@ export function MobileActionBar({
     />
   ) : undefined;
 
-  // Edu tooltip for Tema (first visit)
+  // Edu tooltip for Branding (first visit)
   const temaTooltipNode = showTemaHint ? (
     <TooltipBubble
-      title={t("dashboard.wizard.temaHintTitle", "🎨 Ganti warna & font")}
-      desc={t("dashboard.wizard.temaHintDesc", "Sesuaikan tampilan website kamu")}
+      title={t("dashboard.wizard.temaHintTitle", "🎨 Branding Website")}
+      desc={t("dashboard.wizard.temaHintDesc", "Atur warna & font sesuai brand kamu")}
     />
   ) : undefined;
 

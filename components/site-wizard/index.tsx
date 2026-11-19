@@ -157,7 +157,7 @@ import {
   fontExtFromMime,
 } from "@/lib/wizard-font-storage";
 import { FEATURE_FLAGS } from "@/lib/feature-flags";
-import { ThemePanel, ThemeSheet } from "./theme-panel";
+import { BrandPanel, BrandSheet } from "./brand-panel";
 import { getPresets } from "@/lib/theme-presets";
 
 // Skor kualitas minimal (dari SSE done event) sebelum hasil AI ditampilkan.
@@ -1413,7 +1413,7 @@ export function SiteWizard({
           }`}
       >
         {FEATURE_FLAGS.THEME_PANEL && preview.previewState === "result" ? (
-          <ThemePanel
+          <BrandPanel
             mood={chat.moodRef.current || chat.mood || "clean-modern"}
             theme={themeDraft}
             baseToken={baseThemeToken}
@@ -2795,7 +2795,7 @@ export function SiteWizard({
       )}
 
       {FEATURE_FLAGS.THEME_PANEL && (
-        <ThemeSheet
+        <BrandSheet
           open={themeSheetOpen}
           mood={chat.moodRef.current || chat.mood || "clean-modern"}
           theme={themeDraft}

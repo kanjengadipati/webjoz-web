@@ -31,7 +31,9 @@ interface ThemePanelProps {
 
 type SubView = "none" | "brand-color" | "custom-font";
 
-export function ThemePanel({
+export type BrandPanelProps = ThemePanelProps;
+
+export function BrandPanel({
   mood,
   theme,
   baseToken,
@@ -42,7 +44,7 @@ export function ThemePanel({
   onLogoApplied,
   onBrandColorApplied,
   onSelectMood,
-}: ThemePanelProps) {
+}: BrandPanelProps) {
   const { t, isIndonesian } = useI18n();
   const [subView, setSubView] = useState<SubView>("none");
   const [toastLabel, setToastLabel] = useState<string | null>(null);
@@ -108,10 +110,10 @@ export function ThemePanel({
 
         <div className="flex-1 min-w-0">
           <p className="text-sm font-bold text-sidebar-foreground leading-tight">
-            {t("dashboard.wizard.theme.panelTitle", "Sesuaikan Tema")}
+            {t("dashboard.wizard.theme.panelTitle", isIndonesian ? "Brand Website Anda" : "Brand Your Website")}
           </p>
           <p className="text-[11px] text-sidebar-muted-foreground leading-tight truncate">
-            {t("dashboard.wizard.theme.panelSubtitle", "Ubah warna & font pratinjau")}
+            {t("dashboard.wizard.theme.panelSubtitle", isIndonesian ? "Atur warna & tipografi website" : "Change preview colors & fonts")}
           </p>
         </div>
 
