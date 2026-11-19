@@ -3346,6 +3346,12 @@ export interface Translations {
       variantFooterDarkContrastBandDesc: string;
       variantFooterLocationAndHours: string;
       variantFooterLocationAndHoursDesc: string;
+      variantFooterMultiColumnNewsletter: string;
+      variantFooterMultiColumnNewsletterDesc: string;
+      variantFooterBrandGradientCta: string;
+      variantFooterBrandGradientCtaDesc: string;
+      variantFooterSocialPillCta: string;
+      variantFooterSocialPillCtaDesc: string;
       // blog
       variantBlogGrid: string;
       variantBlogGridDesc: string;
@@ -7627,6 +7633,15 @@ export const translations: Record<Locale, Translations> = {
         variantFooterLocationAndHours: "Lokasi & Jam",
         variantFooterLocationAndHoursDesc:
           "Brand + alamat peta + jam operasional dalam grid bersih.",
+        variantFooterMultiColumnNewsletter: "Multi-Kolom + Newsletter",
+        variantFooterMultiColumnNewsletterDesc:
+          "Multi-kolom lengkap dengan form langganan newsletter, tautan navigasi, dan media sosial.",
+        variantFooterBrandGradientCta: "Banner Gradien (Bold)",
+        variantFooterBrandGradientCtaDesc:
+          "Footer warna gradien brand dengan slogan inspiratif dan tombol CTA penutup halaman.",
+        variantFooterSocialPillCta: "Pill Sosmed + CTA",
+        variantFooterSocialPillCtaDesc:
+          "Layout horizontal seimbang dengan brand di kiri, pill media sosial di tengah, dan tombol CTA di kanan.",
         // blog
         variantBlogGrid: "Grid",
         variantBlogGridDesc: "Kartu dalam 3 kolom rapi.",
@@ -12121,6 +12136,15 @@ export const translations: Record<Locale, Translations> = {
         variantFooterLocationAndHours: "Location & Hours",
         variantFooterLocationAndHoursDesc:
           "Brand + map address + operating hours in a clean grid.",
+        variantFooterMultiColumnNewsletter: "Multi-Column + Newsletter",
+        variantFooterMultiColumnNewsletterDesc:
+          "Multi-column with newsletter subscription form, navigation links, and social media.",
+        variantFooterBrandGradientCta: "Brand Gradient Banner (Bold)",
+        variantFooterBrandGradientCtaDesc:
+          "Brand gradient footer with inspirational slogan and high-impact closing CTA button.",
+        variantFooterSocialPillCta: "Social Pills + CTA",
+        variantFooterSocialPillCtaDesc:
+          "Balanced horizontal layout with brand on left, social media pills centered, and CTA button on right.",
         // blog
         variantBlogGrid: "Grid",
         variantBlogGridDesc: "Cards in a 3-column neat layout.",

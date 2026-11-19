@@ -9,6 +9,9 @@ const ColumnsWithSocial = dynamic(() => import("./columns-with-social"));
 const ColumnsWithNav = dynamic(() => import("./columns-with-nav"));
 const DarkContrastBand = dynamic(() => import("./dark-contrast-band"));
 const LocationAndHours = dynamic(() => import("./location-and-hours"));
+const MultiColumnNewsletter = dynamic(() => import("./multi-column-newsletter"));
+const BrandGradientCta = dynamic(() => import("./brand-gradient-cta"));
+const SocialPillCta = dynamic(() => import("./social-pill-cta"));
 
 const variants: Record<string, ComponentType<FooterVariantProps>> = {
   "minimal-band": MinimalBand,
@@ -16,6 +19,9 @@ const variants: Record<string, ComponentType<FooterVariantProps>> = {
   "columns-with-nav": ColumnsWithNav,
   "dark-contrast-band": DarkContrastBand,
   "location-and-hours": LocationAndHours,
+  "multi-column-newsletter": MultiColumnNewsletter,
+  "brand-gradient-cta": BrandGradientCta,
+  "social-pill-cta": SocialPillCta,
 };
 
 export default function FooterSection(props: FooterVariantProps) {
