@@ -2,6 +2,11 @@ import type { NextConfig } from "next";
 import path from "path";
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "res.cloudinary.com" },
+    ],
+  },
   // "standalone" is for Docker/self-hosted. Remove it on Vercel to avoid
   // bundling source maps and unnecessary files into every serverless function.
   // output: "standalone",
