@@ -2456,6 +2456,11 @@ export interface Translations {
       heroLocationMap: string;
       heroProductShowcase: string;
       heroCinematic: string;
+      heroEditorialAsymmetric: string;
+      heroFloatingLayers: string;
+      heroCinematicImmersive: string;
+      heroVisualMosaic: string;
+      heroBentoHero: string;
       variantProductTable: string;
       variantSpotlight: string;
       variantMenuCarousel: string;
@@ -6582,6 +6587,11 @@ export const translations: Record<Locale, Translations> = {
         heroLocationMap: "Hero: Peta Lokasi",
         heroProductShowcase: "Hero: Showcase Produk",
         heroCinematic: "Hero: Sinematik",
+        heroEditorialAsymmetric: "Hero: Editorial Asimetris",
+        heroFloatingLayers: "Hero: Lapisan Melayang (3D)",
+        heroCinematicImmersive: "Hero: Sinematik Imersif",
+        heroVisualMosaic: "Hero: Mosaik Visual",
+        heroBentoHero: "Hero: Bento Hero Kontemporer",
         variantProductTable: "Tabel Spesifikasi",
         variantSpotlight: "Sorotan Produk",
         variantMenuCarousel: "Carousel Horizontal",
@@ -11069,6 +11079,11 @@ export const translations: Record<Locale, Translations> = {
         heroLocationMap: "Hero: Location Map",
         heroProductShowcase: "Hero: Product Showcase",
         heroCinematic: "Hero: Cinematic",
+        heroEditorialAsymmetric: "Hero: Editorial Asymmetric",
+        heroFloatingLayers: "Hero: Floating Layers (3D)",
+        heroCinematicImmersive: "Hero: Cinematic Immersive",
+        heroVisualMosaic: "Hero: Visual Mosaic",
+        heroBentoHero: "Hero: Contemporary Bento Hero",
         variantProductTable: "Spec Table",
         variantSpotlight: "Product Spotlight",
         variantMenuCarousel: "Horizontal Carousel",

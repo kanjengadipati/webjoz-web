@@ -36,6 +36,11 @@ const HeroBookingForm = dynamic(() => import("./booking-form"));
 const HeroLocationMap = dynamic(() => import("./location-map"));
 const HeroProductShowcase = dynamic(() => import("./product-showcase"));
 const HeroCinematic = dynamic(() => import("./cinematic"));
+const HeroEditorialAsymmetric = dynamic(() => import("./editorial-asymmetric"));
+const HeroFloatingLayers = dynamic(() => import("./floating-layers"));
+const HeroCinematicImmersive = dynamic(() => import("./cinematic-immersive"));
+const HeroVisualMosaic = dynamic(() => import("./visual-mosaic"));
+const HeroBentoHero = dynamic(() => import("./bento-hero"));
 
 // Typed against HeroStyle (hero/meta.ts): adding a variant to the catalog without
 // registering its component here is a compile error. "carousel" is a legacy alias.
@@ -74,6 +79,12 @@ const variants: Record<HeroStyle | "carousel", ComponentType<HeroVariantProps>> 
   // Tier 3 additions
   "product-showcase": HeroProductShowcase,
   "cinematic": HeroCinematic,
+  // New visual hero additions
+  "editorial-asymmetric": HeroEditorialAsymmetric,
+  "floating-layers": HeroFloatingLayers,
+  "cinematic-immersive": HeroCinematicImmersive,
+  "visual-mosaic": HeroVisualMosaic,
+  "bento-hero": HeroBentoHero,
 };
 
 export default function HeroSection({

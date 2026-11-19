@@ -125,6 +125,31 @@
     "minImages": 3
   },
   {
+    "name": "editorial-asymmetric",
+    "imageNeed": "optional",
+    "minImages": 0
+  },
+  {
+    "name": "floating-layers",
+    "imageNeed": "optional",
+    "minImages": 0
+  },
+  {
+    "name": "cinematic-immersive",
+    "imageNeed": "required",
+    "minImages": 1
+  },
+  {
+    "name": "visual-mosaic",
+    "imageNeed": "required",
+    "minImages": 3
+  },
+  {
+    "name": "bento-hero",
+    "imageNeed": "optional",
+    "minImages": 0
+  },
+  {
     "name": "tech-saas",
     "imageNeed": "none",
     "minImages": 0

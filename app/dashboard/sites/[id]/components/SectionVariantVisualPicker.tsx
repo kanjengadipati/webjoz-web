@@ -914,6 +914,108 @@ export function VariantWireframe({ section, variant }: { section: string; varian
     );
   }
 
+  if (variant === "editorial-asymmetric") {
+    return (
+      <div className="w-full h-14 rounded-lg bg-[#0c1017] border border-white/5 p-1.5 flex items-center gap-1.5 overflow-hidden relative">
+        <div className="w-1/2 flex flex-col justify-center gap-1 pl-1">
+          <div className="w-1/3 h-1 rounded-full bg-primary/80" />
+          <div className="w-4/5 h-1.5 rounded-full bg-white/90" />
+          <div className="w-3/5 h-1 rounded-full bg-slate-400/60" />
+          <div className="w-2/5 h-1.5 rounded-full bg-primary/60 mt-0.5" />
+        </div>
+        <div className="w-1/2 h-full relative">
+          <div className="absolute top-0.5 right-1 w-12 h-8 rounded bg-slate-800/80 border border-border/40 p-1 flex items-end gap-0.5">
+            <div className="w-1.5 h-3 bg-slate-600 rounded-xs" />
+            <div className="w-1.5 h-5 bg-primary/70 rounded-xs" />
+            <div className="w-1.5 h-4 bg-slate-600 rounded-xs" />
+          </div>
+          <div className="absolute bottom-0 left-0 w-11 h-6 rounded bg-slate-900 border border-primary/40 shadow-lg p-1 flex items-center gap-1">
+            <div className="w-2 h-2 rounded-full bg-emerald-400" />
+            <div className="w-6 h-1 rounded-full bg-slate-300" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (variant === "floating-layers") {
+    return (
+      <div className="w-full h-14 rounded-lg bg-[#080b12] border border-white/5 p-1.5 flex items-center justify-between gap-1 overflow-hidden relative">
+        <div className="w-5/12 flex flex-col justify-center gap-1 pl-1">
+          <div className="w-1/2 h-1 rounded-full bg-primary/80" />
+          <div className="w-full h-1.5 rounded-full bg-white/90" />
+          <div className="w-3/4 h-1 rounded-full bg-slate-400/60" />
+        </div>
+        <div className="w-7/12 h-full relative flex items-center justify-center">
+          <div className="absolute top-1 right-2 w-16 h-7 rounded bg-slate-950 border border-slate-700/60" style={{ transform: "rotate(-8deg)" }} />
+          <div className="absolute top-2 right-4 w-15 h-8 rounded bg-slate-800/90 border border-primary/40 shadow-md p-1" style={{ transform: "rotate(-3deg)" }}>
+            <div className="w-2 h-2 rounded-full bg-primary mb-1" />
+            <div className="w-8 h-1 rounded-full bg-slate-300" />
+          </div>
+          <div className="absolute bottom-0.5 right-1 w-8 h-6 rounded bg-slate-900 border border-emerald-500/40 p-0.5 flex flex-col justify-center">
+            <div className="w-5 h-1 rounded-full bg-emerald-400" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (variant === "cinematic-immersive") {
+    return (
+      <div className="w-full h-14 rounded-lg bg-[#07090e] p-1 flex items-center justify-center overflow-hidden">
+        <div className="w-full h-full rounded-md border border-white/15 bg-gradient-to-t from-black via-slate-900/60 to-black/40 p-1 flex flex-col justify-between relative overflow-hidden">
+          <div className="flex justify-between items-center">
+            <div className="w-4 h-1 rounded-full bg-white/60" />
+            <div className="w-3 h-1 rounded-full bg-primary/80" />
+          </div>
+          <div className="flex justify-between items-end">
+            <div className="space-y-0.5">
+              <div className="w-12 h-1.5 rounded-full bg-white/90" />
+              <div className="w-8 h-1 rounded-full bg-slate-400" />
+            </div>
+            <div className="w-6 h-2 rounded-full bg-white" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (variant === "visual-mosaic") {
+    return (
+      <div className="w-full h-14 rounded-lg bg-[#0c1017] border border-white/5 flex overflow-hidden">
+        <div className="w-1/2 p-2 flex flex-col justify-center gap-1 border-r border-white/5">
+          <div className="w-14 h-2.5 rounded-xs bg-white/90" />
+          <div className="w-10 h-1 rounded-full bg-slate-400/60" />
+          <div className="w-6 h-1 rounded-full bg-primary/80 mt-1" />
+        </div>
+        <div className="w-1/2 p-1 bg-black grid grid-cols-2 gap-0.5">
+          <div className="rounded-xs bg-slate-800" />
+          <div className="rounded-xs bg-slate-700 row-span-2" />
+          <div className="rounded-xs bg-slate-700" />
+          <div className="rounded-xs bg-slate-800" />
+        </div>
+      </div>
+    );
+  }
+
+  if (variant === "bento-hero") {
+    return (
+      <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1 flex flex-col justify-between overflow-hidden">
+        <div className="flex flex-col items-center gap-0.5 pt-0.5">
+          <div className="w-14 h-1.5 rounded-full bg-white/90" />
+          <div className="w-20 h-1 rounded-full bg-slate-400/50" />
+        </div>
+        <div className="grid grid-cols-4 gap-0.5 h-6">
+          <div className="col-span-2 rounded-xs bg-slate-800 border border-white/5" />
+          <div className="rounded-xs bg-slate-950 border border-slate-700 flex items-center justify-center">
+            <div className="w-2 h-1 rounded-full bg-emerald-400" />
+          </div>
+          <div className="rounded-xs bg-primary/70" />
+        </div>
+      </div>
+    );
+  }
+
   if (variant === "whatsapp-direct") {
     return (
       <div className="w-full h-14 rounded-lg bg-[#090d16] border border-white/5 p-1.5 flex flex-col items-center justify-center gap-1 overflow-hidden">
