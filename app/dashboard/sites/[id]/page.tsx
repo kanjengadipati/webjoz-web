@@ -1083,7 +1083,7 @@ export default function SiteEditorPage() {
 
   const handlePreviewSelectSection = useCallback((section: string) => {
     selectSection(section, false);
-    if (section === "seo" || section === "header") {
+    if (section === "seo") {
       if (typeof window !== "undefined" && (window.innerWidth < 768 || device === "mobile")) {
         setSheetCollapsed(false);
       } else {
