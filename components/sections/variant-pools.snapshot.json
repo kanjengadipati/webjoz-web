@@ -1,0 +1,142 @@
+{
+  "about": [
+    "classic",
+    "split-image",
+    "stat-heavy",
+    "team-grid",
+    "timeline"
+  ],
+  "benefits": [
+    "bento-grid",
+    "checklist",
+    "comparison-table",
+    "featured-grid",
+    "grid",
+    "how-it-works",
+    "icon-row",
+    "stat-grid",
+    "trust-bar"
+  ],
+  "blog_index": [
+    "featured",
+    "grid",
+    "list",
+    "minimal"
+  ],
+  "catalog": [
+    "editorial-grid",
+    "grid",
+    "grid-dense",
+    "horizontal-swipe-carousel",
+    "instagram-square-grid",
+    "masonry-flow",
+    "neo-brutalist-matrix",
+    "product-table",
+    "showcase-featured",
+    "split-hero-catalog",
+    "spotlight",
+    "tabs-by-category"
+  ],
+  "contact": [
+    "bento-grid",
+    "classic-split",
+    "dark-split",
+    "minimal-centered",
+    "overlay-map",
+    "whatsapp-direct"
+  ],
+  "cta": [
+    "banner",
+    "card",
+    "centered",
+    "inline-lead-form",
+    "split-image"
+  ],
+  "faq": [
+    "accordion",
+    "chat-bubble-style",
+    "columns",
+    "sidebar-category",
+    "simple",
+    "two-column-grid"
+  ],
+  "footer": [
+    "brand-gradient-cta",
+    "columns-with-nav",
+    "columns-with-social",
+    "dark-contrast-band",
+    "location-and-hours",
+    "minimal-band",
+    "multi-column-newsletter",
+    "social-pill-cta"
+  ],
+  "gallery": [
+    "before-after-slider",
+    "carousel",
+    "grid",
+    "lightbox-story",
+    "masonry",
+    "video-grid"
+  ],
+  "header": [
+    "brand-block-nav",
+    "centered-logo",
+    "floating-capsule",
+    "left-logo-inline-nav",
+    "logo-with-cta-button",
+    "split-utility",
+    "stacked-logo-tagline",
+    "transparent-overlay"
+  ],
+  "menu": [
+    "accordion-by-category",
+    "bento-photo-grid",
+    "cards",
+    "compact-list",
+    "grid",
+    "horizontal-swipe-carousel",
+    "masonry-flow",
+    "sidebar-scrollspy-photo",
+    "tabs-by-category",
+    "text-list",
+    "visual-showcase-hero"
+  ],
+  "partners": [
+    "featured-collab-grid",
+    "logo-wall",
+    "marquee",
+    "pill-grid"
+  ],
+  "pricing": [
+    "cards",
+    "comparison-table",
+    "horizontal-rows",
+    "single-tier-highlight"
+  ],
+  "skills": [
+    "chips",
+    "grouped-list",
+    "meter"
+  ],
+  "stats": [
+    "big-number-spotlight",
+    "card-grid",
+    "counter-row",
+    "minimal-split"
+  ],
+  "testimonials": [
+    "carousel",
+    "compact",
+    "featured-spotlight",
+    "google-reviews",
+    "grid",
+    "logo-wall",
+    "video-wall"
+  ],
+  "works": [
+    "featured-grid",
+    "grid",
+    "masonry",
+    "showcase-featured"
+  ]
+}
