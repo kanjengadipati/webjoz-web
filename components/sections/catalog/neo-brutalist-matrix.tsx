@@ -246,11 +246,12 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
                         )}
                       </div>
 
-                      {item.description && (
+                      {(item.description || isEditorMode) && (
                         <InlineText
                           section="catalog"
                           fieldKey={"categories." + catIdx + ".items." + index + ".description"}
                           value={item.description ?? ""}
+                          placeholder={isEN ? "Item description..." : "Deskripsi produk..."}
                           onUpdateField={onUpdateField}
                           isEditorMode={isEditorMode}
                           isSelected={isSelected}

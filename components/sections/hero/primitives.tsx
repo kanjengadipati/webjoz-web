@@ -163,6 +163,7 @@ export interface HeroImageProps extends InlineEditProps {
   style?: React.CSSProperties;
   /** Aktifkan mode background (opacity overlay editor di pojok). */
   isBackground?: boolean;
+  overlayPosition?: "center" | "top-right" | "bottom-right" | "bottom-left" | "top-left";
   compact?: boolean;
   fallbackIcon?: React.ReactNode;
   /** Kredit foto — diteruskan ke PhotoCredit. */
@@ -197,6 +198,7 @@ export function HeroImage({
   className,
   style,
   isBackground = false,
+  overlayPosition,
   compact,
   fallbackIcon,
   credit,
@@ -223,6 +225,7 @@ export function HeroImage({
         className={className}
         style={style}
         isBackground={isBackground}
+        overlayPosition={overlayPosition}
         compact={compact}
         fallbackIcon={fallbackIcon}
         collapseSheetForInlineEdit={collapseSheetForInlineEdit}

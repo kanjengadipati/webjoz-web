@@ -263,11 +263,12 @@ export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isE
                           className="font-bold tracking-tight inline mr-1.5"
                           style={{ color: "var(--dt-text)" }}
                         />
-                        {item.description && (
+                        {(item.description || isEditorMode) && (
                           <InlineText
                             section="catalog"
                             fieldKey={"categories." + catIdx + ".items." + index + ".description"}
                             value={item.description ?? ""}
+                            placeholder={isEN ? "Item description..." : "Deskripsi produk..."}
                             onUpdateField={onUpdateField}
                             isEditorMode={isEditorMode}
                             isSelected={isSelected}

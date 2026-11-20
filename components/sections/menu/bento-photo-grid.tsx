@@ -178,8 +178,8 @@ export default function BentoPhotoGrid({ menu, onUpdateField, isEditorMode, isSe
                         )}
                       </div>
 
-                      {item.description && (
-                        <InlineText section="menu" fieldKey={"categories." + catIndex + ".items." + itemIndex + ".description"} value={item.description ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="p" multiline className={`text-xs md:text-sm text-white/80 font-normal leading-relaxed transition-all duration-300 ${
+                      {(item.description || isEditorMode) && (
+                        <InlineText section="menu" fieldKey={"categories." + catIndex + ".items." + itemIndex + ".description"} value={item.description ?? ""} placeholder={isEN ? "Item description..." : "Deskripsi menu..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="p" multiline className={`text-xs md:text-sm text-white/80 font-normal leading-relaxed transition-all duration-300 ${
                           isLarge ? "line-clamp-none opacity-100" : "line-clamp-2 md:line-clamp-1 group-hover:line-clamp-none"
                         }`} />
                       )}

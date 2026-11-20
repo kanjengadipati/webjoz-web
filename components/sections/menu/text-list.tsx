@@ -162,8 +162,8 @@ export default function MenuTextList({ menu, onUpdateField, isEditorMode, isSele
                         )}
                       </div>
                       {/* Description */}
-                      {item.description && (
-                        <InlineText section="menu" fieldKey={"categories." + originalCatIdx + ".items." + originalItemIdx + ".description"} value={item.description ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="p" multiline style={{ margin: "0.3rem 0 0.6rem", fontSize: "0.78rem", color: muted, lineHeight: 1.55 }} />
+                      {(item.description || isEditorMode) && (
+                        <InlineText section="menu" fieldKey={"categories." + originalCatIdx + ".items." + originalItemIdx + ".description"} value={item.description ?? ""} placeholder={isEN ? "Item description..." : "Deskripsi menu..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="p" multiline style={{ margin: "0.3rem 0 0.6rem", fontSize: "0.78rem", color: muted, lineHeight: 1.55 }} />
                       )}
                       {/* Tags & Platforms */}
                       {(item.tags?.length || isEditorMode) && (

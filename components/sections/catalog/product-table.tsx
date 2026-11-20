@@ -237,9 +237,9 @@ export default function CatalogProductTable({ catalog, onUpdateField, isEditorMo
                               className="text-sm font-semibold"
                               style={{ color: "var(--dt-text)" }}
                             />
-                            {item.badge && (
+                            {(item.badge || isEditorMode) && (
                               <span className="self-start text-[10px] uppercase tracking-widest font-bold px-2 py-0.5" style={{ backgroundColor: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "var(--dt-radius)" }}>
-                                <InlineText section="catalog" fieldKey={base(catIdx, itemIdx) + ".badge"} value={item.badge ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
+                                <InlineText section="catalog" fieldKey={base(catIdx, itemIdx) + ".badge"} value={item.badge ?? ""} placeholder={isEN ? "Badge..." : "Label..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
                               </span>
                             )}
                           </div>

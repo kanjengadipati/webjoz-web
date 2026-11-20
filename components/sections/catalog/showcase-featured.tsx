@@ -154,8 +154,8 @@ export default function CatalogShowcaseFeatured({ catalog, design_token, onUpdat
                               )
                             )}
                           </div>
-                          {item.description && (
-                            <InlineText section="catalog" fieldKey={"categories." + ci + ".items." + itemIdx + ".description"} value={item.description ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="p" multiline style={{ margin: 0, fontSize: "0.8rem", color: muted, lineHeight: 1.55 }} />
+                          {(item.description || isEditorMode) && (
+                            <InlineText section="catalog" fieldKey={"categories." + ci + ".items." + itemIdx + ".description"} value={item.description ?? ""} placeholder={isEN ? "Item description..." : "Deskripsi produk..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="p" multiline style={{ margin: 0, fontSize: "0.8rem", color: muted, lineHeight: 1.55 }} />
                           )}
                           {item.capacity != null && item.capacity > 0 && (
                             <div style={{ marginTop: "0.25rem" }}>

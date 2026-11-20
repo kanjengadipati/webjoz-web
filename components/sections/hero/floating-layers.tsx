@@ -6,6 +6,7 @@ import type { HeroVariantProps } from "./types";
 import { InlineText, HeroAccessory } from "../../templates/shared";
 import { HeroCta, HeroImage, HERO_HEADING_SIZE } from "./primitives";
 import { heroStrings } from "./hero-strings";
+import { getHeroSlides } from "./images";
 
 /**
  * Floating Layers — 02. Floating Layers
@@ -29,6 +30,8 @@ export default function HeroFloatingLayers({
   const s = heroStrings(language);
   const [isInlineEditing, setIsInlineEditing] = useState(false);
   const dw = (h.dashboard_widget || {}) as Record<string, any>;
+  const slides = getHeroSlides(h, { includeHidden: Boolean(isEditorMode) });
+  const backImage = (dw.screen_image as string) || (slides.length > 1 ? slides[1]?.src : null);
 
   const handleEditingStateChange = useCallback((editing: boolean) => {
     setIsInlineEditing(editing);
@@ -316,20 +319,39 @@ export default function HeroFloatingLayers({
                   />
                 </div>
 
-                {/* Dashboard Chart Mock */}
-                <div className="mt-4 h-32 rounded-xl bg-slate-900/80 p-3 border border-slate-800/60 flex items-end justify-between gap-2">
-                  {[30, 45, 60, 40, 75, 90, 85, 100].map((v, i) => (
-                    <div key={i} className="flex-1 flex flex-col items-center h-full justify-end">
-                      <div
-                        className="w-full rounded-t-sm"
-                        style={{
-                          height: `${v}%`,
-                          background: i >= 5 ? "var(--dt-primary, #3b82f6)" : "#334155",
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
+                {/* Dashboard Screen Content: Secondary Photo Slot or Chart Mock */}
+                {(backImage || isEditorMode) ? (
+                  <div className="mt-4 relative h-36 w-full rounded-xl overflow-hidden border border-slate-800/80 bg-slate-900/90 shadow-inner">
+                    <HeroImage
+                      src={backImage}
+                      alt={h.headline || "Screen preview"}
+                      credit={slides[1]?.credit || null}
+                      language={language}
+                      fieldKey="dashboard_widget.screen_image"
+                      overlayPosition="center"
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={isSelected}
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  /* Dashboard Chart Mock */
+                  <div className="mt-4 h-32 rounded-xl bg-slate-900/80 p-3 border border-slate-800/60 flex items-end justify-between gap-2">
+                    {[30, 45, 60, 40, 75, 90, 85, 100].map((v, i) => (
+                      <div key={i} className="flex-1 flex flex-col items-center h-full justify-end">
+                        <div
+                          className="w-full rounded-t-sm"
+                          style={{
+                            height: `${v}%`,
+                            background: i >= 5 ? "var(--dt-primary, #3b82f6)" : "#334155",
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
               </motion.div>
 
               {/* Mid Layer: Front Floating Glass/Light Card */}

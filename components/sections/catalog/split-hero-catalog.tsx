@@ -223,11 +223,12 @@ export default function CatalogSplitHeroCatalog({ catalog, onUpdateField, isEdit
                           )}
                         </div>
 
-                        {item.description && (
+                        {(item.description || isEditorMode) && (
                           <InlineText
                             section="catalog"
                             fieldKey={"categories." + catIdx + ".items." + index + ".description"}
                             value={item.description ?? ""}
+                            placeholder={isEN ? "Item description..." : "Deskripsi produk..."}
                             onUpdateField={onUpdateField}
                             isEditorMode={isEditorMode}
                             isSelected={isSelected}

@@ -106,9 +106,9 @@ export default function CatalogSpotlight({ catalog, design_token, onUpdateField,
           <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0.05) 100%)" }} />
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 flex flex-col justify-end min-h-[60vh] py-12" style={{ color: "#fff" }}>
-            {heroItem.badge && (
+            {(heroItem.badge || isEditorMode) && (
               <span className="self-start text-[11px] uppercase tracking-widest font-bold px-3 py-1 mb-4" style={{ backgroundColor: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "9999px" }}>
-                <InlineText section="catalog" fieldKey={heroPath + ".badge"} value={heroItem.badge ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
+                <InlineText section="catalog" fieldKey={heroPath + ".badge"} value={heroItem.badge ?? ""} placeholder={isEN ? "Badge..." : "Label..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
               </span>
             )}
 

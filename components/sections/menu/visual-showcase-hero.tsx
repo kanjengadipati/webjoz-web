@@ -181,8 +181,8 @@ export default function VisualShowcaseHero({ menu, onUpdateField, isEditorMode, 
                         )}
                       </div>
 
-                      {item.description && (
-                        <InlineText section="menu" fieldKey={"categories." + catIndex + ".items." + itemIndex + ".description"} value={item.description ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="p" multiline className="text-xs md:text-sm text-dt-text-muted font-light leading-relaxed line-clamp-2 mt-2" />
+                      {(item.description || isEditorMode) && (
+                        <InlineText section="menu" fieldKey={"categories." + catIndex + ".items." + itemIndex + ".description"} value={item.description ?? ""} placeholder={isEN ? "Item description..." : "Deskripsi menu..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="p" multiline className="text-xs md:text-sm text-dt-text-muted font-light leading-relaxed line-clamp-2 mt-2" />
                       )}
 
                       <div className="w-full h-[1px] bg-dt-border/40 mt-4"></div>

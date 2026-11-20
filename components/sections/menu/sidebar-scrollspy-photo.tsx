@@ -281,8 +281,8 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
                               )}
                             </div>
 
-                            {item.description && (
-                              <InlineText section="menu" fieldKey={"categories." + index + ".items." + itemIndex + ".description"} value={item.description ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="p" multiline className="text-xs md:text-sm text-dt-text-muted leading-relaxed line-clamp-3 md:line-clamp-2" />
+                            {(item.description || isEditorMode) && (
+                              <InlineText section="menu" fieldKey={"categories." + index + ".items." + itemIndex + ".description"} value={item.description ?? ""} placeholder={isEN ? "Item description..." : "Deskripsi menu..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="p" multiline className="text-xs md:text-sm text-dt-text-muted leading-relaxed line-clamp-3 md:line-clamp-2" />
                             )}
                           </div>
 
