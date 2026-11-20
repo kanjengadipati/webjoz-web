@@ -39,6 +39,7 @@ export type PreInferred = {
   entity?: "individual" | "organization" | null;
   /** True bila teks deskripsi berasal dari AI (jalur skip/voice), bukan diketik pengguna. */
   descriptionFromAI?: boolean;
+  skipMsgId?: string;
 };
 
 /** Build a PreInferred from the v1-validated pair plus the API's v2 fields. */

@@ -917,7 +917,8 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     // If the user skips, call AI with the business name only to infer category.
     if (isSkip) {
       const currentBizName = businessNameRef.current || businessName;
-      setMessages((prev) => [...prev, { id: Date.now().toString(), sender: "user", text: t("dashboard.wizard.btnNext", "Lanjut") }]);
+      const skipMsgId = `user-desc-${Date.now()}`;
+      setMessages((prev) => [...prev, { id: skipMsgId, sender: "user", text: t("dashboard.wizard.btnNext", "Lanjut") }]);
       setIsAnalyzingDescription(true);
       try {
         const aiRes = await processBusinessDescription("", currentBizName, locale);
@@ -950,9 +951,8 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
           if (detectedLoc && !serviceArea) setServiceArea(detectedLoc);
 
           // Bila ada refined_text dari AI, rekursi ke typed path agar STEP 2-4 berjalan normal.
-          // Bila refined_text kosong (nama abstrak), jangan rekursi — langsung kirim ke
-          // processDescriptionSubmission dengan teks non-kosong hasil generate dari nama
-          // HANYA jika ada validHint; kalau tidak ada, jatuh ke fallback picker di bawah.
+          // Bila refined_text kosong (nama abstrak), jangan rekursi — biarkan deskripsi kosong
+          // dan langsung tampilkan kategori agar pengguna tidak melihat deskripsi asal-asalan.
           const validHint = validateClassification(d.type, d.sub_type) ?? validateClassification(d.type, "");
 
           if (refinedText) {
@@ -965,6 +965,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
               industryId: d.industry_id || "",
               confidence: d.confidence === "high" ? "high" : "medium",
               descriptionFromAI: true,
+              skipMsgId,
             });
             return;
           }
@@ -1044,8 +1045,14 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     // Render the user message bubble and extract geographic location if mentioned.
     // =========================================================================
     const fromAI = !!preInferred?.descriptionFromAI;
-    const userMsgId = `user-desc-${Date.now()}`;
-    if (!fromAI) {
+    const userMsgId = preInferred?.skipMsgId || `user-desc-${Date.now()}`;
+    if (fromAI && preInferred?.skipMsgId) {
+      // Perbarui pesan skip ("Next") dengan teks deskripsi hasil polesan AI
+      setDescriptionMessageId(userMsgId);
+      setMessages((prev) =>
+        prev.map((m) => (m.id === userMsgId ? { ...m, text: val, isRefined: true } : m))
+      );
+    } else if (!fromAI) {
       setDescriptionMessageId(userMsgId);
       setMessages((prev) => [...prev, { id: userMsgId, sender: "user", text: val }]);
     }
