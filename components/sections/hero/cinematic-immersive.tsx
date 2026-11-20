@@ -59,7 +59,7 @@ export default function HeroCinematicImmersive({
         }}
       >
         {/* Background photo & overlays */}
-        {bgImage ? (
+        {(bgImage || isEditorMode) ? (
           <div className="absolute inset-0 z-0">
             <HeroImage
               src={bgImage}
@@ -72,6 +72,7 @@ export default function HeroCinematicImmersive({
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
               className="w-full h-full object-cover"
               style={{ filter: "brightness(0.85)" }}
+              isBackground={true}
             />
           </div>
         ) : (

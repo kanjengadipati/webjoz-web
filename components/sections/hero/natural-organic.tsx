@@ -100,7 +100,7 @@ export default function HeroNaturalOrganic({
         }}
       >
         {/* Badge */}
-        {Boolean(h.eyebrow?.trim() || h.badge_text?.trim()) && (
+        {(Boolean(h.eyebrow?.trim() || h.badge_text?.trim()) || isEditorMode) && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}

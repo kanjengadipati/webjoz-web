@@ -28,6 +28,7 @@ export default function HeroFloatingLayers({
 }: HeroVariantProps) {
   const s = heroStrings(language);
   const [isInlineEditing, setIsInlineEditing] = useState(false);
+  const dw = (h.dashboard_widget || {}) as Record<string, any>;
 
   const handleEditingStateChange = useCallback((editing: boolean) => {
     setIsInlineEditing(editing);
@@ -204,12 +205,65 @@ export default function HeroFloatingLayers({
             {/* Partner logos / tech badge strip */}
             <div className="mt-12 pt-6 border-t border-border/40 w-full">
               <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-                {language === "en" ? "Compatible with modern platforms" : "Terintegrasi dengan ekosistem digital"}
+                <InlineText
+                  section="hero"
+                  fieldKey="dashboard_widget.partner_title"
+                  value={(dw.partner_title as string) ?? ""}
+                  placeholder={language === "en" ? "Compatible with modern platforms" : "Terintegrasi dengan ekosistem digital"}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="span"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={handleEditingStateChange}
+                />
               </div>
               <div className="flex items-center gap-6 text-xs font-semibold text-muted-foreground opacity-75 flex-wrap">
-                <span className="flex items-center gap-1.5"><Cpu className="size-3.5 text-primary" /> API First</span>
-                <span className="flex items-center gap-1.5"><ShieldCheck className="size-3.5 text-emerald-500" /> Enterprise Ready</span>
-                <span className="flex items-center gap-1.5"><Activity className="size-3.5 text-amber-500" /> 99.9% Uptime</span>
+                <span className="flex items-center gap-1.5">
+                  <Cpu className="size-3.5 text-primary" />
+                  <InlineText
+                    section="hero"
+                    fieldKey="dashboard_widget.tag_1"
+                    value={(dw.tag_1 as string) ?? ""}
+                    placeholder="API First"
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="span"
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={handleEditingStateChange}
+                  />
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <ShieldCheck className="size-3.5 text-emerald-500" />
+                  <InlineText
+                    section="hero"
+                    fieldKey="dashboard_widget.tag_2"
+                    value={(dw.tag_2 as string) ?? ""}
+                    placeholder="Enterprise Ready"
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="span"
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={handleEditingStateChange}
+                  />
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Activity className="size-3.5 text-amber-500" />
+                  <InlineText
+                    section="hero"
+                    fieldKey="dashboard_widget.tag_3"
+                    value={(dw.tag_3 as string) ?? ""}
+                    placeholder="99.9% Uptime"
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="span"
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={handleEditingStateChange}
+                  />
+                </span>
               </div>
             </div>
           </div>
@@ -233,9 +287,33 @@ export default function HeroFloatingLayers({
                     <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
                     <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                    <span className="text-[11px] font-mono text-slate-400 ml-2">cloud-dashboard.app</span>
+                    <InlineText
+                      section="hero"
+                      fieldKey="dashboard_widget.app_label"
+                      value={(dw.app_label as string) ?? ""}
+                      placeholder="cloud-dashboard.app"
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={isSelected}
+                      as="span"
+                      className="text-[11px] font-mono text-slate-400 ml-2"
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      onEditingStateChange={handleEditingStateChange}
+                    />
                   </div>
-                  <span className="text-xs font-bold text-emerald-400">$75,340</span>
+                  <InlineText
+                    section="hero"
+                    fieldKey="dashboard_widget.revenue_value"
+                    value={(dw.revenue_value as string) ?? ""}
+                    placeholder="$75,340"
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="span"
+                    className="text-xs font-bold text-emerald-400"
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={handleEditingStateChange}
+                  />
                 </div>
 
                 {/* Dashboard Chart Mock */}
@@ -267,8 +345,8 @@ export default function HeroFloatingLayers({
                   boxShadow: "0 25px 60px -15px rgba(0, 0, 0, 0.35)",
                 }}
               >
-                {/* Image showcase inside card if provided */}
-                {h.image_url ? (
+                {/* Image showcase inside card if provided or in editor mode */}
+                {(h.image_url || isEditorMode) ? (
                   <div className="relative mb-4 h-40 w-full rounded-xl overflow-hidden border border-border/40">
                     <HeroImage
                       src={h.image_url}
@@ -293,12 +371,35 @@ export default function HeroFloatingLayers({
                       </div>
                       <div>
                         <div className="text-sm font-bold">{h.headline?.slice(0, 24)}...</div>
-                        <div className="text-xs text-muted-foreground">{language === "en" ? "Production Verified" : "Terverifikasi Siap Pakai"}</div>
+                        <InlineText
+                          section="hero"
+                          fieldKey="dashboard_widget.status_label"
+                          value={(dw.status_label as string) ?? ""}
+                          placeholder={language === "en" ? "Production Verified" : "Terverifikasi Siap Pakai"}
+                          onUpdateField={onUpdateField}
+                          isEditorMode={isEditorMode}
+                          isSelected={isSelected}
+                          as="div"
+                          className="text-xs text-muted-foreground"
+                          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                          onEditingStateChange={handleEditingStateChange}
+                        />
                       </div>
                     </div>
                     <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold">
                       <TrendingUp className="size-3.5" />
-                      <span>+1282%</span>
+                      <InlineText
+                        section="hero"
+                        fieldKey="dashboard_widget.badge_growth"
+                        value={(dw.badge_growth as string) ?? ""}
+                        placeholder="+1282%"
+                        onUpdateField={onUpdateField}
+                        isEditorMode={isEditorMode}
+                        isSelected={isSelected}
+                        as="span"
+                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                        onEditingStateChange={handleEditingStateChange}
+                      />
                     </div>
                   </div>
                 )}
@@ -325,7 +426,19 @@ export default function HeroFloatingLayers({
                       onEditingStateChange={handleEditingStateChange}
                     />
                   </div>
-                  <span className="text-xs font-mono text-primary font-bold">4.9/5.0</span>
+                  <InlineText
+                    section="hero"
+                    fieldKey="dashboard_widget.rating_value"
+                    value={(dw.rating_value as string) ?? ""}
+                    placeholder="4.9/5.0"
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="span"
+                    className="text-xs font-mono text-primary font-bold"
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={handleEditingStateChange}
+                  />
                 </div>
               </motion.div>
 
@@ -340,13 +453,48 @@ export default function HeroFloatingLayers({
                 }}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] uppercase font-mono tracking-wider text-slate-400">Total Analytics</span>
+                  <InlineText
+                    section="hero"
+                    fieldKey="dashboard_widget.analytics_label"
+                    value={(dw.analytics_label as string) ?? ""}
+                    placeholder={language === "en" ? "Total Analytics" : "Total Analitik"}
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="span"
+                    className="text-[10px] uppercase font-mono tracking-wider text-slate-400"
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={handleEditingStateChange}
+                  />
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
                 </div>
-                <div className="text-lg font-bold font-mono text-white tracking-tight">524,860</div>
+                <InlineText
+                  section="hero"
+                  fieldKey="dashboard_widget.analytics_value"
+                  value={(dw.analytics_value as string) ?? ""}
+                  placeholder="524,860"
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="div"
+                  className="text-lg font-bold font-mono text-white tracking-tight"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={handleEditingStateChange}
+                />
                 <div className="text-[11px] text-emerald-400 flex items-center gap-1 mt-0.5">
-                  <TrendingUp className="size-3" />
-                  <span>+34.2% {language === "en" ? "this month" : "bulan ini"}</span>
+                  <TrendingUp className="size-3 shrink-0" />
+                  <InlineText
+                    section="hero"
+                    fieldKey="dashboard_widget.analytics_growth"
+                    value={(dw.analytics_growth as string) ?? ""}
+                    placeholder={language === "en" ? "+34.2% this month" : "+34.2% bulan ini"}
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="span"
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={handleEditingStateChange}
+                  />
                 </div>
               </motion.div>
             </div>

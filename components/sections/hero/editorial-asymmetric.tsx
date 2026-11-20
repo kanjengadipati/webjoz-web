@@ -29,6 +29,7 @@ export default function HeroEditorialAsymmetric({
 }: HeroVariantProps) {
   const s = heroStrings(language);
   const [isInlineEditing, setIsInlineEditing] = useState(false);
+  const dw = (h.dashboard_widget || {}) as Record<string, any>;
 
   const handleEditingStateChange = useCallback((editing: boolean) => {
     setIsInlineEditing(editing);
@@ -254,18 +255,39 @@ export default function HeroEditorialAsymmetric({
                 <div className="flex items-center justify-between pb-3 border-b border-border/40">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                    <span className="text-xs font-semibold tracking-wide uppercase text-muted-foreground">
-                      {language === "en" ? "Performance Overview" : "Ringkasan Performa"}
-                    </span>
+                    <InlineText
+                      section="hero"
+                      fieldKey="dashboard_widget.overview_label"
+                      value={(dw.overview_label as string) ?? ""}
+                      placeholder={language === "en" ? "Performance Overview" : "Ringkasan Performa"}
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={isSelected}
+                      as="span"
+                      className="text-xs font-semibold tracking-wide uppercase text-muted-foreground"
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      onEditingStateChange={handleEditingStateChange}
+                    />
                   </div>
                   <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-muted/60 text-[11px] font-medium text-muted-foreground">
-                    <span>{language === "en" ? "Current Period" : "Periode Berjalan"}</span>
+                    <InlineText
+                      section="hero"
+                      fieldKey="dashboard_widget.period_label"
+                      value={(dw.period_label as string) ?? ""}
+                      placeholder={language === "en" ? "Current Period" : "Periode Berjalan"}
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={isSelected}
+                      as="span"
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      onEditingStateChange={handleEditingStateChange}
+                    />
                     <ChevronDown className="size-3" />
                   </div>
                 </div>
 
                 {/* Foto / Ilustrasi jika ada, atau bar grafis */}
-                {h.image_url ? (
+                {(h.image_url || isEditorMode) ? (
                   <div className="relative my-4 h-48 w-full rounded-xl overflow-hidden border border-border/50">
                     <HeroImage
                       src={h.image_url}
@@ -283,12 +305,47 @@ export default function HeroEditorialAsymmetric({
                   <div className="my-5 p-4 rounded-xl bg-muted/30 border border-border/40 flex flex-col gap-3">
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className="text-[11px] text-muted-foreground">{language === "en" ? "Client Satisfaction" : "Tingkat Kepuasan"}</div>
-                        <div className="text-2xl font-bold tracking-tight text-foreground">99.4%</div>
+                        <InlineText
+                          section="hero"
+                          fieldKey="dashboard_widget.stat_label"
+                          value={(dw.stat_label as string) ?? ""}
+                          placeholder={language === "en" ? "Client Satisfaction" : "Tingkat Kepuasan"}
+                          onUpdateField={onUpdateField}
+                          isEditorMode={isEditorMode}
+                          isSelected={isSelected}
+                          as="div"
+                          className="text-[11px] text-muted-foreground"
+                          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                          onEditingStateChange={handleEditingStateChange}
+                        />
+                        <InlineText
+                          section="hero"
+                          fieldKey="dashboard_widget.stat_value"
+                          value={(dw.stat_value as string) ?? ""}
+                          placeholder="99.4%"
+                          onUpdateField={onUpdateField}
+                          isEditorMode={isEditorMode}
+                          isSelected={isSelected}
+                          as="div"
+                          className="text-2xl font-bold tracking-tight text-foreground"
+                          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                          onEditingStateChange={handleEditingStateChange}
+                        />
                       </div>
                       <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold">
                         <TrendingUp className="size-3.5" />
-                        <span>+18.2%</span>
+                        <InlineText
+                          section="hero"
+                          fieldKey="dashboard_widget.stat_growth"
+                          value={(dw.stat_growth as string) ?? ""}
+                          placeholder="+18.2%"
+                          onUpdateField={onUpdateField}
+                          isEditorMode={isEditorMode}
+                          isSelected={isSelected}
+                          as="span"
+                          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                          onEditingStateChange={handleEditingStateChange}
+                        />
                       </div>
                     </div>
                     {/* Visual Bar chart mock */}
@@ -311,7 +368,19 @@ export default function HeroEditorialAsymmetric({
                 {/* Metric footer */}
                 <div className="flex items-center justify-between pt-2 text-xs text-muted-foreground">
                   <span>{h.badge_text || (language === "en" ? "Verified Delivery Standard" : "Standar Layanan Terverifikasi")}</span>
-                  <span className="font-semibold text-foreground">100% Guaranteed</span>
+                  <InlineText
+                    section="hero"
+                    fieldKey="dashboard_widget.guarantee_label"
+                    value={(dw.guarantee_label as string) ?? ""}
+                    placeholder={language === "en" ? "100% Guaranteed" : "Garansi 100%"}
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="span"
+                    className="font-semibold text-foreground"
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={handleEditingStateChange}
+                  />
                 </div>
               </motion.div>
 
@@ -328,29 +397,97 @@ export default function HeroEditorialAsymmetric({
                 }}
               >
                 <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-border/50">
-                  <span className="text-xs font-bold uppercase tracking-wider text-primary">
-                    {language === "en" ? "Key Deliverables" : "Layanan Utama"}
-                  </span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-semibold">
-                    {language === "en" ? "Live" : "Aktif"}
-                  </span>
+                  <InlineText
+                    section="hero"
+                    fieldKey="dashboard_widget.deliverables_title"
+                    value={(dw.deliverables_title as string) ?? ""}
+                    placeholder={language === "en" ? "Key Deliverables" : "Layanan Utama"}
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="span"
+                    className="text-xs font-bold uppercase tracking-wider text-primary"
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={handleEditingStateChange}
+                  />
+                  <InlineText
+                    section="hero"
+                    fieldKey="dashboard_widget.live_tag"
+                    value={(dw.live_tag as string) ?? ""}
+                    placeholder={language === "en" ? "Live" : "Aktif"}
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="span"
+                    className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-semibold"
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={handleEditingStateChange}
+                  />
                 </div>
 
                 <div className="space-y-2.5 text-xs">
                   <div className="flex items-center justify-between p-2 rounded-lg bg-muted/40">
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="size-4 text-emerald-500 shrink-0" />
-                      <span className="font-medium text-foreground">{h.badge_text?.split("|")[0]?.trim() || (language === "en" ? "Consultation & Audit" : "Konsultasi & Audit")}</span>
+                      <InlineText
+                        section="hero"
+                        fieldKey="dashboard_widget.item_1"
+                        value={(dw.item_1 as string) ?? ""}
+                        placeholder={h.badge_text?.split("|")[0]?.trim() || (language === "en" ? "Consultation & Audit" : "Konsultasi & Audit")}
+                        onUpdateField={onUpdateField}
+                        isEditorMode={isEditorMode}
+                        isSelected={isSelected}
+                        as="span"
+                        className="font-medium text-foreground"
+                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                        onEditingStateChange={handleEditingStateChange}
+                      />
                     </div>
-                    <span className="text-[10px] text-muted-foreground font-mono">DONE</span>
+                    <InlineText
+                      section="hero"
+                      fieldKey="dashboard_widget.item_1_status"
+                      value={(dw.item_1_status as string) ?? ""}
+                      placeholder="DONE"
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={isSelected}
+                      as="span"
+                      className="text-[10px] text-muted-foreground font-mono"
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      onEditingStateChange={handleEditingStateChange}
+                    />
                   </div>
 
                   <div className="flex items-center justify-between p-2 rounded-lg bg-muted/40">
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="size-4 text-primary shrink-0" />
-                      <span className="font-medium text-foreground">{language === "en" ? "Strategy Execution" : "Eksekusi Strategis"}</span>
+                      <InlineText
+                        section="hero"
+                        fieldKey="dashboard_widget.item_2"
+                        value={(dw.item_2 as string) ?? ""}
+                        placeholder={language === "en" ? "Strategy Execution" : "Eksekusi Strategis"}
+                        onUpdateField={onUpdateField}
+                        isEditorMode={isEditorMode}
+                        isSelected={isSelected}
+                        as="span"
+                        className="font-medium text-foreground"
+                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                        onEditingStateChange={handleEditingStateChange}
+                      />
                     </div>
-                    <span className="text-[10px] text-primary font-mono font-semibold">IN PROGRESS</span>
+                    <InlineText
+                      section="hero"
+                      fieldKey="dashboard_widget.item_2_status"
+                      value={(dw.item_2_status as string) ?? ""}
+                      placeholder="IN PROGRESS"
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={isSelected}
+                      as="span"
+                      className="text-[10px] text-primary font-mono font-semibold"
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      onEditingStateChange={handleEditingStateChange}
+                    />
                   </div>
                 </div>
               </motion.div>

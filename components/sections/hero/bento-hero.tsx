@@ -29,6 +29,7 @@ export default function HeroBentoHero({
 }: HeroVariantProps) {
   const s = heroStrings(language);
   const [isInlineEditing, setIsInlineEditing] = useState(false);
+  const dw = (h.dashboard_widget || {}) as Record<string, any>;
 
   const handleEditingStateChange = useCallback((editing: boolean) => {
     setIsInlineEditing(editing);
@@ -174,7 +175,7 @@ export default function HeroBentoHero({
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4">
           {/* Panel 1: Foto Utama (md:col-span-5, row-span-2) */}
           <div className="md:col-span-5 md:row-span-2 rounded-2xl overflow-hidden border border-border/50 shadow-md relative min-h-[220px] bg-slate-900">
-            {photo1 ? (
+            {(photo1 || isEditorMode) ? (
               <HeroImage
                 src={photo1}
                 alt={h.headline}
@@ -199,12 +200,47 @@ export default function HeroBentoHero({
           {/* Panel 2: Kartu Statistik Gelap Kontras (md:col-span-4) */}
           <div className="md:col-span-4 rounded-2xl p-5 border border-slate-800 bg-slate-950 text-white shadow-md flex flex-col justify-between">
             <div className="text-3xl sm:text-4xl font-extrabold tracking-tight font-mono text-white">
-              {stat1.value}
+              <InlineText
+                section="hero"
+                fieldKey="stats.0.value"
+                value={stat1.value}
+                placeholder="100+"
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="span"
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={handleEditingStateChange}
+              />
             </div>
             <div className="mt-4">
-              <div className="text-xs font-semibold text-slate-200">{stat1.label}</div>
+              <div className="text-xs font-semibold text-slate-200">
+                <InlineText
+                  section="hero"
+                  fieldKey="stats.0.label"
+                  value={stat1.label}
+                  placeholder={language === "en" ? "Projects Delivered" : "Proyek Tuntas"}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="span"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={handleEditingStateChange}
+                />
+              </div>
               <div className="text-[11px] text-slate-400 mt-0.5">
-                {language === "en" ? "Committed to delivering exceptional results in every engagement" : "Dedikasi menghadirkan kualitas terbaik pada setiap kerja sama."}
+                <InlineText
+                  section="hero"
+                  fieldKey="dashboard_widget.stat1_desc"
+                  value={(dw.stat1_desc as string) ?? ""}
+                  placeholder={language === "en" ? "Committed to delivering exceptional results in every engagement" : "Dedikasi menghadirkan kualitas terbaik pada setiap kerja sama."}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="div"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={handleEditingStateChange}
+                />
               </div>
             </div>
           </div>
@@ -220,9 +256,33 @@ export default function HeroBentoHero({
           >
             <div className="text-sm font-mono font-bold text-primary">01</div>
             <div className="mt-4">
-              <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{language === "en" ? "Mission" : "Misi"}</div>
+              <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                <InlineText
+                  section="hero"
+                  fieldKey="dashboard_widget.mission_title"
+                  value={(dw.mission_title as string) ?? ""}
+                  placeholder={language === "en" ? "Mission" : "Misi"}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="span"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={handleEditingStateChange}
+                />
+              </div>
               <div className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                {language === "en" ? "Delivering smart, scalable solutions that elevate your brand." : "Mewujudkan solusi digital berstandar tinggi yang memperkuat bisnis Anda."}
+                <InlineText
+                  section="hero"
+                  fieldKey="dashboard_widget.mission_desc"
+                  value={(dw.mission_desc as string) ?? ""}
+                  placeholder={language === "en" ? "Delivering smart, scalable solutions that elevate your brand." : "Mewujudkan solusi digital berstandar tinggi yang memperkuat bisnis Anda."}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="div"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={handleEditingStateChange}
+                />
               </div>
             </div>
           </div>
@@ -235,12 +295,47 @@ export default function HeroBentoHero({
             }}
           >
             <div className="text-3xl font-extrabold tracking-tight font-mono text-white">
-              {stat2.value}
+              <InlineText
+                section="hero"
+                fieldKey="stats.1.value"
+                value={stat2.value}
+                placeholder="98%"
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="span"
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={handleEditingStateChange}
+              />
             </div>
             <div className="mt-4">
-              <div className="text-xs font-bold text-white/95">{stat2.label}</div>
+              <div className="text-xs font-bold text-white/95">
+                <InlineText
+                  section="hero"
+                  fieldKey="stats.1.label"
+                  value={stat2.label}
+                  placeholder={language === "en" ? "Satisfaction Rate" : "Tingkat Kepuasan"}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="span"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={handleEditingStateChange}
+                />
+              </div>
               <div className="text-[11px] text-white/80 mt-0.5">
-                {language === "en" ? "Consistent positive feedback across verified clients." : "Feedback positif konsisten dari pelanggan terverifikasi."}
+                <InlineText
+                  section="hero"
+                  fieldKey="dashboard_widget.stat2_desc"
+                  value={(dw.stat2_desc as string) ?? ""}
+                  placeholder={language === "en" ? "Consistent positive feedback across verified clients." : "Feedback positif konsisten dari pelanggan terverifikasi."}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="div"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={handleEditingStateChange}
+                />
               </div>
             </div>
           </div>
@@ -255,19 +350,54 @@ export default function HeroBentoHero({
             }}
           >
             <div className="text-3xl font-extrabold tracking-tight font-mono text-foreground">
-              {stat3.value}
+              <InlineText
+                section="hero"
+                fieldKey="stats.2.value"
+                value={stat3.value}
+                placeholder="24/7"
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="span"
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={handleEditingStateChange}
+              />
             </div>
             <div className="mt-4">
-              <div className="text-xs font-bold text-foreground">{stat3.label}</div>
+              <div className="text-xs font-bold text-foreground">
+                <InlineText
+                  section="hero"
+                  fieldKey="stats.2.label"
+                  value={stat3.label}
+                  placeholder={language === "en" ? "Client Support" : "Dukungan Klien"}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="span"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={handleEditingStateChange}
+                />
+              </div>
               <div className="text-[11px] text-muted-foreground mt-0.5">
-                {language === "en" ? "Reliable readiness whenever you need assistance." : "Kesiapan responsif kapan pun Anda membutuhkan dukungan."}
+                <InlineText
+                  section="hero"
+                  fieldKey="dashboard_widget.stat3_desc"
+                  value={(dw.stat3_desc as string) ?? ""}
+                  placeholder={language === "en" ? "Reliable readiness whenever you need assistance." : "Kesiapan responsif kapan pun Anda membutuhkan dukungan."}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="div"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={handleEditingStateChange}
+                />
               </div>
             </div>
           </div>
 
           {/* Panel 6: Foto Sekunder / Studio (md:col-span-5) */}
           <div className="md:col-span-5 rounded-2xl overflow-hidden border border-border/50 shadow-md relative min-h-[140px] bg-slate-900">
-            {photo2 ? (
+            {(photo2 || isEditorMode) ? (
               <HeroImage
                 src={photo2}
                 alt={`${h.headline} detail`}

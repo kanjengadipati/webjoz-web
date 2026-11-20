@@ -152,7 +152,7 @@ export default function HeroPortraitShowcase({
           gap: "1.75rem",
         }}
       >
-        {Boolean(h.eyebrow?.trim()) && (
+        {(Boolean(h.eyebrow?.trim()) || isEditorMode) && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
