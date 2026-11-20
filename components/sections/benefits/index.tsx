@@ -1,20 +1,11 @@
 "use client";
 import React, { useCallback } from "react";
-import dynamic from "next/dynamic";
-import type { ComponentType } from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 
-const BenefitsClassic = dynamic(() => import("./classic"));
-const BenefitsStatGrid = dynamic(() => import("./stat-grid"));
-const BenefitsChecklist = dynamic(() => import("./checklist"));
-const BenefitsComparisonTable = dynamic(() => import("./comparison-table"));
-const BenefitsFeaturedGrid = dynamic(() => import("./featured-grid"));
-const BenefitsIconRow = dynamic(() => import("./icon-row"));
-const BenefitsBentoGrid = dynamic(() => import("./bento-grid"));
-const BenefitsTrustBar = dynamic(() => import("./trust-bar"));
-const BenefitsHowItWorks = dynamic(() => import("./how-it-works"));
+import { resolveVariant } from "../variant-meta";
+import { BENEFITS_VARIANTS } from "./variants";
 
-type BenefitVariantProps = {
+export type BenefitVariantProps = {
   benefits: TemplateProps["content"]["benefits"];
   design_token?: DesignToken | null;
   onUpdateField?: (section: string, key: string, value: any) => void;
@@ -24,18 +15,6 @@ type BenefitVariantProps = {
   onEditingStateChange?: (isEditing: boolean) => void;
   language?: "id" | "en";
   onAddItem?: () => void;
-};
-
-const variants: Record<string, ComponentType<BenefitVariantProps>> = {
-  grid: BenefitsClassic,
-  "stat-grid": BenefitsStatGrid,
-  checklist: BenefitsChecklist,
-  "comparison-table": BenefitsComparisonTable,
-  "featured-grid": BenefitsFeaturedGrid,
-  "icon-row": BenefitsIconRow,
-  "bento-grid": BenefitsBentoGrid,
-  "trust-bar": BenefitsTrustBar,
-  "how-it-works": BenefitsHowItWorks,
 };
 
 export default function BenefitsSection({
@@ -58,7 +37,7 @@ export default function BenefitsSection({
   language?: "id" | "en";
 }) {
   const variant = design_token?.layout?.section_variants?.benefits ?? "grid";
-  const Renderer = variants[variant] ?? BenefitsClassic;
+  const Renderer = resolveVariant<BenefitVariantProps>(BENEFITS_VARIANTS, variant, "grid");
   const isEditor = !!isEditorMode;
 
   const onAddItem = useCallback(() => {

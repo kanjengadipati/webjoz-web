@@ -1,27 +1,13 @@
 "use client";
 import React, { useCallback } from "react";
-import dynamic from "next/dynamic";
-import type { ComponentType } from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 import { genId } from "../inline-add";
 import { useEditorChromeEnabled } from "../editor-chrome-context";
 
-const CatalogClassic = dynamic(() => import("./classic"));
-const CatalogCompact = dynamic(() => import("./compact"));
-const CatalogCards = dynamic(() => import("./cards"));
-const CatalogGridDense = dynamic(() => import("./grid-dense"));
-const CatalogShowcaseFeatured = dynamic(() => import("./showcase-featured"));
-const CatalogTabsByCategory = dynamic(() => import("./tabs-by-category"));
-const CatalogEditorialGrid = dynamic(() => import("./editorial-grid"));
-const CatalogMasonryFlow = dynamic(() => import("./masonry-flow"));
-const CatalogInstagramSquareGrid = dynamic(() => import("./instagram-square-grid"));
-const CatalogSplitHeroCatalog = dynamic(() => import("./split-hero-catalog"));
-const CatalogNeoBrutalistMatrix = dynamic(() => import("./neo-brutalist-matrix"));
-const CatalogHorizontalSwipeCarousel = dynamic(() => import("./horizontal-swipe-carousel"));
-const CatalogProductTable = dynamic(() => import("./product-table"));
-const CatalogSpotlight = dynamic(() => import("./spotlight"));
+import { resolveVariant } from "../variant-meta";
+import { CATALOG_VARIANTS } from "./variants";
 
-type CatalogVariantProps = {
+export type CatalogVariantProps = {
   catalog: TemplateProps["content"]["catalog"];
   design_token?: DesignToken | null;
   onUpdateField?: (section: string, key: string, value: any) => void;
@@ -34,25 +20,6 @@ type CatalogVariantProps = {
   onAddCategory?: () => void;
   onDeleteCategory?: (catIdx: number) => void;
   language?: "id" | "en";
-};
-
-const variants: Record<string, ComponentType<CatalogVariantProps>> = {
-  // existing
-  grid: CatalogClassic,
-  compact: CatalogCompact,
-  cards: CatalogCards,
-  // new
-  "grid-dense": CatalogGridDense,
-  "showcase-featured": CatalogShowcaseFeatured,
-  "tabs-by-category": CatalogTabsByCategory,
-  "editorial-grid": CatalogEditorialGrid,
-  "masonry-flow": CatalogMasonryFlow,
-  "instagram-square-grid": CatalogInstagramSquareGrid,
-  "split-hero-catalog": CatalogSplitHeroCatalog,
-  "neo-brutalist-matrix": CatalogNeoBrutalistMatrix,
-  "horizontal-swipe-carousel": CatalogHorizontalSwipeCarousel,
-  "product-table": CatalogProductTable,
-  spotlight: CatalogSpotlight,
 };
 
 export default function CatalogSection({
@@ -75,7 +42,7 @@ export default function CatalogSection({
   language?: "id" | "en";
 }) {
   const variant = design_token?.layout?.section_variants?.catalog ?? "grid";
-  const Renderer = variants[variant] ?? CatalogClassic;
+  const Renderer = resolveVariant<CatalogVariantProps>(CATALOG_VARIANTS, variant, "grid");
 
   const chromeEnabled = useEditorChromeEnabled();
   const isEditor = !!isEditorMode && chromeEnabled;

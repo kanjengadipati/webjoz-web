@@ -2,7 +2,7 @@
 import React from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 import type { AboutVariantProps } from "./classic";
-import type { VariantDef } from "../variant-meta";
+import { resolveVariant } from "../variant-meta";
 import { ABOUT_VARIANTS } from "./variants";
 
 export default function AboutSection({
@@ -15,10 +15,7 @@ export default function AboutSection({
   onEditingStateChange,
 }: AboutVariantProps) {
   const variant = design_token?.layout?.section_variants?.about ?? "classic";
-  // Varian tak dikenal (mis. sudah dihapus) jatuh ke "classic", bukan error.
-  const Renderer = (
-    (ABOUT_VARIANTS as Record<string, VariantDef<AboutVariantProps>>)[variant] ?? ABOUT_VARIANTS.classic
-  ).component;
+  const Renderer = resolveVariant<AboutVariantProps>(ABOUT_VARIANTS, variant, "classic");
 
   const onAddItem = React.useCallback(() => {
     if (!onUpdateField) return;

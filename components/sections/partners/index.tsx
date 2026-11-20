@@ -1,11 +1,9 @@
 "use client";
 import React from "react";
-import type { ComponentType } from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
-import PartnersLogoWall from "./logo-wall";
-import PartnersMarquee from "./marquee";
-import PartnersPillGrid from "./pill-grid";
-import PartnersFeaturedCollabGrid from "./featured-collab-grid";
+
+import { resolveVariant } from "../variant-meta";
+import { PARTNERS_VARIANTS } from "./variants";
 
 export interface PartnersVariantProps {
   partners: NonNullable<TemplateProps["content"]["partners"]>;
@@ -17,13 +15,6 @@ export interface PartnersVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
 }
-
-const variants: Record<string, ComponentType<PartnersVariantProps>> = {
-  "logo-wall": PartnersLogoWall,
-  marquee: PartnersMarquee,
-  "pill-grid": PartnersPillGrid,
-  "featured-collab-grid": PartnersFeaturedCollabGrid,
-};
 
 export default function PartnersSection(props: {
   partners?: TemplateProps["content"]["partners"];
@@ -37,6 +28,6 @@ export default function PartnersSection(props: {
 }) {
   if (!props.partners?.items?.length) return null;
   const variant = props.design_token?.layout?.section_variants?.partners ?? "logo-wall";
-  const Renderer = variants[variant] ?? PartnersLogoWall;
+  const Renderer = resolveVariant<PartnersVariantProps>(PARTNERS_VARIANTS, variant, "logo-wall");
   return <Renderer {...props} partners={props.partners} />;
 }

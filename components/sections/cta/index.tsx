@@ -1,14 +1,9 @@
 "use client";
 import React from "react";
-import dynamic from "next/dynamic";
-import type { ComponentType } from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 
-const CtaClassic = dynamic(() => import("./classic"));
-const CtaCard = dynamic(() => import("./card"));
-const CtaCentered = dynamic(() => import("./centered"));
-const CtaSplitImage = dynamic(() => import("./split-image"));
-const CtaInlineLeadForm = dynamic(() => import("./inline-lead-form"));
+import { resolveVariant } from "../variant-meta";
+import { CTA_VARIANTS } from "./variants";
 
 export type CtaVariantProps = {
   cta: TemplateProps["content"]["cta"];
@@ -23,14 +18,6 @@ export type CtaVariantProps = {
   leadSubmitting?: boolean;
   leadSuccess?: boolean;
   leadError?: string | null;
-};
-
-const variants: Record<string, ComponentType<CtaVariantProps>> = {
-  banner: CtaClassic,
-  card: CtaCard,
-  centered: CtaCentered,
-  "split-image": CtaSplitImage,
-  "inline-lead-form": CtaInlineLeadForm,
 };
 
 export default function CtaSection({
@@ -61,7 +48,7 @@ export default function CtaSection({
   leadError?: string | null;
 }) {
   const variant = design_token?.layout?.section_variants?.cta ?? "banner";
-  const Renderer = variants[variant] ?? CtaClassic;
+  const Renderer = resolveVariant<CtaVariantProps>(CTA_VARIANTS, variant, "banner");
   return (
     <Renderer
       cta={cta}

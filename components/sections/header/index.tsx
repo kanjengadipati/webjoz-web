@@ -1,32 +1,13 @@
 "use client";
 import React from "react";
-import dynamic from "next/dynamic";
-import type { ComponentType } from "react";
 import type { HeaderVariantProps } from "./types";
 
-const LeftLogoInlineNav = dynamic(() => import("./left-logo-inline-nav"));
-const CenteredLogo = dynamic(() => import("./centered-logo"));
-const TransparentOverlay = dynamic(() => import("./transparent-overlay"));
-const LogoWithCtaButton = dynamic(() => import("./logo-with-cta-button"));
-const StackedLogoTagline = dynamic(() => import("./stacked-logo-tagline"));
-const FloatingCapsule = dynamic(() => import("./floating-capsule"));
-const SplitUtility = dynamic(() => import("./split-utility"));
-const BrandBlockNav = dynamic(() => import("./brand-block-nav"));
-
-const variants: Record<string, ComponentType<HeaderVariantProps>> = {
-  "left-logo-inline-nav": LeftLogoInlineNav,
-  "centered-logo": CenteredLogo,
-  "transparent-overlay": TransparentOverlay,
-  "logo-with-cta-button": LogoWithCtaButton,
-  "stacked-logo-tagline": StackedLogoTagline,
-  "floating-capsule": FloatingCapsule,
-  "split-utility": SplitUtility,
-  "brand-block-nav": BrandBlockNav,
-};
+import { resolveVariant } from "../variant-meta";
+import { HEADER_VARIANTS } from "./variants";
 
 export default function HeaderSection(props: HeaderVariantProps) {
   const variant = props.design_token?.layout?.section_variants?.header ?? "left-logo-inline-nav";
-  const Renderer = variants[variant] ?? LeftLogoInlineNav;
+  const Renderer = resolveVariant<HeaderVariantProps>(HEADER_VARIANTS, variant, "left-logo-inline-nav");
   const navHidden = props.design_token?.layout?.nav_hidden_sections ?? [];
   const autoHidden = props.sectionOrder?.includes("works") ? ["catalog"] : [];
   const mergedHiddenSections = [...new Set([...(props.hiddenSections ?? []), ...navHidden, ...autoHidden])];

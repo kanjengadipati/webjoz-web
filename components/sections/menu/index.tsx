@@ -1,24 +1,12 @@
 "use client";
 import React, { useCallback } from "react";
-import dynamic from "next/dynamic";
-import type { ComponentType } from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 import { genId } from "../inline-add";
 
-const MenuClassic = dynamic(() => import("./classic"));
-const MenuCompact = dynamic(() => import("./compact"));
-const MenuCards = dynamic(() => import("./cards"));
-const MenuTextList = dynamic(() => import("./text-list"));
-const MenuCompactList = dynamic(() => import("./compact-list"));
-const MenuTabsByCategory = dynamic(() => import("./tabs-by-category"));
-const MenuAccordionByCategory = dynamic(() => import("./accordion-by-category"));
-const MenuBentoPhotoGrid = dynamic(() => import("./bento-photo-grid"));
-const MenuVisualShowcaseHero = dynamic(() => import("./visual-showcase-hero"));
-const MenuSidebarScrollspyPhoto = dynamic(() => import("./sidebar-scrollspy-photo"));
-const MenuHorizontalSwipeCarousel = dynamic(() => import("./horizontal-swipe-carousel"));
-const MenuMasonryFlow = dynamic(() => import("./masonry-flow"));
+import { resolveVariant } from "../variant-meta";
+import { MENU_VARIANTS } from "./variants";
 
-type MenuVariantProps = {
+export type MenuVariantProps = {
   menu: TemplateProps["content"]["menu"];
   design_token?: DesignToken | null;
   onUpdateField?: (section: string, key: string, value: any) => void;
@@ -31,23 +19,6 @@ type MenuVariantProps = {
   onAddCategory?: () => void;
   onDeleteCategory?: (catIdx: number) => void;
   language?: "id" | "en";
-};
-
-const variants: Record<string, ComponentType<MenuVariantProps>> = {
-  // existing
-  grid: MenuClassic,
-  compact: MenuCompact,
-  cards: MenuCards,
-  // new
-  "text-list": MenuTextList,
-  "compact-list": MenuCompactList,
-  "tabs-by-category": MenuTabsByCategory,
-  "accordion-by-category": MenuAccordionByCategory,
-  "bento-photo-grid": MenuBentoPhotoGrid,
-  "visual-showcase-hero": MenuVisualShowcaseHero,
-  "sidebar-scrollspy-photo": MenuSidebarScrollspyPhoto,
-  "horizontal-swipe-carousel": MenuHorizontalSwipeCarousel,
-  "masonry-flow": MenuMasonryFlow,
 };
 
 export default function MenuSection({
@@ -70,7 +41,7 @@ export default function MenuSection({
   language?: "id" | "en";
 }) {
   const variant = design_token?.layout?.section_variants?.menu ?? "grid";
-  const Renderer = variants[variant] ?? MenuClassic;
+  const Renderer = resolveVariant<MenuVariantProps>(MENU_VARIANTS, variant, "grid");
 
   const isEditor = !!isEditorMode;
 

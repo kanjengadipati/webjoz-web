@@ -1,19 +1,12 @@
 "use client";
 import React, { useCallback } from "react";
-import dynamic from "next/dynamic";
-import type { ComponentType } from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 import { useI18n } from "@/lib/i18n/context";
 
-const TestimonialsClassic = dynamic(() => import("./classic"));
-const TestimonialsCompact = dynamic(() => import("./compact"));
-const TestimonialsGrid = dynamic(() => import("./grid"));
-const TestimonialsLogoWall = dynamic(() => import("./logo-wall"));
-const TestimonialsFeaturedSpotlight = dynamic(() => import("./featured-spotlight"));
-const TestimonialsGoogleReviews = dynamic(() => import("./google-reviews"));
-const TestimonialsVideoWall = dynamic(() => import("./video-wall"));
+import { resolveVariant } from "../variant-meta";
+import { TESTIMONIALS_VARIANTS } from "./variants";
 
-type TestimonialVariantProps = {
+export type TestimonialVariantProps = {
   testimonials: TemplateProps["content"]["testimonials"];
   design_token?: DesignToken | null;
   onUpdateField?: (section: string, key: string, value: any) => void;
@@ -26,16 +19,6 @@ type TestimonialVariantProps = {
   isExample?: boolean;
   locale?: string;
   language?: string;
-};
-
-const variants: Record<string, ComponentType<TestimonialVariantProps>> = {
-  carousel: TestimonialsClassic,
-  compact: TestimonialsCompact,
-  grid: TestimonialsGrid,
-  "logo-wall": TestimonialsLogoWall,
-  "featured-spotlight": TestimonialsFeaturedSpotlight,
-  "google-reviews": TestimonialsGoogleReviews,
-  "video-wall": TestimonialsVideoWall,
 };
 
 export default function TestimonialsSection({
@@ -62,7 +45,7 @@ export default function TestimonialsSection({
   const { locale } = useI18n();
   const effectiveLang = language || locale || "id";
   const variant = design_token?.layout?.section_variants?.testimonials ?? "carousel";
-  const Renderer = variants[variant] ?? TestimonialsClassic;
+  const Renderer = resolveVariant<TestimonialVariantProps>(TESTIMONIALS_VARIANTS, variant, "carousel");
   const isEditor = !!(isEditorMode && (editorChrome ?? true));
   const isExample = testimonials?._is_example === true;
 

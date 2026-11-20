@@ -34,7 +34,10 @@ function readVariantsFile(constName) {
   const dir = imp[1].replace(/\/[^/]+$/, "");
   const keys = [];
   for (const m of src.matchAll(/^ {2}"?([A-Za-z0-9_-]+)"?: \{\s*$/gm)) keys.push(m[1]);
-  const targets = [...src.matchAll(/import\("\.\/([^"]+)"\)/g)].map((m) => m[1]);
+  const targets = [
+    ...[...src.matchAll(/import\("\.\/([^"]+)"\)/g)].map((m) => m[1]),
+    ...[...src.matchAll(/^import \w+ from "\.\/([^"]+)";/gm)].map((m) => m[1]).filter((t) => t !== "index" && t !== "shared" && t !== "types"),
+  ];
   if (keys.length === 0) errors.push(`${imp[1]}.ts: format berubah? tidak ada varian terbaca`);
   if (keys.length !== targets.length)
     errors.push(`${imp[1]}.ts: ${keys.length} varian tapi ${targets.length} import komponen`);

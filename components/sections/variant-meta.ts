@@ -48,3 +48,17 @@ export function variantOptions(defs: Record<string, VariantDef>): VariantOption[
     wireframeLayout: d.wireframeLayout,
   }));
 }
+
+/**
+ * Pilih komponen varian. Nama tak dikenal (mis. varian lama yang sudah dihapus)
+ * jatuh ke `fallback`, bukan error.
+ */
+export function resolveVariant<P = any>(
+  defs: Record<string, VariantDef<P>>,
+  name: string | undefined,
+  fallback: string,
+): ComponentType<P> {
+  const key = name && Object.prototype.hasOwnProperty.call(defs, name) ? name : fallback;
+  return defs[key].component;
+}
+

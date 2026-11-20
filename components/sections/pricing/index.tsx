@@ -1,11 +1,9 @@
 "use client";
 import React from "react";
-import type { ComponentType } from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
-import PricingCards from "./cards";
-import PricingHorizontalRows from "./horizontal-rows";
-import PricingComparisonTable from "./comparison-table";
-import PricingSingleTierHighlight from "./single-tier-highlight";
+
+import { resolveVariant } from "../variant-meta";
+import { PRICING_VARIANTS } from "./variants";
 
 export interface PricingVariantProps {
   pricing: NonNullable<TemplateProps["content"]["pricing"]>;
@@ -17,13 +15,6 @@ export interface PricingVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
 }
-
-const variants: Record<string, ComponentType<PricingVariantProps>> = {
-  cards: PricingCards,
-  "horizontal-rows": PricingHorizontalRows,
-  "comparison-table": PricingComparisonTable,
-  "single-tier-highlight": PricingSingleTierHighlight,
-};
 
 export default function PricingSection(props: {
   pricing?: TemplateProps["content"]["pricing"];
@@ -37,6 +28,6 @@ export default function PricingSection(props: {
 }) {
   if (!props.pricing?.plans?.length) return null;
   const variant = props.design_token?.layout?.section_variants?.pricing ?? "cards";
-  const Renderer = variants[variant] ?? PricingCards;
+  const Renderer = resolveVariant<PricingVariantProps>(PRICING_VARIANTS, variant, "cards");
   return <Renderer {...props} pricing={props.pricing} />;
 }

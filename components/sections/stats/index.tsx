@@ -1,11 +1,9 @@
 "use client";
 import React from "react";
-import type { ComponentType } from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
-import StatsCounterRow from "./counter-row";
-import StatsCardGrid from "./card-grid";
-import StatsMinimalSplit from "./minimal-split";
-import StatsBigNumberSpotlight from "./big-number-spotlight";
+
+import { resolveVariant } from "../variant-meta";
+import { STATS_VARIANTS } from "./variants";
 
 export interface StatsVariantProps {
   stats: NonNullable<TemplateProps["content"]["stats"]>;
@@ -17,13 +15,6 @@ export interface StatsVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
 }
-
-const variants: Record<string, ComponentType<StatsVariantProps>> = {
-  "counter-row": StatsCounterRow,
-  "card-grid": StatsCardGrid,
-  "minimal-split": StatsMinimalSplit,
-  "big-number-spotlight": StatsBigNumberSpotlight,
-};
 
 export default function StatsSection(props: {
   stats?: TemplateProps["content"]["stats"];
@@ -37,6 +28,6 @@ export default function StatsSection(props: {
 }) {
   if (!props.stats?.items?.length) return null;
   const variant = props.design_token?.layout?.section_variants?.stats ?? "counter-row";
-  const Renderer = variants[variant] ?? StatsCounterRow;
+  const Renderer = resolveVariant<StatsVariantProps>(STATS_VARIANTS, variant, "counter-row");
   return <Renderer {...props} stats={props.stats} />;
 }

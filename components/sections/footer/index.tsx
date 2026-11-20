@@ -1,31 +1,12 @@
 "use client";
 import React from "react";
-import dynamic from "next/dynamic";
-import type { ComponentType } from "react";
 import type { FooterVariantProps } from "./types";
 
-const MinimalBand = dynamic(() => import("./minimal-band"));
-const ColumnsWithSocial = dynamic(() => import("./columns-with-social"));
-const ColumnsWithNav = dynamic(() => import("./columns-with-nav"));
-const DarkContrastBand = dynamic(() => import("./dark-contrast-band"));
-const LocationAndHours = dynamic(() => import("./location-and-hours"));
-const MultiColumnNewsletter = dynamic(() => import("./multi-column-newsletter"));
-const BrandGradientCta = dynamic(() => import("./brand-gradient-cta"));
-const SocialPillCta = dynamic(() => import("./social-pill-cta"));
-
-const variants: Record<string, ComponentType<FooterVariantProps>> = {
-  "minimal-band": MinimalBand,
-  "columns-with-social": ColumnsWithSocial,
-  "columns-with-nav": ColumnsWithNav,
-  "dark-contrast-band": DarkContrastBand,
-  "location-and-hours": LocationAndHours,
-  "multi-column-newsletter": MultiColumnNewsletter,
-  "brand-gradient-cta": BrandGradientCta,
-  "social-pill-cta": SocialPillCta,
-};
+import { resolveVariant } from "../variant-meta";
+import { FOOTER_VARIANTS } from "./variants";
 
 export default function FooterSection(props: FooterVariantProps) {
   const variant = props.design_token?.layout?.section_variants?.footer ?? "minimal-band";
-  const Renderer = variants[variant] ?? MinimalBand;
+  const Renderer = resolveVariant<FooterVariantProps>(FOOTER_VARIANTS, variant, "minimal-band");
   return <Renderer {...props} />;
 }

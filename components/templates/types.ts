@@ -1,5 +1,18 @@
 import type { HeroStyle } from "../sections/hero/meta";
 import type { AboutVariant } from "../sections/about/variants";
+import type { FooterVariant } from "../sections/footer/variants";
+import type { HeaderVariant } from "../sections/header/variants";
+import type { ContactVariant } from "../sections/contact/variants";
+import type { CatalogVariant } from "../sections/catalog/variants";
+import type { MenuVariant } from "../sections/menu/variants";
+import type { PricingVariant } from "../sections/pricing/variants";
+import type { PartnersVariant } from "../sections/partners/variants";
+import type { SkillsVariant } from "../sections/skills/variants";
+import type { StatsVariant } from "../sections/stats/variants";
+import type { FaqVariant } from "../sections/faq/variants";
+import type { CtaVariant } from "../sections/cta/variants";
+import type { TestimonialsVariant } from "../sections/testimonials/variants";
+import type { BenefitsVariant } from "../sections/benefits/variants";
 import type { PreloaderContent } from "webjoz-ui";
 
 export interface TestimonialItem {
@@ -255,21 +268,21 @@ export interface DesignToken {
     section_variants?: {
       hero?: HeroStyle;
       about?: AboutVariant;
-      benefits?: "grid" | "stat-grid" | "checklist" | "comparison-table" | "featured-grid" | "icon-row" | "bento-grid" | "trust-bar" | "how-it-works";
-      testimonials?: "carousel" | "compact" | "grid" | "logo-wall" | "featured-spotlight" | "google-reviews" | "video-wall";
-      cta?: "banner" | "card" | "centered" | "split-image" | "inline-lead-form";
-      faq?: "accordion" | "simple" | "columns" | "sidebar-category" | "two-column-grid" | "chat-bubble-style";
+      benefits?: BenefitsVariant;
+      testimonials?: TestimonialsVariant;
+      cta?: CtaVariant;
+      faq?: FaqVariant;
       gallery?: "grid" | "masonry" | "carousel" | "lightbox-story" | "before-after-slider" | "video-grid";
       works?: "grid" | "masonry" | "featured-grid" | "showcase-featured";
-      menu?: "grid" | "compact" | "cards" | "text-list" | "compact-list" | "tabs-by-category" | "accordion-by-category" | "bento-photo-grid" | "visual-showcase-hero" | "sidebar-scrollspy-photo" | "horizontal-swipe-carousel" | "masonry-flow";
-      catalog?: "grid" | "compact" | "cards" | "grid-dense" | "showcase-featured" | "tabs-by-category" | "editorial-grid" | "masonry-flow" | "instagram-square-grid" | "split-hero-catalog" | "neo-brutalist-matrix" | "horizontal-swipe-carousel" | "product-table" | "spotlight";
-      stats?: "counter-row" | "card-grid" | "minimal-split" | "big-number-spotlight";
-      skills?: "chips" | "grouped-list" | "meter";
-      partners?: "logo-wall" | "marquee" | "pill-grid" | "featured-collab-grid";
-      pricing?: "cards" | "horizontal-rows" | "comparison-table" | "single-tier-highlight";
-      contact?: "classic-split" | "whatsapp-direct" | "minimal-centered" | "overlay-map" | "bento-grid" | "dark-split";
-      header?: "left-logo-inline-nav" | "centered-logo" | "transparent-overlay" | "logo-with-cta-button" | "stacked-logo-tagline";
-      footer?: "minimal-band" | "columns-with-social" | "columns-with-nav" | "dark-contrast-band" | "location-and-hours";
+      menu?: MenuVariant;
+      catalog?: CatalogVariant;
+      stats?: StatsVariant;
+      skills?: SkillsVariant;
+      partners?: PartnersVariant;
+      pricing?: PricingVariant;
+      contact?: ContactVariant;
+      header?: HeaderVariant;
+      footer?: FooterVariant;
     };
     section_order?: string[];
     hidden_sections?: string[];

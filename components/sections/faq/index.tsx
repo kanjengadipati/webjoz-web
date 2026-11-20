@@ -1,24 +1,9 @@
 "use client";
 import React, { useCallback } from "react";
-import dynamic from "next/dynamic";
-import type { ComponentType } from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 
-const FaqClassic = dynamic(() => import("./classic"));
-const FaqSimple = dynamic(() => import("./simple"));
-const FaqColumns = dynamic(() => import("./columns"));
-const FaqSidebarCategory = dynamic(() => import("./sidebar-category"));
-const FaqTwoColumnGrid = dynamic(() => import("./two-column-grid"));
-const FaqChatBubbleStyle = dynamic(() => import("./chat-bubble-style"));
-
-const variants: Record<string, ComponentType<any>> = {
-  accordion: FaqClassic,
-  simple: FaqSimple,
-  columns: FaqColumns,
-  "sidebar-category": FaqSidebarCategory,
-  "two-column-grid": FaqTwoColumnGrid,
-  "chat-bubble-style": FaqChatBubbleStyle,
-};
+import { resolveVariant } from "../variant-meta";
+import { FAQ_VARIANTS } from "./variants";
 
 export default function FaqSection({
   faq,
@@ -40,7 +25,7 @@ export default function FaqSection({
   onEditingStateChange?: (isEditing: boolean) => void;
 }) {
   const variant = design_token?.layout?.section_variants?.faq ?? "accordion";
-  const Renderer = variants[variant] ?? FaqClassic;
+  const Renderer = resolveVariant<any>(FAQ_VARIANTS, variant, "accordion");
   const isEditor = !!isEditorMode;
 
   const onAddItem = useCallback(() => {
