@@ -10,6 +10,7 @@
     "lint": "eslint",
     "check:hero": "node scripts/check-hero-catalog.mjs",
     "check:variants": "node scripts/check-variant-parity.mjs",
+    "sync:variants": "node scripts/sync-variant-pools.mjs",
     "prebuild": "npm run check:hero && npm run check:variants",
     "check:hidden-sections": "node scripts/check-hidden-sections.mjs",
     "check:subtype-map": "node scripts/check-subtype-map.mjs",
