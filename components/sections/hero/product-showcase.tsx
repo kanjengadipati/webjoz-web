@@ -61,6 +61,7 @@ export default function HeroProductShowcase({
             onUpdateField={onUpdateField}
             isEditorMode={isEditorMode}
             isSelected={isSelected}
+            isBackground={true}
             className="w-full h-full"
             style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: (h as any).image_position || "center 20%", display: "block" }}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
@@ -97,6 +98,7 @@ export default function HeroProductShowcase({
           flexDirection: "column",
           justifyContent: "flex-end",
           padding: "clamp(2rem, 5vw, 4rem) clamp(1.5rem, 6vw, 5rem) clamp(3rem, 7vw, 5rem)",
+          pointerEvents: "none",
         }}
       >
         {/* Eyebrow label */}
@@ -105,6 +107,7 @@ export default function HeroProductShowcase({
             initial={reduce ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
+            style={{ pointerEvents: "auto", alignSelf: "flex-start" }}
           >
             <InlineText
               {...common}
@@ -130,6 +133,7 @@ export default function HeroProductShowcase({
           initial={reduce ? false : { opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.65, delay: 0.08 }}
+          style={{ pointerEvents: "auto" }}
         >
           <InlineText
             {...common}
@@ -157,6 +161,7 @@ export default function HeroProductShowcase({
             initial={reduce ? false : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.18 }}
+            style={{ pointerEvents: "auto" }}
           >
             <InlineText
               {...common}
@@ -182,7 +187,7 @@ export default function HeroProductShowcase({
             initial={reduce ? false : { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.28 }}
-            style={{ marginTop: "2rem", display: "flex", alignItems: "center", gap: "0.875rem", flexWrap: "wrap" }}
+            style={{ marginTop: "2rem", display: "flex", alignItems: "center", gap: "0.875rem", flexWrap: "wrap", pointerEvents: "auto" }}
           >
             <HeroCta
               href={h.cta_url}
@@ -240,6 +245,7 @@ export default function HeroProductShowcase({
           zIndex: 10,
           width: "clamp(80px, 10vw, 120px)",
           height: "clamp(80px, 10vw, 120px)",
+          pointerEvents: "none",
         }}
       >
         <svg viewBox="0 0 120 120" width="100%" height="100%" aria-hidden>
