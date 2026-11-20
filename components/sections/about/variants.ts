@@ -37,6 +37,11 @@ export const ABOUT_VARIANTS = {
     labelKey: "variantAboutTeamGrid", label: "Grid Tim",
     descriptionKey: "variantAboutTeamGridDesc", description: "Grid anggota tim (membutuhkan team_members).",
   },
+  "bento-grid": {
+    component: dynamic(() => import("./bento-grid")),
+    labelKey: "variantAboutBentoGrid", label: "Bento Grid",
+    descriptionKey: "variantAboutBentoGridDesc", description: "Grid asimetris interaktif memadukan teks, foto, statistik, dan kartu fitur.",
+  },
 } satisfies Record<string, VariantDef<AboutVariantProps>>;
 
 export type AboutVariant = keyof typeof ABOUT_VARIANTS;
