@@ -42,6 +42,26 @@ export const ABOUT_VARIANTS = {
     labelKey: "variantAboutBentoGrid", label: "Bento Grid",
     descriptionKey: "variantAboutBentoGridDesc", description: "Grid asimetris interaktif memadukan teks, foto, statistik, dan kartu fitur.",
   },
+  "founder-spotlight": {
+    component: dynamic(() => import("./founder-spotlight")),
+    labelKey: "variantAboutFounderSpotlight", label: "Sorotan Founder",
+    descriptionKey: "variantAboutFounderSpotlightDesc", description: "Profil personal founder/pemilik dengan kutipan visi, foto potret, dan tanda tangan.",
+  },
+  "editorial-magazine": {
+    component: dynamic(() => import("./editorial-magazine")),
+    labelKey: "variantAboutEditorialMagazine", label: "Majalah Editorial",
+    descriptionKey: "variantAboutEditorialMagazineDesc", description: "Tata letak narasi elegan dengan watermark angka besar dan potongan foto artistik.",
+  },
+  "brand-manifesto": {
+    component: dynamic(() => import("./brand-manifesto")),
+    labelKey: "variantAboutBrandManifesto", label: "Manifesto Brand",
+    descriptionKey: "variantAboutBrandManifestoDesc", description: "Fokus tipografi tegas tanpa foto, menonjolkan pesan dan komitmen brand.",
+  },
+  "milestone-showcase": {
+    component: dynamic(() => import("./milestone-showcase")),
+    labelKey: "variantAboutMilestoneShowcase", label: "Pencapaian Milestone",
+    descriptionKey: "variantAboutMilestoneShowcaseDesc", description: "Garis horizontal pencapaian bisnis berurutan dengan ikon dan tahun.",
+  },
 } satisfies Record<string, VariantDef<AboutVariantProps>>;
 
 export type AboutVariant = keyof typeof ABOUT_VARIANTS;
