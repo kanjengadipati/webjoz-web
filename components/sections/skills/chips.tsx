@@ -15,6 +15,7 @@ export default function SkillsChips({
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: SkillsVariantProps) {
+  const isEN = language.toLowerCase().startsWith("en");
   const groups = skills.groups || [];
   if (!groups.length && !isEditorMode) return null;
 
@@ -134,7 +135,7 @@ export default function SkillsChips({
                   border: `1px solid color-mix(in srgb, ${brandPrimary} 12%, transparent)`,
                 }}
               >
-                {Boolean(group.name?.trim()) && (
+                {(Boolean(group.name?.trim()) || isEditorMode) && (
                   <h3
                     style={{
                       fontFamily: "var(--dt-heading-font)",
@@ -146,7 +147,18 @@ export default function SkillsChips({
                       margin: "0 0 1.25rem 0",
                     }}
                   >
-                    {group.name}
+                    <InlineText
+                      section="skills"
+                      fieldKey={`groups.${gIdx}.name`}
+                      value={group.name || ""}
+                      placeholder={isEN ? "Category Name..." : "Nama Kategori..."}
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={isSelected}
+                      as="span"
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      onEditingStateChange={onEditingStateChange}
+                    />
                   </h3>
                 )}
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "0.65rem" }}>
@@ -180,7 +192,20 @@ export default function SkillsChips({
                           }}
                         />
                       )}
-                      <span>{item.label}</span>
+                      <span>
+                        <InlineText
+                          section="skills"
+                          fieldKey={`groups.${gIdx}.items.${iIdx}.label`}
+                          value={item.label || ""}
+                          placeholder={isEN ? "Skill..." : "Nama skill..."}
+                          onUpdateField={onUpdateField}
+                          isEditorMode={isEditorMode}
+                          isSelected={isSelected}
+                          as="span"
+                          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                          onEditingStateChange={onEditingStateChange}
+                        />
+                      </span>
                     </span>
                   ))}
                 </div>

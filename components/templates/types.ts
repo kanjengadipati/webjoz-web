@@ -406,6 +406,7 @@ export interface TemplateProps {
       subtitle?: string;
       textAlign?: "left" | "center" | "right";
       comparison?: {
+        feature_label?: string;
         column_a_label: string;
         column_b_label: string;
         rows: Array<{ label: string; value_a: string; value_b: string }>;

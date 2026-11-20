@@ -15,6 +15,7 @@ export default function SkillsGroupedList({
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: SkillsVariantProps) {
+  const isEN = language.toLowerCase().startsWith("en");
   const groups = skills.groups || [];
   if (!groups.length && !isEditorMode) return null;
 
@@ -154,7 +155,18 @@ export default function SkillsGroupedList({
                       margin: 0,
                     }}
                   >
-                    {group.name}
+                    <InlineText
+                      section="skills"
+                      fieldKey={`groups.${gIdx}.name`}
+                      value={group.name || ""}
+                      placeholder={isEN ? "Category Name..." : "Nama Kategori..."}
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={isSelected}
+                      as="span"
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      onEditingStateChange={onEditingStateChange}
+                    />
                   </h3>
                   <span
                     style={{
@@ -192,7 +204,18 @@ export default function SkillsGroupedList({
                             <CheckCircle2 className="w-3.5 h-3.5" style={{ color: brandPrimary }} />
                           )}
                           <span style={{ fontSize: "0.875rem", fontWeight: 500, color: brandText }}>
-                            {item.label}
+                            <InlineText
+                              section="skills"
+                              fieldKey={`groups.${gIdx}.items.${iIdx}.label`}
+                              value={item.label || ""}
+                              placeholder={isEN ? "Skill name..." : "Nama skill..."}
+                              onUpdateField={onUpdateField}
+                              isEditorMode={isEditorMode}
+                              isSelected={isSelected}
+                              as="span"
+                              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                              onEditingStateChange={onEditingStateChange}
+                            />
                           </span>
                         </div>
 

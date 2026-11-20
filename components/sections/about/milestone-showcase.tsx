@@ -21,7 +21,9 @@ export default function AboutMilestoneShowcase({
   collapseSheetForInlineEdit,
   onEditingStateChange,
   onAddItem,
+  language = "id",
 }: AboutVariantProps) {
+  const isEN = language.toLowerCase().startsWith("en");
   const py = { paddingTop: "var(--dt-spacing)", paddingBottom: "var(--dt-spacing)" } as any;
   const milestones = a.milestones && a.milestones.length > 0 ? a.milestones : defaultMilestones;
 
@@ -52,7 +54,8 @@ export default function AboutMilestoneShowcase({
               <InlineText
                 section="about"
                 fieldKey="eyebrow"
-                value={a.eyebrow || "Perjalanan Kami"}
+                value={a.eyebrow || (isEN ? "Our Journey" : "Perjalanan Kami")}
+                placeholder={isEN ? "Add label..." : "Tambah label..."}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
@@ -159,6 +162,7 @@ export default function AboutMilestoneShowcase({
                       section="about"
                       fieldKey={`milestones.${idx}.year`}
                       value={m.year}
+                      placeholder={isEN ? "Year..." : "Tahun..."}
                       onUpdateField={onUpdateField}
                       isEditorMode={isEditorMode}
                       isSelected={isSelected}
@@ -184,6 +188,7 @@ export default function AboutMilestoneShowcase({
                       section="about"
                       fieldKey={`milestones.${idx}.title`}
                       value={m.title}
+                      placeholder={isEN ? "Milestone title..." : "Judul pencapaian..."}
                       onUpdateField={onUpdateField}
                       isEditorMode={isEditorMode}
                       isSelected={isSelected}
@@ -192,7 +197,7 @@ export default function AboutMilestoneShowcase({
                       onEditingStateChange={onEditingStateChange}
                     />
                   </h3>
-                  {m.description && (
+                  {(m.description || isEditorMode) && (
                     <p
                       style={{
                         fontSize: "0.85rem",
@@ -204,7 +209,8 @@ export default function AboutMilestoneShowcase({
                       <InlineText
                         section="about"
                         fieldKey={`milestones.${idx}.description`}
-                        value={m.description}
+                        value={m.description || ""}
+                        placeholder={isEN ? "Milestone description..." : "Deskripsi pencapaian..."}
                         onUpdateField={onUpdateField}
                         isEditorMode={isEditorMode}
                         isSelected={isSelected}

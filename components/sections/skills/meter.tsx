@@ -15,6 +15,7 @@ export default function SkillsMeter({
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: SkillsVariantProps) {
+  const isEN = language.toLowerCase().startsWith("en");
   const groups = skills.groups || [];
   if (!groups.length && !isEditorMode) return null;
 
@@ -140,7 +141,7 @@ export default function SkillsMeter({
                   border: `1px solid color-mix(in srgb, ${brandPrimary} 12%, transparent)`,
                 }}
               >
-                {Boolean(group.name?.trim()) && (
+                {(Boolean(group.name?.trim()) || isEditorMode) && (
                   <h3
                     style={{
                       fontFamily: "var(--dt-heading-font)",
@@ -154,7 +155,18 @@ export default function SkillsMeter({
                       paddingBottom: "0.5rem",
                     }}
                   >
-                    {group.name}
+                    <InlineText
+                      section="skills"
+                      fieldKey={`groups.${gIdx}.name`}
+                      value={group.name || ""}
+                      placeholder={isEN ? "Category Name..." : "Nama Kategori..."}
+                      onUpdateField={onUpdateField}
+                      isEditorMode={isEditorMode}
+                      isSelected={isSelected}
+                      as="span"
+                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                      onEditingStateChange={onEditingStateChange}
+                    />
                   </h3>
                 )}
 
@@ -169,7 +181,18 @@ export default function SkillsMeter({
                             {item.icon && (
                               <DynamicIcon name={item.icon} defaultIcon={Wrench} className="w-3.5 h-3.5" style={{ color: brandPrimary }} />
                             )}
-                            {item.label}
+                            <InlineText
+                              section="skills"
+                              fieldKey={`groups.${gIdx}.items.${iIdx}.label`}
+                              value={item.label || ""}
+                              placeholder={isEN ? "Skill name..." : "Nama skill..."}
+                              onUpdateField={onUpdateField}
+                              isEditorMode={isEditorMode}
+                              isSelected={isSelected}
+                              as="span"
+                              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                              onEditingStateChange={onEditingStateChange}
+                            />
                           </span>
                           {levelLabel && (
                             <span style={{ fontSize: "0.75rem", fontWeight: 500, color: brandMuted }}>

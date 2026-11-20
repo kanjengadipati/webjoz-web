@@ -13,6 +13,7 @@ export default function AboutSection({
   isSelected,
   collapseSheetForInlineEdit,
   onEditingStateChange,
+  language,
 }: AboutVariantProps) {
   const variant = design_token?.layout?.section_variants?.about ?? "classic";
   const Renderer = resolveVariant<AboutVariantProps>(ABOUT_VARIANTS, variant, "classic");
@@ -51,6 +52,7 @@ export default function AboutSection({
       collapseSheetForInlineEdit={collapseSheetForInlineEdit}
       onEditingStateChange={onEditingStateChange}
       onAddItem={isEditorMode ? onAddItem : undefined}
+      language={language}
     />
   );
 }

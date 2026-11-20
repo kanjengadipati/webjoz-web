@@ -86,7 +86,19 @@ export default function BenefitsComparisonTable({
           <table style={{ width: "100%", borderCollapse: "collapse", borderRadius: "var(--dt-radius-lg)", overflow: "hidden", border: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)` }}>
             <thead>
               <tr style={{ background: `color-mix(in srgb, var(--dt-primary) 8%, transparent)` }}>
-                <th style={{ padding: "1rem 1.25rem", textAlign: "left", color: "var(--dt-text)", fontWeight: 700, fontSize: "0.85rem", borderBottom: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)` }}>Fitur / Keunggulan</th>
+                <th style={{ padding: "1rem 1.25rem", textAlign: "left", color: "var(--dt-text)", fontWeight: 700, fontSize: "0.85rem", borderBottom: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)` }}>
+                  <InlineText
+                    section="benefits"
+                    fieldKey="comparison.feature_label"
+                    value={comp?.feature_label || (language === "en" ? "Feature / Benefit" : "Fitur / Keunggulan")}
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="span"
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={onEditingStateChange}
+                  />
+                </th>
                 <th style={{ padding: "1rem 1.25rem", textAlign: "center", color: "var(--dt-primary)", fontWeight: 800, fontSize: "0.9rem", borderBottom: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)` }}>
                   <InlineText
                     section="benefits"
