@@ -43,7 +43,7 @@ export default function AboutFounderSpotlight({
               boxShadow: "var(--dt-card-shadow, 0 10px 25px -5px rgba(0,0,0,0.06))",
             }}
           >
-            {a.image_url ? (
+            {(a.image_url || isEditorMode) ? (
               <>
                 <InlineImage
                   section="about"
@@ -164,7 +164,19 @@ export default function AboutFounderSpotlight({
                 onEditingStateChange={onEditingStateChange}
               />
             </span>
-            <span style={{ fontSize: "0.85rem", color: "var(--dt-text-muted)" }}>{founderRole}</span>
+            <InlineText
+              section="about"
+              fieldKey="team_members.0.role"
+              value={firstMember?.role || "Founder & CEO"}
+              placeholder="Founder & CEO"
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="span"
+              style={{ fontSize: "0.85rem", color: "var(--dt-text-muted)" }}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
           </div>
 
           {/* Body Narrative */}
@@ -208,7 +220,18 @@ export default function AboutFounderSpotlight({
                   transition: "opacity 0.2s ease",
                 }}
               >
-                <span>{a.cv_label?.trim() || "Profil Lengkap"}</span>
+                <InlineText
+                  section="about"
+                  fieldKey="cv_label"
+                  value={a.cv_label?.trim() || "Profil Lengkap"}
+                  placeholder="Profil Lengkap"
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="span"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
                 <ArrowRight className="w-4 h-4" />
               </a>
             ) : (
@@ -227,7 +250,18 @@ export default function AboutFounderSpotlight({
                   transition: "opacity 0.2s ease",
                 }}
               >
-                <span>Terhubung Langsung</span>
+                <InlineText
+                  section="about"
+                  fieldKey="cv_label"
+                  value={a.cv_label?.trim() || "Terhubung Langsung"}
+                  placeholder="Terhubung Langsung"
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="span"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
                 <ArrowRight className="w-4 h-4" />
               </a>
             )}

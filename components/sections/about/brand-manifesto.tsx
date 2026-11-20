@@ -136,7 +136,18 @@ export default function AboutBrandManifesto({
                   transition: "opacity 0.2s ease",
                 }}
               >
-                <span>{a.cv_label?.trim() || "Tentang Visi Kami"}</span>
+                <InlineText
+                  section="about"
+                  fieldKey="cv_label"
+                  value={a.cv_label?.trim() || "Tentang Visi Kami"}
+                  placeholder="Tentang Visi Kami"
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="span"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
                 <ArrowRight className="w-4 h-4" />
               </a>
             </div>

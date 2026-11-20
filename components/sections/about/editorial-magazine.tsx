@@ -121,7 +121,18 @@ export default function AboutEditorialMagazine({
               style={{ color: "var(--dt-primary)" }}
             >
               <span className="border-b border-current pb-0.5">
-                {a.cv_label?.trim() || "Pelajari Lebih Lanjut"}
+                <InlineText
+                  section="about"
+                  fieldKey="cv_label"
+                  value={a.cv_label?.trim() || "Pelajari Lebih Lanjut"}
+                  placeholder="Pelajari Lebih Lanjut"
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="span"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
               </span>
               <ArrowUpRight className="w-4 h-4 transition-transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
             </a>
@@ -138,7 +149,7 @@ export default function AboutEditorialMagazine({
               border: "1px solid var(--dt-card-border, rgba(0,0,0,0.08))",
             }}
           >
-            {a.image_url ? (
+            {(a.image_url || isEditorMode) ? (
               <>
                 <InlineImage
                   section="about"

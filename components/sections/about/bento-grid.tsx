@@ -120,7 +120,18 @@ export default function AboutBentoGrid({
                   transition: "opacity 0.2s ease",
                 }}
               >
-                <span>{a.cv_label?.trim() || "Pelajari Lebih Lanjut"}</span>
+                <InlineText
+                  section="about"
+                  fieldKey="cv_label"
+                  value={a.cv_label?.trim() || "Pelajari Lebih Lanjut"}
+                  placeholder="Pelajari Lebih Lanjut"
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="span"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
                 <ArrowRight className="w-4 h-4" />
               </a>
             </div>
@@ -141,7 +152,18 @@ export default function AboutBentoGrid({
                   transition: "opacity 0.2s ease",
                 }}
               >
-                <span>Hubungi Kami</span>
+                <InlineText
+                  section="about"
+                  fieldKey="cv_label"
+                  value={a.cv_label?.trim() || "Hubungi Kami"}
+                  placeholder="Hubungi Kami"
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="span"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
                 <ArrowRight className="w-4 h-4" />
               </a>
             </div>
@@ -159,7 +181,7 @@ export default function AboutBentoGrid({
               border: "1px solid var(--dt-card-border, rgba(0,0,0,0.08))",
             }}
           >
-            {a.image_url ? (
+            {(a.image_url || isEditorMode) ? (
               <>
                 <InlineImage
                   section="about"
@@ -239,7 +261,18 @@ export default function AboutBentoGrid({
                   margin: 0,
                 }}
               >
-                Inovasi Tanpa Batas
+                <InlineText
+                  section="about"
+                  fieldKey="highlight_stat_3.label"
+                  value={a.highlight_stat_3?.label || "Inovasi Tanpa Batas"}
+                  placeholder="Inovasi Tanpa Batas"
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="span"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
               </h3>
               <p
                 style={{
@@ -249,7 +282,18 @@ export default function AboutBentoGrid({
                   lineHeight: 1.5,
                 }}
               >
-                Selalu mengadopsi standar terkini untuk memastikan hasil terbaik dan berkelanjutan.
+                <InlineText
+                  section="about"
+                  fieldKey="highlight_stat_3.value"
+                  value={a.highlight_stat_3?.value || "Selalu mengadopsi standar terkini untuk memastikan hasil terbaik dan berkelanjutan."}
+                  placeholder="Deskripsi keunggulan..."
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="span"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
               </p>
             </div>
           </div>
