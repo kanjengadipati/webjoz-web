@@ -151,14 +151,34 @@ export default function MultiColumnNewsletter({
 
           {/* Kolom 4: Newsletter Form */}
           <div className="space-y-3">
-            <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: TXT_HIGH }}>
-              {isEn ? "Get Latest Updates" : "Dapatkan update terbaru"}
-            </p>
-            <p className="text-xs leading-relaxed" style={{ color: TXT_LOW }}>
-              {isEn
-                ? "Subscribe to our newsletter for exclusive insights and updates."
-                : "Berlangganan newsletter kami untuk penawaran dan info eksklusif."}
-            </p>
+            <InlineText
+              section="footer"
+              fieldKey="newsletter_title"
+              value={footer?.newsletter_title || (isEn ? "Get Latest Updates" : "Dapatkan update terbaru")}
+              placeholder={isEn ? "Get Latest Updates" : "Dapatkan update terbaru"}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="p"
+              className="text-[11px] font-bold uppercase tracking-wider"
+              style={{ color: TXT_HIGH }}
+            />
+            <InlineText
+              section="footer"
+              fieldKey="newsletter_description"
+              value={footer?.newsletter_description || (isEn ? "Subscribe to our newsletter for exclusive insights and updates." : "Berlangganan newsletter kami untuk penawaran dan info eksklusif.")}
+              placeholder={isEn ? "Subscribe to our newsletter..." : "Berlangganan newsletter..."}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="p"
+              className="text-xs leading-relaxed"
+              style={{ color: TXT_LOW }}
+            />
 
             {submitted ? (
               <div className="flex items-center gap-2 p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs font-medium">

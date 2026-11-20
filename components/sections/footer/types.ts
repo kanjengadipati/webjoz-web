@@ -6,6 +6,12 @@ export interface FooterVariantProps {
     copyright_text?: string;
     tagline?: string;
     social_links?: Array<{ platform: string; url: string }>;
+    slogan?: string;
+    cta_text?: string;
+    newsletter_title?: string;
+    newsletter_description?: string;
+    social_title?: string;
+    [key: string]: unknown;
   };
   design_token?: DesignToken | null;
   brand_name?: string;

@@ -90,18 +90,39 @@ export default function BrandGradientCta({
 
           {/* Tengah: Slogan inspiratif */}
           <div className="max-w-md text-center lg:text-left">
-            <p className="text-sm sm:text-base font-medium text-white/95 leading-snug">
-              {defaultSlogan}
-            </p>
+            <InlineText
+              section="footer"
+              fieldKey="slogan"
+              value={footer?.slogan || defaultSlogan}
+              placeholder={defaultSlogan}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="p"
+              className="text-sm sm:text-base font-medium text-white/95 leading-snug"
+            />
           </div>
 
           {/* Kanan: CTA Kontras */}
           <div className="shrink-0">
             <a
-              href={navCtaHref(defaultCta, "#contact")}
+              href={navCtaHref(footer?.cta_text || defaultCta, "#contact")}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-slate-950 font-bold text-xs sm:text-sm shadow-md hover:bg-slate-100 transition-all hover:scale-105 active:scale-95"
             >
-              <span>{defaultCta}</span>
+              <InlineText
+                section="footer"
+                fieldKey="cta_text"
+                value={footer?.cta_text || defaultCta}
+                placeholder={defaultCta}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+                as="span"
+              />
               <ArrowRight className="w-3.5 h-3.5" />
             </a>
           </div>

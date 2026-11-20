@@ -458,6 +458,12 @@ export interface TemplateProps {
       tagline?: string;
       copyright_text?: string;
       social_links?: Array<{ platform: string; url: string }>;
+      slogan?: string;
+      cta_text?: string;
+      newsletter_title?: string;
+      newsletter_description?: string;
+      social_title?: string;
+      [key: string]: unknown;
     };
     menu?: {
       title: string;

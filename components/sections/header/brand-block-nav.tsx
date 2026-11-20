@@ -68,10 +68,20 @@ export default function BrandBlockNav({
             as="span"
             className="truncate block leading-tight font-bold text-sm text-white"
           />
-          {header?.tagline && (
-            <span className="text-[10px] font-normal text-white/75 truncate leading-tight mt-0.5">
-              {header.tagline}
-            </span>
+          {(header?.tagline || isEditorMode) && (
+            <InlineText
+              section="header"
+              fieldKey="tagline"
+              value={header?.tagline ?? ""}
+              placeholder="Tagline..."
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode && editorChrome !== false}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="span"
+              className="text-[10px] font-normal text-white/75 truncate leading-tight mt-0.5 block"
+            />
           )}
         </div>
       </div>

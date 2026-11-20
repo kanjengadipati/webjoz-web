@@ -16,6 +16,7 @@ export default function ColumnsWithNav({
   footer,
   brand_name,
   hasBlog,
+  language = "id",
   onUpdateField,
   isEditorMode = false, editorChrome,
   isSelected = false,
@@ -136,7 +137,7 @@ export default function ColumnsWithNav({
                 style={{ color: TXT_HIGH }}
               >
                 <ArrowUp className="w-3.5 h-3.5" />
-                <span>Kembali ke Atas</span>
+                <span>{language === "en" ? "Back to top" : "Kembali ke atas"}</span>
               </button>
             </div>
           </div>

@@ -93,9 +93,20 @@ export default function SocialPillCta({
 
           {/* Tengah: Social Icons Pill Container */}
           <div className="flex flex-col items-center gap-1.5 px-4 py-2 rounded-xl bg-background/60 border border-[var(--dt-border)] shadow-xs">
-            <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: TXT_LOW }}>
-              {isEn ? "Follow Us on Social Media" : "Ikuti Kami di Media Sosial"}
-            </span>
+            <InlineText
+              section="footer"
+              fieldKey="social_title"
+              value={footer?.social_title || (isEn ? "Follow Us on Social Media" : "Ikuti Kami di Media Sosial")}
+              placeholder={isEn ? "Follow Us on Social Media" : "Ikuti Kami di Media Sosial"}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="span"
+              className="text-[10px] font-semibold uppercase tracking-wider"
+              style={{ color: TXT_LOW }}
+            />
             <InlineSocialEditor
               links={links}
               onUpdateField={onUpdateField}
@@ -111,10 +122,21 @@ export default function SocialPillCta({
           {/* Kanan: CTA Button */}
           <div className="shrink-0">
             <a
-              href={navCtaHref(defaultCta, "#contact")}
+              href={navCtaHref(footer?.cta_text || defaultCta, "#contact")}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-[var(--dt-radius)] bg-[var(--dt-primary)] text-[var(--dt-primary-foreground)] font-semibold text-xs sm:text-sm shadow-sm hover:opacity-90 transition-all hover:scale-105 active:scale-95"
             >
-              <span>{defaultCta}</span>
+              <InlineText
+                section="footer"
+                fieldKey="cta_text"
+                value={footer?.cta_text || defaultCta}
+                placeholder={defaultCta}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+                as="span"
+              />
               <ArrowRight className="w-3.5 h-3.5" />
             </a>
           </div>

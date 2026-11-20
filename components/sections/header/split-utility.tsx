@@ -39,12 +39,22 @@ export default function SplitUtility({
       >
         {/* Left: lokasi & email */}
         <div className="flex items-center gap-4">
-          {contactAddress && (
-            <span className="flex items-center gap-1.5">
-              <MapPin className="w-3 h-3 shrink-0 text-[var(--dt-primary)]" />
-              <span className="truncate max-w-[200px]">{contactAddress}</span>
-            </span>
-          )}
+          <span className="flex items-center gap-1.5">
+            <MapPin className="w-3 h-3 shrink-0 text-[var(--dt-primary)]" />
+            <InlineText
+              section="header"
+              fieldKey="utility_text"
+              value={(header as any)?.utility_text || contactAddress || (language === "en" ? "Your City, Province" : "Kota Anda, Provinsi")}
+              placeholder={language === "en" ? "Location or note..." : "Lokasi atau catatan..."}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode && editorChrome !== false}
+              isSelected={isSelected}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+              as="span"
+              className="truncate max-w-[200px]"
+            />
+          </span>
           {contactEmail && (
             <a
               href={`mailto:${contactEmail}`}
@@ -54,17 +64,23 @@ export default function SplitUtility({
               <span>{contactEmail}</span>
             </a>
           )}
-          {!contactAddress && !contactEmail && (
-            <span className="flex items-center gap-1.5">
-              <MapPin className="w-3 h-3 shrink-0 text-[var(--dt-primary)]" />
-              <span>{language === "en" ? "Your City, Province" : "Kota Anda, Provinsi"}</span>
-            </span>
-          )}
         </div>
 
         {/* Right: tagline atau teks singkat */}
-        {header?.tagline && (
-          <span className="italic opacity-80 truncate max-w-[300px]">{header.tagline}</span>
+        {(header?.tagline || isEditorMode) && (
+          <InlineText
+            section="header"
+            fieldKey="tagline"
+            value={header?.tagline ?? ""}
+            placeholder="Tagline..."
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode && editorChrome !== false}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+            as="span"
+            className="italic opacity-80 truncate max-w-[300px]"
+          />
         )}
       </div>
 
