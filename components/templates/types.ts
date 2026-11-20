@@ -1,4 +1,5 @@
 import type { HeroStyle } from "../sections/hero/meta";
+import type { AboutVariant } from "../sections/about/variants";
 import type { PreloaderContent } from "webjoz-ui";
 
 export interface TestimonialItem {
@@ -253,7 +254,7 @@ export interface DesignToken {
     section_variants_manual?: Record<string, boolean>;
     section_variants?: {
       hero?: HeroStyle;
-      about?: "classic" | "split-image" | "stat-heavy" | "timeline" | "team-grid";
+      about?: AboutVariant;
       benefits?: "grid" | "stat-grid" | "checklist" | "comparison-table" | "featured-grid" | "icon-row" | "bento-grid" | "trust-bar" | "how-it-works";
       testimonials?: "carousel" | "compact" | "grid" | "logo-wall" | "featured-spotlight" | "google-reviews" | "video-wall";
       cta?: "banner" | "card" | "centered" | "split-image" | "inline-lead-form";

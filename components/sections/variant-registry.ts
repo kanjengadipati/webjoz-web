@@ -2,16 +2,10 @@
 // Every consumer (editor dropdown, design-assets admin UI, etc.) imports from here.
 
 import { HERO_VARIANTS } from "./hero/meta";
+import { ABOUT_VARIANTS } from "./about/variants";
+import { variantOptions, type VariantOption } from "./variant-meta";
 
-export interface VariantOption {
-  value: string;
-  label: string;
-  labelKey?: string;
-  description?: string;
-  descriptionKey?: string;
-  group?: string; // optional grouping label for dropdown submenu (e.g. "Dasar", "Visual Foto")
-  wireframeLayout?: string; // archetype wireframe identifier for automated previews
-}
+export type { VariantOption } from "./variant-meta";
 
 export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
   hero: HERO_VARIANTS.map((v) => ({ ...v })),
@@ -23,13 +17,7 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "starfield",        labelKey: "variantHeroEffectStarfield",     label: "Luar Angkasa",         group: "Efek Visual", descriptionKey: "variantHeroEffectStarfieldDesc",     description: "Titik bintang berkelap-kelip di latar gelap yang dramatis." },
     { value: "retro-paper",      labelKey: "variantHeroEffectRetroPaper",    label: "Kertas Retro",         group: "Efek Visual", descriptionKey: "variantHeroEffectRetroPaperDesc",    description: "Tekstur kertas usang dan butiran hangat bergaya vintage." },
   ],
-  about: [
-    { value: "classic",      labelKey: "variantAboutClassic",      label: "Klasik",         descriptionKey: "variantAboutClassicDesc",      description: "Teks di kiri, konten bersih tanpa gambar besar." },
-    { value: "split-image",  labelKey: "variantAboutSplitImage",   label: "Split + Gambar", descriptionKey: "variantAboutSplitImageDesc",   description: "Teks di kiri, gambar besar di kanan." },
-    { value: "stat-heavy",   labelKey: "variantAboutStatHeavy",    label: "Statistik",      descriptionKey: "variantAboutStatHeavyDesc",    description: "Tampilkan angka highlight dan statistik bisnis." },
-    { value: "timeline",     labelKey: "variantAboutTimeline",     label: "Timeline",       descriptionKey: "variantAboutTimelineDesc",     description: "Kronologi perjalanan bisnis (membutuhkan milestones)." },
-    { value: "team-grid",    labelKey: "variantAboutTeamGrid",     label: "Grid Tim",       descriptionKey: "variantAboutTeamGridDesc",     description: "Grid anggota tim (membutuhkan team_members)." },
-  ],
+  about: variantOptions(ABOUT_VARIANTS),
   benefits: [
     { value: "grid",               labelKey: "variantBenefitsGrid",              label: "Grid",                          descriptionKey: "variantBenefitsGridDesc",              description: "Kartu ikon tersusun grid rapi." },
     { value: "featured-grid",      labelKey: "variantBenefitsFeaturedGrid",      label: "Grid Highlight",                descriptionKey: "variantBenefitsFeaturedGridDesc",      description: "Kartu pertama berukuran besar sebagai sorotan utama, sisanya dalam grid rapi." },

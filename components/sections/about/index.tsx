@@ -1,23 +1,9 @@
 "use client";
 import React from "react";
-import dynamic from "next/dynamic";
-import type { ComponentType } from "react";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 import type { AboutVariantProps } from "./classic";
-
-const AboutClassic = dynamic(() => import("./classic"));
-const AboutSplitImage = dynamic(() => import("./split-image"));
-const AboutStatHeavy = dynamic(() => import("./stat-heavy"));
-const AboutTimeline = dynamic(() => import("./timeline"));
-const AboutTeamGrid = dynamic(() => import("./team-grid"));
-
-const variants: Record<string, ComponentType<AboutVariantProps>> = {
-  classic: AboutClassic,
-  "split-image": AboutSplitImage,
-  "stat-heavy": AboutStatHeavy,
-  timeline: AboutTimeline,
-  "team-grid": AboutTeamGrid,
-};
+import type { VariantDef } from "../variant-meta";
+import { ABOUT_VARIANTS } from "./variants";
 
 export default function AboutSection({
   about,
@@ -29,7 +15,10 @@ export default function AboutSection({
   onEditingStateChange,
 }: AboutVariantProps) {
   const variant = design_token?.layout?.section_variants?.about ?? "classic";
-  const Renderer = variants[variant] ?? AboutClassic;
+  // Varian tak dikenal (mis. sudah dihapus) jatuh ke "classic", bukan error.
+  const Renderer = (
+    (ABOUT_VARIANTS as Record<string, VariantDef<AboutVariantProps>>)[variant] ?? ABOUT_VARIANTS.classic
+  ).component;
 
   const onAddItem = React.useCallback(() => {
     if (!onUpdateField) return;
