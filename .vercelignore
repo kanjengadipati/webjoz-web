@@ -7,8 +7,7 @@
 # Exclude standalone output (not needed on Vercel, which manages its own bundling)
 .next/standalone
 
-# Exclude test artifacts and dev scripts
-scripts/
+# Exclude test artifacts (keep scripts/ for prebuild checks)
 playwright-report/
 test-results/
 *.test.mjs
