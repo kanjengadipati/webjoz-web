@@ -3143,6 +3143,16 @@ export interface Translations {
       variantAboutTimelineDesc: string;
       variantAboutTeamGrid: string;
       variantAboutTeamGridDesc: string;
+      variantAboutBentoGrid: string;
+      variantAboutBentoGridDesc: string;
+      variantAboutFounderSpotlight: string;
+      variantAboutFounderSpotlightDesc: string;
+      variantAboutEditorialMagazine: string;
+      variantAboutEditorialMagazineDesc: string;
+      variantAboutBrandManifesto: string;
+      variantAboutBrandManifestoDesc: string;
+      variantAboutMilestoneShowcase: string;
+      variantAboutMilestoneShowcaseDesc: string;
       // benefits
       variantBenefitsGrid: string;
       variantBenefitsGridDesc: string;
@@ -7356,6 +7366,21 @@ export const translations: Record<Locale, Translations> = {
         variantAboutTeamGrid: "Grid Tim",
         variantAboutTeamGridDesc:
           "Grid anggota tim (membutuhkan team_members).",
+        variantAboutBentoGrid: "Bento Grid",
+        variantAboutBentoGridDesc:
+          "Grid asimetris interaktif memadukan teks, foto, statistik, dan kartu fitur.",
+        variantAboutFounderSpotlight: "Sorotan Founder",
+        variantAboutFounderSpotlightDesc:
+          "Profil personal founder/pemilik dengan kutipan visi, foto potret, dan tanda tangan.",
+        variantAboutEditorialMagazine: "Majalah Editorial",
+        variantAboutEditorialMagazineDesc:
+          "Tata letak narasi elegan dengan watermark angka besar dan potongan foto artistik.",
+        variantAboutBrandManifesto: "Manifesto Brand",
+        variantAboutBrandManifestoDesc:
+          "Fokus tipografi tegas tanpa foto, menonjolkan pesan dan komitmen brand.",
+        variantAboutMilestoneShowcase: "Pencapaian Milestone",
+        variantAboutMilestoneShowcaseDesc:
+          "Garis horizontal pencapaian bisnis berurutan dengan ikon dan tahun.",
         // benefits
         variantBenefitsGrid: "Grid",
         variantBenefitsGridDesc: "Kartu ikon tersusun grid rapi.",
@@ -11861,6 +11886,21 @@ export const translations: Record<Locale, Translations> = {
         variantAboutTeamGrid: "Team Grid",
         variantAboutTeamGridDesc:
           "Grid of team members (requires team_members).",
+        variantAboutBentoGrid: "Bento Grid",
+        variantAboutBentoGridDesc:
+          "Interactive asymmetric grid mixing text, photo, stats, and feature cards.",
+        variantAboutFounderSpotlight: "Founder Spotlight",
+        variantAboutFounderSpotlightDesc:
+          "Personal profile of the founder/owner with a vision quote, portrait photo, and signature.",
+        variantAboutEditorialMagazine: "Editorial Magazine",
+        variantAboutEditorialMagazineDesc:
+          "Elegant narrative layout with a large number watermark and artistic photo crop.",
+        variantAboutBrandManifesto: "Brand Manifesto",
+        variantAboutBrandManifestoDesc:
+          "Bold typography without photos, highlighting the brand message and commitments.",
+        variantAboutMilestoneShowcase: "Milestone Showcase",
+        variantAboutMilestoneShowcaseDesc:
+          "Horizontal timeline of business milestones with icons and years.",
         // benefits
         variantBenefitsGrid: "Grid",
         variantBenefitsGridDesc: "Icon cards arranged in a neat grid.",
