@@ -382,7 +382,7 @@ export default function SitesPage() {
     return () => window.removeEventListener("click", handleOutsideClick);
   }, []);
 
-  const handlePublishWithSubdomain = async (subdomain: string) => {
+  const handlePublishWithSubdomain = async (subdomain: string, _contentVerified?: boolean) => {
     if (!publishTarget || !token || !activeTenantId) return;
     try {
       setActionLoading(publishTarget.id);

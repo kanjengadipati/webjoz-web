@@ -463,7 +463,7 @@ export default function SiteEditorPage() {
     }
   };
 
-  const handlePublishWithSubdomain = async (subdomain: string) => {
+  const handlePublishWithSubdomain = async (subdomain: string, _contentVerified?: boolean) => {
     if (!siteDetails || !token || !activeTenantId) return;
     if (isSuspended) {
       pushToast(t("dashboard.planExpiredBanner"), "error");

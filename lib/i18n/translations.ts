@@ -619,6 +619,8 @@ export interface Translations {
       customDomainLink: string;
       launching: string;
       launchWebsite: string;
+      publishContentVerified: string;
+      publishContentVerifiedDesc: string;
       publishTermsTitle: string;
       publishTermsLink: string;
       publishTermsRequired: string;
@@ -4614,6 +4616,8 @@ export const translations: Record<Locale, Translations> = {
         customDomainLink: "Custom Domain",
         launching: "Meluncurkan...",
         launchWebsite: "Luncurkan Website",
+        publishContentVerified: "Data pada website ini sudah asli, bukan data contoh",
+        publishContentVerifiedDesc: "Mis. tahun berdiri, nama tim, statistik, testimoni, dan foto. Isi yang dibuat otomatis bisa berupa contoh; kebenaran konten menjadi tanggung jawab Anda.",
         publishTermsTitle: "Saya menyetujui",
         publishTermsLink: "Syarat & Ketentuan Webjoz",
         publishTermsRequired:
@@ -9150,6 +9154,8 @@ export const translations: Record<Locale, Translations> = {
         customDomainLink: "Custom Domain",
         launching: "Launching...",
         launchWebsite: "Launch Website",
+        publishContentVerified: "The data on this website is real, not sample data",
+        publishContentVerifiedDesc: "E.g. founding year, team names, statistics, testimonials and photos. Auto-generated content may be sample data; you are responsible for its accuracy.",
         publishTermsTitle: "I agree to",
         publishTermsLink: "Webjoz's Terms & Conditions",
         publishTermsRequired: "Please check this box to publish the website.",

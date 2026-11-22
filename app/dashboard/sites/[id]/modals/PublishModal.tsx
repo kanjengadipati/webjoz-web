@@ -18,7 +18,8 @@ export interface PublishModalProps {
   };
   /** Hash ID of the site being published (lets the check ignore its own subdomain). */
   siteId?: string;
-  onConfirm: (subdomain: string) => void;
+  /** `contentVerified`: required user declaration that the content is real; responsibility for accuracy lies with the user. */
+  onConfirm: (subdomain: string, contentVerified?: boolean) => void;
   onCancel: () => void;
   loading: boolean;
   violations?: ModerationViolation[];
@@ -43,6 +44,7 @@ export default function PublishModal({ site, siteId, onConfirm, onCancel, loadin
     return site.subdomain;
   });
   const [agreed, setAgreed] = useState(false);
+  const [contentVerified, setContentVerified] = useState(false);
   const [submitAttempted, setSubmitAttempted] = useState(false);
   // Hasil lookup server, disimpan bersama subdomain yang diperiksa agar hasil
   // lama tidak dipakai untuk input baru.
@@ -118,11 +120,11 @@ export default function PublishModal({ site, siteId, onConfirm, onCancel, loadin
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isInputValid || !agreed) {
+    if (!isInputValid || !agreed || !contentVerified) {
       setSubmitAttempted(true);
       return;
     }
-    onConfirm(subdomain);
+    onConfirm(subdomain, contentVerified);
   };
 
   const previewDomain = subdomain.trim() ? `${subdomain.trim().toLowerCase()}.${BASE_DOMAIN}` : "";
@@ -279,6 +281,34 @@ export default function PublishModal({ site, siteId, onConfirm, onCancel, loadin
           </div>
         )}
 
+        {/* Content authenticity declaration — required before publishing */}
+        <label
+          className={`flex items-start gap-3 border rounded-xl p-3.5 transition-colors bg-card select-none ${
+            submitAttempted && !contentVerified
+              ? "border-red-500/50 bg-red-500/[0.02]"
+              : "border-border/70 hover:border-primary/40"
+          } ${loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}
+        >
+          <input
+            type="checkbox"
+            checked={contentVerified}
+            disabled={loading}
+            onChange={(e) => {
+              setContentVerified(e.target.checked);
+              if (e.target.checked) setSubmitAttempted(false);
+            }}
+            className="w-4 h-4 mt-0.5 accent-primary rounded shrink-0 cursor-pointer"
+          />
+          <div className="min-w-0 space-y-1">
+            <p className="text-[12px] font-medium text-foreground/80 leading-snug">
+              {t("dashboard.sites.publishContentVerified")}
+            </p>
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              {t("dashboard.sites.publishContentVerifiedDesc")}
+            </p>
+          </div>
+        </label>
+
         {/* Terms & Conditions Acceptance - placed directly above action buttons */}
         <TermsAcceptance
           agreed={agreed}
@@ -304,7 +334,7 @@ export default function PublishModal({ site, siteId, onConfirm, onCancel, loadin
           <Button
             type="submit"
             className="flex-1 rounded-xl h-11 text-[13.5px] font-bold border-0 transition-all flex items-center justify-center gap-2"
-            disabled={loading || !isInputValid || !agreed}
+            disabled={loading || !isInputValid || !agreed || !contentVerified}
           >
             {loading ? (
               <>
