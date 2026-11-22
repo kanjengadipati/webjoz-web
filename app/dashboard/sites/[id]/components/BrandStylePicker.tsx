@@ -40,9 +40,22 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
   const { t, isIndonesian } = useI18n();
   const colorInputRef = useRef<HTMLInputElement>(null);
   const fontFileInputRef = useRef<HTMLInputElement>(null);
+  const customFontPanelRef = useRef<HTMLDivElement>(null);
 
   // State untuk kustom font (Upload / URL)
   const [showCustomFontPanel, setShowCustomFontPanel] = useState(false);
+
+  useEffect(() => {
+    if (showCustomFontPanel) {
+      const timer = setTimeout(() => {
+        customFontPanelRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
+      }, 60);
+      return () => clearTimeout(timer);
+    }
+  }, [showCustomFontPanel]);
   const [customFontMode, setCustomFontMode] = useState<"upload" | "url">("upload");
   const [fontTarget, setFontTarget] = useState<"heading" | "body">("heading");
   const [urlFontFamily, setUrlFontFamily] = useState("");
@@ -395,7 +408,7 @@ export default function BrandStylePicker({ designToken, onUpdateField, locale = 
       </div>
 
       {/* Accordion / Drawer: Upload Font Kustom & Input URL Font */}
-      <div className="pt-1 border-t border-border/60">
+      <div ref={customFontPanelRef} className="pt-1 border-t border-border/60 scroll-mt-3">
         <button
           type="button"
           onClick={() => setShowCustomFontPanel((prev) => !prev)}

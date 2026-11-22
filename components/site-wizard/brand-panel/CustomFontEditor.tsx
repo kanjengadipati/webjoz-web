@@ -68,6 +68,8 @@ export function CustomFontEditor({
   const { t, locale } = useI18n();
   const isEN = locale === "en";
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const accordionRef = useRef<HTMLDivElement>(null);
 
   const currentTypography =
     theme.draft?.typography ?? theme.applied.typography ?? baseToken?.typography ?? {};
@@ -96,6 +98,29 @@ export function CustomFontEditor({
   const [manualFamilyName, setManualFamilyName] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Auto-scroll when accordion opens so the upload font controls are immediately visible
+  useEffect(() => {
+    if (uploadOpen) {
+      const timer = setTimeout(() => {
+        if (scrollContainerRef.current && accordionRef.current) {
+          const containerRect = scrollContainerRef.current.getBoundingClientRect();
+          const elemRect = accordionRef.current.getBoundingClientRect();
+          const offsetTop = elemRect.top - containerRect.top;
+          scrollContainerRef.current.scrollTo({
+            top: scrollContainerRef.current.scrollTop + offsetTop - 12,
+            behavior: "smooth",
+          });
+        } else if (accordionRef.current) {
+          accordionRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      }, 60);
+      return () => clearTimeout(timer);
+    }
+  }, [uploadOpen]);
 
   // Preload all library fonts
   useEffect(() => {
@@ -301,7 +326,7 @@ export function CustomFontEditor({
       </div>
 
       {/* ── Scrollable content ──────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto">
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto">
         <div className="p-4 space-y-5">
 
           {/* Heading Font Section */}
@@ -347,7 +372,7 @@ export function CustomFontEditor({
           </div>
 
           {/* ── Upload custom font accordion ───────────────── */}
-          <div className="rounded-xl border border-border/70 overflow-hidden">
+          <div ref={accordionRef} className="rounded-xl border border-border/70 overflow-hidden scroll-mt-3">
             <button
               type="button"
               onClick={() => setUploadOpen((v) => !v)}

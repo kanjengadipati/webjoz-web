@@ -46,6 +46,19 @@ export default function TypographyPairingPicker({
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (showDrawer) {
+      const timer = setTimeout(() => {
+        drawerRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
+      }, 60);
+      return () => clearTimeout(timer);
+    }
+  }, [showDrawer]);
 
   const pairings = getEnabledTypographyPairings();
 
@@ -356,7 +369,7 @@ export default function TypographyPairingPicker({
           </div>
 
           {/* Accordion: Upload Font File or URL */}
-          <div className="pt-2 border-t border-border">
+          <div ref={drawerRef} className="pt-2 border-t border-border scroll-mt-3">
             <button
               type="button"
               onClick={() => setShowDrawer((prev) => !prev)}
