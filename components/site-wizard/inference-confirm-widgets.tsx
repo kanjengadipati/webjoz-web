@@ -308,9 +308,8 @@ export function InferenceConfirmCard({
         }
       }
     }
-    const newSubType =
-      draftIndustry && draftIndustry !== "__other__" && !draftIndustry.includes(".") ? draftIndustry : "";
-    onConfirm(newSubType);
+    const selectedValue = draftIndustry && draftIndustry !== "__other__" ? draftIndustry : "";
+    onConfirm(selectedValue);
   }, [chat, draftName, draftArea, draftDesc, draftIndustry, draftBidang, taxonomyV2, wizardLang, onConfirm]);
 
   // Press Enter (when not editing a field) to confirm
