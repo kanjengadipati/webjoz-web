@@ -12,6 +12,10 @@
  */
 
 import type { ProcessBusinessDescriptionResult } from "@/lib/api/ai";
+import {
+  archetypeForLegacyType,
+  archetypeToLegacyType,
+} from "./archetype-meta";
 
 // ── mapping tables ──────────────────────────────────────────────────────────
 
@@ -93,23 +97,6 @@ const INDUSTRY_ID_TO_V1: Record<string, [string, string]> = Object.fromEntries(
   ])
 );
 
-/** archetype → canonical v1 type */
-function archetypeToLegacyType(archetype: string): string {
-  switch (archetype) {
-    case "food_venue":           return "Kuliner";
-    case "retail_catalog":       return "Toko";
-    case "booking_service":      return "Layanan & Reservasi";
-    case "portfolio_individual": return "Portofolio";
-    case "professional_firm":    return "Kreatif & Profesional";
-    case "corporate_org":
-    case "lodging":
-    case "institution_org":
-    case "destination":
-    case "software_product":     return "Company Profile";
-    default:                     return "";
-  }
-}
-
 // ── public helpers ──────────────────────────────────────────────────────────
 
 /** Returns [archetype, industry_id] for a known v1 sub-type, or null. */
@@ -162,16 +149,9 @@ export function backfillClassifyResultV2(
   return result;
 }
 
+/** v1 type → canonical archetype (derived from /taxonomy/v2 metadata). */
 function legacyTypeToArchetype(legacyType: string): string {
-  switch (legacyType) {
-    case "Kuliner":               return "food_venue";
-    case "Toko":                  return "retail_catalog";
-    case "Layanan & Reservasi":   return "booking_service";
-    case "Portofolio":            return "portfolio_individual";
-    case "Kreatif & Profesional": return "professional_firm";
-    case "Company Profile":       return "corporate_org";
-    default:                      return "";
-  }
+  return archetypeForLegacyType(legacyType);
 }
 
 /**

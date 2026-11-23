@@ -1,20 +1,11 @@
+import { archetypeToLegacyType as legacyTypeOf } from "./archetype-meta.ts";
+
 export type InferenceRoute = "confirm" | "suggest" | "pick";
 
-/** Map archetype ID to the nearest v1 legacy type for backward compat. */
+/** Map archetype ID to the nearest v1 legacy type for backward compat.
+ * Metadata comes from /taxonomy/v2 via archetype-meta (single source). */
 export function archetypeToLegacyType(arch: string): string {
-  switch (arch) {
-    case "food_venue":           return "Kuliner";
-    case "retail_catalog":       return "Toko";
-    case "booking_service":      return "Layanan & Reservasi";
-    case "portfolio_individual": return "Portofolio";
-    case "professional_firm":    return "Kreatif & Profesional";
-    case "corporate_org":
-    case "lodging":
-    case "institution_org":
-    case "destination":
-    case "software_product":     return "Company Profile";
-    default:                     return "";
-  }
+  return legacyTypeOf(arch);
 }
 
 /** v2 fields of a classify / refine response (snake_case, as the API returns them). */

@@ -1,3 +1,8 @@
+import {
+  entityOfArchetype,
+  isIndividualArchetype,
+} from "./archetype-meta.ts";
+
 export type Entity = "individual" | "organization" | null;
 export type EntitySource = "user" | "inferred" | null;
 
@@ -17,12 +22,9 @@ export interface GroupLite<I extends IndustryLite = IndustryLite> {
   industries: I[];
 }
 
-const ORG_ARCHETYPES = new Set(["professional_firm", "corporate_org", "institution_org"]);
-
+/** Entity comes from the archetype metadata returned by /taxonomy/v2. */
 export function entityFromArchetype(archetype?: string | null): Entity {
-  if (archetype === "portfolio_individual") return "individual";
-  if (archetype && ORG_ARCHETYPES.has(archetype)) return "organization";
-  return null;
+  return entityOfArchetype(archetype);
 }
 
 /**
@@ -43,7 +45,7 @@ export function toggleUserEntity(state: EntityState, picked: "individual" | "org
   return { value: picked, source: "user" };
 }
 
-const isIndividual = (i: IndustryLite) => i.archetype === "portfolio_individual";
+const isIndividual = (i: IndustryLite) => isIndividualArchetype(i.archetype);
 
 /** Bidang yang punya setidaknya satu industri untuk entitas itu (diturunkan dari katalog, bukan daftar manual). */
 export function groupsForEntity<G extends GroupLite>(groups: G[], entity: Entity): G[] {

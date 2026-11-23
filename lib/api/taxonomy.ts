@@ -78,6 +78,12 @@ export interface TaxonomyV2Archetype {
   label: string;
   label_id: string;
   label_en: string;
+  /** Nearest v1 business type (many-to-one) for the compat adaptor. */
+  legacy_type: string;
+  /** 1:1 v1 content-context label; wins over legacy_type on reverse lookup. */
+  context_type?: string;
+  /** "individual" | "organization" | "" — omitted by older API builds. */
+  entity?: string;
 }
 
 /** Full v2 taxonomy response from GET /ai/public/taxonomy/v2 */

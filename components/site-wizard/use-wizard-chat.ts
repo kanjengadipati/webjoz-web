@@ -10,6 +10,7 @@ import type { Message, ChatStage, InferenceResult } from "./types";
 import type { WizardResumeChat } from "./wizard-persistence";
 
 import { routeInference, classifyInference, type InferenceRoute, type ClassifyV2Fields, type PreInferred } from "./inference-v2";
+import { archetypeForLegacyType } from "./archetype-meta";
 import { useI18n } from "@/lib/i18n/context";
 import { useToast } from "@/components/toast-provider";
 import { refineTranscript, processBusinessDescription } from "@/lib/api/ai";
@@ -606,16 +607,9 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setBusinessSubType("");
     setTypeWasInferred(false);
     setInputValue("");
-    // v2: set archetype so sub-type chips use catalog v2 industries
-    const typeToArch: Record<string, string> = {
-      "Kuliner": "food_venue",
-      "Toko": "retail_catalog",
-      "Layanan & Reservasi": "booking_service",
-      "Portofolio": "portfolio_individual",
-      "Kreatif & Profesional": "professional_firm",
-      "Company Profile": "corporate_org",
-    };
-    const arch = typeToArch[type] ?? "";
+    // v2: set archetype so sub-type chips use catalog v2 industries.
+    // Reverse lookup comes from /taxonomy/v2 metadata (single source).
+    const arch = archetypeForLegacyType(type);
     setArchetype(arch);
     archetypeRef.current = arch;
     setIndustryId("");
@@ -1258,16 +1252,8 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
       // v2: ensure archetype is set so catalog chips are used
       const currentArch = archetypeRef.current;
       if (!currentArch) {
-        // legacy type → archetype mapping (reverse of archetypeToLegacyType)
-        const typeToArch: Record<string, string> = {
-          "Kuliner": "food_venue",
-          "Toko": "retail_catalog",
-          "Layanan & Reservasi": "booking_service",
-          "Portofolio": "portfolio_individual",
-          "Kreatif & Profesional": "professional_firm",
-          "Company Profile": "corporate_org",
-        };
-        const arch = typeToArch[confirmedType];
+        // legacy type → archetype from /taxonomy/v2 metadata (single source).
+        const arch = archetypeForLegacyType(confirmedType);
         if (arch) { setArchetype(arch); archetypeRef.current = arch; }
       }
       setChatStage("type");

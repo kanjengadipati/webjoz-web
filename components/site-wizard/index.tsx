@@ -102,6 +102,7 @@ import {
   toggleUserEntity,
   nextEntityFromArchetype,
 } from "./entity";
+import { fallbackArchetypeForEntity, fallbackTypeForEntity } from "./archetype-meta";
 import { useTaxonomy, useTaxonomyV2 } from "@/hooks/use-taxonomy";
 import { selectTemplate, formatText, generateSubdomain, generateSlug, getTemplatePool, getDynamicDescriptionPlaceholder, generateDescriptionFromBusinessName, preloadTemplate, resolveBusinessName } from "./helpers";
 import { sanitizeClassificationPair } from "./taxonomy";
@@ -804,7 +805,7 @@ export function SiteWizard({
       // fall back to derivation from v1 type/subType for old FE compatibility.
       ...(() => {
         const arch = chat.archetypeRef.current ||
-          (!safePair.businessType ? (ent === "individual" ? "portfolio_individual" : "booking_service") : undefined);
+          (!safePair.businessType ? fallbackArchetypeForEntity(ent) : undefined);
         const iid = chat.industryIdRef.current;
         const custom = chat.industryCustom || (!iid && safeBusinessSubType ? safeBusinessSubType : undefined);
         const base = (arch || iid)
@@ -850,8 +851,8 @@ export function SiteWizard({
   const handleSelectCustomIndustry = (text: string) => {
     const clean = text.replace(/<[^>]*>?/gm, "").trim().slice(0, 80); // sama dengan batas server
     if (!clean) return;
-    const fallbackArch = chat.entity === "individual" ? "portfolio_individual" : "booking_service";
-    const fallbackType = chat.entity === "individual" ? "Portofolio" : "Layanan & Reservasi";
+    const fallbackArch = fallbackArchetypeForEntity(chat.entity);
+    const fallbackType = fallbackTypeForEntity(chat.entity);
     chat.setIndustryId("");
     chat.industryIdRef.current = "";
     chat.setIndustryCustom(clean);
@@ -864,6 +865,19 @@ export function SiteWizard({
       chat.setArchetype(fallbackArch);
       chat.archetypeRef.current = fallbackArch;
       chat.setEntityState((prev) => nextEntityFromArchetype(prev, fallbackArch));
+    }
+    // Jika deskripsi belum diisi manual oleh pengguna, bangkitkan deskripsi awal dari custom industry
+    if (chat.descriptionSource !== "user" || !chat.descriptionRef?.current) {
+      const autoDesc = generateDescriptionFromBusinessName(
+        chat.businessName || "",
+        { subType: clean },
+        wizardLang
+      );
+      if (autoDesc) {
+        if (chat.descriptionRef) chat.descriptionRef.current = autoDesc;
+        chat.setDescription(autoDesc);
+        if (chat.setDescriptionSource) chat.setDescriptionSource("ai");
+      }
     }
     // lanjut ke pemilihan bahasa seperti handleSelectSubType
     chat.setMessages((prev) => [

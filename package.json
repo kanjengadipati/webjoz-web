@@ -28,6 +28,7 @@
     "test:section-status": "node --test scripts/section-status.test.mjs",
     "test:section-order": "node --test scripts/section-order.test.mjs",
     "test:inference-v2": "node --test scripts/inference-v2.test.mjs",
+    "test:archetype-meta": "node --test --experimental-strip-types scripts/archetype-meta.test.mjs",
     "test:brand-color": "node --test --experimental-strip-types scripts/brand-color.test.mjs",
     "test:theme-overrides": "node --test --experimental-strip-types scripts/theme-overrides.test.mjs",
     "test:theme-presets": "node --test --experimental-strip-types scripts/theme-presets.test.mjs",

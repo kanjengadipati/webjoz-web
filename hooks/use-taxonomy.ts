@@ -164,6 +164,7 @@ export function useTaxonomyFlat(lang: "id" | "en" = "id", region?: string) {
 // ── v2 taxonomy hook (Tahap 4) ─────────────────────────────────────────────
 
 import { fetchTaxonomyV2, TaxonomyV2Response, TaxonomyV2Industry } from "@/lib/api/taxonomy";
+import { setArchetypeMeta } from "@/components/site-wizard/archetype-meta";
 
 /**
  * useTaxonomyV2 fetches the v2 catalog grouped by Bidang (sector).
@@ -191,6 +192,11 @@ export function useTaxonomyV2(lang: "id" | "en" = "id", region?: string) {
   useEffect(() => {
     load();
   }, [load]);
+
+  // Publish archetype metadata to the wizard helpers during render, so the
+  // very next render (triggered by setData) sees the API values everywhere.
+  // Falls back to the bundled copy when the request failed or is still loading.
+  setArchetypeMeta(data?.archetypes);
 
   /** Find an industry entry by stable ID. O(n) — use only in non-hot paths. */
   const getIndustry = useCallback(
