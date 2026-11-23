@@ -58,9 +58,7 @@ export default function CatalogSection({
       const existingFeatures = items.find((it) => it.features && it.features.length > 0)?.features;
       const defaultFeatures = existingFeatures && existingFeatures.length > 0
         ? existingFeatures.map((_, i) => (isEN ? `Feature ${i + 1}` : `Fitur ${i + 1}`))
-        : isEN
-          ? ["Key Feature 1", "Key Feature 2", "Official Warranty"]
-          : ["Fitur Unggulan 1", "Fitur Unggulan 2", "Garansi Resmi"];
+        : [];
 
       items.push({
         id: genId(),

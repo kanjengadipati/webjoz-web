@@ -2334,7 +2334,7 @@ function MenuCatalogCard({
           <div className="mt-2">
             <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)" }}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="w-3 h-3"><circle cx="9" cy="7" r="2"/><path d="M3 21v-1a6 6 0 0 1 12 0v1"/><circle cx="17" cy="7" r="2"/><path d="M21 21v-1a5 5 0 0 0-3-4.6"/></svg>
-              s/d <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".capacity" : ""} value={String(capacity)} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /> tamu
+              s/d <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".capacity" : ""} value={String(capacity)} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             </span>
           </div>
         )}

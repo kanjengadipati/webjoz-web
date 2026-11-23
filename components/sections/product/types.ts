@@ -3,7 +3,7 @@ import type { TemplateProps, DesignToken } from "../../templates/types";
 type MenuContent = NonNullable<TemplateProps["content"]["menu"]>;
 type CatalogContent = NonNullable<TemplateProps["content"]["catalog"]>;
 
-export type ProductKind = "menu" | "catalog";
+export type ProductKind = "menu" | "product" | "service" | "lodging";
 
 export type ProductItem = MenuContent["categories"][number]["items"][number] &
   CatalogContent["categories"][number]["items"][number];

@@ -470,12 +470,14 @@ export interface TemplateProps {
       title: string;
       eyebrow?: string;
       subtitle?: string;
+      kind?: "menu" | "product" | "service" | "lodging";
       categories: MenuCategory[];
     };
     catalog?: {
       title: string;
       eyebrow?: string;
       subtitle?: string;
+      kind?: "menu" | "product" | "service" | "lodging";
       categories: CatalogCategory[];
     };
     gallery?: {
