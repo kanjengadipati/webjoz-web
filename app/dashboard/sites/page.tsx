@@ -19,7 +19,6 @@ import { useToast } from "@/components/toast-provider";
 import { useI18n } from "@/lib/i18n/context";
 import { encodeSiteId } from "@/lib/sqids";
 import { BASE_DOMAIN } from "@/lib/site-config";
-import TermsAcceptance from "@/components/terms-acceptance";
 import ModerationBlock, { type ModerationViolation } from "@/components/moderation-block";
 
 /* ── Delete Confirmation Modal ─────────────────────────────────────── */

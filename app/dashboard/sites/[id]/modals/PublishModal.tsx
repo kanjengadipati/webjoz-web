@@ -2,13 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Rocket, Globe, Loader2 } from "lucide-react";
+import { Rocket, Globe, Loader2, ExternalLink } from "lucide-react";
 import { Button, Dialog } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
 import { request } from "@/lib/api/client";
 import { isReservedSubdomain } from "@/lib/subdomain";
 import { BASE_DOMAIN } from "@/lib/site-config";
-import TermsAcceptance from "@/components/terms-acceptance";
 import ModerationBlock, { type ModerationViolation } from "@/components/moderation-block";
 
 export interface PublishModalProps {
@@ -37,7 +36,8 @@ interface SubdomainAvailabilityResponse {
 }
 
 export default function PublishModal({ site, siteId, onConfirm, onCancel, loading, violations, onAppealSubmit, appealLoading, appealDone }: PublishModalProps) {
-  const { t } = useI18n();
+  const { t, isIndonesian } = useI18n();
+  const termsHref = isIndonesian ? "/terms" : "/en/terms";
   const hasModerationBlock = !!violations && violations.length > 0;
   const [subdomain, setSubdomain] = useState(() => {
     if (site.subdomain.startsWith("draft-")) return "";
@@ -281,44 +281,84 @@ export default function PublishModal({ site, siteId, onConfirm, onCancel, loadin
           </div>
         )}
 
-        {/* Content authenticity declaration — required before publishing */}
-        <label
-          className={`flex items-start gap-3 border rounded-xl p-3.5 transition-colors bg-card select-none ${
-            submitAttempted && !contentVerified
-              ? "border-red-500/50 bg-red-500/[0.02]"
-              : "border-border/70 hover:border-primary/40"
-          } ${loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}
-        >
-          <input
-            type="checkbox"
-            checked={contentVerified}
-            disabled={loading}
-            onChange={(e) => {
-              setContentVerified(e.target.checked);
-              if (e.target.checked) setSubmitAttempted(false);
-            }}
-            className="w-4 h-4 mt-0.5 accent-primary rounded shrink-0 cursor-pointer"
-          />
-          <div className="min-w-0 space-y-1">
-            <p className="text-[12px] font-medium text-foreground/80 leading-snug">
-              {t("dashboard.sites.publishContentVerified")}
-            </p>
-            <p className="text-[11px] text-muted-foreground leading-relaxed">
-              {t("dashboard.sites.publishContentVerifiedDesc")}
-            </p>
-          </div>
-        </label>
+        {/* Verification & Terms Agreement Checklist */}
+        <div className="space-y-1">
+          <div
+            className={`border rounded-xl bg-card divide-y divide-border/60 overflow-hidden transition-colors ${
+              submitAttempted && (!contentVerified || !agreed)
+                ? "border-red-500/50"
+                : "border-border/70"
+            }`}
+          >
+            {/* 1. Content authenticity declaration */}
+            <label
+              className={`flex items-start gap-3 p-3.5 transition-colors select-none ${
+                submitAttempted && !contentVerified
+                  ? "bg-red-500/[0.04]"
+                  : "hover:bg-muted/30"
+              } ${loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}
+            >
+              <input
+                type="checkbox"
+                checked={contentVerified}
+                disabled={loading}
+                onChange={(e) => {
+                  setContentVerified(e.target.checked);
+                  if (e.target.checked) setSubmitAttempted(false);
+                }}
+                className="w-4 h-4 mt-0.5 accent-primary rounded shrink-0 cursor-pointer"
+              />
+              <div className="min-w-0 space-y-1">
+                <p className="text-[12px] font-medium text-foreground/80 leading-snug">
+                  {t("dashboard.sites.publishContentVerified")}
+                </p>
+                <p className="text-[11px] text-muted-foreground leading-relaxed">
+                  {t("dashboard.sites.publishContentVerifiedDesc")}
+                </p>
+              </div>
+            </label>
 
-        {/* Terms & Conditions Acceptance - placed directly above action buttons */}
-        <TermsAcceptance
-          agreed={agreed}
-          onChange={(v) => {
-            setAgreed(v);
-            if (v) setSubmitAttempted(false);
-          }}
-          showError={submitAttempted && !agreed}
-          disabled={loading}
-        />
+            {/* 2. Terms & Conditions Acceptance */}
+            <label
+              className={`flex items-start gap-3 p-3.5 transition-colors select-none ${
+                submitAttempted && !agreed
+                  ? "bg-red-500/[0.04]"
+                  : "hover:bg-muted/30"
+              } ${loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}
+            >
+              <input
+                type="checkbox"
+                checked={agreed}
+                disabled={loading}
+                onChange={(e) => {
+                  setAgreed(e.target.checked);
+                  if (e.target.checked) setSubmitAttempted(false);
+                }}
+                className="w-4 h-4 mt-0.5 accent-primary rounded shrink-0 cursor-pointer"
+              />
+              <div className="min-w-0">
+                <p className="text-[12px] font-medium text-foreground/80 leading-snug">
+                  {t("dashboard.sites.publishTermsTitle")}{" "}
+                  <Link
+                    href={termsHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="font-semibold text-[#3ddc84] dark:text-[#5fe3a0] underline underline-offset-4 decoration-[#3ddc84]/40 hover:decoration-[#3ddc84] hover:text-white transition-colors inline-flex items-center gap-1"
+                  >
+                    <span>{t("dashboard.sites.publishTermsLink")}</span>
+                    <ExternalLink className="w-3 h-3 shrink-0 opacity-80" />
+                  </Link>
+                </p>
+              </div>
+            </label>
+          </div>
+          {submitAttempted && !agreed && (
+            <p className="text-[11px] text-red-500 ml-1">
+              {t("dashboard.sites.publishTermsRequired")}
+            </p>
+          )}
+        </div>
 
         {/* Actions */}
         <div className="flex gap-3 pt-1">
