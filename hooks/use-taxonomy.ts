@@ -180,6 +180,12 @@ export function useTaxonomyV2(lang: "id" | "en" = "id", region?: string) {
     setError(null);
     try {
       const resp = await fetchTaxonomyV2(lang, region);
+      // Publish archetype metadata to the wizard helpers here (not during
+      // render): a render-phase write to module state is an impure side effect
+      // and, with several hook instances, a still-loading instance would reset
+      // the metadata another instance already loaded. On failure we keep
+      // whatever is current (bundled fallback or an earlier successful load).
+      setArchetypeMeta(resp?.archetypes);
       setData(resp);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load v2 taxonomy");
@@ -192,11 +198,6 @@ export function useTaxonomyV2(lang: "id" | "en" = "id", region?: string) {
   useEffect(() => {
     load();
   }, [load]);
-
-  // Publish archetype metadata to the wizard helpers during render, so the
-  // very next render (triggered by setData) sees the API values everywhere.
-  // Falls back to the bundled copy when the request failed or is still loading.
-  setArchetypeMeta(data?.archetypes);
 
   /** Find an industry entry by stable ID. O(n) — use only in non-hot paths. */
   const getIndustry = useCallback(
