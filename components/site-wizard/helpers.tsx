@@ -444,6 +444,12 @@ export function generateDescriptionFromBusinessName(
       case "Frozen Food Homemade":
       case "food.home_kitchen":
         return `Providing a variety of quality frozen foods, home-cooked meals, and delicious culinary options crafted with care at ${name}.`;
+      case "Elektronik & Gadget":
+      case "Toko Gadget":
+      case "Toko Elektronik":
+      case "shop.electronics":
+      case "shop.gadget":
+        return `Offering premium electronics, modern gadgets, and quality tech accessories at ${name}.`;
       default:
         if (/frozen|fozen|nugget|dimsum/i.test(`${name} ${subType || ""}`)) {
           return `Providing a variety of quality frozen food options and delicious daily meals at ${name}.`;
@@ -511,6 +517,12 @@ export function generateDescriptionFromBusinessName(
     case "Frozen Food Homemade":
     case "food.home_kitchen":
       return `Menyediakan aneka pilihan frozen food berkualitas dan sajian makanan rumahan lezat praktis di ${name}.`;
+    case "Elektronik & Gadget":
+    case "Toko Gadget":
+    case "Toko Elektronik":
+    case "shop.electronics":
+    case "shop.gadget":
+      return `Menyediakan berbagai produk alat elektronik, gadget terkini, dan aksesoris berkualitas untuk kebutuhan Anda di ${name}.`;
     default:
       if (/frozen|fozen|nugget|dimsum/i.test(`${name} ${subType || ""}`)) {
         return `Menyediakan aneka produk frozen food berkualitas dan makanan lezat praktis untuk kebutuhan keluarga di ${name}.`;

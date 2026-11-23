@@ -625,7 +625,23 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     _onGenerate: (name: string, type: string, overrides: any) => void
   ) => {
     setBusinessSubType(subType);
+    businessSubTypeRef.current = subType;
     setInputValue("");
+
+    // Jika deskripsi belum diisi manual oleh pengguna (mis. lewati deskripsi atau nama tidak teridentifikasi),
+    // deskripsi final dibangkitkan dari kategori bisnis yang dipilih.
+    if (descriptionSource !== "user" || !descriptionRef.current) {
+      const autoDesc = generateDescriptionFromBusinessName(
+        businessNameRef.current || businessName,
+        { subType, type: businessTypeRef.current || businessType },
+        siteLanguageRef.current || locale
+      );
+      if (autoDesc) {
+        descriptionRef.current = autoDesc;
+        setDescription(autoDesc);
+        if (setDescriptionSource) setDescriptionSource("ai");
+      }
+    }
 
     setMessages((prev) => [
       ...prev,
@@ -1543,6 +1559,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     description,
     setDescription,
     descriptionSource,
+    setDescriptionSource,
     suggestedIndustryId,
     setSuggestedIndustryId,
     manualPicker,
