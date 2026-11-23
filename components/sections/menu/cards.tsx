@@ -4,5 +4,5 @@ import ProductCards from "../product/cards";
 import type { MenuVariantProps } from "../product/types";
 
 export default function MenuCards({ menu, ...rest }: MenuVariantProps) {
-  return <ProductCards kind="menu" data={menu} {...rest} />;
+  return <ProductCards section="menu" kind="menu" data={menu} {...rest} />;
 }

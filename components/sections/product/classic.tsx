@@ -8,7 +8,7 @@ import { SectionHeader, pillEyebrowStyle, headerTitleStyle } from "../section-he
 import { productCategories, type ProductVariantProps } from "./types";
 
 export default function ProductClassic({
-  kind, data, design_token, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
+  section, kind, data, design_token, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
   onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id",
 }: ProductVariantProps) {
   const isEN = language === "en";
@@ -59,10 +59,10 @@ export default function ProductClassic({
   const Icon = isMenu ? Utensils : ImageIcon;
 
   return (
-    <section id={kind} style={{ padding: `var(--dt-spacing) 1.5rem`, background: `color-mix(in srgb, ${brandPrimary} 4%, ${brandBg})`, borderTop: `1px solid color-mix(in srgb, ${brandPrimary} 12%, transparent)` }}>
+    <section id={section} style={{ padding: `var(--dt-spacing) 1.5rem`, background: `color-mix(in srgb, ${brandPrimary} 4%, ${brandBg})`, borderTop: `1px solid color-mix(in srgb, ${brandPrimary} 12%, transparent)` }}>
       <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
         <SectionHeader
-          section={kind}
+          section={section}
           eyebrow={data.eyebrow ?? eyebrowDefault}
           title={data.title}
           wrapperStyle={{ textAlign: "center", marginBottom: "2.5rem" }}
@@ -99,7 +99,7 @@ export default function ProductClassic({
                 <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, ${brandPrimary} 18%, transparent)` }} />
                 <span style={{ width: 6, height: 6, borderRadius: "50%", background: brandPrimary, flexShrink: 0 }} />
                 <InlineText
-                  section={kind}
+                  section={section}
                   fieldKey={"categories." + cat.originalCatIdx + ".name"}
                   value={cat.name ?? ""}
                   onUpdateField={onUpdateField}
@@ -127,9 +127,9 @@ export default function ProductClassic({
               >
                 {cat.filteredItems.map(({ item, originalCatIdx, originalItemIdx }) => (
                   <MenuCatalogCard
-                    key={item.id || `${kind}-classic-${originalCatIdx}-${originalItemIdx}`}
+                    key={item.id || `${section}-classic-${originalCatIdx}-${originalItemIdx}`}
                     item={{
-                      id: item.id || `${kind}-classic-${originalCatIdx}-${originalItemIdx}`,
+                      id: item.id || `${section}-classic-${originalCatIdx}-${originalItemIdx}`,
                       name: item.name,
                       price: item.price,
                       priceAmount: item.price_amount,
@@ -150,7 +150,7 @@ export default function ProductClassic({
                     icon={Icon}
                     layout={design_token?.layout?.card_style ?? "grid"}
                     styles={cardStyles}
-                    editSection={kind}
+                    editSection={section}
                     pathBase={"categories." + originalCatIdx + ".items." + originalItemIdx}
                     onUpdateField={onUpdateField}
                     isEditorMode={isEditorMode}

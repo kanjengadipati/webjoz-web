@@ -8,7 +8,7 @@ import { SectionHeader, pillEyebrowStyle, headerTitleStyle } from "../section-he
 import { productCategories, type ProductVariantProps } from "./types";
 
 export default function ProductCards({
-  kind, data, design_token, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
+  section, kind, data, design_token, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
   onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id",
 }: ProductVariantProps) {
   const isEN = language === "en";
@@ -61,10 +61,10 @@ export default function ProductCards({
   const Icon = isMenu ? Utensils : ImageIcon;
 
   return (
-    <section id={kind} style={{ padding: "var(--dt-spacing) 1.5rem", background: `color-mix(in srgb, ${brandPrimary} 4%, ${brandBg})`, borderTop: `1px solid color-mix(in srgb, ${brandPrimary} 12%, transparent)` }}>
+    <section id={section} style={{ padding: "var(--dt-spacing) 1.5rem", background: `color-mix(in srgb, ${brandPrimary} 4%, ${brandBg})`, borderTop: `1px solid color-mix(in srgb, ${brandPrimary} 12%, transparent)` }}>
       <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
         <SectionHeader
-          section={kind}
+          section={section}
           eyebrow={data.eyebrow ?? eyebrowDefault}
           title={data.title}
           wrapperStyle={{ textAlign: "center", marginBottom: "2.5rem" }}
@@ -99,7 +99,7 @@ export default function ProductCards({
             <div key={renderedIdx} style={{ marginBottom: "4rem" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.75rem", marginBottom: "1.5rem" }}>
                 <InlineText
-                  section={kind}
+                  section={section}
                   fieldKey={"categories." + cat.originalCatIdx + ".name"}
                   value={cat.name ?? ""}
                   onUpdateField={onUpdateField}
@@ -121,7 +121,7 @@ export default function ProductCards({
 
               <div style={{ display: "grid", gridTemplateColumns: `repeat(auto-fill, minmax(${isMenu ? 320 : 280}px, 1fr))`, gap: "1.5rem", ...(isMenu ? { alignItems: "stretch" } : {}) }}>
                 {cat.filteredItems.map(({ item, originalCatIdx, originalItemIdx }) => {
-                  const cardKey = item.id || `${kind}-cards-${originalCatIdx}-${originalItemIdx}`;
+                  const cardKey = item.id || `${section}-cards-${originalCatIdx}-${originalItemIdx}`;
                   const cardEl = (
                     <MenuCatalogCard
                       item={{
@@ -146,7 +146,7 @@ export default function ProductCards({
                       icon={Icon}
                       layout={design_token?.layout?.card_style ?? "grid"}
                       styles={cardStyles}
-                      editSection={kind}
+                      editSection={section}
                       pathBase={"categories." + originalCatIdx + ".items." + originalItemIdx}
                       onUpdateField={onUpdateField}
                       isEditorMode={isEditorMode}

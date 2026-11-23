@@ -4,5 +4,5 @@ import ProductMasonryFlow from "../product/masonry-flow";
 import type { CatalogVariantProps } from "../product/types";
 
 export default function CatalogMasonryFlow({ catalog, ...rest }: CatalogVariantProps) {
-  return <ProductMasonryFlow kind="product" data={catalog} {...rest} />;
+  return <ProductMasonryFlow section="catalog" kind="product" data={catalog} {...rest} />;
 }

@@ -4,5 +4,5 @@ import ProductHorizontalSwipeCarousel from "../product/horizontal-swipe-carousel
 import type { CatalogVariantProps } from "../product/types";
 
 export default function CatalogHorizontalSwipeCarousel({ catalog, ...rest }: CatalogVariantProps) {
-  return <ProductHorizontalSwipeCarousel kind="product" data={catalog} {...rest} />;
+  return <ProductHorizontalSwipeCarousel section="catalog" kind="product" data={catalog} {...rest} />;
 }

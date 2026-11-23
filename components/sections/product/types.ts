@@ -3,7 +3,8 @@ import type { TemplateProps, DesignToken } from "../../templates/types";
 type MenuContent = NonNullable<TemplateProps["content"]["menu"]>;
 type CatalogContent = NonNullable<TemplateProps["content"]["catalog"]>;
 
-export type ProductKind = "menu" | "product" | "service" | "lodging";
+import type { ProductKind } from "./kind-config";
+export type { ProductKind };
 
 export type ProductItem = MenuContent["categories"][number]["items"][number] &
   CatalogContent["categories"][number]["items"][number];
@@ -38,6 +39,9 @@ export interface CatalogVariantProps extends ProductCommonProps {
 }
 
 export interface ProductVariantProps extends ProductCommonProps {
+  /** Section key in content (menu | catalog). Used for id/anchor/editSection. */
+  section: "menu" | "catalog";
+  /** Behaviour kind (menu | product | service | lodging). */
   kind: ProductKind;
   data: TemplateProps["content"]["menu"] | TemplateProps["content"]["catalog"];
 }

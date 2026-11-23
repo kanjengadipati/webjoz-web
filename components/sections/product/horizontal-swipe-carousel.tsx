@@ -7,7 +7,7 @@ import { SectionHeader } from "../section-header";
 import { productCategories, type ProductVariantProps } from "./types";
 
 export default function ProductHorizontalSwipeCarousel({
-  kind, data, design_token, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
+  section, kind, data, design_token, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
   onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id",
 }: ProductVariantProps) {
   const isEN = language === "en";
@@ -61,7 +61,7 @@ export default function ProductHorizontalSwipeCarousel({
 
   return (
     <section
-      id={kind}
+      id={section}
       className="py-16 px-4 md:px-8 max-w-7xl mx-auto overflow-hidden"
       style={{
         backgroundColor: brandBg,
@@ -74,7 +74,7 @@ export default function ProductHorizontalSwipeCarousel({
       {/* Header */}
       <div className="mb-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
         <SectionHeader
-          section={kind}
+          section={section}
           eyebrow={(data.eyebrow || isEditorMode) ? (data.eyebrow ?? eyebrowDefault) : undefined}
           title={data.title}
           subtitle={(data.subtitle || isEditorMode) ? (data.subtitle ?? "") : undefined}
@@ -134,7 +134,7 @@ export default function ProductHorizontalSwipeCarousel({
                 style={{ color: isActive ? brandText : "var(--dt-text-muted)", fontFamily: headingFont }}
               >
                 <InlineText
-                  section={kind}
+                  section={section}
                   fieldKey={"categories." + idx + ".name"}
                   value={category.name ?? ""}
                   onUpdateField={onUpdateField}
@@ -178,7 +178,7 @@ export default function ProductHorizontalSwipeCarousel({
             style={{ WebkitOverflowScrolling: "touch" }}
           >
             {activeCategory.items?.map((item, index) => {
-              const cardKey = item.id || `${kind}-hsc-${safeActiveIdx}-${index}`;
+              const cardKey = item.id || `${section}-hsc-${safeActiveIdx}-${index}`;
               return (
                 <div
                   key={cardKey}
@@ -209,7 +209,7 @@ export default function ProductHorizontalSwipeCarousel({
                     }}
                     icon={Icon}
                     styles={cardStyles}
-                    editSection={kind}
+                    editSection={section}
                     pathBase={"categories." + safeActiveIdx + ".items." + index}
                     onUpdateField={onUpdateField}
                     isEditorMode={isEditorMode}

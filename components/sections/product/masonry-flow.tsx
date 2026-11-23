@@ -7,7 +7,7 @@ import { SectionHeader } from "../section-header";
 import { productCategories, type ProductVariantProps } from "./types";
 
 export default function ProductMasonryFlow({
-  kind, data, design_token, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
+  section, kind, data, design_token, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
   onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id",
 }: ProductVariantProps) {
   const isEN = language === "en";
@@ -65,7 +65,7 @@ export default function ProductMasonryFlow({
 
   return (
     <section
-      id={kind}
+      id={section}
       style={{
         backgroundColor: brandBg,
         color: brandText,
@@ -81,7 +81,7 @@ export default function ProductMasonryFlow({
       >
       {/* Header */}
       <SectionHeader
-        section={kind}
+        section={section}
         eyebrow={(data.eyebrow || isEditorMode) ? (data.eyebrow ?? eyebrowDefault) : undefined}
         title={data.title}
         subtitle={(data.subtitle || isEditorMode) ? (data.subtitle ?? "") : undefined}
@@ -112,7 +112,7 @@ export default function ProductMasonryFlow({
               style={{ borderColor: "var(--dt-border)" }}
             >
               <InlineText
-                section={kind}
+                section={section}
                 fieldKey={"categories." + catIdx + ".name"}
                 value={category.name ?? ""}
                 onUpdateField={onUpdateField}
@@ -136,7 +136,7 @@ export default function ProductMasonryFlow({
             {/* Vertical CSS Masonry Columns */}
             <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 md:gap-6 [column-fill:_balance]">
               {category.items?.map((item, index) => {
-                const cardKey = item.id || `${kind}-mf-${catIdx}-${index}`;
+                const cardKey = item.id || `${section}-mf-${catIdx}-${index}`;
                 return (
                   <div
                     key={cardKey}
@@ -173,7 +173,7 @@ export default function ProductMasonryFlow({
                       }}
                       icon={Icon}
                       styles={getMasonryCardStyles(index)}
-                      editSection={kind}
+                      editSection={section}
                       pathBase={"categories." + catIdx + ".items." + index}
                       onUpdateField={onUpdateField}
                       isEditorMode={isEditorMode}

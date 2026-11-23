@@ -11,7 +11,7 @@ import { productCategories, type ProductVariantProps } from "./types";
  * Best for menus/catalogs with 3+ categories where scrolling per-category is too long.
  */
 export default function ProductTabsByCategory({
-  kind, data, design_token, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
+  section, kind, data, design_token, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
   onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id",
 }: ProductVariantProps) {
   const isEN = language === "en";
@@ -68,11 +68,11 @@ export default function ProductTabsByCategory({
   };
 
   return (
-    <section id={kind} style={{ padding: "var(--dt-spacing) 1.5rem", background: `color-mix(in srgb, ${p} 4%, ${bg})`, borderTop: `1px solid color-mix(in srgb, ${p} 12%, transparent)` }}>
+    <section id={section} style={{ padding: "var(--dt-spacing) 1.5rem", background: `color-mix(in srgb, ${p} 4%, ${bg})`, borderTop: `1px solid color-mix(in srgb, ${p} 12%, transparent)` }}>
       <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
         {/* Header */}
         <SectionHeader
-          section={kind}
+          section={section}
           eyebrow={data.eyebrow ?? eyebrowDefault}
           title={data.title}
           wrapperStyle={{ textAlign: "center", marginBottom: "2rem" }}
@@ -144,7 +144,7 @@ export default function ProductTabsByCategory({
                     whiteSpace: "nowrap",
                   }}
                 >
-                  <InlineText section={kind} fieldKey={"categories." + i + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontSize: "0.78rem", fontWeight: isActive ? 700 : 500, color: isActive ? "var(--dt-cta-text, #fff)" : `color-mix(in srgb, ${text} 70%, transparent)`, whiteSpace: "nowrap" as const }} />
+                  <InlineText section={section} fieldKey={"categories." + i + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontSize: "0.78rem", fontWeight: isActive ? 700 : 500, color: isActive ? "var(--dt-cta-text, #fff)" : `color-mix(in srgb, ${text} 70%, transparent)`, whiteSpace: "nowrap" as const }} />
                 </button>
                 {isEditorMode && onDeleteCategory && (
                   <InlineDeleteButton
@@ -216,7 +216,7 @@ export default function ProductTabsByCategory({
                   icon={Icon}
                   layout={design_token?.layout?.card_style ?? "grid"}
                   styles={cardStyles}
-                  editSection={kind}
+                  editSection={section}
                   pathBase={"categories." + safeActiveIdx + ".items." + originalItemIdx}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
