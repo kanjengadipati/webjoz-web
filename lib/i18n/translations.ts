@@ -8069,7 +8069,7 @@ export const translations: Record<Locale, Translations> = {
         entityQuestion: "Website ini untuk siapa?",
         entityIndividual: "Perorangan",
         entityOrganization: "Bisnis / Organisasi",
-        btnContinue: "Lanjut",
+        btnContinue: "Lanjutkan",
         btnDone: "Tutup",
         btnEdit: "Ubah",
         btnGenerate: "Buat Website Sekarang",
