@@ -277,7 +277,7 @@ export function getTemplatePool(businessType: string, mood: string): string[] {
     return BUSINESS_TEMPLATE_POOLS.jasa;
   }
   if (lower.includes("produk") || lower.includes("toko") || lower.includes("retail") ||
-    lower.includes("fashion") || lower.includes("elektronik") || lower.includes("umkm") ||
+    lower.includes("fashion") || lower.includes("elektronik") || lower.includes("gadget") || lower.includes("umkm") ||
     lower.includes("online") || lower.includes("minuman") || lower.includes("bubble") ||
     lower.includes("boba")) {
     return BUSINESS_TEMPLATE_POOLS.produk;

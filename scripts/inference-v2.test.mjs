@@ -51,6 +51,20 @@ test("preInferredFromClassify with low confidence stays low", () => {
   assert.equal(pre.confidence, "low");
 });
 
+test("gadget and electronics stay distinct industries", () => {
+  const gadget = preInferredFromClassify(
+    { type: "Toko", subType: "Gadget" },
+    { archetype: "retail_catalog", industry_id: "shop.gadget", confidence: "high" },
+  );
+  const electronics = preInferredFromClassify(
+    { type: "Toko", subType: "Elektronik" },
+    { archetype: "retail_catalog", industry_id: "shop.electronics", confidence: "high" },
+  );
+  assert.equal(gadget.industryId, "shop.gadget");
+  assert.equal(electronics.industryId, "shop.electronics");
+  assert.notEqual(gadget.industryId, electronics.industryId);
+});
+
 test("preInferredFromClassify with null v2 fields", () => {
   const pre = preInferredFromClassify({ type: "Toko", subType: "" }, null);
   assert.equal(pre.type, "Toko");

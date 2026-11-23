@@ -66,6 +66,11 @@
   },
   {
     "type": "Toko",
+    "subType": "Gadget",
+    "id": "shop.gadget"
+  },
+  {
+    "type": "Toko",
     "subType": "Kecantikan \u0026 Kosmetik",
     "id": "shop.beauty"
   },

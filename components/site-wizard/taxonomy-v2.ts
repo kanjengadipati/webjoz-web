@@ -32,6 +32,7 @@ const SUB_TYPE_TO_V2: Record<string, [string, string]> = {
   // Toko
   "Fashion & Pakaian":                   ["retail_catalog", "shop.fashion"],
   "Elektronik":                          ["retail_catalog", "shop.electronics"],
+  "Gadget":                              ["retail_catalog", "shop.gadget"],
   "Kecantikan & Kosmetik":              ["retail_catalog", "shop.beauty"],
   "Produk Lokal Handmade":              ["retail_catalog", "shop.handmade"],
   "Minimarket & Sembako":               ["retail_catalog", "shop.grocery"],

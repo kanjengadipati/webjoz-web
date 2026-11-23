@@ -131,7 +131,8 @@ const KREATIF_PRO_SUB_TYPES: SubTypeItem[] = [
 // Sub-tipe untuk "Toko" — toko fisik, online retail, dan UMKM produk
 const TOKO_SUB_TYPES: SubTypeItem[] = [
   { value: "Fashion & Pakaian", emoji: "👗", label: "Fashion" },
-  { value: "Elektronik", emoji: "📱", label: "Elektronik" },
+  { value: "Elektronik", emoji: "🔌", label: "Elektronik" },
+  { value: "Gadget", emoji: "📱", label: "Gadget" },
   { value: "Kecantikan & Kosmetik", emoji: "💄", label: "Kosmetik & Skincare" },
   { value: "Produk Lokal Handmade", emoji: "🧺", label: "Handmade" },
   { value: "Minimarket & Sembako", emoji: "🏪", label: "Minimarket & Sembako" },

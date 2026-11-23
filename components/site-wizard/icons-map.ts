@@ -90,7 +90,8 @@ export const SUB_TYPE_ICONS: Record<string, React.ElementType> = {
   "Koperasi & Simpan Pinjam": Landmark,
   // Toko
   "Fashion & Pakaian": Shirt,
-  "Elektronik": Smartphone,
+  "Elektronik": Monitor,
+  "Gadget": Smartphone,
   "Kecantikan & Kosmetik": SparkleIcon,
   "Produk Lokal Handmade": PencilRuler,
   "Minimarket & Sembako": Store,
@@ -165,7 +166,8 @@ export const SUB_TYPE_ICONS: Record<string, React.ElementType> = {
   "service.car_wash": Car,
   "service.vehicle_rental": Car,
   // Elektronik & Gadget
-  "shop.electronics": Smartphone,
+  "shop.electronics": Monitor,
+  "shop.gadget": Smartphone,
   "service.device_repair": Smartphone,
   // Hewan & Pertanian
   "shop.agri": Wheat,
