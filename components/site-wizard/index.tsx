@@ -1539,14 +1539,14 @@ export function SiteWizard({
                     if (selectedValue.includes(".")) {
                       chat.setIndustryId(selectedValue);
                       chat.industryIdRef.current = selectedValue;
-                    } else {
+                    } else if (selectedValue) {
                       chat.setBusinessSubType(selectedValue);
                     }
-                    const doInject = chat.inferenceAutoConfirmRef.current;
+                    // Clear the deferred inference callback and advance through the
+                    // canonical handler so the button always works, even when the ref
+                    // was reset (e.g. after changing the AI model / re-initialisation).
                     chat.inferenceAutoConfirmRef.current = null;
-                    if (doInject) {
-                      doInject(selectedValue.includes(".") ? "" : selectedValue);
-                    }
+                    chat.continueToLanguage();
                   }}
                   onChangeCategory={() => {
                     chat.setMessages((prev) => prev.filter((msg) => msg.id !== m.id));
@@ -1615,17 +1615,13 @@ export function SiteWizard({
                     if (selectedValue.includes(".")) {
                       chat.setIndustryId(selectedValue);
                       chat.industryIdRef.current = selectedValue;
-                    } else {
+                    } else if (selectedValue) {
                       chat.setBusinessSubType(selectedValue);
                     }
-                    // Route through the canonical doInjectLanguage stored in the ref.
-                    const doInject = chat.inferenceAutoConfirmRef.current;
+                    // Always advance via the canonical handler — the deferred ref may
+                    // be null after a model change / re-initialisation.
                     chat.inferenceAutoConfirmRef.current = null;
-                    if (doInject) {
-                      doInject(selectedValue.includes(".") ? "" : selectedValue);
-                    } else {
-                      if (!selectedValue.includes(".")) chat.setBusinessSubType(selectedValue);
-                    }
+                    chat.continueToLanguage();
                   }}
                   onUnlockChips={() => {
                     chat.inferenceAutoConfirmRef.current = null;
