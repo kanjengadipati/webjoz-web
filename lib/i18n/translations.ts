@@ -3697,7 +3697,14 @@ export interface Translations {
       entityIndividual: string;
       entityOrganization: string;
       btnContinue: string;
+      btnDone: string;
+      btnEdit: string;
       btnGenerate: string;
+      profileLooksGreat: string;
+      capturedInfo: string;
+      namePlaceholder: string;
+      cardDesc: string;
+      locationPlaceholder: string;
       cardName: string;
       cardBidang: string;
       cardSpec: string;
@@ -8063,7 +8070,14 @@ export const translations: Record<Locale, Translations> = {
         entityIndividual: "Perorangan",
         entityOrganization: "Bisnis / Organisasi",
         btnContinue: "Ya, lanjut",
+        btnDone: "Tutup",
+        btnEdit: "Ubah",
         btnGenerate: "Buat Website Sekarang",
+        profileLooksGreat: "Profil bisnis sudah siap!",
+        capturedInfo: "Berikut informasi yang kami rangkum:",
+        namePlaceholder: "Ketik nama usaha...",
+        cardDesc: "Ringkasan AI",
+        locationPlaceholder: "Kota atau wilayah operasional...",
         cardName: "Nama usaha",
         cardBidang: "Bidang",
         cardSpec: "Spesialisasi",
@@ -12587,7 +12601,14 @@ export const translations: Record<Locale, Translations> = {
         entityIndividual: "Individual",
         entityOrganization: "Business / Organization",
         btnContinue: "Yes, continue",
+        btnDone: "Done",
+        btnEdit: "Edit",
         btnGenerate: "Build My Website Now",
+        profileLooksGreat: "Your business profile looks great!",
+        capturedInfo: "Here's the information we've captured:",
+        namePlaceholder: "Enter business name...",
+        cardDesc: "AI Summary",
+        locationPlaceholder: "City, Region, or Coverage Area",
         cardName: "Business name",
         cardBidang: "Field",
         cardSpec: "Specialty",

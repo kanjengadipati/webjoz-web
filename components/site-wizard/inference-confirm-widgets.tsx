@@ -340,10 +340,10 @@ export function InferenceConfirmCard({
           </div>
           <div>
             <h3 className="text-base font-bold text-white leading-tight">
-              {t("dashboard.wizard.profileLooksGreat", isEN ? "Your business profile looks great!" : "Profil bisnis sudah siap!")}
+              {t("dashboard.wizard.profileLooksGreat")}
             </h3>
             <p className="text-xs text-slate-400 leading-snug mt-0.5">
-              {t("dashboard.wizard.capturedInfo", isEN ? "Here's the information we've captured:" : "Berikut informasi yang kami rangkum:")}
+              {t("dashboard.wizard.capturedInfo")}
             </p>
           </div>
         </div>
@@ -355,7 +355,7 @@ export function InferenceConfirmCard({
             <div className="flex items-center gap-3 min-w-0">
               <Store className="w-5 h-5 text-slate-400 shrink-0" />
               <span className="text-sm text-slate-300">
-                {t("dashboard.wizard.cardName", isEN ? "Business name" : "Nama usaha")}
+                {t("dashboard.wizard.cardName")}
               </span>
             </div>
             {!isEditingAll && (
@@ -382,7 +382,7 @@ export function InferenceConfirmCard({
                   if (draftName.trim()) chat.setBusinessName(draftName.trim());
                   if (editing === "name") setEditing(null);
                 }}
-                placeholder={t("dashboard.wizard.namePlaceholder", isEN ? "Enter business name..." : "Ketik nama usaha...")}
+                placeholder={t("dashboard.wizard.namePlaceholder")}
                 className="w-full px-3 py-1.5 rounded-xl text-xs bg-white/[0.06] text-white border border-white/10 focus:border-white/30 focus:outline-none transition-colors"
               />
             </div>
@@ -393,7 +393,7 @@ export function InferenceConfirmCard({
             <div className="flex items-center gap-3 min-w-0">
               <FieldIcon className="w-5 h-5 text-slate-400 shrink-0" />
               <span className="text-sm text-slate-300">
-                {t("dashboard.wizard.cardBidang", isEN ? "Field" : "Bidang")}
+                {t("dashboard.wizard.cardBidang")}
               </span>
             </div>
             {!isEditingAll && (
@@ -404,6 +404,7 @@ export function InferenceConfirmCard({
                 className={`text-sm text-right font-bold truncate max-w-[55%] transition-colors ${
                   isLocked ? "text-slate-300 cursor-default" : "text-white hover:text-primary cursor-pointer"
                 }`}
+                title={editing === "bidang" ? (isEN ? "Close" : "Tutup") : (isEN ? "Click to edit" : "Klik untuk ubah")}
               >
                 {bidangLabel || "—"}
               </button>
@@ -438,7 +439,7 @@ export function InferenceConfirmCard({
             <div className="flex items-center gap-3 min-w-0">
               <Star className="w-5 h-5 text-slate-400 shrink-0" />
               <span className="text-sm text-slate-300">
-                {t("dashboard.wizard.cardSpec", isEN ? "Specialty" : "Spesialisasi")}
+                {t("dashboard.wizard.cardSpec")}
               </span>
             </div>
             {!isEditingAll && (
@@ -449,6 +450,7 @@ export function InferenceConfirmCard({
                 className={`text-sm text-right font-bold truncate max-w-[55%] transition-colors ${
                   isLocked ? "text-slate-300 cursor-default" : "text-white hover:text-primary cursor-pointer"
                 }`}
+                title={editing === "spec" ? (isEN ? "Close" : "Tutup") : (isEN ? "Click to edit" : "Klik untuk ubah")}
               >
                 {specLabel || "—"}
               </button>
@@ -481,7 +483,7 @@ export function InferenceConfirmCard({
                   autoFocus={editing === "spec"}
                   value={chat.industryCustom || ""}
                   onChange={(e) => chat.setIndustryCustom(e.target.value)}
-                  placeholder={t("dashboard.wizard.otherIndustry", isEN ? "Other (type specialty)..." : "Lainnya (ketik spesialisasi)...")}
+                  placeholder={t("dashboard.wizard.otherIndustry")}
                   className="w-full px-3 py-1.5 rounded-xl text-xs bg-white/[0.06] text-white border border-white/10 focus:border-white/30 focus:outline-none transition-colors"
                 />
               )}
@@ -493,7 +495,7 @@ export function InferenceConfirmCard({
             <div className="flex items-center gap-3 min-w-0">
               <MapPin className="w-5 h-5 text-slate-400 shrink-0" />
               <span className="text-sm text-slate-300">
-                {t("dashboard.wizard.cardLocation", isEN ? "Location" : "Lokasi")}
+                {t("dashboard.wizard.cardLocation")}
               </span>
             </div>
             {!isEditingAll && (
@@ -520,7 +522,7 @@ export function InferenceConfirmCard({
                   if (draftArea.trim()) chat.setServiceArea(draftArea.trim());
                   if (editing === "area") setEditing(null);
                 }}
-                placeholder={t("dashboard.wizard.locationPlaceholder", isEN ? "City, Region, or Coverage Area" : "Kota atau wilayah operasional...")}
+                placeholder={t("dashboard.wizard.locationPlaceholder")}
                 className="w-full px-3 py-1.5 rounded-xl text-xs bg-white/[0.06] text-white border border-white/10 focus:border-white/30 focus:outline-none transition-colors"
               />
             </div>
@@ -534,7 +536,7 @@ export function InferenceConfirmCard({
                 <div className="flex items-center gap-2">
                   <SparkleGenAI className="w-4 h-4 text-white shrink-0" />
                   <span className="text-xs font-bold text-white uppercase tracking-wider">
-                    {t("dashboard.wizard.cardDesc", isEN ? "AI Summary" : "Ringkasan AI")}
+                    {t("dashboard.wizard.cardDesc")}
                   </span>
                 </div>
                 {!isLocked && !isEditingAll && (
@@ -545,8 +547,8 @@ export function InferenceConfirmCard({
                   >
                     <Pencil className="w-3 h-3" />
                     {editing === "desc"
-                      ? t("dashboard.wizard.btnDone", isEN ? "Done" : "Tutup")
-                      : t("dashboard.wizard.btnEdit", isEN ? "Edit" : "Ubah")}
+                      ? t("dashboard.wizard.btnDone")
+                      : t("dashboard.wizard.btnEdit")}
                   </button>
                 )}
               </div>
@@ -590,8 +592,8 @@ export function InferenceConfirmCard({
             {isEditingAll ? <Check className="w-4 h-4" /> : <Pencil className="w-4 h-4" />}
             <span>
               {isEditingAll
-                ? t("dashboard.wizard.btnDone", isEN ? "Done" : "Selesai")
-                : t("dashboard.wizard.btnEdit", isEN ? "Edit" : "Edit")}
+                ? t("dashboard.wizard.btnDone")
+                : t("dashboard.wizard.btnEdit")}
             </span>
           </Button>
           <Button
