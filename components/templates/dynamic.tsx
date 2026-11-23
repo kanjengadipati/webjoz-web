@@ -512,7 +512,7 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} language={language} hasBlog={!!(content.blog?.posts?.length)} contactAddress={content.contact?.address} contactMapsUrl={content.contact?.maps_url ?? undefined} contactOpeningHours={content.contact?.opening_hours} onUpdateField={onUpdateField} isEditorMode={isEditorMode} editorChrome={editorChrome} isSelected={activeSection === "footer"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
         </MemoPreviewSectionWrapper>
 
-        {isEditorMode && (
+        {(isEditorMode && (editorChrome ?? true)) && (
           <MemoPreviewSectionWrapper section="seo"  activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={editorChrome ?? isEditorMode}>
             <MemoSectionContent content={{ seo, dt }} render={(data) => {
               const { seo: s } = data;

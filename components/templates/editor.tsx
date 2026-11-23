@@ -602,6 +602,15 @@ export const PreviewSectionWrapper: React.FC<{
 }) => {
     const { t, locale } = useI18n();
     const chromeEnabled = useEditorChromeEnabled();
+
+    // SEO is not a visual website section — it is only displayed in the full
+    // dashboard editor when full editor chrome is enabled. In public view or
+    // wizard preview (where chromeEnabled is false or isEditorMode is false),
+    // it must never render on the canvas.
+    if (section === "seo" && (!isEditorMode || !chromeEnabled)) {
+      return null;
+    }
+
     const displayLabel = getSectionLabel(section, locale) || label || section;
     const [isGalleryOpen, setIsGalleryOpen] = useState(false);
     

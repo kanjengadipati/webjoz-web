@@ -349,7 +349,7 @@ export const TemplateJasa: React.FC<TemplateProps> = ({
       <MemoPreviewSectionWrapper section="footer"  activeSection={activeSection} currentVariant={getSectionVariant(dt, "footer")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={editorChrome ?? isEditorMode}>
         <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} language={language} hasBlog={!!(blog?.posts?.length)} contactAddress={contact?.address} contactMapsUrl={contact?.maps_url ?? undefined} contactOpeningHours={contact?.opening_hours} onUpdateField={onUpdateField} isEditorMode={isEditorMode} editorChrome={editorChrome} isSelected={activeSection === "footer"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
       </MemoPreviewSectionWrapper>
-      {isEditorMode && (
+      {(isEditorMode && (editorChrome ?? true)) && (
         <MemoPreviewSectionWrapper section="seo"  activeSection={activeSection} currentVariant={getSectionVariant(dt, "seo")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={editorChrome ?? isEditorMode}>
           <MemoSectionContent content={seo} render={(seoData) => (
             <SeoEditorPreview seo={seoData} domain={tenantDomain} />

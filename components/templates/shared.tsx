@@ -3616,11 +3616,14 @@ const SeoEditorPreview = ({
   domain?: string;
 }) => {
   const { t } = useI18n();
+  const chromeEnabled = useEditorChromeEnabled();
   const [activeTab, setActiveTab] = useState<"google" | "whatsapp" | "meta">("google");
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [copiedUrl, setCopiedUrl] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
   const [isReloading, setIsReloading] = useState(false);
+
+  if (!chromeEnabled) return null;
 
   const cleanDomain = domain ? domain.replace(/^https?:\/\//, "").replace(/\/$/, "") : "kopijozzjogja.webjoz.com";
   const siteBrand = seo?.title?.split("-")[0]?.trim() || cleanDomain.split(".")[0] || "Webjoz";
