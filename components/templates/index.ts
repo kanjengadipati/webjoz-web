@@ -1,4 +1,5 @@
-export type { TemplateProps, DesignToken } from "./types";
+export type { TemplateProps, DesignToken, SiteViewMode } from "./types";
+export { SeoPreviewSection } from "./editor";
 
 export { TemplateKuliner } from "./kuliner";
 export { TemplateJasa } from "./jasa";

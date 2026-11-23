@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
   CartProvider, CartFab, WAFloatingButton, BackToTop,
-  SeoEditorPreview, ctaHref, InlineText,
+  ctaHref, InlineText,
 } from "./shared";
 import { buildCssVars, loadGoogleFont, headingVars, filterEmptySections, getSectionVariant, computePrimaryFg, withoutHidden } from "./helpers";
 import GallerySection from "../sections/gallery";
@@ -264,7 +264,6 @@ export const TemplateBold: React.FC<TemplateProps> = ({
         <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} language={language} contactAddress={contact?.address} contactMapsUrl={contact?.maps_url ?? undefined} contactOpeningHours={contact?.opening_hours} onUpdateField={onUpdateField} isEditorMode={isEditorMode} editorChrome={editorChrome} isSelected={activeSection === "footer"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
       </MemoPreviewSectionWrapper>
 
-      {(isEditorMode && (editorChrome ?? true)) && <MemoPreviewSectionWrapper section="seo"  activeSection={activeSection} currentVariant={getSectionVariant(dt, "seo")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={editorChrome ?? isEditorMode}><MemoSectionContent content={seo} render={(s) => <SeoEditorPreview seo={s} domain={tenantDomain} />} /></MemoPreviewSectionWrapper>}
       <CartFab colorStyle={{ background: red, color: ctaText }} />
       <WAFloatingButton phone={contact?.phone} isEditorMode={isEditorMode} editorChrome={editorChrome} onSubmitLead={onSubmitLead} brandName={header?.brand_name} isPremium={isPremium} floatingType={design_token?.layout?.floating_button} language={language} />
       <BackToTop isEditorMode={isEditorMode} editorChrome={editorChrome} />

@@ -20,7 +20,7 @@ import { useToast } from "@/components/toast-provider";
 import { getTemplate, TEMPLATE_REGISTRY } from "@/lib/template-registry";
 import { getTemplateDefaultDesignToken } from "@/lib/template-defaults";
 import { setEditorSiteId, getFeatureMarker, FeatureMarkerIcon, setInlineAiRewrite } from "@/components/templates/shared";
-import { SectionShortcutContext, type SectionShortcutHandler } from "@/components/templates/editor";
+import { SectionShortcutContext, type SectionShortcutHandler, SeoPreviewSection } from "@/components/templates/editor";
 import { SectionReorderProvider } from "@/components/templates/section-reorder";
 import { SectionVisibilityProvider } from "@/components/templates/section-visibility";
 import { getSectionStatus, addToPlan, type SectionStatus } from "@/lib/section-status";
@@ -2947,105 +2947,91 @@ export default function SiteEditorPage() {
                 getLabel={(k) => getSectionLabel(k, locale)}
                 onMove={handleReorderSection}
               >
-                {device === "mobile" ? (
-              /* Mobile: centered with some margin */
-              <div className="relative mx-auto my-6 h-[760px] w-[375px] flex-shrink-0 rounded-[40px] border-[12px] border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800 transition-all duration-300">
-                {/* Speaker/Notch */}
-                <div className="absolute left-1/2 top-3 z-50 h-4 w-28 -translate-x-1/2 rounded-full bg-slate-900" />
-                {/* Screen container */}
-                <div
-                  className="h-full w-full overflow-hidden rounded-[28px] bg-white relative z-10"
-                  style={{ transform: "translate3d(0, 0, 0)", isolation: "isolate" }}
-                >
-                  <div
-                    style={{
-                      width: "181.81%",
-                      height: "181.81%",
-                      transform: "scale(0.55)",
-                      transformOrigin: "top left"
-                    }}
-                    className="overflow-y-auto h-full"
-                  >
-                    <TemplateComponent
-                      content={content}
-                      design_token={designToken ?? null}
-                      isEditorMode={true}
-                      editorSiteId={siteId}
-                      activeSection={activeTab}
-                      onSelectSection={handlePreviewSelectSection}
-                      onRegenSection={handleRegenWithPremiumCheck}
-                      onUpdateField={updateField}
-                      onUpdateSectionVariant={updateSectionVariant}
-                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                      onEditingStateChange={(editing) => { isInlineEditingRef.current = editing; }}
-                      onSubmitLead={async () => { }}
-                      tenantDomain={siteDetails?.subdomain ? tenantHost(siteDetails.subdomain) : ""}
-                      isPremium={activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise"}
-                    />
-                  </div>
-                </div>
-                {/* Home Indicator line */}
-                <div className="absolute bottom-2 left-1/2 z-50 h-1 w-24 -translate-x-1/2 rounded-full bg-slate-700" />
-              </div>
-            ) : device === "tablet" ? (
-              /* Tablet: centered with some margin */
-              <div className="relative mx-auto my-6 h-[900px] w-[768px] flex-shrink-0 rounded-[24px] border-[10px] border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800 transition-all duration-300">
-                {/* Camera notch */}
-                <div className="absolute left-1/2 top-2 z-50 h-3 w-16 -translate-x-1/2 rounded-full bg-slate-900" />
-                {/* Screen container */}
-                <div
-                  className="h-full w-full overflow-hidden rounded-[14px] bg-white relative z-10"
-                  style={{ transform: "translate3d(0, 0, 0)", isolation: "isolate" }}
-                >
-                  <div
-                    style={{
-                      width: "150%",
-                      height: "150%",
-                      transform: "scale(0.667)",
-                      transformOrigin: "top left"
-                    }}
-                    className="overflow-y-auto h-full"
-                  >
-                    <TemplateComponent
-                      content={content}
-                      design_token={designToken ?? null}
-                      isEditorMode={true}
-                      editorSiteId={siteId}
-                      activeSection={activeTab}
-                      onSelectSection={handlePreviewSelectSection}
-                      onRegenSection={handleRegenWithPremiumCheck}
-                      onUpdateField={updateField}
-                      onUpdateSectionVariant={updateSectionVariant}
-                      collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                      onEditingStateChange={(editing) => { isInlineEditingRef.current = editing; }}
-                      onSubmitLead={async () => { }}
-                      tenantDomain={siteDetails?.subdomain ? tenantHost(siteDetails.subdomain) : ""}
-                      isPremium={activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise"}
-                    />
-                  </div>
-                </div>
-              </div>
-            ) : (
-              /* Desktop: full width, no padding — site fills the canvas edge-to-edge */
-              <div className="w-full overflow-hidden">
-                <TemplateComponent
-                  content={content}
-                  design_token={designToken ?? null}
-                  isEditorMode={true}
-                  activeSection={activeTab}
-                  onSelectSection={handlePreviewSelectSection}
-                  onRegenSection={handleRegenWithPremiumCheck}
-                  onUpdateField={updateField}
-                  onUpdateSectionVariant={updateSectionVariant}
-                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                  onEditingStateChange={(editing) => { isInlineEditingRef.current = editing; }}
-                  onSubmitLead={async () => { }}
-                  tenantDomain={siteDetails?.subdomain ? tenantHost(siteDetails.subdomain) : ""}
-                  isPremium={activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise"}
-                  language={siteDetails?.language}
-                />
-              </div>
-            )}
+                {(() => {
+                  const canvasSite = (
+                    <>
+                      <TemplateComponent
+                        content={content}
+                        design_token={designToken ?? null}
+                        viewMode="editor"
+                        isEditorMode={true}
+                        editorSiteId={siteId}
+                        activeSection={activeTab}
+                        onSelectSection={handlePreviewSelectSection}
+                        onRegenSection={handleRegenWithPremiumCheck}
+                        onUpdateField={updateField}
+                        onUpdateSectionVariant={updateSectionVariant}
+                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                        onEditingStateChange={(editing) => { isInlineEditingRef.current = editing; }}
+                        onSubmitLead={async () => { }}
+                        tenantDomain={siteDetails?.subdomain ? tenantHost(siteDetails.subdomain) : ""}
+                        isPremium={activeTenant?.tenant?.plan === "pro" || activeTenant?.tenant?.plan === "enterprise"}
+                        language={siteDetails?.language}
+                      />
+                      <SeoPreviewSection
+                        seo={content?.seo}
+                        activeSection={activeTab}
+                        onSelectSection={handlePreviewSelectSection}
+                        tenantDomain={siteDetails?.subdomain ? tenantHost(siteDetails.subdomain) : ""}
+                      />
+                    </>
+                  );
+
+                  if (device === "mobile") {
+                    return (
+                      <div className="relative mx-auto my-6 h-[760px] w-[375px] flex-shrink-0 rounded-[40px] border-[12px] border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800 transition-all duration-300">
+                        <div className="absolute left-1/2 top-3 z-50 h-4 w-28 -translate-x-1/2 rounded-full bg-slate-900" />
+                        <div
+                          className="h-full w-full overflow-hidden rounded-[28px] bg-white relative z-10"
+                          style={{ transform: "translate3d(0, 0, 0)", isolation: "isolate" }}
+                        >
+                          <div
+                            style={{
+                              width: "181.81%",
+                              height: "181.81%",
+                              transform: "scale(0.55)",
+                              transformOrigin: "top left"
+                            }}
+                            className="overflow-y-auto h-full"
+                          >
+                            {canvasSite}
+                          </div>
+                        </div>
+                        <div className="absolute bottom-2 left-1/2 z-50 h-1 w-24 -translate-x-1/2 rounded-full bg-slate-700" />
+                      </div>
+                    );
+                  }
+
+                  if (device === "tablet") {
+                    return (
+                      <div className="relative mx-auto my-6 h-[900px] w-[768px] flex-shrink-0 rounded-[24px] border-[10px] border-slate-900 bg-slate-950 shadow-2xl ring-4 ring-slate-800 transition-all duration-300">
+                        <div className="absolute left-1/2 top-2 z-50 h-3 w-16 -translate-x-1/2 rounded-full bg-slate-900" />
+                        <div
+                          className="h-full w-full overflow-hidden rounded-[14px] bg-white relative z-10"
+                          style={{ transform: "translate3d(0, 0, 0)", isolation: "isolate" }}
+                        >
+                          <div
+                            style={{
+                              width: "150%",
+                              height: "150%",
+                              transform: "scale(0.667)",
+                              transformOrigin: "top left"
+                            }}
+                            className="overflow-y-auto h-full"
+                          >
+                            {canvasSite}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <div className="w-full overflow-hidden">
+                      {canvasSite}
+                    </div>
+                  );
+                })()}
             </SectionReorderProvider>
             </SectionVisibilityProvider>
             </SectionShortcutContext.Provider>

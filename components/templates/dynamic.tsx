@@ -3,7 +3,7 @@
 import React from "react";
 import { MemoPreviewSectionWrapper, MemoSectionContent } from "./editor";
 import {
-  WAFloatingButton, BackToTop, SeoEditorPreview, CartFab,
+  WAFloatingButton, BackToTop, CartFab,
   CartProvider, FeatureMarkerProvider, getFeatureMarker,
 } from "./shared";
 import { BlogPostsSection } from "./blog-section";
@@ -512,14 +512,6 @@ export const TemplateDynamic: React.FC<TemplateProps> = ({
           <FooterSection footer={footer ?? {}} design_token={dt} brand_name={header?.brand_name} language={language} hasBlog={!!(content.blog?.posts?.length)} contactAddress={content.contact?.address} contactMapsUrl={content.contact?.maps_url ?? undefined} contactOpeningHours={content.contact?.opening_hours} onUpdateField={onUpdateField} isEditorMode={isEditorMode} editorChrome={editorChrome} isSelected={activeSection === "footer"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
         </MemoPreviewSectionWrapper>
 
-        {(isEditorMode && (editorChrome ?? true)) && (
-          <MemoPreviewSectionWrapper section="seo"  activeSection={activeSection} onSelectSection={onSelectSection} onRegenSection={onRegenSection} isEditorMode={editorChrome ?? isEditorMode}>
-            <MemoSectionContent content={{ seo, dt }} render={(data) => {
-              const { seo: s } = data;
-              return <SeoEditorPreview seo={s} domain={tenantDomain} />;
-            }} />
-          </MemoPreviewSectionWrapper>
-        )}
         <CartFab />
         <WAFloatingButton phone={content?.contact?.phone} isEditorMode={isEditorMode} onSubmitLead={onSubmitLead} brandName={content?.header?.brand_name} isPremium={isPremium} floatingType={dt?.layout?.floating_button} language={language} />
         <BackToTop isEditorMode={isEditorMode} editorChrome={editorChrome} />

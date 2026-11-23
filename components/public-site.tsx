@@ -525,6 +525,7 @@ export default function PublicSite({ subdomain, host, siteId, previewToken, init
         </div>
         <div id="preview-scroll-container" className="flex-1 min-h-0 overflow-y-auto">
           <TemplateComponent
+            viewMode="public"
             content={content}
             design_token={design_token ?? null}
             onSubmitLead={handleSubmitLead}
@@ -541,6 +542,7 @@ export default function PublicSite({ subdomain, host, siteId, previewToken, init
 
   return (
     <TemplateComponent
+      viewMode="public"
       content={content}
       design_token={design_token ?? null}
       onSubmitLead={handleSubmitLead}

@@ -11,6 +11,7 @@ import { useSectionVisibility, SectionVisibilityButton, HiddenSectionNotice } fr
 import { useEditorChromeEnabled } from "@/components/sections/editor-chrome-context";
 import { CustomSelect, type CustomSelectOption, VisualVariantPanel } from "webjoz-ui";
 import { VariantWireframe } from "@/app/dashboard/sites/[id]/components/SectionVariantWireframe";
+import { SeoEditorPreview } from "./shared";
 
 // ---------------------------------------------------------------------------
 // Shared mini SVG wireframe previews (canvas inline gallery)
@@ -860,3 +861,37 @@ export const MemoSectionContent = React.memo(
     return true;
   }
 ) as <T>(props: MemoSectionContentProps<T>) => React.ReactElement;
+
+// ─── SeoPreviewSection (Dashboard Editor Canvas Only) ─────────────────────────
+
+export interface SeoPreviewSectionProps {
+  seo?: any;
+  activeSection?: string;
+  onSelectSection?: (section: string) => void;
+  tenantDomain?: string;
+}
+
+/**
+ * Dedicated SEO preview section for the dashboard editor canvas.
+ * Isolated from website templates so SEO mockup never leaks to public or wizard views.
+ */
+export const SeoPreviewSection: React.FC<SeoPreviewSectionProps> = ({
+  seo,
+  activeSection,
+  onSelectSection,
+  tenantDomain,
+}) => {
+  return (
+    <MemoPreviewSectionWrapper
+      section="seo"
+      activeSection={activeSection}
+      onSelectSection={onSelectSection}
+      isEditorMode={true}
+    >
+      <MemoSectionContent
+        content={seo}
+        render={(s) => <SeoEditorPreview seo={s} domain={tenantDomain} />}
+      />
+    </MemoPreviewSectionWrapper>
+  );
+};

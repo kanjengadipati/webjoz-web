@@ -328,6 +328,8 @@ export interface ContentSection {
   data: Record<string, any>;
 }
 
+export type SiteViewMode = "public" | "wizard" | "editor";
+
 export interface TemplateProps {
   content: {
     sections?: ContentSection[];
@@ -547,6 +549,13 @@ export interface TemplateProps {
   onUpdateSectionVariant?: (section: string, value: string) => void;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
+  /**
+   * Explicit site view mode:
+   * - "public": visitor facing, read-only
+   * - "wizard": inline content editing only, no canvas editor chrome
+   * - "editor": full dashboard canvas editor with all editing affordances
+   */
+  viewMode?: SiteViewMode;
   isEditorMode?: boolean;
   /** Chrome editor (outline, label, regen, visibility, reorder). Default = isEditorMode. Wizard set false. */
   editorChrome?: boolean;

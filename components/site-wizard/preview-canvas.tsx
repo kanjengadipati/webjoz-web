@@ -102,6 +102,7 @@ export function PreviewCanvas({ chat, preview, device, themeDraft, fullPage, onR
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       design_token={liveToken as any}
       language={(chat.siteLanguage || "id") as any}
+      viewMode="wizard"
       isEditorMode={previewState === "result"}
       editorChrome={false}
       onUpdateField={previewState === "result" ? preview.updateField : undefined}
