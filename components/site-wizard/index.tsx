@@ -1867,10 +1867,44 @@ export function SiteWizard({
                       );
                     })}
 
+                    {/* Smart Chip: Rekomendasi AI jika ada industryCustom yang belum terpilih */}
+                    {!isLocked && chat.industryCustom && !customSubTypeOpen && (
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border border-primary/40 bg-primary/10 text-white shadow-sm transition-all duration-200">
+                        <SparkleGenAI className="w-3.5 h-3.5 text-primary shrink-0" />
+                        <button
+                          type="button"
+                          onClick={() => handleSelectCustomIndustry(chat.industryCustom)}
+                          className="text-left font-semibold text-white hover:text-primary transition-colors cursor-pointer"
+                          title={isIndonesian ? "Gunakan rekomendasi ini" : "Use this recommendation"}
+                        >
+                          {chat.industryCustom}
+                        </button>
+                        <span className="text-[9px] font-bold uppercase tracking-wider text-primary/90 bg-primary/20 px-1.5 py-0.5 rounded ml-0.5 shrink-0">
+                          {isIndonesian ? "Saran AI" : "AI Suggested"}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCustomSubTextInput(chat.industryCustom);
+                            setCustomSubTypeOpen(true);
+                          }}
+                          className="p-1 text-slate-400 hover:text-white transition-colors cursor-pointer ml-0.5"
+                          title={isIndonesian ? "Ubah rekomendasi ini" : "Edit recommendation"}
+                        >
+                          <Pencil className="w-3 h-3" />
+                        </button>
+                      </div>
+                    )}
+
                     {!isLocked && (!customSubTypeOpen ? (
                       <button
                         type="button"
-                        onClick={() => setCustomSubTypeOpen(true)}
+                        onClick={() => {
+                          if (chat.industryCustom && !customSubTextInput) {
+                            setCustomSubTextInput(chat.industryCustom);
+                          }
+                          setCustomSubTypeOpen(true);
+                        }}
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border border-dashed border-white/20 text-slate-400 hover:border-white/40 hover:text-white transition-all cursor-pointer"
                       >
                         <span>+ {t("dashboard.wizard.otherSubType", "Lainnya")}</span>
@@ -1910,6 +1944,17 @@ export function SiteWizard({
                           className="h-7 w-7 flex items-center justify-center bg-white text-slate-950 rounded-lg hover:bg-slate-200 transition-colors cursor-pointer shrink-0 shadow-sm"
                         >
                           <Check className="w-4 h-4 text-slate-950 stroke-[3]" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCustomSubTypeOpen(false);
+                            setCustomSubTextInput("");
+                          }}
+                          className="h-7 w-7 flex items-center justify-center text-slate-400 hover:text-white transition-colors cursor-pointer shrink-0"
+                          title={isIndonesian ? "Batal" : "Cancel"}
+                        >
+                          <X className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     ))}

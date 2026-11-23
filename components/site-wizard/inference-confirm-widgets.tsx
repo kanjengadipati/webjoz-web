@@ -472,19 +472,29 @@ export function InferenceConfirmCard({
                       value: i.id,
                       label: isEN ? i.label_en || i.label : i.label_id || i.label,
                     })),
-                  { value: "__other__", label: t("dashboard.wizard.otherIndustry", "Lainnya (ketik spesialisasi)...") },
+                  {
+                    value: "__other__",
+                    label: chat.industryCustom
+                      ? `${chat.industryCustom} (${isEN ? "AI Suggestion" : "Saran AI"})`
+                      : t("dashboard.wizard.otherIndustry", "Lainnya (ketik spesialisasi)..."),
+                  },
                 ]}
                 size="sm"
                 triggerClassName="border-white/10 bg-white/[0.06] text-white rounded-xl"
               />
               {draftIndustry === "__other__" && (
-                <input
-                  autoFocus={editing === "spec"}
-                  value={chat.industryCustom || ""}
-                  onChange={(e) => chat.setIndustryCustom(e.target.value)}
-                  placeholder={t("dashboard.wizard.otherIndustry")}
-                  className="w-full px-3 py-1.5 rounded-xl text-xs bg-white/[0.06] text-white border border-white/10 focus:border-white/30 focus:outline-none transition-colors"
-                />
+                <div className="relative flex items-center">
+                  <input
+                    autoFocus={editing === "spec"}
+                    value={chat.industryCustom || ""}
+                    onChange={(e) => chat.setIndustryCustom(e.target.value)}
+                    placeholder={t("dashboard.wizard.otherIndustry", "Ketik spesialisasi...")}
+                    className="w-full px-3 py-1.5 pr-8 rounded-xl text-xs bg-white/[0.06] text-white border border-white/10 focus:border-white/30 focus:outline-none transition-colors"
+                  />
+                  {chat.industryCustom && (
+                    <SparkleGenAI className="w-3.5 h-3.5 text-primary absolute right-2.5 pointer-events-none" />
+                  )}
+                </div>
               )}
             </div>
           )}
