@@ -1,8 +1,19 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Tag, ChevronDown } from "lucide-react";
-import { CustomSelect } from "webjoz-ui";
+import {
+  Tag,
+  ChevronDown,
+  Check,
+  Store,
+  Shirt,
+  Briefcase,
+  Star,
+  MapPin,
+  Pencil,
+  ArrowRight,
+} from "lucide-react";
+import { CustomSelect, SparkleGenAI, Button } from "webjoz-ui";
 import { SUB_TYPE_ICONS } from "./icons-map";
 import { generateDescriptionFromBusinessName } from "./helpers";
 
@@ -130,18 +141,18 @@ export function InferenceConfirmWidget({
         </div>
       )}
       {pending && (
-        <button
+        <Button
           type="button"
           onClick={() => onConfirmWithSubType(pending)}
           disabled={isLocked}
-          className={`mt-2 w-full py-2 rounded-xl text-xs font-bold transition-all ${
+          className={`mt-2 w-full py-2 h-auto rounded-xl text-xs font-bold transition-all ${
             isLocked
               ? "bg-white/10 text-slate-500 cursor-not-allowed"
               : "bg-white text-slate-900 hover:bg-slate-100 cursor-pointer shadow-md"
           }`}
         >
           {t("dashboard.wizard.btnContinue", "Ya, lanjut")}
-        </button>
+        </Button>
       )}
     </div>
   );
@@ -170,13 +181,28 @@ export function InferenceConfirmCard({
   const [draftName, setDraftName] = useState(chat.businessName || "");
   const [draftArea, setDraftArea] = useState(chat.serviceArea || "");
   const [draftIndustry, setDraftIndustry] = useState(chat.industryId || chat.businessSubType || "");
-  const isLocked = chat.chatStage === "language" || chat.chatStage === "mood" || chat.chatStage === "brand-logo" || chat.chatStage === "done";
+  const [draftDesc, setDraftDesc] = useState(chat.descriptionRef?.current || chat.description || "");
+  const isLocked =
+    chat.chatStage === "language" ||
+    chat.chatStage === "mood" ||
+    chat.chatStage === "brand-logo" ||
+    chat.chatStage === "done";
   const [draftBidang, setDraftBidang] = useState<string>("");
+
+  const isEN = uiLang === "en";
 
   // Once the wizard moves past the confirmation card, close any open editor.
   useEffect(() => {
     if (isLocked) setEditing(null);
   }, [isLocked]);
+
+  // Keep draftDesc in sync if chat.description gets populated by AI
+  useEffect(() => {
+    const cur = chat.descriptionRef?.current || chat.description || "";
+    if (cur && !draftDesc) {
+      setDraftDesc(cur);
+    }
+  }, [chat.description, draftDesc]);
 
   const effectiveBidangId =
     draftBidang ||
@@ -186,11 +212,11 @@ export function InferenceConfirmCard({
   const bidangLabel = (() => {
     if (taxonomyV2 && effectiveBidangId) {
       const g = taxonomyV2.groups.find((gr: any) => gr.id === effectiveBidangId);
-      if (g) return uiLang === "en" ? g.label_en || g.label : g.label_id || g.label;
+      if (g) return isEN ? g.label_en || g.label : g.label_id || g.label;
     }
     if (taxonomyV2 && chat.archetype) {
       const g = taxonomyV2.groups.find((gr: any) => gr.industries.some((i: any) => i.id === chat.industryId));
-      if (g) return uiLang === "en" ? g.label_en || g.label : g.label_id || g.label;
+      if (g) return isEN ? g.label_en || g.label : g.label_id || g.label;
     }
     return chat.businessType || "-";
   })();
@@ -198,17 +224,24 @@ export function InferenceConfirmCard({
   const specLabel = (() => {
     if (taxonomyV2 && chat.industryId) {
       const ind = taxonomyV2.groups.flatMap((g: any) => g.industries).find((i: any) => i.id === chat.industryId);
-      if (ind) return uiLang === "en" ? ind.label_en || ind.label : ind.label_id || ind.label;
+      if (ind) return isEN ? ind.label_en || ind.label : ind.label_id || ind.label;
     }
     return chat.businessSubType || "-";
   })();
+
+  const FieldIcon =
+    effectiveBidangId === "fashion" ||
+    specLabel.toLowerCase().includes("fashion") ||
+    specLabel.toLowerCase().includes("baju") ||
+    specLabel.toLowerCase().includes("pakaian")
+      ? Shirt
+      : Briefcase;
 
   const handleContinue = useCallback(() => {
     const oldName = chat.businessName || "";
     const newName = draftName.trim();
     if (newName && newName !== oldName) {
       chat.setBusinessName(newName);
-      // Keep refined description in sync with the new name (best-effort replace).
       const cur = chat.descriptionRef?.current || chat.description || "";
       if (cur && oldName) {
         const updated = cur.split(oldName).join(newName);
@@ -220,7 +253,6 @@ export function InferenceConfirmCard({
     const newArea = draftArea.trim();
     if (newArea && newArea !== oldArea) {
       chat.setServiceArea(newArea);
-      // Keep refined description in sync with the new location (best-effort replace).
       const cur = chat.descriptionRef?.current || chat.description || "";
       if (cur && oldArea) {
         const updated = cur.split(oldArea).join(newArea);
@@ -228,10 +260,16 @@ export function InferenceConfirmCard({
         chat.setDescription(updated);
       }
     }
+    const oldDesc = chat.descriptionRef?.current || chat.description || "";
+    const newDesc = draftDesc.trim();
+    if (newDesc && newDesc !== oldDesc) {
+      chat.setDescription(newDesc);
+      if (chat.descriptionRef) chat.descriptionRef.current = newDesc;
+      if (chat.setDescriptionSource) chat.setDescriptionSource("user");
+    }
     if (draftIndustry === "__other__") {
       chat.setIndustryId("");
       chat.industryIdRef.current = "";
-      // industryCustom already set via input
     } else if (draftIndustry && draftIndustry !== chat.industryId) {
       if (draftIndustry.includes(".")) {
         chat.setIndustryId(draftIndustry);
@@ -242,8 +280,7 @@ export function InferenceConfirmCard({
             chat.setArchetype(ind.archetype);
             chat.archetypeRef.current = ind.archetype;
             const newLabel = wizardLang === "en" ? ind.label_en || ind.label : ind.label_id || ind.label;
-            // 2.3: jangan timpa description yang ditulis pengguna
-            if (chat.descriptionSource !== "user") {
+            if (chat.descriptionSource !== "user" && !newDesc) {
               const refreshed = generateDescriptionFromBusinessName(
                 chat.businessName || "",
                 { subType: newLabel },
@@ -258,8 +295,7 @@ export function InferenceConfirmCard({
         }
       } else {
         chat.setBusinessSubType(draftIndustry);
-        // 2.3: jangan timpa description yang ditulis pengguna
-        if (chat.descriptionSource !== "user") {
+        if (chat.descriptionSource !== "user" && !newDesc) {
           const refreshed = generateDescriptionFromBusinessName(
             chat.businessName || "",
             { subType: draftIndustry },
@@ -275,7 +311,7 @@ export function InferenceConfirmCard({
     const newSubType =
       draftIndustry && draftIndustry !== "__other__" && !draftIndustry.includes(".") ? draftIndustry : "";
     onConfirm(newSubType);
-  }, [chat, draftName, draftArea, draftIndustry, draftBidang, taxonomyV2, wizardLang, onConfirm]);
+  }, [chat, draftName, draftArea, draftDesc, draftIndustry, draftBidang, taxonomyV2, wizardLang, onConfirm]);
 
   // Press Enter (when not editing a field) to confirm
   useEffect(() => {
@@ -290,137 +326,289 @@ export function InferenceConfirmCard({
     return () => window.removeEventListener("keydown", handler);
   }, [isLocked, editing, handleContinue]);
 
-  const Row = ({ label, value, onEdit }: { label: string; value: string; onEdit: () => void }) => (
-    <div className="flex items-center justify-between gap-2 py-1.5 border-b border-white/[0.06] last:border-0">
-      <span className="text-[11px] text-slate-500 shrink-0">{label}</span>
-      <button
-        type="button"
-        onClick={onEdit}
-        disabled={isLocked}
-        className={`text-[11px] text-right truncate max-w-[60%] ${
-          isLocked ? "text-slate-500 cursor-default" : "text-slate-200 hover:text-white cursor-pointer"
-        }`}
-      >
-        {value || "—"} {isLocked ? "" : "✎"}
-      </button>
-    </div>
-  );
+  const hasDescription = Boolean(draftDesc || chat.description);
+  const isEditingAll = editing === "all";
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-2 duration-400 space-y-3">
-      <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-3 space-y-1">
-        <Row
-          label={t("dashboard.wizard.cardName", "Nama usaha")}
-          value={editing === "name" ? draftName : chat.businessName || "-"}
-          onEdit={() => setEditing("name")}
-        />
-        {editing === "name" && (
-          <input
-            autoFocus
-            value={draftName}
-            onChange={(e) => setDraftName(e.target.value)}
-            onBlur={() => {
-              if (draftName.trim()) chat.setBusinessName(draftName.trim());
-              setEditing(null);
-            }}
-            className="w-full px-2 py-1 rounded-lg text-xs bg-white/[0.06] text-white border border-white/10"
-          />
-        )}
-        <Row
-          label={t("dashboard.wizard.cardBidang", "Bidang")}
-          value={bidangLabel}
-          onEdit={() => setEditing("bidang")}
-        />
-        {editing === "bidang" && taxonomyV2 && (
-          <CustomSelect
-            value={
-              draftBidang ||
-              (taxonomyV2.groups.find((g: any) => g.industries.some((i: any) => i.id === chat.industryId))?.id ?? "")
-            }
-            onChange={(val) => {
-              setDraftBidang(val);
-              const group = taxonomyV2?.groups.find((g: any) => g.id === val);
-              const first = group?.industries?.[0]?.id;
-              setDraftIndustry(first || "");
-              setEditing(null);
-            }}
-            options={taxonomyV2.groups.map((g: any) => ({
-              value: g.id,
-              label: uiLang === "en" ? g.label_en || g.label : g.label_id || g.label,
-            }))}
-            size="sm"
-            triggerClassName="border-white/10 bg-black/20 text-slate-200"
-          />
-        )}
-        <Row
-          label={t("dashboard.wizard.cardSpec", "Spesialisasi")}
-          value={specLabel}
-          onEdit={() => setEditing("spec")}
-        />
-        {editing === "spec" && taxonomyV2 && (
-          <>
-            <CustomSelect
-              value={draftIndustry || "__other__"}
-              onChange={(val) => {
-                setDraftIndustry(val);
-                setEditing(null);
-              }}
-              options={[
-                ...taxonomyV2.groups
-                  .filter((g: any) => !draftBidang || g.id === draftBidang)
-                  .flatMap((g: any) => g.industries)
-                  .filter((i: any) => (!draftBidang && chat.archetype ? i.archetype === chat.archetype : true))
-                  .map((i: any) => ({
-                    value: i.id,
-                    label: uiLang === "en" ? i.label_en || i.label : i.label_id || i.label,
-                  })),
-                { value: "__other__", label: t("dashboard.wizard.otherIndustry", "Lainnya (ketik spesialisasi)...") },
-              ]}
-              size="sm"
-              triggerClassName="border-white/10 bg-black/20 text-slate-200"
-            />
-            {draftIndustry === "__other__" && (
-              <input
-                autoFocus
-                value={chat.industryCustom || ""}
-                onChange={(e) => chat.setIndustryCustom(e.target.value)}
-                placeholder={t("dashboard.wizard.otherIndustry", "Lainnya (ketik spesialisasi)...")}
-                className="w-full mt-1 px-2 py-1 rounded-lg text-xs bg-white/[0.06] text-white border border-white/10"
-              />
+    <div className="animate-in fade-in slide-in-from-bottom-2 duration-400 w-full max-w-lg mx-auto">
+      <div className="rounded-3xl border border-white/[0.08] bg-[#121316] p-5 sm:p-6 shadow-2xl relative overflow-hidden">
+
+        {/* Header: large circle icon + title inline */}
+        <div className="flex items-center gap-3 mb-5">
+          <div className="shrink-0 w-11 h-11 rounded-full bg-white/[0.08] border border-white/10 flex items-center justify-center">
+            <Check className="w-5 h-5 text-white stroke-[2.5]" />
+          </div>
+          <div>
+            <h3 className="text-base font-bold text-white leading-tight">
+              {t("dashboard.wizard.profileLooksGreat", isEN ? "Your business profile looks great!" : "Profil bisnis sudah siap!")}
+            </h3>
+            <p className="text-xs text-slate-400 leading-snug mt-0.5">
+              {t("dashboard.wizard.capturedInfo", isEN ? "Here's the information we've captured:" : "Berikut informasi yang kami rangkum:")}
+            </p>
+          </div>
+        </div>
+
+        {/* Captured Items List */}
+        <div className="space-y-0">
+          {/* 1. Business Name */}
+          <div className="flex items-center justify-between gap-3 py-3 px-1">
+            <div className="flex items-center gap-3 min-w-0">
+              <Store className="w-5 h-5 text-slate-400 shrink-0" />
+              <span className="text-sm text-slate-300">
+                {t("dashboard.wizard.cardName", isEN ? "Business name" : "Nama usaha")}
+              </span>
+            </div>
+            {!isEditingAll && (
+              <button
+                type="button"
+                onClick={() => !isLocked && setEditing(editing === "name" ? null : "name")}
+                disabled={isLocked}
+                className={`text-sm text-right font-bold truncate max-w-[55%] transition-colors ${
+                  isLocked ? "text-slate-300 cursor-default" : "text-white hover:text-primary cursor-pointer"
+                }`}
+                title={editing === "name" ? (isEN ? "Close" : "Tutup") : (isEN ? "Click to edit" : "Klik untuk ubah")}
+              >
+                {draftName || chat.businessName || "—"}
+              </button>
             )}
-          </>
-        )}
-        <Row
-          label={t("dashboard.wizard.cardLocation", "Lokasi")}
-          value={editing === "area" ? draftArea : chat.serviceArea || "-"}
-          onEdit={() => setEditing("area")}
-        />
-        {editing === "area" && (
-          <input
-            autoFocus
-            value={draftArea}
-            onChange={(e) => setDraftArea(e.target.value)}
-            onBlur={() => {
-              if (draftArea.trim()) chat.setServiceArea(draftArea.trim());
-              setEditing(null);
-            }}
-            className="w-full px-2 py-1 rounded-lg text-xs bg-white/[0.06] text-white border border-white/10"
-          />
-        )}
+          </div>
+          {(editing === "name" || isEditingAll) && (
+            <div className="pb-2 px-1 pl-9">
+              <input
+                autoFocus={editing === "name"}
+                value={draftName}
+                onChange={(e) => setDraftName(e.target.value)}
+                onBlur={() => {
+                  if (draftName.trim()) chat.setBusinessName(draftName.trim());
+                  if (editing === "name") setEditing(null);
+                }}
+                placeholder={t("dashboard.wizard.namePlaceholder", isEN ? "Enter business name..." : "Ketik nama usaha...")}
+                className="w-full px-3 py-1.5 rounded-xl text-xs bg-white/[0.06] text-white border border-white/10 focus:border-white/30 focus:outline-none transition-colors"
+              />
+            </div>
+          )}
+
+          {/* 2. Field (Bidang) */}
+          <div className="flex items-center justify-between gap-3 py-3 px-1">
+            <div className="flex items-center gap-3 min-w-0">
+              <FieldIcon className="w-5 h-5 text-slate-400 shrink-0" />
+              <span className="text-sm text-slate-300">
+                {t("dashboard.wizard.cardBidang", isEN ? "Field" : "Bidang")}
+              </span>
+            </div>
+            {!isEditingAll && (
+              <button
+                type="button"
+                onClick={() => !isLocked && setEditing(editing === "bidang" ? null : "bidang")}
+                disabled={isLocked}
+                className={`text-sm text-right font-bold truncate max-w-[55%] transition-colors ${
+                  isLocked ? "text-slate-300 cursor-default" : "text-white hover:text-primary cursor-pointer"
+                }`}
+              >
+                {bidangLabel || "—"}
+              </button>
+            )}
+          </div>
+          {(editing === "bidang" || isEditingAll) && taxonomyV2 && (
+            <div className="pb-2 px-1 pl-9">
+              <CustomSelect
+                value={
+                  draftBidang ||
+                  (taxonomyV2.groups.find((g: any) => g.industries.some((i: any) => i.id === chat.industryId))?.id ?? "")
+                }
+                onChange={(val) => {
+                  setDraftBidang(val);
+                  const group = taxonomyV2?.groups.find((g: any) => g.id === val);
+                  const first = group?.industries?.[0]?.id;
+                  setDraftIndustry(first || "");
+                  if (editing === "bidang") setEditing(null);
+                }}
+                options={taxonomyV2.groups.map((g: any) => ({
+                  value: g.id,
+                  label: isEN ? g.label_en || g.label : g.label_id || g.label,
+                }))}
+                size="sm"
+                triggerClassName="border-white/10 bg-white/[0.06] text-white rounded-xl"
+              />
+            </div>
+          )}
+
+          {/* 3. Specialty (Spesialisasi) */}
+          <div className="flex items-center justify-between gap-3 py-3 px-1">
+            <div className="flex items-center gap-3 min-w-0">
+              <Star className="w-5 h-5 text-slate-400 shrink-0" />
+              <span className="text-sm text-slate-300">
+                {t("dashboard.wizard.cardSpec", isEN ? "Specialty" : "Spesialisasi")}
+              </span>
+            </div>
+            {!isEditingAll && (
+              <button
+                type="button"
+                onClick={() => !isLocked && setEditing(editing === "spec" ? null : "spec")}
+                disabled={isLocked}
+                className={`text-sm text-right font-bold truncate max-w-[55%] transition-colors ${
+                  isLocked ? "text-slate-300 cursor-default" : "text-white hover:text-primary cursor-pointer"
+                }`}
+              >
+                {specLabel || "—"}
+              </button>
+            )}
+          </div>
+          {(editing === "spec" || isEditingAll) && taxonomyV2 && (
+            <div className="pb-2 px-1 pl-9 space-y-1.5">
+              <CustomSelect
+                value={draftIndustry || "__other__"}
+                onChange={(val) => {
+                  setDraftIndustry(val);
+                  if (editing === "spec") setEditing(null);
+                }}
+                options={[
+                  ...taxonomyV2.groups
+                    .filter((g: any) => !draftBidang || g.id === draftBidang)
+                    .flatMap((g: any) => g.industries)
+                    .filter((i: any) => (!draftBidang && chat.archetype ? i.archetype === chat.archetype : true))
+                    .map((i: any) => ({
+                      value: i.id,
+                      label: isEN ? i.label_en || i.label : i.label_id || i.label,
+                    })),
+                  { value: "__other__", label: t("dashboard.wizard.otherIndustry", "Lainnya (ketik spesialisasi)...") },
+                ]}
+                size="sm"
+                triggerClassName="border-white/10 bg-white/[0.06] text-white rounded-xl"
+              />
+              {draftIndustry === "__other__" && (
+                <input
+                  autoFocus={editing === "spec"}
+                  value={chat.industryCustom || ""}
+                  onChange={(e) => chat.setIndustryCustom(e.target.value)}
+                  placeholder={t("dashboard.wizard.otherIndustry", isEN ? "Other (type specialty)..." : "Lainnya (ketik spesialisasi)...")}
+                  className="w-full px-3 py-1.5 rounded-xl text-xs bg-white/[0.06] text-white border border-white/10 focus:border-white/30 focus:outline-none transition-colors"
+                />
+              )}
+            </div>
+          )}
+
+          {/* 4. Location */}
+          <div className="flex items-center justify-between gap-3 py-3 px-1">
+            <div className="flex items-center gap-3 min-w-0">
+              <MapPin className="w-5 h-5 text-slate-400 shrink-0" />
+              <span className="text-sm text-slate-300">
+                {t("dashboard.wizard.cardLocation", isEN ? "Location" : "Lokasi")}
+              </span>
+            </div>
+            {!isEditingAll && (
+              <button
+                type="button"
+                onClick={() => !isLocked && setEditing(editing === "area" ? null : "area")}
+                disabled={isLocked}
+                className={`text-sm text-right font-bold truncate max-w-[55%] transition-colors ${
+                  isLocked ? "text-slate-300 cursor-default" : "text-white hover:text-primary cursor-pointer"
+                }`}
+                title={editing === "area" ? (isEN ? "Close" : "Tutup") : (isEN ? "Click to edit" : "Klik untuk ubah")}
+              >
+                {draftArea || chat.serviceArea || "—"}
+              </button>
+            )}
+          </div>
+          {(editing === "area" || isEditingAll) && (
+            <div className="pb-2 px-1 pl-9">
+              <input
+                autoFocus={editing === "area"}
+                value={draftArea}
+                onChange={(e) => setDraftArea(e.target.value)}
+                onBlur={() => {
+                  if (draftArea.trim()) chat.setServiceArea(draftArea.trim());
+                  if (editing === "area") setEditing(null);
+                }}
+                placeholder={t("dashboard.wizard.locationPlaceholder", isEN ? "City, Region, or Coverage Area" : "Kota atau wilayah operasional...")}
+                className="w-full px-3 py-1.5 rounded-xl text-xs bg-white/[0.06] text-white border border-white/10 focus:border-white/30 focus:outline-none transition-colors"
+              />
+            </div>
+          )}
+
+          {/* 5. Description — AI Highlight Box */}
+          {(hasDescription || isEditingAll || editing === "desc") && (
+            <div className="mt-2 rounded-2xl bg-white/[0.05] p-3.5">
+              {/* Header: SparkleGenAI icon + label + edit button */}
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <div className="flex items-center gap-2">
+                  <SparkleGenAI className="w-4 h-4 text-white shrink-0" />
+                  <span className="text-xs font-bold text-white uppercase tracking-wider">
+                    {t("dashboard.wizard.cardDesc", isEN ? "AI Summary" : "Ringkasan AI")}
+                  </span>
+                </div>
+                {!isLocked && !isEditingAll && (
+                  <button
+                    type="button"
+                    onClick={() => setEditing(editing === "desc" ? null : "desc")}
+                    className="text-xs text-slate-400 hover:text-white transition-colors cursor-pointer flex items-center gap-1 shrink-0"
+                  >
+                    <Pencil className="w-3 h-3" />
+                    {editing === "desc"
+                      ? t("dashboard.wizard.btnDone", isEN ? "Done" : "Tutup")
+                      : t("dashboard.wizard.btnEdit", isEN ? "Edit" : "Ubah")}
+                  </button>
+                )}
+              </div>
+              {editing === "desc" || isEditingAll ? (
+                <textarea
+                  autoFocus={editing === "desc"}
+                  rows={3}
+                  value={draftDesc}
+                  onChange={(e) => setDraftDesc(e.target.value)}
+                  placeholder={
+                    isEN
+                      ? t("dashboard.wizard.descPlaceholder", "Brief description of your business...")
+                      : t("dashboard.wizard.descPlaceholder", "Deskripsi singkat tentang bisnismu...")
+                  }
+                  className="w-full px-3 py-2 rounded-xl text-xs bg-white/[0.06] text-white border border-white/10 focus:border-white/30 focus:outline-none transition-colors resize-none leading-relaxed"
+                />
+              ) : (
+                <p className="text-sm text-slate-300 leading-relaxed break-words">
+                  {draftDesc || chat.description}
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex items-center gap-3 pt-4 mt-4">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setEditing(editing ? null : "all")}
+            disabled={isLocked}
+            className={`px-5 py-3 h-auto rounded-full text-sm font-semibold border transition-all flex items-center justify-center gap-2 ${
+              isLocked
+                ? "border-white/10 text-slate-500 cursor-not-allowed opacity-50"
+                : isEditingAll
+                ? "border-white/30 bg-white/10 text-white hover:bg-white/15 cursor-pointer"
+                : "border-white/20 bg-transparent text-slate-200 hover:text-white hover:border-white/40 hover:bg-white/5 active:scale-95 cursor-pointer"
+            }`}
+          >
+            {isEditingAll ? <Check className="w-4 h-4" /> : <Pencil className="w-4 h-4" />}
+            <span>
+              {isEditingAll
+                ? t("dashboard.wizard.btnDone", isEN ? "Done" : "Selesai")
+                : t("dashboard.wizard.btnEdit", isEN ? "Edit" : "Edit")}
+            </span>
+          </Button>
+          <Button
+            type="button"
+            onClick={handleContinue}
+            disabled={isLocked}
+            className={`flex-1 py-3 px-6 h-auto rounded-full text-sm font-bold transition-all flex items-center justify-center gap-2 shadow-lg ${
+              isLocked
+                ? "bg-white/10 text-slate-500 cursor-not-allowed shadow-none"
+                : "bg-white text-slate-900 hover:bg-slate-100 active:scale-95 cursor-pointer"
+            }`}
+          >
+            <span>{t("dashboard.wizard.btnContinue")}</span>
+            <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+          </Button>
+        </div>
       </div>
-      <button
-        type="button"
-        onClick={handleContinue}
-        disabled={isLocked}
-        className={`w-full py-2.5 rounded-xl text-sm font-bold transition-all ${
-          isLocked
-            ? "bg-white/10 text-slate-500 cursor-not-allowed shadow-none"
-            : "bg-white text-slate-900 hover:bg-slate-100 cursor-pointer shadow-lg"
-        }`}
-      >
-        {t("dashboard.wizard.btnContinue", "Ya, lanjut")}
-      </button>
     </div>
   );
 }
-
