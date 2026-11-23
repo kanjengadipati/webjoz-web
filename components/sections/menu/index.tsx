@@ -5,6 +5,7 @@ import { genId } from "../inline-add";
 
 import { resolveVariant } from "../variant-meta";
 import { MENU_VARIANTS } from "./variants";
+import { ProductKindProvider } from "../product/kind-config";
 
 export type MenuVariantProps = {
   menu: TemplateProps["content"]["menu"];
@@ -110,7 +111,7 @@ export default function MenuSection({
   );
 
   return (
-    <>
+    <ProductKindProvider kind="menu">
       <Renderer
         menu={menu}
         design_token={design_token}
@@ -125,6 +126,6 @@ export default function MenuSection({
         onDeleteCategory={isEditor ? onDeleteCategory : undefined}
         language={language}
       />
-    </>
+    </ProductKindProvider>
   );
 }

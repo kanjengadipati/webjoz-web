@@ -5,13 +5,14 @@ import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-
 import { AddToCartButton } from "@/components/cart";
 import { SectionHeader, pillEyebrowStyle, headerTitleStyle } from "../section-header";
 import { productCategories, type ProductVariantProps } from "./types";
-import { KIND_CONFIG } from "./kind-config";
+import { KIND_CONFIG, useProductKind } from "./kind-config";
 
 export default function ProductCompact({
-  section, kind, data, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
+  section, kind: _kind, data, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange,
   onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id",
 }: ProductVariantProps) {
   const isEN = language === "en";
+  const kind = useProductKind();
   const isMenu = kind === "menu";
   const [quickView, setQuickView] = useState<{ catIdx: number; itemIdx: number } | null>(null);
   if (!data) return null;
@@ -77,11 +78,7 @@ export default function ProductCompact({
                   {item.description && <InlineText section={section} fieldKey={"categories." + catIdx + ".items." + itemIdx + ".description"} value={item.description ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" multiline style={{ fontSize: "0.8rem", color: "var(--dt-text-muted)", lineHeight: 1.4 }} />}
                   {!isMenu && item.capacity != null && item.capacity > 0 && (
                     <span style={{ fontSize: "0.7rem", fontWeight: 600, color: brandPrimary, marginTop: "0.15rem" }}>
-                      {KIND_CONFIG[kind]?.capacityUnit?.(isEN) ? (
-                        <>{isEN ? "up to" : "s/d"} <InlineText section={section} fieldKey={"categories." + catIdx + ".items." + itemIdx + ".capacity"} value={item.capacity != null ? String(item.capacity) : ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" /> {KIND_CONFIG[kind].capacityUnit(isEN)}</>
-                      ) : (
-                        <InlineText section={section} fieldKey={"categories." + catIdx + ".items." + itemIdx + ".capacity"} value={item.capacity != null ? String(item.capacity) : ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
-                      )}
+                      {isEN ? "up to" : "s/d"} <InlineText section={section} fieldKey={"categories." + catIdx + ".items." + itemIdx + ".capacity"} value={item.capacity != null ? String(item.capacity) : ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" /> {KIND_CONFIG[kind]?.capacityUnit?.(isEN) || (isEN ? "guests" : "tamu")}
                     </span>
                   )}
                   {!isMenu && item.features && item.features.length > 0 && (

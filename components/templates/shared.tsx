@@ -1,4 +1,6 @@
 "use client";
+import type { ProductKind } from "../sections/product/kind-config";
+import { KIND_CONFIG, useProductKind } from "../sections/product/kind-config";
 
 import React, { useId, useState, useEffect, useRef } from "react";
 import { headingVars, avatarTextColor, minVariantPriceAmount } from "./helpers";
@@ -1683,11 +1685,8 @@ export interface MenuCatalogCardStyles {
   button?: { className?: string; style?: React.CSSProperties };
 }
 
-import type { ProductKind } from "../sections/product/kind-config";
-import { KIND_CONFIG } from "../sections/product/kind-config";
 
 interface MenuCatalogCardProps {
-  kind?: ProductKind;
   item: MenuCatalogCardItem;
   styles?: MenuCatalogCardStyles;
   icon: React.ElementType;
@@ -1705,10 +1704,11 @@ interface MenuCatalogCardProps {
 }
 
 function MenuCatalogCard({
-  kind = "product", item, styles: stylesProp, icon, layout = "grid",
+  item, styles: stylesProp, icon, layout = "grid",
   onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, editSection, pathBase, onDelete,
   featureMarker: explicitFeatureMarker,
 }: MenuCatalogCardProps) {
+  const kind = useProductKind();
   const featureMarker = useFeatureMarker(explicitFeatureMarker);
   const styles = stylesProp ?? {};
   const chromeEnabled = useEditorChromeEnabled();
@@ -2338,11 +2338,12 @@ function MenuCatalogCard({
           <div className="mt-2">
             <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)" }}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="w-3 h-3"><circle cx="9" cy="7" r="2"/><path d="M3 21v-1a6 6 0 0 1 12 0v1"/><circle cx="17" cy="7" r="2"/><path d="M21 21v-1a5 5 0 0 0-3-4.6"/></svg>
-              {KIND_CONFIG[kind]?.capacityUnit?.(isEN) ? (
-                <>s/d <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".capacity" : ""} value={String(capacity)} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /> {KIND_CONFIG[kind].capacityUnit(isEN)}</>
-              ) : (
-                <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".capacity" : ""} value={String(capacity)} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-              )}
+              {(() => {
+                const unit = KIND_CONFIG[kind]?.capacityUnit?.(isEN) || (isEN ? "guests" : "tamu");
+                return (
+                  <>s/d <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".capacity" : ""} value={String(capacity)} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /> {unit}</>
+                );
+              })()}
             </span>
           </div>
         )}

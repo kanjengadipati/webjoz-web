@@ -1,3 +1,5 @@
+import React from "react";
+
 // KIND_CONFIG — single source of truth for per-kind behaviour of the menu/catalog
 // section. Replaces scattered `sectionKey === "menu"/"catalog"` branching.
 export type ProductKind = "menu" | "product" | "service" | "lodging";
@@ -64,4 +66,14 @@ export const KIND_CONFIG: Record<ProductKind, KindConfig> = {
 export function resolveKind(data: { kind?: ProductKind } | null | undefined, fallback: ProductKind = "product"): ProductKind {
   const k = data?.kind;
   return k && k in KIND_CONFIG ? k : fallback;
+}
+
+const ProductKindContext = React.createContext<ProductKind>("product");
+
+export function ProductKindProvider({ kind, children }: { kind: ProductKind; children: React.ReactNode }) {
+  return React.createElement(ProductKindContext.Provider, { value: kind }, children);
+}
+
+export function useProductKind(): ProductKind {
+  return React.useContext(ProductKindContext);
 }

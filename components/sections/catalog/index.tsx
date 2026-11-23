@@ -6,6 +6,7 @@ import { useEditorChromeEnabled } from "../editor-chrome-context";
 
 import { resolveVariant } from "../variant-meta";
 import { CATALOG_VARIANTS } from "./variants";
+import { ProductKindProvider, resolveKind } from "../product/kind-config";
 
 export type CatalogVariantProps = {
   catalog: TemplateProps["content"]["catalog"];
@@ -119,7 +120,7 @@ export default function CatalogSection({
   );
 
   return (
-    <>
+    <ProductKindProvider kind={resolveKind(catalog)}>
       <Renderer
         catalog={catalog}
         design_token={design_token}
@@ -134,6 +135,6 @@ export default function CatalogSection({
         onDeleteCategory={isEditor ? onDeleteCategory : undefined}
         language={language}
       />
-    </>
+    </ProductKindProvider>
   );
 }
