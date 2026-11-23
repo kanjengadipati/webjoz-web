@@ -11,6 +11,7 @@ export interface KindConfig {
   showTags: boolean;
   showDeliveryPlatforms: boolean;
   ctaMode: "cart" | "booking" | "inquiry";
+  capacityUnit: (isEN: boolean) => string;
 }
 
 export const KIND_CONFIG: Record<ProductKind, KindConfig> = {
@@ -23,6 +24,7 @@ export const KIND_CONFIG: Record<ProductKind, KindConfig> = {
     showTags: true,
     showDeliveryPlatforms: true,
     ctaMode: "cart",
+    capacityUnit: () => "",
   },
   product: {
     label: "Catalog",
@@ -33,6 +35,7 @@ export const KIND_CONFIG: Record<ProductKind, KindConfig> = {
     showTags: false,
     showDeliveryPlatforms: false,
     ctaMode: "cart",
+    capacityUnit: () => "",
   },
   service: {
     label: "Service",
@@ -43,6 +46,7 @@ export const KIND_CONFIG: Record<ProductKind, KindConfig> = {
     showTags: false,
     showDeliveryPlatforms: false,
     ctaMode: "inquiry",
+    capacityUnit: (isEN) => (isEN ? "people" : "orang"),
   },
   lodging: {
     label: "Lodging",
@@ -53,6 +57,7 @@ export const KIND_CONFIG: Record<ProductKind, KindConfig> = {
     showTags: false,
     showDeliveryPlatforms: false,
     ctaMode: "booking",
+    capacityUnit: (isEN) => (isEN ? "guests" : "tamu"),
   },
 };
 
