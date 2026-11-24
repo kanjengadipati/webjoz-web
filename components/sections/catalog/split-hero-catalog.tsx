@@ -1,10 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import { ArrowRight, Image as ImageIcon } from "lucide-react";
+import { ArrowRight, Utensils, Image as ImageIcon } from "lucide-react";
 import { InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import { SectionHeader } from "../section-header";
 import { AddToCartButton } from "@/components/cart";
+import { useProductKind } from "../product/kind-config";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface CatalogVariantProps {
@@ -24,9 +25,12 @@ interface CatalogVariantProps {
 
 export default function CatalogSplitHeroCatalog({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: CatalogVariantProps) {
   const isEN = language === "en";
+  const kind = useProductKind();
+  const isMenu = kind === "menu";
   const [quickView, setQuickView] = useState<{ catIdx: number; itemIdx: number } | null>(null);
   if (!catalog) return null;
   const { eyebrow, title, subtitle, categories } = catalog;
+  const eyebrowDefault = isMenu ? (isEN ? "Menu Selection" : "Daftar Menu Pilihan") : (isEN ? "Product Collection" : "Koleksi Produk");
   const qvCategory = quickView ? categories[quickView.catIdx] : undefined;
   const qvItem = qvCategory?.items?.[quickView?.itemIdx ?? -1];
 
@@ -49,7 +53,7 @@ export default function CatalogSplitHeroCatalog({ catalog, onUpdateField, isEdit
         <div className="lg:col-span-5 lg:sticky lg:top-8 space-y-8 flex flex-col justify-between h-auto">
           <SectionHeader
             section="catalog"
-            eyebrow={(eyebrow || isEditorMode) ? (eyebrow ?? "") : undefined}
+            eyebrow={(eyebrow || isEditorMode) ? (eyebrow ?? eyebrowDefault) : undefined}
             title={title}
             subtitle={(subtitle || isEditorMode) ? (subtitle ?? "") : undefined}
             eyebrowClassName="text-xs uppercase tracking-widest font-semibold block mb-3"
@@ -246,6 +250,28 @@ export default function CatalogSplitHeroCatalog({ catalog, onUpdateField, isEdit
                             <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 10%, transparent)", color: "var(--dt-primary)" }}>
                               {isEN ? "up to" : "s/d"} <InlineText section="catalog" fieldKey={"categories." + catIdx + ".items." + index + ".capacity"} value={item.capacity != null ? String(item.capacity) : ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" /> {isEN ? "guests" : "tamu"}
                             </span>
+                          </div>
+                        )}
+
+                        {/* Food Tags (e.g. Pedas, Favorit) */}
+                        {item.tags && item.tags.length > 0 && (
+                          <div className="mb-2 flex flex-wrap gap-1">
+                            {item.tags.map((tag: string, tagIdx: number) => (
+                              <span key={tagIdx} className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 14%, transparent)", color: "var(--dt-primary)" }}>
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Delivery Platforms */}
+                        {item.delivery_platforms && item.delivery_platforms.length > 0 && (
+                          <div className="mb-3 flex flex-wrap gap-1">
+                            {item.delivery_platforms.map((dp, dpIdx) => (
+                              <span key={dpIdx} className="text-[10px] font-semibold px-2 py-0.5 rounded-md" style={{ background: "color-mix(in srgb, var(--dt-text) 8%, transparent)", color: "var(--dt-text)" }}>
+                                {dp.name}
+                              </span>
+                            ))}
                           </div>
                         )}
 

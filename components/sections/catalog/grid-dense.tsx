@@ -1,10 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import { Image as ImageIcon } from "lucide-react";
+import { Utensils, Image as ImageIcon } from "lucide-react";
 import { MenuCatalogCard, InlineText, CatalogMenuFilterBar } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import { useCatalogFilter } from "../use-catalog-filter";
 import { SectionHeader, pillEyebrowStyle, headerTitleStyle, headerDividerStyle } from "../section-header";
+import { useProductKind } from "../product/kind-config";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface CatalogVariantProps {
@@ -25,9 +26,25 @@ interface CatalogVariantProps {
 /**
  * Grid Dense — tighter grid, smaller cards, fits more items per row.
  * Best for catalogs with 20+ items. Cards use minmax(180px, 1fr).
+ * Fully optimized for both Retail Catalog and F&B Menu modes.
  */
-export default function CatalogGridDense({ catalog, design_token, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: CatalogVariantProps) {
+export default function CatalogGridDense({
+  catalog,
+  design_token,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+  onAddItem,
+  onDeleteItem,
+  onAddCategory,
+  onDeleteCategory,
+  language = "id",
+}: CatalogVariantProps) {
   const isEN = language === "en";
+  const kind = useProductKind();
+  const isMenu = kind === "menu";
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -40,13 +57,16 @@ export default function CatalogGridDense({ catalog, design_token, onUpdateField,
   const text = "var(--dt-text)";
   const hFont = "var(--dt-heading-font)";
   const hWeight = "var(--dt-heading-weight)";
+  const Icon = isMenu ? Utensils : ImageIcon;
+  const eyebrowDefault = isMenu ? (isEN ? "Menu Selection" : "Daftar Menu Pilihan") : (isEN ? "Product Collection" : "Koleksi Produk");
+  const searchPlaceholder = isMenu ? (isEN ? "Search menu or tags..." : "Cari menu atau tags...") : (isEN ? "Search products..." : "Cari produk...");
 
   return (
     <section id="catalog" style={{ padding: "var(--dt-spacing) 1.5rem", background: `color-mix(in srgb, ${p} 4%, ${bg})`, borderTop: `1px solid color-mix(in srgb, ${p} 12%, transparent)` }}>
       <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
         <SectionHeader
           section="catalog"
-          eyebrow={(catalog.eyebrow || isEditorMode) ? (catalog.eyebrow ?? (isEN ? "Product Collection" : "Koleksi Produk")) : undefined}
+          eyebrow={(catalog.eyebrow || isEditorMode) ? (catalog.eyebrow ?? eyebrowDefault) : undefined}
           title={catalog.title}
           wrapperStyle={{ textAlign: "center", marginBottom: "2.5rem" }}
           eyebrowStyle={pillEyebrowStyle(p)}
@@ -67,13 +87,13 @@ export default function CatalogGridDense({ catalog, design_token, onUpdateField,
           onSelectCategory={setActiveCategory}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
-          placeholder={isEN ? "Search products..." : "Cari produk..."}
+          placeholder={searchPlaceholder}
         />
 
         {filteredCategories.length === 0 ? (
           <div style={{ textAlign: "center", padding: "4rem 1rem", opacity: 0.75 }}>
             <p style={{ fontWeight: 600, fontSize: "1rem", color: text }}>
-              {isEN ? `No products match the search "${searchQuery}".` : `Tidak ada produk yang cocok dengan pencarian "${searchQuery}".`}
+              {isEN ? `No items match the search "${searchQuery}".` : `Tidak ada item yang cocok dengan pencarian "${searchQuery}".`}
             </p>
           </div>
         ) : (
@@ -89,8 +109,6 @@ export default function CatalogGridDense({ catalog, design_token, onUpdateField,
                     title={isEN ? "Delete Category" : "Hapus Kategori"}
                   />
                 )}
-
-
                 <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, ${p} 18%, transparent)` }} />
               </div>
               <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 items-stretch">
@@ -116,8 +134,10 @@ export default function CatalogGridDense({ catalog, design_token, onUpdateField,
                       features: item.features,
                       maxFeatures: 2,
                       capacity: item.capacity,
+                      tags: item.tags,
+                      delivery_platforms: item.delivery_platforms,
                     }}
-                    icon={ImageIcon}
+                    icon={Icon}
                     layout={design_token?.layout?.card_style ?? "grid"}
                     styles={{
                       className: "group transition-all duration-300 flex flex-col h-full justify-between",
@@ -154,9 +174,9 @@ export default function CatalogGridDense({ catalog, design_token, onUpdateField,
             </div>
           ))
         )}
-      {isEditorMode && onAddCategory && (
-        <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
-      )}
+        {isEditorMode && onAddCategory && (
+          <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+        )}
       </div>
     </section>
   );

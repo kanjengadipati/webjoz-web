@@ -22,12 +22,14 @@ import PricingSectionInner from "@/components/sections/pricing";
 import HeaderSection from "@/components/sections/header";
 import FooterSection from "@/components/sections/footer";
 import { BlogPostsSection } from "@/components/templates/blog-section";
+import { ProductKindProvider } from "@/components/sections/product/kind-config";
 
 export interface SectionRendererProps {
   sectionKey: string;
   variantKey: string;
   designToken: DesignToken;
   zeroState?: boolean;
+  catalogKind?: "product" | "menu";
 }
 
 export function SectionRenderer({
@@ -35,6 +37,7 @@ export function SectionRenderer({
   variantKey,
   designToken,
   zeroState = false,
+  catalogKind = "product",
 }: SectionRendererProps) {
   const d = MOCK_SHOWCASE_DATA;
 
@@ -89,14 +92,27 @@ export function SectionRenderer({
         />
       );
 
-    case "catalog":
+    case "catalog": {
+      const isFnb = catalogKind === "menu";
+      const catalogData = isFnb
+        ? {
+            eyebrow: d.menu.eyebrow,
+            title: d.menu.title,
+            subtitle: d.menu.subtitle,
+            categories: d.menu.categories,
+          }
+        : d.catalog;
+
       return (
-        <CatalogSectionInner
-          catalog={d.catalog as any}
-          design_token={designToken}
-          isEditorMode={false}
-        />
+        <ProductKindProvider kind={isFnb ? "menu" : "product"}>
+          <CatalogSectionInner
+            catalog={catalogData as any}
+            design_token={designToken}
+            isEditorMode={false}
+          />
+        </ProductKindProvider>
       );
+    }
 
     case "works":
       return (

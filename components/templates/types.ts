@@ -127,6 +127,8 @@ export interface MenuCategory {
 export interface CatalogItem extends CatalogEntryBase {
   features?: string[] | null;
   capacity?: number | null;
+  tags?: string[] | null;
+  delivery_platforms?: { name: string; url: string }[] | null;
 }
 
 export interface CatalogCategory {

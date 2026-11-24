@@ -1,9 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import { Image as _ImageIcon } from "lucide-react";
+import { Utensils, Image as _ImageIcon } from "lucide-react";
 import { InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import { SectionHeader } from "../section-header";
+import { useProductKind } from "../product/kind-config";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 import { AddToCartButton } from "@/components/cart";
 
@@ -24,9 +25,12 @@ interface CatalogVariantProps {
 
 export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: CatalogVariantProps) {
   const isEN = language === "en";
+  const kind = useProductKind();
+  const isMenu = kind === "menu";
   const [quickView, setQuickView] = useState<{ catIdx: number; itemIdx: number } | null>(null);
   if (!catalog) return null;
   const { eyebrow, title, subtitle, categories } = catalog;
+  const eyebrowDefault = isMenu ? (isEN ? "Menu Selection" : "Daftar Menu Pilihan") : (isEN ? "Product Collection" : "Koleksi Produk");
   const qvCategory = quickView ? categories[quickView.catIdx] : undefined;
   const qvItem = qvCategory?.items?.[quickView?.itemIdx ?? -1];
 
@@ -43,7 +47,7 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
       {/* Header with High-Contrast Layout */}
       <SectionHeader
         section="catalog"
-        eyebrow={(eyebrow || isEditorMode) ? (eyebrow ?? "") : undefined}
+        eyebrow={(eyebrow || isEditorMode) ? (eyebrow ?? eyebrowDefault) : undefined}
         title={title}
         subtitle={(subtitle || isEditorMode) ? (subtitle ?? "") : undefined}
         wrapperClassName="mb-16 p-8 border-[3px] border-solid"
@@ -269,6 +273,28 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
                           <span className="inline-flex items-center gap-1 text-[11px] font-black uppercase px-2 py-0.5 border-2 rounded-none" style={{ borderColor: "var(--dt-text, #18181b)", background: "var(--dt-accent)", color: "var(--dt-primary-foreground)" }}>
                             {isEN ? "up to" : "s/d"} <InlineText section="catalog" fieldKey={"categories." + catIdx + ".items." + index + ".capacity"} value={item.capacity != null ? String(item.capacity) : ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" /> {isEN ? "guests" : "tamu"}
                           </span>
+                        </div>
+                      )}
+
+                      {/* Food Tags (e.g. Pedas, Favorit) */}
+                      {item.tags && item.tags.length > 0 && (
+                        <div className="mb-3 flex flex-wrap gap-1.5">
+                          {item.tags.map((tag: string, tagIdx: number) => (
+                            <span key={tagIdx} className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 border-2 rounded-none" style={{ borderColor: "var(--dt-text, #18181b)", backgroundColor: "var(--dt-accent)", color: "var(--dt-primary-foreground)" }}>
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Delivery Platforms */}
+                      {item.delivery_platforms && item.delivery_platforms.length > 0 && (
+                        <div className="mb-3 flex flex-wrap gap-1.5">
+                          {item.delivery_platforms.map((dp, dpIdx) => (
+                            <span key={dpIdx} className="text-[10px] font-black uppercase px-2 py-0.5 border-2 rounded-none" style={{ borderColor: "var(--dt-text, #18181b)", color: "var(--dt-text)", backgroundColor: "color-mix(in srgb, var(--dt-surface) 85%, var(--dt-text))" }}>
+                              {dp.name}
+                            </span>
+                          ))}
                         </div>
                       )}
 

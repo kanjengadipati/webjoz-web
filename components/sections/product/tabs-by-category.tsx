@@ -220,9 +220,10 @@ export default function ProductTabsByCategory({
                     image_urls: item.image_urls,
                     is_available: item.is_available,
                     variant_groups: item.variant_groups,
+                    badge: item.badge,
                     ...(isMenu
                       ? { tags: item.tags, delivery_platforms: item.delivery_platforms }
-                      : { badge: item.badge, features: item.features, capacity: item.capacity }),
+                      : { features: item.features, capacity: item.capacity }),
                   }}
                   icon={Icon}
                   layout={design_token?.layout?.card_style ?? "grid"}

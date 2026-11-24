@@ -83,6 +83,7 @@ export default function SectionShowcasePage() {
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "hidden">("all");
   const [copiedVariant, setCopiedVariant] = useState<string | null>(null);
   const [cardStyle, setCardStyle] = useState<"standard" | "horizontal" | "minimal" | "overlay" | "magazine">("standard");
+  const [catalogKind, setCatalogKind] = useState<"product" | "menu">("product");
   const [fullscreenSection, setFullscreenSection] = useState<string | null>(null);
 
   const handleOpenFullscreenSection = useCallback((sectionKey: string, targetVariant?: string) => {
@@ -105,6 +106,16 @@ export default function SectionShowcasePage() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
+
+  // Lock body scroll when fullscreen overlay is active to avoid scroll-chaining jitter
+  useEffect(() => {
+    if (!fullscreenSection) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [fullscreenSection]);
 
   // Hidden variants state from platform config
   const [hiddenVariants, setHiddenVariants] = useState<Record<string, string[]>>({});
@@ -687,11 +698,11 @@ export default function SectionShowcasePage() {
         const fsCssVars = buildCssVars(currentToken);
         return (
           <div
-            className="fixed inset-0 z-[200] bg-background flex flex-col animate-in fade-in duration-200"
+            className="fixed inset-0 z-[200] bg-background flex flex-col"
             style={fsCssVars as React.CSSProperties}
           >
-            {/* Top Bar */}
-            <div className="shrink-0 flex items-center justify-between px-4 py-2.5 border-b border-border/80 bg-card/95 backdrop-blur-md">
+            {/* Top Bar — solid bg without backdrop-blur to prevent GPU compositing thrashing */}
+            <div className="shrink-0 flex items-center justify-between px-4 py-2.5 border-b border-border/80 bg-card z-10 shadow-xs">
               <div className="flex items-center gap-2.5">
                 <span className="text-sm font-bold capitalize">Section: {fullscreenSection}</span>
                 <span className="text-xs px-2 py-0.5 rounded bg-muted text-muted-foreground font-mono">
@@ -718,6 +729,34 @@ export default function SectionShowcasePage() {
                     ))}
                   </select>
                 </div>
+
+                {/* Mode Data Catalog: Retail vs F&B */}
+                {fullscreenSection === "catalog" && (
+                  <div className="flex items-center gap-1 bg-muted/40 p-0.5 rounded-lg border border-border/60">
+                    <button
+                      type="button"
+                      onClick={() => setCatalogKind("product")}
+                      className={`px-2 py-1 text-xs rounded-md transition-all cursor-pointer ${
+                        catalogKind === "product"
+                          ? "bg-background text-foreground shadow-xs font-semibold"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      Retail
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCatalogKind("menu")}
+                      className={`px-2 py-1 text-xs rounded-md transition-all cursor-pointer ${
+                        catalogKind === "menu"
+                          ? "bg-background text-foreground shadow-xs font-semibold"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      F&B (Menu)
+                    </button>
+                  </div>
+                )}
 
                 {/* Card style */}
                 {(fullscreenSection === "catalog" || fullscreenSection === "menu") && (
@@ -770,8 +809,8 @@ export default function SectionShowcasePage() {
               </div>
             </div>
 
-            {/* Scrollable Canvas */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-8 bg-muted/10">
+            {/* Scrollable Canvas — hardware-accelerated with overscroll containment */}
+            <div className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6 space-y-8 bg-muted/10 [transform:translateZ(0)]">
               <CartProvider
                 waPhone="6281234567890"
                 brandName="Webjoz Showcase"
@@ -783,6 +822,7 @@ export default function SectionShowcasePage() {
                     key={v.value}
                     id={`fs-variant-${v.value}`}
                     className="space-y-2 max-w-7xl mx-auto"
+                    style={{ contentVisibility: "auto", containIntrinsicSize: "0 500px" }}
                   >
                     <div className="flex items-center justify-between px-1">
                       <div className="flex items-center gap-2">
@@ -804,11 +844,12 @@ export default function SectionShowcasePage() {
                       </button>
                     </div>
 
-                    <div className="bg-background rounded-xl border border-border/80 p-3 sm:p-4 overflow-hidden shadow-xs">
+                    <div className="bg-background rounded-xl border border-border/80 p-3 sm:p-4 overflow-hidden shadow-xs [transform:translateZ(0)]">
                       <div className={viewportWidthClass}>
                         <SectionRenderer
                           sectionKey={fullscreenSection}
                           variantKey={v.value}
+                          catalogKind={catalogKind}
                           designToken={{
                             ...currentToken,
                             layout: {

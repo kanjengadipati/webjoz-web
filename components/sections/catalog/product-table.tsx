@@ -1,10 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import { Image as ImageIcon } from "lucide-react";
+import { Utensils, Image as ImageIcon } from "lucide-react";
 import { InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import { SectionHeader } from "../section-header";
 import { AddToCartButton } from "@/components/cart";
+import { useProductKind } from "../product/kind-config";
 import type { TemplateProps, DesignToken, CatalogItem } from "../../templates/types";
 
 interface CatalogVariantProps {
@@ -24,23 +25,26 @@ interface CatalogVariantProps {
 
 export default function CatalogProductTable({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id" }: CatalogVariantProps) {
   const isEN = language === "en";
+  const kind = useProductKind();
+  const isMenu = kind === "menu";
   const [quickView, setQuickView] = useState<{ catIdx: number; itemIdx: number } | null>(null);
   if (!catalog) return null;
 
   const categories = catalog.categories || [];
   const qvCategory = quickView ? categories[quickView.catIdx] : undefined;
   const qvItem = qvCategory?.items?.[quickView?.itemIdx ?? -1];
+  const eyebrowDefault = isMenu ? (isEN ? "Menu Selection" : "Daftar Menu Pilihan") : (isEN ? "Product Collection" : "Koleksi Produk");
 
   const labels = {
     photo: isEN ? "Photo" : "Foto",
-    name: isEN ? "Name" : "Nama",
+    name: isEN ? (isMenu ? "Menu Item" : "Name") : (isMenu ? "Menu" : "Nama"),
     category: isEN ? "Category" : "Kategori",
     price: isEN ? "Price" : "Harga",
     stock: isEN ? "Availability" : "Stok",
-    action: isEN ? "Action" : "Aksi",
+    action: isEN ? (isMenu ? "Order" : "Action") : (isMenu ? "Pesan" : "Aksi"),
     available: isEN ? "Available" : "Tersedia",
     outOfStock: isEN ? "Out of stock" : "Habis",
-    empty: isEN ? "No products yet." : "Belum ada produk.",
+    empty: isEN ? (isMenu ? "No menu items yet." : "No products yet.") : (isMenu ? "Belum ada item menu." : "Belum ada produk."),
   };
 
   const base = (catIdx: number, itemIdx: number) => "categories." + catIdx + ".items." + itemIdx;
@@ -138,7 +142,7 @@ export default function CatalogProductTable({ catalog, onUpdateField, isEditorMo
         {/* Header */}
         <SectionHeader
           section="catalog"
-          eyebrow={(catalog.eyebrow || isEditorMode) ? (catalog.eyebrow ?? "") : undefined}
+          eyebrow={(catalog.eyebrow || isEditorMode) ? (catalog.eyebrow ?? eyebrowDefault) : undefined}
           title={catalog.title}
           subtitle={(catalog.subtitle || isEditorMode) ? (catalog.subtitle ?? "") : undefined}
           wrapperClassName="mb-12 text-center max-w-2xl mx-auto"
@@ -237,8 +241,18 @@ export default function CatalogProductTable({ catalog, onUpdateField, isEditorMo
                               className="text-sm font-semibold"
                               style={{ color: "var(--dt-text)" }}
                             />
+                            {/* Food Tags (e.g. Pedas, Favorit) */}
+                            {item.tags && item.tags.length > 0 && (
+                              <div className="flex flex-wrap gap-1 mt-0.5">
+                                {item.tags.map((tag: string, tagIdx: number) => (
+                                  <span key={tagIdx} className="text-[9px] font-bold px-1.5 py-0.2 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 14%, transparent)", color: "var(--dt-primary)" }}>
+                                    {tag}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
                             {(item.badge || isEditorMode) && (
-                              <span className="self-start text-[10px] uppercase tracking-widest font-bold px-2 py-0.5" style={{ backgroundColor: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "var(--dt-radius)" }}>
+                              <span className="self-start text-[10px] uppercase tracking-widest font-bold px-2 py-0.5 mt-0.5" style={{ backgroundColor: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "var(--dt-radius)" }}>
                                 <InlineText section="catalog" fieldKey={base(catIdx, itemIdx) + ".badge"} value={item.badge ?? ""} placeholder={isEN ? "Badge..." : "Label..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
                               </span>
                             )}
@@ -313,19 +327,30 @@ export default function CatalogProductTable({ catalog, onUpdateField, isEditorMo
                         />
                       </div>
                       <div className="flex flex-col min-w-0 flex-grow">
-                        <InlineText
-                          section="catalog"
-                          fieldKey={base(catIdx, itemIdx) + ".name"}
-                          value={item.name ?? ""}
-                          onUpdateField={onUpdateField}
-                          isEditorMode={isEditorMode}
-                          isSelected={isSelected}
-                          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                          onEditingStateChange={onEditingStateChange}
-                          as="span"
-                          className="text-sm font-semibold"
-                          style={{ color: "var(--dt-text)" }}
-                        />
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <InlineText
+                            section="catalog"
+                            fieldKey={base(catIdx, itemIdx) + ".name"}
+                            value={item.name ?? ""}
+                            onUpdateField={onUpdateField}
+                            isEditorMode={isEditorMode}
+                            isSelected={isSelected}
+                            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                            onEditingStateChange={onEditingStateChange}
+                            as="span"
+                            className="text-sm font-semibold"
+                            style={{ color: "var(--dt-text)" }}
+                          />
+                          {item.tags && item.tags.length > 0 && (
+                            <div className="flex flex-wrap gap-1">
+                              {item.tags.map((tag: string, tagIdx: number) => (
+                                <span key={tagIdx} className="text-[9px] font-bold px-1.5 py-0.2 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 14%, transparent)", color: "var(--dt-primary)" }}>
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                         <span className="text-[11px] mt-0.5" style={{ color: "var(--dt-text-muted)" }}>{category.name}</span>
                         <div className="mt-1">{renderPrice(item, catIdx, itemIdx)}</div>
                         <div className="mt-1.5">{renderStock(item)}</div>

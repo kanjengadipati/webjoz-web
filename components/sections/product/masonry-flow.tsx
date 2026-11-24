@@ -164,9 +164,10 @@ export default function ProductMasonryFlow({
                         image_credit: item.image_credit,
                         is_available: item.is_available,
                         variant_groups: item.variant_groups,
+                        badge: item.badge,
                         ...(isMenu
                           ? { tags: item.tags, delivery_platforms: item.delivery_platforms }
-                          : { badge: item.badge, features: item.features, maxFeatures: 2, capacity: item.capacity }),
+                          : { features: item.features, maxFeatures: 2, capacity: item.capacity }),
                       }}
                       icon={Icon}
                       styles={getMasonryCardStyles(index)}

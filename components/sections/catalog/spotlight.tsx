@@ -1,10 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import { Image as ImageIcon } from "lucide-react";
+import { Utensils, Image as ImageIcon } from "lucide-react";
 import { MenuCatalogCard, InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import { SectionHeader } from "../section-header";
 import { AddToCartButton } from "@/components/cart";
+import { useProductKind } from "../product/kind-config";
 import PhotoCredit from "../PhotoCredit";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
@@ -25,9 +26,13 @@ interface CatalogVariantProps {
 
 export default function CatalogSpotlight({ catalog, design_token, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id" }: CatalogVariantProps) {
   const isEN = language === "en";
+  const kind = useProductKind();
+  const isMenu = kind === "menu";
   const [quickView, setQuickView] = useState<{ catIdx: number; itemIdx: number } | null>(null);
   if (!catalog) return null;
 
+  const Icon = isMenu ? Utensils : ImageIcon;
+  const eyebrowDefault = isMenu ? (isEN ? "Menu Selection" : "Daftar Menu Pilihan") : (isEN ? "Product Collection" : "Koleksi Produk");
   const categories = catalog.categories || [];
   const qvCategory = quickView ? categories[quickView.catIdx] : undefined;
   const qvItem = qvCategory?.items?.[quickView?.itemIdx ?? -1];
@@ -69,7 +74,7 @@ export default function CatalogSpotlight({ catalog, design_token, onUpdateField,
       {/* Header */}
       <SectionHeader
         section="catalog"
-        eyebrow={(catalog.eyebrow || isEditorMode) ? (catalog.eyebrow ?? "") : undefined}
+        eyebrow={(catalog.eyebrow || isEditorMode) ? (catalog.eyebrow ?? eyebrowDefault) : undefined}
         title={catalog.title}
         subtitle={(catalog.subtitle || isEditorMode) ? (catalog.subtitle ?? "") : undefined}
         wrapperClassName="max-w-7xl mx-auto px-4 md:px-8 mb-10 text-center"
@@ -160,6 +165,16 @@ export default function CatalogSpotlight({ catalog, design_token, onUpdateField,
             )}
 
             <div className="flex flex-wrap items-center gap-2 mt-4">
+              {/* Food Tags (e.g. Chef's Recommendation, Pedas, Favorit) */}
+              {heroItem.tags && heroItem.tags.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {heroItem.tags.map((tag: string, tagIdx: number) => (
+                    <span key={tagIdx} className="inline-flex items-center text-xs font-bold px-3 py-1 rounded-full shadow-sm" style={{ background: "rgba(255,255,255,0.22)", color: "#fff", backdropFilter: "blur(6px)" }}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
               {heroItem.capacity != null && heroItem.capacity > 0 && (
                 <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: "rgba(255,255,255,0.16)", color: "#fff" }}>
                   {labels.upTo} <InlineText section="catalog" fieldKey={heroPath + ".capacity"} value={heroItem.capacity != null ? String(heroItem.capacity) : ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" /> {labels.guests}
@@ -307,8 +322,10 @@ export default function CatalogSpotlight({ catalog, design_token, onUpdateField,
                       features: item.features,
                       maxFeatures: 2,
                       capacity: item.capacity,
+                      tags: item.tags,
+                      delivery_platforms: item.delivery_platforms,
                     }}
-                    icon={ImageIcon}
+                    icon={Icon}
                     layout="grid"
                     styles={{
                       className: "group transition-all duration-300 flex flex-col h-full justify-between",

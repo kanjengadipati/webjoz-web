@@ -1,12 +1,13 @@
 "use client";
 import React from "react";
-import { Image as ImageIcon } from "lucide-react";
+import { Utensils, Image as ImageIcon } from "lucide-react";
 import { MenuCatalogCard, InlineText, InlineImage, isPlaceholderPrice, useFeatureMarker, FeatureMarkerIcon } from "../../templates/shared";
 import { minVariantPriceAmount } from "../../templates/helpers";
 import { formatPriceWithAmount } from "@/lib/utils";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import { SectionHeader, pillEyebrowStyle, headerTitleStyle, headerDividerStyle } from "../section-header";
 import { AddToCartButton } from "@/components/cart";
+import { useProductKind } from "../product/kind-config";
 import PhotoCredit from "../PhotoCredit";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
@@ -30,9 +31,25 @@ interface CatalogVariantProps {
  * Featured items rendered large above the fold (up to 2 per category).
  * Remaining items shown in standard grid below.
  * Reuses badge field: any item with badge != null/empty is "featured".
+ * Fully optimized for both Retail Catalog and F&B Menu modes.
  */
-export default function CatalogShowcaseFeatured({ catalog, design_token, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: CatalogVariantProps) {
+export default function CatalogShowcaseFeatured({
+  catalog,
+  design_token,
+  onUpdateField,
+  isEditorMode,
+  isSelected,
+  collapseSheetForInlineEdit,
+  onEditingStateChange,
+  onAddItem,
+  onDeleteItem,
+  onAddCategory,
+  onDeleteCategory,
+  language = "id",
+}: CatalogVariantProps) {
   const isEN = language === "en";
+  const kind = useProductKind();
+  const isMenu = kind === "menu";
   const marker = useFeatureMarker();
   if (!catalog) return null;
   const p = "var(--dt-primary)";
@@ -42,6 +59,8 @@ export default function CatalogShowcaseFeatured({ catalog, design_token, onUpdat
   const muted = "color-mix(in srgb, var(--dt-text) 55%, transparent)";
   const hFont = "var(--dt-heading-font)";
   const hWeight = "var(--dt-heading-weight)";
+  const Icon = isMenu ? Utensils : ImageIcon;
+  const eyebrowDefault = isMenu ? (isEN ? "Menu Selection" : "Daftar Menu Pilihan") : (isEN ? "Product Collection" : "Koleksi Produk");
 
   return (
     <section id="catalog" style={{ padding: "var(--dt-spacing) 1.5rem", background: `color-mix(in srgb, ${p} 4%, ${bg})`, borderTop: `1px solid color-mix(in srgb, ${p} 12%, transparent)` }}>
@@ -49,7 +68,7 @@ export default function CatalogShowcaseFeatured({ catalog, design_token, onUpdat
         {/* Header */}
         <SectionHeader
           section="catalog"
-          eyebrow={catalog.eyebrow ?? (isEN ? "Product Collection" : "Koleksi Produk")}
+          eyebrow={(catalog.eyebrow || isEditorMode) ? (catalog.eyebrow ?? eyebrowDefault) : undefined}
           title={catalog.title}
           wrapperStyle={{ textAlign: "center", marginBottom: "3rem" }}
           eyebrowStyle={pillEyebrowStyle(p)}
@@ -85,8 +104,6 @@ export default function CatalogShowcaseFeatured({ catalog, design_token, onUpdat
                     title={isEN ? "Delete Category" : "Hapus Kategori"}
                   />
                 )}
-
-
                 <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, ${p} 18%, transparent)` }} />
               </div>
 
@@ -138,9 +155,11 @@ export default function CatalogShowcaseFeatured({ catalog, design_token, onUpdat
                             </div>
                           )}
                           {/* Badge pill overlay */}
-                          <span style={{ position: "absolute", top: "0.75rem", left: "0.75rem", background: p, color: bg, padding: "0.25rem 0.625rem", borderRadius: "9999px", fontSize: "0.65rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em" }}>
-                            <InlineText section="catalog" fieldKey={"categories." + ci + ".items." + itemIdx + ".badge"} value={item.badge ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
-                          </span>
+                          {(item.badge || isEditorMode) && (
+                            <span style={{ position: "absolute", top: "0.75rem", left: "0.75rem", background: p, color: bg, padding: "0.25rem 0.625rem", borderRadius: "9999px", fontSize: "0.65rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                              <InlineText section="catalog" fieldKey={"categories." + ci + ".items." + itemIdx + ".badge"} value={item.badge ?? ""} placeholder="Badge" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
+                            </span>
+                          )}
                         </div>
                         {/* Content */}
                         <div style={{ padding: "1.25rem", display: "flex", flexDirection: "column", gap: "0.5rem", flex: 1 }}>
@@ -169,6 +188,29 @@ export default function CatalogShowcaseFeatured({ catalog, design_token, onUpdat
                               </span>
                             </div>
                           )}
+
+                          {/* Food Tags (e.g. Favorit, Pedas, Signature) */}
+                          {item.tags && item.tags.length > 0 && (
+                            <div style={{ margin: "0.25rem 0 0 0", display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
+                              {item.tags.map((tag: string, tagIdx: number) => (
+                                <span key={tagIdx} style={{ display: "inline-flex", alignItems: "center", fontSize: "0.7rem", fontWeight: 700, padding: "0.15rem 0.5rem", borderRadius: "9999px", background: `color-mix(in srgb, ${p} 14%, transparent)`, color: p }}>
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Delivery Platforms (GoFood, GrabFood) */}
+                          {item.delivery_platforms && item.delivery_platforms.length > 0 && (
+                            <div style={{ marginTop: "0.25rem", display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
+                              {item.delivery_platforms.map((dp, dpIdx) => (
+                                <span key={dpIdx} style={{ fontSize: "0.65rem", fontWeight: 600, padding: "0.1rem 0.4rem", borderRadius: "6px", background: "color-mix(in srgb, var(--dt-text) 8%, transparent)", color: text }}>
+                                  {dp.name}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+
                           {item.features && item.features.length > 0 && (
                             <ul style={{ margin: "0.25rem 0 0 0", padding: 0, listStyle: "none", display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
                               {item.features.map((f: string, feaIdx: number) => (
@@ -245,8 +287,10 @@ export default function CatalogShowcaseFeatured({ catalog, design_token, onUpdat
                           variant_groups: item.variant_groups,
                           features: item.features,
                           capacity: item.capacity,
+                          tags: item.tags,
+                          delivery_platforms: item.delivery_platforms,
                         }}
-                        icon={ImageIcon}
+                        icon={Icon}
                         layout="grid"
                         styles={{
                           className: "group transition-all duration-300 flex flex-col h-full justify-between",
@@ -258,6 +302,7 @@ export default function CatalogShowcaseFeatured({ catalog, design_token, onUpdat
                           title: { className: "font-semibold text-sm leading-tight line-clamp-2 min-h-[2.5rem]", style: { color: text, fontFamily: hFont } },
                           description: { className: "text-xs leading-relaxed line-clamp-3", style: { color: muted } },
                           price: { className: "self-start text-xs font-bold px-2.5 py-1 rounded-md whitespace-nowrap", style: { background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p } },
+                          badge: { className: "inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap", style: { background: p, color: bg } },
                           button: { className: "mt-auto w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all hover:brightness-110", style: { background: p, color: bg, border: "none" } },
                         }}
                         editSection="catalog"
@@ -271,24 +316,17 @@ export default function CatalogShowcaseFeatured({ catalog, design_token, onUpdat
                       />
                     ))}
                     {isEditorMode && onAddItem && (
-                      <InlineAddTile
-                        label={isEN ? "Add Item" : "Tambah Item"}
-                        variant="card"
-                        className="rounded-xl min-h-[300px]"
-                        onClick={() => onAddItem(ci)}
-                      />
+                      <InlineAddTile label={isEN ? "Add Item" : "Tambah Item"} variant="card" className="rounded-xl" onClick={() => onAddItem(ci)} />
                     )}
                   </div>
                 );
               })()}
-
-              {/* Edge case: all items have badge — show them in featured grid only, no rest grid needed */}
             </div>
           );
         })}
-      {isEditorMode && onAddCategory && (
-        <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
-      )}
+        {isEditorMode && onAddCategory && (
+          <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+        )}
       </div>
     </section>
   );

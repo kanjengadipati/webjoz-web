@@ -1,8 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import { Image as _ImageIcon, Heart, Bookmark, Eye } from "lucide-react";
+import { Utensils, Image as _ImageIcon, Heart, Bookmark, Eye } from "lucide-react";
 import { InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
+import { useProductKind } from "../product/kind-config";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 import { AddToCartButton } from "@/components/cart";
 
@@ -23,9 +24,12 @@ interface CatalogVariantProps {
 
 export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange, onAddItem, onDeleteItem, onAddCategory, onDeleteCategory, language = "id"}: CatalogVariantProps) {
   const isEN = language === "en";
+  const kind = useProductKind();
+  const isMenu = kind === "menu";
   const [quickView, setQuickView] = useState<{ catIdx: number; itemIdx: number } | null>(null);
   if (!catalog) return null;
   const { eyebrow, title, subtitle, categories } = catalog;
+  const eyebrowDefault = isMenu ? (isEN ? "Menu Selection" : "Daftar Menu Pilihan") : (isEN ? "Product Collection" : "Koleksi Produk");
   const qvCategory = quickView ? categories[quickView.catIdx] : undefined;
   const qvItem = qvCategory?.items?.[quickView?.itemIdx ?? -1];
 
@@ -46,7 +50,7 @@ export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isE
             <InlineText
               section="catalog"
               fieldKey="eyebrow"
-              value={eyebrow}
+              value={eyebrow ?? eyebrowDefault}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -289,6 +293,28 @@ export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isE
                         </div>
                       )}
 
+                      {/* Food Tags (e.g. Pedas, Favorit) */}
+                      {item.tags && item.tags.length > 0 && (
+                        <div className="mt-1.5 flex flex-wrap gap-1">
+                          {item.tags.map((tag: string, tagIdx: number) => (
+                            <span key={tagIdx} className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 14%, transparent)", color: "var(--dt-primary)" }}>
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Delivery Platforms */}
+                      {item.delivery_platforms && item.delivery_platforms.length > 0 && (
+                        <div className="mt-1.5 flex flex-wrap gap-1">
+                          {item.delivery_platforms.map((dp, dpIdx) => (
+                            <span key={dpIdx} className="text-[9px] font-semibold px-1.5 py-0.5 rounded-md" style={{ background: "color-mix(in srgb, var(--dt-text) 8%, transparent)", color: "var(--dt-text)" }}>
+                              {dp.name}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
                       {item.features && item.features.length > 0 && (
                         <div className="mt-1.5 flex flex-wrap gap-1">
                           {item.features.map((f: string, fi: number) => (
@@ -299,6 +325,15 @@ export default function CatalogInstagramSquareGrid({ catalog, onUpdateField, isE
                         </div>
                       )}
                     </div>
+
+                    {/* Stock status indicator */}
+                    {item.is_available === false && (
+                      <div className="px-1 pt-1">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, #f43f5e 14%, transparent)", color: "#e11d48" }}>
+                          {isEN ? "Sold Out" : "Habis"}
+                        </span>
+                      </div>
+                    )}
 
                     {/* Instagram Shop CTA Button */}
                     <div className="pt-2 px-1 mt-auto" onClick={(e) => e.stopPropagation()}>

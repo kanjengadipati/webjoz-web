@@ -103,12 +103,20 @@ export default function ProductCompact({
                           className="font-semibold text-sm leading-tight truncate max-w-full"
                           style={{ color: brandText, fontFamily: headingFont }}
                         />
-                        {!isMenu && item.badge && (
+                        {(item.badge || isEditorMode) && (
                           <span
                             className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full whitespace-nowrap"
                             style={{ background: `color-mix(in srgb, ${brandPrimary} 15%, transparent)`, color: brandPrimary }}
                           >
                             <InlineText section={section} fieldKey={"categories." + catIdx + ".items." + itemIdx + ".badge"} value={item.badge ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
+                          </span>
+                        )}
+                        {isMenu && !item.badge && item.tags && item.tags.length > 0 && (
+                          <span
+                            className="text-[9px] font-bold px-1.5 py-0.5 rounded-full whitespace-nowrap"
+                            style={{ background: `color-mix(in srgb, ${brandPrimary} 15%, transparent)`, color: brandPrimary }}
+                          >
+                            {item.tags[0]}
                           </span>
                         )}
                       </div>
