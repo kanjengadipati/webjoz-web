@@ -99,7 +99,7 @@ export default function BenefitsBigStatistics({
             <InlineText
               section="benefits"
               fieldKey="title"
-              value={b.title}
+              value={b.title || (isEN ? "Impact That Speaks for Itself" : "Dampak Nyata yang Terukur")}
               placeholder={isEN ? "Impact That Speaks for Itself" : "Dampak Nyata yang Terukur"}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}

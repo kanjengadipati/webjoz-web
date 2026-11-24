@@ -37,6 +37,10 @@ jangan pernah selesai hanya karena render utama sudah jalan:
 1. **Localization (ID & EN)** — setiap teks/string baru wajib ada di ketiga tempat: `types.ts` (defaults),
    locale ID, dan locale EN. Jangan hardcode string bahasa. Komponen baca bahasa via prop `isEN`/`language`
    dan pilih teks sesuai. Jangan sampai mock/AI default menyuntik teks Indonesia ke output EN (dan sebaliknya).
+   **GATE**: varian baru WAJIB lolos `npm run check:localization` (atribut teks UI tidak boleh hardcoded
+   satu bahasa) dan, untuk string statis, gunakan pola typed dictionary ID/EN (lihat
+   `components/sections/hero/hero-strings.ts`) agar compiler menolak jika salah satu bahasa hilang.
+   Template varian: `templates/section-variant.template.tsx`.
 2. **inlineEdit — WAJIB untuk SETIAP varian/elemen baru (tanpa kecuali)** — setiap teks/gambar yang tampil
    di section wajib punya pendamping inline edit (`InlineText`/`InlineImage`) dengan `fieldKey` yang benar
    dan nilai konten yang sama yang dirender. Jangan ada text statis yang tidak bisa diedit oleh pengguna.

@@ -822,7 +822,6 @@ export default function SectionShowcasePage() {
                     key={v.value}
                     id={`fs-variant-${v.value}`}
                     className="space-y-2 max-w-7xl mx-auto"
-                    style={{ contentVisibility: "auto", containIntrinsicSize: "0 500px" }}
                   >
                     <div className="flex items-center justify-between px-1">
                       <div className="flex items-center gap-2">

@@ -241,7 +241,7 @@ export default function BenefitsSplitFeature({
               <InlineText
                 section="benefits"
                 fieldKey="title"
-                value={b.title}
+                value={b.title || (isEN ? "The smarter way to achieve your goals" : "Solusi cerdas untuk mencapai tujuan Anda")}
                 placeholder={isEN ? "The smarter way to achieve your goals" : "Solusi cerdas untuk mencapai tujuan Anda"}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}

@@ -92,7 +92,7 @@ export default function BenefitsAlternatingFeature({
             <InlineText
               section="benefits"
               fieldKey="title"
-              value={b.title}
+              value={b.title || (isEN ? "Designed for Your Growth" : "Dirancang untuk Pertumbuhan Anda")}
               placeholder={isEN ? "Designed for Your Growth" : "Dirancang untuk Pertumbuhan Anda"}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
