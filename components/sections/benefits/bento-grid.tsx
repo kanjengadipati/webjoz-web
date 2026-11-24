@@ -3,6 +3,7 @@ import React from "react";
 import { Star } from "lucide-react";
 import { DynamicIcon, InlineText } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton } from "../inline-add";
+import { benefitsStrings, type BenefitsStaticStrings } from "./benefits-strings";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface BenefitsVariantProps {
@@ -27,7 +28,7 @@ function BentoCard({
   isSelected,
   collapseSheetForInlineEdit,
   onEditingStateChange,
-  language,
+  L,
   onDeleteItem,
 }: {
   item: NonNullable<TemplateProps["content"]["benefits"]>["items"][number];
@@ -39,11 +40,9 @@ function BentoCard({
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
-  language?: "id" | "en";
+  L: BenefitsStaticStrings;
   onDeleteItem?: (idx: number) => void;
 }) {
-  const isEN = language === "en";
-
   return (
     <div
       className={`group relative flex flex-col justify-between overflow-hidden transition-all duration-200 ${className ?? ""}`}
@@ -100,7 +99,7 @@ function BentoCard({
                 section="benefits"
                 fieldKey={"items." + itemIndex + ".stat"}
                 value={item.stat ?? ""}
-                placeholder="100%"
+                placeholder={L.statPlaceholder}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
@@ -123,7 +122,7 @@ function BentoCard({
                     section="benefits"
                     fieldKey={"items." + itemIndex + ".stat_label"}
                     value={item.stat_label ?? ""}
-                    placeholder={isEN ? "Metric" : "Metrik"}
+                    placeholder={L.statLabelPlaceholder}
                     onUpdateField={onUpdateField}
                     isEditorMode={isEditorMode}
                     isSelected={isSelected}
@@ -158,7 +157,7 @@ function BentoCard({
           section="benefits"
           fieldKey={"items." + itemIndex + ".title"}
           value={item.title ?? ""}
-          placeholder={isEN ? "Title..." : "Judul..."}
+          placeholder={L.itemTitlePlaceholder}
           onUpdateField={onUpdateField}
           isEditorMode={isEditorMode}
           isSelected={isSelected}
@@ -179,7 +178,7 @@ function BentoCard({
           section="benefits"
           fieldKey={"items." + itemIndex + ".description"}
           value={item.description ?? ""}
-          placeholder={isEN ? "Description..." : "Deskripsi..."}
+          placeholder={L.itemDescriptionPlaceholder}
           onUpdateField={onUpdateField}
           isEditorMode={isEditorMode}
           isSelected={isSelected}
@@ -202,7 +201,7 @@ function BentoCard({
           <InlineDeleteButton
             compact
             onDelete={() => onDeleteItem(itemIndex)}
-            title={isEN ? "Delete benefit" : "Hapus keunggulan"}
+            title={L.deleteItemTitle}
           />
         </div>
       )}
@@ -242,7 +241,7 @@ export default function BenefitsBentoGrid({
   language = "id",
   onAddItem,
 }: BenefitsVariantProps) {
-  const isEN = language === "en";
+  const L = benefitsStrings(language);
   const items = b?.items ?? [];
   const count = items.length;
 
@@ -287,8 +286,8 @@ export default function BenefitsBentoGrid({
                 <InlineText
                   section="benefits"
                   fieldKey="eyebrow"
-                  value={b.eyebrow || (isEN ? "Benefits" : "Keunggulan")}
-                  placeholder={isEN ? "Benefits" : "Keunggulan"}
+                  value={b.eyebrow || L.eyebrowBenefits}
+                  placeholder={L.eyebrowBenefits}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -311,8 +310,8 @@ export default function BenefitsBentoGrid({
             <InlineText
               section="benefits"
               fieldKey="title"
-              value={b.title}
-              placeholder={isEN ? "Our Benefits" : "Keunggulan Kami"}
+              value={b.title || L.titlePlaceholder}
+              placeholder={L.titlePlaceholder}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -335,7 +334,7 @@ export default function BenefitsBentoGrid({
                 section="benefits"
                 fieldKey="subtitle"
                 value={b.subtitle}
-                placeholder={isEN ? "Key reasons to choose us" : "Alasan utama mengapa Anda harus memilih kami"}
+                placeholder={L.subtitlePlaceholder}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
@@ -362,14 +361,14 @@ export default function BenefitsBentoGrid({
               isSelected={isSelected}
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
               onEditingStateChange={onEditingStateChange}
-              language={language}
+              L={L}
               onDeleteItem={handleDeleteItem}
             />
           ))}
           {isEditorMode && onAddItem && (
             <div className="col-span-1 sm:col-span-2 lg:col-span-1">
               <InlineAddTile
-                label={isEN ? "Add benefit" : "Tambah Keunggulan"}
+                label={L.addBenefit}
                 onClick={onAddItem}
                 style={{ borderRadius: "var(--dt-radius-lg)", minHeight: "8rem" }}
               />

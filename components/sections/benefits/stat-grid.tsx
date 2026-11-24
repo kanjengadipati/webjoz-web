@@ -3,6 +3,7 @@ import React from "react";
 import { Star } from "lucide-react";
 import { DynamicIcon, InlineText } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton } from "../inline-add";
+import { benefitsStrings } from "./benefits-strings";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 
 interface BenefitsVariantProps {
@@ -27,7 +28,7 @@ export default function BenefitsStatGrid({
   language = "id",
   onAddItem,
 }: BenefitsVariantProps) {
-  const isEN = language === "en";
+  const L = benefitsStrings(language);
   const items = b?.items ?? [];
 
   const handleDeleteItem = (indexToDelete: number) => {
@@ -64,8 +65,8 @@ export default function BenefitsStatGrid({
                 <InlineText
                   section="benefits"
                   fieldKey="eyebrow"
-                  value={b.eyebrow || (isEN ? "Numbers & Impact" : "Bukti & Dampak")}
-                  placeholder={isEN ? "Numbers & Impact" : "Bukti & Dampak"}
+                  value={b.eyebrow || L.eyebrowNumbers}
+                  placeholder={L.eyebrowNumbers}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -88,8 +89,8 @@ export default function BenefitsStatGrid({
             <InlineText
               section="benefits"
               fieldKey="title"
-              value={b.title ?? ""}
-              placeholder={isEN ? "Proven Track Record" : "Rekam Jejak Terbukti"}
+              value={b.title || L.titleBigStats}
+              placeholder={L.titleBigStats}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -112,7 +113,7 @@ export default function BenefitsStatGrid({
                 section="benefits"
                 fieldKey="subtitle"
                 value={b.subtitle}
-                placeholder={isEN ? "Real data from our customers" : "Data nyata keberhasilan pelanggan kami"}
+                placeholder={L.subtitleBigStats}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
@@ -168,7 +169,7 @@ export default function BenefitsStatGrid({
                       section="benefits"
                       fieldKey={"items." + idx + ".stat"}
                       value={item.stat ?? ""}
-                      placeholder="10x"
+                      placeholder={L.statPlaceholder}
                       onUpdateField={onUpdateField}
                       isEditorMode={isEditorMode}
                       isSelected={isSelected}
@@ -200,7 +201,7 @@ export default function BenefitsStatGrid({
                   section="benefits"
                   fieldKey={"items." + idx + ".title"}
                   value={item.title ?? ""}
-                  placeholder={isEN ? "Metric title..." : "Judul metrik..."}
+                  placeholder={L.itemTitlePlaceholder}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -221,7 +222,7 @@ export default function BenefitsStatGrid({
                   section="benefits"
                   fieldKey={"items." + idx + ".description"}
                   value={item.description ?? ""}
-                  placeholder={isEN ? "Metric description..." : "Penjelasan metrik..."}
+                  placeholder={L.itemDescriptionPlaceholder}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -244,7 +245,7 @@ export default function BenefitsStatGrid({
                   <InlineDeleteButton
                     compact
                     onDelete={() => handleDeleteItem(idx)}
-                    title={isEN ? "Delete benefit" : "Hapus keunggulan"}
+                    title={L.deleteItemTitle}
                   />
                 </div>
               )}
@@ -254,7 +255,7 @@ export default function BenefitsStatGrid({
           {isEditorMode && onAddItem && (
             <div className="h-full">
               <InlineAddTile
-                label={isEN ? "Add benefit" : "Tambah Keunggulan"}
+                label={L.addBenefit}
                 onClick={onAddItem}
                 style={{ height: "100%", minHeight: "10rem", borderRadius: "var(--dt-radius-lg)" }}
               />

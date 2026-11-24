@@ -2,6 +2,7 @@
 import React from "react";
 import { InlineText } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton } from "../inline-add";
+import { benefitsStrings } from "./benefits-strings";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 
 interface BenefitsVariantProps {
@@ -28,7 +29,7 @@ export default function BenefitsHowItWorks({
   onAddItem,
   onDeleteItem,
 }: BenefitsVariantProps) {
-  const isEN = language === "en";
+  const L = benefitsStrings(language);
   const items = b?.items ?? [];
 
   if (!b) return null;
@@ -71,8 +72,8 @@ export default function BenefitsHowItWorks({
                 <InlineText
                   section="benefits"
                   fieldKey="eyebrow"
-                  value={b.eyebrow ?? (isEN ? "How it works" : "Cara Kerja")}
-                  placeholder={isEN ? "How it works" : "Cara Kerja"}
+                  value={b.eyebrow || L.eyebrowHowItWorks}
+                  placeholder={L.eyebrowHowItWorks}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -87,8 +88,8 @@ export default function BenefitsHowItWorks({
             <InlineText
               section="benefits"
               fieldKey="title"
-              value={b.title}
-              placeholder={isEN ? "How It Works Title..." : "Judul Cara Kerja..."}
+              value={b.title || L.titleHowItWorks}
+              placeholder={L.titleHowItWorks}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -111,17 +112,17 @@ export default function BenefitsHowItWorks({
               section="benefits"
               fieldKey="subtitle"
               value={b.subtitle}
-              placeholder={isEN ? "Describe the simple steps..." : "Jelaskan langkah-langkah mudahnya..."}
+              placeholder={L.subtitleHowItWorks}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
               as="p"
               style={{
                 color: "var(--dt-text-muted)",
-                fontSize: "1.05rem",
-                maxWidth: "42rem",
+                fontSize: "1rem",
+                maxWidth: "36rem",
                 margin: "0.75rem auto 0",
-                lineHeight: 1.65,
+                lineHeight: 1.6,
               }}
               multiline
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
@@ -130,159 +131,116 @@ export default function BenefitsHowItWorks({
           )}
         </div>
 
-        {/* Steps container — fully responsive grid */}
-        <div className={`grid ${colsClass} gap-8 sm:gap-6 relative`}>
-          {/* Connecting line behind steps — visible on desktop multi-column */}
+        {/* Steps container */}
+        <div className="relative">
+          {/* Connecting line behind step circles — hidden on mobile to avoid overlap */}
           {items.length > 1 && (
             <div
-              aria-hidden="true"
-              className="hidden lg:block"
+              className="hidden lg:block absolute left-0 right-0 h-0.5"
               style={{
-                position: "absolute",
-                top: "2.75rem",
-                left: `calc(100% / ${Math.min(items.length, 4)} / 2)`,
-                right: `calc(100% / ${Math.min(items.length, 4)} / 2)`,
-                height: "2px",
-                background: `linear-gradient(90deg, var(--dt-primary) 0%, color-mix(in srgb, var(--dt-primary) 30%, transparent) 100%)`,
+                top: "1.75rem",
+                background: `linear-gradient(90deg, transparent 5%, color-mix(in srgb, var(--dt-primary) 35%, transparent) 15%, color-mix(in srgb, var(--dt-primary) 35%, transparent) 85%, transparent 95%)`,
                 zIndex: 0,
-                pointerEvents: "none",
               }}
             />
           )}
 
-          {items.map((item, idx) => (
-            <div
-              key={idx}
-              className="group relative z-10 flex flex-col items-center text-center px-4 pb-4"
-            >
-              {/* Step number badge */}
+          {/* Steps grid */}
+          <div className={`grid ${colsClass} gap-8 relative z-10`}>
+            {items.map((item, idx) => (
               <div
-                style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: "50%",
-                  background: `linear-gradient(135deg, var(--dt-primary), color-mix(in srgb, var(--dt-primary) 70%, var(--dt-text)))`,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: "1.5rem",
-                  flexShrink: 0,
-                  boxShadow: `0 0 0 6px color-mix(in srgb, var(--dt-primary) 12%, var(--dt-bg)), 0 4px 16px color-mix(in srgb, var(--dt-primary) 30%, transparent)`,
-                  transition: "transform 0.2s, box-shadow 0.2s",
-                }}
+                key={idx}
+                className="group relative flex flex-col items-center text-center p-4 rounded-xl transition-all"
               >
-                <span
+                {/* Numbered step circle */}
+                <div
+                  className="w-14 h-14 rounded-full flex items-center justify-center font-bold text-lg mb-4 flex-shrink-0 transition-transform duration-200 group-hover:scale-105"
                   style={{
+                    background: "var(--dt-surface)",
+                    color: "var(--dt-primary)",
+                    border: `2px solid var(--dt-primary)`,
+                    boxShadow: `0 0 0 6px color-mix(in srgb, var(--dt-primary) 12%, transparent)`,
                     fontFamily: "var(--dt-heading-font)",
-                    fontWeight: 800,
-                    fontSize: "1.25rem",
-                    color: "var(--dt-bg)",
-                    lineHeight: 1,
-                    userSelect: "none",
                   }}
                 >
                   {idx + 1}
-                </span>
-              </div>
+                </div>
 
-              {/* Step title */}
-              <InlineText
-                section="benefits"
-                fieldKey={`items.${idx}.title`}
-                value={item.title ?? ""}
-                placeholder={isEN ? `Step ${idx + 1}` : `Langkah ${idx + 1}`}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={isSelected}
-                as="h3"
-                style={{
-                  fontFamily: "var(--dt-heading-font)",
-                  fontWeight: 700,
-                  color: "var(--dt-text)",
-                  fontSize: "1.05rem",
-                  margin: "0 0 0.5rem",
-                  lineHeight: 1.3,
-                }}
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                onEditingStateChange={onEditingStateChange}
-              />
-
-              {/* Step description */}
-              <InlineText
-                section="benefits"
-                fieldKey={`items.${idx}.description`}
-                value={item.description ?? ""}
-                placeholder={isEN ? "Step explanation..." : "Penjelasan langkah..."}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={isSelected}
-                as="p"
-                style={{
-                  color: "var(--dt-text-muted)",
-                  fontSize: "0.875rem",
-                  lineHeight: 1.65,
-                  margin: 0,
-                }}
-                multiline
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                onEditingStateChange={onEditingStateChange}
-              />
-
-              {/* Optional stat badge */}
-              {(item.stat || isEditorMode) && (
-                <span
+                {/* Step title */}
+                <InlineText
+                  section="benefits"
+                  fieldKey={`items.${idx}.title`}
+                  value={item.title ?? ""}
+                  placeholder={L.stepActionPlaceholder}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="h3"
                   style={{
-                    display: "inline-block",
-                    marginTop: "0.75rem",
-                    fontSize: "0.7rem",
+                    fontFamily: "var(--dt-heading-font)",
                     fontWeight: 700,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.08em",
-                    color: "var(--dt-primary)",
-                    background: `color-mix(in srgb, var(--dt-primary) 10%, transparent)`,
-                    border: `1px solid color-mix(in srgb, var(--dt-primary) 20%, transparent)`,
-                    padding: "0.2rem 0.65rem",
-                    borderRadius: "999px",
+                    fontSize: "1.1rem",
+                    color: "var(--dt-text)",
+                    marginBottom: "0.5rem",
+                    lineHeight: 1.3,
                   }}
-                >
-                  <InlineText
-                    section="benefits"
-                    fieldKey={`items.${idx}.stat`}
-                    value={item.stat ?? ""}
-                    placeholder="Stat"
-                    onUpdateField={onUpdateField}
-                    isEditorMode={isEditorMode}
-                    isSelected={isSelected}
-                    as="span"
-                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                    onEditingStateChange={onEditingStateChange}
-                  />
-                </span>
-              )}
-
-              {/* Delete button in editor mode */}
-              {isEditorMode && onDeleteItem && (
-                <InlineDeleteButton
-                  compact
-                  className="absolute top-0 right-2 z-20"
-                  onDelete={() => onDeleteItem(idx)}
-                  title={isEN ? "Delete step" : "Hapus langkah"}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
                 />
-              )}
-            </div>
-          ))}
-        </div>
 
-        {isEditorMode && onAddItem && (
-          <div style={{ display: "flex", justifyContent: "center", marginTop: "2rem" }}>
-            <InlineAddTile
-              compact
-              label={isEN ? "Add step" : "Tambah Langkah"}
-              onClick={onAddItem}
-              style={{ borderRadius: "var(--dt-radius)", maxWidth: "16rem" }}
-            />
+                {/* Step description */}
+                <InlineText
+                  section="benefits"
+                  fieldKey={`items.${idx}.description`}
+                  value={item.description ?? ""}
+                  placeholder={L.stepDescriptionPlaceholder}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="p"
+                  style={{
+                    color: "var(--dt-text-muted)",
+                    fontSize: "0.875rem",
+                    lineHeight: 1.6,
+                    margin: 0,
+                  }}
+                  multiline
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
+
+                {/* Delete button (only in editor mode) */}
+                {isEditorMode && (
+                  <div className="absolute top-0 right-0">
+                    <InlineDeleteButton
+                      compact
+                      onDelete={() => {
+                        if (onDeleteItem) {
+                          onDeleteItem(idx);
+                        } else if (onUpdateField) {
+                          const newItems = items.filter((_, i) => i !== idx);
+                          onUpdateField("benefits", "items", newItems);
+                        }
+                      }}
+                      title={L.deleteStepTitle}
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {isEditorMode && onAddItem && (
+              <div className="flex items-center justify-center min-h-[10rem]">
+                <InlineAddTile
+                  compact
+                  label={L.addStep}
+                  onClick={onAddItem}
+                  style={{ borderRadius: "var(--dt-radius-lg)", width: "100%", height: "100%" }}
+                />
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </section>
   );

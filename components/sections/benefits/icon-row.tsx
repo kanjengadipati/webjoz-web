@@ -3,6 +3,7 @@ import React from "react";
 import { Star } from "lucide-react";
 import { DynamicIcon, InlineText } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton } from "../inline-add";
+import { benefitsStrings } from "./benefits-strings";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface BenefitsVariantProps {
@@ -27,7 +28,7 @@ export default function BenefitsIconRow({
   language = "id",
   onAddItem,
 }: BenefitsVariantProps) {
-  const isEN = language === "en";
+  const L = benefitsStrings(language);
   const items = b?.items ?? [];
 
   const handleDeleteItem = (indexToDelete: number) => {
@@ -64,8 +65,8 @@ export default function BenefitsIconRow({
                 <InlineText
                   section="benefits"
                   fieldKey="eyebrow"
-                  value={b.eyebrow || (isEN ? "Benefits" : "Keunggulan")}
-                  placeholder={isEN ? "Benefits" : "Keunggulan"}
+                  value={b.eyebrow || L.eyebrowBenefits}
+                  placeholder={L.eyebrowBenefits}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -88,8 +89,8 @@ export default function BenefitsIconRow({
             <InlineText
               section="benefits"
               fieldKey="title"
-              value={b.title}
-              placeholder={isEN ? "Why Us" : "Mengapa Kami"}
+              value={b.title || L.titlePlaceholder}
+              placeholder={L.titlePlaceholder}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -112,7 +113,7 @@ export default function BenefitsIconRow({
                 section="benefits"
                 fieldKey="subtitle"
                 value={b.subtitle}
-                placeholder={isEN ? "Quality and trust in every aspect" : "Kualitas dan komitmen terpercaya di setiap aspek"}
+                placeholder={L.subtitlePlaceholder}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
@@ -175,7 +176,7 @@ export default function BenefitsIconRow({
                 section="benefits"
                 fieldKey={"items." + idx + ".title"}
                 value={item.title ?? ""}
-                placeholder={isEN ? "Title..." : "Judul..."}
+                placeholder={L.itemTitlePlaceholder}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
@@ -197,7 +198,7 @@ export default function BenefitsIconRow({
                 section="benefits"
                 fieldKey={"items." + idx + ".description"}
                 value={item.description ?? ""}
-                placeholder={isEN ? "Description..." : "Deskripsi..."}
+                placeholder={L.itemDescriptionPlaceholder}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
@@ -219,7 +220,7 @@ export default function BenefitsIconRow({
                   <InlineDeleteButton
                     compact
                     onDelete={() => handleDeleteItem(idx)}
-                    title={isEN ? "Delete benefit" : "Hapus keunggulan"}
+                    title={L.deleteItemTitle}
                   />
                 </div>
               )}
@@ -229,7 +230,7 @@ export default function BenefitsIconRow({
           {isEditorMode && onAddItem && (
             <div className="h-full">
               <InlineAddTile
-                label={isEN ? "Add benefit" : "Tambah Keunggulan"}
+                label={L.addBenefit}
                 onClick={onAddItem}
                 style={{ height: "100%", minHeight: "10rem", borderRadius: "var(--dt-radius-lg)" }}
               />
