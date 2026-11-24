@@ -1,9 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, MessageCircleQuestion } from "lucide-react";
 import type { FaqItem, TemplateProps, DesignToken } from "../../templates/types";
 import { InlineText } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton } from "../inline-add";
+import { faqStrings } from "./faq-strings";
 
 interface FaqVariantProps {
   faq: TemplateProps["content"]["faq"];
@@ -107,6 +108,7 @@ export default function FaqSidebarCategory({
   onDeleteItem,
 }: FaqVariantProps) {
   const isEN = language === "en";
+  const L = faqStrings(language);
   const rawItems = faq.items || [];
   // Never invent category names on the public site — only categories the user
   // actually authored. Items without a category simply have no pill.
@@ -134,13 +136,13 @@ export default function FaqSidebarCategory({
     <section id="faq" style={{ padding: `var(--dt-spacing) 1.5rem`, background: "var(--dt-bg)" }}>
       <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-          <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>{isEN ? "Questions" : "Pertanyaan"}</span>
+          <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>{L.eyebrow}</span>
           <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>
             {isEditorMode ? (
               <InlineText
                 section="faq"
                 fieldKey="title"
-                value={faq.title}
+                value={faq.title || L.defaultTitle}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
@@ -148,7 +150,7 @@ export default function FaqSidebarCategory({
                 onEditingStateChange={onEditingStateChange}
                 as="span"
               />
-            ) : faq.title}
+            ) : (faq.title || L.defaultTitle)}
           </h2>
         </div>
         {categories.length > 0 && (
@@ -199,13 +201,34 @@ export default function FaqSidebarCategory({
           })}
           {isEditorMode && onAddItem && (
             <InlineAddTile
-              label={isEN ? "Add question" : "Tambah Pertanyaan"}
+              label={L.addQuestion}
               variant="bar"
               onClick={handleAddItem}
               className="w-full"
               style={{ borderRadius: "var(--dt-radius)", color: "var(--dt-text)" }}
             />
           )}
+        </div>
+
+        {/* Secondary Support CTA */}
+        <div
+          className="mt-10 pt-6 text-center flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm"
+          style={{
+            borderTop: "1px dashed color-mix(in srgb, var(--dt-text) 15%, transparent)",
+            color: "var(--dt-text-muted)",
+          }}
+        >
+          <span className="flex items-center gap-1.5 font-medium">
+            <MessageCircleQuestion className="w-4 h-4 text-[var(--dt-primary)] shrink-0" />
+            {L.supportHelpText}
+          </span>
+          <a
+            href="#contact"
+            className="font-semibold underline underline-offset-4 transition-colors hover:opacity-80"
+            style={{ color: "var(--dt-primary)" }}
+          >
+            {L.supportActionText} &rarr;
+          </a>
         </div>
       </div>
     </section>

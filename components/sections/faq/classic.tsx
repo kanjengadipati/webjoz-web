@@ -1,13 +1,15 @@
 "use client";
 import React, { useId, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, MessageCircleQuestion } from "lucide-react";
 import type { FaqItem, TemplateProps, DesignToken } from "../../templates/types";
 import { InlineText } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton } from "../inline-add";
+import { faqStrings } from "./faq-strings";
 
 const DynamicFaqAccordion: React.FC<{
   item: FaqItem;
   index: number;
+  defaultOpen?: boolean;
   onUpdateItem?: (index: number, field: string, value: string) => void;
   onDelete?: () => void;
   section?: string;
@@ -15,8 +17,8 @@ const DynamicFaqAccordion: React.FC<{
   isSelected?: boolean;
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
-}> = ({ item, index, onUpdateItem, onDelete, section = "faq", isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }) => {
-  const [isOpen, setIsOpen] = useState(false);
+}> = ({ item, index, defaultOpen = false, onUpdateItem, onDelete, section = "faq", isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange }) => {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
   // In editor mode the panel is always expanded so both question and answer
   // are reachable for inline editing without having to toggle first.
   const effectiveOpen = isEditorMode ? true : isOpen;
@@ -149,6 +151,7 @@ export default function FaqClassic({
 }: FaqVariantProps) {
   const py = { paddingTop: "var(--dt-spacing)", paddingBottom: "var(--dt-spacing)" } as any;
   const isEN = language === "en";
+  const L = faqStrings(language);
 
   const handleUpdateItem = (index: number, field: string, value: string) => {
     const nextItems = [...(faq.items || [])];
@@ -160,13 +163,13 @@ export default function FaqClassic({
     <section id="faq" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, background: "var(--dt-bg)" }}>
       <div style={{ maxWidth: "52rem", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-          <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>{isEN ? "Questions" : "Pertanyaan"}</span>
+          <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>{L.eyebrow}</span>
           <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>
             {isEditorMode ? (
               <InlineText
                 section="faq"
                 fieldKey="title"
-                value={faq.title}
+                value={faq.title || L.defaultTitle}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
@@ -174,7 +177,7 @@ export default function FaqClassic({
                 onEditingStateChange={onEditingStateChange}
                 as="span"
               />
-            ) : faq.title}
+            ) : (faq.title || L.defaultTitle)}
           </h2>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
@@ -183,6 +186,7 @@ export default function FaqClassic({
               key={idx}
               item={item}
               index={idx}
+              defaultOpen={idx === 0}
               onUpdateItem={handleUpdateItem}
               onDelete={onDeleteItem ? () => onDeleteItem(idx) : undefined}
               section="faq"
@@ -194,13 +198,34 @@ export default function FaqClassic({
           ))}
           {isEditorMode && onAddItem && (
             <InlineAddTile
-              label={isEN ? "Add question" : "Tambah Pertanyaan"}
+              label={L.addQuestion}
               variant="bar"
               onClick={onAddItem}
               className="w-full"
               style={{ borderRadius: "var(--dt-radius)", color: "var(--dt-text)" }}
             />
           )}
+        </div>
+
+        {/* Secondary Support CTA */}
+        <div
+          className="mt-10 pt-6 text-center flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm"
+          style={{
+            borderTop: "1px dashed color-mix(in srgb, var(--dt-text) 15%, transparent)",
+            color: "var(--dt-text-muted)",
+          }}
+        >
+          <span className="flex items-center gap-1.5 font-medium">
+            <MessageCircleQuestion className="w-4 h-4 text-[var(--dt-primary)] shrink-0" />
+            {L.supportHelpText}
+          </span>
+          <a
+            href="#contact"
+            className="font-semibold underline underline-offset-4 transition-colors hover:opacity-80"
+            style={{ color: "var(--dt-primary)" }}
+          >
+            {L.supportActionText} &rarr;
+          </a>
         </div>
       </div>
     </section>

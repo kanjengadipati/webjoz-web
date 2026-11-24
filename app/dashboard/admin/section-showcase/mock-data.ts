@@ -1058,8 +1058,18 @@ export const MOCK_SHOWCASE_DATA = {
         category: "Umum",
       },
       {
+        question: "Apakah tersedia panduan atau konsultasi gratis sebelum memulai?",
+        answer: "Ya, tim support kami siap membantu memandu pemilihan template, struktur konten, hingga konfigurasi awal bisnis Anda.",
+        category: "Umum",
+      },
+      {
         question: "Apakah saya bisa mengubah konten website sendiri di kemudian hari?",
         answer: "Tentu saja! Anda diberikan akses dashboard visual yang sangat mudah digunakan untuk mengganti foto, memperbarui harga menu/katalog, dan mengedit teks tanpa perlu kemampuan coding.",
+        category: "Pengelolaan",
+      },
+      {
+        question: "Apakah ada batasan jumlah produk atau artikel yang bisa ditambahkan?",
+        answer: "Tidak ada batasan. Anda bebas menambah item katalog, menu, atau artikel blog sesuai kebutuhan pertumbuhan bisnis Anda.",
         category: "Pengelolaan",
       },
       {
