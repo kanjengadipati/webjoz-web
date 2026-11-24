@@ -1306,6 +1306,7 @@ export interface Translations {
       connectionOk: string;
       connectionFailed: string;
       baseUrlInvalid: string;
+      baseUrlOpenaiEmptyHint: string;
       filterOnlyIssues: string;
       filterAllProviders: string;
       formProviderPlaceholder: string;
@@ -5371,6 +5372,8 @@ export const translations: Record<Locale, Translations> = {
         connectionOk: "Koneksi OK",
         connectionFailed: "Koneksi gagal",
         baseUrlInvalid: "Base URL harus diawali https:// atau http://",
+        baseUrlOpenaiEmptyHint:
+          "Base URL kosong = endpoint OpenAI asli (api.openai.com). Untuk key Groq/OpenRouter, pilih preset di atas.",
         filterOnlyIssues: "Hanya bermasalah",
         filterAllProviders: "Semua provider",
         formProviderPlaceholder: "— pilih provider —",
@@ -9913,6 +9916,8 @@ export const translations: Record<Locale, Translations> = {
         connectionOk: "Connection OK",
         connectionFailed: "Connection failed",
         baseUrlInvalid: "Base URL must start with https:// or http://",
+        baseUrlOpenaiEmptyHint:
+          "Empty base URL = real OpenAI endpoint (api.openai.com). For a Groq/OpenRouter key, pick a preset above.",
         filterOnlyIssues: "Only issues",
         filterAllProviders: "All providers",
         formProviderPlaceholder: "— select provider —",

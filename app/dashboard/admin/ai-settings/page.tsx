@@ -207,6 +207,19 @@ const PROVIDER_OPTIONS: CustomSelectOption[] = [
   { value: "mock", label: "mock" },
 ];
 
+// Provider "openai" berarti OpenAI-compatible: Groq, OpenRouter, atau OpenAI
+// asli. Tanpa base_url backend default ke api.openai.com — key Groq (gsk_...)
+// ditolak 401 di sana. Preset ini mengisi base_url + model default yang benar;
+// yang pertama (Groq) dipakai otomatis saat provider openai dipilih.
+const OPENAI_ENDPOINT_PRESETS = [
+  { label: "Groq", baseURL: "https://api.groq.com/openai/v1", model: "openai/gpt-oss-120b" },
+  { label: "OpenRouter", baseURL: "https://openrouter.ai/api/v1", model: "openrouter/free" },
+  { label: "OpenAI", baseURL: "https://api.openai.com/v1", model: "gpt-4o-mini" },
+] as const;
+
+const OPENAI_PRESET_URLS: string[] = OPENAI_ENDPOINT_PRESETS.map((p) => p.baseURL);
+const OPENAI_PRESET_MODELS: string[] = OPENAI_ENDPOINT_PRESETS.map((p) => p.model);
+
 // tierRank groups tier names so the dropdown lists primary first, then the
 // fallback chain, then each router level in numeric order.
 function tierRank(tier: string): [number, number, string] {
@@ -442,6 +455,34 @@ export default function AdminAiSettingsPage() {
       setSaveError("");
       setCustomTier(false);
     }
+  }
+
+  // Saat provider diganti ke "openai", isi otomatis endpoint Groq + model
+  // default (kasus prod: base_url kosong → backend default api.openai.com →
+  // key gsk_ ditolak 401). Nilai yang sudah diketik manual tidak ditimpa,
+  // kecuali masih berupa URL/model preset lain. Sebaliknya, pindah KELUAR dari
+  // openai membersihkan URL preset supaya tidak nyangkut di provider lain.
+  function handleProviderChange(value: string) {
+    setFormData((f) => {
+      const next = { ...f, provider: value };
+      if (value === "openai") {
+        const groq = OPENAI_ENDPOINT_PRESETS[0];
+        if (!f.base_url || OPENAI_PRESET_URLS.includes(f.base_url)) next.base_url = groq.baseURL;
+        if (!f.model || OPENAI_PRESET_MODELS.includes(f.model)) next.model = groq.model;
+      } else if (OPENAI_PRESET_URLS.includes(f.base_url)) {
+        next.base_url = "";
+        if (OPENAI_PRESET_MODELS.includes(f.model)) next.model = "";
+      }
+      return next;
+    });
+  }
+
+  function applyEndpointPreset(preset: (typeof OPENAI_ENDPOINT_PRESETS)[number]) {
+    setFormData((f) => ({
+      ...f,
+      base_url: preset.baseURL,
+      model: !f.model || OPENAI_PRESET_MODELS.includes(f.model) ? preset.model : f.model,
+    }));
   }
 
   function cancelEdit() {
@@ -1164,7 +1205,7 @@ export default function AdminAiSettingsPage() {
               <Label className="uppercase tracking-wider text-muted-foreground">{t("dashboard.adminAiStatus.formProvider")}</Label>
               <CustomSelect
                 value={formData.provider}
-                onChange={(value) => setFormData((f) => ({ ...f, provider: value }))}
+                onChange={handleProviderChange}
                 options={PROVIDER_OPTIONS}
                 placeholder={t("dashboard.adminAiStatus.formProviderPlaceholder")}
               />
@@ -1186,6 +1227,30 @@ export default function AdminAiSettingsPage() {
                 value={formData.base_url}
                 onChange={(e) => setFormData((f) => ({ ...f, base_url: e.target.value }))}
               />
+              {formData.provider === "openai" && (
+                <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                  {OPENAI_ENDPOINT_PRESETS.map((preset) => (
+                    <Button
+                      key={preset.label}
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => applyEndpointPreset(preset)}
+                      className={
+                        "h-6 px-2 text-[10.5px] font-medium " +
+                        (formData.base_url === preset.baseURL
+                          ? "bg-primary/10 border-primary/30 text-primary"
+                          : "text-muted-foreground")
+                      }
+                    >
+                      {preset.label}
+                    </Button>
+                  ))}
+                </div>
+              )}
+              {formData.provider === "openai" && !formData.base_url && (
+                <p className="text-[10px] text-amber-500 mt-0.5">{t("dashboard.adminAiStatus.baseUrlOpenaiEmptyHint")}</p>
+              )}
               {formData.base_url && !formData.base_url.startsWith("https://") && !formData.base_url.startsWith("http://") && (
                 <p className="text-[10px] text-amber-500 mt-0.5">{t("dashboard.adminAiStatus.baseUrlInvalid")}</p>
               )}
