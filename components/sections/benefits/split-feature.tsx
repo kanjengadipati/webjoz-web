@@ -3,6 +3,7 @@ import React from "react";
 import { ArrowRight, CheckCircle, Sparkles } from "lucide-react";
 import { DynamicIcon, InlineImage, InlineText } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton } from "../inline-add";
+import { benefitsStrings } from "./benefits-strings";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 
 interface BenefitsVariantProps {
@@ -27,7 +28,7 @@ export default function BenefitsSplitFeature({
   language = "id",
   onAddItem,
 }: BenefitsVariantProps) {
-  const isEN = language === "en";
+  const L = benefitsStrings(language);
   const items = b?.items ?? [];
   const primaryItem = items[0];
   const supportingItems = items.slice(1);
@@ -81,7 +82,7 @@ export default function BenefitsSplitFeature({
                   section="benefits"
                   fieldKey="image_url"
                   src={visualImage ?? ""}
-                  alt={primaryItem?.title || b?.title || "Feature Showcase"}
+                  alt={primaryItem?.title || b?.title || L.itemTitlePlaceholder}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -128,7 +129,7 @@ export default function BenefitsSplitFeature({
                       letterSpacing: "0.08em",
                     }}
                   >
-                    {primaryItem?.title || (isEN ? "Signature Benefit" : "Keunggulan Utama")}
+                    {primaryItem?.title || L.primaryFeatureBadge}
                   </span>
                 </div>
               )}
@@ -156,7 +157,7 @@ export default function BenefitsSplitFeature({
                       section="benefits"
                       fieldKey="items.0.stat"
                       value={primaryItem?.stat ?? ""}
-                      placeholder="100%"
+                      placeholder={L.statPlaceholder}
                       onUpdateField={onUpdateField}
                       isEditorMode={isEditorMode}
                       isSelected={isSelected}
@@ -181,7 +182,7 @@ export default function BenefitsSplitFeature({
                         section="benefits"
                         fieldKey="items.0.stat_label"
                         value={primaryItem?.stat_label ?? ""}
-                        placeholder={isEN ? "Metric Label" : "Label Metrik"}
+                        placeholder={L.statLabelPlaceholder}
                         onUpdateField={onUpdateField}
                         isEditorMode={isEditorMode}
                         isSelected={isSelected}
@@ -216,8 +217,8 @@ export default function BenefitsSplitFeature({
                 <InlineText
                   section="benefits"
                   fieldKey="eyebrow"
-                  value={b.eyebrow || (isEN ? "Signature Feature" : "Fitur Unggulan")}
-                  placeholder={isEN ? "Signature Feature" : "Fitur Unggulan"}
+                  value={b.eyebrow || L.eyebrowSignature}
+                  placeholder={L.eyebrowSignature}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -241,8 +242,8 @@ export default function BenefitsSplitFeature({
               <InlineText
                 section="benefits"
                 fieldKey="title"
-                value={b.title || (isEN ? "The smarter way to achieve your goals" : "Solusi cerdas untuk mencapai tujuan Anda")}
-                placeholder={isEN ? "The smarter way to achieve your goals" : "Solusi cerdas untuk mencapai tujuan Anda"}
+                value={b.title || L.titleSplitFeature}
+                placeholder={L.titleSplitFeature}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
@@ -266,7 +267,7 @@ export default function BenefitsSplitFeature({
                 section="benefits"
                 fieldKey="subtitle"
                 value={b?.subtitle || primaryItem?.description || ""}
-                placeholder={isEN ? "Comprehensive explanation of how this benefit transforms your experience..." : "Penjelasan lengkap bagaimana keunggulan ini mempermudah dan memberi nilai tambah bagi Anda..."}
+                placeholder={L.subtitleSplitFeature}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
@@ -300,7 +301,7 @@ export default function BenefitsSplitFeature({
                           section="benefits"
                           fieldKey={`items.${realIdx}.title`}
                           value={item.title ?? ""}
-                          placeholder={isEN ? "Point..." : "Poin..."}
+                          placeholder={L.pointPlaceholder}
                           onUpdateField={onUpdateField}
                           isEditorMode={isEditorMode}
                           isSelected={isSelected}
@@ -321,7 +322,7 @@ export default function BenefitsSplitFeature({
                             section="benefits"
                             fieldKey={`items.${realIdx}.description`}
                             value={item.description ?? ""}
-                            placeholder={isEN ? "Short note..." : "Catatan singkat..."}
+                            placeholder={L.notePlaceholder}
                             onUpdateField={onUpdateField}
                             isEditorMode={isEditorMode}
                             isSelected={isSelected}
@@ -344,7 +345,7 @@ export default function BenefitsSplitFeature({
                           <InlineDeleteButton
                             compact
                             onDelete={() => handleDeleteItem(realIdx)}
-                            title={isEN ? "Delete point" : "Hapus poin"}
+                            title={L.deletePointTitle}
                           />
                         </div>
                       )}
@@ -366,8 +367,8 @@ export default function BenefitsSplitFeature({
                 <InlineText
                   section="benefits"
                   fieldKey="cta_text"
-                  value={b?.cta_text || (isEN ? "Learn More" : "Pelajari Lebih Lanjut")}
-                  placeholder={isEN ? "Learn More" : "Pelajari Lebih Lanjut"}
+                  value={b?.cta_text || L.learnMoreCta}
+                  placeholder={L.learnMoreCta}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -381,7 +382,7 @@ export default function BenefitsSplitFeature({
               {isEditorMode && onAddItem && (
                 <InlineAddTile
                   compact
-                  label={isEN ? "Add supporting point" : "Tambah poin pendukung"}
+                  label={L.addSupportingPoint}
                   onClick={onAddItem}
                   style={{ borderRadius: "var(--dt-radius)" }}
                 />

@@ -3,6 +3,7 @@ import React from "react";
 import { CheckCircle } from "lucide-react";
 import { InlineText } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton } from "../inline-add";
+import { benefitsStrings } from "./benefits-strings";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 
 interface BenefitsVariantProps {
@@ -27,7 +28,7 @@ export default function BenefitsChecklist({
   language = "id",
   onAddItem,
 }: BenefitsVariantProps) {
-  const isEN = language === "en";
+  const L = benefitsStrings(language);
   const items = b?.items ?? [];
 
   const handleDeleteItem = (indexToDelete: number) => {
@@ -64,8 +65,8 @@ export default function BenefitsChecklist({
                 <InlineText
                   section="benefits"
                   fieldKey="eyebrow"
-                  value={b.eyebrow || (isEN ? "Benefits" : "Keunggulan")}
-                  placeholder={isEN ? "Benefits" : "Keunggulan"}
+                  value={b.eyebrow || L.eyebrowBenefits}
+                  placeholder={L.eyebrowBenefits}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -88,8 +89,8 @@ export default function BenefitsChecklist({
             <InlineText
               section="benefits"
               fieldKey="title"
-              value={b.title ?? ""}
-              placeholder={isEN ? "Key Benefits" : "Keunggulan Utama"}
+              value={b.title || L.titlePlaceholder}
+              placeholder={L.titlePlaceholder}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -112,7 +113,7 @@ export default function BenefitsChecklist({
                 section="benefits"
                 fieldKey="subtitle"
                 value={b.subtitle}
-                placeholder={isEN ? "What makes us different" : "Nilai lebih yang kami berikan"}
+                placeholder={L.subtitlePlaceholder}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
@@ -154,7 +155,7 @@ export default function BenefitsChecklist({
                     section="benefits"
                     fieldKey={"items." + idx + ".title"}
                     value={item.title ?? ""}
-                    placeholder={isEN ? "Benefit title..." : "Judul keunggulan..."}
+                    placeholder={L.itemTitlePlaceholder}
                     onUpdateField={onUpdateField}
                     isEditorMode={isEditorMode}
                     isSelected={isSelected}
@@ -187,7 +188,7 @@ export default function BenefitsChecklist({
                         section="benefits"
                         fieldKey={"items." + idx + ".stat"}
                         value={item.stat ?? ""}
-                        placeholder="100%"
+                        placeholder={L.statPlaceholder}
                         onUpdateField={onUpdateField}
                         isEditorMode={isEditorMode}
                         isSelected={isSelected}
@@ -203,7 +204,7 @@ export default function BenefitsChecklist({
                   section="benefits"
                   fieldKey={"items." + idx + ".description"}
                   value={item.description ?? ""}
-                  placeholder={isEN ? "Benefit description..." : "Deskripsi keunggulan..."}
+                  placeholder={L.itemDescriptionPlaceholder}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -226,7 +227,7 @@ export default function BenefitsChecklist({
                   <InlineDeleteButton
                     compact
                     onDelete={() => handleDeleteItem(idx)}
-                    title={isEN ? "Delete benefit" : "Hapus keunggulan"}
+                    title={L.deleteItemTitle}
                   />
                 </div>
               )}
@@ -237,7 +238,7 @@ export default function BenefitsChecklist({
             <div className="md:col-span-2">
               <InlineAddTile
                 compact
-                label={isEN ? "Add benefit" : "Tambah Keunggulan"}
+                label={L.addBenefit}
                 onClick={onAddItem}
                 style={{ borderRadius: "var(--dt-radius-lg)" }}
               />

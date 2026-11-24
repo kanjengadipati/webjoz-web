@@ -3,6 +3,7 @@ import React from "react";
 import { Star } from "lucide-react";
 import { DynamicIcon, InlineImage, InlineText } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton } from "../inline-add";
+import { benefitsStrings } from "./benefits-strings";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 
 interface BenefitsVariantProps {
@@ -27,7 +28,7 @@ export default function BenefitsAlternatingFeature({
   language = "id",
   onAddItem,
 }: BenefitsVariantProps) {
-  const isEN = language === "en";
+  const L = benefitsStrings(language);
   const items = b?.items ?? [];
 
   const handleDeleteItem = (indexToDelete: number) => {
@@ -68,8 +69,8 @@ export default function BenefitsAlternatingFeature({
                 <InlineText
                   section="benefits"
                   fieldKey="eyebrow"
-                  value={b.eyebrow || (isEN ? "Key Solutions" : "Solusi Lengkap")}
-                  placeholder={isEN ? "Key Solutions" : "Solusi Lengkap"}
+                  value={b.eyebrow || L.eyebrowSolutions}
+                  placeholder={L.eyebrowSolutions}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -92,8 +93,8 @@ export default function BenefitsAlternatingFeature({
             <InlineText
               section="benefits"
               fieldKey="title"
-              value={b.title || (isEN ? "Designed for Your Growth" : "Dirancang untuk Pertumbuhan Anda")}
-              placeholder={isEN ? "Designed for Your Growth" : "Dirancang untuk Pertumbuhan Anda"}
+              value={b.title || L.titleAlternating}
+              placeholder={L.titleAlternating}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -116,7 +117,7 @@ export default function BenefitsAlternatingFeature({
                 section="benefits"
                 fieldKey="subtitle"
                 value={b.subtitle}
-                placeholder={isEN ? "Everything you need to scale with confidence and ease" : "Semua yang Anda butuhkan untuk berkembang dengan mudah dan terpercaya"}
+                placeholder={L.subtitleAlternating}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
@@ -157,7 +158,7 @@ export default function BenefitsAlternatingFeature({
                         section="benefits"
                         fieldKey={`items.${idx}.image_url`}
                         src={item.image_url ?? ""}
-                        alt={item.title || "Benefit Visual"}
+                        alt={item.title || L.itemTitlePlaceholder}
                         onUpdateField={onUpdateField}
                         isEditorMode={isEditorMode}
                         isSelected={isSelected}
@@ -225,7 +226,7 @@ export default function BenefitsAlternatingFeature({
                           section="benefits"
                           fieldKey={`items.${idx}.stat`}
                           value={item.stat ?? ""}
-                          placeholder="Stat..."
+                          placeholder={L.statPlaceholder}
                           onUpdateField={onUpdateField}
                           isEditorMode={isEditorMode}
                           isSelected={isSelected}
@@ -242,7 +243,7 @@ export default function BenefitsAlternatingFeature({
                     section="benefits"
                     fieldKey={`items.${idx}.title`}
                     value={item.title ?? ""}
-                    placeholder={isEN ? "Benefit title..." : "Judul keunggulan..."}
+                    placeholder={L.itemTitlePlaceholder}
                     onUpdateField={onUpdateField}
                     isEditorMode={isEditorMode}
                     isSelected={isSelected}
@@ -264,7 +265,7 @@ export default function BenefitsAlternatingFeature({
                     section="benefits"
                     fieldKey={`items.${idx}.description`}
                     value={item.description ?? ""}
-                    placeholder={isEN ? "Detailed description of this benefit..." : "Penjelasan rinci mengenai keunggulan ini..."}
+                    placeholder={L.itemDescriptionPlaceholder}
                     onUpdateField={onUpdateField}
                     isEditorMode={isEditorMode}
                     isSelected={isSelected}
@@ -287,7 +288,7 @@ export default function BenefitsAlternatingFeature({
                       <InlineDeleteButton
                         compact
                         onDelete={() => handleDeleteItem(idx)}
-                        title={isEN ? "Delete step" : "Hapus langkah"}
+                        title={L.deleteStepTitle}
                       />
                     </div>
                   )}
@@ -299,7 +300,7 @@ export default function BenefitsAlternatingFeature({
           {isEditorMode && onAddItem && (
             <div className="pt-4">
               <InlineAddTile
-                label={isEN ? "Add alternating feature" : "Tambah Fitur Bergantian"}
+                label={L.addAlternatingFeature}
                 onClick={onAddItem}
                 style={{ borderRadius: "var(--dt-radius-lg)" }}
               />

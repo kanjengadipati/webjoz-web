@@ -3,6 +3,7 @@ import React from "react";
 import { Star } from "lucide-react";
 import { DynamicIcon, InlineText } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton } from "../inline-add";
+import { benefitsStrings } from "./benefits-strings";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface BenefitsVariantProps {
@@ -27,7 +28,7 @@ export default function BenefitsClassic({
   language = "id",
   onAddItem,
 }: BenefitsVariantProps) {
-  const isEN = language === "en";
+  const L = benefitsStrings(language);
   const items = b?.items ?? [];
 
   const handleDeleteItem = (indexToDelete: number) => {
@@ -64,8 +65,8 @@ export default function BenefitsClassic({
                 <InlineText
                   section="benefits"
                   fieldKey="eyebrow"
-                  value={b.eyebrow || (isEN ? "Benefits" : "Keunggulan")}
-                  placeholder={isEN ? "Benefits" : "Keunggulan"}
+                  value={b.eyebrow || L.eyebrowBenefits}
+                  placeholder={L.eyebrowBenefits}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -88,8 +89,8 @@ export default function BenefitsClassic({
             <InlineText
               section="benefits"
               fieldKey="title"
-              value={b.title}
-              placeholder={isEN ? "Our Benefits" : "Keunggulan Kami"}
+              value={b.title || L.titlePlaceholder}
+              placeholder={L.titlePlaceholder}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -112,7 +113,7 @@ export default function BenefitsClassic({
                 section="benefits"
                 fieldKey="subtitle"
                 value={b.subtitle}
-                placeholder={isEN ? "What sets us apart" : "Alasan utama mengapa Anda akan menyukai kami"}
+                placeholder={L.subtitlePlaceholder}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
@@ -174,7 +175,7 @@ export default function BenefitsClassic({
                         section="benefits"
                         fieldKey={"items." + idx + ".stat"}
                         value={item.stat ?? ""}
-                        placeholder="99%"
+                        placeholder={L.statPlaceholder}
                         onUpdateField={onUpdateField}
                         isEditorMode={isEditorMode}
                         isSelected={isSelected}
@@ -189,7 +190,7 @@ export default function BenefitsClassic({
                           section="benefits"
                           fieldKey={"items." + idx + ".stat_label"}
                           value={item.stat_label ?? ""}
-                          placeholder={isEN ? "Metric" : "Metrik"}
+                          placeholder={L.statLabelPlaceholder}
                           onUpdateField={onUpdateField}
                           isEditorMode={isEditorMode}
                           isSelected={isSelected}
@@ -224,7 +225,7 @@ export default function BenefitsClassic({
                   section="benefits"
                   fieldKey={"items." + idx + ".title"}
                   value={item.title ?? ""}
-                  placeholder={isEN ? "Benefit title..." : "Judul keunggulan..."}
+                  placeholder={L.itemTitlePlaceholder}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -245,7 +246,7 @@ export default function BenefitsClassic({
                   section="benefits"
                   fieldKey={"items." + idx + ".description"}
                   value={item.description ?? ""}
-                  placeholder={isEN ? "Benefit description..." : "Deskripsi keunggulan..."}
+                  placeholder={L.itemDescriptionPlaceholder}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -263,7 +264,7 @@ export default function BenefitsClassic({
                   <InlineDeleteButton
                     compact
                     onDelete={() => handleDeleteItem(idx)}
-                    title={isEN ? "Delete benefit" : "Hapus keunggulan"}
+                    title={L.deleteItemTitle}
                   />
                 </div>
               )}
@@ -273,7 +274,7 @@ export default function BenefitsClassic({
           {isEditorMode && onAddItem && (
             <div className="h-full">
               <InlineAddTile
-                label={isEN ? "Add benefit" : "Tambah Keunggulan"}
+                label={L.addBenefit}
                 onClick={onAddItem}
                 style={{ height: "100%", minHeight: "12rem", borderRadius: "var(--dt-radius-lg)" }}
               />

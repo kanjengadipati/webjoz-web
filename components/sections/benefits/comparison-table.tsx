@@ -3,6 +3,7 @@ import React from "react";
 import { Check, X } from "lucide-react";
 import { InlineText } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton } from "../inline-add";
+import { benefitsStrings } from "./benefits-strings";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface BenefitsVariantProps {
@@ -27,11 +28,8 @@ export default function BenefitsComparisonTable({
   onAddItem,
   language = "id",
 }: BenefitsVariantProps) {
-  const isEN = language === "en";
+  const L = benefitsStrings(language);
   const comp = b?.comparison;
-  // Only real comparison rows — never fabricate claims, and never derive rows from
-  // benefits.items (those are a different data shape and would write to a
-  // non-existent comparison.rows.* path).
   const rows = comp?.rows ?? [];
   const showTable = rows.length > 0 || isEditorMode;
 
@@ -69,8 +67,8 @@ export default function BenefitsComparisonTable({
                 <InlineText
                   section="benefits"
                   fieldKey="eyebrow"
-                  value={b.eyebrow || (isEN ? "Comparison" : "Perbandingan")}
-                  placeholder={isEN ? "Comparison" : "Perbandingan"}
+                  value={b.eyebrow || L.eyebrowComparison}
+                  placeholder={L.eyebrowComparison}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -93,8 +91,8 @@ export default function BenefitsComparisonTable({
             <InlineText
               section="benefits"
               fieldKey="title"
-              value={b.title}
-              placeholder={isEN ? "Why Choose Us" : "Mengapa Memilih Kami"}
+              value={b.title || L.titleComparison}
+              placeholder={L.titleComparison}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -117,7 +115,7 @@ export default function BenefitsComparisonTable({
                 section="benefits"
                 fieldKey="subtitle"
                 value={b.subtitle}
-                placeholder={isEN ? "Clear comparison with others" : "Perbandingan transparan dengan yang lain"}
+                placeholder={L.subtitleComparison}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
@@ -158,8 +156,8 @@ export default function BenefitsComparisonTable({
                     <InlineText
                       section="benefits"
                       fieldKey="comparison.feature_label"
-                      value={comp?.feature_label || (isEN ? "Feature / Benefit" : "Fitur & Keunggulan")}
-                      placeholder={isEN ? "Feature / Benefit" : "Fitur & Keunggulan"}
+                      value={comp?.feature_label || L.featureLabel}
+                      placeholder={L.featureLabel}
                       onUpdateField={onUpdateField}
                       isEditorMode={isEditorMode}
                       isSelected={isSelected}
@@ -186,13 +184,13 @@ export default function BenefitsComparisonTable({
                   >
                     <div className="flex flex-col items-center gap-1">
                       <span className="text-[10px] tracking-widest uppercase font-extrabold px-2 py-0.5 rounded-full bg-[var(--dt-primary)] text-white shadow-xs">
-                        {isEN ? "Recommended" : "Pilihan Terbaik"}
+                        {L.recommendedBadge}
                       </span>
                       <InlineText
                         section="benefits"
                         fieldKey="comparison.column_a_label"
-                        value={comp?.column_a_label || (isEN ? "Us" : "Kami")}
-                        placeholder={isEN ? "Us" : "Kami"}
+                        value={comp?.column_a_label || L.columnUs}
+                        placeholder={L.columnUs}
                         onUpdateField={onUpdateField}
                         isEditorMode={isEditorMode}
                         isSelected={isSelected}
@@ -218,8 +216,8 @@ export default function BenefitsComparisonTable({
                     <InlineText
                       section="benefits"
                       fieldKey="comparison.column_b_label"
-                      value={comp?.column_b_label || (isEN ? "Others" : "Lainnya")}
-                      placeholder={isEN ? "Others" : "Lainnya"}
+                      value={comp?.column_b_label || L.columnOthers}
+                      placeholder={L.columnOthers}
                       onUpdateField={onUpdateField}
                       isEditorMode={isEditorMode}
                       isSelected={isSelected}
@@ -264,7 +262,7 @@ export default function BenefitsComparisonTable({
                         section="benefits"
                         fieldKey={`comparison.rows.${idx}.label`}
                         value={row.label ?? ""}
-                        placeholder={isEN ? "Row label..." : "Nama fitur/keunggulan..."}
+                        placeholder={L.comparisonRowLabel}
                         onUpdateField={onUpdateField}
                         isEditorMode={isEditorMode}
                         isSelected={isSelected}
@@ -289,7 +287,7 @@ export default function BenefitsComparisonTable({
                         <span
                           onClick={isEditorMode ? () => onUpdateField?.("benefits", `comparison.rows.${idx}.value_a`, "✗") : undefined}
                           style={{ cursor: isEditorMode ? "pointer" : "default", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
-                          title={isEditorMode ? (isEN ? "Click to toggle" : "Klik untuk ganti nilai") : undefined}
+                          title={isEditorMode ? L.toggleValueTitle : undefined}
                           className="w-7 h-7 rounded-full bg-[color-mix(in_srgb,var(--dt-primary)_15%,transparent)] mx-auto"
                         >
                           <Check style={{ width: 16, height: 16, color: "var(--dt-primary)", strokeWidth: 3 }} />
@@ -298,7 +296,7 @@ export default function BenefitsComparisonTable({
                         <span
                           onClick={isEditorMode ? () => onUpdateField?.("benefits", `comparison.rows.${idx}.value_a`, "✓") : undefined}
                           style={{ cursor: isEditorMode ? "pointer" : "default", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
-                          title={isEditorMode ? (isEN ? "Click to toggle" : "Klik untuk ganti nilai") : undefined}
+                          title={isEditorMode ? L.toggleValueTitle : undefined}
                           className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 mx-auto"
                         >
                           <X style={{ width: 16, height: 16, color: "var(--dt-text-muted)", strokeWidth: 2.5 }} />
@@ -308,7 +306,7 @@ export default function BenefitsComparisonTable({
                           section="benefits"
                           fieldKey={`comparison.rows.${idx}.value_a`}
                           value={row.value_a ?? ""}
-                          placeholder={isEN ? "Yes" : "Ya"}
+                          placeholder="✓"
                           onUpdateField={onUpdateField}
                           isEditorMode={isEditorMode}
                           isSelected={isSelected}
@@ -326,7 +324,7 @@ export default function BenefitsComparisonTable({
                         <span
                           onClick={isEditorMode ? () => onUpdateField?.("benefits", `comparison.rows.${idx}.value_b`, "✗") : undefined}
                           style={{ cursor: isEditorMode ? "pointer" : "default", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
-                          title={isEditorMode ? (isEN ? "Click to toggle" : "Klik untuk ganti nilai") : undefined}
+                          title={isEditorMode ? L.toggleValueTitle : undefined}
                           className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 mx-auto"
                         >
                           <Check style={{ width: 16, height: 16, color: "var(--dt-text-muted)", strokeWidth: 2 }} />
@@ -335,7 +333,7 @@ export default function BenefitsComparisonTable({
                         <span
                           onClick={isEditorMode ? () => onUpdateField?.("benefits", `comparison.rows.${idx}.value_b`, "✓") : undefined}
                           style={{ cursor: isEditorMode ? "pointer" : "default", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
-                          title={isEditorMode ? (isEN ? "Click to toggle" : "Klik untuk ganti nilai") : undefined}
+                          title={isEditorMode ? L.toggleValueTitle : undefined}
                           className="w-7 h-7 rounded-full bg-rose-50 dark:bg-rose-950/40 mx-auto"
                         >
                           <X style={{ width: 16, height: 16, color: "#f43f5e", strokeWidth: 2.5 }} />
@@ -345,7 +343,7 @@ export default function BenefitsComparisonTable({
                           section="benefits"
                           fieldKey={`comparison.rows.${idx}.value_b`}
                           value={row.value_b ?? ""}
-                          placeholder={isEN ? "No" : "Tidak"}
+                          placeholder="✗"
                           onUpdateField={onUpdateField}
                           isEditorMode={isEditorMode}
                           isSelected={isSelected}
@@ -363,7 +361,7 @@ export default function BenefitsComparisonTable({
                         <InlineDeleteButton
                           compact
                           onDelete={() => handleDeleteRow(idx)}
-                          title={isEN ? "Delete row" : "Hapus baris"}
+                          title={L.deleteRowTitle}
                         />
                       </td>
                     )}
@@ -376,14 +374,14 @@ export default function BenefitsComparisonTable({
 
         {!showTable && (
           <p style={{ textAlign: "center", color: "var(--dt-text-muted)", fontSize: "0.9rem", margin: 0 }}>
-            {isEN ? "No comparison rows yet." : "Belum ada baris perbandingan."}
+            {L.noComparisonRows}
           </p>
         )}
 
         {isEditorMode && onAddItem && (
           <div style={{ marginTop: "1.25rem" }}>
             <InlineAddTile
-              label={isEN ? "Add Comparison Row" : "Tambah Baris Perbandingan"}
+              label={L.addComparisonRow}
               onClick={onAddItem}
               style={{ borderRadius: "var(--dt-radius)" }}
             />

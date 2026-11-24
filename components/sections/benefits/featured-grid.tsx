@@ -3,6 +3,7 @@ import React from "react";
 import { Star } from "lucide-react";
 import { DynamicIcon, InlineText } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton } from "../inline-add";
+import { benefitsStrings } from "./benefits-strings";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface BenefitsVariantProps {
@@ -27,7 +28,7 @@ export default function BenefitsFeaturedGrid({
   language = "id",
   onAddItem,
 }: BenefitsVariantProps) {
-  const isEN = language === "en";
+  const L = benefitsStrings(language);
   const items = b?.items ?? [];
   const [featured, ...rest] = items;
 
@@ -65,8 +66,8 @@ export default function BenefitsFeaturedGrid({
                 <InlineText
                   section="benefits"
                   fieldKey="eyebrow"
-                  value={b.eyebrow || (isEN ? "Benefits" : "Keunggulan")}
-                  placeholder={isEN ? "Benefits" : "Keunggulan"}
+                  value={b.eyebrow || L.eyebrowBenefits}
+                  placeholder={L.eyebrowBenefits}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -89,8 +90,8 @@ export default function BenefitsFeaturedGrid({
             <InlineText
               section="benefits"
               fieldKey="title"
-              value={b.title}
-              placeholder={isEN ? "Featured Benefits" : "Keunggulan Unggulan"}
+              value={b.title || L.titlePlaceholder}
+              placeholder={L.titlePlaceholder}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -113,7 +114,7 @@ export default function BenefitsFeaturedGrid({
                 section="benefits"
                 fieldKey="subtitle"
                 value={b.subtitle}
-                placeholder={isEN ? "Highlights that matter" : "Fokus utama keunggulan layanan kami"}
+                placeholder={L.subtitlePlaceholder}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
@@ -178,7 +179,7 @@ export default function BenefitsFeaturedGrid({
                   borderRadius: "var(--dt-radius)",
                 }}
               >
-                {isEN ? "Primary Feature" : "Keunggulan Utama"}
+                {L.primaryFeatureBadge}
               </span>
 
               {featured.stat || isEditorMode ? (
@@ -188,7 +189,7 @@ export default function BenefitsFeaturedGrid({
                       section="benefits"
                       fieldKey="items.0.stat"
                       value={featured.stat ?? ""}
-                      placeholder="10x"
+                      placeholder={L.statPlaceholder}
                       onUpdateField={onUpdateField}
                       isEditorMode={isEditorMode}
                       isSelected={isSelected}
@@ -203,7 +204,7 @@ export default function BenefitsFeaturedGrid({
                         section="benefits"
                         fieldKey="items.0.stat_label"
                         value={featured.stat_label ?? ""}
-                        placeholder={isEN ? "Metric" : "Metrik"}
+                        placeholder={L.statLabelPlaceholder}
                         onUpdateField={onUpdateField}
                         isEditorMode={isEditorMode}
                         isSelected={isSelected}
@@ -240,7 +241,7 @@ export default function BenefitsFeaturedGrid({
                   section="benefits"
                   fieldKey="items.0.title"
                   value={featured.title ?? ""}
-                  placeholder={isEN ? "Title..." : "Judul..."}
+                  placeholder={L.itemTitlePlaceholder}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -260,7 +261,7 @@ export default function BenefitsFeaturedGrid({
                   section="benefits"
                   fieldKey="items.0.description"
                   value={featured.description ?? ""}
-                  placeholder={isEN ? "Description..." : "Deskripsi..."}
+                  placeholder={L.itemDescriptionPlaceholder}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -285,7 +286,7 @@ export default function BenefitsFeaturedGrid({
                 <InlineDeleteButton
                   compact
                   onDelete={() => handleDeleteItem(0)}
-                  title={isEN ? "Delete benefit" : "Hapus keunggulan"}
+                  title={L.deleteItemTitle}
                 />
               </div>
             )}
@@ -327,7 +328,7 @@ export default function BenefitsFeaturedGrid({
                           section="benefits"
                           fieldKey={"items." + realIdx + ".stat"}
                           value={item.stat ?? ""}
-                          placeholder="24/7"
+                          placeholder={L.statPlaceholder}
                           onUpdateField={onUpdateField}
                           isEditorMode={isEditorMode}
                           isSelected={isSelected}
@@ -342,7 +343,7 @@ export default function BenefitsFeaturedGrid({
                             section="benefits"
                             fieldKey={"items." + realIdx + ".stat_label"}
                             value={item.stat_label ?? ""}
-                            placeholder={isEN ? "Metric" : "Metrik"}
+                            placeholder={L.statLabelPlaceholder}
                             onUpdateField={onUpdateField}
                             isEditorMode={isEditorMode}
                             isSelected={isSelected}
@@ -377,7 +378,7 @@ export default function BenefitsFeaturedGrid({
                     section="benefits"
                     fieldKey={"items." + realIdx + ".title"}
                     value={item.title ?? ""}
-                    placeholder={isEN ? "Title..." : "Judul..."}
+                    placeholder={L.itemTitlePlaceholder}
                     onUpdateField={onUpdateField}
                     isEditorMode={isEditorMode}
                     isSelected={isSelected}
@@ -398,7 +399,7 @@ export default function BenefitsFeaturedGrid({
                     section="benefits"
                     fieldKey={"items." + realIdx + ".description"}
                     value={item.description ?? ""}
-                    placeholder={isEN ? "Description..." : "Deskripsi..."}
+                    placeholder={L.itemDescriptionPlaceholder}
                     onUpdateField={onUpdateField}
                     isEditorMode={isEditorMode}
                     isSelected={isSelected}
@@ -416,7 +417,7 @@ export default function BenefitsFeaturedGrid({
                     <InlineDeleteButton
                       compact
                       onDelete={() => handleDeleteItem(realIdx)}
-                      title={isEN ? "Delete benefit" : "Hapus keunggulan"}
+                      title={L.deleteItemTitle}
                     />
                   </div>
                 )}
@@ -427,7 +428,7 @@ export default function BenefitsFeaturedGrid({
           {isEditorMode && onAddItem && (
             <div className="h-full">
               <InlineAddTile
-                label={isEN ? "Add benefit" : "Tambah Keunggulan"}
+                label={L.addBenefit}
                 onClick={onAddItem}
                 style={{ height: "100%", minHeight: "10rem", borderRadius: "var(--dt-radius-lg)" }}
               />

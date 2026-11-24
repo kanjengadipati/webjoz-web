@@ -3,6 +3,7 @@ import React from "react";
 import { TrendingUp } from "lucide-react";
 import { DynamicIcon, InlineText } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton } from "../inline-add";
+import { benefitsStrings } from "./benefits-strings";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 
 interface BenefitsVariantProps {
@@ -27,7 +28,7 @@ export default function BenefitsBigStatistics({
   language = "id",
   onAddItem,
 }: BenefitsVariantProps) {
-  const isEN = language === "en";
+  const L = benefitsStrings(language);
   const items = b?.items ?? [];
 
   const handleDeleteItem = (indexToDelete: number) => {
@@ -75,8 +76,8 @@ export default function BenefitsBigStatistics({
                 <InlineText
                   section="benefits"
                   fieldKey="eyebrow"
-                  value={b.eyebrow || (isEN ? "Proven Results" : "Hasil Terbukti")}
-                  placeholder={isEN ? "Proven Results" : "Hasil Terbukti"}
+                  value={b.eyebrow || L.eyebrowNumbers}
+                  placeholder={L.eyebrowNumbers}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -99,8 +100,8 @@ export default function BenefitsBigStatistics({
             <InlineText
               section="benefits"
               fieldKey="title"
-              value={b.title || (isEN ? "Impact That Speaks for Itself" : "Dampak Nyata yang Terukur")}
-              placeholder={isEN ? "Impact That Speaks for Itself" : "Dampak Nyata yang Terukur"}
+              value={b.title || L.titleBigStats}
+              placeholder={L.titleBigStats}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -123,7 +124,7 @@ export default function BenefitsBigStatistics({
                 section="benefits"
                 fieldKey="subtitle"
                 value={b.subtitle}
-                placeholder={isEN ? "Real, verifiable metrics from our trusted partnerships and clients" : "Metrik dan data nyata dari kepuasan serta keberhasilan mitra kami"}
+                placeholder={L.subtitleBigStats}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
@@ -189,7 +190,7 @@ export default function BenefitsBigStatistics({
                     section="benefits"
                     fieldKey={`items.${idx}.stat`}
                     value={item.stat || (idx === 0 ? "99%" : idx === 1 ? "1.2k+" : "24/7")}
-                    placeholder="99%"
+                    placeholder={L.statPlaceholder}
                     onUpdateField={onUpdateField}
                     isEditorMode={isEditorMode}
                     isSelected={isSelected}
@@ -215,7 +216,7 @@ export default function BenefitsBigStatistics({
                       section="benefits"
                       fieldKey={`items.${idx}.stat_label`}
                       value={item.stat_label ?? ""}
-                      placeholder={isEN ? "Metric Label" : "Label Metrik"}
+                      placeholder={L.statLabelPlaceholder}
                       onUpdateField={onUpdateField}
                       isEditorMode={isEditorMode}
                       isSelected={isSelected}
@@ -231,7 +232,7 @@ export default function BenefitsBigStatistics({
                   section="benefits"
                   fieldKey={`items.${idx}.title`}
                   value={item.title ?? ""}
-                  placeholder={isEN ? "Outcome or milestone..." : "Dampak atau pencapaian..."}
+                  placeholder={L.itemTitlePlaceholder}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -253,7 +254,7 @@ export default function BenefitsBigStatistics({
                   section="benefits"
                   fieldKey={`items.${idx}.description`}
                   value={item.description ?? ""}
-                  placeholder={isEN ? "Explanation of how this figure is achieved..." : "Penjelasan bagaimana angka ini dicapai dan dampaknya..."}
+                  placeholder={L.itemDescriptionPlaceholder}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -276,7 +277,7 @@ export default function BenefitsBigStatistics({
                   <InlineDeleteButton
                     compact
                     onDelete={() => handleDeleteItem(idx)}
-                    title={isEN ? "Delete metric" : "Hapus metrik"}
+                    title={L.deleteMetricTitle}
                   />
                 </div>
               )}
@@ -286,7 +287,7 @@ export default function BenefitsBigStatistics({
           {isEditorMode && onAddItem && (
             <div className="h-full">
               <InlineAddTile
-                label={isEN ? "Add statistic" : "Tambah Statistik"}
+                label={L.addStatistic}
                 onClick={onAddItem}
                 style={{ height: "100%", minHeight: "10rem", borderRadius: "var(--dt-radius-lg)" }}
               />

@@ -35,7 +35,7 @@ const skipFiles = new Set([
 const TECHNICAL_VALUE = /^(https?:|mailto:|var\(--|\{|\.\.\.|[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$)/i;
 
 const ATTR_RE = /\b(placeholder|aria-label|title|alt)\s*=\s*"([^"]+)"/g;
-
+const INLINE_ISEN_RE = /\b(placeholder|aria-label|title|alt)\s*=\s*\{isEN\s*\?\s*"([^"]+)"\s*:\s*"([^"]+)"\}/g;
 function walk(dir, out = []) {
   for (const name of readdirSync(dir)) {
     if (name === "node_modules" || name === ".next") continue;
@@ -63,7 +63,16 @@ function collect() {
         if (!value || TECHNICAL_VALUE.test(value)) continue;
         // Hanya teks yang berisi huruf (bukan angka/simbol murni).
         if (!/[A-Za-zÀ-ÿ]/.test(value)) continue;
-        violations.push({ file: rel, attr, value, fingerprint: `${rel}|${attr}|${value}` });
+        violations.push({ file: rel, attr, value, fingerprint: `${rel}|${attr}|bare|${value}` });
+      }
+      INLINE_ISEN_RE.lastIndex = 0;
+      while ((m = INLINE_ISEN_RE.exec(line)) !== null) {
+        const attr = m[1];
+        const enVal = m[2].trim();
+        const idVal = m[3].trim();
+        // Standar baru: inline isEN untuk placeholder UI tidak diizinkan (harus typed dictionary).
+        // Entri ini dibaseline agar kode legacy tetap lolos; varian baru wajib pakai L.*.
+        violations.push({ file: rel, attr, value: `${enVal} / ${idVal}`, fingerprint: `${rel}|${attr}|inline|${enVal}||${idVal}` });
       }
     });
   }
@@ -99,8 +108,9 @@ if (unknown.length) {
     console.error(`  - ${v.file}  ${v.attr}="${v.value}"`);
   }
   console.error("");
-  console.error("Perbaiki dengan menjadikannya bilingual, mis.:");
-  console.error('  placeholder={isEN ? "Add tagline..." : "Tambah tagline..."}');
+  console.error("Perbaiki dengan typed dictionary per section (standar benefits/hero-strings), mis.:");
+  console.error("  placeholder={L.itemDescriptionPlaceholder}");
+  console.error("  // dengan benefitsStrings(language) / sectionStrings(language)");
   console.error("Atau (hanya untuk kode legacy) perbarui baseline:");
   console.error("  node scripts/check-section-localization.mjs --update-baseline");
   process.exit(1);
