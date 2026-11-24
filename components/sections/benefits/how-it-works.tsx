@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { InlineText } from "../../templates/shared";
-import { InlineAddTile } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton } from "../inline-add";
 import type { DesignToken, TemplateProps } from "../../templates/types";
 
 interface BenefitsVariantProps {
@@ -13,6 +13,7 @@ interface BenefitsVariantProps {
   collapseSheetForInlineEdit?: () => void;
   onEditingStateChange?: (isEditing: boolean) => void;
   onAddItem?: () => void;
+  onDeleteItem?: (idx: number) => void;
   language?: "id" | "en";
 }
 
@@ -25,9 +26,20 @@ export default function BenefitsHowItWorks({
   onEditingStateChange,
   language = "id",
   onAddItem,
+  onDeleteItem,
 }: BenefitsVariantProps) {
   const isEN = language === "en";
-  const items = b.items ?? [];
+  const items = b?.items ?? [];
+
+  if (!b) return null;
+
+  // Responsive column count based on item count
+  const colsClass =
+    items.length === 2
+      ? "grid-cols-1 sm:grid-cols-2"
+      : items.length === 3
+      ? "grid-cols-1 sm:grid-cols-3"
+      : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
 
   return (
     <section
@@ -39,48 +51,67 @@ export default function BenefitsHowItWorks({
     >
       <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
         {/* Section header */}
-        <div style={{ textAlign: "center", marginBottom: "4rem" }}>
-          <span
-            style={{
-              display: "inline-block",
-              fontSize: "0.7rem",
-              fontWeight: 800,
-              textTransform: "uppercase",
-              letterSpacing: "0.15em",
-              color: "var(--dt-primary)",
-              background: `color-mix(in srgb, var(--dt-primary) 10%, transparent)`,
-              border: `1px solid color-mix(in srgb, var(--dt-primary) 18%, transparent)`,
-              padding: "0.25rem 0.75rem",
-              borderRadius: "999px",
-              marginBottom: "1rem",
-            }}
-          >
-            {isEN ? "How it works" : "Cara Kerja"}
-          </span>
-          <InlineText
-            section="benefits"
-            fieldKey="title"
-            value={b.title}
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={isSelected}
-            as="h2"
-            style={{
-              fontFamily: "var(--dt-heading-font)",
-              fontWeight: "var(--dt-heading-weight)" as any,
-              fontSize: "clamp(1.5rem, 4.5cqw, 2.5rem)",
-              color: "var(--dt-text)",
-              marginTop: "0.5rem",
-              lineHeight: 1.2,
-            }}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-          />
+        <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
+          {(b.eyebrow || isEditorMode) && (
+            <div className="mb-2">
+              <span
+                style={{
+                  display: "inline-block",
+                  fontSize: "0.75rem",
+                  fontWeight: 800,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.15em",
+                  color: "var(--dt-primary)",
+                  background: `color-mix(in srgb, var(--dt-primary) 10%, transparent)`,
+                  border: `1px solid color-mix(in srgb, var(--dt-primary) 18%, transparent)`,
+                  padding: "0.25rem 0.75rem",
+                  borderRadius: "999px",
+                }}
+              >
+                <InlineText
+                  section="benefits"
+                  fieldKey="eyebrow"
+                  value={b.eyebrow ?? (isEN ? "How it works" : "Cara Kerja")}
+                  placeholder={isEN ? "How it works" : "Cara Kerja"}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="span"
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
+              </span>
+            </div>
+          )}
+          <div className="w-full">
+            <InlineText
+              section="benefits"
+              fieldKey="title"
+              value={b.title}
+              placeholder={isEN ? "How It Works Title..." : "Judul Cara Kerja..."}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="h2"
+              multiline
+              style={{
+                fontFamily: "var(--dt-heading-font)",
+                fontWeight: "var(--dt-heading-weight)" as any,
+                fontSize: "clamp(1.5rem, 4.5cqw, 2.5rem)",
+                color: "var(--dt-text)",
+                marginTop: "0.5rem",
+                lineHeight: 1.2,
+              }}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
+          </div>
           {(b.subtitle || isEditorMode) && (
             <InlineText
               section="benefits"
               fieldKey="subtitle"
               value={b.subtitle}
+              placeholder={isEN ? "Describe the simple steps..." : "Jelaskan langkah-langkah mudahnya..."}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -99,24 +130,18 @@ export default function BenefitsHowItWorks({
           )}
         </div>
 
-        {/* Steps */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: `repeat(${Math.min(items.length || 3, 4)}, 1fr)`,
-            gap: "0",
-            position: "relative",
-          }}
-        >
-          {/* Connecting line behind steps */}
+        {/* Steps container — fully responsive grid */}
+        <div className={`grid ${colsClass} gap-8 sm:gap-6 relative`}>
+          {/* Connecting line behind steps — visible on desktop multi-column */}
           {items.length > 1 && (
             <div
               aria-hidden="true"
+              className="hidden lg:block"
               style={{
                 position: "absolute",
-                top: "2.75rem", // vertically center on the number badge
-                left: `calc(100% / ${items.length} / 2)`,
-                right: `calc(100% / ${items.length} / 2)`,
+                top: "2.75rem",
+                left: `calc(100% / ${Math.min(items.length, 4)} / 2)`,
+                right: `calc(100% / ${Math.min(items.length, 4)} / 2)`,
                 height: "2px",
                 background: `linear-gradient(90deg, var(--dt-primary) 0%, color-mix(in srgb, var(--dt-primary) 30%, transparent) 100%)`,
                 zIndex: 0,
@@ -128,15 +153,7 @@ export default function BenefitsHowItWorks({
           {items.map((item, idx) => (
             <div
               key={idx}
-              style={{
-                position: "relative",
-                zIndex: 1,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                textAlign: "center",
-                padding: "0 1.25rem 2rem",
-              }}
+              className="group relative z-10 flex flex-col items-center text-center px-4 pb-4"
             >
               {/* Step number badge */}
               <div
@@ -173,6 +190,7 @@ export default function BenefitsHowItWorks({
                 section="benefits"
                 fieldKey={`items.${idx}.title`}
                 value={item.title ?? ""}
+                placeholder={isEN ? `Step ${idx + 1}` : `Langkah ${idx + 1}`}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
@@ -194,6 +212,7 @@ export default function BenefitsHowItWorks({
                 section="benefits"
                 fieldKey={`items.${idx}.description`}
                 value={item.description ?? ""}
+                placeholder={isEN ? "Step explanation..." : "Penjelasan langkah..."}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
@@ -210,7 +229,7 @@ export default function BenefitsHowItWorks({
               />
 
               {/* Optional stat badge */}
-              {item.stat || isEditorMode ? (
+              {(item.stat || isEditorMode) && (
                 <span
                   style={{
                     display: "inline-block",
@@ -230,6 +249,7 @@ export default function BenefitsHowItWorks({
                     section="benefits"
                     fieldKey={`items.${idx}.stat`}
                     value={item.stat ?? ""}
+                    placeholder="Stat"
                     onUpdateField={onUpdateField}
                     isEditorMode={isEditorMode}
                     isSelected={isSelected}
@@ -238,13 +258,23 @@ export default function BenefitsHowItWorks({
                     onEditingStateChange={onEditingStateChange}
                   />
                 </span>
-              ) : null}
+              )}
+
+              {/* Delete button in editor mode */}
+              {isEditorMode && onDeleteItem && (
+                <InlineDeleteButton
+                  compact
+                  className="absolute top-0 right-2 z-20"
+                  onDelete={() => onDeleteItem(idx)}
+                  title={isEN ? "Delete step" : "Hapus langkah"}
+                />
+              )}
             </div>
           ))}
         </div>
 
         {isEditorMode && onAddItem && (
-          <div style={{ display: "flex", justifyContent: "center", marginTop: "1.5rem" }}>
+          <div style={{ display: "flex", justifyContent: "center", marginTop: "2rem" }}>
             <InlineAddTile
               compact
               label={isEN ? "Add step" : "Tambah Langkah"}

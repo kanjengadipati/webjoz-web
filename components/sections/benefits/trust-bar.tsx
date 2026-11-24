@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
-import { ShieldCheck, Trash2 } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import { DynamicIcon, InlineText } from "../../templates/shared";
-import { InlineAddTile } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface BenefitsVariantProps {
@@ -124,20 +124,15 @@ export default function BenefitsTrustBar({
                 borderRadius: "var(--dt-radius-lg)",
               }}
             >
-              {/* Delete button (only in editor mode when hovered) */}
+              {/* Delete button (only in editor mode) */}
               {isEditorMode && onUpdateField && items.length > 1 && (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteItem(idx);
-                  }}
-                  title={isEN ? "Remove item" : "Hapus item"}
-                  className="absolute top-2 right-2 p-1 rounded-md opacity-0 group-hover:opacity-100 bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 transition-opacity z-10 cursor-pointer"
-                  aria-label={isEN ? "Delete item" : "Hapus item"}
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
+                <div className="absolute top-2 right-2">
+                  <InlineDeleteButton
+                    compact
+                    onDelete={() => handleDeleteItem(idx)}
+                    title={isEN ? "Remove item" : "Hapus item"}
+                  />
+                </div>
               )}
 
               {/* Icon Badge */}

@@ -2,7 +2,7 @@
 import React from "react";
 import { Star } from "lucide-react";
 import { DynamicIcon, InlineText } from "../../templates/shared";
-import { InlineAddTile } from "../inline-add";
+import { InlineAddTile, InlineDeleteButton } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface BenefitsVariantProps {
@@ -28,7 +28,13 @@ export default function BenefitsIconRow({
   onAddItem,
 }: BenefitsVariantProps) {
   const isEN = language === "en";
-  const items = b.items ?? [];
+  const items = b?.items ?? [];
+
+  const handleDeleteItem = (indexToDelete: number) => {
+    if (!onUpdateField) return;
+    const newItems = items.filter((_, i) => i !== indexToDelete);
+    onUpdateField("benefits", "items", newItems);
+  };
 
   return (
     <section
@@ -42,157 +48,194 @@ export default function BenefitsIconRow({
     >
       <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
         {/* Section header */}
-        <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
-          <span style={{ display: "block", fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)", marginBottom: "0.25rem" }}>
-            {isEN ? "Benefits" : "Keunggulan"}
-          </span>
-          <InlineText
-            section="benefits"
-            fieldKey="title"
-            value={b.title}
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={isSelected}
-            as="h2"
-            style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-          />
-        </div>
-
-        {/* Icon row — horizontal layout, centered */}
-        <div style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "0",
-          justifyContent: "center",
-        }}>
-          {items.map((item, idx) => (
-            <React.Fragment key={idx}>
-              {/* Divider between items */}
-              {idx > 0 && (
-                <div style={{
-                  width: "1px",
-                  alignSelf: "stretch",
-                  background: `color-mix(in srgb, var(--dt-primary) 12%, transparent)`,
-                  margin: "0",
-                  flexShrink: 0,
-                }} />
-              )}
-
-              <div
+        <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+          {(b?.eyebrow || isEditorMode) && (
+            <div className="mb-2">
+              <span
                 style={{
-                  flex: "1 1 180px",
-                  minWidth: "160px",
-                  maxWidth: "260px",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  textAlign: "center",
-                  padding: "2rem 1.5rem",
-                  gap: "1rem",
-                  transition: "background 0.2s",
-                  borderRadius: idx === 0 ? `var(--dt-radius-lg) 0 0 var(--dt-radius-lg)` : idx === items.length - 1 ? `0 var(--dt-radius-lg) var(--dt-radius-lg) 0` : "0",
-                  cursor: "default",
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.background = `color-mix(in srgb, var(--dt-primary) 6%, transparent)`;
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.background = "transparent";
+                  display: "inline-block",
+                  fontSize: "0.75rem",
+                  fontWeight: 800,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.15em",
+                  color: "var(--dt-primary)",
                 }}
               >
-                {/* Large icon circle */}
-                {item.stat ? (
-                  <div style={{
-                    width: 72, height: 72,
-                    background: `linear-gradient(135deg, color-mix(in srgb, var(--dt-primary) 20%, var(--dt-surface)), color-mix(in srgb, var(--dt-primary) 8%, var(--dt-surface)))`,
-                    border: `2px solid color-mix(in srgb, var(--dt-primary) 25%, transparent)`,
-                    borderRadius: "50%",
-                    display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column",
-                    boxShadow: `0 0 24px color-mix(in srgb, var(--dt-primary) 15%, transparent)`,
-                  }}>
-                    <span style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 800, fontSize: "1.25rem", color: "var(--dt-primary)", lineHeight: 1 }}>
-                      <InlineText
-                        section="benefits"
-                        fieldKey={"items." + idx + ".stat"}
-                        value={item.stat ?? ""}
-                        onUpdateField={onUpdateField}
-                        isEditorMode={isEditorMode}
-                        isSelected={isSelected}
-                        as="span"
-                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                        onEditingStateChange={onEditingStateChange}
-                      />
-                    </span>
-                    {item.stat_label && (
-                      <span style={{ fontSize: "0.55rem", fontWeight: 700, textTransform: "uppercase", color: "var(--dt-text-muted)", letterSpacing: "0.06em" }}>
-                        <InlineText
-                          section="benefits"
-                          fieldKey={"items." + idx + ".stat_label"}
-                          value={item.stat_label ?? ""}
-                          onUpdateField={onUpdateField}
-                          isEditorMode={isEditorMode}
-                          isSelected={isSelected}
-                          as="span"
-                          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                          onEditingStateChange={onEditingStateChange}
-                        />
-                      </span>
-                    )}
-                  </div>
-                ) : (
-                  <div style={{
-                    width: 72, height: 72,
-                    background: `linear-gradient(135deg, color-mix(in srgb, var(--dt-primary) 20%, var(--dt-surface)), color-mix(in srgb, var(--dt-primary) 8%, var(--dt-surface)))`,
-                    border: `2px solid color-mix(in srgb, var(--dt-primary) 25%, transparent)`,
-                    borderRadius: "50%",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    boxShadow: `0 0 24px color-mix(in srgb, var(--dt-primary) 15%, transparent)`,
-                  }}>
-                    <span style={{ color: "var(--dt-primary)", display: "contents" }}>
-                      <DynamicIcon name={item.icon} defaultIcon={Star} className="w-7 h-7" />
-                    </span>
-                  </div>
-                )}
-
-                {/* Title */}
                 <InlineText
                   section="benefits"
-                  fieldKey={"items." + idx + ".title"}
-                  value={item.title ?? ""}
+                  fieldKey="eyebrow"
+                  value={b.eyebrow || (isEN ? "Benefits" : "Keunggulan")}
+                  placeholder={isEN ? "Benefits" : "Keunggulan"}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
-                  as="h3"
-                  style={{ fontFamily: "var(--dt-heading-font)", fontWeight: 700, color: "var(--dt-text)", fontSize: "0.975rem", margin: 0, lineHeight: 1.3 }}
+                  as="span"
                   collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                   onEditingStateChange={onEditingStateChange}
                 />
-
-                {/* Description */}
-                <InlineText
-                  section="benefits"
-                  fieldKey={"items." + idx + ".description"}
-                  value={item.description ?? ""}
-                  onUpdateField={onUpdateField}
-                  isEditorMode={isEditorMode}
-                  isSelected={isSelected}
-                  as="p"
-                  style={{ color: "var(--dt-text-muted)", fontSize: "0.825rem", lineHeight: 1.65, margin: 0 }}
-                  multiline
-                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                  onEditingStateChange={onEditingStateChange}
-                />
-              </div>
-            </React.Fragment>
-          ))}
+              </span>
+            </div>
+          )}
+          <h2
+            style={{
+              fontFamily: "var(--dt-heading-font)",
+              fontWeight: "var(--dt-heading-weight)" as any,
+              fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)",
+              color: "var(--dt-text)",
+              margin: 0,
+            }}
+          >
+            <InlineText
+              section="benefits"
+              fieldKey="title"
+              value={b.title}
+              placeholder={isEN ? "Why Us" : "Mengapa Kami"}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="span"
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
+          </h2>
+          {(b?.subtitle || isEditorMode) && (
+            <p
+              style={{
+                color: "var(--dt-text-muted)",
+                maxWidth: "36rem",
+                margin: "0.75rem auto 0",
+                lineHeight: 1.6,
+                fontSize: "0.95rem",
+              }}
+            >
+              <InlineText
+                section="benefits"
+                fieldKey="subtitle"
+                value={b.subtitle}
+                placeholder={isEN ? "Quality and trust in every aspect" : "Kualitas dan komitmen terpercaya di setiap aspek"}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="span"
+                multiline
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
+            </p>
+          )}
         </div>
-        {isEditorMode && onAddItem && (
-          <div style={{ display: "flex", justifyContent: "center", marginTop: "1.25rem" }}>
-            <InlineAddTile compact label={isEN ? "Add benefit" : "Tambah Keunggulan"} onClick={onAddItem} style={{ borderRadius: "var(--dt-radius)", maxWidth: "16rem" }} />
-          </div>
-        )}
+
+        {/* Clean Responsive Grid (1 col mobile, 2 col tablet, 4 col desktop) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-stretch">
+          {items.map((item, idx) => (
+            <div
+              key={idx}
+              className="group relative flex flex-col items-center text-center p-6 rounded-[var(--dt-radius-lg)] border transition-all duration-200"
+              style={{
+                background: "var(--dt-surface)",
+                borderColor: "color-mix(in srgb, var(--dt-primary) 14%, transparent)",
+              }}
+              onMouseEnter={(e) => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.background = `color-mix(in srgb, var(--dt-primary) 5%, var(--dt-surface))`;
+                el.style.transform = "translateY(-3px)";
+                el.style.borderColor = `color-mix(in srgb, var(--dt-primary) 28%, transparent)`;
+                el.style.boxShadow = `0 8px 24px color-mix(in srgb, var(--dt-primary) 12%, transparent)`;
+              }}
+              onMouseLeave={(e) => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.background = "var(--dt-surface)";
+                el.style.transform = "none";
+                el.style.borderColor = `color-mix(in srgb, var(--dt-primary) 14%, transparent)`;
+                el.style.boxShadow = "none";
+              }}
+            >
+              {/* Icon Circle */}
+              <div
+                style={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: "var(--dt-radius-lg)",
+                  background: `color-mix(in srgb, var(--dt-primary) 12%, transparent)`,
+                  border: `1px solid color-mix(in srgb, var(--dt-primary) 22%, transparent)`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: "1rem",
+                  flexShrink: 0,
+                }}
+              >
+                <span style={{ color: "var(--dt-primary)", display: "contents" }}>
+                  <DynamicIcon name={item.icon} defaultIcon={Star} className="w-6 h-6" />
+                </span>
+              </div>
+
+              {/* Title */}
+              <InlineText
+                section="benefits"
+                fieldKey={"items." + idx + ".title"}
+                value={item.title ?? ""}
+                placeholder={isEN ? "Title..." : "Judul..."}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="h3"
+                style={{
+                  fontFamily: "var(--dt-heading-font)",
+                  fontWeight: 700,
+                  fontSize: "1.05rem",
+                  color: "var(--dt-text)",
+                  margin: "0 0 0.5rem 0",
+                  lineHeight: 1.35,
+                }}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
+
+              {/* Description */}
+              <InlineText
+                section="benefits"
+                fieldKey={"items." + idx + ".description"}
+                value={item.description ?? ""}
+                placeholder={isEN ? "Description..." : "Deskripsi..."}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="p"
+                style={{
+                  color: "var(--dt-text-muted)",
+                  fontSize: "0.875rem",
+                  lineHeight: 1.6,
+                  margin: 0,
+                }}
+                multiline
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
+
+              {/* Inline Delete Button for Editor Mode */}
+              {isEditorMode && (
+                <div className="absolute top-2.5 right-2.5">
+                  <InlineDeleteButton
+                    compact
+                    onDelete={() => handleDeleteItem(idx)}
+                    title={isEN ? "Delete benefit" : "Hapus keunggulan"}
+                  />
+                </div>
+              )}
+            </div>
+          ))}
+
+          {isEditorMode && onAddItem && (
+            <div className="h-full">
+              <InlineAddTile
+                label={isEN ? "Add benefit" : "Tambah Keunggulan"}
+                onClick={onAddItem}
+                style={{ height: "100%", minHeight: "10rem", borderRadius: "var(--dt-radius-lg)" }}
+              />
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );
