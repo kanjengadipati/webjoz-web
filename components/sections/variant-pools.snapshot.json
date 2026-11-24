@@ -12,13 +12,16 @@
     "timeline"
   ],
   "benefits": [
+    "alternating-feature",
     "bento-grid",
+    "big-statistics",
     "checklist",
     "comparison-table",
     "featured-grid",
     "grid",
     "how-it-works",
     "icon-row",
+    "split-feature",
     "stat-grid",
     "trust-bar"
   ],

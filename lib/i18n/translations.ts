@@ -3175,6 +3175,12 @@ export interface Translations {
       variantBenefitsTrustBarDesc: string;
       variantBenefitsHowItWorks: string;
       variantBenefitsHowItWorksDesc: string;
+      variantBenefitsSplitFeature: string;
+      variantBenefitsSplitFeatureDesc: string;
+      variantBenefitsAlternatingFeature: string;
+      variantBenefitsAlternatingFeatureDesc: string;
+      variantBenefitsBigStatistics: string;
+      variantBenefitsBigStatisticsDesc: string;
       // testimonials
       variantTestimonialsCarousel: string;
       variantTestimonialsCarouselDesc: string;
@@ -7422,6 +7428,15 @@ export const translations: Record<Locale, Translations> = {
         variantBenefitsHowItWorks: "Cara Kerja",
         variantBenefitsHowItWorksDesc:
           "Langkah proses berurutan dengan angka bertahap.",
+        variantBenefitsSplitFeature: "Split Feature",
+        variantBenefitsSplitFeatureDesc:
+          "Visual dan penjelasan berdampingan untuk satu benefit unggulan + CTA.",
+        variantBenefitsAlternatingFeature: "Alternating Feature",
+        variantBenefitsAlternatingFeatureDesc:
+          "Baris gambar dan teks bergantian (zigzag) untuk narasi beberapa benefit.",
+        variantBenefitsBigStatistics: "Statistik Raksasa",
+        variantBenefitsBigStatisticsDesc:
+          "Metrik angka besar sebagai bukti dan social proof yang terukur.",
         // testimonials
         variantTestimonialsCarousel: "Carousel",
         variantTestimonialsCarouselDesc:
@@ -11955,6 +11970,15 @@ export const translations: Record<Locale, Translations> = {
         variantBenefitsHowItWorks: "How It Works",
         variantBenefitsHowItWorksDesc:
           "Sequential process steps with numbered progression.",
+        variantBenefitsSplitFeature: "Split Feature",
+        variantBenefitsSplitFeatureDesc:
+          "Side-by-side visual and narrative for one signature benefit + CTA.",
+        variantBenefitsAlternatingFeature: "Alternating Feature",
+        variantBenefitsAlternatingFeatureDesc:
+          "Zigzag alternating image and text rows for storytelling across multiple benefits.",
+        variantBenefitsBigStatistics: "Big Statistics",
+        variantBenefitsBigStatisticsDesc:
+          "Prominent large numbers as verifiable proof and social proof.",
         // testimonials
         variantTestimonialsCarousel: "Carousel",
         variantTestimonialsCarouselDesc:

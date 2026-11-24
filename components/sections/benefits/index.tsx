@@ -39,29 +39,63 @@ export default function BenefitsSection({
   const variant = design_token?.layout?.section_variants?.benefits ?? "grid";
   const Renderer = resolveVariant<BenefitVariantProps>(BENEFITS_VARIANTS, variant, "grid");
   const isEditor = !!isEditorMode;
+  const isEN = language === "en";
 
   const onAddItem = useCallback(() => {
     if (!onUpdateField) return;
     if (variant === "comparison-table") {
       const comp = benefits?.comparison || {
-        column_a_label: "Kami",
-        column_b_label: "Lainnya",
+        column_a_label: isEN ? "Us" : "Kami",
+        column_b_label: isEN ? "Others" : "Lainnya",
         rows: [],
       };
       const rows = [...(comp.rows || [])];
-      rows.push({ label: "Fitur / Keunggulan Baru", value_a: "✓", value_b: "✗" });
+      rows.push({
+        label: isEN ? "New Feature / Benefit" : "Fitur / Keunggulan Baru",
+        value_a: "✓",
+        value_b: "✗",
+      });
       onUpdateField("benefits", "comparison", { ...comp, rows });
+      return;
+    }
+    if (variant === "big-statistics") {
+      const items = [...(benefits?.items ?? [])];
+      const itemNumber = items.length + 1;
+      items.push({
+        title: isEN ? `Key Metric ${itemNumber}` : `Metrik Pencapaian ${itemNumber}`,
+        description: isEN
+          ? "Measurable impact and positive outcomes for clients."
+          : "Dampak terukur dan hasil positif bagi pelanggan.",
+        stat: "100%",
+        stat_label: isEN ? "Success Rate" : "Tingkat Keberhasilan",
+      });
+      onUpdateField("benefits", "items", items);
+      return;
+    }
+    if (variant === "alternating-feature") {
+      const items = [...(benefits?.items ?? [])];
+      const itemNumber = items.length + 1;
+      items.push({
+        title: isEN ? `Pillar ${itemNumber}` : `Pilar Keunggulan ${itemNumber}`,
+        description: isEN
+          ? "In-depth narrative describing how this solution delivers excellence."
+          : "Penjelasan mendalam bagaimana solusi ini memberikan hasil terbaik.",
+        icon: "Star",
+      });
+      onUpdateField("benefits", "items", items);
       return;
     }
     const items = [...(benefits?.items ?? [])];
     const itemNumber = items.length + 1;
     items.push({
-      title: `Keunggulan ${itemNumber}`,
-      description: "Deskripsi keunggulan layanan atau produk kami.",
+      title: isEN ? `Benefit ${itemNumber}` : `Keunggulan ${itemNumber}`,
+      description: isEN
+        ? "Description of this service or product benefit."
+        : "Deskripsi keunggulan layanan atau produk kami.",
       icon: "Star",
     });
     onUpdateField("benefits", "items", items);
-  }, [benefits, onUpdateField, variant]);
+  }, [benefits, onUpdateField, variant, isEN]);
 
   return (
     <Renderer

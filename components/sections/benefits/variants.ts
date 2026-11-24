@@ -49,6 +49,18 @@ export const BENEFITS_VARIANTS = {
     component: dynamic(() => import("./how-it-works")),
     labelKey: "variantBenefitsHowItWorks",        label: "Cara Kerja / How It Works",     descriptionKey: "variantBenefitsHowItWorksDesc",        description: "Langkah proses berurutan dengan angka bertahap.",
   },
+  "split-feature": {
+    component: dynamic(() => import("./split-feature")),
+    labelKey: "variantBenefitsSplitFeature",      label: "Split Feature",                 descriptionKey: "variantBenefitsSplitFeatureDesc",      description: "Visual dan penjelasan berdampingan untuk satu benefit unggulan + CTA.",
+  },
+  "alternating-feature": {
+    component: dynamic(() => import("./alternating-feature")),
+    labelKey: "variantBenefitsAlternatingFeature",label: "Alternating Feature",           descriptionKey: "variantBenefitsAlternatingFeatureDesc",description: "Baris gambar dan teks bergantian (zigzag) untuk narasi beberapa benefit.",
+  },
+  "big-statistics": {
+    component: dynamic(() => import("./big-statistics")),
+    labelKey: "variantBenefitsBigStatistics",    label: "Statistik Raksasa",             descriptionKey: "variantBenefitsBigStatisticsDesc",     description: "Metrik angka besar sebagai bukti dan social proof yang terukur.",
+  },
 } satisfies Record<string, VariantDef<BenefitVariantProps>>;
 
 export type BenefitsVariant = keyof typeof BENEFITS_VARIANTS;

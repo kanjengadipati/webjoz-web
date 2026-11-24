@@ -37,6 +37,7 @@ export interface BenefitItem {
   icon?: string;
   stat?: string;
   stat_label?: string;
+  image_url?: string | null;
 }
 
 export interface FaqItem {
@@ -409,6 +410,9 @@ export interface TemplateProps {
       eyebrow?: string;
       subtitle?: string;
       textAlign?: "left" | "center" | "right";
+      image_url?: string | null;
+      cta_text?: string | null;
+      cta_url?: string | null;
       comparison?: {
         feature_label?: string;
         column_a_label: string;
