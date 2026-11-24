@@ -3,6 +3,7 @@ import React from "react";
 import { ShieldCheck } from "lucide-react";
 import { DynamicIcon, InlineText } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton } from "../inline-add";
+import { benefitsStrings } from "./benefits-strings";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
 interface BenefitsVariantProps {
@@ -28,6 +29,7 @@ export default function BenefitsTrustBar({
   onAddItem,
 }: BenefitsVariantProps) {
   const isEN = language === "en";
+  const L = benefitsStrings(language);
   const items = b?.items ?? [];
 
   const handleDeleteItem = (indexToDelete: number) => {
@@ -79,12 +81,12 @@ export default function BenefitsTrustBar({
             <InlineText
               section="benefits"
               fieldKey="title"
-              value={b?.title ?? (isEN ? "Guaranteed Peace of Mind" : "Jaminan Belanja Aman & Nyaman")}
+              value={b?.title ?? L.trustBarDefaultTitle}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
               as="h2"
-              placeholder={isEN ? "Section Title..." : "Judul Jaminan Belanja..."}
+              placeholder={L.trustBarTitlePlaceholder}
               className="font-bold text-base md:text-lg tracking-tight m-0"
               style={{
                 fontFamily: "var(--dt-heading-font)",
@@ -102,7 +104,7 @@ export default function BenefitsTrustBar({
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
                 as="p"
-                placeholder={isEN ? "Short subtitle..." : "Subjudul ringkas..."}
+                placeholder={L.trustBarSubtitlePlaceholder}
                 className="text-xs mt-1 max-w-md mx-auto"
                 style={{ color: "var(--dt-text-muted)" }}
                 collapseSheetForInlineEdit={collapseSheetForInlineEdit}
@@ -130,7 +132,7 @@ export default function BenefitsTrustBar({
                   <InlineDeleteButton
                     compact
                     onDelete={() => handleDeleteItem(idx)}
-                    title={isEN ? "Remove item" : "Hapus item"}
+                    title={L.deleteItemTitle}
                   />
                 </div>
               )}
@@ -163,7 +165,7 @@ export default function BenefitsTrustBar({
                     isEditorMode={isEditorMode}
                     isSelected={isSelected}
                     as="h3"
-                    placeholder={isEN ? "Trust Point..." : "Poin Kepercayaan..."}
+                    placeholder={L.trustBarItemTitlePlaceholder}
                     className="font-bold text-sm tracking-tight m-0"
                     style={{
                       fontFamily: "var(--dt-heading-font)",
@@ -208,7 +210,7 @@ export default function BenefitsTrustBar({
                   isSelected={isSelected}
                   as="p"
                   multiline
-                  placeholder={isEN ? "Short guarantee detail..." : "Deskripsi jaminan ringkas..."}
+                  placeholder={L.trustBarItemDescPlaceholder}
                   className="text-xs leading-relaxed mt-0.5 m-0"
                   style={{ color: "var(--dt-text-muted)" }}
                   collapseSheetForInlineEdit={collapseSheetForInlineEdit}
@@ -222,7 +224,7 @@ export default function BenefitsTrustBar({
           {isEditorMode && onAddItem && items.length < 6 && (
             <InlineAddTile
               compact
-              label={isEN ? "Add Trust Item" : "Tambah Jaminan"}
+              label={L.trustBarAddTrustItem}
               onClick={onAddItem}
               className="w-full h-full"
               style={{

@@ -68,6 +68,14 @@ export interface BenefitsStaticStrings {
   deletePointTitle: string;
   deleteStepTitle: string;
   deleteMetricTitle: string;
+
+  // Trust bar specific
+  trustBarDefaultTitle: string;
+  trustBarTitlePlaceholder: string;
+  trustBarSubtitlePlaceholder: string;
+  trustBarItemTitlePlaceholder: string;
+  trustBarItemDescPlaceholder: string;
+  trustBarAddTrustItem: string;
 }
 
 const ID: BenefitsStaticStrings = {
@@ -122,6 +130,13 @@ const ID: BenefitsStaticStrings = {
   deletePointTitle: "Hapus poin",
   deleteStepTitle: "Hapus langkah",
   deleteMetricTitle: "Hapus metrik",
+
+  trustBarDefaultTitle: "Jaminan Belanja Aman & Nyaman",
+  trustBarTitlePlaceholder: "Judul Jaminan Belanja...",
+  trustBarSubtitlePlaceholder: "Subjudul ringkas...",
+  trustBarItemTitlePlaceholder: "Poin Kepercayaan...",
+  trustBarItemDescPlaceholder: "Deskripsi jaminan ringkas...",
+  trustBarAddTrustItem: "Tambah Jaminan",
 };
 
 const EN: BenefitsStaticStrings = {
@@ -176,6 +191,13 @@ const EN: BenefitsStaticStrings = {
   deletePointTitle: "Delete point",
   deleteStepTitle: "Delete step",
   deleteMetricTitle: "Delete metric",
+
+  trustBarDefaultTitle: "Guaranteed Peace of Mind",
+  trustBarTitlePlaceholder: "Section Title...",
+  trustBarSubtitlePlaceholder: "Short subtitle...",
+  trustBarItemTitlePlaceholder: "Trust Point...",
+  trustBarItemDescPlaceholder: "Short guarantee detail...",
+  trustBarAddTrustItem: "Add Trust Item",
 };
 
 export function benefitsStrings(language?: "id" | "en"): BenefitsStaticStrings {
