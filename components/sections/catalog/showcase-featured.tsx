@@ -65,9 +65,13 @@ export default function CatalogShowcaseFeatured({ catalog, design_token, onUpdat
 
         {catalog.categories?.map((cat, ci) => {
           // Track original indices while filtering, so we can write to the right path
-          const featuredWithIdx = (cat.items ?? [])
-            .map((it, idx) => ({ item: it, originalIdx: idx }))
-            .filter(({ item }) => item.badge);
+          const allItemsWithIdx = (cat.items ?? []).map((it, idx) => ({ item: it, originalIdx: idx }));
+          let featuredWithIdx = allItemsWithIdx.filter(({ item }) => item.badge);
+          // If no item has badge, promote the first item as the featured product
+          if (featuredWithIdx.length === 0 && allItemsWithIdx.length > 0) {
+            featuredWithIdx = [allItemsWithIdx[0]];
+          }
+          const featuredOriginalIndices = new Set(featuredWithIdx.slice(0, 2).map((f) => f.originalIdx));
           return (
             <div key={ci} style={{ marginBottom: "4rem" }}>
               {/* Category label */}
@@ -204,11 +208,9 @@ export default function CatalogShowcaseFeatured({ catalog, design_token, onUpdat
 
               {/* Remaining items — standard grid */}
               {(() => {
-                const restWithIdx = (cat.items ?? [])
-                  .map((it, idx) => ({ item: it, originalIdx: idx }))
-                  .filter(({ item }) => !item.badge);
+                const restWithIdx = allItemsWithIdx.filter(({ originalIdx }) => !featuredOriginalIndices.has(originalIdx));
                 const hasRest = restWithIdx.length > 0;
-                const showGrid = hasRest || featuredWithIdx.length === 0;
+                const showGrid = hasRest;
 
                 if (!showGrid) {
                   return (
@@ -221,7 +223,7 @@ export default function CatalogShowcaseFeatured({ catalog, design_token, onUpdat
                 }
 
                 return (
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "1.25rem" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "1.25rem", alignItems: "stretch" }}>
                     {restWithIdx.map(({ item, originalIdx: itemIdx }) => (
                       <MenuCatalogCard
                         key={item.id || itemIdx}
@@ -247,16 +249,16 @@ export default function CatalogShowcaseFeatured({ catalog, design_token, onUpdat
                         icon={ImageIcon}
                         layout="grid"
                         styles={{
-                          className: "group transition-all duration-300",
+                          className: "group transition-all duration-300 flex flex-col h-full justify-between",
                           style: { background: bg, border: `1px solid color-mix(in srgb, ${p} 14%, transparent)`, borderRadius: "14px", overflow: "hidden" },
                           image: { className: "w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105" },
                           placeholder: { className: "w-full h-40 flex flex-col items-center justify-center text-center p-3", style: { background: `color-mix(in srgb, ${p} 8%, transparent)` }, iconClassName: "w-10 h-10", iconStyle: { color: `color-mix(in srgb, ${p} 30%, transparent)`, opacity: 0.6 } },
-                          content: { className: "p-4 flex flex-col flex-1 min-w-0" },
+                          content: { className: "p-4 flex flex-col flex-1 justify-between min-w-0" },
                           header: { className: "flex flex-col gap-1.5 mb-2 min-w-0" },
-                          title: { className: "font-semibold text-sm leading-tight line-clamp-2", style: { color: text, fontFamily: hFont } },
+                          title: { className: "font-semibold text-sm leading-tight line-clamp-2 min-h-[2.5rem]", style: { color: text, fontFamily: hFont } },
                           description: { className: "text-xs leading-relaxed line-clamp-3", style: { color: muted } },
                           price: { className: "self-start text-xs font-bold px-2.5 py-1 rounded-md whitespace-nowrap", style: { background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p } },
-                          button: { className: "w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all hover:brightness-110", style: { background: p, color: bg, border: "none" } },
+                          button: { className: "mt-auto w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all hover:brightness-110", style: { background: p, color: bg, border: "none" } },
                         }}
                         editSection="catalog"
                         pathBase={"categories." + ci + ".items." + itemIdx}

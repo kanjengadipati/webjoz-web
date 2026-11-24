@@ -28,11 +28,11 @@ export default function ProductClassic({
 
   const cardStyles: MenuCatalogCardStyles = isMenu
     ? {
-        className: "group transition-all duration-300",
+        className: "group transition-all duration-300 flex flex-col h-full justify-between",
         style: { background: brandBg, border: `1px solid color-mix(in srgb, ${brandPrimary} 14%, transparent)`, borderRadius: "16px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" },
         image: { className: "w-full h-52 object-cover transition-transform duration-500 group-hover:scale-105" },
         placeholder: { className: "w-full h-52 flex items-center justify-center transition-transform duration-500 group-hover:scale-105", style: { background: `color-mix(in srgb, ${brandPrimary} 8%, transparent)` }, iconClassName: "w-12 h-12", iconStyle: { color: `color-mix(in srgb, ${brandPrimary} 30%, transparent)`, opacity: 0.6 } },
-        content: { className: "p-5 space-y-3 flex flex-col flex-1" },
+        content: { className: "p-5 space-y-3 flex flex-col flex-1 justify-between" },
         header: { className: "flex items-start justify-between gap-3 min-w-0 overflow-hidden" },
         title: { className: "font-bold text-sm leading-tight min-w-0 overflow-hidden line-clamp-2", style: { color: brandText, fontFamily: headingFont } },
         description: { className: "text-xs leading-relaxed flex-1", style: { color: `color-mix(in srgb, ${brandText} 60%, transparent)` } },
@@ -40,17 +40,17 @@ export default function ProductClassic({
         button: { className: "mt-auto w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md", style: { background: brandPrimary, color: "var(--dt-cta-text, #fff)", border: "none" } },
       }
     : {
-        className: "group transition-all duration-300",
+        className: "group transition-all duration-300 flex flex-col h-full justify-between",
         style: { background: brandBg, border: `1px solid color-mix(in srgb, ${brandPrimary} 14%, transparent)`, borderRadius: "16px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" },
         image: { className: "w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-105 sm:aspect-[3/4]" },
         placeholder: { className: "w-full aspect-[4/3] flex flex-col items-center justify-center p-4 text-center transition-transform duration-500 group-hover:scale-105 sm:aspect-[3/4]", style: { background: `color-mix(in srgb, ${brandPrimary} 8%, transparent)` }, iconClassName: "w-12 h-12", iconStyle: { color: `color-mix(in srgb, ${brandPrimary} 30%, transparent)`, opacity: 0.6 } },
-        content: { className: "p-4 flex flex-col flex-1 min-w-0" },
+        content: { className: "p-4 flex flex-col flex-1 justify-between min-w-0" },
         header: { className: "flex flex-col gap-1.5 mb-2 min-w-0" },
-        title: { className: "font-bold text-sm leading-tight line-clamp-2", style: { color: brandText, fontFamily: headingFont } },
+        title: { className: "font-bold text-sm leading-tight line-clamp-2 min-h-[2.5rem]", style: { color: brandText, fontFamily: headingFont } },
         description: { className: "text-xs leading-relaxed line-clamp-2", style: { color: `color-mix(in srgb, ${brandText} 60%, transparent)` } },
         price: { className: "self-start text-xs font-bold px-2.5 py-1 rounded-md whitespace-nowrap", style: { background: `color-mix(in srgb, ${brandPrimary} 12%, transparent)`, color: brandPrimary } },
         badge: { className: "inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap", style: { background: brandPrimary, color: "var(--dt-cta-text, #fff)" } },
-        button: { className: "w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md", style: { background: brandPrimary, color: "var(--dt-cta-text, #fff)", border: "none" } },
+        button: { className: "mt-auto w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md", style: { background: brandPrimary, color: "var(--dt-cta-text, #fff)", border: "none" } },
       };
 
   const eyebrowDefault = isMenu ? (isEN ? "Menu Selection" : "Pilihan Menu") : (isEN ? "Product Collection" : "Koleksi Produk");

@@ -93,7 +93,7 @@ export default function CatalogGridDense({ catalog, design_token, onUpdateField,
 
                 <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, ${p} 18%, transparent)` }} />
               </div>
-              <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5">
+              <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 items-stretch">
                 {cat.filteredItems.map(({ item, originalCatIdx, originalItemIdx }) => (
                   <MenuCatalogCard
                     key={item.id || `cat-dense-${originalCatIdx}-${originalItemIdx}`}
@@ -120,17 +120,17 @@ export default function CatalogGridDense({ catalog, design_token, onUpdateField,
                     icon={ImageIcon}
                     layout={design_token?.layout?.card_style ?? "grid"}
                     styles={{
-                      className: "group transition-all duration-300",
+                      className: "group transition-all duration-300 flex flex-col h-full justify-between",
                       style: { background: bg, border: `1px solid color-mix(in srgb, ${p} 12%, transparent)`, borderRadius: "12px", overflow: "hidden" },
-                      image: { className: "w-full h-36 object-cover transition-transform duration-500 group-hover:scale-105" },
-                      placeholder: { className: "w-full h-36 flex flex-col items-center justify-center p-3 text-center", style: { background: `color-mix(in srgb, ${p} 8%, transparent)` }, iconClassName: "w-9 h-9", iconStyle: { color: `color-mix(in srgb, ${p} 30%, transparent)`, opacity: 0.6 } },
-                      content: { className: "p-3.5 flex flex-col flex-1 min-w-0" },
-                      header: { className: "flex flex-col gap-1 mb-1.5 min-w-0" },
-                      title: { className: "font-semibold text-[13px] leading-tight line-clamp-2", style: { color: text, fontFamily: hFont } },
-                      description: { className: "text-[11px] leading-relaxed line-clamp-2", style: { color: `color-mix(in srgb, ${text} 60%, transparent)` } },
-                      price: { className: "self-start text-[11px] font-bold px-2 py-0.5 rounded-md whitespace-nowrap", style: { background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p } },
+                      image: { className: "w-full h-32 sm:h-36 object-cover transition-transform duration-500 group-hover:scale-105" },
+                      placeholder: { className: "w-full h-32 sm:h-36 flex flex-col items-center justify-center p-3 text-center", style: { background: `color-mix(in srgb, ${p} 8%, transparent)` }, iconClassName: "w-8 h-8", iconStyle: { color: `color-mix(in srgb, ${p} 30%, transparent)`, opacity: 0.6 } },
+                      content: { className: "p-3 flex flex-col flex-1 justify-between min-w-0" },
+                      header: { className: "flex flex-col gap-1 mb-1 min-w-0" },
+                      title: { className: "font-semibold text-xs sm:text-[13px] leading-tight line-clamp-2 min-h-[2rem]", style: { color: text, fontFamily: hFont } },
+                      description: { className: "text-[10px] sm:text-[11px] leading-relaxed line-clamp-2", style: { color: `color-mix(in srgb, ${text} 60%, transparent)` } },
+                      price: { className: "self-start text-[11px] sm:text-xs font-bold px-1.5 py-0.5 rounded-md whitespace-nowrap", style: { background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p } },
                       badge: { className: "inline-block text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full whitespace-nowrap", style: { background: p, color: bg } },
-                      button: { className: "w-full flex items-center justify-center gap-1 py-2 px-2 rounded-lg text-[11px] font-bold cursor-pointer transition-all duration-200 hover:brightness-110", style: { background: p, color: bg, border: "none" } },
+                      button: { className: "mt-auto w-full flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg text-[10px] sm:text-[11px] font-bold cursor-pointer transition-all duration-200 hover:brightness-110", style: { background: p, color: bg, border: "none" } },
                     }}
                     editSection="catalog"
                     pathBase={"categories." + originalCatIdx + ".items." + originalItemIdx}

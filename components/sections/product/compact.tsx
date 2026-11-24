@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import { InlineText, ProductQuickView, toQuickViewItem } from "../../templates/shared";
+import { Image as ImageIcon } from "lucide-react";
+import { InlineText, InlineImage, ProductQuickView, toQuickViewItem } from "../../templates/shared";
 import { InlineAddTile, InlineDeleteButton, CategoryAddButton } from "../inline-add";
 import { AddToCartButton } from "@/components/cart";
 import { SectionHeader, pillEyebrowStyle, headerTitleStyle } from "../section-header";
@@ -42,114 +43,186 @@ export default function ProductCompact({
           onEditingStateChange={onEditingStateChange}
         />
         {cats.map((cat, catIdx) => (
-            <div key={catIdx} style={{ marginBottom: "2.5rem" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem", paddingBottom: "0.5rem", borderBottom: `2px solid color-mix(in srgb, ${brandPrimary} 18%, transparent)` }}>
-                <InlineText section={section} fieldKey={"categories." + catIdx + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h3" style={{ fontFamily: headingFont, fontWeight: 700, color: brandPrimary, fontSize: "1rem" }} />
-                {isEditorMode && onDeleteCategory && (
-                  <InlineDeleteButton
-                    compact
-                    onDelete={() => onDeleteCategory(catIdx)}
-                    title={isEN ? "Delete Category" : "Hapus Kategori"}
-                  />
-                )}
-              </div>
+          <div key={catIdx} style={{ marginBottom: "2.5rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem", paddingBottom: "0.5rem", borderBottom: `2px solid color-mix(in srgb, ${brandPrimary} 18%, transparent)` }}>
+              <InlineText section={section} fieldKey={"categories." + catIdx + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h3" style={{ fontFamily: headingFont, fontWeight: 700, color: brandPrimary, fontSize: "1rem" }} />
+              {isEditorMode && onDeleteCategory && (
+                <InlineDeleteButton
+                  compact
+                  onDelete={() => onDeleteCategory(catIdx)}
+                  title={isEN ? "Delete Category" : "Hapus Kategori"}
+                />
+              )}
+            </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 320px), 1fr))", gap: "0.5rem" }}>
-              {cat.items?.map((item, itemIdx) => (
-                <div key={item.id || itemIdx} className={isMenu ? "relative group cursor-pointer transition-colors hover:bg-[color-mix(in_srgb,var(--dt-primary)_6%,transparent)]" : "group cursor-pointer transition-colors hover:bg-[color-mix(in_srgb,var(--dt-primary)_6%,transparent)]"} onClick={() => setQuickView({ catIdx, itemIdx })} style={{ position: "relative", display: "flex", flexDirection: "column", gap: "0.125rem", padding: "0.5rem 0.75rem", borderRadius: "var(--dt-radius)", opacity: item.is_available === false ? 0.6 : 1 }}>
-                  {isMenu && isEditorMode && onDeleteItem && (
-                    <InlineDeleteButton
-                      compact
-                      onDelete={() => onDeleteItem(catIdx, itemIdx)}
-                      className="absolute top-1.5 right-1.5"
-                    />
-                  )}
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "1rem", paddingRight: isEditorMode && onDeleteItem ? (isMenu ? "1.5rem" : "2rem") : 0 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: isMenu ? "0.375rem" : "0.5rem" }}>
-                      <InlineText section={section} fieldKey={"categories." + catIdx + ".items." + itemIdx + ".name"} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontWeight: 600, fontSize: "0.9rem", color: brandText, fontFamily: headingFont }} />
-                      {item.is_available === false ? (
-                        <span style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", padding: "0.1rem 0.35rem", borderRadius: "4px", background: "#f43f5e", color: "#fff" }}>{isEN ? "Sold Out" : "Habis"}</span>
-                      ) : !isMenu && item.badge ? (
-                        <span style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", padding: "0.15rem 0.5rem", borderRadius: "9999px", background: brandPrimary, color: "var(--dt-bg)" }}><InlineText section={section} fieldKey={"categories." + catIdx + ".items." + itemIdx + ".badge"} value={item.badge ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" /></span>
-                      ) : null}
-                    </div>
-                    {(item.price_display || item.price) && <InlineText section={section} fieldKey={"categories." + catIdx + ".items." + itemIdx + ".price"} value={item.price_display || item.price || ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontWeight: 700, fontSize: "0.8rem", color: brandPrimary, whiteSpace: "nowrap" }} />}
-                  </div>
-                  {item.description && <InlineText section={section} fieldKey={"categories." + catIdx + ".items." + itemIdx + ".description"} value={item.description ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" multiline style={{ fontSize: "0.8rem", color: "var(--dt-text-muted)", lineHeight: 1.4 }} />}
-                  {!isMenu && item.capacity != null && item.capacity > 0 && (
-                    <span style={{ fontSize: "0.7rem", fontWeight: 600, color: brandPrimary, marginTop: "0.15rem" }}>
-                      {isEN ? "up to" : "s/d"} <InlineText section={section} fieldKey={"categories." + catIdx + ".items." + itemIdx + ".capacity"} value={item.capacity != null ? String(item.capacity) : ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" /> {KIND_CONFIG[kind]?.capacityUnit?.(isEN) || (isEN ? "guests" : "tamu")}
-                    </span>
-                  )}
-                  {!isMenu && item.features && item.features.length > 0 && (
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.25rem", marginTop: "0.25rem" }}>
-                      {item.features.map((f, fi) => (
-                        <span key={fi} style={{ fontSize: "0.65rem", padding: "0.1rem 0.35rem", borderRadius: "4px", background: `color-mix(in srgb, ${brandPrimary} 10%, transparent)`, color: brandPrimary }}>
-                          {f}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                  <div className="mt-2 w-full" onClick={(e) => e.stopPropagation()}>
-                    <AddToCartButton
-                      itemId={item.id || `${section}-compact-${catIdx}-${itemIdx}`}
-                      itemName={item.name ?? ""}
-                      itemPrice={item.price_display || item.price || null}
-                      itemPriceAmount={item.price_amount}
-                      itemPriceDisplay={item.price_display || item.price}
-                      itemPromoPriceAmount={item.promo_price_amount}
-                      itemPromoPriceDisplay={item.promo_price_display}
-                      discountLabel={item.discount_label}
-                      itemDescription={item.description}
-                      category={cat.name ?? ""}
-                      variant_groups={item.variant_groups}
-                      disabled={item.is_available === false}
-                      className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-[0.7rem] font-bold cursor-pointer transition-all duration-200 hover:brightness-110"
-                      style={{ background: brandPrimary, color: "var(--dt-primary-foreground)", border: "none" }}
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); setQuickView({ catIdx, itemIdx }); }}
-                    onPointerDown={(e) => e.stopPropagation()}
-                    className="self-start mt-1 text-[0.68rem] font-bold uppercase tracking-wider underline underline-offset-2 transition-opacity opacity-100 md:opacity-0 md:group-hover:opacity-100 cursor-pointer"
-                    style={{ color: brandPrimary, background: "none", border: "none", padding: 0 }}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {cat.items?.map((item, itemIdx) => {
+                const isAvailable = item.is_available !== false;
+                return (
+                  <div
+                    key={item.id || itemIdx}
+                    className="group relative flex items-center gap-3 p-3 rounded-xl transition-all duration-200 border cursor-pointer hover:shadow-md"
+                    onClick={() => setQuickView({ catIdx, itemIdx })}
+                    style={{
+                      background: "var(--dt-surface, #fff)",
+                      borderColor: `color-mix(in srgb, ${brandPrimary} 14%, transparent)`,
+                      opacity: isAvailable ? 1 : 0.65,
+                    }}
                   >
-                    {isEN ? "View detail" : "Lihat Detail"}
-                  </button>
-                  {!isMenu && isEditorMode && onDeleteItem && (
-                    <InlineDeleteButton onDelete={() => onDeleteItem(catIdx, itemIdx)} className="absolute top-2 right-1 z-30" />
-                  )}
-                </div>
-              ))}
+                    {/* Compact Thumbnail (if image exists or in editor mode) */}
+                    {(item.image_url || isEditorMode) && (
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-lg overflow-hidden relative bg-neutral-100 dark:bg-neutral-800">
+                        <InlineImage
+                          section={section}
+                          fieldKey={"categories." + catIdx + ".items." + itemIdx + ".image_url"}
+                          src={item.image_url}
+                          alt={item.name}
+                          onUpdateField={onUpdateField}
+                          isEditorMode={isEditorMode}
+                          isSelected={isSelected}
+                          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                          className="w-full h-full object-cover"
+                          fallbackIcon={<ImageIcon className="w-5 h-5 text-neutral-400" />}
+                        />
+                      </div>
+                    )}
+
+                    {/* Middle Info Column */}
+                    <div className="flex flex-col flex-1 min-w-0 pr-1">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <InlineText
+                          section={section}
+                          fieldKey={"categories." + catIdx + ".items." + itemIdx + ".name"}
+                          value={item.name ?? ""}
+                          onUpdateField={onUpdateField}
+                          isEditorMode={isEditorMode}
+                          isSelected={isSelected}
+                          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                          onEditingStateChange={onEditingStateChange}
+                          as="span"
+                          className="font-semibold text-sm leading-tight truncate max-w-full"
+                          style={{ color: brandText, fontFamily: headingFont }}
+                        />
+                        {!isMenu && item.badge && (
+                          <span
+                            className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full whitespace-nowrap"
+                            style={{ background: `color-mix(in srgb, ${brandPrimary} 15%, transparent)`, color: brandPrimary }}
+                          >
+                            <InlineText section={section} fieldKey={"categories." + catIdx + ".items." + itemIdx + ".badge"} value={item.badge ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
+                          </span>
+                        )}
+                      </div>
+
+                      {/* 1. Kurangi deskripsi (line-clamp-1) */}
+                      {(item.description || isEditorMode) && (
+                        <InlineText
+                          section={section}
+                          fieldKey={"categories." + catIdx + ".items." + itemIdx + ".description"}
+                          value={item.description ?? ""}
+                          onUpdateField={onUpdateField}
+                          isEditorMode={isEditorMode}
+                          isSelected={isSelected}
+                          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                          onEditingStateChange={onEditingStateChange}
+                          as="p"
+                          className="text-xs line-clamp-1 mt-0.5 leading-snug"
+                          style={{ color: "var(--dt-text-muted)" }}
+                        />
+                      )}
+
+                      {/* Price display */}
+                      {(item.price_display || item.price || isEditorMode) && (
+                        <div className="mt-1 flex items-baseline gap-1.5">
+                          <InlineText
+                            section={section}
+                            fieldKey={"categories." + catIdx + ".items." + itemIdx + ".price"}
+                            value={item.price_display || item.price || ""}
+                            onUpdateField={onUpdateField}
+                            isEditorMode={isEditorMode}
+                            isSelected={isSelected}
+                            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                            onEditingStateChange={onEditingStateChange}
+                            as="span"
+                            className="font-bold text-xs sm:text-sm whitespace-nowrap"
+                            style={{ color: brandPrimary }}
+                          />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Right Action Column: 2. Tampilkan stok & 3. Tombol lebih kecil */}
+                    <div className="flex flex-col items-end gap-1.5 shrink-0" onClick={(e) => e.stopPropagation()}>
+                      {/* Stock badge */}
+                      <span
+                        className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap"
+                        style={{
+                          backgroundColor: isAvailable
+                            ? "color-mix(in srgb, #10b981 12%, transparent)"
+                            : "color-mix(in srgb, #f43f5e 12%, transparent)",
+                          color: isAvailable ? "#059669" : "#e11d48",
+                        }}
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full" style={{ background: isAvailable ? "#10b981" : "#f43f5e" }} />
+                        {isAvailable ? (isEN ? "In Stock" : "Tersedia") : (isEN ? "Sold Out" : "Habis")}
+                      </span>
+
+                      {/* Smaller compact button */}
+                      <AddToCartButton
+                        itemId={item.id || `${section}-compact-${catIdx}-${itemIdx}`}
+                        itemName={item.name ?? ""}
+                        itemPrice={item.price_display || item.price || null}
+                        itemPriceAmount={item.price_amount}
+                        itemPriceDisplay={item.price_display || item.price}
+                        itemPromoPriceAmount={item.promo_price_amount}
+                        itemPromoPriceDisplay={item.promo_price_display}
+                        discountLabel={item.discount_label}
+                        itemDescription={item.description}
+                        category={cat.name ?? ""}
+                        variant_groups={item.variant_groups}
+                        disabled={!isAvailable}
+                        className="py-1 px-3 rounded-lg text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 shadow-xs"
+                        style={{ background: brandPrimary, color: "var(--dt-primary-foreground)", border: "none" }}
+                      />
+                    </div>
+
+                    {isEditorMode && onDeleteItem && (
+                      <InlineDeleteButton
+                        compact
+                        onDelete={() => onDeleteItem(catIdx, itemIdx)}
+                        className="absolute -top-1.5 -right-1.5 z-30"
+                      />
+                    )}
+                  </div>
+                );
+              })}
               {isEditorMode && onAddItem && (
                 <InlineAddTile
                   label={isEN ? (isMenu ? "Add Menu" : "Add Item") : (isMenu ? "Tambah Menu" : "Tambah Item")}
                   variant="card"
-                  className="rounded-xl min-h-[140px]"
+                  className="rounded-xl min-h-[90px]"
                   onClick={() => onAddItem(catIdx)}
                 />
               )}
             </div>
           </div>
         ))}
-      {isEditorMode && onAddCategory && (
-        <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
-      )}
-      {quickView && qvItem && (
-        <ProductQuickView
-          open
-          onClose={() => setQuickView(null)}
-          item={toQuickViewItem(qvItem, qvCategory?.name)}
-          editSection={section}
-          pathBase={`categories.${quickView.catIdx}.items.${quickView.itemIdx}`}
-          onUpdateField={onUpdateField}
-          isEditorMode={isEditorMode}
-          isSelected={isSelected}
-          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-          onEditingStateChange={onEditingStateChange}
-        />
-      )}
+        {isEditorMode && onAddCategory && (
+          <CategoryAddButton onAdd={onAddCategory} isEN={isEN} collapseSheetForInlineEdit={collapseSheetForInlineEdit} />
+        )}
+        {quickView && qvItem && (
+          <ProductQuickView
+            open
+            onClose={() => setQuickView(null)}
+            item={toQuickViewItem(qvItem, qvCategory?.name)}
+            editSection={section}
+            pathBase={`categories.${quickView.catIdx}.items.${quickView.itemIdx}`}
+            onUpdateField={onUpdateField}
+            isEditorMode={isEditorMode}
+            isSelected={isSelected}
+            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            onEditingStateChange={onEditingStateChange}
+          />
+        )}
       </div>
     </section>
   );

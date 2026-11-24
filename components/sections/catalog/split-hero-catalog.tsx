@@ -272,7 +272,7 @@ export default function CatalogSplitHeroCatalog({ catalog, onUpdateField, isEdit
                       </div>
 
                       {/* Pinned Add to Cart */}
-                      <div onClick={(e) => e.stopPropagation()}>
+                      <div className="mt-4" onClick={(e) => e.stopPropagation()}>
                         <AddToCartButton
                           itemId={item.id || `cat-sh-${catIdx}-${index}`}
                           itemName={item.name}
@@ -285,11 +285,11 @@ export default function CatalogSplitHeroCatalog({ catalog, onUpdateField, isEdit
                           category={category.name}
                           variant_groups={item.variant_groups}
                           disabled={item.is_available === false}
-                          className="px-6 py-2.5 border text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer hover:brightness-110"
+                          className="w-full sm:w-auto px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer hover:brightness-110 shadow-sm"
                           style={{
-                            borderColor: "var(--dt-border)",
-                            color: "var(--dt-text)",
-                            borderRadius: "var(--dt-radius)",
+                            backgroundColor: "var(--dt-primary)",
+                            color: "var(--dt-primary-foreground)",
+                            border: "none",
                           }}
                         />
                       </div>

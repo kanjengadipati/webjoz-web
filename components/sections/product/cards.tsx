@@ -30,29 +30,29 @@ export default function ProductCards({
 
   const cardStyles: MenuCatalogCardStyles = isMenu
     ? {
-        className: "group transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl flex-1",
+        className: "group transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl flex flex-col h-full justify-between flex-1",
         style: { background: "var(--dt-surface, #fff)", border: `1px solid color-mix(in srgb, ${brandPrimary} 14%, transparent)`, borderRadius: "24px", overflow: "hidden", boxShadow: "0 10px 30px -5px rgba(0,0,0,0.06)" },
         image: { className: "w-full h-64 object-cover transition-transform duration-700 ease-out group-hover:scale-105" },
         placeholder: { className: "w-full h-64 flex items-center justify-center transition-transform duration-700 ease-out group-hover:scale-105", style: placeholderStyle, iconClassName: "w-16 h-16", iconStyle: placeholderIconStyle },
-        content: { className: "p-6 space-y-3 flex flex-col flex-1" },
+        content: { className: "p-6 space-y-3 flex flex-col flex-1 justify-between" },
         header: { className: "flex items-start justify-between gap-3" },
         title: { className: "font-extrabold text-base leading-tight", style: { color: brandText, fontFamily: headingFont } },
         description: { className: "text-sm leading-relaxed", style: { color: `color-mix(in srgb, ${brandText} 65%, transparent)` } },
         price: { className: "text-sm font-extrabold px-3 py-1.5 rounded-full whitespace-nowrap shrink-0 shadow-sm", style: { background: `color-mix(in srgb, ${brandPrimary} 15%, transparent)`, color: brandPrimary } },
-        button: { className: "w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-2xl text-xs font-bold uppercase tracking-wider cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md", style: { background: brandPrimary, color: "var(--dt-cta-text, #fff)", border: "none" } },
+        button: { className: "mt-auto w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-2xl text-xs font-bold uppercase tracking-wider cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md", style: { background: brandPrimary, color: "var(--dt-cta-text, #fff)", border: "none" } },
       }
     : {
-        className: "group transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl",
+        className: "group transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl flex flex-col h-full justify-between",
         style: { background: "var(--dt-surface, #fff)", border: `1px solid color-mix(in srgb, ${brandPrimary} 14%, transparent)`, borderRadius: "24px", overflow: "hidden", boxShadow: "0 10px 30px -5px rgba(0,0,0,0.06)", minWidth: 0 },
         image: { className: "w-full aspect-[4/3] object-cover transition-transform duration-700 ease-out group-hover:scale-105 sm:aspect-[4/5]" },
         placeholder: { className: "w-full aspect-[4/3] flex flex-col items-center justify-center p-4 text-center transition-transform duration-700 ease-out group-hover:scale-105 sm:aspect-[4/5]", style: placeholderStyle, iconClassName: "w-16 h-16", iconStyle: placeholderIconStyle },
-        content: { className: "p-5 flex flex-col flex-1 min-w-0" },
+        content: { className: "p-5 flex flex-col flex-1 justify-between min-w-0" },
         header: { className: "flex flex-col gap-1.5 mb-2 min-w-0" },
-        title: { className: "font-extrabold text-base leading-snug tracking-tight", style: { color: brandText, fontFamily: headingFont } },
+        title: { className: "font-extrabold text-base leading-snug tracking-tight line-clamp-2 min-h-[2.5rem]", style: { color: brandText, fontFamily: headingFont } },
         description: { className: "text-xs leading-relaxed line-clamp-2", style: { color: `color-mix(in srgb, ${brandText} 65%, transparent)` } },
         price: { className: "self-start text-xs font-extrabold px-3 py-1 rounded-full whitespace-nowrap shadow-sm", style: { background: `color-mix(in srgb, ${brandPrimary} 15%, transparent)`, color: brandPrimary } },
         badge: { className: "inline-block text-[9px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full whitespace-nowrap shadow-md", style: { background: brandPrimary, color: "var(--dt-cta-text, #fff)" } },
-        button: { className: "w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl text-xs font-bold uppercase tracking-wider cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md", style: { background: brandPrimary, color: "var(--dt-cta-text, #fff)", border: "none" } },
+        button: { className: "mt-auto w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl text-xs font-bold uppercase tracking-wider cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md", style: { background: brandPrimary, color: "var(--dt-cta-text, #fff)", border: "none" } },
       };
 
   const eyebrowDefault = isMenu ? (isEN ? "Menu Selection" : "Pilihan Menu") : (isEN ? "Product Collection" : "Koleksi Produk");

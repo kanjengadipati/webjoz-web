@@ -289,7 +289,7 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
                           onEditingStateChange={onEditingStateChange}
                           as="p"
                           multiline
-                          className="text-sm font-light leading-relaxed mt-1"
+                          className="text-xs sm:text-sm font-light leading-relaxed mt-1 line-clamp-2"
                           style={{ color: "var(--dt-text-muted)" }}
                         />
                       )}
@@ -299,7 +299,7 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
                         type="button"
                         onClick={(e) => { e.stopPropagation(); setQuickView({ catIdx, itemIdx: index }); }}
                         onPointerDown={(e) => e.stopPropagation()}
-                        className="mt-3 self-start text-xs font-medium tracking-wide underline underline-offset-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity cursor-pointer"
+                        className="mt-2.5 self-start text-xs font-semibold tracking-wide underline underline-offset-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity cursor-pointer"
                         style={{ color: "var(--dt-text)" }}
                       >
                         {isEN ? "View detail" : "Lihat Detail"}
@@ -333,7 +333,7 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
                         </div>
                       )}
 
-                      {/* Add to Cart button — always visible (mobile & desktop) */}
+                      {/* Add to Cart button — prominent and larger (mobile & desktop) */}
                       <div className="mt-4" onClick={(e) => e.stopPropagation()}>
                         <AddToCartButton
                           itemId={item.id || `cat-ed-m-${catIdx}-${index}`}
@@ -347,11 +347,11 @@ export default function CatalogEditorialGrid({ catalog, onUpdateField, isEditorM
                           category={category.name}
                           variant_groups={item.variant_groups}
                           disabled={item.is_available === false}
-                          className="w-full py-2.5 border text-xs font-medium uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer hover:brightness-110"
+                          className="w-full py-3 px-4 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 rounded-xl transition-all hover:brightness-110 shadow-sm cursor-pointer"
                           style={{
-                            borderColor: "var(--dt-border)",
-                            color: "var(--dt-text)",
-                            borderRadius: "var(--dt-radius)",
+                            backgroundColor: "var(--dt-primary)",
+                            color: "var(--dt-primary-foreground)",
+                            border: "none",
                           }}
                         />
                       </div>

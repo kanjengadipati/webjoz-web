@@ -105,7 +105,7 @@ export default function CatalogSpotlight({ catalog, design_token, onUpdateField,
           </div>
           <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0.05) 100%)" }} />
 
-          <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 flex flex-col justify-end min-h-[60vh] py-12" style={{ color: "#fff" }}>
+          <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 flex flex-col justify-end min-h-[65vh] sm:min-h-[72vh] py-16" style={{ color: "#fff" }}>
             {(heroItem.badge || isEditorMode) && (
               <span className="self-start text-[11px] uppercase tracking-widest font-bold px-3 py-1 mb-4" style={{ backgroundColor: "var(--dt-primary)", color: "var(--dt-primary-foreground)", borderRadius: "9999px" }}>
                 <InlineText section="catalog" fieldKey={heroPath + ".badge"} value={heroItem.badge ?? ""} placeholder={isEN ? "Badge..." : "Label..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
@@ -311,16 +311,16 @@ export default function CatalogSpotlight({ catalog, design_token, onUpdateField,
                     icon={ImageIcon}
                     layout="grid"
                     styles={{
-                      className: "group transition-all duration-300",
+                      className: "group transition-all duration-300 flex flex-col h-full justify-between",
                       style: { background: "var(--dt-surface)", border: "1px solid var(--dt-border)", borderRadius: "var(--dt-radius)", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" },
                       image: { className: "w-full aspect-[4/5] object-cover transition-transform duration-500 group-hover:scale-105" },
                       placeholder: { className: "w-full aspect-[4/5] flex items-center justify-center", style: { background: "color-mix(in srgb, var(--dt-primary) 8%, transparent)" }, iconClassName: "w-12 h-12", iconStyle: { color: "color-mix(in srgb, var(--dt-primary) 30%, transparent)", opacity: 0.6 } },
-                      content: { className: "p-4 flex flex-col flex-1 min-w-0" },
+                      content: { className: "p-4 flex flex-col flex-1 justify-between min-w-0" },
                       header: { className: "flex flex-col gap-1.5 mb-2 min-w-0" },
-                      title: { className: "font-bold text-sm leading-tight line-clamp-2", style: { color: "var(--dt-text)", fontFamily: "var(--dt-heading-font)" } },
+                      title: { className: "font-bold text-sm leading-tight line-clamp-2 min-h-[2.5rem]", style: { color: "var(--dt-text)", fontFamily: "var(--dt-heading-font)" } },
                       description: { className: "text-xs leading-relaxed line-clamp-2", style: { color: "var(--dt-text-muted)" } },
                       price: { className: "self-start text-xs font-bold px-2.5 py-1 rounded-full", style: { background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)" } },
-                      button: { className: "w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md", style: { background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", border: "none" } },
+                      button: { className: "mt-auto w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md", style: { background: "var(--dt-primary)", color: "var(--dt-primary-foreground)", border: "none" } },
                     }}
                     editSection="catalog"
                     pathBase={`categories.${catIdx}.items.${itemIdx}`}

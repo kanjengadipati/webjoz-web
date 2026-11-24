@@ -104,11 +104,11 @@ export default function CatalogNeoBrutalistMatrix({ catalog, onUpdateField, isEd
             </div>
 
             {/* Matrix Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
               {category.items?.map((item, index) => (
                 <div
                   key={index}
-                  className="group flex flex-col border-[3px] border-solid transition-all duration-150 hover:-translate-x-1 hover:-translate-y-1 min-w-0 relative cursor-pointer rounded-none"
+                  className="group flex flex-col border-[3px] border-solid transition-all duration-150 hover:-translate-x-1 hover:-translate-y-1 min-w-0 relative cursor-pointer rounded-none h-full justify-between"
                   onClick={() => setQuickView({ catIdx, itemIdx: index })}
                   style={{
                     borderColor: "var(--dt-text, #18181b)",

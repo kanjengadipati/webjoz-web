@@ -54,7 +54,7 @@ export default function ProductTabsByCategory({
   const Icon = isMenu ? Utensils : ImageIcon;
 
   const cardStyles: MenuCatalogCardStyles = {
-    className: "group transition-all duration-300",
+    className: "group transition-all duration-300 flex flex-col h-full justify-between",
     style: { background: bg, border: `1px solid color-mix(in srgb, ${p} 14%, transparent)`, borderRadius: "16px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" },
     image: { className: `w-full ${isMenu ? "h-52" : "h-48"} object-cover transition-transform duration-500 group-hover:scale-105` },
     placeholder: { className: `w-full ${isMenu ? "h-52" : "h-48"} flex items-center justify-center transition-transform duration-500 group-hover:scale-105`, style: { background: `color-mix(in srgb, ${p} 8%, transparent)` }, iconClassName: "w-12 h-12", iconStyle: { color: `color-mix(in srgb, ${p} 30%, transparent)`, opacity: 0.6 } },
@@ -64,7 +64,7 @@ export default function ProductTabsByCategory({
     description: { className: isMenu ? "text-xs leading-relaxed flex-1" : "text-xs leading-relaxed line-clamp-3 min-h-[3.75rem]", style: { color: `color-mix(in srgb, ${text} 60%, transparent)` } },
     price: { className: isMenu ? "text-xs font-bold px-2.5 py-1 rounded-full whitespace-nowrap shrink-0" : "self-start text-xs font-bold px-2.5 py-1 rounded-full", style: { background: `color-mix(in srgb, ${p} 12%, transparent)`, color: p } },
     ...(isMenu ? {} : { badge: { className: "inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap", style: { background: p, color: bg } } }),
-    button: { className: `w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md ${isMenu ? "mt-auto" : ""}`, style: { background: p, color: isMenu ? "var(--dt-cta-text, #fff)" : bg, border: "none" } },
+    button: { className: "mt-auto w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md", style: { background: p, color: isMenu ? "var(--dt-cta-text, #fff)" : bg, border: "none" } },
   };
 
   return (
@@ -122,29 +122,40 @@ export default function ProductTabsByCategory({
 
         {/* Tab bar — smooth horizontal scroll on mobile, centered on desktop */}
         <div
-          className="flex items-center gap-2 overflow-x-auto pb-2 mb-8 no-scrollbar justify-start sm:justify-center"
+          className="flex items-center gap-2 overflow-x-auto pb-2 mb-8 no-scrollbar scroll-smooth justify-start sm:justify-center"
           style={{ WebkitOverflowScrolling: "touch" }}
         >
           {cats.map((cat, i) => {
             const isActive = i === safeActiveIdx;
+            const itemCount = cat.items?.length ?? 0;
             return (
-              <span key={i} className="relative inline-flex items-center">
+              <span key={i} className="relative inline-flex items-center shrink-0">
                 <button
                   onClick={() => setActiveIdx(i)}
+                  className="flex items-center gap-1.5 transition-all duration-200"
                   style={{
-                    padding: "0.5rem 1.25rem",
+                    padding: "0.5rem 1.1rem",
                     borderRadius: "9999px",
-                    fontSize: "0.78rem",
+                    fontSize: "0.8rem",
                     fontWeight: isActive ? 700 : 500,
                     background: isActive ? p : `color-mix(in srgb, ${p} 8%, ${surface})`,
                     color: isActive ? "var(--dt-cta-text, #fff)" : `color-mix(in srgb, ${text} 70%, transparent)`,
                     border: isActive ? `1.5px solid ${p}` : `1.5px solid color-mix(in srgb, ${p} 20%, transparent)`,
+                    boxShadow: isActive ? `0 2px 8px color-mix(in srgb, ${p} 25%, transparent)` : "none",
                     cursor: "pointer",
-                    transition: "all 0.18s",
                     whiteSpace: "nowrap",
                   }}
                 >
-                  <InlineText section={section} fieldKey={"categories." + i + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontSize: "0.78rem", fontWeight: isActive ? 700 : 500, color: isActive ? "var(--dt-cta-text, #fff)" : `color-mix(in srgb, ${text} 70%, transparent)`, whiteSpace: "nowrap" as const }} />
+                  <InlineText section={section} fieldKey={"categories." + i + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontSize: "0.8rem", fontWeight: isActive ? 700 : 500, color: isActive ? "var(--dt-cta-text, #fff)" : `color-mix(in srgb, ${text} 70%, transparent)`, whiteSpace: "nowrap" as const }} />
+                  <span
+                    className="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-[10px] font-bold"
+                    style={{
+                      background: isActive ? "rgba(255,255,255,0.22)" : `color-mix(in srgb, ${p} 14%, transparent)`,
+                      color: isActive ? "var(--dt-cta-text, #fff)" : p,
+                    }}
+                  >
+                    {itemCount}
+                  </span>
                 </button>
                 {isEditorMode && onDeleteCategory && (
                   <InlineDeleteButton
@@ -154,7 +165,7 @@ export default function ProductTabsByCategory({
                     title={isEN ? "Delete Category" : "Hapus Kategori"}
                   />
                 )}
-                </span>
+              </span>
             );
           })}
         </div>

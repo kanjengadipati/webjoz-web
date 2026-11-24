@@ -13,12 +13,21 @@ export default function ProductHorizontalSwipeCarousel({
   const isEN = language === "en";
   const isMenu = kind === "menu";
   const [activeCategoryIdx, setActiveCategoryIdx] = useState(0);
+  const [activeSlide, setActiveSlide] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   if (!data) return null;
   const categories = productCategories(data);
   const safeActiveIdx = categories.length ? Math.min(activeCategoryIdx, categories.length - 1) : 0;
   const activeCategory = categories[safeActiveIdx];
+
+  const handleScroll = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, clientWidth } = scrollContainerRef.current;
+      const index = Math.round(scrollLeft / (clientWidth * 0.8));
+      setActiveSlide(index);
+    }
+  };
 
   const scroll = (direction: "left" | "right") => {
     if (scrollContainerRef.current) {
@@ -39,7 +48,7 @@ export default function ProductHorizontalSwipeCarousel({
   const dtRadius = "var(--dt-radius)";
 
   const cardStyles: MenuCatalogCardStyles = {
-    className: "h-full transition-all duration-300 group-hover:shadow-lg",
+    className: "h-full flex flex-col justify-between transition-all duration-300 group-hover:shadow-lg",
     style: {
       background: brandBg,
       border: `1px solid color-mix(in srgb, ${brandPrimary} 12%, transparent)`,
@@ -49,11 +58,11 @@ export default function ProductHorizontalSwipeCarousel({
     },
     image: { className: "w-full aspect-[4/3] object-cover" },
     placeholder: { className: "w-full aspect-[4/3] flex items-center justify-center", style: { background: `color-mix(in srgb, ${brandPrimary} 8%, transparent)` }, iconClassName: "w-10 h-10", iconStyle: { color: `color-mix(in srgb, ${brandPrimary} 35%, transparent)` } },
-    content: { className: "flex flex-col gap-2 p-4" },
+    content: { className: "flex flex-col flex-1 justify-between gap-2 p-4" },
     title: { className: "font-semibold text-base leading-tight", style: { color: brandText, fontFamily: headingFont } },
     description: { className: "text-sm leading-relaxed line-clamp-2", style: { color: `color-mix(in srgb, ${brandText} 70%, transparent)` } },
-    price: { className: "text-sm font-bold px-2 py-0.5 rounded-full self-start", style: { background: `color-mix(in srgb, ${brandPrimary} 12%, transparent)`, color: brandPrimary } },
-    button: { className: "mt-2 w-full flex items-center justify-center gap-2 text-sm font-semibold py-2 px-4 rounded-lg transition-all hover:brightness-110", style: { background: brandPrimary, color: brandBg, border: "none" } },
+    price: { className: "text-sm font-bold px-2.5 py-1 rounded-full self-start", style: { background: `color-mix(in srgb, ${brandPrimary} 12%, transparent)`, color: brandPrimary } },
+    button: { className: "mt-auto w-full flex items-center justify-center gap-2 text-sm font-semibold py-2.5 px-4 rounded-lg transition-all hover:brightness-110", style: { background: brandPrimary, color: brandBg, border: "none" } },
   };
 
   const eyebrowDefault = isMenu ? "Pilihan Menu" : "Koleksi Produk";
@@ -96,11 +105,11 @@ export default function ProductHorizontalSwipeCarousel({
           onEditingStateChange={onEditingStateChange}
         />
 
-        {/* Desktop Slide Controls */}
-        <div className="hidden md:flex items-center gap-2">
+        {/* Desktop & Mobile Slide Controls in Header */}
+        <div className="flex items-center gap-2 self-start md:self-auto">
           <button
             onClick={() => scroll("left")}
-            className="w-10 h-10 border flex items-center justify-center transition-colors duration-200"
+            className="w-10 h-10 border flex items-center justify-center transition-all duration-200 hover:brightness-95 cursor-pointer shadow-xs"
             style={{ borderColor: "var(--dt-border)", backgroundColor: "var(--dt-surface)", borderRadius: dtRadius }}
             aria-label={isEN ? "Scroll left" : "Geser kiri"}
           >
@@ -108,7 +117,7 @@ export default function ProductHorizontalSwipeCarousel({
           </button>
           <button
             onClick={() => scroll("right")}
-            className="w-10 h-10 border flex items-center justify-center transition-colors duration-200"
+            className="w-10 h-10 border flex items-center justify-center transition-all duration-200 hover:brightness-95 cursor-pointer shadow-xs"
             style={{ borderColor: "var(--dt-border)", backgroundColor: "var(--dt-surface)", borderRadius: dtRadius }}
             aria-label={isEN ? "Scroll right" : "Geser kanan"}
           >
@@ -171,9 +180,10 @@ export default function ProductHorizontalSwipeCarousel({
 
       {/* Carousel Snap Row Container */}
       {activeCategory && (
-        <div className="relative">
+        <div className="relative group/carousel">
           <div
             ref={scrollContainerRef}
+            onScroll={handleScroll}
             className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 scrollbar-thin scroll-smooth"
             style={{ WebkitOverflowScrolling: "touch" }}
           >
@@ -182,7 +192,7 @@ export default function ProductHorizontalSwipeCarousel({
               return (
                 <div
                   key={cardKey}
-                  className="w-[82%] max-w-[360px] sm:w-auto sm:max-w-none sm:min-w-[320px] md:min-w-[360px] snap-start flex-shrink-0 flex flex-col group relative"
+                  className="w-[82%] max-w-[360px] sm:w-auto sm:max-w-none sm:min-w-[320px] md:min-w-[360px] snap-start flex-shrink-0 flex flex-col group relative h-auto"
                   style={{ borderRadius: dtRadius }}
                 >
                   <MenuCatalogCard
@@ -232,16 +242,30 @@ export default function ProductHorizontalSwipeCarousel({
             )}
           </div>
 
-          {/* Mobile dots indicator */}
-          <div className="flex md:hidden items-center justify-center gap-2 mt-4">
-            {activeCategory.items?.map((_, idx) => (
-              <div
-                key={idx}
-                className="w-2 h-2 rounded-full"
-                style={{ backgroundColor: idx === 0 ? brandPrimary : `color-mix(in srgb, ${brandText} 20%, transparent)` }}
-              />
-            ))}
-          </div>
+          {/* Dots Indicator (Desktop & Mobile) */}
+          {activeCategory.items && activeCategory.items.length > 1 && (
+            <div className="flex items-center justify-center gap-1.5 mt-6">
+              {activeCategory.items.map((_, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => {
+                    if (scrollContainerRef.current) {
+                      const itemWidth = scrollContainerRef.current.clientWidth * 0.75;
+                      scrollContainerRef.current.scrollTo({ left: idx * itemWidth, behavior: "smooth" });
+                    }
+                  }}
+                  className="transition-all duration-300 rounded-full cursor-pointer border-none p-0"
+                  style={{
+                    width: idx === activeSlide ? "22px" : "7px",
+                    height: "7px",
+                    backgroundColor: idx === activeSlide ? brandPrimary : `color-mix(in srgb, ${brandText} 25%, transparent)`,
+                  }}
+                  aria-label={`Slide ${idx + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
     </section>

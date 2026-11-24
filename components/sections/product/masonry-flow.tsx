@@ -36,26 +36,23 @@ export default function ProductMasonryFlow({
     const aspect = MASONRY_ASPECTS[index % MASONRY_ASPECTS.length];
     return {
       // flex-col ensures image on top, content below — matches masonry vertical flow
-      className: "transition-all duration-300 flex flex-col",
+      className: "transition-all duration-300 flex flex-col h-full justify-between",
       style: { background: "var(--dt-surface)", border: "none", overflow: "hidden" },
-      // On mobile (single col), cap image height so very tall aspects don't dominate.
-      // On sm+ (multi-col), natural aspect ratio creates the masonry stagger effect.
       image: {
         className: `w-full ${aspect} object-cover transition-transform duration-500 group-hover:scale-105`,
-        style: { maxHeight: "280px" } as React.CSSProperties,
       },
       placeholder: {
         className: `w-full ${aspect} flex items-center justify-center`,
-        style: { background: `color-mix(in srgb, ${brandPrimary} 8%, transparent)`, maxHeight: "280px" } as React.CSSProperties,
+        style: { background: `color-mix(in srgb, ${brandPrimary} 8%, transparent)` },
         iconClassName: "w-10 h-10",
         iconStyle: { color: `color-mix(in srgb, ${brandPrimary} 35%, transparent)` },
       },
-      content: { className: "flex flex-col gap-2 p-4" },
+      content: { className: "flex flex-col flex-1 justify-between gap-2 p-4" },
       header: { className: "flex flex-col gap-1.5 mb-1" },
       title: { className: "font-bold text-sm md:text-base leading-snug", style: { color: brandText, fontFamily: headingFont } },
       description: { className: "text-xs leading-relaxed line-clamp-3", style: { color: `color-mix(in srgb, ${brandText} 70%, transparent)` } },
       price: { className: "text-xs font-bold px-2.5 py-1 rounded-full self-start", style: { background: `color-mix(in srgb, ${brandPrimary} 12%, transparent)`, color: brandPrimary } },
-      badge: { className: "inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap", style: { background: brandPrimary, color: "var(--dt-cta-text, #fff)" } },
+      badge: { className: "inline-block text-[9px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full whitespace-nowrap shadow-xs", style: { background: brandPrimary, color: "var(--dt-cta-text, #fff)" } },
       button: { className: "mt-auto w-full flex items-center justify-center gap-2 text-xs font-bold py-2.5 px-4 rounded-xl transition-all hover:brightness-110 shadow-sm cursor-pointer", style: { background: brandPrimary, color: "var(--dt-cta-text, #fff)", border: "none" } },
     };
   };
