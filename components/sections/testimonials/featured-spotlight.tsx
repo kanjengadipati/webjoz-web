@@ -2,7 +2,6 @@
 import React from "react";
 import { Quote } from "lucide-react";
 import { InlineText } from "../../templates/shared";
-import { testimonialsStrings } from "./testimonials-strings";
 import { InlineAddTile } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
@@ -34,7 +33,6 @@ export default function TestimonialsFeaturedSpotlight({
 }: TestimonialsVariantProps) {
   if (!t) return null;
   const isEN = (language || locale || "").toLowerCase().startsWith("en");
-  const L = testimonialsStrings(language || locale || "id");
   const featured = t.items?.[0];
   if (!featured && !(isEditorMode && onAddItem)) return null;
   return (
@@ -42,14 +40,14 @@ export default function TestimonialsFeaturedSpotlight({
       <div style={{ maxWidth: "56rem", margin: "0 auto" }}>
         <div className="flex flex-col items-center text-center mb-8">
           <div className="mb-2">
-            <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)", display: "block" }}>{L.testimonials}</span>
+            <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)", display: "block" }}>{isEN ? "Testimonials" : "Testimoni"}</span>
           </div>
           <div className="w-full">
             <InlineText
               section="testimonials"
               fieldKey="title"
               value={t.title}
-              placeholder={L.whatClientsSay}
+              placeholder={isEN ? "What Clients Say" : "Apa Kata Klien"}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -67,36 +65,38 @@ export default function TestimonialsFeaturedSpotlight({
               <div style={{ position: "absolute", top: "-1rem", left: "2rem", width: 40, height: 40, borderRadius: "50%", background: "var(--dt-primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <Quote style={{ width: 18, height: 18, color: "#fff" }} />
               </div>
-              <InlineText section="testimonials" fieldKey="items.0.quote" value={featured.quote ?? ""} placeholder={L.writeClientTestimonial} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="blockquote" style={{ fontSize: "1.1rem", lineHeight: 1.7, color: "var(--dt-text)", fontStyle: "italic", margin: "0 0 1.5rem" }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+              <InlineText section="testimonials" fieldKey="items.0.quote" value={featured.quote ?? ""} placeholder={isEN ? "Write client testimonial here..." : "Tulis testimoni pelanggan di sini..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="blockquote" style={{ fontSize: "1.1rem", lineHeight: 1.7, color: "var(--dt-text)", fontStyle: "italic", margin: "0 0 1.5rem" }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
               <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.75rem" }}>
                 <div style={{ width: 44, height: 44, borderRadius: "50%", background: featured.avatar_color || `color-mix(in srgb, var(--dt-primary) 15%, var(--dt-bg))`, display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--dt-text)" }}>{featured.avatar_initials || featured.name?.charAt(0)}</span>
                 </div>
-                <div style={{ textAlign: "left" }}>
-                    <InlineText section="testimonials" fieldKey="items.0.name" value={featured.name ?? ""} placeholder={L.clientName} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" style={{ fontWeight: 700, color: "var(--dt-text)", fontSize: "0.9rem", margin: 0 }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                <div style={{ textAlign: "left", display: "flex", flexDirection: "column" }}>
+                    <div>
+                      <InlineText section="testimonials" fieldKey="items.0.name" value={featured.name ?? ""} placeholder={isEN ? "Client Name" : "Nama Pelanggan"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" style={{ fontWeight: 700, color: "var(--dt-text)", fontSize: "0.9rem", margin: 0 }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                    </div>
                     {(featured.role || featured.company || isEditorMode) && (
                       <p style={{ color: "var(--dt-text-muted)", fontSize: "0.8rem", margin: 0 }}>
-                        <InlineText section="testimonials" fieldKey="items.0.role" value={featured.role ?? ""} placeholder={L.rolePosition} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />{featured.company ? ` · ${featured.company}` : ""}
+                        <InlineText section="testimonials" fieldKey="items.0.role" value={featured.role ?? ""} placeholder={isEN ? "Role / Position" : "Jabatan / Peran"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />{featured.company ? ` · ${featured.company}` : ""}
                       </p>
                     )}
                 </div>
               </div>
             </>
           ) : (
-            <p style={{ color: "var(--dt-text-muted)", fontSize: "0.875rem", margin: 0 }}>{L.noTestimonials}</p>
+            <p style={{ color: "var(--dt-text-muted)", fontSize: "0.875rem", margin: 0 }}>{isEN ? "No testimonials yet" : "Belum ada testimoni"}</p>
           )}
         </div>
         {t.items && t.items.length > 1 ? (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem", marginTop: "1.5rem" }}>
             {t.items.slice(1).map((item, idx) => (
               <div key={idx} style={{ background: "var(--dt-surface)", border: `1px solid color-mix(in srgb, var(--dt-primary) 8%, transparent)`, borderRadius: "var(--dt-radius)", padding: "1rem", textAlign: "center" }}>
-                <p style={{ fontSize: "0.8rem", color: "var(--dt-text-muted)", fontStyle: "italic", margin: "0 0 0.5rem", lineHeight: 1.4 }}>&ldquo;<InlineText section="testimonials" fieldKey={`items.${idx + 1}.quote`} value={item.quote ?? ""} placeholder={L.clientTestimonial} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />&rdquo;</p>
-                <InlineText section="testimonials" fieldKey={`items.${idx + 1}.name`} value={item.name ?? ""} placeholder={L.clientName} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--dt-text)", margin: 0 }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                <p style={{ fontSize: "0.8rem", color: "var(--dt-text-muted)", fontStyle: "italic", margin: "0 0 0.5rem", lineHeight: 1.4 }}>&ldquo;<InlineText section="testimonials" fieldKey={`items.${idx + 1}.quote`} value={item.quote ?? ""} placeholder={isEN ? "Client testimonial..." : "Testimoni pelanggan..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />&rdquo;</p>
+                <InlineText section="testimonials" fieldKey={`items.${idx + 1}.name`} value={item.name ?? ""} placeholder={isEN ? "Client Name" : "Nama Pelanggan"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--dt-text)", margin: 0 }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
               </div>
             ))}
             {isEditorMode && onAddItem && (
               <InlineAddTile
-                label={L.addTestimonial}
+                label={isEN ? "Add Testimonial" : "Tambah Testimoni"}
                 variant="card"
                 className="rounded-2xl min-h-[140px] w-full"
                 style={{ borderRadius: "var(--dt-radius)" }}
@@ -107,7 +107,7 @@ export default function TestimonialsFeaturedSpotlight({
         ) : isEditorMode && onAddItem ? (
           <div style={{ marginTop: "1.5rem", maxWidth: "20rem", marginInline: "auto" }}>
             <InlineAddTile
-              label={L.addTestimonial}
+              label={isEN ? "Add Testimonial" : "Tambah Testimoni"}
               variant="card"
               className="rounded-2xl min-h-[140px]"
               style={{ borderRadius: "var(--dt-radius)" }}

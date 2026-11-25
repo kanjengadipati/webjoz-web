@@ -356,36 +356,40 @@ export default function TestimonialsVideoWall({
                     >
                       {initials}
                     </div>
-                    <div className="min-w-0">
-                      <InlineText
-                        section="testimonials"
-                        fieldKey={`items.${idx}.name`}
-                        value={item.name ?? ""}
-                        placeholder={placeholderName}
-                        onUpdateField={onUpdateField}
-                        isEditorMode={isEditorMode}
-                        isSelected={isSelected}
-                        as="p"
-                        className="text-sm font-bold leading-tight"
-                        style={{ color: "var(--dt-text)" }}
-                        collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                        onEditingStateChange={onEditingStateChange}
-                      />
-                      {(item.role || isEditorMode) && (
+                    <div className="min-w-0 flex flex-col justify-center">
+                      <div>
                         <InlineText
                           section="testimonials"
-                          fieldKey={`items.${idx}.role`}
-                          value={item.role ?? ""}
-                          placeholder={placeholderRole}
+                          fieldKey={`items.${idx}.name`}
+                          value={item.name ?? ""}
+                          placeholder={placeholderName}
                           onUpdateField={onUpdateField}
                           isEditorMode={isEditorMode}
                           isSelected={isSelected}
                           as="p"
-                          className="text-xs"
-                          style={{ color: "var(--dt-text-muted)" }}
+                          className="text-sm font-bold leading-tight"
+                          style={{ color: "var(--dt-text)" }}
                           collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                           onEditingStateChange={onEditingStateChange}
                         />
+                      </div>
+                      {(item.role || isEditorMode) && (
+                        <div>
+                          <InlineText
+                            section="testimonials"
+                            fieldKey={`items.${idx}.role`}
+                            value={item.role ?? ""}
+                            placeholder={placeholderRole}
+                            onUpdateField={onUpdateField}
+                            isEditorMode={isEditorMode}
+                            isSelected={isSelected}
+                            as="p"
+                            className="text-xs"
+                            style={{ color: "var(--dt-text-muted)" }}
+                            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                            onEditingStateChange={onEditingStateChange}
+                          />
+                        </div>
                       )}
                     </div>
                   </div>

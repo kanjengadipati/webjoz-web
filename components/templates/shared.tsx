@@ -20,7 +20,6 @@ import { useEditorChromeEnabled } from "../sections/editor-chrome-context";
 
 import type { TestimonialItem, FaqItem, ImageCredit, BenefitItem, CatalogItem, MenuItem } from "./types";
 import PhotoCredit from "../sections/PhotoCredit";
-import { testimonialsStrings } from "../sections/testimonials/testimonials-strings";
 import { InlineAddTile, InlineDeleteButton } from "../sections/inline-add";
 import { useI18n } from "@/lib/i18n/context";
 import {
@@ -80,12 +79,12 @@ export function getFeatureMarker(designToken?: { mood?: string; layout?: { featu
   const explicit = designToken?.layout?.feature_marker as FeatureMarkerStyle | undefined;
   if (explicit && (explicit as string) !== "auto") return explicit;
   const mood = (designToken?.mood ?? "").toLowerCase();
-  if (mood.includes("dark-premium") || mood.includes("elegan"))   return "diamond";
-  if (mood.includes("futuristic") || mood.includes("tech"))        return "arrow";
-  if (mood.includes("bold-dark") || mood.includes("berenergi"))    return "plus";
-  if (mood.includes("warm-earthy") || mood.includes("alami"))      return "leaf";
-  if (mood.includes("bold-vibrant") || mood.includes("ceria"))     return "sparkle";
-  if (mood.includes("retro") || mood.includes("klasik"))           return "dot";
+  if (mood.includes("dark-premium") || mood.includes("elegan")) return "diamond";
+  if (mood.includes("futuristic") || mood.includes("tech")) return "arrow";
+  if (mood.includes("bold-dark") || mood.includes("berenergi")) return "plus";
+  if (mood.includes("warm-earthy") || mood.includes("alami")) return "leaf";
+  if (mood.includes("bold-vibrant") || mood.includes("ceria")) return "sparkle";
+  if (mood.includes("retro") || mood.includes("klasik")) return "dot";
   // clean-modern & fallback default → check
   return "check";
 }
@@ -334,11 +333,10 @@ function ImageLightbox({
                   key={i}
                   type="button"
                   onClick={() => setCurrentIndex(i)}
-                  className={`w-9 h-9 rounded-lg overflow-hidden border-2 transition-all cursor-pointer flex-shrink-0 ${
-                    i === currentIndex
-                      ? "border-primary scale-105 shadow-md"
-                      : "border-white/20 opacity-50 hover:opacity-100"
-                  }`}
+                  className={`w-9 h-9 rounded-lg overflow-hidden border-2 transition-all cursor-pointer flex-shrink-0 ${i === currentIndex
+                    ? "border-primary scale-105 shadow-md"
+                    : "border-white/20 opacity-50 hover:opacity-100"
+                    }`}
                 >
                   <img src={img} alt="" className="w-full h-full object-cover" />
                 </button>
@@ -474,7 +472,7 @@ export function smoothScrollToSection(
   // Fallback native scroll
   try {
     el.scrollIntoView({ behavior: "smooth", block: "start" });
-  } catch {}
+  } catch { }
 
   return true;
 }
@@ -748,7 +746,6 @@ const WAFloatingButton: React.FC<{
 }> = ({ phone, isEditorMode, editorChrome, brandName = "Customer Support", isPremium = false, floatingType, language = "id" }) => {
   const fullEditor = !!(isEditorMode && (editorChrome ?? true));
   const isEN = language === "en";
-  const L = testimonialsStrings(language);
 
   const digits = phone ? phone.replace(/\D/g, "") : "";
   const hasWa = digits.length >= 8 && !isPlaceholderPhone(phone);
@@ -884,11 +881,10 @@ const WAFloatingButton: React.FC<{
           rel="noopener noreferrer"
           onClick={handlePillClick}
           aria-label={isEN ? "Chat with us on WhatsApp" : "Chat dengan kami via WhatsApp"}
-          className={`group flex items-center transition-all duration-300 ease-out cursor-pointer ${
-            isMobileExpanded
-              ? "bg-white text-slate-900 shadow-[0_10px_35px_-5px_rgba(0,0,0,0.25)] border border-slate-200/80 rounded-full mr-3 sm:mr-4 pl-2.5 pr-5 py-2.5 gap-3"
-              : "bg-white/30 dark:bg-white/20 backdrop-blur-md border-l border-t border-b border-white/40 dark:border-white/20 shadow-[0_4px_20px_rgba(0,0,0,0.15)] rounded-l-full rounded-r-none pl-2.5 pr-2 py-2 md:hover:bg-white md:hover:backdrop-blur-none md:hover:border-slate-200/80 md:hover:shadow-[0_10px_35px_-5px_rgba(0,0,0,0.25)] md:hover:rounded-full md:hover:mr-4 md:hover:pl-2.5 md:hover:pr-5 md:hover:py-2.5 md:hover:gap-3"
-          }`}
+          className={`group flex items-center transition-all duration-300 ease-out cursor-pointer ${isMobileExpanded
+            ? "bg-white text-slate-900 shadow-[0_10px_35px_-5px_rgba(0,0,0,0.25)] border border-slate-200/80 rounded-full mr-3 sm:mr-4 pl-2.5 pr-5 py-2.5 gap-3"
+            : "bg-white/30 dark:bg-white/20 backdrop-blur-md border-l border-t border-b border-white/40 dark:border-white/20 shadow-[0_4px_20px_rgba(0,0,0,0.15)] rounded-l-full rounded-r-none pl-2.5 pr-2 py-2 md:hover:bg-white md:hover:backdrop-blur-none md:hover:border-slate-200/80 md:hover:shadow-[0_10px_35px_-5px_rgba(0,0,0,0.25)] md:hover:rounded-full md:hover:mr-4 md:hover:pl-2.5 md:hover:pr-5 md:hover:py-2.5 md:hover:gap-3"
+            }`}
         >
           {/* WhatsApp green circle */}
           <div className="w-10 h-10 rounded-full bg-[#25D366] flex items-center justify-center text-white shrink-0 shadow-sm transition-transform duration-300 md:group-hover:scale-105">
@@ -897,11 +893,10 @@ const WAFloatingButton: React.FC<{
 
           {/* Text column: smoothly expands from 0 to full width */}
           <div
-            className={`flex flex-col text-left whitespace-nowrap transition-all duration-300 ease-out overflow-hidden ${
-              isMobileExpanded
-                ? "max-w-[220px] opacity-100 pr-1"
-                : "max-w-0 opacity-0 md:group-hover:max-w-[220px] md:group-hover:opacity-100 md:group-hover:pr-1"
-            }`}
+            className={`flex flex-col text-left whitespace-nowrap transition-all duration-300 ease-out overflow-hidden ${isMobileExpanded
+              ? "max-w-[220px] opacity-100 pr-1"
+              : "max-w-0 opacity-0 md:group-hover:max-w-[220px] md:group-hover:opacity-100 md:group-hover:pr-1"
+              }`}
           >
             <span className="text-[11px] font-medium text-slate-600 leading-tight">
               {isEN ? "Chat with us on" : "Chat dengan kami via"}
@@ -1261,18 +1256,17 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   onAddItem,
   isExample,
   locale: localeProp,
-  language,
+  language: languageProp,
 }) => {
   const { locale: ctxLocale } = useI18n();
   // Prefer context locale (always accurate); prop is fallback for SSR edge cases
-  const locale = ctxLocale || localeProp;
-  const isEN = (language || locale || "").toLowerCase().startsWith("en");
-  const L = testimonialsStrings(locale || "id");
+  const locale = ctxLocale || languageProp || localeProp;
+  const isEN = (locale || "").toLowerCase().startsWith("en");
 
   if (!testimonials) return null;
   if (!testimonials.items?.length && !(isEditorMode && (editorChrome ?? true) && onAddItem)) return null;
 
-  const examplePrefix = isExample ? (isEN ? "(Example) " : "(Contoh) ") : "";
+  const examplePrefix = isExample ? (locale === "en" ? "(Example) " : "(Contoh) ") : "";
   // withPrefix only used for display — never stored back to data
   const withPrefix = (quote: string) => examplePrefix ? `${examplePrefix}${quote}` : quote;
 
@@ -1296,7 +1290,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                   section="testimonials"
                   fieldKey="eyebrow"
                   value={testimonials.eyebrow}
-                  placeholder={L.whatClientsSay}
+                  placeholder={isEN ? "Testimonials" : "Testimoni"}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -1380,9 +1374,15 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                     >
                       {initials}
                     </div>
-                    <div className="min-w-0">
-                      <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} placeholder="Nama Pelanggan" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-black leading-tight ${nameClass}`} style={{ color: "var(--dt-text)", ...nameStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-                      {(t.role || isEditorMode) && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} placeholder="Jabatan / Peran (cth. Pelanggan)" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-xs font-bold ${roleClass}`} style={{ color: "var(--dt-text-muted)", ...roleStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
+                    <div className="min-w-0 flex flex-col justify-center">
+                      <div>
+                        <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} placeholder="Nama Pelanggan" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-black leading-tight ${nameClass}`} style={{ color: "var(--dt-text)", ...nameStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                      </div>
+                      {(t.role || isEditorMode) && (
+                        <div>
+                          <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} placeholder="Jabatan / Peran (cth. Pelanggan)" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-xs font-bold ${roleClass}`} style={{ color: "var(--dt-text-muted)", ...roleStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1407,9 +1407,15 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                     >
                       {initials}
                     </div>
-                    <div className="min-w-0">
-                      <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} placeholder="Nama Pelanggan" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-xs font-bold leading-tight ${nameClass}`} style={nameStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-                      {(t.role || isEditorMode) && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} placeholder="Jabatan / Peran (cth. Pelanggan)" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-[10px] text-stone-400 ${roleClass}`} style={roleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
+                    <div className="min-w-0 flex flex-col justify-center">
+                      <div>
+                        <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} placeholder="Nama Pelanggan" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-xs font-bold leading-tight ${nameClass}`} style={nameStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                      </div>
+                      {(t.role || isEditorMode) && (
+                        <div>
+                          <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} placeholder="Jabatan / Peran (cth. Pelanggan)" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-[10px] text-stone-400 ${roleClass}`} style={roleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1439,9 +1445,15 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                     >
                       {initials}
                     </div>
-                    <div className="min-w-0">
-                      <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} placeholder="Nama Pelanggan" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-semibold tracking-wide ${nameClass}`} style={nameStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-                      {(t.role || isEditorMode) && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} placeholder="Jabatan / Peran (cth. Pelanggan)" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-xs italic ${roleClass}`} style={roleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
+                    <div className="min-w-0 flex flex-col justify-center">
+                      <div>
+                        <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} placeholder="Nama Pelanggan" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-semibold tracking-wide ${nameClass}`} style={nameStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                      </div>
+                      {(t.role || isEditorMode) && (
+                        <div>
+                          <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} placeholder="Jabatan / Peran (cth. Pelanggan)" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-xs italic ${roleClass}`} style={roleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1474,9 +1486,15 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                     >
                       {initials}
                     </div>
-                    <div className="min-w-0">
-                      <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} placeholder="Nama Pelanggan" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-semibold text-white tracking-wide ${nameClass}`} style={nameStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-                      {(t.role || isEditorMode) && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} placeholder="Jabatan / Peran (cth. Pelanggan)" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-xs text-slate-400 tracking-wider ${roleClass}`} style={roleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
+                    <div className="min-w-0 flex flex-col justify-center">
+                      <div>
+                        <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} placeholder="Nama Pelanggan" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-sm font-semibold text-white tracking-wide ${nameClass}`} style={nameStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                      </div>
+                      {(t.role || isEditorMode) && (
+                        <div>
+                          <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} placeholder="Jabatan / Peran (cth. Pelanggan)" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={`text-xs text-slate-400 tracking-wider ${roleClass}`} style={roleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1632,9 +1650,15 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                   >
                     {initials}
                   </div>
-                  <div className="min-w-0">
-                    <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} placeholder={isEN ? "Client Name" : "Nama Pelanggan"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={nameClasses} style={{ color: "var(--dt-text)", ...nameStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-                    {(t.role || isEditorMode) && <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} placeholder={isEN ? "Role / Position (e.g. Client)" : "Jabatan / Peran (cth. Pelanggan)"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={roleClasses} style={{ color: "var(--dt-text-muted)", ...roleStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />}
+                  <div className="min-w-0 flex flex-col justify-center">
+                    <div>
+                      <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={t.name ?? ""} placeholder={isEN ? "Client Name" : "Nama Pelanggan"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={nameClasses} style={{ color: "var(--dt-text)", ...nameStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                    </div>
+                    {(t.role || isEditorMode) && (
+                      <div>
+                        <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={t.role ?? ""} placeholder={isEN ? "Role / Position (e.g. Client)" : "Jabatan / Peran (cth. Pelanggan)"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className={roleClasses} style={{ color: "var(--dt-text-muted)", ...roleStyle }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1644,9 +1668,8 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
             <InlineAddTile
               label={isEN ? "Add Testimonial" : "Tambah Testimoni"}
               variant="card"
-              className={`rounded-2xl min-h-[200px] ${
-                variant === "carousel" ? "min-w-[280px] shrink-0 snap-start" : "w-full h-full"
-              }`}
+              className={`rounded-2xl min-h-[200px] ${variant === "carousel" ? "min-w-[280px] shrink-0 snap-start" : "w-full h-full"
+                }`}
               style={{ borderRadius: "var(--dt-radius-lg)" }}
               onClick={onAddItem}
             />
@@ -1858,9 +1881,8 @@ function MenuCatalogCard({
                   e.stopPropagation();
                   setActiveImgIdx(idx);
                 }}
-                className={`w-1.5 h-1.5 rounded-full transition-all cursor-pointer ${
-                  idx === activeImgIdx ? "bg-white scale-125" : "bg-white/40 hover:bg-white/70"
-                }`}
+                className={`w-1.5 h-1.5 rounded-full transition-all cursor-pointer ${idx === activeImgIdx ? "bg-white scale-125" : "bg-white/40 hover:bg-white/70"
+                  }`}
                 aria-label={`Foto ${idx + 1}`}
               />
             ))}
@@ -2368,7 +2390,7 @@ function MenuCatalogCard({
         {capacity != null && capacity > 0 && (
           <div className="mt-2">
             <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full" style={{ background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)", color: "var(--dt-primary)" }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="w-3 h-3"><circle cx="9" cy="7" r="2"/><path d="M3 21v-1a6 6 0 0 1 12 0v1"/><circle cx="17" cy="7" r="2"/><path d="M21 21v-1a5 5 0 0 0-3-4.6"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="w-3 h-3"><circle cx="9" cy="7" r="2" /><path d="M3 21v-1a6 6 0 0 1 12 0v1" /><circle cx="17" cy="7" r="2" /><path d="M21 21v-1a5 5 0 0 0-3-4.6" /></svg>
               {(() => {
                 const unit = KIND_CONFIG[kind]?.capacityUnit?.(isEN) || (isEN ? "guests" : "tamu");
                 return (
@@ -2424,7 +2446,7 @@ function MenuCatalogCard({
                       }}
                       className="opacity-0 group-hover/feat:opacity-100 hover:text-rose-500 transition-opacity cursor-pointer p-0.5 -mr-1"
                     >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-2.5 h-2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-2.5 h-2.5"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
                     </button>
                   )}
                 </li>
@@ -2454,7 +2476,7 @@ function MenuCatalogCard({
                     }}
                     title="Tambah fitur produk"
                   >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-2.5 h-2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-2.5 h-2.5"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
                     <span>Fitur</span>
                   </button>
                 </li>
@@ -3301,7 +3323,6 @@ const LeadForm: React.FC<LeadFormProps> = ({
   buttonText, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange
 }) => {
   const isEN = language === "en";
-  const L = testimonialsStrings(language);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -3309,7 +3330,7 @@ const LeadForm: React.FC<LeadFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    void onSubmit({ name, email, phone, message }).catch(() => {});
+    void onSubmit({ name, email, phone, message }).catch(() => { });
   };
 
   if (success) {
@@ -3538,20 +3559,17 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
             {/* Dashed highlight on hover / when selected */}
             {chromeEnabled && (
               <div
-                className={`absolute -inset-1 rounded-xl border-2 border-dashed ${
-                  isLight ? "border-white/50 bg-white/10" : "border-primary/40 bg-primary/5"
-                } transition-opacity pointer-events-none ${
-                  isSelected
+                className={`absolute -inset-1 rounded-xl border-2 border-dashed ${isLight ? "border-white/50 bg-white/10" : "border-primary/40 bg-primary/5"
+                  } transition-opacity pointer-events-none ${isSelected
                     ? "opacity-100"
                     : "opacity-0 group-hover/logo-ph:opacity-100"
-                }`}
+                  }`}
               />
             )}
             {/* Small camera badge — corner indicator that this is clickable to upload */}
             {chromeEnabled && (
-              <span className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full ${
-                isLight ? "bg-white/25 border-white/60 text-white backdrop-blur-sm" : "bg-slate-900/90 border-white/30 text-white"
-              } border flex items-center justify-center shadow transition-transform group-hover/logo-ph:scale-110`}>
+              <span className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full ${isLight ? "bg-white/25 border-white/60 text-white backdrop-blur-sm" : "bg-slate-900/90 border-white/30 text-white"
+                } border flex items-center justify-center shadow transition-transform group-hover/logo-ph:scale-110`}>
                 <Camera className="w-2.5 h-2.5 text-white" />
               </span>
             )}
@@ -3561,11 +3579,10 @@ const LogoImage = ({ url, icon, defaultIcon, iconClass, imgClass, section, onUpd
         {/* Hover / touch overlay (only when logo exists) */}
         {hasLogo && (
           <div
-            className={`absolute inset-0 z-20 flex items-center justify-center bg-black/55 backdrop-blur-[1px] rounded transition-all duration-150 pointer-events-none ${
-              isTouched
-                ? "opacity-100 pointer-events-auto"
-                : "opacity-0 group-hover/logo:opacity-100 group-hover/logo:pointer-events-auto"
-            }`}
+            className={`absolute inset-0 z-20 flex items-center justify-center bg-black/55 backdrop-blur-[1px] rounded transition-all duration-150 pointer-events-none ${isTouched
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 group-hover/logo:opacity-100 group-hover/logo:pointer-events-auto"
+              }`}
           >
             <button
               type="button"
@@ -3751,18 +3768,17 @@ const SeoEditorPreview = ({
               <button
                 type="button"
                 onClick={() => setActiveTab("google")}
-                className={`group relative flex items-center gap-2 px-3.5 py-2 rounded-t-xl text-[12px] font-medium transition-all max-w-[210px] min-w-[130px] border-t border-x cursor-pointer ${
-                  activeTab === "google"
-                    ? "bg-[#ffffff] text-slate-900 border-slate-300 shadow-sm font-semibold"
-                    : "bg-[#14151c]/80 text-slate-400 hover:text-slate-200 border-white/5 hover:bg-[#191b24]"
-                }`}
+                className={`group relative flex items-center gap-2 px-3.5 py-2 rounded-t-xl text-[12px] font-medium transition-all max-w-[210px] min-w-[130px] border-t border-x cursor-pointer ${activeTab === "google"
+                  ? "bg-[#ffffff] text-slate-900 border-slate-300 shadow-sm font-semibold"
+                  : "bg-[#14151c]/80 text-slate-400 hover:text-slate-200 border-white/5 hover:bg-[#191b24]"
+                  }`}
               >
                 {/* Google "G" icon */}
                 <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24">
-                  <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.04h3.88c2.28-2.09 3.66-5.18 3.66-9.14z"/>
-                  <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.04c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.27v3.13C3.25 21.31 7.31 24 12 24z"/>
-                  <path fill="#FBBC05" d="M5.28 14.28c-.24-.72-.38-1.49-.38-2.28s.14-1.56.38-2.28V6.59H1.27C.46 8.21 0 10.04 0 12s.46 3.79 1.27 5.41l4.01-3.13z"/>
-                  <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.69 1.27 6.59l4.01 3.13c.95-2.83 3.6-4.97 6.72-4.97z"/>
+                  <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.04h3.88c2.28-2.09 3.66-5.18 3.66-9.14z" />
+                  <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.04c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.27v3.13C3.25 21.31 7.31 24 12 24z" />
+                  <path fill="#FBBC05" d="M5.28 14.28c-.24-.72-.38-1.49-.38-2.28s.14-1.56.38-2.28V6.59H1.27C.46 8.21 0 10.04 0 12s.46 3.79 1.27 5.41l4.01-3.13z" />
+                  <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.69 1.27 6.59l4.01 3.13c.95-2.83 3.6-4.97 6.72-4.97z" />
                 </svg>
                 <span className="truncate">{t("dashboard.sitesEditor.seoTabGoogle")}</span>
                 <span className="ml-auto text-[10px] text-slate-400 opacity-60 group-hover:opacity-100">✕</span>
@@ -3772,15 +3788,14 @@ const SeoEditorPreview = ({
               <button
                 type="button"
                 onClick={() => setActiveTab("whatsapp")}
-                className={`group relative flex items-center gap-2 px-3.5 py-2 rounded-t-xl text-[12px] font-medium transition-all max-w-[210px] min-w-[130px] border-t border-x cursor-pointer ${
-                  activeTab === "whatsapp"
-                    ? "bg-[#0b141a] text-emerald-300 border-emerald-500/30 shadow-sm font-semibold"
-                    : "bg-[#14151c]/80 text-slate-400 hover:text-slate-200 border-white/5 hover:bg-[#191b24]"
-                }`}
+                className={`group relative flex items-center gap-2 px-3.5 py-2 rounded-t-xl text-[12px] font-medium transition-all max-w-[210px] min-w-[130px] border-t border-x cursor-pointer ${activeTab === "whatsapp"
+                  ? "bg-[#0b141a] text-emerald-300 border-emerald-500/30 shadow-sm font-semibold"
+                  : "bg-[#14151c]/80 text-slate-400 hover:text-slate-200 border-white/5 hover:bg-[#191b24]"
+                  }`}
               >
                 {/* WhatsApp icon */}
                 <svg className="w-3.5 h-3.5 fill-[#25D366] shrink-0" viewBox="0 0 24 24">
-                  <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.983.541 1.767.818 2.791.818 3.182 0 5.768-2.587 5.768-5.768.001-3.18-2.585-5.764-5.768-5.764zm3.376 8.204c-.144.405-.837.774-1.17.824-.312.045-.694.079-2.128-.488-1.833-.726-3.003-2.593-3.094-2.715-.09-.122-.745-.992-.745-1.892 0-.899.467-1.343.633-1.525.166-.182.364-.228.485-.228.122 0 .243.002.349.007.111.005.259-.042.405.309.151.364.515 1.258.56 1.35.045.091.076.197.015.318-.06.121-.09.197-.181.303-.09.106-.19.237-.272.318-.09.091-.184.19-.079.371.106.182.47 1.157 1.009 1.637.694.618 1.28.81 1.462.901.182.091.288.076.394-.045.106-.121.455-.53.576-.712.121-.182.242-.152.405-.091.164.061 1.036.488 1.213.579.177.091.297.136.339.212.043.076.043.439-.101.844z"/>
+                  <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.983.541 1.767.818 2.791.818 3.182 0 5.768-2.587 5.768-5.768.001-3.18-2.585-5.764-5.768-5.764zm3.376 8.204c-.144.405-.837.774-1.17.824-.312.045-.694.079-2.128-.488-1.833-.726-3.003-2.593-3.094-2.715-.09-.122-.745-.992-.745-1.892 0-.899.467-1.343.633-1.525.166-.182.364-.228.485-.228.122 0 .243.002.349.007.111.005.259-.042.405.309.151.364.515 1.258.56 1.35.045.091.076.197.015.318-.06.121-.09.197-.181.303-.09.106-.19.237-.272.318-.09.091-.184.19-.079.371.106.182.47 1.157 1.009 1.637.694.618 1.28.81 1.462.901.182.091.288.076.394-.045.106-.121.455-.53.576-.712.121-.182.242-.152.405-.091.164.061 1.036.488 1.213.579.177.091.297.136.339.212.043.076.043.439-.101.844z" />
                 </svg>
                 <span className="truncate">{t("dashboard.sitesEditor.seoTabWhatsApp")}</span>
                 <span className="ml-auto text-[10px] text-slate-400 opacity-60 group-hover:opacity-100">✕</span>
@@ -3790,11 +3805,10 @@ const SeoEditorPreview = ({
               <button
                 type="button"
                 onClick={() => setActiveTab("meta")}
-                className={`group relative flex items-center gap-2 px-3.5 py-2 rounded-t-xl text-[12px] font-medium transition-all max-w-[210px] min-w-[130px] border-t border-x cursor-pointer ${
-                  activeTab === "meta"
-                    ? "bg-[#0d1117] text-sky-300 border-sky-500/30 shadow-sm font-semibold"
-                    : "bg-[#14151c]/80 text-slate-400 hover:text-slate-200 border-white/5 hover:bg-[#191b24]"
-                }`}
+                className={`group relative flex items-center gap-2 px-3.5 py-2 rounded-t-xl text-[12px] font-medium transition-all max-w-[210px] min-w-[130px] border-t border-x cursor-pointer ${activeTab === "meta"
+                  ? "bg-[#0d1117] text-sky-300 border-sky-500/30 shadow-sm font-semibold"
+                  : "bg-[#14151c]/80 text-slate-400 hover:text-slate-200 border-white/5 hover:bg-[#191b24]"
+                  }`}
               >
                 <Code2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
                 <span className="truncate">{t("dashboard.sitesEditor.seoTabMetaTags")}</span>
@@ -3866,9 +3880,8 @@ const SeoEditorPreview = ({
                 <button
                   type="button"
                   onClick={() => setIsBookmarked(!isBookmarked)}
-                  className={`p-1 rounded-md transition-colors ${
-                    isBookmarked ? "text-amber-400" : "text-slate-400 hover:text-white hover:bg-white/10"
-                  }`}
+                  className={`p-1 rounded-md transition-colors ${isBookmarked ? "text-amber-400" : "text-slate-400 hover:text-white hover:bg-white/10"
+                    }`}
                   title={isBookmarked ? t("dashboard.sitesEditor.bookmarkSaved") : t("dashboard.sitesEditor.bookmarkAdd")}
                 >
                   <Star className={`w-3.5 h-3.5 ${isBookmarked ? "fill-amber-400" : ""}`} />
@@ -3922,13 +3935,13 @@ const SeoEditorPreview = ({
                       <div className="w-px h-4 bg-slate-200" />
                       {/* Mic icon */}
                       <svg className="w-4 h-4" viewBox="0 0 24 24">
-                        <path fill="#4285F4" d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
-                        <path fill="#34A853" d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                        <path fill="#4285F4" d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
+                        <path fill="#34A853" d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
                       </svg>
                       {/* Search icon */}
                       <svg className="w-4 h-4 text-[#4285F4]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                        <circle cx="11" cy="11" r="8"/>
-                        <path d="m21 21-4.35-4.35"/>
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.35-4.35" />
                       </svg>
                     </div>
                   </div>
@@ -4028,13 +4041,12 @@ const SeoEditorPreview = ({
                     {/* Title length check */}
                     <div className="flex items-center gap-1.5">
                       <span className="font-semibold text-slate-600">{t("dashboard.sitesEditor.seoDiagTitle")}</span>
-                      <span className={`font-mono font-medium px-2 py-0.5 rounded-full text-[11px] ${
-                        titleLen >= 30 && titleLen <= 60
-                          ? "bg-emerald-100 text-emerald-800"
-                          : titleLen > 60
-                            ? "bg-red-100 text-red-800"
-                            : "bg-amber-100 text-amber-800"
-                      }`}>
+                      <span className={`font-mono font-medium px-2 py-0.5 rounded-full text-[11px] ${titleLen >= 30 && titleLen <= 60
+                        ? "bg-emerald-100 text-emerald-800"
+                        : titleLen > 60
+                          ? "bg-red-100 text-red-800"
+                          : "bg-amber-100 text-amber-800"
+                        }`}>
                         {titleLen}/60 char {titleLen >= 30 && titleLen <= 60 ? t("dashboard.sitesEditor.seoDiagOptimal") : titleLen > 60 ? t("dashboard.sitesEditor.seoDiagTooLong") : t("dashboard.sitesEditor.seoDiagTooShort")}
                       </span>
                     </div>
@@ -4042,13 +4054,12 @@ const SeoEditorPreview = ({
                     {/* Desc length check */}
                     <div className="flex items-center gap-1.5">
                       <span className="font-semibold text-slate-600">{t("dashboard.sitesEditor.seoDiagDesc")}</span>
-                      <span className={`font-mono font-medium px-2 py-0.5 rounded-full text-[11px] ${
-                        descLen >= 70 && descLen <= 155
-                          ? "bg-emerald-100 text-emerald-800"
-                          : descLen > 155
-                            ? "bg-red-100 text-red-800"
-                            : "bg-amber-100 text-amber-800"
-                      }`}>
+                      <span className={`font-mono font-medium px-2 py-0.5 rounded-full text-[11px] ${descLen >= 70 && descLen <= 155
+                        ? "bg-emerald-100 text-emerald-800"
+                        : descLen > 155
+                          ? "bg-red-100 text-red-800"
+                          : "bg-amber-100 text-amber-800"
+                        }`}>
                         {descLen}/155 char {descLen >= 70 && descLen <= 155 ? t("dashboard.sitesEditor.seoDiagOptimal") : descLen > 155 ? t("dashboard.sitesEditor.seoDiagTooLong") : t("dashboard.sitesEditor.seoDiagTooShort")}
                       </span>
                     </div>
@@ -4134,7 +4145,7 @@ const SeoEditorPreview = ({
                       <span>14:30</span>
                       {/* Double Blue Check */}
                       <svg className="w-3.5 h-3.5 text-sky-400" viewBox="0 0 16 16" fill="currentColor">
-                        <path d="M12.354 4.354a.5.5 0 0 0-.708-.708L5 10.293 1.854 7.146a.5.5 0 1 0-.708.708l3.5 3.5a.5.5 0 0 0 .708 0l7-7zm-4 0a.5.5 0 0 0-.708-.708L5 6.293 6.646 7.94l2.708-2.708z"/>
+                        <path d="M12.354 4.354a.5.5 0 0 0-.708-.708L5 10.293 1.854 7.146a.5.5 0 1 0-.708.708l3.5 3.5a.5.5 0 0 0 .708 0l7-7zm-4 0a.5.5 0 0 0-.708-.708L5 6.293 6.646 7.94l2.708-2.708z" />
                       </svg>
                     </div>
                   </div>
@@ -4228,7 +4239,7 @@ const TILE_STYLES: Record<string, { url: string; label: string }> = {
   default: { url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", label: "OSM" },
   cyclosm: { url: "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png", label: "CyclOSM" },
   light: { url: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}", label: "Terang" },
-  dark:    { url: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}", label: "Gelap" },
+  dark: { url: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}", label: "Gelap" },
   esri: { url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", label: "Esri Street" },
   satelit: { url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", label: "Satelit" },
 };
@@ -4348,7 +4359,6 @@ const SharedContactSection: React.FC<ContactSectionProps> = ({
   mapLayout = "inline",
 }) => {
   const isEN = language === "en";
-  const L = testimonialsStrings(language);
   const effectiveLeadTitleText = formTitle || leadTitleText || (isEN ? "Contact Us" : "Hubungi Kami");
   const hasLeadForm = Boolean(showLeadForm && onSubmitLead);
   const effectiveAlign = align || "center";
