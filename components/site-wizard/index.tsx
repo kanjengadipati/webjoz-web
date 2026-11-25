@@ -412,7 +412,7 @@ export function SiteWizard({
   const generate = useWizardGenerate({
     onDesignToken: (token) => {
       const withBrand = chat.brandLogoPalette
-        ? applyBrandPalette(token, chat.brandLogoPalette, chat.brandLogoThemeMode ?? undefined)
+        ? applyBrandPalette(token, chat.brandLogoPalette, chat.brandLogoThemeMode ?? undefined, { identityOnly: true })
         : token;
       const mergedToken = themeDraft.mergeApplied(withBrand);
       preview.setStreamedDesignToken(mergedToken);
@@ -464,7 +464,7 @@ export function SiteWizard({
       const finalContent = preview.streamedSectionsRef.current;
       let rawToken = preview.streamedTokenRef.current ?? {};
       if (chat.brandLogoPalette) {
-        rawToken = applyBrandPalette(rawToken, chat.brandLogoPalette, chat.brandLogoThemeMode ?? undefined);
+        rawToken = applyBrandPalette(rawToken, chat.brandLogoPalette, chat.brandLogoThemeMode ?? undefined, { identityOnly: true });
       }
       // Pastikan token mentah selalu punya mood asli: dipakai Undo/Reset ganti mood.
       if (!rawToken.mood && chat.moodRef.current) {
@@ -2063,8 +2063,12 @@ export function SiteWizard({
                     chat.setBrandLogo(url, paletteMap, themeMode);
                     preview.setStreamedDesignToken((prev: any) => ({
                       ...(prev || {}),
-                      palette: { ...(prev?.palette || {}), ...paletteMap },
-                      theme_mode: themeMode,
+                      palette: {
+                        ...(prev?.palette || {}),
+                        primary: extracted.primary,
+                        accent: extracted.accent,
+                      },
+                      ...(prev?.theme_mode ? {} : { theme_mode: themeMode }),
                     }));
                   }}
                   onLogoRemoved={() => {

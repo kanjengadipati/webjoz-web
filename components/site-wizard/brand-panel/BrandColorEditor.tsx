@@ -275,7 +275,7 @@ export function BrandColorEditor({
               <p className="text-[10px] text-sidebar-muted-foreground truncate">
                 {t(
                   "dashboard.wizard.uploadLogoHint",
-                  "PNG, JPG, atau SVG · warnanya jadi dasar tema"
+                  "PNG, JPG, atau SVG · warnanya jadi aksen brand"
                 )}
               </p>
             </div>

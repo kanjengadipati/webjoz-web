@@ -105,3 +105,37 @@ test("applyBrandPalette handles null/empty palette gracefully", () => {
   const result2 = applyBrandPalette(initialToken, {}, "light");
   assert.equal(result2.theme_mode, "light");
 });
+
+test("applyBrandPalette with identityOnly preserves mood background, surface, text, and theme_mode", () => {
+  const moodToken = {
+    mood: "warm-earthy",
+    theme_mode: "light",
+    palette: {
+      primary: "#8B4513",
+      accent: "#D2691E",
+      background: "#FDF8F3",
+      surface: "#F5EDE4",
+      text: "#2C1810",
+    },
+  };
+
+  const brandPalette = {
+    primary: "#2563EB",
+    accent: "#F59E0B",
+    background: "#0B0F17",
+    surface: "#141C2B",
+    text: "#F8FAFC",
+  };
+
+  const merged = applyBrandPalette(moodToken, brandPalette, "dark", { identityOnly: true });
+
+  // Brand identity colors applied
+  assert.equal(merged.palette.primary, "#2563EB");
+  assert.equal(merged.palette.accent, "#F59E0B");
+
+  // Mood foundation colors & theme_mode preserved
+  assert.equal(merged.palette.background, "#FDF8F3");
+  assert.equal(merged.palette.surface, "#F5EDE4");
+  assert.equal(merged.palette.text, "#2C1810");
+  assert.equal(merged.theme_mode, "light");
+});

@@ -96,9 +96,9 @@ export function BrandLogoWidget({
 
       const palettes = await extractBrandPalettes(dataUrl);
 
-      // Rule: mood dark-premium enforces dark palette + dark theme_mode.
+      // Rule: dark moods (dark-premium, bold-dark) enforce dark palette + dark theme_mode.
       // Other moods use light palette + light theme_mode.
-      const isDarkMood = mood === "dark-premium";
+      const isDarkMood = mood === "dark-premium" || mood === "bold-dark";
       const selectedPalette = isDarkMood ? palettes.dark : palettes.light;
       const themeMode: "light" | "dark" = isDarkMood ? "dark" : "light";
 
@@ -187,7 +187,7 @@ export function BrandLogoWidget({
               </span>
             </div>
             <p className="text-[11px] text-slate-400 truncate mt-0.5">
-              {t("dashboard.wizard.uploadLogoHint", "PNG, JPG, atau SVG · warnanya jadi dasar tema")}
+              {t("dashboard.wizard.uploadLogoHint", "PNG, JPG, atau SVG · warnanya jadi aksen brand")}
             </p>
           </div>
         </button>
