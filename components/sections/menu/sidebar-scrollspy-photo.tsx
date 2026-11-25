@@ -227,10 +227,10 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
                       <div
                         key={item.id || item.name}
                         id={`scrollspy-item-${index}-${itemIndex}`}
-                        className="group flex flex-col md:flex-row bg-dt-surface rounded-dt overflow-hidden border border-dt-border hover:shadow-md hover:border-dt-primary/30 transition-all duration-300 min-h-[160px] cursor-pointer"
+                        className="group flex flex-col sm:flex-row bg-dt-surface rounded-dt overflow-hidden border border-dt-border hover:shadow-md hover:border-dt-primary/30 transition-all duration-300 min-h-[160px] cursor-pointer"
                         onClick={() => setQuickView({ catIdx: index, itemIdx: itemIndex })}
                       >
-                        <div className="relative w-full md:w-[260px] h-[200px] md:h-auto overflow-hidden bg-dt-accent/5 shrink-0">
+                        <div className="relative w-full sm:w-[180px] md:w-[210px] lg:w-[230px] h-[190px] sm:h-auto overflow-hidden bg-dt-accent/5 shrink-0">
                           <InlineImage
                             section="menu"
                             fieldKey={"categories." + index + ".items." + itemIndex + ".image_url"}
@@ -266,27 +266,66 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
                             type="button"
                             onClick={(e) => { e.stopPropagation(); setQuickView({ catIdx: index, itemIdx: itemIndex }); }}
                             onPointerDown={(e) => e.stopPropagation()}
-                            className="absolute bottom-3 right-3 z-10 bg-white/90 dark:bg-black/80 backdrop-blur-xs text-dt-text text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-full shadow-xs font-dt-heading opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity cursor-pointer"
+                            className="absolute bottom-3 right-3 z-10 bg-white/90 dark:bg-black/80 backdrop-blur-xs text-dt-text text-[10px] font-semibold tracking-wider uppercase px-2.5 py-1 rounded-full shadow-xs font-dt-heading opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity cursor-pointer"
                           >
                             {isEN ? "Detail" : "Lihat"}
                           </button>
                         </div>
 
-                        <div className="flex-1 p-6 flex flex-col justify-between">
+                        <div className="flex-1 p-4 sm:p-5 md:p-6 flex flex-col justify-between min-w-0">
                           <div>
-                            <div className="flex items-baseline justify-between gap-4 mb-2">
-                              <InlineText section="menu" fieldKey={"categories." + index + ".items." + itemIndex + ".name"} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="h4" className="text-lg font-bold tracking-tight text-dt-text font-dt-heading group-hover:text-dt-primary transition-colors duration-200" />
+                            <div className="flex flex-wrap sm:flex-nowrap items-start sm:items-baseline justify-between gap-2 sm:gap-4 mb-2">
+                              <div className="min-w-0 flex-1">
+                                <InlineText
+                                  section="menu"
+                                  fieldKey={"categories." + index + ".items." + itemIndex + ".name"}
+                                  value={item.name ?? ""}
+                                  onUpdateField={onUpdateField}
+                                  isEditorMode={isEditorMode}
+                                  isSelected={isSelected}
+                                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                                  onEditingStateChange={onEditingStateChange}
+                                  as="h4"
+                                  className="text-base sm:text-lg font-bold tracking-tight text-dt-text font-dt-heading group-hover:text-dt-primary transition-colors duration-200 leading-snug line-clamp-2"
+                                />
+                              </div>
                               {item.price && (
-                                <InlineText section="menu" fieldKey={"categories." + index + ".items." + itemIndex + ".price"} value={item.price ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" className="text-base font-bold text-dt-primary font-dt-heading" />
+                                <div className="shrink-0 whitespace-nowrap">
+                                  <InlineText
+                                    section="menu"
+                                    fieldKey={"categories." + index + ".items." + itemIndex + ".price"}
+                                    value={item.price ?? ""}
+                                    onUpdateField={onUpdateField}
+                                    isEditorMode={isEditorMode}
+                                    isSelected={isSelected}
+                                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                                    onEditingStateChange={onEditingStateChange}
+                                    as="span"
+                                    className="text-sm sm:text-base font-bold text-dt-primary font-dt-heading whitespace-nowrap inline-block"
+                                  />
+                                </div>
                               )}
                             </div>
 
                             {(item.description || isEditorMode) && (
-                              <InlineText section="menu" fieldKey={"categories." + index + ".items." + itemIndex + ".description"} value={item.description ?? ""} placeholder={isEN ? "Item description..." : "Deskripsi menu..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="p" multiline className="text-xs md:text-sm text-dt-text-muted leading-relaxed line-clamp-3 md:line-clamp-2" />
+                              <InlineText
+                                section="menu"
+                                fieldKey={"categories." + index + ".items." + itemIndex + ".description"}
+                                value={item.description ?? ""}
+                                placeholder={isEN ? "Item description..." : "Deskripsi menu..."}
+                                onUpdateField={onUpdateField}
+                                isEditorMode={isEditorMode}
+                                isSelected={isSelected}
+                                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                                onEditingStateChange={onEditingStateChange}
+                                as="p"
+                                multiline
+                                className="text-xs sm:text-sm text-dt-text-muted leading-relaxed line-clamp-3 sm:line-clamp-2"
+                              />
                             )}
                           </div>
 
-                          <div className="mt-4" onClick={(e) => e.stopPropagation()}>
+                          <div className="mt-4 pt-1" onClick={(e) => e.stopPropagation()}>
                             <AddToCartButton
                               itemId={item.id || `menu-scrollspy-${index}-${itemIndex}`}
                               itemName={item.name ?? ""}
@@ -300,7 +339,7 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
                               category={category.name ?? ""}
                               variant_groups={item.variant_groups}
                               disabled={item.is_available === false}
-                              className="inline-flex items-center gap-1 text-[0.7rem] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full bg-dt-primary text-dt-primary-foreground cursor-pointer transition-all hover:brightness-110"
+                              className="inline-flex items-center justify-center gap-1.5 text-xs font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-full bg-dt-primary text-dt-primary-foreground cursor-pointer transition-all hover:brightness-110 shadow-xs"
                             />
                           </div>
 

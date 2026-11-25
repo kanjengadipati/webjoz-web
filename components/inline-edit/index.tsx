@@ -66,6 +66,8 @@ export interface InlineTextProps {
    * Throw error jika gagal, InlineText akan handle toast-nya sendiri.
    */
   onAiRewrite?: (currentValue: string) => Promise<string>;
+  /** Class tambahan untuk wrapper luar <span> (mis. "self-start", "w-fit") */
+  wrapperClassName?: string;
   /**
    * Callback regenerate untuk wizard preview (editorChrome=false).
    * Jika disediakan, icon Refresh akan muncul saat focus/klik teks.
@@ -92,6 +94,7 @@ export function InlineText({
   children,
   onAiRewrite,
   onRegen: onRegenProp,
+  wrapperClassName = "",
 }: InlineTextProps) {
   const { t } = useI18n();
   const wizardRegen = useWizardRegen();
@@ -394,7 +397,7 @@ export function InlineText({
   return (
     <span
       ref={wrapperRef}
-      className={`relative group/inline ${multiline ? "block" : "inline-block"} max-w-full`}
+      className={`relative group/inline ${multiline ? "block" : "inline-block"} max-w-full ${wrapperClassName}`}
       onTouchStart={(e) => {
         isTouchScrollingRef.current = false;
         const touch = e.touches[0];

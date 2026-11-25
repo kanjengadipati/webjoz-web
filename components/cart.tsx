@@ -359,7 +359,7 @@ export function AddToCartButton({
       <button
         type="button"
         disabled
-        className={`${className ?? ""} opacity-50 cursor-not-allowed`}
+        className={`inline-flex items-center justify-center gap-1.5 whitespace-nowrap ${className ?? ""} opacity-50 cursor-not-allowed`}
         style={style}
         aria-label={`${itemName} ${isEN ? "unavailable" : "tidak tersedia"}`}
         title={isEN ? "Item unavailable" : "Item tidak tersedia"}
@@ -376,11 +376,11 @@ export function AddToCartButton({
         <button
           type="button"
           onClick={() => setSelectorOpen(true)}
-          className={className ?? ""}
+          className={`inline-flex items-center justify-center gap-1.5 whitespace-nowrap ${className ?? ""}`}
           style={style}
           aria-label={`${isEN ? "Choose options for" : "Pilih opsi untuk"} ${itemName}`}
         >
-          <Plus className="w-3.5 h-3.5" />
+          <Plus className="w-3.5 h-3.5 shrink-0" />
           <span>{totalItemQty > 0 ? `${isEN ? "Choose Options" : "Pilih Opsi"} (${totalItemQty})` : (isEN ? "Choose Options" : "Pilih Opsi")}</span>
         </button>
         {selectorOpen && (
@@ -419,11 +419,11 @@ export function AddToCartButton({
           price_display: effectiveDisplay ?? null,
           category,
         })}
-        className={className ?? ""}
+        className={`inline-flex items-center justify-center gap-1.5 whitespace-nowrap ${className ?? ""}`}
         style={style}
         aria-label={`${isEN ? "Add" : "Tambah"} ${itemName} ${isEN ? "to cart" : "ke keranjang"}`}
       >
-        <Plus className="w-3.5 h-3.5" />
+        <Plus className="w-3.5 h-3.5 shrink-0" />
         <span>{isEN ? "Add" : "Tambah"}</span>
       </button>
     );

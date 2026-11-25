@@ -188,7 +188,7 @@ export default function ProductCompact({
                         category={cat.name ?? ""}
                         variant_groups={item.variant_groups}
                         disabled={!isAvailable}
-                        className="py-1 px-3 rounded-lg text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 shadow-xs"
+                        className="inline-flex items-center justify-center gap-1.5 whitespace-nowrap py-1.5 px-3 rounded-lg text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 shadow-xs"
                         style={{ background: brandPrimary, color: "var(--dt-primary-foreground)", border: "none" }}
                       />
                     </div>

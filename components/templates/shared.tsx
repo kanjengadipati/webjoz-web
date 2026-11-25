@@ -2792,22 +2792,25 @@ function ProductQuickViewInner({
           </div>
 
           {/* Info */}
-          <div className="p-5 sm:p-7 flex flex-col gap-3">
+          <div className="p-5 sm:p-7 flex flex-col items-start gap-3">
             {badgeNode}
 
-            <InlineText
-              section={editSection ?? ""}
-              fieldKey={pathBase ? `${pathBase}.name` : ""}
-              value={itemName}
-              placeholder={t("dashboard.sitesKatalog.labelName", "Nama")}
-              onUpdateField={onUpdateField}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              as="h2"
-              className="self-start pr-8 text-2xl font-bold leading-tight"
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
-            />
+            <div className="w-fit max-w-full">
+              <InlineText
+                section={editSection ?? ""}
+                fieldKey={pathBase ? `${pathBase}.name` : ""}
+                value={itemName}
+                placeholder={t("dashboard.sitesKatalog.labelName", "Nama")}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="h2"
+                wrapperClassName="w-fit self-start"
+                className="text-2xl font-bold leading-tight"
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
+            </div>
 
             {/* Price */}
             {(displayPrice || isEditorMode) && (
@@ -2822,20 +2825,23 @@ function ProductQuickViewInner({
                   )}
                 </div>
               ) : (
-                <InlineText
-                  section={editSection ?? ""}
-                  fieldKey={pathBase ? `${pathBase}.price` : ""}
-                  value={displayPrice ?? ""}
-                  placeholder="+ Harga"
-                  onUpdateField={onUpdateField}
-                  isEditorMode={isEditorMode}
-                  isSelected={isSelected}
-                  as="span"
-                  className="self-start text-xl font-bold"
-                  style={{ color: "var(--dt-primary, #4F46E5)" }}
-                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                  onEditingStateChange={onEditingStateChange}
-                />
+                <div className="w-fit max-w-full">
+                  <InlineText
+                    section={editSection ?? ""}
+                    fieldKey={pathBase ? `${pathBase}.price` : ""}
+                    value={displayPrice ?? ""}
+                    placeholder="+ Harga"
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    as="span"
+                    wrapperClassName="w-fit self-start"
+                    className="text-xl font-bold"
+                    style={{ color: "var(--dt-primary, #4F46E5)" }}
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={onEditingStateChange}
+                  />
+                </div>
               )
             )}
 
@@ -2849,7 +2855,7 @@ function ProductQuickViewInner({
 
             {/* Description */}
             {canInline ? (
-              <InlineText section={editSection!} fieldKey={`${pathBase}.description`} value={item.description ?? ""} placeholder="+ Deskripsi" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className="self-start text-sm leading-relaxed" style={{ color: "var(--dt-text-muted, #475569)" }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+              <InlineText section={editSection!} fieldKey={`${pathBase}.description`} value={item.description ?? ""} placeholder="+ Deskripsi" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" wrapperClassName="w-full" className="text-sm leading-relaxed" style={{ color: "var(--dt-text-muted, #475569)" }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             ) : item.description ? (
               <p className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: "var(--dt-text-muted, #475569)" }}>{item.description}</p>
             ) : null}
