@@ -261,7 +261,7 @@ export function AuthShell({
               href: "/forgot-password",
               icon: KeyRound,
               label: isEn ? "Forgot Pwd" : "Lupa Sandi",
-              active: pathname === "/forgot-password",
+              active: pathname === "/forgot-password" || pathname === "/reset-password",
             },
           ]}
         />
