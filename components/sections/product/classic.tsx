@@ -33,10 +33,10 @@ export default function ProductClassic({
         image: { className: "w-full h-52 object-cover transition-transform duration-500 group-hover:scale-105" },
         placeholder: { className: "w-full h-52 flex items-center justify-center transition-transform duration-500 group-hover:scale-105", style: { background: `color-mix(in srgb, ${brandPrimary} 8%, transparent)` }, iconClassName: "w-12 h-12", iconStyle: { color: `color-mix(in srgb, ${brandPrimary} 30%, transparent)`, opacity: 0.6 } },
         content: { className: "p-5 space-y-3 flex flex-col flex-1 justify-between" },
-        header: { className: "flex items-start justify-between gap-3 min-w-0 overflow-hidden" },
-        title: { className: "font-bold text-sm leading-tight min-w-0 overflow-hidden line-clamp-2", style: { color: brandText, fontFamily: headingFont } },
+        header: { className: "flex flex-col items-start gap-1.5 min-w-0", priceFirst: true },
+        title: { className: "font-bold text-sm leading-tight min-w-0 line-clamp-2", style: { color: brandText, fontFamily: headingFont } },
         description: { className: "text-xs leading-relaxed flex-1", style: { color: `color-mix(in srgb, ${brandText} 60%, transparent)` } },
-        price: { className: "text-xs font-bold px-2.5 py-1 rounded-full whitespace-nowrap shrink-0", style: { background: `color-mix(in srgb, ${brandPrimary} 12%, transparent)`, color: brandPrimary } },
+        price: { className: "self-start text-xs font-bold px-2.5 py-1 rounded-full whitespace-nowrap shrink-0", style: { background: `color-mix(in srgb, ${brandPrimary} 12%, transparent)`, color: brandPrimary } },
         button: { className: "mt-auto w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:brightness-110 hover:shadow-md", style: { background: brandPrimary, color: "var(--dt-cta-text, #fff)", border: "none" } },
       }
     : {

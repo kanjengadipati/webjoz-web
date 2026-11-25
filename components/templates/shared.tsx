@@ -1677,7 +1677,7 @@ export interface MenuCatalogCardStyles {
   image?: { className?: string; style?: React.CSSProperties };
   placeholder?: { className?: string; style?: React.CSSProperties; iconClassName?: string; iconStyle?: React.CSSProperties };
   content?: { className?: string; style?: React.CSSProperties };
-  header?: { className?: string; style?: React.CSSProperties };
+  header?: { className?: string; style?: React.CSSProperties; priceFirst?: boolean };
   title?: { className?: string; style?: React.CSSProperties };
   description?: { className?: string; style?: React.CSSProperties };
   price?: { className?: string; style?: React.CSSProperties };
@@ -1966,12 +1966,30 @@ function MenuCatalogCard({
     </div>
   );
 
+  const priceFirst = stylesProp?.header?.priceFirst;
   const header = (
     <div className={`${headerClassName ?? ""}${hasPromo && !headerClassName?.includes("flex-col") ? " flex-wrap" : ""}`} style={headerStyle}>
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0 flex-1 w-full">
+        {priceFirst && showPrice && headerClassName?.includes("flex-col") && (
+          hasPromo ? (
+            <div className="flex items-center gap-1.5 flex-wrap mb-1 min-w-0">
+              <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-md shrink-0 select-none" style={{ background: "color-mix(in srgb, var(--dt-primary) 16%, transparent)", color: "var(--dt-primary)" }}>
+                <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".discount_label" : ""} value={discountLabel || "Promo"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+              </span>
+              <span className={`${priceClassName ?? ""} whitespace-nowrap shrink-0`} style={priceStyle}>
+                <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".promo_price_display" : ""} value={promoPriceValue} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+              </span>
+              <span className="line-through opacity-45 text-xs whitespace-nowrap shrink-0">{displayPrice}</span>
+            </div>
+          ) : (
+            <span className={`${priceClassName ?? ""} whitespace-nowrap inline-block mb-1`} style={priceStyle}>
+              <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".price" : ""} value={priceValue} placeholder="+ Harga" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+            </span>
+          )
+        )}
         {/* Badge zone removed — badge is now a floating overlay on the image */}
         <InlineText section={editSection ?? ""} fieldKey={pathBase ? pathBase + ".name" : ""} value={itemName ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="h4" className={titleClassName} style={titleStyle} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
-        {showPrice && headerClassName?.includes("flex-col") && (
+        {!priceFirst && showPrice && headerClassName?.includes("flex-col") && (
           hasPromo ? (
             <div className="flex items-center gap-1.5 flex-wrap mt-1 min-w-0">
               <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-md shrink-0 select-none" style={{ background: "color-mix(in srgb, var(--dt-primary) 16%, transparent)", color: "var(--dt-primary)" }}>
@@ -2065,7 +2083,8 @@ function MenuCatalogCard({
     </>
   );
 
-  const quickViewTrigger = (
+  const isMenuCard = kind === "menu" || editSection === "menu";
+  const quickViewTrigger = isMenuCard ? null : (
     <button
       type="button"
       onClick={(e) => { e.stopPropagation(); e.preventDefault(); setQuickViewOpen(true); }}
@@ -2785,7 +2804,7 @@ function ProductQuickViewInner({
               isEditorMode={isEditorMode}
               isSelected={isSelected}
               as="h2"
-              className="text-2xl font-bold leading-tight"
+              className="self-start pr-8 text-2xl font-bold leading-tight"
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
               onEditingStateChange={onEditingStateChange}
             />
@@ -2812,7 +2831,7 @@ function ProductQuickViewInner({
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
                   as="span"
-                  className="text-xl font-bold"
+                  className="self-start text-xl font-bold"
                   style={{ color: "var(--dt-primary, #4F46E5)" }}
                   collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                   onEditingStateChange={onEditingStateChange}
@@ -2830,7 +2849,7 @@ function ProductQuickViewInner({
 
             {/* Description */}
             {canInline ? (
-              <InlineText section={editSection!} fieldKey={`${pathBase}.description`} value={item.description ?? ""} placeholder="+ Deskripsi" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className="text-sm leading-relaxed" style={{ color: "var(--dt-text-muted, #475569)" }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
+              <InlineText section={editSection!} fieldKey={`${pathBase}.description`} value={item.description ?? ""} placeholder="+ Deskripsi" onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" className="self-start text-sm leading-relaxed" style={{ color: "var(--dt-text-muted, #475569)" }} multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             ) : item.description ? (
               <p className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: "var(--dt-text-muted, #475569)" }}>{item.description}</p>
             ) : null}
