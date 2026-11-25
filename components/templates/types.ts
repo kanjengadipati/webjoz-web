@@ -400,6 +400,8 @@ export interface TemplateProps {
       highlight_stat_2?: { value: string; label: string };
       highlight_stat_3?: { value: string; label: string };
       milestones?: Array<{ year: string; title: string; description?: string }>;
+      /** Field names (e.g. "milestones") that are still system-generated samples. */
+      _example_fields?: string[];
       team_members?: Array<{ name: string; role: string; photo_url?: string | null }>;
       cv_url?: string;
       cv_label?: string;
@@ -511,6 +513,7 @@ export interface TemplateProps {
       eyebrow?: string;
       subtitle?: string;
       items: StatItem[];
+      _is_example?: boolean;
     };
     skills?: {
       title?: string;
@@ -523,6 +526,7 @@ export interface TemplateProps {
       eyebrow?: string;
       subtitle?: string;
       items: PartnerItem[];
+      _is_example?: boolean;
     };
     pricing?: {
       title: string;

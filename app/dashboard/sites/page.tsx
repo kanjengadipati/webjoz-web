@@ -381,7 +381,7 @@ export default function SitesPage() {
     return () => window.removeEventListener("click", handleOutsideClick);
   }, []);
 
-  const handlePublishWithSubdomain = async (subdomain: string, _contentVerified?: boolean) => {
+  const handlePublishWithSubdomain = async (subdomain: string, contentVerified?: boolean) => {
     if (!publishTarget || !token || !activeTenantId) return;
     try {
       setActionLoading(publishTarget.id);
@@ -400,7 +400,8 @@ export default function SitesPage() {
       // 2. Publish
       await request<Site>(`/sites/${publishTarget.id}/publish`, {
         method: "POST",
-        headers: { "X-Tenant-ID": activeTenantId.toString() }
+        headers: { "X-Tenant-ID": activeTenantId.toString() },
+        body: JSON.stringify({ content_verified: contentVerified === true }),
       }, token);
 
       pushToast(t("dashboard.sites.toastPublished"), "success");

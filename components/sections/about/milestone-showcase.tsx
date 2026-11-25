@@ -25,7 +25,9 @@ export default function AboutMilestoneShowcase({
 }: AboutVariantProps) {
   const isEN = language.toLowerCase().startsWith("en");
   const py = { paddingTop: "var(--dt-spacing)", paddingBottom: "var(--dt-spacing)" } as any;
-  const milestones = a.milestones && a.milestones.length > 0 ? a.milestones : defaultMilestones;
+  // Never show invented milestones on the public site; defaults are an editor-only placeholder.
+  const milestones = a.milestones && a.milestones.length > 0 ? a.milestones : isEditorMode ? defaultMilestones : [];
+  if (milestones.length === 0) return null;
 
   return (
     <section

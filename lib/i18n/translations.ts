@@ -621,6 +621,12 @@ export interface Translations {
       launchWebsite: string;
       publishContentVerified: string;
       publishContentVerifiedDesc: string;
+      publishExamplesTitle: string;
+      publishExamplesDesc: string;
+      publishExampleTestimonials: string;
+      publishExampleStats: string;
+      publishExamplePartners: string;
+      publishExampleMilestones: string;
       publishTermsTitle: string;
       publishTermsLink: string;
       publishTermsRequired: string;
@@ -4646,6 +4652,12 @@ export const translations: Record<Locale, Translations> = {
         launchWebsite: "Luncurkan Website",
         publishContentVerified: "Data pada website ini sudah asli, bukan data contoh",
         publishContentVerifiedDesc: "Mis. tahun berdiri, nama tim, statistik, testimoni, dan foto. Isi yang dibuat otomatis bisa berupa contoh; kebenaran konten menjadi tanggung jawab Anda.",
+        publishExamplesTitle: "Bagian contoh ini tidak akan tayang",
+        publishExamplesDesc: "Bagian berikut masih berupa contoh buatan sistem, bukan data asli Anda, jadi tidak ikut dipublikasikan. Edit dan isi dengan data asli agar tayang.",
+        publishExampleTestimonials: "Testimoni",
+        publishExampleStats: "Statistik / angka pencapaian",
+        publishExamplePartners: "Mitra & klien",
+        publishExampleMilestones: "Riwayat / tahun berdiri (Tentang)",
         publishTermsTitle: "Saya menyetujui",
         publishTermsLink: "Syarat & Ketentuan Webjoz",
         publishTermsRequired:
@@ -9225,6 +9237,12 @@ export const translations: Record<Locale, Translations> = {
         launchWebsite: "Launch Website",
         publishContentVerified: "The data on this website is real, not sample data",
         publishContentVerifiedDesc: "E.g. founding year, team names, statistics, testimonials and photos. Auto-generated content may be sample data; you are responsible for its accuracy.",
+        publishExamplesTitle: "These sample sections will not go live",
+        publishExamplesDesc: "The sections below are still system-generated samples, not your real data, so they are left out when publishing. Edit them with real data to publish them.",
+        publishExampleTestimonials: "Testimonials",
+        publishExampleStats: "Statistics / achievements",
+        publishExamplePartners: "Partners & clients",
+        publishExampleMilestones: "History / founding year (About)",
         publishTermsTitle: "I agree to",
         publishTermsLink: "Webjoz's Terms & Conditions",
         publishTermsRequired: "Please check this box to publish the website.",

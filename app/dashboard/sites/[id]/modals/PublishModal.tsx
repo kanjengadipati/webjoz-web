@@ -6,6 +6,8 @@ import { Rocket, Globe, Loader2, ExternalLink } from "lucide-react";
 import { Button, Dialog } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
 import { request } from "@/lib/api/client";
+import { useAuthToken } from "@/lib/auth-store";
+import { useActiveTenant } from "@/lib/tenant-store";
 import { isReservedSubdomain } from "@/lib/subdomain";
 import { BASE_DOMAIN } from "@/lib/site-config";
 import ModerationBlock, { type ModerationViolation } from "@/components/moderation-block";
@@ -45,6 +47,40 @@ export default function PublishModal({ site, siteId, onConfirm, onCancel, loadin
   });
   const [agreed, setAgreed] = useState(false);
   const [contentVerified, setContentVerified] = useState(false);
+  const token = useAuthToken();
+  const { activeTenantId } = useActiveTenant();
+  // Bagian yang masih contoh (tidak ikut tayang) — diambil dari server.
+  const [exampleSections, setExampleSections] = useState<string[]>([]);
+  useEffect(() => {
+    if (!siteId || !token || !activeTenantId) return;
+    let active = true;
+    request<{ sections: string[] }>(
+      `/sites/${siteId}/example-sections`,
+      { headers: { "X-Tenant-ID": activeTenantId.toString() } },
+      token,
+    )
+      .then((res) => {
+        if (active) setExampleSections(res.data?.sections ?? []);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [siteId, token, activeTenantId]);
+  const exampleLabel = (key: string): string => {
+    switch (key) {
+      case "testimonials":
+        return t("dashboard.sites.publishExampleTestimonials");
+      case "stats":
+        return t("dashboard.sites.publishExampleStats");
+      case "partners":
+        return t("dashboard.sites.publishExamplePartners");
+      case "about.milestones":
+        return t("dashboard.sites.publishExampleMilestones");
+      default:
+        return key;
+    }
+  };
   const [submitAttempted, setSubmitAttempted] = useState(false);
   // Hasil lookup server, disimpan bersama subdomain yang diperiksa agar hasil
   // lama tidak dipakai untuk input baru.
@@ -278,6 +314,22 @@ export default function PublishModal({ site, siteId, onConfirm, onCancel, loadin
                 {t("dashboard.sites.customDomainDescPost")}
               </p>
             </div>
+          </div>
+        )}
+
+        {exampleSections.length > 0 && (
+          <div className="rounded-xl border border-amber-500/30 bg-amber-500/[0.06] p-3.5 space-y-1.5">
+            <p className="text-[12px] font-semibold text-foreground/90 leading-snug">
+              {t("dashboard.sites.publishExamplesTitle")}
+            </p>
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              {t("dashboard.sites.publishExamplesDesc")}
+            </p>
+            <ul className="list-disc pl-4 space-y-0.5 text-[11.5px] text-foreground/80">
+              {exampleSections.map((k) => (
+                <li key={k}>{exampleLabel(k)}</li>
+              ))}
+            </ul>
           </div>
         )}
 

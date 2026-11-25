@@ -4,6 +4,7 @@ import type { DesignToken, TemplateProps } from "../../templates/types";
 import type { AboutVariantProps } from "./classic";
 import { resolveVariant } from "../variant-meta";
 import { ABOUT_VARIANTS } from "./variants";
+import { ExampleBadgeWrap } from "../example-badge";
 
 export default function AboutSection({
   about,
@@ -42,9 +43,18 @@ export default function AboutSection({
     }
   }, [about, onUpdateField, variant]);
 
+  // Milestones flagged as sample (mock "founded 2022..."): hidden publicly, badged in the editor.
+  const milestonesExample =
+    Array.isArray(about?._example_fields) &&
+    about._example_fields.includes("milestones") &&
+    (about?.milestones?.length ?? 0) > 0;
+  const showsMilestones = variant === "timeline" || variant === "milestone-showcase";
+  const effectiveAbout = milestonesExample && !isEditorMode ? { ...about, milestones: undefined } : about;
+
   return (
+    <ExampleBadgeWrap show={milestonesExample && showsMilestones && !!isEditorMode} language={language}>
     <Renderer
-      about={about}
+      about={effectiveAbout}
       design_token={design_token}
       onUpdateField={onUpdateField}
       isEditorMode={isEditorMode}
@@ -54,5 +64,6 @@ export default function AboutSection({
       onAddItem={isEditorMode ? onAddItem : undefined}
       language={language}
     />
+    </ExampleBadgeWrap>
   );
 }

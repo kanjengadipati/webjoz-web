@@ -4,6 +4,7 @@ import type { DesignToken, TemplateProps } from "../../templates/types";
 
 import { resolveVariant } from "../variant-meta";
 import { PARTNERS_VARIANTS } from "./variants";
+import { ExampleBadgeWrap } from "../example-badge";
 
 export interface PartnersVariantProps {
   partners: NonNullable<TemplateProps["content"]["partners"]>;
@@ -29,5 +30,11 @@ export default function PartnersSection(props: {
   if (!props.partners?.items?.length) return null;
   const variant = props.design_token?.layout?.section_variants?.partners ?? "logo-wall";
   const Renderer = resolveVariant<PartnersVariantProps>(PARTNERS_VARIANTS, variant, "logo-wall");
-  return <Renderer {...props} partners={props.partners} />;
+  const isExample = props.partners._is_example === true;
+  if (isExample && !props.isEditorMode) return null; // sample partners never show publicly
+  return (
+    <ExampleBadgeWrap show={isExample} language={props.language}>
+      <Renderer {...props} partners={props.partners} />
+    </ExampleBadgeWrap>
+  );
 }

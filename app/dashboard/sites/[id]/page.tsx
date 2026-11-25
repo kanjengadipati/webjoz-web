@@ -463,7 +463,7 @@ export default function SiteEditorPage() {
     }
   };
 
-  const handlePublishWithSubdomain = async (subdomain: string, _contentVerified?: boolean) => {
+  const handlePublishWithSubdomain = async (subdomain: string, contentVerified?: boolean) => {
     if (!siteDetails || !token || !activeTenantId) return;
     if (isSuspended) {
       pushToast(t("dashboard.planExpiredBanner"), "error");
@@ -485,7 +485,8 @@ export default function SiteEditorPage() {
       // 2. Publish
       const publishRes = await request<any>(`/sites/${siteDetails.id}/publish`, {
         method: "POST",
-        headers: { "X-Tenant-ID": activeTenantId.toString() }
+        headers: { "X-Tenant-ID": activeTenantId.toString() },
+        body: JSON.stringify({ content_verified: contentVerified === true }),
       }, token);
 
       pushToast(t("dashboard.sitesEditor.publishSuccess"), "success");
@@ -501,6 +502,11 @@ export default function SiteEditorPage() {
       if (apiErr.code === "MODERATION_VIOLATIONS" && Array.isArray(apiErr.details)) {
         setModerationViolations(apiErr.details as ModerationViolation[]);
         setAppealed(false);
+        return;
+      }
+      if (apiErr.code === "ERR_CONTENT_NOT_VERIFIED") {
+        // No prior declaration on record (e.g. site published before this rule): ask for it in the modal.
+        setPublishModalOpen(true);
         return;
       }
       if (apiErr.code === "ERR_SUBDOMAIN_TAKEN") {

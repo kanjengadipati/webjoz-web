@@ -4,6 +4,7 @@ import type { DesignToken, TemplateProps } from "../../templates/types";
 
 import { resolveVariant } from "../variant-meta";
 import { STATS_VARIANTS } from "./variants";
+import { ExampleBadgeWrap } from "../example-badge";
 
 export interface StatsVariantProps {
   stats: NonNullable<TemplateProps["content"]["stats"]>;
@@ -29,5 +30,11 @@ export default function StatsSection(props: {
   if (!props.stats?.items?.length) return null;
   const variant = props.design_token?.layout?.section_variants?.stats ?? "counter-row";
   const Renderer = resolveVariant<StatsVariantProps>(STATS_VARIANTS, variant, "counter-row");
-  return <Renderer {...props} stats={props.stats} />;
+  const isExample = props.stats._is_example === true;
+  if (isExample && !props.isEditorMode) return null; // sample numbers never show publicly
+  return (
+    <ExampleBadgeWrap show={isExample} language={props.language}>
+      <Renderer {...props} stats={props.stats} />
+    </ExampleBadgeWrap>
+  );
 }
