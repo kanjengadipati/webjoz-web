@@ -67,7 +67,7 @@ export default function TestimonialsSection({
 
 
   // Semua hook di atas; baru boleh return awal.
-  if (isExample && !isEditor) return null;
+  if (isExample && !isEditorMode) return null;
 
   return (
     <>
