@@ -54,8 +54,8 @@ export function SectionRenderer({
         />
       );
 
-    case "header":
-      return (
+    case "header": {
+      const headerEl = (
         <HeaderSection
           header={d.header as any}
           design_token={designToken}
@@ -63,6 +63,38 @@ export function SectionRenderer({
           language="id"
         />
       );
+      if (variantKey === "transparent-overlay") {
+        const heroVar =
+          (designToken?.layout?.section_variants?.hero as string | undefined) ||
+          designToken?.layout?.hero_style ||
+          "centered";
+        const needsDarkBackdrop =
+          designToken?.theme_mode === "dark" ||
+          [
+            "full-bleed",
+            "image-carousel",
+            "carousel-split",
+            "carousel-filmstrip",
+            "video-bg",
+            "product-showcase",
+            "cinematic",
+            "bento-grid",
+          ].includes(heroVar);
+        return (
+          <div
+            className="relative min-h-[108px] overflow-hidden"
+            style={{
+              background: needsDarkBackdrop
+                ? "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)"
+                : "var(--dt-bg, var(--background))",
+            }}
+          >
+            {headerEl}
+          </div>
+        );
+      }
+      return headerEl;
+    }
 
     case "about":
       return (

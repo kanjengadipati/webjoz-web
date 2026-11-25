@@ -10,6 +10,10 @@ const WorksGrid = dynamic(() => import("./grid"));
 const WorksMasonry = dynamic(() => import("./masonry"));
 const WorksFeaturedGrid = dynamic(() => import("./featured-grid"));
 const WorksShowcaseFeatured = dynamic(() => import("./showcase-featured"));
+const WorksBento = dynamic(() => import("./bento"));
+const WorksEditorial = dynamic(() => import("./editorial"));
+const WorksCarousel = dynamic(() => import("./carousel"));
+const WorksFullWidth = dynamic(() => import("./full-width"));
 
 export default function WorksSection({
   works,
@@ -145,6 +149,14 @@ export default function WorksSection({
           <WorksFeaturedGrid {...rackProps} />
         ) : variant === "showcase-featured" ? (
           <WorksShowcaseFeatured {...rackProps} />
+        ) : variant === "bento" ? (
+          <WorksBento {...rackProps} />
+        ) : variant === "editorial" ? (
+          <WorksEditorial {...rackProps} />
+        ) : variant === "carousel" ? (
+          <WorksCarousel {...rackProps} />
+        ) : variant === "full-width" ? (
+          <WorksFullWidth {...rackProps} />
         ) : (
           <WorksGrid {...rackProps} />
         )}

@@ -48,6 +48,10 @@ export const SECTION_VARIANT_OPTIONS: Record<string, VariantOption[]> = {
     { value: "masonry",            labelKey: "variantWorksMasonry",          label: "Masonry",          descriptionKey: "variantWorksMasonryDesc",          description: "Tinggi kartu bervariasi seperti Pinterest." },
     { value: "featured-grid",      labelKey: "variantWorksFeaturedGrid",     label: "Grid Unggulan",    descriptionKey: "variantWorksFeaturedGridDesc",     description: "Proyek pertama besar sebagai sorotan, sisanya grid rapi." },
     { value: "showcase-featured",  labelKey: "variantWorksShowcaseFeatured", label: "Showcase Unggulan",descriptionKey: "variantWorksShowcaseFeaturedDesc", description: "Proyek utama horizontal besar, sisanya grid 2 kolom." },
+    { value: "bento",              labelKey: "variantWorksBento",            label: "Bento",            descriptionKey: "variantWorksBentoDesc",            description: "Grid asimetris dengan satu proyek utama besar dan proyek pendukung." },
+    { value: "editorial",          labelKey: "variantWorksEditorial",        label: "Editorial",        descriptionKey: "variantWorksEditorialDesc",        description: "Daftar proyek bernomor rapi dengan thumbnail di kanan." },
+    { value: "carousel",           labelKey: "variantWorksCarousel",         label: "Carousel",         descriptionKey: "variantWorksCarouselDesc",         description: "Slider horizontal dengan tombol navigasi untuk banyak proyek." },
+    { value: "full-width",         labelKey: "variantWorksFullWidth",        label: "Full Width",       descriptionKey: "variantWorksFullWidthDesc",        description: "Gambar proyek penuh dengan kartu info mengambang." },
   ],
   stats: variantOptions(STATS_VARIANTS),
   skills: variantOptions(SKILLS_VARIANTS),
@@ -234,9 +238,11 @@ export function getVariantWireframeLayout(section: string, value: string): strin
 
     case "gallery":
     case "works":
+      if (v.includes("bento")) return "bento";
+      if (v.includes("editorial")) return "list";
       if (v.includes("masonry")) return "masonry";
       if (v.includes("carousel")) return "carousel";
-      if (v.includes("featured") || v.includes("showcase")) return "featured";
+      if (v.includes("featured") || v.includes("showcase") || v.includes("full-width")) return "featured";
       if (v.includes("before") || v.includes("slider")) return "before-after";
       if (v.includes("video")) return "video-grid";
       return "grid";

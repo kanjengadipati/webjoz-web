@@ -51,6 +51,7 @@
     "classic-split",
     "dark-split",
     "minimal-centered",
+    "office-showcase",
     "overlay-map",
     "whatsapp-direct"
   ],
@@ -144,7 +145,11 @@
     "video-wall"
   ],
   "works": [
+    "bento",
+    "carousel",
+    "editorial",
     "featured-grid",
+    "full-width",
     "grid",
     "masonry",
     "showcase-featured"

@@ -196,7 +196,7 @@ export interface PricingPlan {
 }
 
 export type GalleryLayout = "grid" | "masonry" | "carousel";
-export type WorksLayout = "grid" | "masonry" | "featured-grid" | "showcase-featured";
+export type WorksLayout = "grid" | "masonry" | "featured-grid" | "showcase-featured" | "bento" | "editorial" | "carousel" | "full-width";
 export type BlogLayout = "grid" | "list" | "featured" | "minimal";
 
 export interface IconHighlightPair {
@@ -453,6 +453,8 @@ export interface TemplateProps {
       address: string;
       phone: string;
       email: string;
+      image_url?: string | null;
+      image_credit?: ImageCredit | null;
       maps_url?: string | null;
       opening_hours?: string;
       align?: "left" | "center" | "right" | null;

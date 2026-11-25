@@ -37,6 +37,10 @@ export const CONTACT_VARIANTS = {
     component: dynamic(() => import("./minimal-centered")),
     labelKey: "variantContactMinimalCentered",  label: "Minimal Tengah",      descriptionKey: "variantContactMinimalCenteredDesc",  description: "Kartu kontak ringkas terpusat tanpa peta.",
   },
+  "office-showcase": {
+    component: dynamic(() => import("./office-showcase")),
+    labelKey: "variantContactOfficeShowcase",   label: "Showcase Kantor",     descriptionKey: "variantContactOfficeShowcaseDesc",   description: "Foto lokasi atau kantor fisik berdampingan dengan info kontak dan arah lokasi.",
+  },
 } satisfies Record<string, VariantDef<ContactVariantProps>>;
 
 export type ContactVariant = keyof typeof CONTACT_VARIANTS;

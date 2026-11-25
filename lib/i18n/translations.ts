@@ -3244,6 +3244,14 @@ export interface Translations {
       variantWorksFeaturedGridDesc: string;
       variantWorksShowcaseFeatured: string;
       variantWorksShowcaseFeaturedDesc: string;
+      variantWorksBento: string;
+      variantWorksBentoDesc: string;
+      variantWorksEditorial: string;
+      variantWorksEditorialDesc: string;
+      variantWorksCarousel: string;
+      variantWorksCarouselDesc: string;
+      variantWorksFullWidth: string;
+      variantWorksFullWidthDesc: string;
       // stats
       variantStatsCounterRow: string;
       variantStatsCounterRowDesc: string;
@@ -3341,6 +3349,8 @@ export interface Translations {
       variantContactDarkSplitDesc: string;
       variantContactMinimalCentered: string;
       variantContactMinimalCenteredDesc: string;
+      variantContactOfficeShowcase: string;
+      variantContactOfficeShowcaseDesc: string;
       // header
       variantHeaderLeftLogoInlineNav: string;
       variantHeaderLeftLogoInlineNavDesc: string;
@@ -7523,6 +7533,18 @@ export const translations: Record<Locale, Translations> = {
         variantWorksShowcaseFeatured: "Showcase Unggulan",
         variantWorksShowcaseFeaturedDesc:
           "Proyek utama horizontal besar, sisanya grid 2 kolom.",
+        variantWorksBento: "Bento",
+        variantWorksBentoDesc:
+          "Grid asimetris dengan satu proyek utama besar dan proyek pendukung.",
+        variantWorksEditorial: "Editorial",
+        variantWorksEditorialDesc:
+          "Daftar proyek bernomor rapi dengan thumbnail di kanan.",
+        variantWorksCarousel: "Carousel",
+        variantWorksCarouselDesc:
+          "Slider horizontal dengan tombol navigasi untuk banyak proyek.",
+        variantWorksFullWidth: "Full Width",
+        variantWorksFullWidthDesc:
+          "Gambar proyek penuh dengan kartu info mengambang.",
         // stats
         variantStatsCounterRow: "Baris Metrik",
         variantStatsCounterRowDesc:
@@ -7656,6 +7678,9 @@ export const translations: Record<Locale, Translations> = {
         variantContactMinimalCentered: "Minimal Tengah",
         variantContactMinimalCenteredDesc:
           "Kartu kontak ringkas terpusat tanpa peta.",
+        variantContactOfficeShowcase: "Showcase Kantor",
+        variantContactOfficeShowcaseDesc:
+          "Foto lokasi atau kantor fisik berdampingan dengan info kontak dan arah lokasi.",
         // header
         variantHeaderLeftLogoInlineNav: "Logo Kiri + Nav Inline",
         variantHeaderLeftLogoInlineNavDesc:
@@ -12070,6 +12095,18 @@ export const translations: Record<Locale, Translations> = {
         variantWorksShowcaseFeatured: "Showcase",
         variantWorksShowcaseFeaturedDesc:
           "Main project horizontal hero, the rest in a 2-column grid.",
+        variantWorksBento: "Bento",
+        variantWorksBentoDesc:
+          "Asymmetric grid with one large flagship project and supporting items.",
+        variantWorksEditorial: "Editorial",
+        variantWorksEditorialDesc:
+          "Numbered project list with a clean thumbnail on the right.",
+        variantWorksCarousel: "Carousel",
+        variantWorksCarouselDesc:
+          "Horizontal slider with navigation arrows for multiple projects.",
+        variantWorksFullWidth: "Full Width",
+        variantWorksFullWidthDesc:
+          "Full-bleed project visual with an elevated floating info card.",
         // stats
         variantStatsCounterRow: "Metric Row",
         variantStatsCounterRowDesc:
@@ -12202,6 +12239,9 @@ export const translations: Record<Locale, Translations> = {
         variantContactMinimalCentered: "Minimal Centered",
         variantContactMinimalCenteredDesc:
           "Compact centered contact card without a map.",
+        variantContactOfficeShowcase: "Office Showcase",
+        variantContactOfficeShowcaseDesc:
+          "Physical office or location photo paired with contact details and directions.",
         // header
         variantHeaderLeftLogoInlineNav: "Logo Left + Inline Nav",
         variantHeaderLeftLogoInlineNavDesc:

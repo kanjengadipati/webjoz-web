@@ -1101,6 +1101,7 @@ export const MOCK_SHOWCASE_DATA = {
     email: "halo@webjoz.id",
     address: "Jl. Giwangan No. 45, Umbulharjo, D.I. Yogyakarta 55163",
     hours: "Senin - Sabtu: 08:30 - 17:00 WIB",
+    image_url: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1000&auto=format&fit=crop&q=80",
     whatsapp: "6281234567890",
     map_embed_url: "https://maps.google.com/maps?q=-7.8288,110.3922&hl=id&z=14&output=embed",
     maps_url: "https://maps.google.com/maps?q=-7.8288,110.3922&hl=id&z=14&output=embed",
