@@ -38,21 +38,26 @@ export default function TestimonialsFeaturedSpotlight({
   return (
     <section id="testimonials" style={{ padding: `var(--dt-spacing) 1.5rem`, background: `color-mix(in srgb, var(--dt-primary) 5%, var(--dt-bg))`, borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)` }}>
       <div style={{ maxWidth: "56rem", margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-          <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>{isEN ? "Testimonials" : "Testimoni"}</span>
-          <InlineText
-            section="testimonials"
-            fieldKey="title"
-            value={t.title}
-            placeholder={isEN ? "What Clients Say" : "Apa Kata Klien"}
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={isSelected}
-            as="h2"
-            style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-          />
+        <div className="flex flex-col items-center text-center mb-8">
+          <div className="mb-2">
+            <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)", display: "block" }}>{isEN ? "Testimonials" : "Testimoni"}</span>
+          </div>
+          <div className="w-full">
+            <InlineText
+              section="testimonials"
+              fieldKey="title"
+              value={t.title}
+              placeholder={isEN ? "What Clients Say" : "Apa Kata Klien"}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="h2"
+              multiline
+              style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem", display: "block" }}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
+          </div>
         </div>
         <div style={{ position: "relative", background: "var(--dt-surface)", border: `1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)`, borderRadius: "var(--dt-radius-lg)", padding: "3rem 2.5rem", textAlign: "center" }}>
           {featured ? (

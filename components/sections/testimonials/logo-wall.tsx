@@ -36,46 +36,54 @@ export default function TestimonialsLogoWall({
   const items = t.items ?? [];
   return (
     <section id="testimonials" style={{ padding: `var(--dt-spacing) 1.5rem`, background: `color-mix(in srgb, var(--dt-primary) 4%, var(--dt-bg))`, borderTop: `1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)` }}>
-      <div style={{ maxWidth: "72rem", margin: "0 auto", textAlign: "center" }}>
+      <div style={{ maxWidth: "72rem", margin: "0 auto" }} className="flex flex-col items-center text-center">
         {(t.eyebrow || isEditorMode) && (
-          <InlineText
-            section="testimonials"
-            fieldKey="eyebrow"
-            value={t.eyebrow ?? ""}
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={isSelected}
-            as="span"
-            style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)", display: "block" }}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-          />
+          <div className="mb-2">
+            <InlineText
+              section="testimonials"
+              fieldKey="eyebrow"
+              value={t.eyebrow ?? ""}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="span"
+              style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)", display: "block" }}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
+          </div>
         )}
-        <InlineText
-          section="testimonials"
-          fieldKey="title"
-          value={t.title}
-          onUpdateField={onUpdateField}
-          isEditorMode={isEditorMode}
-          isSelected={isSelected}
-          as="h2"
-          style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}
-          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-          onEditingStateChange={onEditingStateChange}
-        />
-        {(t.subtitle || isEditorMode) && (
+        <div className="w-full">
           <InlineText
             section="testimonials"
-            fieldKey="subtitle"
-            value={t.subtitle}
+            fieldKey="title"
+            value={t.title}
             onUpdateField={onUpdateField}
             isEditorMode={isEditorMode}
             isSelected={isSelected}
-            as="p"
-            style={{ color: "var(--dt-text-muted)", marginTop: "0.75rem", lineHeight: 1.6 }}
+            as="h2"
+            multiline
+            style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem", display: "block" }}
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
             onEditingStateChange={onEditingStateChange}
           />
+        </div>
+        {(t.subtitle || isEditorMode) && (
+          <div className="w-full">
+            <InlineText
+              section="testimonials"
+              fieldKey="subtitle"
+              value={t.subtitle}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              as="p"
+              multiline
+              style={{ color: "var(--dt-text-muted)", marginTop: "0.75rem", lineHeight: 1.6, display: "block" }}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+              onEditingStateChange={onEditingStateChange}
+            />
+          </div>
         )}
         {items.length > 0 && (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "2rem", marginTop: "3rem", alignItems: "center" }}>

@@ -81,46 +81,56 @@ export default function TestimonialsGoogleReviews({
       <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
 
         {/* Section header */}
-        <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
+        <div className="flex flex-col items-center text-center mb-10">
           {(t.eyebrow || isEditorMode) && (
-            <InlineText
-              section="testimonials"
-              fieldKey="eyebrow"
-              value={t.eyebrow}
-              onUpdateField={onUpdateField}
-              isEditorMode={isEditorMode}
-              isSelected={isSelected}
-              as="span"
-              style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}
-              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              onEditingStateChange={onEditingStateChange}
-            />
+            <div className="mb-2">
+              <InlineText
+                section="testimonials"
+                fieldKey="eyebrow"
+                value={t.eyebrow}
+                placeholder={isEN ? "Testimonials" : "Testimoni"}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="span"
+                style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)", display: "block" }}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
+            </div>
           )}
-          <InlineText
-            section="testimonials"
-            fieldKey="title"
-            value={t.title}
-            onUpdateField={onUpdateField}
-            isEditorMode={isEditorMode}
-            isSelected={isSelected}
-            as="h2"
-            style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.1rem)", color: "var(--dt-text)", marginTop: t.eyebrow ? "0.5rem" : 0, marginBottom: 0 }}
-            collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-            onEditingStateChange={onEditingStateChange}
-          />
-          {(t.subtitle || isEditorMode) && (
+          <div className="w-full">
             <InlineText
               section="testimonials"
-              fieldKey="subtitle"
-              value={t.subtitle}
+              fieldKey="title"
+              value={t.title}
+              placeholder={isEN ? "What Our Clients Say" : "Kata Klien Kami"}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
-              as="p"
-              style={{ color: "var(--dt-text-muted)", fontSize: "0.95rem", marginTop: "0.5rem", marginBottom: 0 }}
+              as="h2"
+              multiline
+              style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.1rem)", color: "var(--dt-text)", marginTop: t.eyebrow ? "0.5rem" : 0, marginBottom: 0, display: "block" }}
               collapseSheetForInlineEdit={collapseSheetForInlineEdit}
               onEditingStateChange={onEditingStateChange}
             />
+          </div>
+          {(t.subtitle || isEditorMode) && (
+            <div className="w-full">
+              <InlineText
+                section="testimonials"
+                fieldKey="subtitle"
+                value={t.subtitle}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode}
+                isSelected={isSelected}
+                as="p"
+                multiline
+                style={{ color: "var(--dt-text-muted)", fontSize: "0.95rem", marginTop: "0.5rem", marginBottom: 0, display: "block" }}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+              />
+            </div>
           )}
 
           {/* Aggregate Google rating badge */}

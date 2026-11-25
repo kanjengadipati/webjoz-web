@@ -1283,37 +1283,44 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   return (
     <section id="testimonials" className={wrapperClasses} style={wrapperStyle}>
       <div className="max-w-6xl mx-auto space-y-12">
-        {(testimonials.eyebrow || testimonials.title) && (
-          <div className="text-center space-y-2">
-            {testimonials.eyebrow && (
-              <InlineText
-                section="testimonials"
-                fieldKey="eyebrow"
-                value={testimonials.eyebrow}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={isSelected}
-                as="span"
-                className={eyebrowClasses}
-                style={eyebrowStyle}
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                onEditingStateChange={onEditingStateChange}
-              />
+        {(testimonials.eyebrow || testimonials.title || isEditorMode) && (
+          <div className="flex flex-col items-center text-center mb-10">
+            {(testimonials.eyebrow || isEditorMode) && (
+              <div className="mb-2">
+                <InlineText
+                  section="testimonials"
+                  fieldKey="eyebrow"
+                  value={testimonials.eyebrow}
+                  placeholder={isEN ? "Testimonials" : "Testimoni"}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="span"
+                  className={eyebrowClasses}
+                  style={eyebrowStyle}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
+              </div>
             )}
-            {testimonials.title && (
-              <InlineText
-                section="testimonials"
-                fieldKey="title"
-                value={testimonials.title}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={isSelected}
-                as="h2"
-                className={titleClasses}
-                style={{ ...titleStyle, ...headingVars }}
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                onEditingStateChange={onEditingStateChange}
-              />
+            {(testimonials.title || isEditorMode) && (
+              <div className="w-full">
+                <InlineText
+                  section="testimonials"
+                  fieldKey="title"
+                  value={testimonials.title}
+                  placeholder={isEN ? "What Our Clients Say" : "Kata Klien Kami"}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="h2"
+                  multiline
+                  className={titleClasses}
+                  style={{ ...titleStyle, ...headingVars, display: "block" }}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
+              </div>
             )}
           </div>
         )}
@@ -4557,51 +4564,59 @@ const SharedBenefitsSection: React.FC<BenefitsSectionProps> = ({
     <section id="benefits" className={wrapperClass} style={{ ...wrapperStyle, ...alignStyle }}>
       <div className="max-w-6xl mx-auto space-y-10 md:space-y-12">
         {(b.eyebrow || b.title || b.subtitle) && (
-          <div className="space-y-2">
+          <div className="flex flex-col items-center text-center space-y-2">
             {b.eyebrow && (
-              <InlineText
-                section="benefits"
-                fieldKey="eyebrow"
-                value={b.eyebrow}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={isSelected}
-                as="span"
-                className={eyebrowClass}
-                style={headerAlign}
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                onEditingStateChange={onEditingStateChange}
-              />
+              <div className="mb-1">
+                <InlineText
+                  section="benefits"
+                  fieldKey="eyebrow"
+                  value={b.eyebrow}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="span"
+                  className={eyebrowClass}
+                  style={headerAlign}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
+              </div>
             )}
             {b.title && (
-              <InlineText
-                section="benefits"
-                fieldKey="title"
-                value={b.title}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={isSelected}
-                as="h2"
-                className={titleClass}
-                style={{ ...titleStyle, ...headingVars, ...alignStyle }}
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                onEditingStateChange={onEditingStateChange}
-              />
+              <div className="w-full">
+                <InlineText
+                  section="benefits"
+                  fieldKey="title"
+                  value={b.title}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="h2"
+                  multiline
+                  className={titleClass}
+                  style={{ ...titleStyle, ...headingVars, ...alignStyle, display: "block" }}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
+              </div>
             )}
             {b.subtitle && (
-              <InlineText
-                section="benefits"
-                fieldKey="subtitle"
-                value={b.subtitle}
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={isSelected}
-                as="p"
-                className={subtitleClass}
-                style={{ ...subtitleStyle, ...alignStyle }}
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                onEditingStateChange={onEditingStateChange}
-              />
+              <div className="w-full">
+                <InlineText
+                  section="benefits"
+                  fieldKey="subtitle"
+                  value={b.subtitle}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  as="p"
+                  multiline
+                  className={subtitleClass}
+                  style={{ ...subtitleStyle, ...alignStyle, display: "block" }}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                />
+              </div>
             )}
           </div>
         )}
