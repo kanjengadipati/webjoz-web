@@ -26,10 +26,12 @@ type AuthShellProps = {
 // Landing-page style navbar — shared on desktop across all auth pages.
 function LandingHeader() {
   const router = useRouter();
+  const pathname = usePathname();
   const { t } = useI18n();
   const authReady = useAuthReady();
   const token = useAuthToken();
   const isLoggedIn = authReady && !!token;
+  const isLoginPage = pathname === "/login";
 
   return (
     <header className="hidden lg:block sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
@@ -91,6 +93,13 @@ function LandingHeader() {
                 className="hidden sm:inline-block text-xs font-medium text-muted-foreground hover:text-foreground transition-colors px-2 py-1"
               >
                 {t("landing.navDashboard")}
+              </Link>
+            ) : isLoginPage ? (
+              <Link
+                href="/register"
+                className="hidden sm:inline-block text-xs font-medium text-muted-foreground hover:text-foreground transition-colors px-2 py-1"
+              >
+                {t("landing.navRegister")}
               </Link>
             ) : (
               <Link

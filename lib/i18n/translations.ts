@@ -109,6 +109,7 @@ export interface Translations {
     navHelp: string;
     navDashboard: string;
     navLogin: string;
+    navRegister: string;
     navCreateNew: string;
     navStartFree: string;
     mockupGreeting: string;
@@ -4074,6 +4075,7 @@ export const translations: Record<Locale, Translations> = {
       navHelp: "Bantuan",
       navDashboard: "Dashboard",
       navLogin: "Login",
+      navRegister: "Daftar",
       navCreateNew: "Buat Website Baru",
       navStartFree: "Mulai Gratis",
       mockupGreeting: "Halo! Apa nama bisnis Anda?",
@@ -8661,6 +8663,7 @@ export const translations: Record<Locale, Translations> = {
       navHelp: "Help",
       navDashboard: "Dashboard",
       navLogin: "Login",
+      navRegister: "Sign Up",
       navCreateNew: "Create New Website",
       navStartFree: "Start Free",
       mockupGreeting: "Hi! What's your business name?",
