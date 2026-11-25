@@ -4,6 +4,7 @@ import type { DesignToken, TemplateProps } from "../../templates/types";
 import { useI18n } from "@/lib/i18n/context";
 
 import { resolveVariant } from "../variant-meta";
+import { testimonialsStrings } from "./testimonials-strings";
 import { TESTIMONIALS_VARIANTS } from "./variants";
 
 export type TestimonialVariantProps = {
@@ -44,6 +45,7 @@ export default function TestimonialsSection({
 }) {
   const { locale } = useI18n();
   const effectiveLang = language || locale || "id";
+  const L = testimonialsStrings(effectiveLang);
   const variant = design_token?.layout?.section_variants?.testimonials ?? "carousel";
   const Renderer = resolveVariant<TestimonialVariantProps>(TESTIMONIALS_VARIANTS, variant, "carousel");
   const isEditor = !!(isEditorMode && (editorChrome ?? true));
@@ -57,9 +59,9 @@ export default function TestimonialsSection({
       quote: isEN
         ? "Very friendly and professional service, the results exceeded our expectations!"
         : "Pelayanan sangat ramah, profesional, dan hasil yang diberikan sangat memuaskan!",
-      name: isEN ? "Client Name" : "Nama Pelanggan",
-      role: isEN ? "Client" : "Pelanggan",
-      avatar_initials: isEN ? "CN" : "NP",
+      name: L.clientName,
+      role: L.client,
+      avatar_initials: L.avatarInitials,
       avatar_color: "var(--dt-primary)",
     });
     onUpdateField("testimonials", "items", items);

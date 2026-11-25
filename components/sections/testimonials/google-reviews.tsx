@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { InlineText, InlineImage } from "../../templates/shared";
+import { testimonialsStrings } from "./testimonials-strings";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 import { avatarTextColor } from "../../templates/helpers";
 import { InlineAddTile } from "../inline-add";
@@ -59,6 +60,7 @@ export default function TestimonialsGoogleReviews({
 }: Props) {
   if (!t) return null;
   const isEN = (language || locale || "").toLowerCase().startsWith("en");
+  const L = testimonialsStrings(language || locale || "id");
   if (!t.items?.length && !(isEditorMode && onAddItem)) return null;
 
   const items = t.items;
@@ -88,7 +90,7 @@ export default function TestimonialsGoogleReviews({
                 section="testimonials"
                 fieldKey="eyebrow"
                 value={t.eyebrow}
-                placeholder={isEN ? "What Clients Say" : "Apa Kata Klien"}
+                placeholder={L.whatClientsSay}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
@@ -104,7 +106,7 @@ export default function TestimonialsGoogleReviews({
               section="testimonials"
               fieldKey="title"
               value={t.title}
-              placeholder={isEN ? "What Our Clients Say" : "Kata Klien Kami"}
+              placeholder={L.whatOurClientsSay}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -198,7 +200,7 @@ export default function TestimonialsGoogleReviews({
                       <InlineText section="testimonials" fieldKey={`items.${idx}.name`} value={item.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="p" style={{ fontWeight: 700, color: "var(--dt-text)", fontSize: "0.875rem", margin: 0, lineHeight: 1.3 }} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
                       {(item.role || item.company || isEditorMode) && (
                         <p style={{ color: "var(--dt-text-muted)", fontSize: "0.75rem", margin: 0, lineHeight: 1.3 }}>
-                          <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={item.role ?? ""} placeholder={isEN ? "Role / Position" : "Jabatan / Peran"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />{(item.company || isEditorMode) && (
+                          <InlineText section="testimonials" fieldKey={`items.${idx}.role`} value={item.role ?? ""} placeholder={L.rolePosition} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />{(item.company || isEditorMode) && (
                           <span>
                             <span> · </span>
                             <InlineText section="testimonials" fieldKey={`items.${idx}.company`} value={item.company ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
@@ -216,14 +218,14 @@ export default function TestimonialsGoogleReviews({
 
                 {/* Quote */}
                 <p style={{ color: "var(--dt-text-muted)", fontSize: "0.875rem", lineHeight: 1.6, margin: 0, flexGrow: 1, fontStyle: "italic" }}>
-                  &ldquo;<InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={item.quote ?? ""} placeholder={isEN ? "Client testimonial..." : "Testimoni pelanggan..."} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />&rdquo;
+                  &ldquo;<InlineText section="testimonials" fieldKey={`items.${idx}.quote`} value={item.quote ?? ""} placeholder={L.clientTestimonial} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" multiline collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />&rdquo;
                 </p>
               </div>
             );
           })}
           {isEditorMode && onAddItem && (
             <InlineAddTile
-              label={isEN ? "Add Testimonial" : "Tambah Testimoni"}
+              label={L.addTestimonial}
               variant="card"
               className="rounded-2xl min-h-[220px] w-full h-full"
               style={{ borderRadius: "var(--dt-radius-lg)" }}

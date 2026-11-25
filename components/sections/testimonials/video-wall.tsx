@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Play, Star, X } from "lucide-react";
 import { InlineText, InlineImage } from "../../templates/shared";
+import { testimonialsStrings } from "./testimonials-strings";
 import { InlineAddTile } from "../inline-add";
 import { headingVars, avatarTextColor } from "../../templates/helpers";
 import type { TemplateProps, DesignToken, TestimonialItem } from "../../templates/types";
@@ -86,6 +87,7 @@ export default function TestimonialsVideoWall({
   language = "id",
 }: TestimonialsVariantProps) {
   const isEN = language === "en";
+  const L = testimonialsStrings(language || "id");
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
 
   useEffect(() => {
@@ -101,20 +103,20 @@ export default function TestimonialsVideoWall({
   const items = (t.items ?? []) as WallItem[];
   if (!items.length && !(isEditorMode && onAddItem)) return null;
 
-  const labelWatch = isEN ? "Watch" : "Tonton";
-  const labelPlay = isEN ? "Play video" : "Putar video";
-  const labelClose = isEN ? "Close video" : "Tutup video";
-  const labelRemove = isEN ? "Remove testimonial" : "Hapus testimoni";
-  const labelAdd = isEN ? "Add Testimonial" : "Tambah Testimoni";
+  const labelWatch = L.watch;
+  const labelPlay = L.playVideo;
+  const labelClose = L.closeVideo;
+  const labelRemove = L.removeTestimonial;
+  const labelAdd = L.addTestimonial;
   const labelEmpty = isEN
     ? "No testimonials yet. Add real testimonial data."
     : "Belum ada testimoni. Tambahkan data testimoni asli.";
   const placeholderQuote = isEN
     ? "Write the customer testimonial here..."
     : "Tulis testimoni pelanggan di sini...";
-  const placeholderName = isEN ? "Customer name" : "Nama Pelanggan";
-  const placeholderRole = isEN ? "Position / Role" : "Jabatan / Peran";
-  const placeholderAlt = isEN ? "Testimonial photo" : "Foto testimoni";
+  const placeholderName = L.customerName;
+  const placeholderRole = L.positionRole;
+  const placeholderAlt = L.testimonialPhoto;
 
   const activeEmbed = getVideoEmbedUrl(activeVideo);
   const activeIsRaw = !!activeEmbed && /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(activeEmbed);
@@ -138,7 +140,7 @@ export default function TestimonialsVideoWall({
                 section="testimonials"
                 fieldKey="eyebrow"
                 value={t.eyebrow}
-                placeholder={isEN ? "What Clients Say" : "Apa Kata Klien"}
+                placeholder={L.whatClientsSay}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
@@ -161,7 +163,7 @@ export default function TestimonialsVideoWall({
               section="testimonials"
               fieldKey="title"
               value={t.title}
-              placeholder={isEN ? "What Our Clients Say" : "Kata Klien Kami"}
+              placeholder={L.whatOurClientsSay}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
@@ -442,7 +444,7 @@ export default function TestimonialsVideoWall({
             ) : (
               <iframe
                 src={activeEmbed}
-                title={activeItem?.name || (isEN ? "Testimonial video" : "Video testimoni")}
+                title={activeItem?.name || (L.testimonialVideo)}
                 allow="autoplay; fullscreen; picture-in-picture"
                 allowFullScreen
                 className="rounded-lg shadow-2xl bg-black"

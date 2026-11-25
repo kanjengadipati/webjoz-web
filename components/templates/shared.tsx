@@ -20,6 +20,7 @@ import { useEditorChromeEnabled } from "../sections/editor-chrome-context";
 
 import type { TestimonialItem, FaqItem, ImageCredit, BenefitItem, CatalogItem, MenuItem } from "./types";
 import PhotoCredit from "../sections/PhotoCredit";
+import { testimonialsStrings } from "../sections/testimonials/testimonials-strings";
 import { InlineAddTile, InlineDeleteButton } from "../sections/inline-add";
 import { useI18n } from "@/lib/i18n/context";
 import {
@@ -747,6 +748,7 @@ const WAFloatingButton: React.FC<{
 }> = ({ phone, isEditorMode, editorChrome, brandName = "Customer Support", isPremium = false, floatingType, language = "id" }) => {
   const fullEditor = !!(isEditorMode && (editorChrome ?? true));
   const isEN = language === "en";
+  const L = testimonialsStrings(language);
 
   const digits = phone ? phone.replace(/\D/g, "") : "";
   const hasWa = digits.length >= 8 && !isPlaceholderPhone(phone);
@@ -1263,6 +1265,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   // Prefer context locale (always accurate); prop is fallback for SSR edge cases
   const locale = ctxLocale || localeProp;
   const isEN = (locale || "").toLowerCase().startsWith("en");
+  const L = testimonialsStrings(locale || "id");
 
   if (!testimonials) return null;
   if (!testimonials.items?.length && !(isEditorMode && (editorChrome ?? true) && onAddItem)) return null;
@@ -1291,7 +1294,7 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                   section="testimonials"
                   fieldKey="eyebrow"
                   value={testimonials.eyebrow}
-                  placeholder={isEN ? "What Clients Say" : "Apa Kata Klien"}
+                  placeholder={L.whatClientsSay}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
@@ -3296,6 +3299,7 @@ const LeadForm: React.FC<LeadFormProps> = ({
   buttonText, onUpdateField, isEditorMode, isSelected, collapseSheetForInlineEdit, onEditingStateChange
 }) => {
   const isEN = language === "en";
+  const L = testimonialsStrings(language);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -4342,6 +4346,7 @@ const SharedContactSection: React.FC<ContactSectionProps> = ({
   mapLayout = "inline",
 }) => {
   const isEN = language === "en";
+  const L = testimonialsStrings(language);
   const effectiveLeadTitleText = formTitle || leadTitleText || (isEN ? "Contact Us" : "Hubungi Kami");
   const hasLeadForm = Boolean(showLeadForm && onSubmitLead);
   const effectiveAlign = align || "center";

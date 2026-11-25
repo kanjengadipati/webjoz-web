@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { InlineText, InlineImage } from "../../templates/shared";
+import { testimonialsStrings } from "./testimonials-strings";
 import { InlineAddTile } from "../inline-add";
 import type { TemplateProps, DesignToken } from "../../templates/types";
 
@@ -32,6 +33,7 @@ export default function TestimonialsLogoWall({
 }: TestimonialsVariantProps) {
   if (!t) return null;
   const isEN = (language || locale || "").toLowerCase().startsWith("en");
+  const L = testimonialsStrings(language || locale || "id");
   // Never invent testimonials/clients on the public site — only real payload data.
   const items = t.items ?? [];
   return (
@@ -114,13 +116,13 @@ export default function TestimonialsLogoWall({
         )}
         {isEditorMode && items.length === 0 && (
           <p style={{ textAlign: "center", color: "var(--dt-text-muted)", fontSize: "0.8rem", marginTop: "2rem" }}>
-            {isEN ? "No testimonials yet. Add genuine customer feedback." : "Belum ada testimoni. Tambahkan data testimoni asli."}
+            {L.noTestimonialsDesc}
           </p>
         )}
         {isEditorMode && onAddItem && (
           <div style={{ display: "flex", justifyContent: "center", marginTop: "2rem" }}>
             <InlineAddTile
-              label={isEN ? "Add Testimonial" : "Tambah Testimoni"}
+              label={L.addTestimonial}
               variant="card"
               className="rounded-2xl min-h-[160px] w-full max-w-sm"
               style={{ borderRadius: "var(--dt-radius-lg)" }}
