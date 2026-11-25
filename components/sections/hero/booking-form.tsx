@@ -64,6 +64,7 @@ export default function HeroBookingForm({
     fontSize: "0.875rem",
     outline: "none",
   };
+  const inputClass = "w-full transition-all duration-200 focus:ring-2 focus:ring-[var(--dt-primary)]/20 focus:border-[var(--dt-primary)]";
   const labelClass = "block text-[10px] font-bold uppercase tracking-[0.12em] mb-1.5";
   const labelStyle: React.CSSProperties = {
     color: "var(--dt-text-muted)",
@@ -90,9 +91,10 @@ export default function HeroBookingForm({
               initial={reduce ? false : { opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: reduce ? 0 : 0.4 }}
-              className="mb-4 inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em]"
+              className="mb-4 inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] border"
               style={{
-                background: "color-mix(in srgb, var(--dt-primary) 14%, transparent)",
+                background: "color-mix(in srgb, var(--dt-primary) 12%, var(--dt-bg))",
+                borderColor: "color-mix(in srgb, var(--dt-primary) 25%, transparent)",
                 color: "var(--dt-primary)",
               }}
             >
@@ -268,6 +270,7 @@ export default function HeroBookingForm({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder={s.fullNamePlaceholder}
+                  className={inputClass}
                   style={inputStyle}
                 />
               </div>
@@ -284,6 +287,7 @@ export default function HeroBookingForm({
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder={s.whatsappPlaceholder}
+                    className={inputClass}
                     style={inputStyle}
                   />
                 </div>
@@ -298,6 +302,7 @@ export default function HeroBookingForm({
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder={s.emailPlaceholder}
+                    className={inputClass}
                     style={inputStyle}
                   />
                 </div>
@@ -313,6 +318,7 @@ export default function HeroBookingForm({
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder={s.needPlaceholder}
+                  className={inputClass}
                   style={{ ...inputStyle, resize: "none" }}
                 />
               </div>
