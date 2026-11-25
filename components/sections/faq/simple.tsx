@@ -42,7 +42,7 @@ export default function FaqSimple({
 
   return (
     <section id="faq" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, background: "var(--dt-bg)" }}>
-      <div style={{ maxWidth: "52rem", margin: "0 auto" }}>
+      <div style={{ maxWidth: "48rem", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
           <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}>{L.eyebrow}</span>
           <h2 style={{ fontFamily: "var(--dt-heading-font)", fontWeight: "var(--dt-heading-weight)" as any, fontSize: "clamp(1.35rem, 4.5cqw, 2.25rem)", color: "var(--dt-text)", marginTop: "0.5rem" }}>
@@ -66,7 +66,7 @@ export default function FaqSimple({
             <div
               key={idx}
               style={{
-                padding: "1.25rem 0",
+                padding: "1.5rem 0",
                 paddingRight: isEditorMode && onDeleteItem ? "2.25rem" : undefined,
                 borderBottom: idx < (faq.items?.length ?? 0) - 1 ? "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)" : "none",
                 position: "relative",
@@ -75,7 +75,7 @@ export default function FaqSimple({
               {isEditorMode && onDeleteItem && (
                 <InlineDeleteButton onDelete={() => onDeleteItem!(idx)} compact className="absolute top-2.5 right-2.5" />
               )}
-              <h3 style={{ fontFamily: "var(--dt-body-font)", color: "var(--dt-text)", fontWeight: 600, fontSize: "0.95rem", margin: 0, marginBottom: "0.4rem" }}>
+              <h3 style={{ fontFamily: "var(--dt-heading-font)", color: "var(--dt-text)", fontWeight: 700, fontSize: "1.05rem", margin: 0, marginBottom: "0.6rem", lineHeight: 1.4 }}>
                 {isEditorMode ? (
                   <InlineText
                     section="faq"
@@ -90,7 +90,7 @@ export default function FaqSimple({
                   />
                 ) : item.question}
               </h3>
-              <p style={{ color: "var(--dt-text-muted)", fontSize: "0.875rem", lineHeight: 1.7, margin: 0 }}>
+              <p style={{ color: "var(--dt-text-muted)", fontSize: "0.9rem", lineHeight: 1.75, margin: 0, maxWidth: "44rem" }}>
                 {isEditorMode ? (
                   <InlineText
                     section="faq"

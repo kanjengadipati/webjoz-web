@@ -61,26 +61,27 @@ export default function FaqTwoColumnGrid({
             ) : (faq.title || L.defaultTitle)}
           </h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 items-stretch">
           {faq.items?.map((item, idx) => (
             <div
               key={idx}
               className="flex flex-col h-full transition-all duration-200"
               style={{
-                padding: "1.25rem 1.5rem",
+                padding: "1.35rem 1.6rem",
                 paddingRight: isEditorMode && onDeleteItem ? "3rem" : undefined,
-                borderRadius: "var(--dt-radius)",
-                background: "color-mix(in srgb, var(--dt-primary) 5%, var(--dt-surface))",
-                border: "1px solid color-mix(in srgb, var(--dt-primary) 10%, transparent)",
+                borderRadius: "var(--dt-radius-lg)",
+                background: "color-mix(in srgb, var(--dt-primary) 3.5%, var(--dt-surface))",
+                border: "1px solid color-mix(in srgb, var(--dt-primary) 14%, transparent)",
+                boxShadow: "0 2px 8px color-mix(in srgb, var(--dt-primary) 4%, transparent)",
                 position: "relative",
               }}
             >
               {isEditorMode && onDeleteItem && (
                 <InlineDeleteButton onDelete={() => onDeleteItem!(idx)} compact className="absolute top-2.5 right-2.5" />
               )}
-              <div className="flex items-start gap-2 mb-2">
-                <HelpCircle className="w-4 h-4 text-[var(--dt-primary)] shrink-0 mt-0.5 opacity-80" />
-                <h3 style={{ fontFamily: "var(--dt-body-font)", color: "var(--dt-text)", fontWeight: 600, fontSize: "0.95rem", margin: 0 }}>
+              <div className="flex items-start gap-2.5 mb-2.5">
+                <HelpCircle className="w-4 h-4 text-[var(--dt-primary)] shrink-0 mt-1 opacity-90" />
+                <h3 style={{ fontFamily: "var(--dt-heading-font)", color: "var(--dt-text)", fontWeight: 700, fontSize: "1rem", margin: 0, lineHeight: 1.4 }}>
                   {isEditorMode ? (
                     <InlineText
                       section="faq"
@@ -96,7 +97,7 @@ export default function FaqTwoColumnGrid({
                   ) : item.question}
                 </h3>
               </div>
-              <p className="flex-1" style={{ color: "var(--dt-text-muted)", fontSize: "0.85rem", lineHeight: 1.7, margin: 0, paddingLeft: "1.5rem" }}>
+              <p className="flex-1" style={{ color: "var(--dt-text-muted)", fontSize: "0.875rem", lineHeight: 1.7, margin: 0, paddingLeft: "1.65rem" }}>
                 {isEditorMode ? (
                   <InlineText
                     section="faq"

@@ -157,9 +157,24 @@ export default function FaqSidebarCategory({
           <div style={{ display: "flex", gap: "0.5rem", marginBottom: "2rem", flexWrap: "wrap", justifyContent: "center" }}>
             {categories.map(cat => {
               const catIdx = items.findIndex(i => i.category === cat);
+              const count = items.filter(i => (cat === L.allCategory ? true : i.category === cat)).length;
               return (
                 <button key={cat} onClick={() => setActiveCat(cat)}
-                  style={{ padding: "0.4rem 1rem", borderRadius: "2rem", fontSize: "0.8rem", fontWeight: 600, border: `1px solid ${activeCat === cat ? "var(--dt-primary)" : "color-mix(in srgb, var(--dt-text) 18%, transparent)"}`, background: activeCat === cat ? "var(--dt-primary)" : "color-mix(in srgb, var(--dt-text) 6%, transparent)", color: activeCat === cat ? "var(--dt-cta-text, #fff)" : "var(--dt-text)", cursor: "pointer", transition: "all 0.2s" }}>
+                  style={{
+                    padding: "0.4rem 0.85rem",
+                    borderRadius: "2rem",
+                    fontSize: "0.8rem",
+                    fontWeight: 600,
+                    border: `1px solid ${activeCat === cat ? "var(--dt-primary)" : "color-mix(in srgb, var(--dt-text) 18%, transparent)"}`,
+                    background: activeCat === cat ? "var(--dt-primary)" : "color-mix(in srgb, var(--dt-text) 6%, transparent)",
+                    color: activeCat === cat ? "var(--dt-cta-text, #fff)" : "var(--dt-text)",
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.35rem",
+                  }}
+                >
                   {isEditorMode ? (
                     <InlineText
                       section="faq"
@@ -176,6 +191,17 @@ export default function FaqSidebarCategory({
                       onEditingStateChange={onEditingStateChange}
                     />
                   ) : cat}
+                  <span
+                    style={{
+                      fontSize: "0.7rem",
+                      padding: "0.1rem 0.4rem",
+                      borderRadius: "1rem",
+                      background: activeCat === cat ? "color-mix(in srgb, var(--dt-cta-text, #fff) 25%, transparent)" : "color-mix(in srgb, var(--dt-text) 12%, transparent)",
+                      opacity: 0.9,
+                    }}
+                  >
+                    {count}
+                  </span>
                 </button>
               );
             })}

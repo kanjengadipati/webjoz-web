@@ -61,10 +61,10 @@ export default function FaqChatBubbleStyle({
             ) : (faq.title || L.defaultTitle)}
           </h2>
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
           {faq.items?.map((item, idx) => {
             return (
-              <div key={idx} className="flex flex-col gap-2.5">
+              <div key={idx} className="flex flex-col gap-2">
                 {/* Question bubble — right-aligned with User Avatar */}
                 <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-end", gap: "0.5rem" }}>
                   {isEditorMode && onDeleteItem && (
@@ -72,15 +72,15 @@ export default function FaqChatBubbleStyle({
                   )}
                   <div
                     style={{
-                      maxWidth: "85%",
-                      padding: "0.85rem 1.25rem",
-                      borderRadius: "1.15rem 1.15rem 0.25rem 1.15rem",
-                      background: "color-mix(in srgb, var(--dt-primary) 10%, var(--dt-surface))",
-                      border: "1px solid color-mix(in srgb, var(--dt-primary) 18%, transparent)",
-                      boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+                      maxWidth: "80%",
+                      padding: "0.65rem 1rem",
+                      borderRadius: "1rem 1rem 0.2rem 1rem",
+                      background: "color-mix(in srgb, var(--dt-primary) 8%, var(--dt-surface))",
+                      border: "1px solid color-mix(in srgb, var(--dt-primary) 16%, transparent)",
+                      boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
                     }}
                   >
-                    <p style={{ fontFamily: "var(--dt-body-font)", color: "var(--dt-text)", fontWeight: 600, fontSize: "0.9rem", margin: 0, lineHeight: 1.5 }}>
+                    <p style={{ fontFamily: "var(--dt-body-font)", color: "var(--dt-text)", fontWeight: 600, fontSize: "0.875rem", margin: 0, lineHeight: 1.45 }}>
                       {isEditorMode ? (
                         <InlineText
                           section="faq"
@@ -97,40 +97,40 @@ export default function FaqChatBubbleStyle({
                     </p>
                   </div>
                   <div
-                    className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 mb-0.5 text-xs font-semibold"
+                    className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mb-0.5 text-xs font-semibold"
                     style={{
-                      background: "color-mix(in srgb, var(--dt-text) 12%, transparent)",
+                      background: "color-mix(in srgb, var(--dt-text) 10%, transparent)",
                       color: "var(--dt-text)",
                     }}
                     title={L.userLabel}
                   >
-                    <User className="w-3.5 h-3.5 opacity-80" />
+                    <User className="w-3 h-3 opacity-80" />
                   </div>
                 </div>
 
                 {/* Answer bubble — left-aligned with Brand/Bot Avatar */}
                 <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "flex-end", gap: "0.5rem" }}>
                   <div
-                    className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 mb-0.5 shadow-sm"
+                    className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mb-0.5 shadow-xs"
                     style={{
                       background: "var(--dt-primary)",
                       color: "var(--dt-primary-foreground, #fff)",
                     }}
                     title={L.supportLabel}
                   >
-                    <Bot className="w-3.5 h-3.5" />
+                    <Bot className="w-3 h-3" />
                   </div>
                   <div
                     style={{
-                      maxWidth: "85%",
-                      padding: "0.85rem 1.25rem",
-                      borderRadius: "1.15rem 1.15rem 1.15rem 0.25rem",
+                      maxWidth: "80%",
+                      padding: "0.65rem 1rem",
+                      borderRadius: "1rem 1rem 1rem 0.2rem",
                       background: "var(--dt-primary)",
                       color: "var(--dt-primary-foreground, #fff)",
-                      boxShadow: "0 2px 6px color-mix(in srgb, var(--dt-primary) 25%, transparent)",
+                      boxShadow: "0 2px 6px color-mix(in srgb, var(--dt-primary) 20%, transparent)",
                     }}
                   >
-                    <p style={{ fontSize: "0.875rem", lineHeight: 1.7, margin: 0 }}>
+                    <p style={{ fontSize: "0.85rem", lineHeight: 1.6, margin: 0 }}>
                       {isEditorMode ? (
                         <InlineText
                           section="faq"

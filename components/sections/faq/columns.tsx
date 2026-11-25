@@ -61,23 +61,33 @@ export default function FaqColumns({
             ) : (faq.title || L.defaultTitle)}
           </h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 items-start">
           {faq.items?.map((item, idx) => (
-            <div key={idx} style={{ position: "relative", paddingRight: isEditorMode && onDeleteItem ? "2.25rem" : undefined }}>
+            <div
+              key={idx}
+              className="flex flex-col h-full rounded-xl transition-all duration-200"
+              style={{
+                position: "relative",
+                padding: "1.25rem 1.35rem",
+                paddingRight: isEditorMode && onDeleteItem ? "2.5rem" : undefined,
+                background: "color-mix(in srgb, var(--dt-primary) 3%, var(--dt-surface))",
+                border: "1px solid color-mix(in srgb, var(--dt-primary) 12%, transparent)",
+              }}
+            >
               {isEditorMode && onDeleteItem && (
                 <InlineDeleteButton onDelete={() => onDeleteItem!(idx)} compact className="absolute top-2.5 right-2.5" />
               )}
-              <div className="flex items-start gap-2.5 mb-1.5">
+              <div className="flex items-start gap-2.5 mb-2">
                 <span
-                  className="font-mono text-xs font-bold px-1.5 py-0.5 rounded shrink-0 mt-0.5"
+                  className="font-mono text-xs font-bold px-2 py-0.5 rounded-md shrink-0 mt-0.5"
                   style={{
-                    background: "color-mix(in srgb, var(--dt-primary) 12%, transparent)",
+                    background: "color-mix(in srgb, var(--dt-primary) 14%, transparent)",
                     color: "var(--dt-primary)",
                   }}
                 >
                   {String(idx + 1).padStart(2, "0")}
                 </span>
-                <h3 style={{ fontFamily: "var(--dt-body-font)", color: "var(--dt-text)", fontWeight: 600, fontSize: "0.95rem", margin: 0 }}>
+                <h3 style={{ fontFamily: "var(--dt-body-font)", color: "var(--dt-text)", fontWeight: 600, fontSize: "0.95rem", margin: 0, lineHeight: 1.45 }}>
                   {isEditorMode ? (
                     <InlineText
                       section="faq"
@@ -93,7 +103,7 @@ export default function FaqColumns({
                   ) : item.question}
                 </h3>
               </div>
-              <p style={{ color: "var(--dt-text-muted)", fontSize: "0.85rem", lineHeight: 1.7, margin: 0, paddingLeft: "1.85rem" }}>
+              <p className="flex-1" style={{ color: "var(--dt-text-muted)", fontSize: "0.875rem", lineHeight: 1.7, margin: 0, paddingLeft: "2.1rem" }}>
                 {isEditorMode ? (
                   <InlineText
                     section="faq"
