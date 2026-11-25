@@ -14,8 +14,10 @@ export default function MinimalBand({
   footer, brand_name, hasBlog,
   onUpdateField, isEditorMode = false, editorChrome, isSelected = false,
   collapseSheetForInlineEdit, onEditingStateChange,
+  language = "id",
 }: FooterVariantProps) {
-  const displayBrand = brand_name || "Bisnis Kami";
+  const isEN = language === "en";
+  const displayBrand = brand_name || (isEN ? "Our Business" : "Bisnis Kami");
   const displayTagline = footer?.tagline || "";
   const displayCopyright = footer?.copyright_text || `© ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`;
   return (
@@ -33,7 +35,7 @@ export default function MinimalBand({
               section="footer"
               fieldKey="tagline"
               value={displayTagline}
-              placeholder="Tambah tagline..."
+              placeholder={isEN ? "Add tagline..." : "Tambah tagline..."}
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}
               isSelected={isSelected}
