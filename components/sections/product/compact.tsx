@@ -206,8 +206,9 @@ export default function ProductCompact({
               {isEditorMode && onAddItem && (
                 <InlineAddTile
                   label={isEN ? (isMenu ? "Add Menu" : "Add Item") : (isMenu ? "Tambah Menu" : "Tambah Item")}
-                  variant="card"
-                  className="rounded-xl min-h-[90px]"
+                  compact
+                  variant="bar"
+                  className="rounded-xl min-h-[76px] sm:min-h-[84px] h-full"
                   onClick={() => onAddItem(catIdx)}
                 />
               )}
