@@ -88,7 +88,7 @@ export default function TestimonialsGoogleReviews({
                 section="testimonials"
                 fieldKey="eyebrow"
                 value={t.eyebrow}
-                placeholder={isEN ? "Testimonials" : "Testimoni"}
+                placeholder={isEN ? "What Clients Say" : "Apa Kata Klien"}
                 onUpdateField={onUpdateField}
                 isEditorMode={isEditorMode}
                 isSelected={isSelected}
