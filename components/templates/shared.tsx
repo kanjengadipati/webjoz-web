@@ -1230,6 +1230,7 @@ interface TestimonialsSectionProps {
   onAddItem?: () => void;
   isExample?: boolean;
   locale?: string;
+  language?: string;
 }
 
 const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
@@ -1260,17 +1261,18 @@ const SharedTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   onAddItem,
   isExample,
   locale: localeProp,
+  language,
 }) => {
   const { locale: ctxLocale } = useI18n();
   // Prefer context locale (always accurate); prop is fallback for SSR edge cases
   const locale = ctxLocale || localeProp;
-  const isEN = (locale || "").toLowerCase().startsWith("en");
+  const isEN = (language || locale || "").toLowerCase().startsWith("en");
   const L = testimonialsStrings(locale || "id");
 
   if (!testimonials) return null;
   if (!testimonials.items?.length && !(isEditorMode && (editorChrome ?? true) && onAddItem)) return null;
 
-  const examplePrefix = isExample ? (locale === "en" ? "(Example) " : "(Contoh) ") : "";
+  const examplePrefix = isExample ? (isEN ? "(Example) " : "(Contoh) ") : "";
   // withPrefix only used for display — never stored back to data
   const withPrefix = (quote: string) => examplePrefix ? `${examplePrefix}${quote}` : quote;
 

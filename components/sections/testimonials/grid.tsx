@@ -51,6 +51,7 @@ export default function TestimonialsGrid({
       onAddItem={onAddItem}
       isExample={isExample}
       locale={locale}
+      language={language}
     />
   );
 }

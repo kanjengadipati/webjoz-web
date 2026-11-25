@@ -51,6 +51,7 @@ export default function TestimonialsClassic({
       onAddItem={onAddItem}
       isExample={isExample}
       locale={locale}
+      language={language}
     />
   );
 }
