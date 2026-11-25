@@ -5,6 +5,7 @@ import { PreviewData } from "./types";
 import { getTemplateComponent, getTemplatePool, resolveBusinessName } from "./helpers";
 import { buildFullContent } from "@/lib/build-full-content";
 import { DevicePreviewFrame } from "./device-frame";
+import { PreviewErrorBoundary } from "./preview-error-boundary";
 import { Wireframe } from "./wireframe";
 import { useWizardChat } from "./use-wizard-chat";
 import { useWizardPreview } from "./use-wizard-preview";
@@ -93,6 +94,7 @@ export function PreviewCanvas({ chat, preview, device, themeDraft, fullPage, onR
   };
 
   const templatePreview = TemplateComponent ? (
+    <PreviewErrorBoundary resetKey={`${liveTemplateId}-${regenCount}-${historyIndex}`}>
     <EditorChromeProvider value={false}>
     <WizardRegenProvider value={{ onRegen: handleInlineRegen }}>
     {/* eslint-disable-next-line react-hooks/static-components */}
@@ -113,6 +115,7 @@ export function PreviewCanvas({ chat, preview, device, themeDraft, fullPage, onR
     />
     </WizardRegenProvider>
     </EditorChromeProvider>
+    </PreviewErrorBoundary>
   ) : (
     <Wireframe
       businessName={chat.businessName}

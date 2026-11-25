@@ -6,6 +6,8 @@ import { smoothScrollToSection } from "@/components/templates/shared";
 import { loadGoogleFont } from "@/components/templates/helpers";
 import type { PreviewDevice } from "./types";
 
+const SYNC_MARK = "data-wz-sync";
+
 export function DevicePreviewFrame({
   device,
   children,
@@ -24,6 +26,12 @@ export function DevicePreviewFrame({
 }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [mountNode, setMountNode] = useState<HTMLElement | null>(null);
+  // Mirror of mountNode readable from timers/callbacks without stale closures.
+  const mountRef = useRef<HTMLElement | null>(null);
+  const applyMountNode = (node: HTMLElement | null) => {
+    mountRef.current = node;
+    setMountNode(node);
+  };
 
   // Sync external ref with internal ref
   useEffect(() => {
@@ -136,7 +144,10 @@ export function DevicePreviewFrame({
     `;
     doc.head.appendChild(lightOverride);
 
-    if (doc.body) setMountNode(doc.body);
+    // Marker lives on <html>, so it disappears whenever the iframe document is
+    // replaced (srcDoc load). ensureSynced() uses it to detect a stale document.
+    doc.documentElement.setAttribute(SYNC_MARK, "1");
+    if (doc.body) applyMountNode(doc.body);
 
     // Initial font injection into iframe head
     if (typography) {
@@ -166,8 +177,29 @@ export function DevicePreviewFrame({
     };
   }, []);
 
+  // The iframe document can be replaced after our first sync (srcDoc load in
+  // Safari/Firefox, fast remounts). If that happens without an onLoad we would
+  // keep portaling into a detached body and the preview stays blank. Re-check
+  // against the live document instead of trusting the stored mount node.
+  const ensureSynced = () => {
+    const doc = iframeRef.current?.contentDocument;
+    if (!doc?.body || !doc.head) return;
+    if (!doc.documentElement.hasAttribute(SYNC_MARK)) {
+      syncFrameDocument();
+    } else if (mountRef.current !== doc.body) {
+      applyMountNode(doc.body);
+    }
+  };
+
   useEffect(() => {
     syncFrameDocument();
+    let tries = 0;
+    const id = window.setInterval(() => {
+      ensureSynced();
+      if (++tries >= 40) window.clearInterval(id); // ~4s safety net after mount
+    }, 100);
+    return () => window.clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [device]);
 
   // Reactive font injection whenever typography overrides change
