@@ -493,15 +493,15 @@ export function getSectionVariant(dt: any, secKey: string): string | undefined {
   return (dt?.layout?.section_variants as any)?.[secKey];
 }
 
-export function filterEmptySections(sectionOrder: string[], content: any, _isEditorMode?: boolean): string[] {
+export function filterEmptySections(sectionOrder: string[], content: any, isEditorMode?: boolean): string[] {
   if (!content) return sectionOrder;
   return sectionOrder.filter((key) => {
     if (key === "faq") return (content.faq?.items?.length ?? 0) > 0;
     if (key === "testimonials") {
-      // Example testimonials (injected placeholder copy) are hidden outside the
-      // editor by TestimonialsSection, so they must not keep the section or its
-      // nav link alive either.
-      return (content.testimonials?.items?.length ?? 0) > 0 && content.testimonials?._is_example !== true;
+      if ((content.testimonials?.items?.length ?? 0) === 0) return false;
+      // Example testimonials stay visible in the editor (badged), only hidden publicly.
+      if (content.testimonials?._is_example === true && !isEditorMode) return false;
+      return true;
     }
     if (key === "gallery") return (content.gallery?.items?.length ?? 0) > 0;
     if (key === "works") return (content.works?.items?.length ?? 0) > 0;
