@@ -18,7 +18,8 @@ export default function AboutStatHeavy({
   const stats = [a.highlight_stat_1, a.highlight_stat_2, a.highlight_stat_3];
   const hasAnyStat = stats.some(Boolean);
   return (
-    <section id="about" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, maxWidth: "72rem", margin: "0 auto" }}>
+    <section id="about" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, background: "var(--dt-bg)" }}>
+      <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
       {hasAnyStat && (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "1.5rem", marginBottom: "3rem" }}>
           {stats.map((stat, i) => {
@@ -93,6 +94,7 @@ export default function AboutStatHeavy({
           </div>
         </div>
       )}
+      </div>
     </section>
   );
 }

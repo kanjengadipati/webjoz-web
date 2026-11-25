@@ -176,6 +176,7 @@ export function getVariantWireframeLayout(section: string, value: string): strin
       return "footer-band";
 
     case "faq":
+      if (v.includes("search")) return "searchable";
       if (v.includes("accordion")) return "accordion";
       if (v.includes("chat") || v.includes("bubble")) return "chat-bubble";
       if (v.includes("column") || v.includes("grid")) return "columns";
@@ -183,6 +184,7 @@ export function getVariantWireframeLayout(section: string, value: string): strin
       return "simple-list";
 
     case "benefits":
+      if (v.includes("carousel") || v.includes("slide")) return "carousel";
       if (v.includes("bento")) return "bento";
       if (v.includes("icon") || v.includes("row")) return "icon-row";
       if (v.includes("stat")) return "stat-grid";

@@ -61,6 +61,10 @@ export const BENEFITS_VARIANTS = {
     component: dynamic(() => import("./big-statistics")),
     labelKey: "variantBenefitsBigStatistics",    label: "Statistik Raksasa",             descriptionKey: "variantBenefitsBigStatisticsDesc",     description: "Metrik angka besar sebagai bukti dan social proof yang terukur.",
   },
+  carousel: {
+    component: dynamic(() => import("./carousel")),
+    labelKey: "variantBenefitsCarousel",         label: "Carousel / Slider",             descriptionKey: "variantBenefitsCarouselDesc",          description: "Kartu keunggulan bergulir horizontal dengan tombol navigasi dan indikator.",
+  },
 } satisfies Record<string, VariantDef<BenefitVariantProps>>;
 
 export type BenefitsVariant = keyof typeof BENEFITS_VARIANTS;

@@ -76,6 +76,10 @@ export interface BenefitsStaticStrings {
   trustBarItemTitlePlaceholder: string;
   trustBarItemDescPlaceholder: string;
   trustBarAddTrustItem: string;
+
+  // Carousel specific
+  carouselPrev: string;
+  carouselNext: string;
 }
 
 const ID: BenefitsStaticStrings = {
@@ -137,6 +141,9 @@ const ID: BenefitsStaticStrings = {
   trustBarItemTitlePlaceholder: "Poin Kepercayaan...",
   trustBarItemDescPlaceholder: "Deskripsi jaminan ringkas...",
   trustBarAddTrustItem: "Tambah Jaminan",
+
+  carouselPrev: "Keunggulan sebelumnya",
+  carouselNext: "Keunggulan berikutnya",
 };
 
 const EN: BenefitsStaticStrings = {
@@ -198,6 +205,9 @@ const EN: BenefitsStaticStrings = {
   trustBarItemTitlePlaceholder: "Trust Point...",
   trustBarItemDescPlaceholder: "Short guarantee detail...",
   trustBarAddTrustItem: "Add Trust Item",
+
+  carouselPrev: "Previous benefits",
+  carouselNext: "Next benefits",
 };
 
 export function benefitsStrings(language?: "id" | "en"): BenefitsStaticStrings {

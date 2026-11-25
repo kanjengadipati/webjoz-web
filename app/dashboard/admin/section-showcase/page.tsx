@@ -843,7 +843,10 @@ export default function SectionShowcasePage() {
                       </button>
                     </div>
 
-                    <div className="bg-background rounded-xl border border-border/80 p-3 sm:p-4 overflow-hidden shadow-xs [transform:translateZ(0)]">
+                    <div
+                      className="rounded-xl border border-border/80 p-3 sm:p-4 overflow-hidden shadow-xs [transform:translateZ(0)]"
+                      style={{ background: "var(--dt-bg, var(--background))" }}
+                    >
                       <div className={viewportWidthClass}>
                         <SectionRenderer
                           sectionKey={fullscreenSection}

@@ -36,6 +36,10 @@ export const FAQ_VARIANTS = {
     component: dynamic(() => import("./chat-bubble-style")),
     labelKey: "variantFaqChatBubble",        label: "Gaya Chat",          descriptionKey: "variantFaqChatBubbleDesc",        description: "Q&A seperti percakapan chat — pertanyaan di kanan, jawaban di kiri.",
   },
+  searchable: {
+    component: dynamic(() => import("./searchable")),
+    labelKey: "variantFaqSearchable",        label: "Searchable FAQ",     descriptionKey: "variantFaqSearchableDesc",        description: "Pencarian real-time dengan akordion responsif.",
+  },
 } satisfies Record<string, VariantDef>;
 
 export type FaqVariant = keyof typeof FAQ_VARIANTS;

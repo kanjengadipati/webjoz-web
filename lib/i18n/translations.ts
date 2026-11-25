@@ -3181,6 +3181,8 @@ export interface Translations {
       variantBenefitsAlternatingFeatureDesc: string;
       variantBenefitsBigStatistics: string;
       variantBenefitsBigStatisticsDesc: string;
+      variantBenefitsCarousel: string;
+      variantBenefitsCarouselDesc: string;
       // testimonials
       variantTestimonialsCarousel: string;
       variantTestimonialsCarouselDesc: string;
@@ -3219,6 +3221,8 @@ export interface Translations {
       variantFaqTwoColumnGridDesc: string;
       variantFaqChatBubble: string;
       variantFaqChatBubbleDesc: string;
+      variantFaqSearchable: string;
+      variantFaqSearchableDesc: string;
       // gallery
       variantGalleryGrid: string;
       variantGalleryGridDesc: string;
@@ -7437,6 +7441,9 @@ export const translations: Record<Locale, Translations> = {
         variantBenefitsBigStatistics: "Statistik Raksasa",
         variantBenefitsBigStatisticsDesc:
           "Metrik angka besar sebagai bukti dan social proof yang terukur.",
+        variantBenefitsCarousel: "Carousel / Slider",
+        variantBenefitsCarouselDesc:
+          "Kartu keunggulan bergulir horizontal dengan tombol navigasi dan indikator.",
         // testimonials
         variantTestimonialsCarousel: "Carousel",
         variantTestimonialsCarouselDesc:
@@ -7487,6 +7494,9 @@ export const translations: Record<Locale, Translations> = {
         variantFaqChatBubble: "Gaya Chat",
         variantFaqChatBubbleDesc:
           "Q&A seperti percakapan chat — pertanyaan di kanan, jawaban di kiri.",
+        variantFaqSearchable: "Searchable FAQ",
+        variantFaqSearchableDesc:
+          "Pencarian real-time dengan akordion responsif.",
         // gallery
         variantGalleryGrid: "Grid",
         variantGalleryGridDesc: "Foto dalam kotak seragam tersusun rapi.",
@@ -11979,6 +11989,9 @@ export const translations: Record<Locale, Translations> = {
         variantBenefitsBigStatistics: "Big Statistics",
         variantBenefitsBigStatisticsDesc:
           "Prominent large numbers as verifiable proof and social proof.",
+        variantBenefitsCarousel: "Carousel / Slider",
+        variantBenefitsCarouselDesc:
+          "Horizontally scrolling benefit cards with navigation controls and indicators.",
         // testimonials
         variantTestimonialsCarousel: "Carousel",
         variantTestimonialsCarouselDesc:
@@ -12028,6 +12041,9 @@ export const translations: Record<Locale, Translations> = {
         variantFaqChatBubble: "Chat Style",
         variantFaqChatBubbleDesc:
           "Q&A styled like a chat conversation — questions on the right, answers on the left.",
+        variantFaqSearchable: "Searchable FAQ",
+        variantFaqSearchableDesc:
+          "Real-time search with responsive accordions.",
         // gallery
         variantGalleryGrid: "Grid",
         variantGalleryGridDesc: "Photos in uniform boxes arranged neatly.",

@@ -28,7 +28,8 @@ export default function AboutClassic({
   const py = { paddingTop: "var(--dt-spacing)", paddingBottom: "var(--dt-spacing)" } as any;
   const alignStyle = a.textAlign ? { textAlign: a.textAlign as React.CSSProperties['textAlign'] } : {};
   return (
-    <section id="about" className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, maxWidth: "72rem", margin: "0 auto" }}>
+    <section id="about" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, background: "var(--dt-bg)" }}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center" style={{ maxWidth: "72rem", margin: "0 auto" }}>
       <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", ...alignStyle }}>
         <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}><InlineText section="about" fieldKey="eyebrow" value={a.eyebrow || "Mengenal Kami"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></span>
         <InlineText
@@ -92,40 +93,17 @@ export default function AboutClassic({
             <div style={{ background: "var(--dt-surface)", width: "5rem", height: "5rem", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 10px 30px color-mix(in srgb, var(--dt-primary) 20%, transparent)", position: "relative", zIndex: 1 }}>
               <span style={{ color: "var(--dt-primary)" }}><DynamicIcon name={a.icon} defaultIcon={Award} className="w-8 h-8" /></span>
             </div>
-            {isEditorMode && (
-              <div style={{ position: "relative", zIndex: 1, background: "color-mix(in srgb, var(--dt-surface) 50%, transparent)", backdropFilter: "blur(4px)", padding: "0.5rem 1rem", borderRadius: "2rem" }}>
-                <p style={{ color: "var(--dt-text-muted)", fontSize: "0.75rem", margin: 0 }}>Klik area ini untuk menambahkan foto</p>
-              </div>
-            )}
-          </div>
-          {(a.image_url || isEditorMode) && (
-            <div style={{ position: "absolute", inset: 0, zIndex: 2 }}>
-              <InlineImage
-                section="about"
-                fieldKey="image_url"
-                src={a.image_url}
-                alt="About"
-                onUpdateField={onUpdateField}
-                isEditorMode={isEditorMode}
-                isSelected={isSelected}
-                className="w-full h-full"
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-              />
-              <div style={{ position: "absolute", bottom: 4, right: 8, zIndex: 20 }}>
-                <PhotoCredit
-                  credit={a.image_credit}
-                  section="about"
-                  fieldKey="image_credit.name"
-                  onUpdateField={onUpdateField}
-                  isEditorMode={isEditorMode}
-                  isSelected={isSelected}
-                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                />
-              </div>
+            <div style={{ position: "relative", zIndex: 1, maxWidth: "260px" }}>
+              <p style={{ color: "var(--dt-text)", fontWeight: 700, fontSize: "1.1rem", margin: "0 0 0.25rem 0", fontFamily: "var(--dt-heading-font)" }}>
+                {a.eyebrow || "Dedikasi & Integritas"}
+              </p>
+              <p style={{ color: "var(--dt-text-muted)", fontSize: "0.85rem", margin: 0, lineHeight: 1.5 }}>
+                {a.highlight_stat_1?.label || "Fokus pada kualitas terbaik dan kepuasan jangka panjang."}
+              </p>
             </div>
-          )}
+          </div>
         </div>
+      </div>
       </div>
     </section>
   );

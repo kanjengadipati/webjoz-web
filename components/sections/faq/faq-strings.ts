@@ -19,6 +19,10 @@ export interface FaqStaticStrings {
   supportLabel: string;
   allCategory: string;
   deleteQuestionTitle: string;
+  searchPlaceholder: string;
+  noQuestionsFound: string;
+  popularLabel: string;
+  clearSearch: string;
 }
 
 const ID: FaqStaticStrings = {
@@ -33,6 +37,10 @@ const ID: FaqStaticStrings = {
   supportLabel: "Bantuan",
   allCategory: "Semua",
   deleteQuestionTitle: "Hapus pertanyaan",
+  searchPlaceholder: "Cari pertanyaan atau kata kunci...",
+  noQuestionsFound: "Tidak ada pertanyaan yang sesuai dengan pencarian Anda.",
+  popularLabel: "Pertanyaan Populer",
+  clearSearch: "Hapus pencarian",
 };
 
 const EN: FaqStaticStrings = {
@@ -47,6 +55,10 @@ const EN: FaqStaticStrings = {
   supportLabel: "Support",
   allCategory: "All",
   deleteQuestionTitle: "Delete question",
+  searchPlaceholder: "Search questions or keywords...",
+  noQuestionsFound: "No questions match your search.",
+  popularLabel: "Popular Questions",
+  clearSearch: "Clear search",
 };
 
 export function faqStrings(language?: "id" | "en"): FaqStaticStrings {

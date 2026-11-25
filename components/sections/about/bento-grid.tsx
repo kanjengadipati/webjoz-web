@@ -26,10 +26,10 @@ export default function AboutBentoGrid({
       style={{
         ...py,
         padding: `var(--dt-spacing) 1.5rem`,
-        maxWidth: "76rem",
-        margin: "0 auto",
+        background: "var(--dt-bg)",
       }}
     >
+      <div style={{ maxWidth: "76rem", margin: "0 auto" }}>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
         {/* Left Column: Narrative / Story */}
         <div className="lg:col-span-5 flex flex-col gap-5" style={alignStyle}>
@@ -427,6 +427,7 @@ export default function AboutBentoGrid({
             </div>
           </div>
         </div>
+      </div>
       </div>
     </section>
   );

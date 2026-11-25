@@ -15,6 +15,7 @@
     "alternating-feature",
     "bento-grid",
     "big-statistics",
+    "carousel",
     "checklist",
     "comparison-table",
     "featured-grid",
@@ -64,6 +65,7 @@
     "accordion",
     "chat-bubble-style",
     "columns",
+    "searchable",
     "sidebar-category",
     "simple",
     "two-column-grid"

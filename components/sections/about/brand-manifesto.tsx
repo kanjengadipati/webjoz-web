@@ -21,10 +21,10 @@ export default function AboutBrandManifesto({
       style={{
         ...py,
         padding: `var(--dt-spacing) 1.5rem`,
-        maxWidth: "76rem",
-        margin: "0 auto",
+        background: "var(--dt-bg)",
       }}
     >
+      <div style={{ maxWidth: "76rem", margin: "0 auto" }}>
       <div
         className="p-8 sm:p-12 lg:p-16 relative overflow-hidden"
         style={{
@@ -153,6 +153,7 @@ export default function AboutBrandManifesto({
             </div>
           </div>
         </div>
+      </div>
       </div>
     </section>
   );

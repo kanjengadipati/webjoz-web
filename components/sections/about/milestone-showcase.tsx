@@ -34,10 +34,10 @@ export default function AboutMilestoneShowcase({
       style={{
         ...py,
         padding: `var(--dt-spacing) 1.5rem`,
-        maxWidth: "76rem",
-        margin: "0 auto",
+        background: "var(--dt-bg)",
       }}
     >
+      <div style={{ maxWidth: "76rem", margin: "0 auto" }}>
       {/* Top Header: Eyebrow, Title, Body */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-end mb-12 lg:mb-16">
         <div className="lg:col-span-7 flex flex-col gap-3">
@@ -225,6 +225,7 @@ export default function AboutMilestoneShowcase({
             );
           })}
         </div>
+      </div>
       </div>
     </section>
   );

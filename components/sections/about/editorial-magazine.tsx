@@ -22,10 +22,10 @@ export default function AboutEditorialMagazine({
       style={{
         ...py,
         padding: `var(--dt-spacing) 1.5rem`,
-        maxWidth: "76rem",
-        margin: "0 auto",
+        background: "var(--dt-bg)",
       }}
     >
+      <div style={{ maxWidth: "76rem", margin: "0 auto" }}>
       {/* Background Watermark Number "01" */}
       <div
         aria-hidden="true"
@@ -200,6 +200,7 @@ export default function AboutEditorialMagazine({
             )}
           </div>
         </div>
+      </div>
       </div>
     </section>
   );

@@ -15,7 +15,8 @@ export default function AboutSplitImage({
   const py = { paddingTop: "var(--dt-spacing)", paddingBottom: "var(--dt-spacing)" } as any;
   const alignStyle = a.textAlign ? { textAlign: a.textAlign as React.CSSProperties['textAlign'] } : {};
   return (
-    <section id="about" className="group grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, maxWidth: "72rem", margin: "0 auto" }}>
+    <section id="about" style={{ ...py, padding: `var(--dt-spacing) 1.5rem`, background: "var(--dt-bg)" }}>
+      <div className="group grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center" style={{ maxWidth: "72rem", margin: "0 auto" }}>
       <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", ...alignStyle }}>
         <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}><InlineText section="about" fieldKey="eyebrow" value={a.eyebrow || "Mengenal Kami"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></span>
         <InlineText
@@ -111,6 +112,7 @@ export default function AboutSplitImage({
             )}
           </div>
         )}
+      </div>
       </div>
     </section>
   );

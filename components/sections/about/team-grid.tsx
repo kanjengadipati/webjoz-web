@@ -16,7 +16,8 @@ export default function AboutTeamGrid({
   // Never invent team members on the public site — only real data from the payload.
   const members = a.team_members ?? [];
   return (
-    <section id="about" style={{ padding: `var(--dt-spacing) 1.5rem`, maxWidth: "72rem", margin: "0 auto" }}>
+    <section id="about" style={{ padding: `var(--dt-spacing) 1.5rem`, background: "var(--dt-bg)" }}>
+      <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
       <div style={{ textAlign: "center", marginBottom: "3rem" }}>
         <span style={{ fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--dt-primary)" }}><InlineText section="about" fieldKey="eyebrow" value={a.eyebrow || "Tim Kami"} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} as="span" collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} /></span>
         <InlineText
@@ -80,6 +81,7 @@ export default function AboutTeamGrid({
           <InlineAddTile label="Tambah Anggota Tim" onClick={onAddItem} style={{ borderRadius: "var(--dt-radius)", maxWidth: "24rem" }} />
         </div>
       )}
+      </div>
     </section>
   );
 }
