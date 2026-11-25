@@ -694,7 +694,7 @@ export function WorksCard({
             collapseSheetForInlineEdit={collapseSheetForInlineEdit}
           />
         )}
-        {(item.year || isEditorMode) && (
+        {item.year ? (
           <span
             className={`absolute top-3 left-3 px-2.5 py-1 text-[11px] font-bold rounded-full text-white bg-black/55 backdrop-blur-sm ${isEditorMode ? "z-30 pointer-events-auto" : "z-10"}`}
           >
@@ -710,7 +710,7 @@ export function WorksCard({
               onEditingStateChange={onEditingStateChange}
             />
           </span>
-        )}
+        ) : null}
       </div>
 
       <div className={`flex flex-col gap-3 p-5 md:p-6 flex-1 ${featured ? "lg:justify-center" : ""}`}>

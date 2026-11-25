@@ -6,6 +6,9 @@ import PhotoCredit from "../PhotoCredit";
 import type { ContactVariantProps } from "./types";
 import { contactStrings } from "./contact-strings";
 
+const DEFAULT_OFFICE_PHOTO =
+  "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80";
+
 export default function ContactOfficeShowcase({
   contact: c,
   onUpdateField,
@@ -51,52 +54,29 @@ export default function ContactOfficeShowcase({
               border: "1px solid color-mix(in srgb, var(--dt-primary) 18%, transparent)",
             }}
           >
-            {(c.image_url || isEditorMode) ? (
-              <>
-                <InlineImage
+            <InlineImage
+              section="contact"
+              fieldKey="image_url"
+              src={c.image_url || DEFAULT_OFFICE_PHOTO}
+              alt={L.officePhotoAlt}
+              onUpdateField={onUpdateField}
+              isEditorMode={isEditorMode}
+              isSelected={isSelected}
+              className="w-full h-full object-cover"
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+            />
+            {c.image_credit && (
+              <div style={{ position: "absolute", bottom: 6, right: 10, zIndex: 20 }}>
+                <PhotoCredit
+                  credit={c.image_credit}
                   section="contact"
-                  fieldKey="image_url"
-                  src={c.image_url}
-                  alt={L.officePhotoAlt}
+                  fieldKey="image_credit.name"
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}
-                  className="w-full h-full object-cover"
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
                   collapseSheetForInlineEdit={collapseSheetForInlineEdit}
                 />
-                <div style={{ position: "absolute", bottom: 6, right: 10, zIndex: 20 }}>
-                  <PhotoCredit
-                    credit={c.image_credit}
-                    section="contact"
-                    fieldKey="image_credit.name"
-                    onUpdateField={onUpdateField}
-                    isEditorMode={isEditorMode}
-                    isSelected={isSelected}
-                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
-                  />
-                </div>
-              </>
-            ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center gap-3 p-6 text-center">
-                <div
-                  className="w-16 h-16 rounded-full flex items-center justify-center"
-                  style={{
-                    background: "var(--dt-surface)",
-                    color: "var(--dt-primary)",
-                    boxShadow: "0 8px 24px color-mix(in srgb, var(--dt-primary) 16%, transparent)",
-                  }}
-                >
-                  <Building2 className="w-7 h-7" />
-                </div>
-                {c.address && (
-                  <p
-                    className="text-xs max-w-xs leading-relaxed"
-                    style={{ color: "var(--dt-text-muted)" }}
-                  >
-                    {c.address}
-                  </p>
-                )}
               </div>
             )}
           </div>
