@@ -18,7 +18,7 @@ export default function AboutFounderSpotlight({
   // Nama & posisi founder (fallback ke team_members[0] jika ada, atau default nama pemilik)
   const firstMember = a.team_members?.[0];
   const founderName = firstMember?.name || a.eyebrow || "Founder & Pemilik";
-  const founderRole = firstMember?.role || "Founder & CEO";
+  const founderRole = firstMember?.role || "Pemilik";
 
   return (
     <section
@@ -167,7 +167,7 @@ export default function AboutFounderSpotlight({
             <InlineText
               section="about"
               fieldKey="team_members.0.role"
-              value={firstMember?.role || "Founder & CEO"}
+              value={firstMember?.role || "Pemilik"}
               placeholder="Founder & CEO"
               onUpdateField={onUpdateField}
               isEditorMode={isEditorMode}

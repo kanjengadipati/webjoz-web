@@ -5,12 +5,19 @@ import type { ContactVariantProps } from "./types";
 import { InlineText } from "../../templates/shared";
 import DynamicLeadForm from "./lead-form";
 
-function formatWhatsAppUrl(phone?: string, businessName?: string): string {
+// Neutral by default (works for restaurants, shops and services alike);
+// a site can override it via contact.wa_message.
+function defaultWaMessage(isEN: boolean): string {
+  return isEN
+    ? "Hello, I'd like to ask for more information."
+    : "Halo, saya ingin bertanya dan mendapatkan informasi lebih lanjut.";
+}
+
+function formatWhatsAppUrl(phone?: string, message?: string): string {
   if (!phone) return "#";
   const cleanPhone = phone.replace(/[^0-9]/g, "");
   const normalized = cleanPhone.startsWith("0") ? "62" + cleanPhone.slice(1) : cleanPhone;
-  const message = encodeURIComponent(`Halo, saya ingin konsultasi dan tanya informasi lebih lanjut mengenai layanan Anda.`);
-  return `https://wa.me/${normalized}?text=${message}`;
+  return `https://wa.me/${normalized}?text=${encodeURIComponent(message ?? "")}`;
 }
 
 export default function WhatsAppDirect({
@@ -32,7 +39,8 @@ export default function WhatsAppDirect({
   const hasAddress = Boolean(c.address && c.address.trim()) || isEditorMode;
   const hasLeadForm = Boolean(c.show_lead_form && onSubmitLead);
   const showWhatsappCard = c.show_whatsapp_card !== false;
-  const waUrl = formatWhatsAppUrl(c.phone);
+  const waMessage = ((c as unknown as { wa_message?: string }).wa_message || "").trim() || defaultWaMessage(isEN);
+  const waUrl = formatWhatsAppUrl(c.phone, waMessage);
 
   return (
     <section
@@ -169,7 +177,7 @@ export default function WhatsAppDirect({
                   className="text-xs sm:text-[13px] italic leading-relaxed font-medium pl-3 border-l-2 border-[#25D366]/40"
                   style={{ color: "var(--dt-text)" }}
                 >
-                  &ldquo;Halo, saya ingin konsultasi dan tanya informasi lebih lanjut mengenai layanan Anda.&rdquo;
+                  &ldquo;{waMessage}&rdquo;
                 </p>
               </div>
 
@@ -185,7 +193,7 @@ export default function WhatsAppDirect({
                   <div className="w-6 h-6 rounded-full bg-[#25D366]/10 flex items-center justify-center shrink-0">
                     <ShieldCheck className="w-3.5 h-3.5 text-[#25D366]" />
                   </div>
-                  <span className="font-semibold">{isEN ? "100% Free Inquiry" : "Konsultasi Gratis"}</span>
+                  <span className="font-semibold">{isEN ? "100% Free Inquiry" : "Tanya Gratis"}</span>
                 </div>
               </div>
             </div>
