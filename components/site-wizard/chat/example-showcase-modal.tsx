@@ -6,6 +6,7 @@ import { Dialog, Button, SparkleGenAI } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
 import { SHOWCASE_ITEMS, findShowcaseSample } from "@/lib/landing-showcase-data";
 import { TemplatePreview, getDesignToken } from "@/components/landing-template-showcase";
+import { CURATED_SHOWCASE_TABS } from "./curated-showcase-tabs";
 
 interface ExampleShowcaseModalProps {
   open: boolean;
@@ -15,13 +16,6 @@ interface ExampleShowcaseModalProps {
   initialBusinessType?: string;
   initialTabIndex?: number;
 }
-
-const CURATED_INDICES = [
-  { index: 0, labelIdKey: "dashboard.wizard.exampleTabCafe", labelFallbackId: "Kafe & Kuliner", labelFallbackEn: "Cafe & F&B" },
-  { index: 8, labelIdKey: "dashboard.wizard.exampleTabStore", labelFallbackId: "Toko & Fashion", labelFallbackEn: "Store & Fashion" },
-  { index: 1, labelIdKey: "dashboard.wizard.exampleTabConsultant", labelFallbackId: "Konsultan", labelFallbackEn: "Consultant" },
-  { index: 7, labelIdKey: "dashboard.wizard.exampleTabClinic", labelFallbackId: "Klinik & Jasa", labelFallbackEn: "Clinic & Service" },
-] as const;
 
 export function ExampleShowcaseModal({
   open,
@@ -60,7 +54,7 @@ export function ExampleShowcaseModal({
     initialSample;
   const activeToken = getDesignToken(activeSample.templateId);
 
-  const tabs = CURATED_INDICES.map((c) => ({
+  const tabs = CURATED_SHOWCASE_TABS.map((c) => ({
     ...c,
     item: SHOWCASE_ITEMS[c.index],
   })).filter((c) => Boolean(c.item));

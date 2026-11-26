@@ -1,74 +1,9 @@
 "use client";
 
 import React from "react";
-import { ChevronRight, Coffee, ShoppingBag, TrendingUp, Stethoscope, X } from "lucide-react";
+import { ChevronRight, X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
-
-interface ThumbnailItem {
-  labelIdKey: string;
-  labelFallbackId: string;
-  labelFallbackEn: string;
-  imageUrl: string;
-  /** Large word rendered bottom-left */
-  headlineMain: string;
-  /** Small label above the main word */
-  headlineSub: string;
-  /** Rotated vertical accent word on the right edge */
-  headlineAccent: string;
-  Icon: React.ElementType;
-  showcaseIndex: number;
-}
-
-const THUMBNAIL_ITEMS: ThumbnailItem[] = [
-  {
-    labelIdKey: "dashboard.wizard.exampleTabCafe",
-    labelFallbackId: "Kafe & Kuliner",
-    labelFallbackEn: "Cafe & F&B",
-    imageUrl:
-      "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400&q=70",
-    headlineSub: "GOOD",
-    headlineMain: "COFFEE",
-    headlineAccent: "MOOD",
-    Icon: Coffee,
-    showcaseIndex: 0,
-  },
-  {
-    labelIdKey: "dashboard.wizard.exampleTabStore",
-    labelFallbackId: "Toko & Fashion",
-    labelFallbackEn: "Store & Fashion",
-    imageUrl:
-      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=70",
-    headlineSub: "YOUR",
-    headlineMain: "STYLE",
-    headlineAccent: "WAY",
-    Icon: ShoppingBag,
-    showcaseIndex: 8,
-  },
-  {
-    labelIdKey: "dashboard.wizard.exampleTabConsultant",
-    labelFallbackId: "Konsultan",
-    labelFallbackEn: "Consultant",
-    imageUrl:
-      "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&q=70",
-    headlineSub: "GROW",
-    headlineMain: "FASTER",
-    headlineAccent: "BIZ",
-    Icon: TrendingUp,
-    showcaseIndex: 1,
-  },
-  {
-    labelIdKey: "dashboard.wizard.exampleTabClinic",
-    labelFallbackId: "Klinik & Jasa",
-    labelFallbackEn: "Clinic & Service",
-    imageUrl:
-      "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=400&q=70",
-    headlineSub: "SMILE",
-    headlineMain: "CARE",
-    headlineAccent: "PRO",
-    Icon: Stethoscope,
-    showcaseIndex: 7,
-  },
-];
+import { CURATED_SHOWCASE_TABS } from "./curated-showcase-tabs";
 
 interface ExampleThumbnailCardProps {
   onSeeAll: () => void;
@@ -139,7 +74,7 @@ export function ExampleThumbnailCard({
 
       {/* Thumbnail grid — 4 columns */}
       <div className="grid grid-cols-4 gap-1.5">
-        {THUMBNAIL_ITEMS.map((item) => {
+        {CURATED_SHOWCASE_TABS.map((item) => {
           const fallbackLabel = isIndonesian ? item.labelFallbackId : item.labelFallbackEn;
           const label = t(item.labelIdKey, fallbackLabel);
           const Icon = item.Icon;
@@ -148,7 +83,7 @@ export function ExampleThumbnailCard({
             <button
               key={item.labelIdKey}
               type="button"
-              onClick={() => onSelectTab ? onSelectTab(item.showcaseIndex) : onSeeAll()}
+              onClick={() => onSelectTab ? onSelectTab(item.index) : onSeeAll()}
               className="group flex flex-col rounded-xl overflow-hidden border border-white/[0.08] hover:border-white/20 transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] focus:outline-none"
             >
               {/* Image + artistic headline overlay */}
