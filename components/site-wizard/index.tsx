@@ -2527,19 +2527,19 @@ export function SiteWizard({
                       return (
                         <>
                           {formatText(beforePart, isUser)}
-                          <span className="flex flex-wrap items-center gap-1.5 my-2">
+                          <span className="flex flex-nowrap items-center gap-1.5 my-2 overflow-x-auto no-scrollbar">
                             <Badge
                               variant="outline"
-                              className="gap-1 rounded-full border-emerald-400/30 bg-emerald-400/10 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-300"
+                              className="shrink-0 gap-1 rounded-full border-white/15 bg-white/[0.08] px-2 py-0.5 text-[10.5px] font-semibold normal-case tracking-normal text-slate-200 whitespace-nowrap"
                             >
-                              <Check className="w-3 h-3 stroke-[2.5]" />
+                              <Check className="w-2.5 h-2.5 text-white/80 stroke-[2.5]" />
                               {t("dashboard.wizard.greetingChipFree", isIndonesian ? "100% Gratis" : "100% Free")}
                             </Badge>
                             <Badge
                               variant="outline"
-                              className="gap-1 rounded-full border-white/15 bg-white/[0.08] px-2.5 py-0.5 text-[11px] font-semibold text-slate-200"
+                              className="shrink-0 gap-1 rounded-full border-white/15 bg-white/[0.08] px-2 py-0.5 text-[10.5px] font-semibold normal-case tracking-normal text-slate-200 whitespace-nowrap"
                             >
-                              <Zap className="w-3 h-3 text-amber-300" />
+                              <Zap className="w-2.5 h-2.5 text-white/80" />
                               {t("dashboard.wizard.greetingChipFast", isIndonesian ? "Siap dalam 1 menit" : "Ready in 1 minute")}
                             </Badge>
                           </span>
