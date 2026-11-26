@@ -56,26 +56,30 @@ export function ExampleShowcaseModal({
 
   const tabs = CURATED_SHOWCASE_TABS.map((c) => ({
     ...c,
-    item: SHOWCASE_ITEMS[c.index],
-  })).filter((c) => Boolean(c.item));
+    items: c.indices.map((idx) => SHOWCASE_ITEMS[idx]).filter(Boolean),
+  })).filter((c) => c.items.length > 0);
 
   // If ad URL targeted a specific industry outside curated tabs, prepend it
-  const hasInitialInCurated = tabs.some(
-    (t) => t.item.businessName === initialSample.businessName
+  const hasInitialInCurated = tabs.some((t) =>
+    t.items.some((item) => item.businessName === initialSample.businessName)
   );
   const displayTabs =
     initialBusinessType && !hasInitialInCurated
       ? [
           {
-            index: -1,
-            labelIdKey: "dashboard.wizard.exampleTabCafe" as const,
+            indices: [-1],
+            labelIdKey: "dashboard.wizard.categories.kuliner" as const,
             labelFallbackId: initialSample.businessName,
             labelFallbackEn: initialSample.businessName,
-            item: initialSample,
+            items: [initialSample],
           },
           ...tabs,
         ]
       : tabs;
+
+  const activeTab = displayTabs.find((tab) =>
+    tab.items.some((item) => item.businessName === activeSample.businessName)
+  );
 
   const handleUseStyle = () => {
     const styleToken: Record<string, any> = {
@@ -147,15 +151,17 @@ export function ExampleShowcaseModal({
         {/* Category Tabs */}
         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink-0 pb-0.5">
           {displayTabs.map((tab) => {
-            const isActive = activeSample.businessName === tab.item.businessName;
+            const isActive = tab.items.some(
+              (item) => item.businessName === activeSample.businessName
+            );
             const label = isIndonesian ? tab.labelFallbackId : tab.labelFallbackEn;
             return (
               <Button
-                key={tab.item.businessName}
+                key={tab.labelIdKey}
                 type="button"
                 size="sm"
                 variant={isActive ? "default" : "outline"}
-                onClick={() => setSelectedBusinessName(tab.item.businessName)}
+                onClick={() => setSelectedBusinessName(tab.items[0].businessName)}
                 className="shrink-0 rounded-full h-7 px-3 text-[11px] font-semibold"
               >
                 {t(tab.labelIdKey, label)}
@@ -163,6 +169,29 @@ export function ExampleShowcaseModal({
             );
           })}
         </div>
+
+        {/* Sub-pills when the active category has multiple examples */}
+        {activeTab && activeTab.items.length > 1 && (
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink-0">
+            {activeTab.items.map((sample) => {
+              const isSelected = sample.businessName === activeSample.businessName;
+              return (
+                <button
+                  key={sample.businessName}
+                  type="button"
+                  onClick={() => setSelectedBusinessName(sample.businessName)}
+                  className={`shrink-0 rounded-lg px-2.5 py-1 text-[11px] font-medium transition-colors cursor-pointer border ${
+                    isSelected
+                      ? "bg-foreground/10 text-foreground border-foreground/25 font-semibold"
+                      : "bg-transparent text-muted-foreground border-border/60 hover:text-foreground hover:border-border"
+                  }`}
+                >
+                  {sample.businessName}
+                </button>
+              );
+            })}
+          </div>
+        )}
 
         {/* Scrollable Real Template Preview (0 AI tokens) */}
         <div className="flex-1 overflow-y-auto rounded-xl border border-border/70 bg-muted/30 p-2 sm:p-3">

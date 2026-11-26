@@ -83,7 +83,7 @@ export function ExampleThumbnailCard({
             <button
               key={item.labelIdKey}
               type="button"
-              onClick={() => onSelectTab ? onSelectTab(item.index) : onSeeAll()}
+              onClick={() => onSelectTab ? onSelectTab(item.indices[0]) : onSeeAll()}
               className="group flex flex-col rounded-xl overflow-hidden border border-white/[0.08] hover:border-white/20 transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] focus:outline-none"
             >
               {/* Image + artistic headline overlay */}
