@@ -1,12 +1,13 @@
 "use client";
 
 import React from "react";
-import { ChevronRight, Coffee, ShoppingBag, TrendingUp, Palette, X } from "lucide-react";
+import { ChevronRight, Coffee, ShoppingBag, TrendingUp, Stethoscope, X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 
 interface ThumbnailItem {
-  labelShortId: string;
-  labelShortEn: string;
+  labelIdKey: string;
+  labelFallbackId: string;
+  labelFallbackEn: string;
   imageUrl: string;
   /** Large word rendered bottom-left */
   headlineMain: string;
@@ -20,8 +21,9 @@ interface ThumbnailItem {
 
 const THUMBNAIL_ITEMS: ThumbnailItem[] = [
   {
-    labelShortId: "Coffee Shop",
-    labelShortEn: "Coffee Shop",
+    labelIdKey: "dashboard.wizard.exampleTabCafe",
+    labelFallbackId: "Kafe & Kuliner",
+    labelFallbackEn: "Cafe & F&B",
     imageUrl:
       "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400&q=70",
     headlineSub: "GOOD",
@@ -31,8 +33,9 @@ const THUMBNAIL_ITEMS: ThumbnailItem[] = [
     showcaseIndex: 0,
   },
   {
-    labelShortId: "Fashion Store",
-    labelShortEn: "Fashion Store",
+    labelIdKey: "dashboard.wizard.exampleTabStore",
+    labelFallbackId: "Toko & Fashion",
+    labelFallbackEn: "Store & Fashion",
     imageUrl:
       "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=70",
     headlineSub: "YOUR",
@@ -42,26 +45,28 @@ const THUMBNAIL_ITEMS: ThumbnailItem[] = [
     showcaseIndex: 8,
   },
   {
-    labelShortId: "Business",
-    labelShortEn: "Business",
+    labelIdKey: "dashboard.wizard.exampleTabConsultant",
+    labelFallbackId: "Konsultan",
+    labelFallbackEn: "Consultant",
     imageUrl:
       "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&q=70",
     headlineSub: "GROW",
     headlineMain: "FASTER",
     headlineAccent: "BIZ",
     Icon: TrendingUp,
-    showcaseIndex: 7,
+    showcaseIndex: 1,
   },
   {
-    labelShortId: "Portfolio",
-    labelShortEn: "Portfolio",
+    labelIdKey: "dashboard.wizard.exampleTabClinic",
+    labelFallbackId: "Klinik & Jasa",
+    labelFallbackEn: "Clinic & Service",
     imageUrl:
-      "https://images.unsplash.com/photo-1529912626516-e58b23f44f1d?w=400&q=70",
-    headlineSub: "CREATE",
-    headlineMain: "INSPIRE",
-    headlineAccent: "ART",
-    Icon: Palette,
-    showcaseIndex: 1,
+      "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=400&q=70",
+    headlineSub: "SMILE",
+    headlineMain: "CARE",
+    headlineAccent: "PRO",
+    Icon: Stethoscope,
+    showcaseIndex: 7,
   },
 ];
 
@@ -135,12 +140,13 @@ export function ExampleThumbnailCard({
       {/* Thumbnail grid — 4 columns */}
       <div className="grid grid-cols-4 gap-1.5">
         {THUMBNAIL_ITEMS.map((item) => {
-          const label = isIndonesian ? item.labelShortId : item.labelShortEn;
+          const fallbackLabel = isIndonesian ? item.labelFallbackId : item.labelFallbackEn;
+          const label = t(item.labelIdKey, fallbackLabel);
           const Icon = item.Icon;
 
           return (
             <button
-              key={item.labelShortEn}
+              key={item.labelIdKey}
               type="button"
               onClick={() => onSelectTab ? onSelectTab(item.showcaseIndex) : onSeeAll()}
               className="group flex flex-col rounded-xl overflow-hidden border border-white/[0.08] hover:border-white/20 transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] focus:outline-none"

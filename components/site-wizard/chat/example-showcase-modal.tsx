@@ -18,9 +18,9 @@ interface ExampleShowcaseModalProps {
 
 const CURATED_INDICES = [
   { index: 0, labelIdKey: "dashboard.wizard.exampleTabCafe", labelFallbackId: "Kafe & Kuliner", labelFallbackEn: "Cafe & F&B" },
-  { index: 7, labelIdKey: "dashboard.wizard.exampleTabClinic", labelFallbackId: "Klinik & Jasa", labelFallbackEn: "Clinic & Service" },
   { index: 8, labelIdKey: "dashboard.wizard.exampleTabStore", labelFallbackId: "Toko & Fashion", labelFallbackEn: "Store & Fashion" },
   { index: 1, labelIdKey: "dashboard.wizard.exampleTabConsultant", labelFallbackId: "Konsultan", labelFallbackEn: "Consultant" },
+  { index: 7, labelIdKey: "dashboard.wizard.exampleTabClinic", labelFallbackId: "Klinik & Jasa", labelFallbackEn: "Clinic & Service" },
 ] as const;
 
 export function ExampleShowcaseModal({
