@@ -3628,6 +3628,8 @@ export interface Translations {
       exampleBtnUseStyle: string;
       exampleBtnCustomStyle: string;
       trustStripText: string;
+      greetingChipFree: string;
+      greetingChipFast: string;
       btnSeeExamples: string;
       wireframeStyleSelectedBanner: string;
       exampleCardTitle: string;
@@ -8042,6 +8044,8 @@ export const translations: Record<Locale, Translations> = {
         exampleBtnUseStyle: "Pakai gaya ini",
         exampleBtnCustomStyle: "Atur gaya sendiri",
         trustStripText: "100% gratis — website AI siap dalam 1 menit",
+        greetingChipFree: "100% Gratis",
+        greetingChipFast: "Siap dalam 1 menit",
         btnSeeExamples: "Lihat contoh",
         wireframeStyleSelectedBanner:
           "Gaya visual terpilih — lengkapi profil bisnis di chat",
@@ -12629,6 +12633,8 @@ export const translations: Record<Locale, Translations> = {
         exampleBtnUseStyle: "Use this style",
         exampleBtnCustomStyle: "Pick my own style",
         trustStripText: "100% free — your AI website ready in 1 minute",
+        greetingChipFree: "100% Free",
+        greetingChipFast: "Ready in 1 minute",
         btnSeeExamples: "See examples",
         wireframeStyleSelectedBanner:
           "Visual style selected — complete your business profile in chat",

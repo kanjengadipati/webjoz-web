@@ -1543,20 +1543,6 @@ export function SiteWizard({
 
           {/* Step Progress Bar — 4 Unified Logical Steps */}
           <WizardStepProgressBar chatStage={chat.chatStage} />
-
-          {/* Compact Trust Strip */}
-          {mode === "public" && preview.previewState === "wireframe" && (
-            <div className="pb-1 pt-0.5">
-              <div className="flex items-center gap-1.5 text-[10.5px] text-slate-300/90 min-w-0">
-                <Check className="w-3 h-3 text-emerald-400 shrink-0 stroke-[2.5]" />
-                <span className="truncate">
-                  {t("dashboard.wizard.trustStripText", isIndonesian
-                    ? "100% gratis — website AI siap dalam 1 menit"
-                    : "100% free — your AI website ready in 1 minute")}
-                </span>
-              </div>
-            </div>
-          )}
         </div>
 
         <WizardResumeBanner
@@ -2527,6 +2513,38 @@ export function SiteWizard({
                           onClick={() => {}}
                           readOnly
                         />
+                      );
+                    })()
+                  ) : m.id === "init" && mode === "public" ? (
+                    (() => {
+                      const marker = "website.";
+                      const idx = messageText.indexOf(marker);
+                      if (idx === -1) {
+                        return formatText(messageText, isUser);
+                      }
+                      const beforePart = messageText.slice(0, idx + marker.length);
+                      const afterPart = messageText.slice(idx + marker.length).trimStart();
+                      return (
+                        <>
+                          {formatText(beforePart, isUser)}
+                          <span className="flex flex-wrap items-center gap-1.5 my-2">
+                            <Badge
+                              variant="outline"
+                              className="gap-1 rounded-full border-emerald-400/30 bg-emerald-400/10 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-300"
+                            >
+                              <Check className="w-3 h-3 stroke-[2.5]" />
+                              {t("dashboard.wizard.greetingChipFree", isIndonesian ? "100% Gratis" : "100% Free")}
+                            </Badge>
+                            <Badge
+                              variant="outline"
+                              className="gap-1 rounded-full border-white/15 bg-white/[0.08] px-2.5 py-0.5 text-[11px] font-semibold text-slate-200"
+                            >
+                              <Zap className="w-3 h-3 text-amber-300" />
+                              {t("dashboard.wizard.greetingChipFast", isIndonesian ? "Siap dalam 1 menit" : "Ready in 1 minute")}
+                            </Badge>
+                          </span>
+                          {afterPart ? formatText(afterPart, isUser) : null}
+                        </>
                       );
                     })()
                   ) : (
