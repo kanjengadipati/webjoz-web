@@ -119,7 +119,7 @@ export function ExampleThumbnailCard({
           onClick={onSeeAll}
           className="shrink-0 flex items-center gap-0.5 text-[11px] font-semibold text-white/50 hover:text-white/80 transition-colors whitespace-nowrap mt-0.5"
         >
-          {t("dashboard.wizard.exampleCardSeeAll", isIndonesian ? "Lihat semua contoh" : "See all examples")}
+          {t("dashboard.wizard.exampleCardSeeAll", isIndonesian ? "Lihat semua" : "See all")}
           <ChevronRight className="w-3 h-3" />
         </button>
       </div>
