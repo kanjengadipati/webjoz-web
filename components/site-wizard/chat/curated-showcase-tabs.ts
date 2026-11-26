@@ -33,7 +33,7 @@ export const CURATED_SHOWCASE_TABS: CuratedShowcaseTab[] = [
     labelFallbackId: "Toko Online & Retail",
     labelFallbackEn: "Online Store & Retail",
     imageUrl:
-      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=70",
+      "https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&q=70",
     headlineSub: "YOUR",
     headlineMain: "STYLE",
     headlineAccent: "WAY",

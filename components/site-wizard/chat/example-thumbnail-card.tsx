@@ -3,6 +3,7 @@
 import React from "react";
 import { ChevronRight, X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import { SHOWCASE_ITEMS } from "@/lib/landing-showcase-data";
 import { CURATED_SHOWCASE_TABS } from "./curated-showcase-tabs";
 
 interface ExampleThumbnailCardProps {
@@ -78,6 +79,8 @@ export function ExampleThumbnailCard({
           const fallbackLabel = isIndonesian ? item.labelFallbackId : item.labelFallbackEn;
           const label = t(item.labelIdKey, fallbackLabel);
           const Icon = item.Icon;
+          const primarySample = SHOWCASE_ITEMS[item.indices[0]];
+          const thumbnailImageUrl = primarySample?.content?.hero?.image_url || item.imageUrl;
 
           return (
             <button
@@ -90,7 +93,7 @@ export function ExampleThumbnailCard({
               <div className="relative overflow-hidden" style={{ height: 100 }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={item.imageUrl}
+                  src={thumbnailImageUrl}
                   alt={label}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   loading="lazy"
