@@ -8040,7 +8040,7 @@ export const translations: Record<Locale, Translations> = {
         exampleTabConsultant: "Konsultan",
         exampleBtnUseStyle: "Pakai gaya ini",
         exampleBtnCustomStyle: "Atur gaya sendiri",
-        trustStripText: "Gratis coba · Tanpa kartu · Jadi < 5 menit",
+        trustStripText: "100% gratis — website AI siap dalam 1 menit",
         btnSeeExamples: "Lihat contoh",
         wireframeStyleSelectedBanner:
           "Gaya visual terpilih — lengkapi profil bisnis di chat",
@@ -12314,10 +12314,6 @@ export const translations: Record<Locale, Translations> = {
         variantHeaderSplitUtilityDesc:
           "Slim top bar with contact info above sticky main nav bar; clean and professional.",
         variantHeaderBrandBlockNav: "Brand Block + Nav Rail",
-        variantHeaderBrandBlockNavDesc:
-          "Solid color block on left for brand identity, clean nav rail on right; bold and modern.",
-        // footer
-        variantFooterMinimalBand: "Minimal Band",
         variantFooterMinimalBandDesc:
           "Brand + tagline + copyright in a single clean dark row.",
         variantFooterColumnsWithNav: "Columns + Quick Nav",
@@ -12627,7 +12623,7 @@ export const translations: Record<Locale, Translations> = {
         exampleTabConsultant: "Consultant",
         exampleBtnUseStyle: "Use this style",
         exampleBtnCustomStyle: "Pick my own style",
-        trustStripText: "Free to try · No card · Ready < 5 min",
+        trustStripText: "100% free — your AI website ready in 1 minute",
         btnSeeExamples: "See examples",
         wireframeStyleSelectedBanner:
           "Visual style selected — complete your business profile in chat",

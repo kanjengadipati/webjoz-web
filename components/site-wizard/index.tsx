@@ -1551,8 +1551,8 @@ export function SiteWizard({
                 <Check className="w-3 h-3 text-emerald-400 shrink-0 stroke-[2.5]" />
                 <span className="truncate">
                   {t("dashboard.wizard.trustStripText", isIndonesian
-                    ? "Gratis coba · Tanpa kartu · Jadi < 5 menit"
-                    : "Free to try · No card · Ready < 5 min")}
+                    ? "100% gratis — website AI siap dalam 1 menit"
+                    : "100% free — your AI website ready in 1 minute")}
                 </span>
               </div>
               {/* Thumbnail card — links to modal */}
