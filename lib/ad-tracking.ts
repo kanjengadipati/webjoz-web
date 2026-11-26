@@ -26,7 +26,8 @@ export type AdFunnelEvent =
   | "wizard_start"
   | "site_generated"
   | "save_clicked"
-  | "site_saved";
+  | "site_saved"
+  | "purchase";
 
 export interface AdEventParams {
   business_type?: string;
@@ -34,6 +35,11 @@ export interface AdEventParams {
   mood?: string;
   template_id?: string;
   language?: string;
+  order_id?: string;
+  value?: number;
+  currency?: string;
+  plan_id?: number;
+  payment_method?: string;
   [key: string]: string | number | boolean | undefined;
 }
 
@@ -202,6 +208,20 @@ export function trackAdEvent(event: AdFunnelEvent, params: AdEventParams = {}): 
             ...payload,
           });
           break;
+        case "purchase": {
+          const eventOpts = params.order_id ? { eventID: String(params.order_id) } : undefined;
+          window.fbq(
+            "track",
+            "Purchase",
+            {
+              content_name: "Plan Upgrade",
+              currency: params.currency || "IDR",
+              ...payload,
+            },
+            ...(eventOpts ? [eventOpts] : [])
+          );
+          break;
+        }
       }
     } catch {
       /* ignore pixel runtime errors */
@@ -218,6 +238,8 @@ export function trackAdEvent(event: AdFunnelEvent, params: AdEventParams = {}): 
           ? "generate_lead"
           : event === "site_saved"
           ? "sign_up"
+          : event === "purchase"
+          ? "purchase"
           : event;
       window.gtag("event", gaEventName, payload);
     } catch {
@@ -237,6 +259,8 @@ export function trackAdEvent(event: AdFunnelEvent, params: AdEventParams = {}): 
           ? "SubmitForm"
           : event === "save_clicked"
           ? "ClickButton"
+          : event === "purchase"
+          ? "CompletePayment"
           : "CompleteRegistration";
       window.ttq.track(ttEventName, payload);
     } catch {

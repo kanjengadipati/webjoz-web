@@ -14,6 +14,7 @@ import { useToast } from "@/components/toast-provider";
 import { loadPendingUpgradeDraft, clearPendingUpgradeDraft, PendingUpgradeSiteDraft } from "@/components/site-wizard/wizard-persistence";
 import { buildFullContent } from "@/lib/build-full-content";
 import { encodeSiteId } from "@/lib/sqids";
+import { trackAdEvent } from "@/lib/ad-tracking";
 
 interface Transaction {
   id: number;
@@ -130,6 +131,21 @@ export default function PaymentSuccessPage() {
               setTx(res.data);
               setSettled(true);
               settledRef.current = true;
+              try {
+                const trackedKey = `webjoz_purchase_tracked_${res.data.order_id}`;
+                if (!window.localStorage.getItem(trackedKey)) {
+                  window.localStorage.setItem(trackedKey, "1");
+                  trackAdEvent("purchase", {
+                    order_id: res.data.order_id,
+                    value: res.data.gross_amount,
+                    currency: "IDR",
+                    plan_id: res.data.plan_id,
+                    payment_method: res.data.payment_method,
+                  });
+                }
+              } catch {
+                /* ignore storage/tracking errors */
+              }
             }
             return;
           }
