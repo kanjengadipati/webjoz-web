@@ -1,5 +1,6 @@
 import { request } from "@/lib/api/client";
 import type { LoginResponse, Profile } from "@/lib/types";
+import type { AttributionPayload } from "@/lib/ad-tracking";
 
 export async function login(email: string, password: string) {
   return request<LoginResponse>("/auth/login", {
@@ -71,12 +72,19 @@ export async function verifyOtp(input: {
   });
 }
 
-export async function register(name: string, email: string, phoneNumber: string, password: string) {
+export async function register(
+  name: string,
+  email: string,
+  phoneNumber: string,
+  password: string,
+  attribution?: AttributionPayload,
+) {
   const payload = {
     name,
     email,
     password,
     ...(phoneNumber ? { phone_number: phoneNumber } : {}),
+    ...(attribution ? { attribution } : {}),
   };
 
   return request<null>("/auth/register", {
@@ -151,10 +159,14 @@ export async function acceptInvitationRegister(token: string, name: string, pass
   });
 }
 
-export async function socialLogin(provider: string, token: string) {
-  return request<LoginResponse>("/auth/social-login", {
+export async function socialLogin(
+  provider: string,
+  token: string,
+  attribution?: AttributionPayload,
+) {
+  return request<LoginResponse & { is_new_user?: boolean }>("/auth/social-login", {
     method: "POST",
-    body: JSON.stringify({ provider, token }),
+    body: JSON.stringify({ provider, token, ...(attribution ? { attribution } : {}) }),
   });
 }
 

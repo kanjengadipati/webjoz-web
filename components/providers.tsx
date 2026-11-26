@@ -8,6 +8,7 @@ import { NotificationProvider } from "webjoz-ui";
 import type { Locale } from "@/lib/i18n/translations";
 import { I18nProvider, useI18n } from "@/lib/i18n/context";
 import { socialLogin, linkGoogle } from "@/lib/api/auth";
+import { buildAttributionPayload, createAdEventId, trackAdEvent } from "@/lib/ad-tracking";
 
 function GoogleOAuthHandler() {
   const router = useRouter();
@@ -54,9 +55,14 @@ function GoogleOAuthHandler() {
     }
 
     // Exchange id_token with backend (Normal Login)
-    socialLogin("google", idToken)
+    const regEventId = createAdEventId("registration");
+    socialLogin("google", idToken, buildAttributionPayload(regEventId))
       .then((apiResponse) => {
         persistAuthSession("", apiResponse.data.access_token);
+        // Hanya akun yang benar-benar baru dibuat (server menentukan)
+        if (apiResponse.data.is_new_user) {
+          trackAdEvent("registration", { method: "google", event_id: regEventId });
+        }
         sessionStorage.removeItem("webjoz_google_return_to");
 
         // Smart back: push history state so back button stays in app, not Google

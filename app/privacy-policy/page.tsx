@@ -141,7 +141,7 @@ export default function PrivacyPolicyPage() {
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-3">9. Cookie</h2>
             <p>
-              Webjoz menggunakan cookie esensial untuk autentikasi sesi. Kami tidak menggunakan cookie pelacakan pihak ketiga untuk keperluan iklan. Anda dapat menonaktifkan cookie melalui pengaturan browser, namun beberapa fitur layanan mungkin tidak berfungsi dengan baik.
+              Webjoz menggunakan cookie esensial untuk autentikasi sesi. Pada situs pemasaran dan halaman pembuatan website (webjoz.com), kami juga dapat menggunakan teknologi pelacakan pihak ketiga, yaitu Meta Pixel (Meta Platforms), Google Analytics, dan TikTok Pixel, untuk mengukur efektivitas iklan kami, misalnya dari mana Anda datang (parameter UTM dan ID klik iklan) dan tindakan yang Anda lakukan seperti membuka halaman pembuatan website, mendaftar, atau berlangganan. Data ini tidak mencakup isi website yang Anda buat. Pixel milik Webjoz tidak dijalankan pada website yang dipublikasikan pelanggan (pelanggan dapat memasang pixel mereka sendiri). Anda dapat menonaktifkan cookie melalui pengaturan browser, mengatur preferensi iklan Anda melalui pengaturan akun Meta, atau menghubungi kami untuk pertanyaan terkait data ini; beberapa fitur layanan mungkin tidak berfungsi dengan baik jika cookie esensial dinonaktifkan.
             </p>
           </section>
 

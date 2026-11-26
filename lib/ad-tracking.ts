@@ -26,6 +26,7 @@ export type AdFunnelEvent =
   | "wizard_start"
   | "site_generated"
   | "save_clicked"
+  | "registration"
   | "site_saved"
   | "purchase";
 
@@ -40,6 +41,13 @@ export interface AdEventParams {
   currency?: string;
   plan_id?: number;
   payment_method?: string;
+  /** "email" | "google" | "facebook" untuk event registration */
+  method?: string;
+  /**
+   * ID dedup Meta. Jika kosong dibuat otomatis. Gunakan ID yang sama saat
+   * mengirim event yang sama via Conversions API dari server.
+   */
+  event_id?: string;
   [key: string]: string | number | boolean | undefined;
 }
 
@@ -161,11 +169,60 @@ function cleanParams(params: Record<string, unknown>): Record<string, unknown> {
   return out;
 }
 
+function readCookie(name: string): string | undefined {
+  if (typeof document === "undefined") return undefined;
+  const match = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith(`${name}=`));
+  return match ? decodeURIComponent(match.slice(name.length + 1)) : undefined;
+}
+
+function generateEventId(event: string): string {
+  const rand =
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+  return `${event}_${rand}`;
+}
+
+/**
+ * Identitas browser untuk Meta Conversions API: cookie `_fbp`, `_fbc`
+ * (dibangun dari `fbclid` jika cookie belum ada), plus atribusi UTM.
+ * Kirim objek ini ke backend saat register/simpan site/bayar agar server
+ * dapat mengirim event dengan match quality yang baik.
+ */
+export function getAdTrackingContext(): {
+  fbp?: string;
+  fbc?: string;
+  attribution: AdAttribution | null;
+} {
+  const attribution = getStoredAttribution();
+  const fbp = readCookie("_fbp");
+  let fbc = readCookie("_fbc");
+  if (!fbc && attribution?.fbclid) {
+    fbc = `fb.1.${attribution.captured_at}.${attribution.fbclid}`;
+  }
+  return { ...(fbp ? { fbp } : {}), ...(fbc ? { fbc } : {}), attribution };
+}
+
 /**
  * Dispatch a conversion funnel event to configured pixels (Meta, GA4, TikTok).
+ * Mengembalikan event_id yang dipakai (untuk dedup dengan CAPI) atau null
+ * bila konteks tidak boleh dilacak.
  */
-export function trackAdEvent(event: AdFunnelEvent, params: AdEventParams = {}): void {
-  if (!isTrackableWebjozContext()) return;
+export function trackAdEvent(event: AdFunnelEvent, params: AdEventParams = {}): string | null {
+  if (!isTrackableWebjozContext()) return null;
+
+  const eventId = params.event_id
+    ? String(params.event_id)
+    : params.order_id
+      ? String(params.order_id)
+      : generateEventId(event);
+  // event_id dipakai sebagai opsi dedup Meta, bukan sebagai parameter event
+  const { event_id: _omit, ...rest } = params;
+  void _omit;
+  params = rest;
+  const metaOpts = { eventID: eventId };
 
   const attribution = getStoredAttribution();
   const payload = cleanParams({
@@ -176,40 +233,50 @@ export function trackAdEvent(event: AdFunnelEvent, params: AdEventParams = {}): 
     utm_content: attribution?.utm_content,
   });
 
-  // 1. Meta Pixel (fbq)
+  // 1. Meta Pixel (fbq) — semua event membawa eventID agar bisa di-dedup dengan CAPI
   if (typeof window.fbq === "function") {
     try {
       switch (event) {
         case "view_create":
-          window.fbq("track", "ViewContent", {
-            content_name: "AI Website Wizard",
-            content_category: params.business_type || "general",
-            ...payload,
-          });
+          window.fbq(
+            "track",
+            "ViewContent",
+            {
+              content_name: "AI Website Wizard",
+              content_category: params.business_type || "general",
+              ...payload,
+            },
+            metaOpts
+          );
           break;
         case "wizard_start":
-          window.fbq("track", "InitiateCheckout", {
-            content_name: "Wizard Generation Started",
-            ...payload,
-          });
+          // Bukan checkout: pakai custom event agar funnel e-commerce tidak tercemar
+          window.fbq("trackCustom", "WizardStart", payload, metaOpts);
           break;
         case "site_generated":
-          window.fbq("track", "Lead", {
-            content_name: "AI Website Preview Generated",
-            ...payload,
-          });
+          window.fbq("trackCustom", "PreviewGenerated", payload, metaOpts);
           break;
         case "save_clicked":
-          window.fbq("trackCustom", "SaveSiteIntent", payload);
+          window.fbq("trackCustom", "SaveSiteIntent", payload, metaOpts);
+          break;
+        case "registration":
+          window.fbq(
+            "track",
+            "CompleteRegistration",
+            { content_name: "Webjoz Account Created", status: true, ...payload },
+            metaOpts
+          );
           break;
         case "site_saved":
-          window.fbq("track", "CompleteRegistration", {
-            content_name: "Website Created & Saved",
-            ...payload,
-          });
+          // User sudah login dan menyimpan website = lead berkualitas
+          window.fbq(
+            "track",
+            "Lead",
+            { content_name: "Website Created & Saved", ...payload },
+            metaOpts
+          );
           break;
-        case "purchase": {
-          const eventOpts = params.order_id ? { eventID: String(params.order_id) } : undefined;
+        case "purchase":
           window.fbq(
             "track",
             "Purchase",
@@ -218,10 +285,9 @@ export function trackAdEvent(event: AdFunnelEvent, params: AdEventParams = {}): 
               currency: params.currency || "IDR",
               ...payload,
             },
-            ...(eventOpts ? [eventOpts] : [])
+            metaOpts
           );
           break;
-        }
       }
     } catch {
       /* ignore pixel runtime errors */
@@ -234,9 +300,9 @@ export function trackAdEvent(event: AdFunnelEvent, params: AdEventParams = {}): 
       const gaEventName =
         event === "wizard_start"
           ? "begin_wizard"
-          : event === "site_generated"
-          ? "generate_lead"
           : event === "site_saved"
+          ? "generate_lead"
+          : event === "registration"
           ? "sign_up"
           : event === "purchase"
           ? "purchase"
@@ -254,10 +320,10 @@ export function trackAdEvent(event: AdFunnelEvent, params: AdEventParams = {}): 
         event === "view_create"
           ? "ViewContent"
           : event === "wizard_start"
-          ? "InitiateCheckout"
-          : event === "site_generated"
+          ? "ClickButton"
+          : event === "site_saved"
           ? "SubmitForm"
-          : event === "save_clicked"
+          : event === "save_clicked" || event === "site_generated"
           ? "ClickButton"
           : event === "purchase"
           ? "CompletePayment"
@@ -267,4 +333,52 @@ export function trackAdEvent(event: AdFunnelEvent, params: AdEventParams = {}): 
       /* ignore ttq runtime errors */
     }
   }
+
+  return eventId;
+}
+
+/** Buat event_id baru (dipakai bersama oleh Pixel di browser dan CAPI di server). */
+export function createAdEventId(event: AdFunnelEvent): string {
+  return generateEventId(event);
+}
+
+/** Payload atribusi yang dikirim ke backend bersama register / social login. */
+export interface AttributionPayload {
+  event_id: string;
+  fbp?: string;
+  fbc?: string;
+  fbclid?: string;
+  gclid?: string;
+  ttclid?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_content?: string;
+  utm_term?: string;
+  landing_path?: string;
+  source_url?: string;
+}
+
+/**
+ * Bangun payload atribusi untuk backend (first-touch disimpan server-side,
+ * dan dipakai untuk event Meta Conversions API dengan event_id yang sama).
+ */
+export function buildAttributionPayload(eventId: string): AttributionPayload {
+  const { fbp, fbc, attribution } = getAdTrackingContext();
+  const payload: AttributionPayload = {
+    event_id: eventId,
+    fbp,
+    fbc,
+    fbclid: attribution?.fbclid,
+    gclid: attribution?.gclid,
+    ttclid: attribution?.ttclid,
+    utm_source: attribution?.utm_source,
+    utm_medium: attribution?.utm_medium,
+    utm_campaign: attribution?.utm_campaign,
+    utm_content: attribution?.utm_content,
+    utm_term: attribution?.utm_term,
+    landing_path: attribution?.landing_path,
+    source_url: typeof window !== "undefined" ? window.location.href.slice(0, 500) : undefined,
+  };
+  return cleanParams(payload as unknown as Record<string, unknown>) as unknown as AttributionPayload;
 }

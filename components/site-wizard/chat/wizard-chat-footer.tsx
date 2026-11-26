@@ -27,9 +27,23 @@ export function WizardChatFooter({
   t,
 }: WizardChatFooterProps) {
   return (
+    <>
+    <p
+      className="px-5 pt-2 text-[10px] leading-snug text-slate-500 shrink-0"
+      style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
+    >
+      {t("dashboard.wizard.privacyNoticePrefix", "Dengan melanjutkan, Anda menyetujui")}{" "}
+      <a href="/terms" target="_blank" rel="noopener" className="underline hover:text-slate-300">
+        {t("dashboard.wizard.privacyNoticeTerms", "Syarat & Ketentuan")}
+      </a>{" "}
+      {t("dashboard.wizard.privacyNoticeAnd", "dan")}{" "}
+      <a href="/privacy-policy" target="_blank" rel="noopener" className="underline hover:text-slate-300">
+        {t("dashboard.wizard.privacyNoticePolicy", "Kebijakan Privasi")}
+      </a>
+      . {t("dashboard.wizard.privacyNoticeAds", "Kami memakai pixel iklan (Meta) untuk mengukur efektivitas kampanye.")}
+    </p>
     <div
       className="px-5 py-3 shrink-0 flex items-center justify-between"
-      style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
     >
       <span className="text-[11px] text-slate-500 flex items-center gap-1.5">
         <div
@@ -78,6 +92,7 @@ export function WizardChatFooter({
         </span>
       </div>
     </div>
+    </>
   );
 }
 

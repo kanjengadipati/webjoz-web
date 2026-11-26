@@ -7,6 +7,7 @@ import { Button, Input, Label } from "webjoz-ui";
 import { PhoneNumberInput } from "@/components/phone-number-input";
 import { useToast } from "@/components/toast-provider";
 import { register } from "@/lib/api";
+import { buildAttributionPayload, createAdEventId, trackAdEvent } from "@/lib/ad-tracking";
 import { AuthShell } from "@/components/auth-shell";
 import { useI18n } from "@/lib/i18n/context";
 
@@ -30,7 +31,10 @@ export default function RegisterPage() {
     const redirectParam = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("redirect") : null;
 
     try {
-      await register(name, email, phone, password);
+      // event_id sama untuk Pixel (browser) dan Conversions API (server) agar tidak dobel
+      const eventId = createAdEventId("registration");
+      await register(name, email, phone, password, buildAttributionPayload(eventId));
+      trackAdEvent("registration", { method: "email", event_id: eventId });
       pushToast(t("auth.registerSuccess"), "success");
       router.push(redirectParam ? `/login?redirect=${encodeURIComponent(redirectParam)}` : "/login");
     } catch (err: any) {

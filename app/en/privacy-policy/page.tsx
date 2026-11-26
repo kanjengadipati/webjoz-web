@@ -143,7 +143,7 @@ export default function EnPrivacyPolicyPage() {
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-3">9. Cookies</h2>
             <p>
-              Webjoz uses essential cookies for session authentication. We do not use third-party tracking cookies for advertising purposes. You can disable cookies through your browser settings, although some features of the service may not work properly.
+              Webjoz uses essential cookies for session authentication. On our marketing site and website-creation pages (webjoz.com), we may also use third-party tracking technologies, namely Meta Pixel (Meta Platforms), Google Analytics and TikTok Pixel, to measure the effectiveness of our advertising, for example where you came from (UTM parameters and ad click IDs) and actions you take such as opening the website builder, signing up or subscribing. This data does not include the content of the websites you create. Webjoz&apos;s own pixels do not run on websites published by customers (customers may install their own pixels). You can disable cookies through your browser settings, manage your ad preferences through your Meta account settings, or contact us with questions about this data; some features of the service may not work properly if essential cookies are disabled.
             </p>
           </section>
 

@@ -11,6 +11,9 @@ import { FACEBOOK_CLIENT_ID, GOOGLE_CLIENT_ID, SOCIAL_ACTIVE_PROVIDERS } from "@
 import { Button } from "webjoz-ui";
 import { cn } from "@/lib/utils";
 import Script from "next/script";
+import { InAppBrowserNotice } from "@/components/in-app-browser-notice";
+import { detectInAppBrowser } from "@/lib/in-app-browser";
+import { buildAttributionPayload, createAdEventId, trackAdEvent } from "@/lib/ad-tracking";
 
 type FacebookLoginResponse = {
   authResponse?: {
@@ -104,6 +107,17 @@ export function SocialAuthButtons({
       return;
     }
 
+    // Google menolak OAuth di in-app browser (Instagram/Facebook/TikTok) dengan
+    // `disallowed_useragent`. Jangan arahkan user ke halaman error Google;
+    // <InAppBrowserNotice /> sudah menjelaskan opsi lain.
+    if (detectInAppBrowser().isInApp) {
+      pushToast(
+        "Login Google tidak didukung di browser aplikasi ini. Buka di Chrome/Safari atau gunakan email.",
+        "info"
+      );
+      return;
+    }
+
     // Save current path so we can return after OAuth callback
     if (typeof window !== "undefined") {
       const redirectParam = new URLSearchParams(window.location.search).get("redirect");
@@ -149,9 +163,13 @@ export function SocialAuthButtons({
       fb.login(
         (response) => {
           if (response?.authResponse?.accessToken) {
-            socialLogin("facebook", response.authResponse.accessToken)
+            const regEventId = createAdEventId("registration");
+            socialLogin("facebook", response.authResponse.accessToken, buildAttributionPayload(regEventId))
               .then((apiResponse) => {
                 persistAuthSession("", apiResponse.data.access_token);
+                if (apiResponse.data.is_new_user) {
+                  trackAdEvent("registration", { method: "facebook", event_id: regEventId });
+                }
                 pushToast(t("dashboard.toast.facebookSuccess", undefined, { mode: mode === "login" ? "login" : "signup" }), "success");
 
                 const redirectParam = new URLSearchParams(window.location.search).get("redirect");
@@ -197,6 +215,8 @@ export function SocialAuthButtons({
           </div>
         </div>
       )}
+
+      {hasGoogle && <InAppBrowserNotice />}
 
       {layout === "grid" ? (
         <div className={`grid gap-3.5 my-4 ${hasGoogle && hasFacebook ? "grid-cols-2" : "grid-cols-1"}`}>
