@@ -105,12 +105,12 @@ export function ExampleThumbnailCard({
           </div>
           <div className="min-w-0">
             <p className="text-[13px] font-bold text-white leading-snug">
-              {t("dashboard.wizard.exampleCardTitle", isIndonesian ? "Lihat Contoh Website" : "Browse Website Examples")}
+              {t("dashboard.wizard.exampleCardTitle", isIndonesian ? "Inspirasi Website" : "Website Inspiration")}
             </p>
             <p className="text-[11px] text-white/45 leading-tight truncate">
               {t("dashboard.wizard.exampleCardSubtitle", isIndonesian
-                ? "Pilih desain untuk inspirasi"
-                : "Pick a design for inspiration")}
+                ? "Pilih gaya yang cocok buatmu"
+                : "Pick a style that fits you")}
             </p>
           </div>
         </div>
