@@ -109,8 +109,8 @@ export function ExampleThumbnailCard({
             </p>
             <p className="text-[11px] text-white/45 leading-tight truncate">
               {t("dashboard.wizard.exampleCardSubtitle", isIndonesian
-                ? "Pilih salah satu contoh desain untuk inspirasi"
-                : "Pick a design example for inspiration")}
+                ? "Pilih desain untuk inspirasi"
+                : "Pick a design for inspiration")}
             </p>
           </div>
         </div>
