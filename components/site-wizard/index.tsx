@@ -2527,17 +2527,19 @@ export function SiteWizard({
                       return (
                         <>
                           {formatText(beforePart, isUser)}
-                          <span className="flex flex-nowrap items-center gap-1.5 my-2 overflow-x-auto no-scrollbar">
+                          <span className="flex flex-nowrap items-center gap-1.5 my-2 overflow-x-auto no-scrollbar animate-in fade-in slide-in-from-bottom-2 duration-500" style={{ animationDelay: "120ms", animationFillMode: "both" }}>
                             <Badge
                               variant="outline"
-                              className="shrink-0 gap-1 rounded-full border-white/15 bg-white/[0.08] px-2 py-0.5 text-[10.5px] font-semibold normal-case tracking-normal text-slate-200 whitespace-nowrap"
+                              className="shrink-0 gap-1 rounded-full border-white/15 bg-white/[0.08] px-2 py-0.5 text-[10.5px] font-semibold normal-case tracking-normal text-slate-200 whitespace-nowrap animate-in fade-in slide-in-from-bottom-1 duration-400"
+                              style={{ animationDelay: "180ms", animationFillMode: "both" }}
                             >
                               <Check className="w-2.5 h-2.5 text-white/80 stroke-[2.5]" />
                               {t("dashboard.wizard.greetingChipFree", isIndonesian ? "100% Gratis" : "100% Free")}
                             </Badge>
                             <Badge
                               variant="outline"
-                              className="shrink-0 gap-1 rounded-full border-white/15 bg-white/[0.08] px-2 py-0.5 text-[10.5px] font-semibold normal-case tracking-normal text-slate-200 whitespace-nowrap"
+                              className="shrink-0 gap-1 rounded-full border-white/15 bg-white/[0.08] px-2 py-0.5 text-[10.5px] font-semibold normal-case tracking-normal text-slate-200 whitespace-nowrap animate-in fade-in slide-in-from-bottom-1 duration-400"
+                              style={{ animationDelay: "300ms", animationFillMode: "both" }}
                             >
                               <Zap className="w-2.5 h-2.5 text-white/80" />
                               {t("dashboard.wizard.greetingChipFast", isIndonesian ? "Siap dalam 1 menit" : "Ready in 1 minute")}
