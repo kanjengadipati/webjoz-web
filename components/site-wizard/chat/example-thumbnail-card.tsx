@@ -8,8 +8,12 @@ interface ThumbnailItem {
   labelShortId: string;
   labelShortEn: string;
   imageUrl: string;
-  headlineId: string;
-  headlineEn: string;
+  /** Large word rendered bottom-left */
+  headlineMain: string;
+  /** Small label above the main word */
+  headlineSub: string;
+  /** Rotated vertical accent word on the right edge */
+  headlineAccent: string;
   Icon: React.ElementType;
   showcaseIndex: number;
 }
@@ -20,8 +24,9 @@ const THUMBNAIL_ITEMS: ThumbnailItem[] = [
     labelShortEn: "Coffee Shop",
     imageUrl:
       "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400&q=70",
-    headlineId: "Good Coffee,\nBetter Mood",
-    headlineEn: "Good Coffee,\nBetter Mood",
+    headlineSub: "GOOD",
+    headlineMain: "COFFEE",
+    headlineAccent: "MOOD",
     Icon: Coffee,
     showcaseIndex: 0,
   },
@@ -30,18 +35,20 @@ const THUMBNAIL_ITEMS: ThumbnailItem[] = [
     labelShortEn: "Fashion Store",
     imageUrl:
       "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=70",
-    headlineId: "Style\nYour Way",
-    headlineEn: "Style\nYour Way",
+    headlineSub: "YOUR",
+    headlineMain: "STYLE",
+    headlineAccent: "WAY",
     Icon: ShoppingBag,
     showcaseIndex: 8,
   },
   {
-    labelShortId: "Business Consulting",
-    labelShortEn: "Business Consulting",
+    labelShortId: "Business",
+    labelShortEn: "Business",
     imageUrl:
       "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&q=70",
-    headlineId: "Grow Your\nBusiness\nFaster",
-    headlineEn: "Grow Your\nBusiness\nFaster",
+    headlineSub: "GROW",
+    headlineMain: "FASTER",
+    headlineAccent: "BIZ",
     Icon: TrendingUp,
     showcaseIndex: 7,
   },
@@ -50,8 +57,9 @@ const THUMBNAIL_ITEMS: ThumbnailItem[] = [
     labelShortEn: "Portfolio",
     imageUrl:
       "https://images.unsplash.com/photo-1529912626516-e58b23f44f1d?w=400&q=70",
-    headlineId: "Create.\nInspire.",
-    headlineEn: "Create.\nInspire.",
+    headlineSub: "CREATE",
+    headlineMain: "INSPIRE",
+    headlineAccent: "ART",
     Icon: Palette,
     showcaseIndex: 1,
   },
@@ -75,21 +83,8 @@ export function ExampleThumbnailCard({
       className="relative rounded-2xl border border-white/15 p-3.5 space-y-2.5 backdrop-blur-xl shadow-[0_18px_50px_rgba(0,0,0,0.72)] ring-1 ring-white/[0.06]"
       style={{ background: "rgba(20, 23, 30, 0.94)" }}
     >
-      {/* Close button at top-right corner */}
-      {onDismiss && (
-        <button
-          type="button"
-          onClick={onDismiss}
-          aria-label={isIndonesian ? "Tutup" : "Close"}
-          title={isIndonesian ? "Tutup" : "Close"}
-          className="absolute -top-2.5 -right-2.5 z-10 w-6 h-6 rounded-full bg-[#1e222d] border border-white/20 text-white/75 hover:text-white hover:bg-[#2a2f3d] hover:border-white/35 flex items-center justify-center shadow-lg transition-all active:scale-90 cursor-pointer"
-        >
-          <X className="w-3.5 h-3.5 stroke-[2.4]" />
-        </button>
-      )}
-
       {/* Header row */}
-      <div className="flex items-start justify-between gap-2 pr-1">
+      <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0">
           {/* Icon box */}
           <div
@@ -114,21 +109,33 @@ export function ExampleThumbnailCard({
             </p>
           </div>
         </div>
-        <button
-          type="button"
-          onClick={onSeeAll}
-          className="shrink-0 flex items-center gap-0.5 text-[11px] font-semibold text-white/50 hover:text-white/80 transition-colors whitespace-nowrap mt-0.5"
-        >
-          {t("dashboard.wizard.exampleCardSeeAll", isIndonesian ? "Lihat semua" : "See all")}
-          <ChevronRight className="w-3 h-3" />
-        </button>
+        <div className="shrink-0 flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={onSeeAll}
+            className="flex items-center gap-0.5 text-[11px] font-semibold text-white/55 hover:text-white/85 transition-colors whitespace-nowrap cursor-pointer"
+          >
+            {t("dashboard.wizard.exampleCardSeeAll", isIndonesian ? "Lihat semua" : "See all")}
+            <ChevronRight className="w-3 h-3" />
+          </button>
+          {onDismiss && (
+            <button
+              type="button"
+              onClick={onDismiss}
+              aria-label={isIndonesian ? "Tutup" : "Close"}
+              title={isIndonesian ? "Tutup" : "Close"}
+              className="w-6 h-6 rounded-lg bg-white/[0.06] hover:bg-white/15 border border-white/10 text-white/60 hover:text-white flex items-center justify-center transition-all active:scale-90 cursor-pointer"
+            >
+              <X className="w-3.5 h-3.5 stroke-[2.2]" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Thumbnail grid — 4 columns */}
       <div className="grid grid-cols-4 gap-1.5">
         {THUMBNAIL_ITEMS.map((item) => {
           const label = isIndonesian ? item.labelShortId : item.labelShortEn;
-          const headline = isIndonesian ? item.headlineId : item.headlineEn;
           const Icon = item.Icon;
 
           return (
@@ -138,7 +145,7 @@ export function ExampleThumbnailCard({
               onClick={() => onSelectTab ? onSelectTab(item.showcaseIndex) : onSeeAll()}
               className="group flex flex-col rounded-xl overflow-hidden border border-white/[0.08] hover:border-white/20 transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] focus:outline-none"
             >
-              {/* Image + headline overlay */}
+              {/* Image + artistic headline overlay */}
               <div className="relative overflow-hidden" style={{ height: 100 }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -147,25 +154,78 @@ export function ExampleThumbnailCard({
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   loading="lazy"
                 />
-                {/* Scrim */}
+                {/* Dark scrim — heavier at bottom for text legibility */}
                 <div
                   className="absolute inset-0"
                   style={{
-                    background: "linear-gradient(160deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.18) 60%, rgba(0,0,0,0.5) 100%)",
+                    background:
+                      "linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.15) 100%)",
                   }}
                 />
-                {/* Headline */}
-                <div className="absolute top-1.5 left-1.5 right-1">
-                  <span
-                    className="text-white font-extrabold leading-[1.2] whitespace-pre-line"
-                    style={{ fontSize: "9.5px", textShadow: "0 1px 6px rgba(0,0,0,0.7)" }}
-                  >
-                    {headline}
-                  </span>
+
+                {/* ── Artistic headline ── */}
+                {/* Sub label — small tracking-widest at top-left */}
+                <div
+                  className="absolute top-1.5 left-1.5"
+                  style={{
+                    fontSize: "5.5px",
+                    letterSpacing: "0.18em",
+                    fontWeight: 700,
+                    color: "rgba(255,255,255,0.65)",
+                    textTransform: "uppercase",
+                    lineHeight: 1,
+                  }}
+                >
+                  {item.headlineSub}
+                </div>
+
+                {/* Thin horizontal rule under sub */}
+                <div
+                  className="absolute left-1.5"
+                  style={{
+                    top: "13px",
+                    width: "18px",
+                    height: "0.7px",
+                    background: "rgba(255,255,255,0.35)",
+                  }}
+                />
+
+                {/* Main word — large bold at bottom-left */}
+                <div
+                  className="absolute bottom-1 left-1.5 leading-none"
+                  style={{
+                    fontSize: "15px",
+                    fontWeight: 900,
+                    color: "#ffffff",
+                    letterSpacing: "-0.03em",
+                    textShadow: "0 2px 8px rgba(0,0,0,0.6)",
+                    fontStyle: "italic",
+                  }}
+                >
+                  {item.headlineMain}
+                </div>
+
+                {/* Accent word — rotated vertical on right edge */}
+                <div
+                  className="absolute"
+                  style={{
+                    right: "-1px",
+                    bottom: "6px",
+                    fontSize: "5px",
+                    fontWeight: 700,
+                    letterSpacing: "0.22em",
+                    color: "rgba(255,255,255,0.4)",
+                    textTransform: "uppercase",
+                    writingMode: "vertical-rl",
+                    transform: "rotate(180deg)",
+                    lineHeight: 1,
+                  }}
+                >
+                  {item.headlineAccent}
                 </div>
               </div>
 
-              {/* Label row — separate section below image */}
+              {/* Label row */}
               <div
                 className="flex items-center gap-1 px-2 py-1.5"
                 style={{ background: "rgba(255,255,255,0.055)", borderTop: "1px solid rgba(255,255,255,0.07)" }}
@@ -182,4 +242,3 @@ export function ExampleThumbnailCard({
     </div>
   );
 }
-
