@@ -8044,7 +8044,7 @@ export const translations: Record<Locale, Translations> = {
         btnSeeExamples: "Lihat contoh",
         wireframeStyleSelectedBanner:
           "Gaya visual terpilih — lengkapi profil bisnis di chat",
-        exampleCardTitle: "Lihat Contoh Gratis",
+        exampleCardTitle: "Lihat Contoh Website",
         exampleCardSubtitle: "Pilih salah satu contoh desain untuk inspirasi",
       retry: "Coba lagi",
       optional: "opsional",
@@ -12627,7 +12627,7 @@ export const translations: Record<Locale, Translations> = {
         btnSeeExamples: "See examples",
         wireframeStyleSelectedBanner:
           "Visual style selected — complete your business profile in chat",
-        exampleCardTitle: "Free Design Examples",
+        exampleCardTitle: "Browse Website Examples",
         exampleCardSubtitle: "Pick a design example for inspiration",
       retry: "Try again",
       optional: "optional",

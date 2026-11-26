@@ -103,7 +103,7 @@ export function ExampleThumbnailCard({
             <p className="text-[13px] font-bold text-white leading-tight truncate">
               {t(
                 "dashboard.wizard.exampleCardTitle",
-                isIndonesian ? "Lihat Contoh Gratis" : "Free Design Examples"
+                isIndonesian ? "Lihat Contoh Website" : "Browse Website Examples"
               )}
             </p>
             <p className="text-[11px] text-white/50 leading-tight truncate">
