@@ -8048,10 +8048,10 @@ export const translations: Record<Locale, Translations> = {
         exampleCardTitle: "Lihat Contoh Website",
         exampleCardSubtitle: "Pilih desain untuk inspirasi",
         exampleCardSeeAll: "Lihat semua",
-      retry: "Coba lagi",
-      optional: "opsional",
-      temaHintTitle: "🎨 Branding Website",
-      temaHintDesc: "Atur warna & font sesuai brand kamu",
+        retry: "Coba lagi",
+        optional: "opsional",
+        temaHintTitle: "🎨 Branding Website",
+        temaHintDesc: "Atur warna & font sesuai brand kamu",
         untitledDraft: "Draft Tanpa Nama",
         inputPlaceholderName: "Masukkan nama bisnis Anda...",
         inputPlaceholderDesc: "Ceritakan singkat tentang bisnis Anda...",
@@ -12315,4 +12315,4 @@ export const translations: Record<Locale, Translations> = {
         variantHeaderSplitUtility: "Split Utility (2 Rows)",
         variantHeaderSplitUtilityDesc:
           "Slim top bar with contact info above sticky main nav bar; clean and professional.",
-... [truncated for diff preview]
+        ...[truncated for diff preview]
