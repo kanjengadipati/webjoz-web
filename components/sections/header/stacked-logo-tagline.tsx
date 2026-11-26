@@ -36,7 +36,7 @@ export default function StackedLogoTagline({
           <InlineText
             section="header"
             fieldKey="brand_name"
-            value={header?.brand_name || "Brand Kami"}
+            value={header?.brand_name || (language === "en" ? "Our Brand" : "Brand Kami")}
             onUpdateField={onUpdateField}
             isEditorMode={isEditorMode && editorChrome !== false}
             isSelected={isSelected}
@@ -66,7 +66,7 @@ export default function StackedLogoTagline({
         {!header?.nav_cta_hidden && (
           <a
             href={navCtaHref(header?.nav_cta_text, header?.nav_cta_href)}
-            aria-label={`Hubungi ${header?.brand_name || "brand ini"}`}
+            aria-label={language === "en" ? `Contact ${header?.brand_name || "this brand"}` : `Hubungi ${header?.brand_name || "brand ini"}`}
             className="order-1 md:order-2 shrink-0 px-2.5 py-1.5 sm:px-4 sm:py-1.5 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-xs font-medium hover:opacity-85 transition-all shadow-sm inline-flex items-center justify-center max-w-[125px] sm:max-w-none truncate"
             style={{ color: "var(--dt-primary-foreground)" }}
           >

@@ -36,7 +36,7 @@ export default function CenteredLogo({
           <InlineText
             section="header"
             fieldKey="brand_name"
-            value={header?.brand_name || "Brand Kami"}
+            value={header?.brand_name || (language === "en" ? "Our Brand" : "Brand Kami")}
             onUpdateField={onUpdateField}
             isEditorMode={isEditorMode && editorChrome !== false}
             isSelected={isSelected}
@@ -49,7 +49,7 @@ export default function CenteredLogo({
         {!header?.nav_cta_hidden && (
           <a
             href={navCtaHref(header?.nav_cta_text, header?.nav_cta_href)}
-            aria-label={`Hubungi ${header?.brand_name || "brand ini"}`}
+            aria-label={language === "en" ? `Contact ${header?.brand_name || "this brand"}` : `Hubungi ${header?.brand_name || "brand ini"}`}
             className="shrink-0 px-2.5 py-1.5 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-xs font-semibold hover:opacity-85 transition-all shadow-sm inline-flex items-center justify-center sm:hidden max-w-[125px] truncate"
             style={{ color: "var(--dt-primary-foreground)" }}
           >
@@ -97,7 +97,7 @@ export default function CenteredLogo({
         {!header?.nav_cta_hidden && (
           <a
             href={navCtaHref(header?.nav_cta_text, header?.nav_cta_href)}
-            aria-label={`Hubungi ${header?.brand_name || "brand ini"}`}
+            aria-label={language === "en" ? `Contact ${header?.brand_name || "this brand"}` : `Hubungi ${header?.brand_name || "brand ini"}`}
             className="hidden sm:inline-flex shrink-0 px-5 py-2 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-xs font-semibold hover:opacity-85 transition-all shadow-sm items-center"
             style={{ color: "var(--dt-primary-foreground)" }}
           >
