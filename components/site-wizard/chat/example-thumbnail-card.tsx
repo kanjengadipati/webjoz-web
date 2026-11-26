@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ChevronRight, Coffee, ShoppingBag, TrendingUp, Palette } from "lucide-react";
+import { ChevronRight, Coffee, ShoppingBag, TrendingUp, Palette, X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 
 interface ThumbnailItem {
@@ -60,21 +60,36 @@ const THUMBNAIL_ITEMS: ThumbnailItem[] = [
 interface ExampleThumbnailCardProps {
   onSeeAll: () => void;
   onSelectTab?: (showcaseIndex: number) => void;
+  onDismiss?: () => void;
 }
 
 export function ExampleThumbnailCard({
   onSeeAll,
   onSelectTab,
+  onDismiss,
 }: ExampleThumbnailCardProps) {
   const { t, isIndonesian } = useI18n();
 
   return (
     <div
-      className="rounded-2xl border border-white/[0.09] p-3 space-y-2.5"
-      style={{ background: "rgba(255,255,255,0.04)" }}
+      className="relative rounded-2xl border border-white/15 p-3.5 space-y-2.5 backdrop-blur-xl shadow-[0_18px_50px_rgba(0,0,0,0.72)] ring-1 ring-white/[0.06]"
+      style={{ background: "rgba(20, 23, 30, 0.94)" }}
     >
+      {/* Close button at top-right corner */}
+      {onDismiss && (
+        <button
+          type="button"
+          onClick={onDismiss}
+          aria-label={isIndonesian ? "Tutup" : "Close"}
+          title={isIndonesian ? "Tutup" : "Close"}
+          className="absolute -top-2.5 -right-2.5 z-10 w-6 h-6 rounded-full bg-[#1e222d] border border-white/20 text-white/75 hover:text-white hover:bg-[#2a2f3d] hover:border-white/35 flex items-center justify-center shadow-lg transition-all active:scale-90 cursor-pointer"
+        >
+          <X className="w-3.5 h-3.5 stroke-[2.4]" />
+        </button>
+      )}
+
       {/* Header row */}
-      <div className="flex items-start justify-between gap-2">
+      <div className="flex items-start justify-between gap-2 pr-1">
         <div className="flex items-center gap-2 min-w-0">
           {/* Icon box */}
           <div

@@ -228,6 +228,7 @@ export function SiteWizard({
   const device = useWizardDevice();
   const [showExamplesModal, setShowExamplesModal] = useState(false);
   const [examplesModalInitialTab, setExamplesModalInitialTab] = useState<number | undefined>(undefined);
+  const [dismissedExamplePopup, setDismissedExamplePopup] = useState(false);
 
   const baseThemeToken =
     (preview.layoutOptionIndex > 0 && (preview.layoutOptionCount ?? 0) > 1
@@ -1566,6 +1567,7 @@ export function SiteWizard({
           t={t}
         />
 
+        <div className="relative flex-1 min-h-0 flex flex-col">
         <div className={`flex-1 overflow-y-auto px-4 py-5 space-y-4 ${device.isMobile ? (device.mobileScreen === "preview" ? "pb-28" : "pb-6") : "md:pb-8"}`}>
           {chat.messages.map((m) => {
             if (m.widget === "name-confirm") {
@@ -2558,22 +2560,6 @@ export function SiteWizard({
             );
           })}
 
-          {/* Thumbnail card — appears after first AI message, only in public mode wireframe */}
-          {mode === "public" && preview.previewState === "wireframe" && chat.messages.length >= 1 && !chat.isInitialTyping && (
-            <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-              <ExampleThumbnailCard
-                onSeeAll={() => {
-                  setExamplesModalInitialTab(undefined);
-                  setShowExamplesModal(true);
-                }}
-                onSelectTab={(showcaseIndex) => {
-                  setExamplesModalInitialTab(showcaseIndex);
-                  setShowExamplesModal(true);
-                }}
-              />
-            </div>
-          )}
-
           {chat.isAnalyzingDescription && (
             <div className="flex gap-2.5 justify-start animate-in fade-in duration-200">
               <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center shrink-0 mt-0.5 text-slate-900 shadow-xs">
@@ -2595,6 +2581,31 @@ export function SiteWizard({
           )}
 
           <div ref={chat.chatEndRef} />
+        </div>
+
+        {/* Floating Example Thumbnail Popup — hovers above chat input */}
+        {mode === "public" &&
+          preview.previewState === "wireframe" &&
+          chat.chatStage === "name" &&
+          chat.messages.length <= 1 &&
+          !chat.isInitialTyping &&
+          !dismissedExamplePopup && (
+            <div className="pointer-events-none absolute inset-x-3 bottom-3 z-30 animate-in fade-in slide-in-from-bottom-3 duration-500">
+              <div className="pointer-events-auto">
+                <ExampleThumbnailCard
+                  onSeeAll={() => {
+                    setExamplesModalInitialTab(undefined);
+                    setShowExamplesModal(true);
+                  }}
+                  onSelectTab={(showcaseIndex) => {
+                    setExamplesModalInitialTab(showcaseIndex);
+                    setShowExamplesModal(true);
+                  }}
+                  onDismiss={() => setDismissedExamplePopup(true)}
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Chat Input */}
