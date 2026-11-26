@@ -3632,6 +3632,7 @@ export interface Translations {
       wireframeStyleSelectedBanner: string;
       exampleCardTitle: string;
       exampleCardSubtitle: string;
+      exampleCardSeeAll: string;
       retry: string;
       optional: string;
       temaHintTitle: string;
@@ -8046,6 +8047,7 @@ export const translations: Record<Locale, Translations> = {
           "Gaya visual terpilih — lengkapi profil bisnis di chat",
         exampleCardTitle: "Lihat Contoh Website",
         exampleCardSubtitle: "Pilih salah satu contoh desain untuk inspirasi",
+        exampleCardSeeAll: "Lihat semua contoh",
       retry: "Coba lagi",
       optional: "opsional",
       temaHintTitle: "🎨 Branding Website",
@@ -12314,6 +12316,9 @@ export const translations: Record<Locale, Translations> = {
         variantHeaderSplitUtilityDesc:
           "Slim top bar with contact info above sticky main nav bar; clean and professional.",
         variantHeaderBrandBlockNav: "Brand Block + Nav Rail",
+        variantHeaderBrandBlockNavDesc:
+          "Solid color block on the left for brand, clean navigation rail on the right; strong brand identity.",
+        variantFooterMinimalBand: "Minimal Band",
         variantFooterMinimalBandDesc:
           "Brand + tagline + copyright in a single clean dark row.",
         variantFooterColumnsWithNav: "Columns + Quick Nav",
@@ -12629,6 +12634,7 @@ export const translations: Record<Locale, Translations> = {
           "Visual style selected — complete your business profile in chat",
         exampleCardTitle: "Browse Website Examples",
         exampleCardSubtitle: "Pick a design example for inspiration",
+        exampleCardSeeAll: "See all examples",
       retry: "Try again",
       optional: "optional",
       temaHintTitle: "🎨 Brand Your Website",
