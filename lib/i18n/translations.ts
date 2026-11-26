@@ -3619,6 +3619,19 @@ export interface Translations {
       loadingCardChecklist5: string;
       resetChatBtn: string;
       resetChatTooltip: string;
+      exampleShowcaseTitle: string;
+      exampleShowcaseSubtitle: string;
+      exampleTabCafe: string;
+      exampleTabClinic: string;
+      exampleTabStore: string;
+      exampleTabConsultant: string;
+      exampleBtnUseStyle: string;
+      exampleBtnCustomStyle: string;
+      trustStripText: string;
+      btnSeeExamples: string;
+      wireframeStyleSelectedBanner: string;
+      exampleCardTitle: string;
+      exampleCardSubtitle: string;
       retry: string;
       optional: string;
       temaHintTitle: string;
@@ -8018,6 +8031,21 @@ export const translations: Record<Locale, Translations> = {
         loadingCardChecklist5: "Website siap dipublish!",
         resetChatBtn: "Reset Chat",
         resetChatTooltip: "Mulai ulang chat dari awal",
+        exampleShowcaseTitle: "Contoh Hasil Website AI",
+        exampleShowcaseSubtitle:
+          "Dibuat otomatis dalam hitungan menit — scroll untuk lihat detailnya",
+        exampleTabCafe: "Kafe & Kuliner",
+        exampleTabClinic: "Klinik & Jasa",
+        exampleTabStore: "Toko & Fashion",
+        exampleTabConsultant: "Konsultan",
+        exampleBtnUseStyle: "Pakai gaya ini",
+        exampleBtnCustomStyle: "Atur gaya sendiri",
+        trustStripText: "Gratis coba · Tanpa kartu · Jadi < 5 menit",
+        btnSeeExamples: "Lihat contoh",
+        wireframeStyleSelectedBanner:
+          "Gaya visual terpilih — lengkapi profil bisnis di chat",
+        exampleCardTitle: "Lihat Contoh Gratis",
+        exampleCardSubtitle: "Pilih salah satu contoh desain untuk inspirasi",
       retry: "Coba lagi",
       optional: "opsional",
       temaHintTitle: "🎨 Branding Website",
@@ -12590,6 +12618,21 @@ export const translations: Record<Locale, Translations> = {
         loadingCardChecklist5: "Website ready to publish!",
         resetChatBtn: "Reset Chat",
         resetChatTooltip: "Start the chat over from the beginning",
+        exampleShowcaseTitle: "Real AI Website Examples",
+        exampleShowcaseSubtitle:
+          "Generated in minutes — scroll to inspect the full layout",
+        exampleTabCafe: "Cafe & F&B",
+        exampleTabClinic: "Clinic & Service",
+        exampleTabStore: "Store & Fashion",
+        exampleTabConsultant: "Consultant",
+        exampleBtnUseStyle: "Use this style",
+        exampleBtnCustomStyle: "Pick my own style",
+        trustStripText: "Free to try · No card · Ready < 5 min",
+        btnSeeExamples: "See examples",
+        wireframeStyleSelectedBanner:
+          "Visual style selected — complete your business profile in chat",
+        exampleCardTitle: "Free Design Examples",
+        exampleCardSubtitle: "Pick a design example for inspiration",
       retry: "Try again",
       optional: "optional",
       temaHintTitle: "🎨 Brand Your Website",

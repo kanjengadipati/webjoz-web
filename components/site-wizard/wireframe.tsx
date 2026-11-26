@@ -39,25 +39,30 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
     }
   }, [designToken]);
 
-  // Detect dark vs light mode from design token
+  // Detect dark vs light mode from background luminance first (more reliable than theme_mode alone)
   const isDark = React.useMemo(() => {
     if (!designToken) return true; // default wireframe is dark
+    const bg = designToken?.palette?.background;
+    if (typeof bg === "string") {
+      const hex = bg.replace("#", "").trim();
+      if (hex.length === 6) {
+        const r = parseInt(hex.slice(0, 2), 16);
+        const g = parseInt(hex.slice(2, 4), 16);
+        const b = parseInt(hex.slice(4, 6), 16);
+        if (!isNaN(r) && !isNaN(g) && !isNaN(b)) {
+          const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+          return luminance < 0.5;
+        }
+      }
+    }
     if (designToken.theme_mode === "dark") return true;
     if (designToken.theme_mode === "light") return false;
-    // Fallback: check background luminance
-    const bg = designToken?.palette?.background ?? "#0d0f14";
-    const hex = bg.replace("#", "");
-    if (hex.length !== 6) return true;
-    const r = parseInt(hex.slice(0, 2), 16);
-    const g = parseInt(hex.slice(2, 4), 16);
-    const b = parseInt(hex.slice(4, 6), 16);
-    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-    return luminance < 0.5;
+    return true;
   }, [designToken]);
 
-  // Skeleton opacities: stronger mix on light backgrounds (text is dark, so low % = near-transparent)
+  // Skeleton opacities: clear contrast on both dark and light backgrounds
   const textMix = isDark
-    ? { subtle: "4%", soft: "6%", strong: "8%", panel: "3.5%", panelBorder: "5.5%" }
+    ? { subtle: "8%", soft: "12%", strong: "16%", panel: "5%", panelBorder: "11%" }
     : { subtle: "8%", soft: "12%", strong: "16%", panel: "7%", panelBorder: "11%" };
 
   const fallbackSubtle  = isDark ? "rgba(255,255,255,0.04)"  : "rgba(0,0,0,0.06)";
@@ -115,10 +120,14 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
               style={{ background: "var(--dt-primary)" }}
             />
             <span>
-              {t(
-                "dashboard.wizard.wireframeDesignPreviewBanner",
-                "Pratinjau desain — hasil akhir sedang dibuat AI"
-              )}
+              {highlight
+                ? t(
+                    "dashboard.wizard.wireframeDesignPreviewBanner",
+                    "Pratinjau desain — hasil akhir sedang dibuat AI"
+                  )
+                : effectiveLang === "en"
+                ? t("dashboard.wizard.wireframeStyleSelectedBanner", "Visual style selected — complete your business profile in chat")
+                : t("dashboard.wizard.wireframeStyleSelectedBanner", "Gaya visual terpilih — lengkapi profil bisnis di chat")}
             </span>
           </div>
         )}

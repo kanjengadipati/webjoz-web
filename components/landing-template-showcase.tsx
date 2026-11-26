@@ -32,12 +32,12 @@ const DYNAMIC_SHOWCASE_TOKEN: DesignToken = {
   mood: "professional",
 };
 
-function getDesignToken(templateId: string): DesignToken {
+export function getDesignToken(templateId: string): DesignToken {
   if (templateId === "TEMPLATE_DYNAMIC") return DYNAMIC_SHOWCASE_TOKEN;
   return (TEMPLATE_DEFAULT_DESIGN_TOKENS[templateId] || TEMPLATE_DEFAULT_DESIGN_TOKENS.TEMPLATE_DYNAMIC)!;
 }
 
-function TemplatePreview({
+export function TemplatePreview({
   templateId,
   content,
   designToken,

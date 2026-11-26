@@ -3,7 +3,8 @@
 
 import React, { useState, useRef, useMemo, useEffect } from "react";
 import Link from "next/link";
-import { CustomSelect, Dialog, Button } from "webjoz-ui";
+import dynamic from "next/dynamic";
+import { Badge, CustomSelect, Dialog, Button } from "webjoz-ui";
 import { useRouter } from "next/navigation";
 import { request } from "@/lib/api/client";
 import {
@@ -28,6 +29,7 @@ import {
   CookingPot,
   Cpu,
   Crown,
+  Eye,
   Dumbbell,
   Factory,
   Flame,
@@ -147,7 +149,17 @@ import { WizardResumeBanner } from "./chat/wizard-resume-banner";
 import { WizardChatFooter } from "./chat/wizard-chat-footer";
 import { WizardChatInput } from "./chat/wizard-chat-input";
 import { BrandLogoWidget } from "./chat/brand-logo-widget";
+
+const ExampleShowcaseModal = dynamic(
+  () => import("./chat/example-showcase-modal").then((m) => m.ExampleShowcaseModal),
+  { ssr: false }
+);
+const ExampleThumbnailCard = dynamic(
+  () => import("./chat/example-thumbnail-card").then((m) => m.ExampleThumbnailCard),
+  { ssr: false }
+);
 import { applyBrandPalette } from "@/lib/apply-brand-palette";
+import { trackAdEvent } from "@/lib/ad-tracking";
 import { uploadImageFile, uploadFontFile } from "@/components/file-upload";
 import {
   clearCustomFontStorage,
@@ -214,6 +226,8 @@ export function SiteWizard({
   const chat = useWizardChat({ businessType: initialBusinessType, businessSubType: initialBusinessSubType });
   const preview = useWizardPreview();
   const device = useWizardDevice();
+  const [showExamplesModal, setShowExamplesModal] = useState(false);
+  const [examplesModalInitialTab, setExamplesModalInitialTab] = useState<number | undefined>(undefined);
 
   const baseThemeToken =
     (preview.layoutOptionIndex > 0 && (preview.layoutOptionCount ?? 0) > 1
@@ -456,6 +470,12 @@ export function SiteWizard({
         return;
       }
       const mood = (preview.streamedTokenRef.current as any)?.mood ?? "";
+      trackAdEvent("site_generated", {
+        business_type: chat.businessTypeRef.current || chat.businessType,
+        business_sub_type: chat.businessSubTypeRef.current || chat.businessSubType,
+        mood,
+        template_id: templateId,
+      });
       const pool = getTemplatePool(chat.businessType, mood);
       preview.setTemplatePool(pool);
       preview.setTemplatePoolIndex(0);
@@ -888,16 +908,23 @@ export function SiteWizard({
   };
 
   const handleSelectMood = (mood: string) => {
+    if (initialDesignTokenRef.current?.mood && initialDesignTokenRef.current.mood !== mood) {
+      initialDesignTokenRef.current = null;
+    }
     chat.handleSelectMood(mood, () => {
       // onGenerate is deferred — called via handleStartGeneration after brand-logo step
     });
   };
 
   const handleStartGeneration = () => {
+    trackAdEvent("wizard_start", {
+      business_type: chat.businessTypeRef.current || chat.businessType,
+      business_sub_type: chat.businessSubTypeRef.current || chat.businessSubType,
+      mood: chat.moodRef.current || chat.mood,
+    });
     preview.setRegenCount(0);
     preview.setHasUnsavedEdits(false);
     generate.didGenerateRef.current = true;
-    initialDesignTokenRef.current = null;
     chat.handleStartGeneration((name, type, overrides) => {
       void handleGenerate(name, type, overrides);
     });
@@ -914,6 +941,11 @@ export function SiteWizard({
   const handleGoToEditor = async () => {
     if (isSavingRef.current) return; // prevent double-click / race condition
     isSavingRef.current = true;
+    trackAdEvent("save_clicked", {
+      business_type: chat.businessTypeRef.current || chat.businessType,
+      business_sub_type: chat.businessSubTypeRef.current || chat.businessSubType,
+      mood: chat.moodRef.current || chat.mood,
+    });
 
     // Simpan token yang sama persis dengan yang dirender preview.
     const renderedToken: Record<string, any> | null | undefined =
@@ -1074,6 +1106,11 @@ export function SiteWizard({
       savedAndNavigatingRef.current = true;
       clearWizardSnapshot();
       clearCustomFontStorage();
+      trackAdEvent("site_saved", {
+        business_type: chat.businessTypeRef.current || chat.businessType,
+        business_sub_type: chat.businessSubTypeRef.current || chat.businessSubType,
+        mood: chat.moodRef.current || chat.mood,
+      });
       router.push(`/dashboard/sites/${encodeSiteId(siteId)}`);
     } catch (err: any) {
       if (err.statusCode === 403 && err.code === "ERR_SITE_LIMIT") {
@@ -1464,9 +1501,12 @@ export function SiteWizard({
               <div className="min-w-0 flex flex-col">
                 <div className="flex items-center gap-1.5">
                   <span className="font-bold text-white text-sm leading-tight truncate">Joz-AI</span>
-                  <span className="text-[9px] font-bold tracking-wider text-white/90 bg-white/10 border border-white/20 px-1.5 py-0.5 rounded-md leading-none">
-                    BETA
-                  </span>
+                  <Badge
+                    variant="outline"
+                    className="text-[9px] font-bold tracking-wider text-white/90 bg-white/10 border-white/20 px-1.5 py-0.5 rounded-md leading-none"
+                  >
+                    AI BUILDER
+                  </Badge>
                 </div>
                 <span className="text-[11px] text-slate-400 leading-tight truncate">
                   Webjoz Assistant
@@ -1502,6 +1542,32 @@ export function SiteWizard({
 
           {/* Step Progress Bar — 4 Unified Logical Steps */}
           <WizardStepProgressBar chatStage={chat.chatStage} />
+
+          {/* Compact Trust Strip + Example Thumbnail Card for Cold Ad Traffic */}
+          {mode === "public" && preview.previewState === "wireframe" && (
+            <div className="pb-2 pt-0.5 space-y-1.5">
+              {/* Trust strip */}
+              <div className="flex items-center gap-1.5 text-[10.5px] text-slate-300/90 min-w-0">
+                <Check className="w-3 h-3 text-emerald-400 shrink-0 stroke-[2.5]" />
+                <span className="truncate">
+                  {t("dashboard.wizard.trustStripText", isIndonesian
+                    ? "Gratis coba · Tanpa kartu · Jadi < 5 menit"
+                    : "Free to try · No card · Ready < 5 min")}
+                </span>
+              </div>
+              {/* Thumbnail card — links to modal */}
+              <ExampleThumbnailCard
+                onSeeAll={() => {
+                  setExamplesModalInitialTab(undefined);
+                  setShowExamplesModal(true);
+                }}
+                onSelectTab={(showcaseIndex) => {
+                  setExamplesModalInitialTab(showcaseIndex);
+                  setShowExamplesModal(true);
+                }}
+              />
+            </div>
+          )}
         </div>
 
         <WizardResumeBanner
@@ -2884,6 +2950,35 @@ export function SiteWizard({
         businessName={chat.businessName}
         onUpgradeSuccess={handleGoToEditor}
       />
+
+      {showExamplesModal && (
+        <ExampleShowcaseModal
+          open={showExamplesModal}
+          onClose={() => setShowExamplesModal(false)}
+          initialTabIndex={examplesModalInitialTab}
+          onUseStyle={(styleToken) => {
+            initialDesignTokenRef.current = styleToken;
+            preview.setStreamedDesignToken(styleToken);
+            preview.streamedTokenRef.current = styleToken;
+            if (styleToken.mood) {
+              chat.setMood(styleToken.mood);
+              chat.moodRef.current = styleToken.mood;
+            }
+            if (device.isMobile) device.setMobileScreen("chat");
+            chat.inputRef.current?.focus();
+          }}
+          onStartCustom={() => {
+            initialDesignTokenRef.current = null;
+            preview.setStreamedDesignToken(null);
+            preview.streamedTokenRef.current = null;
+            chat.setMood("");
+            chat.moodRef.current = "";
+            if (device.isMobile) device.setMobileScreen("chat");
+            chat.inputRef.current?.focus();
+          }}
+          initialBusinessType={chat.businessSubType || chat.businessType || initialBusinessSubType || initialBusinessType}
+        />
+      )}
 
       {/* AI Regen Modal — Standard webjoz-ui Dialog with medium size & bottom-right position */}
       <Dialog

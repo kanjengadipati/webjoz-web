@@ -16,6 +16,7 @@ import { decodeDesignTokenParam } from "@/lib/design-token-library";
 import { WIZARD_RESUME_KEY, loadWizardSnapshot } from "@/components/site-wizard/wizard-persistence";
 import { encodeSiteId } from "@/lib/sqids";
 import { uploadImageFile } from "@/components/file-upload";
+import { captureAttributionParams, trackAdEvent } from "@/lib/ad-tracking";
 
 const PENDING_KEY = "webjoz_pending_wizard_data";
 const SAVE_LOCK_KEY = "webjoz_save_in_progress";
@@ -43,6 +44,16 @@ function PublicWizardContent() {
   );
 
   const [activeReferralCode, setActiveReferralCode] = useState<string>("");
+
+  useEffect(() => {
+    captureAttributionParams();
+    if (!isSaveAction) {
+      trackAdEvent("view_create", {
+        business_type: initialBusinessType,
+        business_sub_type: initialBusinessSubType,
+      });
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (refParam && typeof window !== "undefined") {
@@ -307,6 +318,13 @@ function PublicWizardContent() {
         void clearAllDraftMedia();
 
         // Redirect langsung ke editor website yang baru dibuat
+        trackAdEvent("site_saved", {
+          business_type: pending.businessType,
+          business_sub_type: pending.businessSubType,
+          mood: pending.mood,
+          template_id: pending.templateId,
+          language: pending.language,
+        });
         router.push(`/dashboard/sites/${encodeSiteId(siteId)}`);
       } catch (err: any) {
         console.error(err);
