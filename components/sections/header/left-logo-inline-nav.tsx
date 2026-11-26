@@ -104,7 +104,18 @@ export default function LeftLogoInlineNav({
                 className="w-full py-2.5 px-4 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-sm font-semibold text-center flex items-center justify-center hover:opacity-90 transition-all shadow-sm"
                 style={{ color: "var(--dt-primary-foreground)" }}
               >
-                {header?.nav_cta_text || defaultCta}
+                <InlineText
+                  section="header"
+                  fieldKey="nav_cta_text"
+                  value={header?.nav_cta_text || defaultCta}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                  as="span"
+                  className="truncate"
+                />
               </a>
             ) : undefined
           }
