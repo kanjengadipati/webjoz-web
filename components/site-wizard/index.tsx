@@ -1543,10 +1543,9 @@ export function SiteWizard({
           {/* Step Progress Bar — 4 Unified Logical Steps */}
           <WizardStepProgressBar chatStage={chat.chatStage} />
 
-          {/* Compact Trust Strip + Example Thumbnail Card for Cold Ad Traffic */}
+          {/* Compact Trust Strip */}
           {mode === "public" && preview.previewState === "wireframe" && (
-            <div className="pb-2 pt-0.5 space-y-1.5">
-              {/* Trust strip */}
+            <div className="pb-1 pt-0.5">
               <div className="flex items-center gap-1.5 text-[10.5px] text-slate-300/90 min-w-0">
                 <Check className="w-3 h-3 text-emerald-400 shrink-0 stroke-[2.5]" />
                 <span className="truncate">
@@ -1555,17 +1554,6 @@ export function SiteWizard({
                     : "100% free — your AI website ready in 1 minute")}
                 </span>
               </div>
-              {/* Thumbnail card — links to modal */}
-              <ExampleThumbnailCard
-                onSeeAll={() => {
-                  setExamplesModalInitialTab(undefined);
-                  setShowExamplesModal(true);
-                }}
-                onSelectTab={(showcaseIndex) => {
-                  setExamplesModalInitialTab(showcaseIndex);
-                  setShowExamplesModal(true);
-                }}
-              />
             </div>
           )}
         </div>
@@ -2569,6 +2557,22 @@ export function SiteWizard({
               </div>
             );
           })}
+
+          {/* Thumbnail card — appears after first AI message, only in public mode wireframe */}
+          {mode === "public" && preview.previewState === "wireframe" && chat.messages.length >= 1 && !chat.isInitialTyping && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+              <ExampleThumbnailCard
+                onSeeAll={() => {
+                  setExamplesModalInitialTab(undefined);
+                  setShowExamplesModal(true);
+                }}
+                onSelectTab={(showcaseIndex) => {
+                  setExamplesModalInitialTab(showcaseIndex);
+                  setShowExamplesModal(true);
+                }}
+              />
+            </div>
+          )}
 
           {chat.isAnalyzingDescription && (
             <div className="flex gap-2.5 justify-start animate-in fade-in duration-200">
