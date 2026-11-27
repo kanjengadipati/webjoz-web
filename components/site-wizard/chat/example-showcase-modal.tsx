@@ -77,7 +77,7 @@ export function ExampleShowcaseModal({
           templateId: data?.templateId || "TEMPLATE_DYNAMIC",
           content: data?.content || null,
           designToken: data?.design_token || null,
-          mood: s.mood || data?.design_token?.mood || "modern",
+          mood: data?.design_token?.mood || "modern",
           isLoading: !data,
         };
       });

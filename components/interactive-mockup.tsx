@@ -17,6 +17,7 @@ import {
   useMockupShowcaseSites,
   useRealSiteData,
   resolveSiteBusinessName,
+  resolveSiteCategory,
 } from "@/lib/mockup-showcase-sites";
 import { buildCssVars } from "@/components/templates/helpers";
 import { SparkleIcon } from "@/components/sparkle-icon";
@@ -219,49 +220,15 @@ function inferCategoryIndex(
   siteData?: SiteData | null,
   sample?: ShowcaseItem | null
 ): number {
-  const name = (businessName || "").toLowerCase();
-
-  // 1. Check strong keyword match on business name (highest user-perceived relevance)
-  if (
-    /\b(dev|developer|engineer|software|code|app|web|digital|agency|konsultan|consulting|jasa|service|law|hukum|notaris|bengkel|klinik|salon|barber|laundry|studio|arsitek|design|desain|fotografi|photo|creator|kreator|coach|trainer|portofolio|portfolio|it)\b/i.test(
-      name
-    )
-  ) {
-    return 1; // 🔧 Jasa / Services
-  }
-  if (
-    /\b(kopi|coffee|kafe|cafe|resto|restoran|kuliner|food|makan|dapur|kitchen|bakery|roti|cake|boba|tea|teh|snack|warung|angkringan|catering|bistro|bar|nasi|mie)\b/i.test(
-      name
-    )
-  ) {
-    return 0; // 🍜 Kuliner / F&B
-  }
-  if (
-    /\b(toko|shop|store|produk|product|fashion|baju|clothing|hijab|distro|sepatu|tas|craft|handmade|skincare|kosmetik|merch|mart|retail|boutique|olshop|elektronik|gadget)\b/i.test(
-      name
-    )
-  ) {
-    return 2; // 🛍 Produk / Products
-  }
-
-  // 2. Check siteData content or sample business type
-  const bType = (
-    (typeof siteData?.content?.business_type === "string" ? siteData.content.business_type : "") ||
-    sample?.businessType ||
-    ""
-  ).toLowerCase();
-
-  if (/kuliner|food|cafe|kopi|resto|makan/.test(bType)) return 0;
-  if (/produk|toko|retail|shop|fashion|store|olshop/.test(bType)) return 2;
-  if (/jasa|service|portofolio|kreator|agency|booking|konsultan|developer|it/.test(bType)) return 1;
-
-  // 3. Check template ID
-  const templateId = siteData?.templateId || sample?.templateId || "";
-  if (/KULINER|COLORFUL/.test(templateId)) return 0;
-  if (/PRODUK|NATURAL/.test(templateId)) return 2;
-  if (/JASA|PORTFOLIO|MINIMALIST|BOLD|ELEGANT|DYNAMIC|FUTURISTIC/.test(templateId)) return 1;
-
-  return 0;
+  // This is ONLY used as a fallback when there is NO real site URL loaded.
+  // When a real site is active, callers should use resolveSiteCategory(site, realSiteData) directly.
+  // Here we do keyword inference purely from what the user typed as business name.
+  const syntheticSite = {
+    url: "",
+    businessName: businessName || "",
+    category: undefined as number | undefined,
+  };
+  return resolveSiteCategory(syntheticSite, siteData ?? null);
 }
 
 export const REAL_MOOD_SLUGS = [
@@ -847,8 +814,16 @@ function MobileChatCard({
     showcaseItem.businessName;
 
   const [manualTab, setManualTab] = useState<"chat" | "preview" | null>(null);
-  const categoryIndex = inferCategoryIndex(chatBusinessName, realSiteData, sample);
-  const selectedMoodIndex = inferMoodIndex(realSiteData, token, chatBusinessName);
+  // Category & mood: when real site is active, derive purely from API data.
+  // Fallback to keyword inference on user-typed business name only when no real site URL.
+  const categoryIndex = siteUrl
+    ? resolveSiteCategory({ url: siteUrl, businessName: chatBusinessName }, realSiteData)
+    : inferCategoryIndex(chatBusinessName);
+  const selectedMoodIndex = inferMoodIndex(
+    realSiteData,
+    siteUrl ? undefined : token,
+    chatBusinessName
+  );
 
   const displayMoodIndices = useMemo(() => {
     if (selectedMoodIndex === 0) return [0, 1, 3];
@@ -1161,14 +1136,14 @@ export function InteractiveMockup() {
     (currentSite ? resolveSiteBusinessName(currentSite, realSiteData) : "") ||
     showcaseItem.businessName;
 
-  const categoryIndex =
-    currentSite?.category !== undefined
-      ? currentSite.category
-      : inferCategoryIndex(chatBusinessName, realSiteData, showcaseItem);
-  const selectedMoodIndex =
-    currentSite?.mood !== undefined
-      ? resolveMoodIndex(currentSite.mood)
-      : inferMoodIndex(realSiteData, token, chatBusinessName);
+  const categoryIndex = currentSite
+    ? resolveSiteCategory(currentSite, realSiteData)
+    : inferCategoryIndex(chatBusinessName, null, showcaseItem);
+  const selectedMoodIndex = inferMoodIndex(
+    realSiteData,
+    currentSite ? undefined : token,
+    chatBusinessName
+  );
 
   const displayMoodIndices = useMemo(() => {
     if (selectedMoodIndex === 0) return [0, 1, 3];
@@ -1519,63 +1494,6 @@ export function InteractiveMockup() {
                       placeholder="https://contoh.webjoz.com/"
                       className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs font-mono text-foreground outline-none focus:border-amber-500/60 transition-colors"
                     />
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-0.5">
-                      <div>
-                        <label className="block text-[10px] text-muted-foreground mb-1 font-medium">Kategori</label>
-                        <select
-                          value={site.category !== undefined ? site.category : ""}
-                          onChange={(e) =>
-                            setDraftSites((prev) =>
-                              prev.map((v, idx) =>
-                                idx === i
-                                  ? { ...v, category: e.target.value === "" ? undefined : Number(e.target.value) }
-                                  : v,
-                              ),
-                            )
-                          }
-                          className="w-full rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs text-foreground outline-none focus:border-amber-500/60 transition-colors cursor-pointer"
-                        >
-                          <option value="">Otomatis (Deteksi AI)</option>
-                          {translations.landing.mockupChips.map((name, catIdx) => (
-                            <option key={catIdx} value={catIdx}>
-                              {name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-[10px] text-muted-foreground mb-1 font-medium">Mood Desain</label>
-                        <select
-                          value={
-                            site.mood !== undefined
-                              ? typeof site.mood === "number"
-                                ? REAL_MOOD_SLUGS[site.mood] ?? site.mood
-                                : site.mood
-                              : ""
-                          }
-                          onChange={(e) =>
-                            setDraftSites((prev) =>
-                              prev.map((v, idx) =>
-                                idx === i
-                                  ? { ...v, mood: e.target.value === "" ? undefined : e.target.value }
-                                  : v,
-                              ),
-                            )
-                          }
-                          className="w-full rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs text-foreground outline-none focus:border-amber-500/60 transition-colors cursor-pointer"
-                        >
-                          <option value="">Otomatis (Deteksi AI)</option>
-                          {translations.landing.mockupMoodChips.map((name, moodIdx) => {
-                            const slug = REAL_MOOD_SLUGS[moodIdx];
-                            return (
-                              <option key={slug} value={slug}>
-                                {name}
-                              </option>
-                            );
-                          })}
-                        </select>
-                      </div>
-                    </div>
                   </div>
                 ))}
               </div>

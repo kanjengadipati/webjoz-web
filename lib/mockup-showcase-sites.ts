@@ -10,22 +10,16 @@ export const MOCKUP_SHOWCASE_API_BASE =
 export interface MockupShowcaseSite {
   url: string;
   businessName: string;
-  category?: number; // 0: Kuliner, 1: Jasa, 2: Produk
-  mood?: string | number; // e.g. "clean-modern", "warm-earthy", "bold-vibrant", "dark-premium", "bold-dark", "retro", "futuristic", or index 0..6
 }
 
 export const DEFAULT_MOCKUP_SHOWCASE_SITES: MockupShowcaseSite[] = [
   {
     url: "https://pleco-dev.webjoz.com/",
     businessName: "Pleco Dev",
-    category: 1, // 🔧 Jasa
-    mood: "futuristic", // 🤖 Futuristik
   },
   {
     url: "https://kopijozzjogja.webjoz.com/",
     businessName: "Kopi Jozz Jogja",
-    category: 0, // 🍜 Kuliner
-    mood: "retro", // ⏳ Klasik & Retro
   },
 ];
 
@@ -38,17 +32,7 @@ function toSite(input: unknown): MockupShowcaseSite | null {
     const obj = input as Record<string, unknown>;
     const url = typeof obj.url === "string" ? obj.url.trim() : "";
     const businessName = typeof obj.businessName === "string" ? obj.businessName.trim() : "";
-    const category =
-      typeof obj.category === "number" && obj.category >= 0 && obj.category <= 2
-        ? obj.category
-        : undefined;
-    const mood =
-      typeof obj.mood === "string" && obj.mood.trim()
-        ? obj.mood.trim()
-        : typeof obj.mood === "number" && obj.mood >= 0 && obj.mood <= 6
-        ? obj.mood
-        : undefined;
-    return url ? { url, businessName, category, mood } : null;
+    return url ? { url, businessName } : null;
   }
   return null;
 }
@@ -199,13 +183,7 @@ export function resolveSiteCategory(
   site: MockupShowcaseSite,
   data?: RealSiteData | null
 ): number {
-  // Priority 1: explicit category set by Super Admin in editor
-  if (typeof site.category === "number" && site.category >= 0 && site.category <= 2) {
-    return site.category;
-  }
-
-  // Priority 2: keyword inference from business content
-  // Pull text from multiple content fields for broader coverage
+  // Infer category from real API content + business name
   const content = data?.content as any;
   const textParts = [
     site.businessName || "",
