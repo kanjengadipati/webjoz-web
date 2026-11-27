@@ -30,16 +30,16 @@ interface ChipMeta {
 }
 
 const CHIP_META: Record<string, ChipMeta> = {
-  food_venue: { emoji: "🍜", id: "Kuliner", en: "Food & Drink" },
-  retail_catalog: { emoji: "🛍", id: "Toko & Produk", en: "Shop & Retail" },
+  food_venue: { emoji: "🍜", id: "Makanan & Minuman", en: "Food & Drink" },
+  retail_catalog: { emoji: "🛍", id: "Toko & Jualan", en: "Shop & Retail" },
   booking_service: { emoji: "🔧", id: "Jasa & Booking", en: "Services & Booking" },
-  portfolio_individual: { emoji: "🎨", id: "Portofolio", en: "Portfolio" },
-  professional_firm: { emoji: "💼", id: "Agensi & Profesional", en: "Agency & Pro" },
+  portfolio_individual: { emoji: "🎨", id: "Portofolio Pribadi", en: "Personal Portfolio" },
+  professional_firm: { emoji: "💼", id: "Jasa Profesional & Agensi", en: "Professional Firm & Agency" },
   corporate_org: { emoji: "🏢", id: "Perusahaan", en: "Company" },
   lodging: { emoji: "🏨", id: "Penginapan", en: "Lodging" },
-  institution_org: { emoji: "🎓", id: "Institusi", en: "Institution" },
-  destination: { emoji: "🏝", id: "Destinasi Wisata", en: "Destination" },
-  software_product: { emoji: "💻", id: "Produk Software", en: "Software" },
+  institution_org: { emoji: "🎓", id: "Institusi & Organisasi", en: "Institution & Organisation" },
+  destination: { emoji: "🏝", id: "Destinasi & Atraksi", en: "Destination & Attraction" },
+  software_product: { emoji: "💻", id: "Produk Software", en: "Software Product" },
 };
 
 export function archetypeEmoji(id: string): string {

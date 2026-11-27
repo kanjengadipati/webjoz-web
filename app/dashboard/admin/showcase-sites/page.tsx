@@ -12,7 +12,8 @@ import {
   type ShowcaseArchetypeOption,
   type ShowcaseCandidate,
 } from "@/lib/api/showcase";
-import { archetypeChipLabel } from "@/lib/showcase-archetypes";
+import { archetypeLabel } from "@/lib/showcase-archetypes";
+import { ArchetypeIcon } from "@/components/archetype-icon";
 import { useRealSiteData } from "@/lib/mockup-showcase-sites";
 import { TemplatePreview } from "@/components/landing-template-showcase";
 import { ArrowDown, ArrowUp, ExternalLink, Eye, Monitor, Plus, Search, ShieldOff, Smartphone, Trash2 } from "lucide-react";
@@ -312,13 +313,17 @@ export default function AdminShowcaseSitesPage() {
                           options={[
                             {
                               value: "",
+                              icon: item.own_archetype ? (
+                                <ArchetypeIcon id={item.own_archetype} className="size-3.5 text-muted-foreground" />
+                              ) : undefined,
                               label: item.own_archetype
-                                ? `${tr("Otomatis", "Auto")}: ${archetypeChipLabel(item.own_archetype, isIndonesian)}`
+                                ? `${tr("Otomatis", "Auto")}: ${archetypeLabel(item.own_archetype, isIndonesian)}`
                                 : tr("Otomatis (dari website)", "Auto (from website)"),
                             },
                             ...archetypes.map((a) => ({
                               value: a.id,
-                              label: `${archetypeChipLabel(a.id, isIndonesian)} — ${isIndonesian ? a.label_id : a.label_en}`,
+                              icon: <ArchetypeIcon id={a.id} className="size-3.5 text-muted-foreground" />,
+                              label: archetypeLabel(a.id, isIndonesian, a),
                             })),
                           ]}
                         />
@@ -377,7 +382,10 @@ export default function AdminShowcaseSitesPage() {
                       <p className="truncate font-mono text-[11px] text-muted-foreground">{c.host}</p>
                       <div className="mt-1 flex flex-wrap items-center gap-1.5">
                         {c.archetype ? (
-                          <Badge variant="secondary">{archetypeChipLabel(c.archetype, isIndonesian)}</Badge>
+                          <Badge variant="secondary" className="inline-flex items-center gap-1">
+                            <ArchetypeIcon id={c.archetype} className="size-3" />
+                            <span>{archetypeLabel(c.archetype, isIndonesian)}</span>
+                          </Badge>
                         ) : (
                           <Badge variant="outline">{tr("Kategori belum ada", "No category")}</Badge>
                         )}

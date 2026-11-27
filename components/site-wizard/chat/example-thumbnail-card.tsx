@@ -10,7 +10,9 @@ import {
   resolveSiteBusinessName,
   resolveSiteArchetype,
 } from "@/lib/mockup-showcase-sites";
-import { archetypeChipLabel } from "@/lib/showcase-archetypes";
+import { archetypeLabel } from "@/lib/showcase-archetypes";
+import { ArchetypeThumbnailArt } from "@/components/archetype-thumbnail-art";
+import { ArchetypeIcon } from "@/components/archetype-icon";
 
 interface ExampleThumbnailCardProps {
   onSeeAll: () => void;
@@ -115,11 +117,7 @@ export function ExampleThumbnailCard({
           const host = siteHost(site.url);
           const data = realSitesData[host];
           const bName = resolveSiteBusinessName(site, data);
-          const categoryLabel = archetypeChipLabel(archetype, isIndonesian);
-          const heroImg =
-            data?.content?.hero?.image_url ||
-            data?.content?.about?.image_url ||
-            "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400&q=70";
+          const categoryLabel = archetypeLabel(archetype, isIndonesian);
 
           return (
             <button
@@ -128,14 +126,11 @@ export function ExampleThumbnailCard({
               onClick={() => (onSelectTab ? onSelectTab(idx) : onSeeAll())}
               className="group flex flex-col rounded-xl overflow-hidden border border-white/[0.08] hover:border-white/20 transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] focus:outline-none cursor-pointer"
             >
-              {/* Image + headline */}
+              {/* SVG Artwork + headline */}
               <div className="relative overflow-hidden" style={{ height: 100 }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={heroImg}
-                  alt={bName}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  loading="lazy"
+                <ArchetypeThumbnailArt
+                  id={archetype}
+                  className="w-full h-full transition-transform duration-300 group-hover:scale-105"
                 />
                 {/* Dark scrim */}
                 <div
@@ -176,12 +171,13 @@ export function ExampleThumbnailCard({
 
               {/* Label row */}
               <div
-                className="flex items-center gap-1 px-2 py-1.5"
+                className="flex items-center gap-1.5 px-2 py-1.5"
                 style={{
                   background: "rgba(255,255,255,0.055)",
                   borderTop: "1px solid rgba(255,255,255,0.07)",
                 }}
               >
+                <ArchetypeIcon id={archetype} className="w-3 h-3 shrink-0 text-white/65" />
                 <span className="text-[9.5px] font-semibold text-white/75 truncate leading-tight">
                   {categoryLabel}
                 </span>

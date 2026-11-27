@@ -15,11 +15,12 @@ import {
   resolveSiteArchetype,
 } from "@/lib/mockup-showcase-sites";
 import {
-  archetypeChipLabel,
   archetypeChipWindow,
+  archetypeLabel,
   archetypeToCategoryIndex,
   inferArchetypeFromText,
 } from "@/lib/showcase-archetypes";
+import { ArchetypeIcon } from "@/components/archetype-icon";
 import { buildCssVars } from "@/components/templates/helpers";
 import { SparkleIcon } from "@/components/sparkle-icon";
 
@@ -912,7 +913,7 @@ function MobileChatCard({
                 {/* Category Chips: 1 chip per line (decorative, non-clickable) */}
                 <div className="flex flex-col gap-1.5 pt-1">
                   {archetypeChips.map((chipId) => {
-                    const chipText = archetypeChipLabel(chipId, isIndonesian);
+                    const chipText = archetypeLabel(chipId, isIndonesian);
                     const isSelected = chipId === archetype && flowStep >= STEP_PICK_TYPE;
                     return (
                       <div
@@ -923,6 +924,7 @@ function MobileChatCard({
                             : "bg-white/5 border border-white/10 text-white/80"
                         }`}
                       >
+                        <ArchetypeIcon id={chipId} className="size-3.5 shrink-0" />
                         <span>{chipText}</span>
                       </div>
                     );
@@ -1231,7 +1233,7 @@ export function InteractiveMockup() {
                     {/* Category Chips: 1 chip per line (decorative, non-clickable) */}
                     <div className="flex flex-col gap-1.5 pt-1">
                       {archetypeChips.map((chipId) => {
-                        const chip = archetypeChipLabel(chipId, isIndonesian);
+                        const chip = archetypeLabel(chipId, isIndonesian);
                         const sel = chipId === archetype && flowStep >= STEP_PICK_TYPE;
                         return (
                           <div
@@ -1242,6 +1244,7 @@ export function InteractiveMockup() {
                                 : "bg-card/70 border-border/50 text-muted-foreground dark:bg-white/5 dark:border-white/10 dark:text-white/80"
                             }`}
                           >
+                            <ArchetypeIcon id={chipId} className="size-3.5 shrink-0" />
                             <span>{chip}</span>
                           </div>
                         );
