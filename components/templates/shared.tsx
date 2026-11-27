@@ -8,7 +8,7 @@ import { formatPriceWithAmount } from "@/lib/utils";
 import {
   Check, ArrowRight, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Star, Menu, X, Send,
   MapPin, Phone, Mail, Globe, Pencil, Upload, Loader2, Camera, Link2, ImagePlus, Trash2,
-  Search, Lock, RotateCw, Copy, ExternalLink, Sparkles, MessageCircle, MoreVertical, ShieldCheck, Share2, Code2, Eye, Image,
+  Search, Lock, RotateCw, Copy, ExternalLink, Sparkles, MessageCircle, MoreVertical, ShieldCheck, Share2, Code2, Image,
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { CartProvider, CartFab, AddToCartButton, isPlaceholderPrice } from "@/components/cart";
@@ -2117,20 +2117,6 @@ function MenuCatalogCard({
     </>
   );
 
-  const isMenuCard = kind === "menu" || editSection === "menu";
-  const quickViewTrigger = isMenuCard ? null : (
-    <button
-      type="button"
-      onClick={(e) => { e.stopPropagation(); e.preventDefault(); setQuickViewOpen(true); }}
-      onPointerDown={(e) => e.stopPropagation()}
-      className={`absolute ${layout === "compact" || layout === "horizontal" ? "bottom-2.5 right-2.5" : isEditorMode ? "top-2.5 left-2.5" : "top-2.5 right-2.5"} z-40 w-9 h-9 rounded-full flex items-center justify-center bg-slate-900/70 text-white backdrop-blur-sm shadow-md border border-white/20 hover:bg-slate-900 transition-all cursor-pointer ${isEditorMode ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
-      aria-label={t("dashboard.sitesKatalog.quickView", "Lihat Detail")}
-      title={t("dashboard.sitesKatalog.quickView", "Lihat Detail")}
-    >
-      <Eye className="w-4 h-4" />
-    </button>
-  );
-
   const quickViewModal = (
     <ProductQuickView
       open={quickViewOpen}
@@ -2161,10 +2147,9 @@ function MenuCatalogCard({
         {isEditorMode && onDelete && (
           <InlineDeleteButton onDelete={onDelete} className="absolute top-2.5 right-2.5 z-40" />
         )}
-        {quickViewTrigger}
         <div className="flex items-start gap-4 h-full">
           <div className="flex-shrink-0">{imageNode}</div>
-          <div className="min-w-0 flex-1 flex flex-col h-full" style={contentStyle}>
+          <div className={`min-w-0 flex-1 flex flex-col h-full ${isEditorMode && onDelete ? "pr-9" : ""}`} style={contentStyle}>
             {header}
             {descriptionElement}
             {tagsAndPlatforms}
@@ -2192,37 +2177,40 @@ function MenuCatalogCard({
     );
   }
 
-  // ── Horizontal: image left small, content right (menu/service list style) ──
+  // ── Horizontal: image left square thumbnail, content right, full-width CTA bottom ──
   if (layout === "horizontal") {
     return (
       <div className={`relative group cursor-pointer ${className || ""}`} style={style} onClick={() => setQuickViewOpen(true)}>
         {isEditorMode && onDelete && (
           <InlineDeleteButton onDelete={onDelete} className="absolute top-2.5 right-2.5 z-40" />
         )}
-        {quickViewTrigger}
-        <div className="flex items-start gap-3 h-full">
-          <div className="flex-shrink-0 w-20 sm:w-24">{imageNode}</div>
-          <div className="min-w-0 flex-1 flex flex-col h-full" style={contentStyle}>
-            {header}
-            {descriptionElement}
-            {tagsAndPlatforms}
-            <div className="mt-auto pt-2" onClick={(e) => e.stopPropagation()}>
-              <AddToCartButton
-                itemId={itemId}
-                itemName={itemName}
-                itemPrice={displayPrice ?? null}
-                itemPriceAmount={itemPriceAmount}
-                itemPriceDisplay={displayPrice}
-                itemPromoPriceAmount={itemPromoPriceAmount}
-                itemPromoPriceDisplay={itemPromoPriceDisplay}
-                discountLabel={discountLabel}
-                category={category}
-                variant_groups={variant_groups}
-                className={buttonClassName}
-                style={buttonStyle}
-                disabled={isOutOfStock}
-              />
+        <div className="flex flex-col h-full justify-between">
+          <div className="flex items-start gap-3.5 p-4 flex-1 min-w-0">
+            <div className="flex-shrink-0 w-24 sm:w-28 rounded-xl overflow-hidden [&_img]:!h-24 sm:[&_img]:!h-28 [&_img]:!w-full [&_img]:!aspect-square [&>div]:!h-24 sm:[&>div]:!h-28 [&>div]:!w-full [&>div]:!aspect-square">
+              {imageNode}
             </div>
+            <div className={`min-w-0 flex-1 flex flex-col ${isEditorMode && onDelete ? "pr-9" : ""}`}>
+              {header}
+              {descriptionElement}
+              {tagsAndPlatforms}
+            </div>
+          </div>
+          <div className="px-4 pb-4 pt-1 mt-auto" onClick={(e) => e.stopPropagation()}>
+            <AddToCartButton
+              itemId={itemId}
+              itemName={itemName}
+              itemPrice={displayPrice ?? null}
+              itemPriceAmount={itemPriceAmount}
+              itemPriceDisplay={displayPrice}
+              itemPromoPriceAmount={itemPromoPriceAmount}
+              itemPromoPriceDisplay={itemPromoPriceDisplay}
+              discountLabel={discountLabel}
+              category={category}
+              variant_groups={variant_groups}
+              className={buttonClassName}
+              style={buttonStyle}
+              disabled={isOutOfStock}
+            />
           </div>
         </div>
         {quickViewModal}
@@ -2237,7 +2225,6 @@ function MenuCatalogCard({
         {isEditorMode && onDelete && (
           <InlineDeleteButton onDelete={onDelete} className="absolute top-2.5 right-2.5 z-40" />
         )}
-        {quickViewTrigger}
         {imageNode}
         <div className={`${contentClassName || ""} flex-grow flex flex-col`} style={contentStyle}>
           {header}
@@ -2274,7 +2261,6 @@ function MenuCatalogCard({
         {isEditorMode && onDelete && (
           <InlineDeleteButton onDelete={onDelete} className="absolute top-2.5 right-2.5 z-40" />
         )}
-        {quickViewTrigger}
         {/* Fullbleed image */}
         <div className="absolute inset-0">{imageNode}</div>
         {/* Gradient overlay */}
@@ -2326,7 +2312,6 @@ function MenuCatalogCard({
         {isEditorMode && onDelete && (
           <InlineDeleteButton onDelete={onDelete} className="absolute top-2.5 right-2.5 z-40" />
         )}
-        {quickViewTrigger}
         <div className="flex flex-col sm:flex-row sm:h-full">
           {/* Image: full-width on mobile, 40% on sm+ */}
           <div className="w-full sm:w-2/5 sm:flex-shrink-0 overflow-hidden">{imageNode}</div>
@@ -2382,7 +2367,6 @@ function MenuCatalogCard({
       {isEditorMode && onDelete && (
         <InlineDeleteButton onDelete={onDelete} className="absolute top-2.5 right-2.5 z-40" />
       )}
-      {quickViewTrigger}
       {imageNode}
       <div className={`${contentClassName || ""} flex-grow flex flex-col`} style={contentStyle}>
         {header}
