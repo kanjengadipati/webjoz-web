@@ -15,6 +15,7 @@ export interface ContactStaticStrings {
   hoursLabel: string;
   hoursPlaceholder: string;
   subtitlePlaceholder: string;
+  socialMediaLabel: string;
   viewLocation: string;
   officePhotoAlt: string;
   addPhotoHint: string;
@@ -31,6 +32,7 @@ const ID: ContactStaticStrings = {
   hoursLabel: "Jam Operasional",
   hoursPlaceholder: "Senin - Jumat, 08:00 - 17:00",
   subtitlePlaceholder: "Kunjungi kantor kami atau hubungi melalui informasi di bawah.",
+  socialMediaLabel: "Media Sosial",
   viewLocation: "Lihat Lokasi",
   officePhotoAlt: "Foto Kantor / Lokasi",
   addPhotoHint: "Klik untuk menambahkan foto lokasi",
@@ -47,6 +49,7 @@ const EN: ContactStaticStrings = {
   hoursLabel: "Opening Hours",
   hoursPlaceholder: "Mon - Fri, 08:00 - 17:00",
   subtitlePlaceholder: "Visit our office or reach out via the contact details below.",
+  socialMediaLabel: "Social Media",
   viewLocation: "View Location",
   officePhotoAlt: "Office / Location Photo",
   addPhotoHint: "Click to add location photo",
