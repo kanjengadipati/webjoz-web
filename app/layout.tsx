@@ -39,19 +39,31 @@ export const metadata: Metadata = {
   authors: [{ name: "Webjoz", url: SITE_URL }],
   openGraph: {
     title: "Webjoz — AI Website Builder untuk Bisnis",
-    description: "Buat website bisnis profesional dalam 5 menit dengan AI.",
+    description: "Buat website bisnis profesional dalam 1 menit dengan AI.",
     url: SITE_URL,
     siteName: "Webjoz",
-    images: [{ url: "https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067989/giwangan/opengraph-image.png", width: 1200, height: 630 }],
+    images: [
+      {
+        url: siteUrl("/og-id.jpg"),
+        width: 1024,
+        height: 576,
+        alt: "Webjoz — AI Website Builder untuk Bisnis",
+      },
+    ],
     locale: "id_ID",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Webjoz — AI Website Builder untuk Bisnis",
-    description: "Buat website bisnis profesional dalam 5 menit dengan AI.",
+    description: "Buat website bisnis profesional dalam 1 menit dengan AI.",
     site: "@webjoz",
-    images: ["https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067989/giwangan/opengraph-image.png"],
+    images: [
+      {
+        url: siteUrl("/og-id.jpg"),
+        alt: "Webjoz — AI Website Builder untuk Bisnis",
+      },
+    ],
   },
   robots: {
     index: true,

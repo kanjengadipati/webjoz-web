@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Buat Website Gratis dengan AI — Webjoz | 5 Menit Tanpa Coding",
+  title: "Buat Website Gratis dalam 1 Menit — Webjoz AI | Tanpa Coding",
   description:
-    "Website bisnis profesional hanya dalam 5 menit. Chat dengan AI, pilih gaya visual, publikasikan gratis. Cocok untuk UMKM dan perusahaan Indonesia.",
+    "Chat dengan AI, website bisnis langsung jadi dalam 1 menit. Gratis, tanpa coding, cocok untuk UMKM dan perusahaan Indonesia.",
   keywords: [
     "buat website gratis",
     "website AI",
@@ -13,19 +13,31 @@ export const metadata: Metadata = {
     "website tanpa coding",
   ],
   openGraph: {
-    title: "Buat Website Gratis dengan AI — Webjoz",
-    description: "Website bisnis profesional dalam 5 menit dengan AI. Tanpa coding, tanpa form panjang.",
+    title: "Buat Website Gratis dalam 1 Menit — Webjoz AI",
+    description: "Chat dengan AI, website bisnis langsung jadi. Gratis & tanpa coding.",
     url: "https://www.webjoz.com/create",
     siteName: "Webjoz",
-    images: [{ url: "https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067989/giwangan/opengraph-image.png", width: 1200, height: 630 }],
+    images: [
+      {
+        url: "https://www.webjoz.com/og-id.jpg",
+        width: 1024,
+        height: 576,
+        alt: "Webjoz AI — Buat Website Bisnis Gratis dalam 1 Menit",
+      },
+    ],
     locale: "id_ID",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Buat Website Gratis dengan AI — Webjoz",
-    description: "Website bisnis profesional dalam 5 menit dengan AI. Tanpa coding.",
-    images: ["https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067989/giwangan/opengraph-image.png"],
+    title: "Buat Website Gratis dalam 1 Menit — Webjoz AI",
+    description: "Chat dengan AI, website bisnis langsung jadi. Gratis & tanpa coding.",
+    images: [
+      {
+        url: "https://www.webjoz.com/og-id.jpg",
+        alt: "Webjoz AI — Buat Website Bisnis Gratis dalam 1 Menit",
+      },
+    ],
   },
   robots: {
     index: false,

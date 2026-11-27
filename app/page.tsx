@@ -18,7 +18,14 @@ export const metadata: Metadata = {
     description: "Buat website bisnis profesional hanya dalam 5 menit dengan AI. Tanpa coding.",
     url: siteUrl(),
     siteName: "Webjoz",
-    images: [{ url: "https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067989/giwangan/opengraph-image.png", width: 1200, height: 630 }],
+    images: [
+      {
+        url: siteUrl("/og-id.jpg"),
+        width: 1024,
+        height: 576,
+        alt: "Webjoz | AI Website Builder untuk Bisnis Indonesia",
+      },
+    ],
     locale: "id_ID",
     alternateLocale: ["en_US"],
     type: "website",
@@ -27,7 +34,12 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Webjoz | AI Website Builder untuk Bisnis Indonesia",
     description: "Buat website bisnis profesional hanya dalam 5 menit dengan AI.",
-    images: ["https://res.cloudinary.com/dckbihkyp/image/upload/f_webp,q_auto/v1795067989/giwangan/opengraph-image.png"],
+    images: [
+      {
+        url: siteUrl("/og-id.jpg"),
+        alt: "Webjoz | AI Website Builder untuk Bisnis Indonesia",
+      },
+    ],
   },
 };
 
