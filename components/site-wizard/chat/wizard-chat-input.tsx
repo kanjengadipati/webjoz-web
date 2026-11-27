@@ -6,20 +6,6 @@ import { AudioWaveform } from "../audio-waveform";
 import { MicOnboardingHint } from "../mic-onboarding-hint";
 import { getDynamicDescriptionPlaceholder } from "../helpers";
 
-const NAME_PLACEHOLDERS_ID = [
-  "Cth: Kopi Kenanga...",
-  "Cth: CV Jaya Bangun Persada...",
-  "Cth: Dimas Pratama (Portofolio)...",
-  "Cth: Studio Lensa Kreatif...",
-];
-
-const NAME_PLACEHOLDERS_EN = [
-  "e.g. Amber Cafe & Roastery...",
-  "e.g. Apex Construction Co...",
-  "e.g. Alex Morgan (Portfolio)...",
-  "e.g. Studio Lumina Design...",
-];
-
 interface WizardChatInputProps {
   chat: {
     isRecording: boolean;
@@ -61,16 +47,35 @@ export function WizardChatInput({
 }: WizardChatInputProps) {
   const [placeholderIndex, setPlaceholderIndex] = React.useState(0);
 
+  const rawVariants = t("dashboard.wizard.inputPlaceholderNameVariants") as unknown;
+  const namePlaceholderVariants: string[] =
+    Array.isArray(rawVariants) && rawVariants.length > 0
+      ? (rawVariants as string[])
+      : locale === "en"
+      ? [
+          "e.g. Amber Cafe & Roastery...",
+          "e.g. Apex Construction Co...",
+          "e.g. Alex Morgan (Portfolio)...",
+          "e.g. Studio Lumina Design...",
+        ]
+      : [
+          "Cth: Kopi Kenanga...",
+          "Cth: CV Jaya Bangun Persada...",
+          "Cth: Dimas Pratama (Portofolio)...",
+          "Cth: Studio Lensa Kreatif...",
+        ];
+
   React.useEffect(() => {
     if (chat.chatStage !== "name") return;
     const interval = setInterval(() => {
-      setPlaceholderIndex((prev) => (prev + 1) % NAME_PLACEHOLDERS_ID.length);
+      setPlaceholderIndex((prev) => (prev + 1) % namePlaceholderVariants.length);
     }, 3200);
     return () => clearInterval(interval);
-  }, [chat.chatStage]);
+  }, [chat.chatStage, namePlaceholderVariants.length]);
 
-  const namePlaceholderList = locale === "en" ? NAME_PLACEHOLDERS_EN : NAME_PLACEHOLDERS_ID;
-  const currentNamePlaceholder = namePlaceholderList[placeholderIndex] || namePlaceholderList[0];
+  const currentNamePlaceholder =
+    namePlaceholderVariants[placeholderIndex % namePlaceholderVariants.length] ||
+    namePlaceholderVariants[0];
 
   if (
     chat.chatStage === "type" ||

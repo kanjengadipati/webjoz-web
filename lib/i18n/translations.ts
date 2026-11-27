@@ -3541,6 +3541,7 @@ export interface Translations {
       initialMessage: string;
       nameAckVariants: string[];
       nameConfirmVariants: string[];
+      inputPlaceholderNameVariants: string[];
       descriptionPrompt: string;
       descriptionSkipKeyword: string;
       descriptionInferenceHigh: string;
@@ -7948,6 +7949,12 @@ export const translations: Record<Locale, Translations> = {
           "Itu nama aslinya, atau masih nama sementara? Pilih 'Ya' untuk lanjut, atau 'Ganti' jika ingin diubah 😊",
           "Apakah itu nama sebenarnya? Klik 'Ya' untuk lanjut, atau 'Ganti' jika ingin memasukkan nama lain.",
           "Nama tersebut terdengar seperti percobaan — pastikan ini yang Anda mau. Klik 'Ya' untuk lanjut atau 'Ganti'.",
+        ],
+        inputPlaceholderNameVariants: [
+          "Cth: Kopi Kenanga...",
+          "Cth: CV Jaya Bangun Persada...",
+          "Cth: Dimas Pratama (Portofolio)...",
+          "Cth: Studio Lensa Kreatif...",
         ],
         descriptionPrompt:
           "Ceritakan sekilas tentang bisnis atau profil Anda 1-2 paragraf. (Tekan Enter untuk lewati)",
@@ -12537,6 +12544,12 @@ export const translations: Record<Locale, Translations> = {
           "Is that the official name, or a temporary one? Click 'Yes' to continue, or 'Change' if you'd like to edit it 😊",
           "Is that the actual name? Click 'Yes' to continue, or 'Change' to enter a different one.",
           "That name sounds like a placeholder — make sure it's the one you want. Click 'Yes' or 'Change'.",
+        ],
+        inputPlaceholderNameVariants: [
+          "e.g. Amber Cafe & Roastery...",
+          "e.g. Apex Construction Co...",
+          "e.g. Alex Morgan (Portfolio)...",
+          "e.g. Studio Lumina Design...",
         ],
         descriptionPrompt:
           "Tell us briefly about your business or profile in 1-2 paragraphs. (Press Enter to skip)",
