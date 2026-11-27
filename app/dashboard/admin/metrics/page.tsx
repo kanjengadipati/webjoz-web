@@ -18,7 +18,7 @@ interface TrendBucket {
 
 interface SectionVariantTrace {
   variant: string;
-  source: string;
+  source: number;
   picked_by: string;
   candidates?: string[];
   scores?: Record<string, number>;
@@ -39,7 +39,7 @@ interface GenerationLog {
   status: string;
   duration_ms: number;
   stage_breakdown: Record<string, number> | null;
-  section_sources: Record<string, string> | null;
+  section_sources: Record<string, number> | null;
   section_variants?: Record<string, SectionVariantTrace> | null;
   failure_reason: string | null;
   tokens_total: number;
@@ -63,12 +63,6 @@ function sourceMeta(source: number): { labelKey: "sourceAI" | "sourcePartial" | 
     default:
       return { labelKey: "sourceAI", cls: "bg-emerald-500/10 text-emerald-600" };
   }
-}
-
-function sourceMetaFromStr(source: string): { labelKey: "sourceAI" | "sourcePartial" | "sourceMock"; cls: string } {
-  if (source === "mock_fallback") return { labelKey: "sourceMock", cls: "bg-slate-500/10 text-slate-600" };
-  if (source === "partial_mock") return { labelKey: "sourcePartial", cls: "bg-amber-500/10 text-amber-600" };
-  return { labelKey: "sourceAI", cls: "bg-emerald-500/10 text-emerald-600" };
 }
 
 interface SummaryMetrics {
@@ -672,8 +666,8 @@ export default function AdminMetricsPage() {
                         <div className="px-6 py-3 border-b border-border/40 bg-muted/30 flex flex-wrap items-center gap-3 text-xs">
                           <span className="text-muted-foreground">Semua section:</span>
                           {uniformSource && (
-                            <span className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-600 font-medium px-2 py-0.5 rounded-full">
-                              source: {sources[0]}
+                            <span className={`inline-flex items-center gap-1 font-medium px-2 py-0.5 rounded-full ${sourceMeta(sources[0]).cls}`}>
+                              source: {t(`dashboard.adminMetrics.${sourceMeta(sources[0]).labelKey}`)}
                             </span>
                           )}
                           {uniformPickedBy && (
@@ -716,7 +710,11 @@ export default function AdminMetricsPage() {
                               <td className="py-2 px-6 font-medium whitespace-nowrap">{sec}</td>
                               <td className="py-2 px-4 font-mono text-xs whitespace-nowrap">{v.variant || "-"}</td>
                               {!uniformSource && (
-                                <td className="py-2 px-4 uppercase text-xs whitespace-nowrap">{v.source}</td>
+                                <td className="py-2 px-4 text-xs whitespace-nowrap">
+                                  <span className={`inline-flex text-[10px] font-medium px-1.5 py-0.5 rounded ${sourceMeta(v.source).cls}`}>
+                                    {t(`dashboard.adminMetrics.${sourceMeta(v.source).labelKey}`)}
+                                  </span>
+                                </td>
                               )}
                               {!uniformPickedBy && (
                                 <td className="py-2 px-4 text-xs whitespace-nowrap">{v.picked_by}</td>
@@ -760,7 +758,7 @@ export default function AdminMetricsPage() {
                   // Check if all sources are the same
                   const allSources = [...new Set(entries.map(([, s]) => s))];
                   const uniformSource = allSources.length === 1;
-                  const bannerMeta = uniformSource ? sourceMetaFromStr(allSources[0]) : null;
+                  const bannerMeta = uniformSource ? sourceMeta(allSources[0]) : null;
                   return (
                     <>
                       {uniformSource && bannerMeta && (
@@ -782,7 +780,7 @@ export default function AdminMetricsPage() {
                         </thead>
                         <tbody>
                           {entries.map(([sec, ssrc]) => {
-                            const meta = sourceMetaFromStr(ssrc);
+                            const meta = sourceMeta(ssrc);
                             return (
                               <tr key={sec} className="border-b border-border/40 hover:bg-muted/20">
                                 <td className="py-2 px-6 font-medium whitespace-nowrap">{sec}</td>

@@ -483,7 +483,7 @@ export function SiteWizard({
     },
     onDone: (templateId, qualityScore, generationSource, _qualityIssues, layoutAlternatives) => {
       // Quality gate (lapisan terakhir): backend sudah meng-gate per-grup dan
-      // menandai konten sebagai mock_fallback saat ada grup yang jatuh ke mock.
+      // menandai konten sebagai mock fallback (kode 2/3) saat ada grup yang jatuh ke mock.
       // Kalau konten masih AI murni tapi skornya rendah, auto-retry sekali —
       // tanpa ini, hasil jelek (mis. score 44) tetap ditampilkan.
       // Gunakan refs (bukan state) untuk menjaga closure protection yang konsisten
