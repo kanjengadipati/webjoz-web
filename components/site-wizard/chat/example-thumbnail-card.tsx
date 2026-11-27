@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { ChevronRight, X, Globe } from "lucide-react";
+import { ChevronRight, X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import {
   useMockupShowcaseSites,
@@ -10,6 +10,7 @@ import {
   resolveSiteBusinessName,
   resolveSiteArchetype,
 } from "@/lib/mockup-showcase-sites";
+import { archetypeChipLabel } from "@/lib/showcase-archetypes";
 
 interface ExampleThumbnailCardProps {
   onSeeAll: () => void;
@@ -114,10 +115,11 @@ export function ExampleThumbnailCard({
           gridTemplateColumns: `repeat(${Math.max(2, Math.min(4, displaySites.length))}, minmax(0, 1fr))`,
         }}
       >
-        {displaySites.map(({ site, index: idx }) => {
+        {displaySites.map(({ site, index: idx, archetype }) => {
           const host = siteHost(site.url);
           const data = realSitesData[host];
           const bName = resolveSiteBusinessName(site, data);
+          const categoryLabel = archetypeChipLabel(archetype, isIndonesian);
           const heroImg =
             data?.content?.hero?.image_url ||
             data?.content?.about?.image_url ||
@@ -184,9 +186,8 @@ export function ExampleThumbnailCard({
                   borderTop: "1px solid rgba(255,255,255,0.07)",
                 }}
               >
-                <Globe className="w-2.5 h-2.5 shrink-0 text-white/55" strokeWidth={1.8} />
                 <span className="text-[9.5px] font-semibold text-white/75 truncate leading-tight">
-                  {bName}
+                  {categoryLabel}
                 </span>
               </div>
             </button>
