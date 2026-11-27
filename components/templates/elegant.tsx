@@ -238,10 +238,6 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
       overflowX: "hidden",
       containerType: "inline-size",
     } as React.CSSProperties}>
-      <div className="py-2 text-center text-[10px] uppercase tracking-widest  " style={{ background: "#0d0c08", borderBottom: `1px solid ${gold}20`, color: gold }}>
-        {header?.tagline || "Layanan Eksklusif · Kualitas Premium · Kepuasan Terjamin"}
-      </div>
-
       {(() => {
         const renderedSectionOrder = filterEmptySections(sectionOrder, content, editorChrome ?? isEditorMode)
           .filter(k => isEditorMode || !(dt?.layout?.hidden_sections ?? []).includes(k))
@@ -249,6 +245,21 @@ export const TemplateElegant: React.FC<TemplateProps> = ({
         return (
           <>
             <MemoPreviewSectionWrapper section="header"  activeSection={activeSection} currentVariant={getSectionVariant(dt, "header")} onSelectSection={onSelectSection} onRegenSection={onRegenSection} onUpdateVariant={onUpdateSectionVariant} isEditorMode={editorChrome ?? isEditorMode}>
+              <div className="py-2 text-center text-[10px] uppercase tracking-widest" style={{ background: "#0d0c08", borderBottom: `1px solid ${gold}20`, color: gold }}>
+                <InlineText
+                  section="header"
+                  fieldKey="tagline"
+                  value={header?.tagline || (language === "en" ? "Exclusive Service · Premium Quality · Guaranteed Satisfaction" : "Layanan Eksklusif · Kualitas Premium · Kepuasan Terjamin")}
+                  placeholder={language === "en" ? "+ Add tagline" : "+ Tambah tagline"}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode && editorChrome !== false}
+                  isSelected={activeSection === "header"}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                  as="span"
+                  className="inline-block"
+                />
+              </div>
               <HeaderSection header={header} design_token={dt} sectionOrder={withoutHidden(renderedSectionOrder, dt)} hiddenSections={dt?.layout?.hidden_sections} language={language} onUpdateField={onUpdateField} isEditorMode={isEditorMode} editorChrome={editorChrome} isSelected={activeSection === "header"} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} />
             </MemoPreviewSectionWrapper>
 
