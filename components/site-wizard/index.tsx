@@ -2540,10 +2540,18 @@ export function SiteWizard({
                               <Badge
                                 variant="outline"
                                 className="shrink-0 gap-1 rounded-full border-white/15 bg-white/[0.08] px-2 py-0.5 text-[10.5px] font-semibold normal-case tracking-normal text-slate-200 whitespace-nowrap animate-in fade-in slide-in-from-bottom-1 duration-400"
-                                style={{ animationDelay: "200ms", animationFillMode: "both" }}
+                                style={{ animationDelay: "180ms", animationFillMode: "both" }}
                               >
                                 <Zap className="w-2.5 h-2.5 text-white/80" />
-                                {t("dashboard.wizard.greetingChipFast", isIndonesian ? "Siap dalam 1 menit" : "Ready in 1 minute")}
+                                {t("dashboard.wizard.greetingChipFast", isIndonesian ? "Cepat" : "Fast")}
+                              </Badge>
+                              <Badge
+                                variant="outline"
+                                className="shrink-0 gap-1 rounded-full border-white/15 bg-white/[0.08] px-2 py-0.5 text-[10.5px] font-semibold normal-case tracking-normal text-slate-200 whitespace-nowrap animate-in fade-in slide-in-from-bottom-1 duration-400"
+                                style={{ animationDelay: "280ms", animationFillMode: "both" }}
+                              >
+                                <SparkleGenAI className="w-2.5 h-2.5 text-white/80 shrink-0" />
+                                {t("dashboard.wizard.greetingChipEasy", isIndonesian ? "Mudah" : "Easy")}
                               </Badge>
                             </span>
                           )}

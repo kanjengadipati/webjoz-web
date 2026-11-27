@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Buat Website Gratis dalam 1 Menit — Webjoz AI | Tanpa Coding",
+  title: "Buat Website Gratis dengan AI — Webjoz | Cepat & Mudah",
   description:
-    "Chat dengan AI, website bisnis langsung jadi dalam 1 menit. Gratis, tanpa coding, cocok untuk UMKM dan perusahaan Indonesia.",
+    "Chat singkat dengan AI, website bisnis langsung jadi. Gratis, cepat, dan mudah tanpa coding. Cocok untuk UMKM dan perusahaan Indonesia.",
   keywords: [
     "buat website gratis",
     "website AI",
@@ -13,8 +13,8 @@ export const metadata: Metadata = {
     "website tanpa coding",
   ],
   openGraph: {
-    title: "Buat Website Gratis dalam 1 Menit — Webjoz AI",
-    description: "Chat dengan AI, website bisnis langsung jadi. Gratis & tanpa coding.",
+    title: "Buat Website Gratis dengan AI — Webjoz",
+    description: "Chat dengan AI, website bisnis langsung jadi. Gratis, cepat & tanpa coding.",
     url: "https://www.webjoz.com/create",
     siteName: "Webjoz",
     images: [
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
         url: "https://www.webjoz.com/og-id.jpg",
         width: 1024,
         height: 576,
-        alt: "Webjoz AI — Buat Website Bisnis Gratis dalam 1 Menit",
+        alt: "Webjoz AI — Buat Website Bisnis Gratis dengan AI",
       },
     ],
     locale: "id_ID",
@@ -30,12 +30,12 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Buat Website Gratis dalam 1 Menit — Webjoz AI",
-    description: "Chat dengan AI, website bisnis langsung jadi. Gratis & tanpa coding.",
+    title: "Buat Website Gratis dengan AI — Webjoz",
+    description: "Chat dengan AI, website bisnis langsung jadi. Gratis, cepat & tanpa coding.",
     images: [
       {
         url: "https://www.webjoz.com/og-id.jpg",
-        alt: "Webjoz AI — Buat Website Bisnis Gratis dalam 1 Menit",
+        alt: "Webjoz AI — Buat Website Bisnis Gratis dengan AI",
       },
     ],
   },

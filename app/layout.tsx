@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Webjoz", url: SITE_URL }],
   openGraph: {
     title: "Webjoz — AI Website Builder untuk Bisnis",
-    description: "Buat website bisnis profesional dalam 1 menit dengan AI.",
+    description: "Buat website bisnis profesional dalam hitungan menit dengan AI.",
     url: SITE_URL,
     siteName: "Webjoz",
     images: [
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Webjoz — AI Website Builder untuk Bisnis",
-    description: "Buat website bisnis profesional dalam 1 menit dengan AI.",
+    description: "Buat website bisnis profesional dalam hitungan menit dengan AI.",
     site: "@webjoz",
     images: [
       {
