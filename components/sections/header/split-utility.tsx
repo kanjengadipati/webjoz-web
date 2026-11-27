@@ -128,10 +128,19 @@ export default function SplitUtility({
               as="span"
               className="truncate block leading-tight text-[var(--dt-text)]"
             />
-            {header?.tagline && (
-              <span className="text-[11px] font-normal text-[var(--dt-text-muted)] truncate leading-tight mt-0.5 hidden sm:block">
-                {header.tagline}
-              </span>
+            {(header?.tagline || isEditorMode) && (
+              <InlineText
+                section="header"
+                fieldKey="tagline"
+                value={header?.tagline ?? ""}
+                onUpdateField={onUpdateField}
+                isEditorMode={isEditorMode && editorChrome !== false}
+                isSelected={isSelected}
+                collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                onEditingStateChange={onEditingStateChange}
+                as="span"
+                className="text-[11px] font-normal text-[var(--dt-text-muted)] truncate leading-tight mt-0.5 hidden sm:block"
+              />
             )}
           </div>
         </div>
@@ -179,7 +188,18 @@ export default function SplitUtility({
                   className="w-full py-2.5 px-4 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-sm font-semibold text-center flex items-center justify-center hover:opacity-90 transition-all shadow-sm"
                   style={{ color: "var(--dt-primary-foreground)" }}
                 >
-                  {header?.nav_cta_text || defaultCta}
+                  <InlineText
+                    section="header"
+                    fieldKey="nav_cta_text"
+                    value={header?.nav_cta_text || defaultCta}
+                    onUpdateField={onUpdateField}
+                    isEditorMode={isEditorMode}
+                    isSelected={isSelected}
+                    collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                    onEditingStateChange={onEditingStateChange}
+                    as="span"
+                    className="truncate"
+                  />
                 </a>
               ) : undefined
             }

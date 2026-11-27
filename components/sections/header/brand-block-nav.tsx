@@ -96,12 +96,23 @@ export default function BrandBlockNav({
           imgClass="h-8 w-auto max-w-[100px] shrink-0 object-contain"
           section="header"
           onUpdateField={onUpdateField}
-          isEditorMode={false}
-          isSelected={false}
+          isEditorMode={isEditorMode && editorChrome !== false}
+          isSelected={isSelected}
           collapseSheetForInlineEdit={collapseSheetForInlineEdit}
           lightOnHero={isDark}
         />
-        <span className="truncate text-[var(--dt-text)]">{header?.brand_name || "Brand"}</span>
+        <InlineText
+          section="header"
+          fieldKey="brand_name"
+          value={header?.brand_name || (language === "en" ? "Our Brand" : "Brand Kami")}
+          onUpdateField={onUpdateField}
+          isEditorMode={isEditorMode && editorChrome !== false}
+          isSelected={isSelected}
+          collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+          onEditingStateChange={onEditingStateChange}
+          as="span"
+          className="truncate text-[var(--dt-text)]"
+        />
       </div>
 
       {/* Navigation Rail — kanan */}
@@ -150,7 +161,18 @@ export default function BrandBlockNav({
                 className="w-full py-2.5 px-4 bg-[var(--dt-primary)] rounded-[var(--dt-radius)] text-sm font-semibold text-center flex items-center justify-center hover:opacity-90 transition-all shadow-sm"
                 style={{ color: "var(--dt-primary-foreground)" }}
               >
-                {header?.nav_cta_text || defaultCta}
+                <InlineText
+                  section="header"
+                  fieldKey="nav_cta_text"
+                  value={header?.nav_cta_text || defaultCta}
+                  onUpdateField={onUpdateField}
+                  isEditorMode={isEditorMode}
+                  isSelected={isSelected}
+                  collapseSheetForInlineEdit={collapseSheetForInlineEdit}
+                  onEditingStateChange={onEditingStateChange}
+                  as="span"
+                  className="truncate"
+                />
               </a>
             ) : undefined
           }
