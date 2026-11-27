@@ -13,8 +13,10 @@ import {
   type ShowcaseCandidate,
 } from "@/lib/api/showcase";
 import { archetypeChipLabel } from "@/lib/showcase-archetypes";
-import { ArrowDown, ArrowUp, ExternalLink, Loader2, Plus, Search, ShieldOff, Trash2 } from "lucide-react";
-import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Input } from "webjoz-ui";
+import { useRealSiteData } from "@/lib/mockup-showcase-sites";
+import { TemplatePreview } from "@/components/landing-template-showcase";
+import { ArrowDown, ArrowUp, ExternalLink, Eye, Loader2, Monitor, Plus, Search, ShieldOff, Smartphone, Trash2 } from "lucide-react";
+import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Dialog, Input, Spinner } from "webjoz-ui";
 
 /** One row of the curated list as edited on this page. */
 interface DraftItem {
@@ -55,6 +57,15 @@ export default function AdminShowcaseSitesPage() {
   const [loading, setLoading] = useState(true);
   const [loadingCandidates, setLoadingCandidates] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [previewTarget, setPreviewTarget] = useState<{
+    name: string;
+    host: string;
+    url: string;
+    candidate?: ShowcaseCandidate;
+  } | null>(null);
+  const [previewDevice, setPreviewDevice] = useState<"desktop" | "mobile">("desktop");
+
+  const previewData = useRealSiteData(previewTarget?.host ?? null);
 
   const dirty = useMemo(() => serialize(items) !== savedSnapshot, [items, savedSnapshot]);
 
@@ -224,6 +235,22 @@ export default function AdminShowcaseSitesPage() {
                       type="button"
                       variant="outline"
                       size="sm"
+                      onClick={() =>
+                        setPreviewTarget({
+                          name: item.business_name || item.site_name,
+                          host: item.host,
+                          url: item.url,
+                        })
+                      }
+                      aria-label={tr("Pratinjau", "Preview")}
+                      title={tr("Pratinjau website", "Preview website")}
+                    >
+                      <Eye className="size-3.5" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
                       onClick={() => move(index, -1)}
                       disabled={index === 0}
                       aria-label={tr("Naikkan", "Move up")}
@@ -341,17 +368,38 @@ export default function AdminShowcaseSitesPage() {
                         )}
                       </div>
                     </div>
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant={picked ? "outline" : "default"}
-                      disabled={picked}
-                      onClick={() => addCandidate(c)}
-                      className="shrink-0 gap-1"
-                    >
-                      <Plus className="size-3.5" />
-                      {picked ? tr("Dipilih", "Added") : tr("Tambah", "Add")}
-                    </Button>
+                    <div className="flex shrink-0 items-center gap-1.5">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() =>
+                          setPreviewTarget({
+                            name: c.business_name || c.site_name,
+                            host: c.host,
+                            url: c.url,
+                            candidate: c,
+                          })
+                        }
+                        aria-label={tr("Pratinjau", "Preview")}
+                        title={tr("Pratinjau website", "Preview website")}
+                        className="gap-1"
+                      >
+                        <Eye className="size-3.5" />
+                        <span className="hidden sm:inline">{tr("Lihat", "Preview")}</span>
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant={picked ? "outline" : "default"}
+                        disabled={picked}
+                        onClick={() => addCandidate(c)}
+                        className="gap-1"
+                      >
+                        <Plus className="size-3.5" />
+                        {picked ? tr("Dipilih", "Added") : tr("Tambah", "Add")}
+                      </Button>
+                    </div>
                   </div>
                 );
               })
@@ -359,6 +407,112 @@ export default function AdminShowcaseSitesPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* ── Popup Preview Website ─────────────────────────────────────── */}
+      <Dialog
+        open={!!previewTarget}
+        onOpenChange={(nextOpen) => {
+          if (!nextOpen) setPreviewTarget(null);
+        }}
+        size="xl"
+        backdrop="subtle"
+        className="sm:!max-w-4xl"
+        style={{ maxWidth: "min(920px, calc(100vw - 1.5rem))" }}
+        title={
+          <div className="flex items-center justify-between gap-2.5 w-full">
+            <div className="min-w-0">
+              <span className="block font-bold text-sm sm:text-base text-foreground truncate">
+                {previewTarget?.name}
+              </span>
+              {previewTarget?.url && (
+                <a
+                  href={previewTarget.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 font-mono text-[11px] font-normal text-muted-foreground hover:text-foreground hover:underline truncate"
+                >
+                  <span>{previewTarget.host}</span>
+                  <ExternalLink className="size-3 shrink-0" />
+                </a>
+              )}
+            </div>
+            <div className="flex items-center bg-muted/80 p-0.5 rounded-lg border border-border/60 shrink-0">
+              <button
+                type="button"
+                onClick={() => setPreviewDevice("mobile")}
+                title={tr("Tampilan HP", "Mobile view")}
+                aria-label="Mobile view"
+                className={`flex items-center justify-center p-1.5 rounded-md transition-all cursor-pointer ${
+                  previewDevice === "mobile"
+                    ? "bg-background text-foreground shadow-xs font-semibold"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Smartphone className="size-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setPreviewDevice("desktop")}
+                title={tr("Tampilan Desktop", "Desktop view")}
+                aria-label="Desktop view"
+                className={`flex items-center justify-center p-1.5 rounded-md transition-all cursor-pointer ${
+                  previewDevice === "desktop"
+                    ? "bg-background text-foreground shadow-xs font-semibold"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Monitor className="size-3.5" />
+              </button>
+            </div>
+          </div>
+        }
+        footer={
+          <div className="flex items-center justify-end gap-2 w-full">
+            <Button type="button" variant="outline" onClick={() => setPreviewTarget(null)}>
+              {tr("Tutup", "Close")}
+            </Button>
+            {previewTarget?.candidate && !selectedIds.has(previewTarget.candidate.site_id) && (
+              <Button
+                type="button"
+                onClick={() => {
+                  if (previewTarget.candidate) addCandidate(previewTarget.candidate);
+                  setPreviewTarget(null);
+                }}
+                className="gap-1.5"
+              >
+                <Plus className="size-4" />
+                {tr("Tambahkan ke Showcase", "Add to Showcase")}
+              </Button>
+            )}
+          </div>
+        }
+      >
+        <div className="h-[68dvh] sm:h-[65vh] overflow-y-auto rounded-xl border border-border/70 bg-muted/30 p-1.5 sm:p-3">
+          <div
+            className={`rounded-lg overflow-hidden border border-border/50 shadow-sm bg-white transition-all duration-200 min-h-[240px] flex items-center justify-center ${
+              previewDevice === "mobile" ? "max-w-[390px] mx-auto w-full" : "w-full"
+            }`}
+          >
+            {!previewData || !previewData.content ? (
+              <div className="flex flex-col items-center justify-center p-8 gap-2.5 text-muted-foreground">
+                <Spinner size="md" />
+                <span className="text-xs">
+                  {tr("Memuat pratinjau website…", "Loading website preview…")}
+                </span>
+              </div>
+            ) : (
+              <TemplatePreview
+                key={`${previewTarget?.host}-${previewDevice}`}
+                templateId={previewData.templateId || "TEMPLATE_DYNAMIC"}
+                content={previewData.content}
+                designToken={previewData.design_token}
+                scaleBase={previewDevice === "mobile" ? 390 : 1280}
+                scrollable
+              />
+            )}
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 }
