@@ -83,7 +83,6 @@ import {
   HardHat,
   Wrench,
   X,
-  Zap,
   Maximize2,
   Minimize2,
 } from "lucide-react";
@@ -158,6 +157,34 @@ const ExampleThumbnailCard = dynamic(
   () => import("./chat/example-thumbnail-card").then((m) => m.ExampleThumbnailCard),
   { ssr: false }
 );
+
+function AnimatedCheck({ animate = true }: { animate?: boolean }) {
+  return (
+    <svg
+      className="w-2.5 h-2.5 text-white/90 shrink-0"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="3.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path
+        d="M4.5 12.5l5 5L19.5 7"
+        style={
+          animate
+            ? {
+                strokeDasharray: 24,
+                strokeDashoffset: 24,
+                animation: "draw-check 0.35s cubic-bezier(0.65, 0, 0.45, 1) forwards 0.05s",
+              }
+            : undefined
+        }
+      />
+    </svg>
+  );
+}
 import { applyBrandPalette } from "@/lib/apply-brand-palette";
 import { trackAdEvent } from "@/lib/ad-tracking";
 import { uploadImageFile, uploadFontFile } from "@/components/file-upload";
@@ -2545,7 +2572,7 @@ export function SiteWizard({
                                   variant="outline"
                                   className="shrink-0 gap-1 rounded-full border-white/15 bg-white/[0.08] px-2 py-0.5 text-[10.5px] font-semibold normal-case tracking-normal text-slate-200 whitespace-nowrap animate-in fade-in zoom-in-95 slide-in-from-bottom-1 duration-300"
                                 >
-                                  <Check className="w-2.5 h-2.5 text-white/80 stroke-[2.5]" />
+                                  <AnimatedCheck animate={chat.isInitialTyping} />
                                   {t("dashboard.wizard.greetingChipFree", isIndonesian ? "Gratis" : "Free")}
                                 </Badge>
                               )}
@@ -2554,7 +2581,7 @@ export function SiteWizard({
                                   variant="outline"
                                   className="shrink-0 gap-1 rounded-full border-white/15 bg-white/[0.08] px-2 py-0.5 text-[10.5px] font-semibold normal-case tracking-normal text-slate-200 whitespace-nowrap animate-in fade-in zoom-in-95 slide-in-from-bottom-1 duration-300"
                                 >
-                                  <Zap className="w-2.5 h-2.5 text-white/80" />
+                                  <AnimatedCheck animate={chat.isInitialTyping} />
                                   {t("dashboard.wizard.greetingChipFast", isIndonesian ? "Cepat" : "Fast")}
                                 </Badge>
                               )}
@@ -2563,7 +2590,7 @@ export function SiteWizard({
                                   variant="outline"
                                   className="shrink-0 gap-1 rounded-full border-white/15 bg-white/[0.08] px-2 py-0.5 text-[10.5px] font-semibold normal-case tracking-normal text-slate-200 whitespace-nowrap animate-in fade-in zoom-in-95 slide-in-from-bottom-1 duration-300"
                                 >
-                                  <SparkleGenAI className="w-2.5 h-2.5 text-white/80 shrink-0" />
+                                  <AnimatedCheck animate={chat.isInitialTyping} />
                                   {t("dashboard.wizard.greetingChipEasy", isIndonesian ? "Mudah" : "Easy")}
                                 </Badge>
                               )}
