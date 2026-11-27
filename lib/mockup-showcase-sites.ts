@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect, useMemo } from "react";
 
 export const MOCKUP_SHOWCASE_SITES_KEY = "webjoz_mockup_showcase_sites";
 
@@ -100,4 +100,97 @@ export function useMockupShowcaseSites() {
   }, []);
 
   return { sites, save };
+}
+
+export interface RealSiteData {
+  content: any;
+  design_token: any;
+  templateId: string;
+}
+
+const _siteDataCache = new Map<string, RealSiteData | null>();
+
+export async function fetchRealSiteData(host: string): Promise<RealSiteData | null> {
+  if (!host) return null;
+  const cleanHost = siteHost(host);
+  const cached = _siteDataCache.get(cleanHost);
+  if (cached !== undefined) return cached;
+  try {
+    const url = `${MOCKUP_SHOWCASE_API_BASE}/public/sites?host=${encodeURIComponent(cleanHost)}`;
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    const d = json?.data;
+    const entry: RealSiteData | null =
+      d?.content && d?.design_token && d?.template_id
+        ? { content: d.content, design_token: d.design_token, templateId: d.template_id }
+        : null;
+    _siteDataCache.set(cleanHost, entry);
+    return entry;
+  } catch {
+    _siteDataCache.set(cleanHost, null);
+    return null;
+  }
+}
+
+export function useRealSiteData(host: string | null): RealSiteData | null {
+  const cleanHost = host ? siteHost(host) : null;
+  const [data, setData] = useState<RealSiteData | null>(() =>
+    cleanHost ? (_siteDataCache.has(cleanHost) ? (_siteDataCache.get(cleanHost) ?? null) : null) : null
+  );
+
+  useEffect(() => {
+    if (!cleanHost) return;
+    const cached = _siteDataCache.get(cleanHost);
+    if (cached !== undefined) {
+      queueMicrotask(() => setData(cached));
+      return;
+    }
+    let active = true;
+    fetchRealSiteData(cleanHost).then((entry) => {
+      if (active) setData(entry);
+    });
+    return () => {
+      active = false;
+    };
+  }, [cleanHost]);
+
+  return data;
+}
+
+export function useAllRealSitesData(sites: MockupShowcaseSite[]): Record<string, RealSiteData | null> {
+  const hosts = useMemo(
+    () => sites.map((s) => siteHost(s.url)).filter(Boolean),
+    [sites]
+  );
+
+  const [dataMap, setDataMap] = useState<Record<string, RealSiteData | null>>(() => {
+    const initial: Record<string, RealSiteData | null> = {};
+    for (const h of hosts) {
+      if (_siteDataCache.has(h)) {
+        initial[h] = _siteDataCache.get(h) ?? null;
+      }
+    }
+    return initial;
+  });
+
+  useEffect(() => {
+    let active = true;
+    for (const h of hosts) {
+      const cached = _siteDataCache.get(h);
+      if (cached !== undefined) {
+        setDataMap((prev) => (prev[h] === cached ? prev : { ...prev, [h]: cached }));
+        continue;
+      }
+      fetchRealSiteData(h).then((entry) => {
+        if (!active) return;
+        setDataMap((prev) => ({ ...prev, [h]: entry }));
+      });
+    }
+    return () => {
+      active = false;
+    };
+  }, [hosts]);
+
+  return dataMap;
 }

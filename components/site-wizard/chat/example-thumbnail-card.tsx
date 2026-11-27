@@ -4,6 +4,11 @@ import React from "react";
 import { ChevronRight, X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { SHOWCASE_ITEMS } from "@/lib/landing-showcase-data";
+import {
+  useMockupShowcaseSites,
+  useAllRealSitesData,
+  siteHost,
+} from "@/lib/mockup-showcase-sites";
 import { CURATED_SHOWCASE_TABS } from "./curated-showcase-tabs";
 
 interface ExampleThumbnailCardProps {
@@ -18,6 +23,15 @@ export function ExampleThumbnailCard({
   onDismiss,
 }: ExampleThumbnailCardProps) {
   const { t, isIndonesian } = useI18n();
+  const { sites } = useMockupShowcaseSites();
+  const realSitesData = useAllRealSitesData(sites);
+
+  const getTabIdxForCategory = (cat?: number): number => {
+    if (cat === 0) return 0;
+    if (cat === 1) return 2;
+    if (cat === 2) return 1;
+    return 3;
+  };
 
   return (
     <div
@@ -75,19 +89,28 @@ export function ExampleThumbnailCard({
 
       {/* Thumbnail grid — 4 columns */}
       <div className="grid grid-cols-4 gap-1.5">
-        {CURATED_SHOWCASE_TABS.map((item) => {
+        {CURATED_SHOWCASE_TABS.map((item, tabIdx) => {
           const fallbackLabel = isIndonesian ? item.labelFallbackId : item.labelFallbackEn;
           const label = t(item.labelIdKey, fallbackLabel);
           const Icon = item.Icon;
+
+          const matchingReal = sites.find(
+            (s) => s.category !== undefined && getTabIdxForCategory(s.category) === tabIdx
+          );
+          const realData = matchingReal ? realSitesData[siteHost(matchingReal.url)] : null;
           const primarySample = SHOWCASE_ITEMS[item.indices[0]];
-          const thumbnailImageUrl = primarySample?.content?.hero?.image_url || item.imageUrl;
+          const thumbnailImageUrl =
+            realData?.content?.hero?.image_url || primarySample?.content?.hero?.image_url || item.imageUrl;
+          const headlineSub = matchingReal?.businessName
+            ? matchingReal.businessName.slice(0, 14).toUpperCase()
+            : item.headlineSub;
 
           return (
             <button
               key={item.labelIdKey}
               type="button"
-              onClick={() => onSelectTab ? onSelectTab(item.indices[0]) : onSeeAll()}
-              className="group flex flex-col rounded-xl overflow-hidden border border-white/[0.08] hover:border-white/20 transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] focus:outline-none"
+              onClick={() => (onSelectTab ? onSelectTab(tabIdx) : onSeeAll())}
+              className="group flex flex-col rounded-xl overflow-hidden border border-white/[0.08] hover:border-white/20 transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] focus:outline-none cursor-pointer"
             >
               {/* Image + artistic headline overlay */}
               <div className="relative overflow-hidden" style={{ height: 100 }}>
@@ -120,7 +143,7 @@ export function ExampleThumbnailCard({
                     lineHeight: 1,
                   }}
                 >
-                  {item.headlineSub}
+                  {headlineSub}
                 </div>
 
                 {/* Thin horizontal rule under sub */}

@@ -12,8 +12,10 @@ import {
   DEFAULT_MOCKUP_SHOWCASE_SITES,
   MOCKUP_SHOWCASE_API_BASE,
   type MockupShowcaseSite,
+  type RealSiteData as SiteData,
   siteHost,
   useMockupShowcaseSites,
+  useRealSiteData,
 } from "@/lib/mockup-showcase-sites";
 import { buildCssVars } from "@/components/templates/helpers";
 import { SparkleIcon } from "@/components/sparkle-icon";
@@ -210,49 +212,6 @@ function RealPreviewPanel({
 /* ── RealSitePreviewPanel: fetches real site content from the API and renders
      via the local template engine (auto-scroll preserved). Falls back to sample
      content when fetch fails. ────────────────────────────────────────────── */
-interface SiteData {
-  content: Record<string, unknown>;
-  design_token: DesignToken;
-  templateId: string;
-}
-
-const _siteDataCache = new Map<string, SiteData | null>();
-
-function useRealSiteData(host: string | null): SiteData | null {
-  const [data, setData] = useState<SiteData | null>(() =>
-    host ? (_siteDataCache.has(host) ? (_siteDataCache.get(host) ?? null) : null) : null,
-  );
-
-  useEffect(() => {
-    if (!host) return;
-    const cached = _siteDataCache.get(host);
-    if (cached !== undefined) {
-      queueMicrotask(() => setData(cached));
-      return;
-    }
-    let active = true;
-    const url = `${MOCKUP_SHOWCASE_API_BASE}/public/sites?host=${encodeURIComponent(host)}`;
-    fetch(url, { cache: "no-store" })
-      .then(async (res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const json = await res.json();
-        const d = json?.data;
-        const entry: SiteData | null =
-          d?.content && d?.design_token && d?.template_id
-            ? { content: d.content, design_token: d.design_token, templateId: d.template_id }
-            : null;
-        _siteDataCache.set(host, entry);
-        if (active) setData(entry);
-      })
-      .catch(() => {
-        _siteDataCache.set(host, null);
-        if (active) setData(null);
-      });
-    return () => { active = false; };
-  }, [host]);
-
-  return data;
-}
 
 function inferCategoryIndex(
   businessName?: string,
