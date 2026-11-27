@@ -2547,22 +2547,22 @@ export function SiteWizard({
                         />
                       );
                     })()
-                  ) : m.id === "init" && mode === "public" ? (
+                  ) : m.id === "init" ? (
                     (() => {
-                      const marker = "website.";
-                      const idx = messageText.indexOf(marker);
-                      if (idx === -1) {
-                        return (
-                          <>
-                            {formatText(messageText, isUser)}
-                            {chat.isInitialTyping && (
-                              <span className="ml-0.5 inline-block h-4 w-0.5 translate-y-0.5 animate-pulse rounded-full bg-slate-300" />
-                            )}
-                          </>
-                        );
+                      const match = messageText.match(/website[.,!?]?/i);
+                      let beforePart = messageText;
+                      let afterPart = "";
+                      if (match && typeof match.index === "number") {
+                        const endIdx = match.index + match[0].length;
+                        beforePart = messageText.slice(0, endIdx);
+                        afterPart = messageText.slice(endIdx).trimStart();
+                      } else {
+                        const periodIdx = messageText.indexOf(".");
+                        if (periodIdx !== -1) {
+                          beforePart = messageText.slice(0, periodIdx + 1);
+                          afterPart = messageText.slice(periodIdx + 1).trimStart();
+                        }
                       }
-                      const beforePart = messageText.slice(0, idx + marker.length);
-                      const afterPart = messageText.slice(idx + marker.length).trimStart();
                       const chipsCount = !chat.isInitialTyping ? 3 : (chat.initialChipsCount ?? 0);
                       return (
                         <>
