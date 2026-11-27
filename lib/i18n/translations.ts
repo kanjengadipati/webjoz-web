@@ -7941,7 +7941,7 @@ export const translations: Record<Locale, Translations> = {
       },
       wizard: {
         initialMessage:
-          "Halo! Saya Joz-AI, asisten AI yang akan membantu Anda membuat website. Mari kita mulai: apa nama bisnis atau brand Anda?",
+          "Yuk, buat website. Apa nama bisnis atau brand Anda?",
         nameAckVariants: ["Siap!", "Baik!", "Oke!", "Mantap!", "Keren!"],
         nameConfirmVariants: [
           "Itu nama aslinya, atau masih nama sementara? Pilih 'Ya' untuk lanjut, atau 'Ganti' jika ingin diubah 😊",
@@ -8044,7 +8044,7 @@ export const translations: Record<Locale, Translations> = {
         exampleBtnUseStyle: "Pakai gaya ini",
         exampleBtnCustomStyle: "Atur gaya sendiri",
         trustStripText: "100% gratis — website AI siap dalam 1 menit",
-        greetingChipFree: "100% Gratis",
+        greetingChipFree: "Gratis",
         greetingChipFast: "Siap dalam 1 menit",
         btnSeeExamples: "Lihat contoh",
         wireframeStyleSelectedBanner:
@@ -12523,7 +12523,7 @@ export const translations: Record<Locale, Translations> = {
       },
       wizard: {
         initialMessage:
-          "Hi! I'm Joz-AI, an AI assistant who will help you create a website. Let's get started: what's the name of your business or brand?",
+          "Let's build your website. What's the name of your business or brand?",
         nameAckVariants: [
           "Got it!",
           "Great!",
@@ -12633,7 +12633,7 @@ export const translations: Record<Locale, Translations> = {
         exampleBtnUseStyle: "Use this style",
         exampleBtnCustomStyle: "Pick my own style",
         trustStripText: "100% free — your AI website ready in 1 minute",
-        greetingChipFree: "100% Free",
+        greetingChipFree: "Free",
         greetingChipFast: "Ready in 1 minute",
         btnSeeExamples: "See examples",
         wireframeStyleSelectedBanner:

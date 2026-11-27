@@ -2535,7 +2535,7 @@ export function SiteWizard({
                                 style={{ animationDelay: "80ms", animationFillMode: "both" }}
                               >
                                 <Check className="w-2.5 h-2.5 text-white/80 stroke-[2.5]" />
-                                {t("dashboard.wizard.greetingChipFree", isIndonesian ? "100% Gratis" : "100% Free")}
+                                {t("dashboard.wizard.greetingChipFree", isIndonesian ? "Gratis" : "Free")}
                               </Badge>
                               <Badge
                                 variant="outline"
