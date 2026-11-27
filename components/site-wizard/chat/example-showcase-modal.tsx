@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Smartphone, Monitor } from "lucide-react";
 import { Dialog, Button, SparkleGenAI } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
 import { SHOWCASE_ITEMS, findShowcaseSample } from "@/lib/landing-showcase-data";
@@ -41,11 +41,15 @@ export function ExampleShowcaseModal({
   const [selectedBusinessName, setSelectedBusinessName] = useState<string>(
     initialSample.businessName
   );
+  const [previewDevice, setPreviewDevice] = useState<"desktop" | "mobile">("mobile");
 
-  // Sync when modal re-opens with a new initialTabIndex
+  // Sync when modal re-opens with a new initialTabIndex and detect mobile screen
   useEffect(() => {
     if (open) {
       setSelectedBusinessName(initialSample.businessName);
+      if (typeof window !== "undefined") {
+        setPreviewDevice(window.innerWidth < 640 ? "mobile" : "desktop");
+      }
     }
   }, [open, initialSample]);
 
@@ -106,24 +110,56 @@ export function ExampleShowcaseModal({
       className="sm:!max-w-4xl"
       style={{ maxWidth: "min(920px, calc(100vw - 1.5rem))" }}
       title={
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground border border-border/60">
-            <SparkleGenAI className="h-4.5 w-4.5" />
+        <div className="flex items-center justify-between gap-2.5 w-full">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground border border-border/60">
+              <SparkleGenAI className="h-4.5 w-4.5" />
+            </div>
+            <div className="min-w-0">
+              <span className="block font-bold text-sm sm:text-base text-foreground truncate">
+                {t("dashboard.wizard.exampleShowcaseTitle", isIndonesian ? "Contoh Hasil Website AI" : "Real AI Website Examples")}
+              </span>
+              <span className="hidden sm:block text-[11px] font-normal text-muted-foreground truncate">
+                {t("dashboard.wizard.exampleShowcaseSubtitle", isIndonesian
+                  ? "Dibuat otomatis dalam hitungan menit — scroll untuk lihat detailnya"
+                  : "Generated in minutes — scroll to inspect the full layout")}
+              </span>
+            </div>
           </div>
-          <div className="min-w-0">
-            <span className="block font-bold text-sm sm:text-base text-foreground truncate">
-              {t("dashboard.wizard.exampleShowcaseTitle", isIndonesian ? "Contoh Hasil Website AI" : "Real AI Website Examples")}
-            </span>
-            <span className="block text-[11px] font-normal text-muted-foreground truncate">
-              {t("dashboard.wizard.exampleShowcaseSubtitle", isIndonesian
-                ? "Dibuat otomatis dalam hitungan menit — scroll untuk lihat detailnya"
-                : "Generated in minutes — scroll to inspect the full layout")}
-            </span>
+
+          {/* Device Toggle */}
+          <div className="flex items-center bg-muted/80 p-0.5 rounded-lg border border-border/60 shrink-0">
+            <button
+              type="button"
+              onClick={() => setPreviewDevice("mobile")}
+              title={isIndonesian ? "Tampilan HP" : "Mobile view"}
+              aria-label="Mobile view"
+              className={`flex items-center justify-center p-1.5 rounded-md transition-all cursor-pointer ${
+                previewDevice === "mobile"
+                  ? "bg-background text-foreground shadow-xs font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Smartphone className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setPreviewDevice("desktop")}
+              title={isIndonesian ? "Tampilan Desktop" : "Desktop view"}
+              aria-label="Desktop view"
+              className={`flex items-center justify-center p-1.5 rounded-md transition-all cursor-pointer ${
+                previewDevice === "desktop"
+                  ? "bg-background text-foreground shadow-xs font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Monitor className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
       }
       footer={
-        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-2 w-full">
+        <div className="grid grid-cols-2 gap-2 w-full sm:flex sm:items-center sm:justify-between">
           <Button
             type="button"
             variant="outline"
@@ -131,23 +167,23 @@ export function ExampleShowcaseModal({
               onClose();
               onStartCustom();
             }}
-            className="w-full sm:w-auto h-10 px-4 rounded-xl text-xs font-semibold"
+            className="w-full sm:w-auto h-10 px-2 sm:px-4 rounded-xl text-[11px] sm:text-xs font-semibold truncate"
           >
-            {t("dashboard.wizard.exampleBtnCustomStyle", isIndonesian ? "Atur gaya sendiri" : "Pick my own style")}
+            {t("dashboard.wizard.exampleBtnCustomStyle", isIndonesian ? "Atur sendiri" : "Pick my own style")}
           </Button>
           <Button
             type="button"
             variant="default"
             onClick={handleUseStyle}
-            className="w-full sm:w-auto h-10 px-5 rounded-xl text-xs sm:text-sm font-bold gap-2"
+            className="w-full sm:w-auto h-10 px-3 sm:px-5 rounded-xl text-xs sm:text-sm font-bold gap-1.5 sm:gap-2 truncate"
           >
-            <span>{t("dashboard.wizard.exampleBtnUseStyle", isIndonesian ? "Pakai gaya ini" : "Use this style")}</span>
-            <ArrowRight className="w-4 h-4" />
+            <span className="truncate">{t("dashboard.wizard.exampleBtnUseStyle", isIndonesian ? "Pakai gaya ini" : "Use this style")}</span>
+            <ArrowRight className="w-4 h-4 shrink-0" />
           </Button>
         </div>
       }
     >
-      <div className="flex flex-col gap-3 h-[62dvh] sm:h-[60vh]">
+      <div className="flex flex-col gap-2.5 sm:gap-3 h-[72dvh] sm:h-[62vh]">
         {/* Category Tabs */}
         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink-0 pb-0.5">
           {displayTabs.map((tab) => {
@@ -194,13 +230,18 @@ export function ExampleShowcaseModal({
         )}
 
         {/* Scrollable Real Template Preview (0 AI tokens) */}
-        <div className="flex-1 overflow-y-auto rounded-xl border border-border/70 bg-muted/30 p-2 sm:p-3">
-          <div className="rounded-lg overflow-hidden border border-border/50 shadow-sm bg-white">
+        <div className="flex-1 overflow-y-auto rounded-xl border border-border/70 bg-muted/30 p-1.5 sm:p-3">
+          <div
+            className={`rounded-lg overflow-hidden border border-border/50 shadow-sm bg-white transition-all duration-200 ${
+              previewDevice === "mobile" ? "max-w-[390px] mx-auto" : "w-full"
+            }`}
+          >
             <TemplatePreview
+              key={`${activeSample.templateId}-${previewDevice}`}
               templateId={activeSample.templateId}
               content={activeSample.content}
               designToken={activeToken}
-              scaleBase={1280}
+              scaleBase={previewDevice === "mobile" ? 390 : 1280}
               scrollable
             />
           </div>

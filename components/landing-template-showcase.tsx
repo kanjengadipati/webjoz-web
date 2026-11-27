@@ -61,7 +61,7 @@ export function TemplatePreview({
     if (!el || !TemplateComponent) return;
     const update = () => {
       const s = el.offsetWidth / scaleBase;
-      setScale(s);
+      if (s > 0) setScale(s);
       // Scrollable mode: container height = tinggi layout asli × scale, supaya
       // area scroll tepat setinggi tampilan yang ter-skalakan (bukan tinggi layout
       // yang belum di-scale = ribuan px dengan ruang kosong besar di bawah).
@@ -69,6 +69,7 @@ export function TemplatePreview({
     };
     const obs = new ResizeObserver(update);
     obs.observe(el);
+    if (innerRef.current) obs.observe(innerRef.current);
     update();
     return () => obs.disconnect();
   }, [TemplateComponent, scaleBase, scrollable]);
