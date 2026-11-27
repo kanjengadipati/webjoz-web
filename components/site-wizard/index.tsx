@@ -2520,55 +2520,78 @@ export function SiteWizard({
                       const marker = "website.";
                       const idx = messageText.indexOf(marker);
                       if (idx === -1) {
-                        return formatText(messageText, isUser);
+                        return (
+                          <>
+                            {formatText(messageText, isUser)}
+                            {chat.isInitialTyping && (
+                              <span className="ml-0.5 inline-block h-4 w-0.5 translate-y-0.5 animate-pulse rounded-full bg-slate-300" />
+                            )}
+                          </>
+                        );
                       }
                       const beforePart = messageText.slice(0, idx + marker.length);
                       const afterPart = messageText.slice(idx + marker.length).trimStart();
+                      const chipsCount = !chat.isInitialTyping ? 3 : (chat.initialChipsCount ?? 0);
                       return (
                         <>
                           {formatText(beforePart, isUser)}
-                          {!chat.isInitialTyping && (
-                            <span className="flex flex-nowrap items-center gap-1.5 my-2 overflow-x-auto no-scrollbar animate-in fade-in slide-in-from-bottom-2 duration-500" style={{ animationFillMode: "both" }}>
-                              <Badge
-                                variant="outline"
-                                className="shrink-0 gap-1 rounded-full border-white/15 bg-white/[0.08] px-2 py-0.5 text-[10.5px] font-semibold normal-case tracking-normal text-slate-200 whitespace-nowrap animate-in fade-in slide-in-from-bottom-1 duration-400"
-                                style={{ animationDelay: "80ms", animationFillMode: "both" }}
-                              >
-                                <Check className="w-2.5 h-2.5 text-white/80 stroke-[2.5]" />
-                                {t("dashboard.wizard.greetingChipFree", isIndonesian ? "Gratis" : "Free")}
-                              </Badge>
-                              <Badge
-                                variant="outline"
-                                className="shrink-0 gap-1 rounded-full border-white/15 bg-white/[0.08] px-2 py-0.5 text-[10.5px] font-semibold normal-case tracking-normal text-slate-200 whitespace-nowrap animate-in fade-in slide-in-from-bottom-1 duration-400"
-                                style={{ animationDelay: "180ms", animationFillMode: "both" }}
-                              >
-                                <Zap className="w-2.5 h-2.5 text-white/80" />
-                                {t("dashboard.wizard.greetingChipFast", isIndonesian ? "Cepat" : "Fast")}
-                              </Badge>
-                              <Badge
-                                variant="outline"
-                                className="shrink-0 gap-1 rounded-full border-white/15 bg-white/[0.08] px-2 py-0.5 text-[10.5px] font-semibold normal-case tracking-normal text-slate-200 whitespace-nowrap animate-in fade-in slide-in-from-bottom-1 duration-400"
-                                style={{ animationDelay: "280ms", animationFillMode: "both" }}
-                              >
-                                <SparkleGenAI className="w-2.5 h-2.5 text-white/80 shrink-0" />
-                                {t("dashboard.wizard.greetingChipEasy", isIndonesian ? "Mudah" : "Easy")}
-                              </Badge>
+                          {chat.isInitialTyping && !afterPart && chipsCount === 0 && (
+                            <span className="ml-0.5 inline-block h-4 w-0.5 translate-y-0.5 animate-pulse rounded-full bg-slate-300" />
+                          )}
+                          {chipsCount > 0 && (
+                            <span className="flex flex-nowrap items-center gap-1.5 my-2 overflow-x-auto no-scrollbar">
+                              {chipsCount >= 1 && (
+                                <Badge
+                                  variant="outline"
+                                  className="shrink-0 gap-1 rounded-full border-white/15 bg-white/[0.08] px-2 py-0.5 text-[10.5px] font-semibold normal-case tracking-normal text-slate-200 whitespace-nowrap animate-in fade-in zoom-in-95 slide-in-from-bottom-1 duration-300"
+                                >
+                                  <Check className="w-2.5 h-2.5 text-white/80 stroke-[2.5]" />
+                                  {t("dashboard.wizard.greetingChipFree", isIndonesian ? "Gratis" : "Free")}
+                                </Badge>
+                              )}
+                              {chipsCount >= 2 && (
+                                <Badge
+                                  variant="outline"
+                                  className="shrink-0 gap-1 rounded-full border-white/15 bg-white/[0.08] px-2 py-0.5 text-[10.5px] font-semibold normal-case tracking-normal text-slate-200 whitespace-nowrap animate-in fade-in zoom-in-95 slide-in-from-bottom-1 duration-300"
+                                >
+                                  <Zap className="w-2.5 h-2.5 text-white/80" />
+                                  {t("dashboard.wizard.greetingChipFast", isIndonesian ? "Cepat" : "Fast")}
+                                </Badge>
+                              )}
+                              {chipsCount >= 3 && (
+                                <Badge
+                                  variant="outline"
+                                  className="shrink-0 gap-1 rounded-full border-white/15 bg-white/[0.08] px-2 py-0.5 text-[10.5px] font-semibold normal-case tracking-normal text-slate-200 whitespace-nowrap animate-in fade-in zoom-in-95 slide-in-from-bottom-1 duration-300"
+                                >
+                                  <SparkleGenAI className="w-2.5 h-2.5 text-white/80 shrink-0" />
+                                  {t("dashboard.wizard.greetingChipEasy", isIndonesian ? "Mudah" : "Easy")}
+                                </Badge>
+                              )}
                             </span>
                           )}
-                          {afterPart ? formatText(afterPart, isUser) : null}
+                          {afterPart ? (
+                            <>
+                              {formatText(afterPart, isUser)}
+                              {chat.isInitialTyping && (
+                                <span className="ml-0.5 inline-block h-4 w-0.5 translate-y-0.5 animate-pulse rounded-full bg-slate-300" />
+                              )}
+                            </>
+                          ) : null}
                         </>
                       );
                     })()
                   ) : (
-                    formatText(messageText, isUser)
+                    <>
+                      {formatText(messageText, isUser)}
+                      {m.id === "init" && chat.isInitialTyping && (
+                        <span className="ml-0.5 inline-block h-4 w-0.5 translate-y-0.5 animate-pulse rounded-full bg-slate-300" />
+                      )}
+                    </>
                   )}
                   {m.isEdited && (
                     <span className={`text-[10px] ml-1.5 italic font-normal ${isUser ? "text-slate-500" : "text-slate-400"}`}>
                       {t("dashboard.wizard.editedBadge", "(diedit)")}
                     </span>
-                  )}
-                  {m.id === "init" && chat.isInitialTyping && (
-                    <span className="ml-0.5 inline-block h-4 w-0.5 translate-y-0.5 animate-pulse rounded-full bg-slate-300" />
                   )}
                   {m.isPreparing && device.mobileScreen === "chat" && (
                     <PreparingWebsiteLoader t={t} />

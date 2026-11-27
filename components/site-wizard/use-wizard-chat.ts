@@ -43,6 +43,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
   const [inputValue, setInputValue] = useState("");
   const initialTypingDoneRef = useRef(false);
   const [initialWordCount, setInitialWordCount] = useState(0);
+  const [initialChipsCount, setInitialChipsCount] = useState(0);
   const [isInitialTyping, setIsInitialTyping] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -480,6 +481,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     // If not at stage "name" or there are subsequent messages, skip animation entirely
     if (chatStage !== "name" || messages.length > 1) {
       setInitialWordCount(initialMessageWords.length);
+      setInitialChipsCount(3);
       setIsInitialTyping(false);
       initialTypingDoneRef.current = true;
       return;
@@ -493,37 +495,76 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     // If initial typing already completed, keep full word count and done state
     if (initialTypingDoneRef.current) {
       setInitialWordCount(initialMessageWords.length);
+      setInitialChipsCount(3);
       setIsInitialTyping(false);
       return;
     }
 
-    // Otherwise animate word by word (start with 1 word so bubble is never empty)
+    // Otherwise animate word by word:
+    // Sentence 1 -> Staggered chips (Gratis, Cepat, Mudah) -> Sentence 2
     setIsInitialTyping(true);
     setInitialWordCount((prev) => (prev > 0 ? prev : 1));
+    setInitialChipsCount(0);
 
-    const interval = setInterval(() => {
-      setInitialWordCount((count) => {
-        if (count >= initialMessageWords.length) {
-          clearInterval(interval);
+    const firstSentenceWords = (() => {
+      const idx = initialMessageWords.findIndex((w) => w.includes("website."));
+      return idx >= 0 ? idx + 1 : initialMessageWords.length;
+    })();
+
+    const timers: (NodeJS.Timeout | number)[] = [];
+
+    const startSecondSentence = () => {
+      if (firstSentenceWords >= initialMessageWords.length) {
+        setIsInitialTyping(false);
+        initialTypingDoneRef.current = true;
+        return;
+      }
+      let current = firstSentenceWords;
+      const secondInterval = setInterval(() => {
+        current++;
+        setInitialWordCount(current);
+        if (current >= initialMessageWords.length) {
+          clearInterval(secondInterval);
           setIsInitialTyping(false);
           initialTypingDoneRef.current = true;
-          return initialMessageWords.length;
         }
-        return count + 1;
-      });
-    }, 90);
+      }, 75);
+      timers.push(secondInterval);
+    };
 
-    // Safety fallback: if anything throttles or delays the interval, finish gracefully after 2.5s
+    let word = 1;
+    const firstInterval = setInterval(() => {
+      word++;
+      setInitialWordCount(word);
+      if (word >= firstSentenceWords) {
+        clearInterval(firstInterval);
+        // Staggered chip entrance in sync with text flow
+        timers.push(setTimeout(() => setInitialChipsCount(1), 160));
+        timers.push(setTimeout(() => setInitialChipsCount(2), 340));
+        timers.push(setTimeout(() => setInitialChipsCount(3), 520));
+        timers.push(setTimeout(() => startSecondSentence(), 720));
+      }
+    }, 75);
+    timers.push(firstInterval);
+
+    // Safety fallback: if anything throttles or delays the interval, finish gracefully after 3.5s
     const safetyTimer = setTimeout(() => {
-      clearInterval(interval);
+      timers.forEach((t) => {
+        clearTimeout(t as NodeJS.Timeout);
+        clearInterval(t as NodeJS.Timeout);
+      });
       setInitialWordCount(initialMessageWords.length);
+      setInitialChipsCount(3);
       setIsInitialTyping(false);
       initialTypingDoneRef.current = true;
-    }, 2500);
+    }, 3500);
+    timers.push(safetyTimer);
 
     return () => {
-      clearInterval(interval);
-      clearTimeout(safetyTimer);
+      timers.forEach((t) => {
+        clearTimeout(t as NodeJS.Timeout);
+        clearInterval(t as NodeJS.Timeout);
+      });
     };
   }, [initialMessageText, chatStage, messages.length, initialMessageWords.length]);
 
@@ -847,6 +888,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
       setIsInitialTyping(false);
       initialTypingDoneRef.current = true;
       setInitialWordCount(initialMessageWords.length);
+      setInitialChipsCount(3);
     }
     if (!inputValue.trim() && chatStage !== "description") return;
     const val = inputValue.trim();
@@ -904,6 +946,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
       setIsInitialTyping(false);
       initialTypingDoneRef.current = true;
       setInitialWordCount(initialMessageWords.length);
+      setInitialChipsCount(3);
     }
     const capitalized = capitalizeWords(sampleName.trim());
     setInputValue("");
@@ -1410,6 +1453,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
         : [{ id: "init", sender: "ai", text: initialMessageText }]
     );
     setInitialWordCount(initialMessageWords.length);
+    setInitialChipsCount(3);
     setBusinessName(snap.businessName ?? "");
     // Guard resume: pasangan stale/tidak-kanonis dari localStorage lama
     // di-drop sampai sub-nya saja (type tetap bila tipenya valid).
@@ -1478,6 +1522,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     setMessages([{ id: "init", sender: "ai", text: initialMessageText }]);
     setInputValue("");
     setInitialWordCount(initialMessageWords.length);
+    setInitialChipsCount(3);
     setBusinessName(prefill?.businessType ? "" : "");
     setBusinessType(prefill?.businessType ?? "");
     setBusinessSubType(prefill?.businessSubType ?? "");
@@ -1534,6 +1579,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
     inputValue,
     setInputValue,
     initialWordCount,
+    initialChipsCount,
     initialMessageText,
     initialMessageWords,
     businessName,
