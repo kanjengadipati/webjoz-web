@@ -16,6 +16,7 @@ import {
   siteHost,
   useMockupShowcaseSites,
   useRealSiteData,
+  resolveSiteBusinessName,
 } from "@/lib/mockup-showcase-sites";
 import { buildCssVars } from "@/components/templates/helpers";
 import { SparkleIcon } from "@/components/sparkle-icon";
@@ -838,10 +839,12 @@ function MobileChatCard({
 
   const showcaseItem = sample;
   const TemplateComponent = TEMPLATE_REGISTRY.find((t) => t.id === showcaseItem.templateId)?.component;
-  const chatBusinessName = businessName?.trim() || showcaseItem.businessName;
-
   const host = siteUrl ? siteHost(siteUrl) : null;
   const realSiteData = useRealSiteData(host);
+  const chatBusinessName =
+    businessName?.trim() ||
+    (siteUrl ? resolveSiteBusinessName({ url: siteUrl, businessName: "" }, realSiteData) : "") ||
+    showcaseItem.businessName;
 
   const [manualTab, setManualTab] = useState<"chat" | "preview" | null>(null);
   const categoryIndex = inferCategoryIndex(chatBusinessName, realSiteData, sample);
@@ -1152,10 +1155,11 @@ export function InteractiveMockup() {
   const previewIndex = usePreviewExampleIndex(sites.length, 6000, flowStep >= STEP_PREVIEW);
   const currentSite =
     sites.length > 0 ? sites[previewIndex % sites.length] : null;
-  const chatBusinessName = currentSite?.businessName?.trim() || showcaseItem.businessName;
-
   const currentHost = currentSite ? siteHost(currentSite.url) : null;
   const realSiteData = useRealSiteData(currentHost);
+  const chatBusinessName =
+    (currentSite ? resolveSiteBusinessName(currentSite, realSiteData) : "") ||
+    showcaseItem.businessName;
 
   const categoryIndex =
     currentSite?.category !== undefined

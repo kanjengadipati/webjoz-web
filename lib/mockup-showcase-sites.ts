@@ -194,3 +194,47 @@ export function useAllRealSitesData(sites: MockupShowcaseSite[]): Record<string,
 
   return dataMap;
 }
+
+export function resolveSiteCategory(
+  site: MockupShowcaseSite,
+  data?: RealSiteData | null
+): number {
+  if (typeof site.category === "number" && site.category >= 0 && site.category <= 2) {
+    return site.category;
+  }
+  const text = (
+    `${site.businessName || ""} ${(data?.content as any)?.header?.brand_name || ""} ${(data?.content as any)?.business_type || ""} ${(data?.content as any)?.hero?.headline || ""} ${(data?.content as any)?.hero?.subheadline || ""}`
+  ).toLowerCase();
+
+  if (/kopi|coffee|resto|makan|food|kuliner|cafe|kafe|dapur|kitchen|bakery|cake|boba|tea|teh|snack|warung/.test(text)) {
+    return 0; // Kuliner
+  }
+  if (/toko|shop|store|produk|product|fashion|baju|clothing|hijab|distro|sepatu|tas|craft|handmade|skincare|kosmetik|merch|mart|retail|boutique|olshop/.test(text)) {
+    return 2; // Produk
+  }
+  return 1; // Jasa & Portofolio (default)
+}
+
+export function resolveSiteBusinessName(
+  site: MockupShowcaseSite,
+  data?: RealSiteData | null
+): string {
+  if (site.businessName && site.businessName.trim()) {
+    return site.businessName.trim();
+  }
+  const fromContent = (data?.content as any)?.header?.brand_name || (data?.content as any)?.hero?.badge_text;
+  if (typeof fromContent === "string" && fromContent.trim()) {
+    return fromContent.trim();
+  }
+  const host = siteHost(site.url);
+  if (host) {
+    const subdomain = host.split(".")[0];
+    if (subdomain && subdomain !== "www") {
+      return subdomain
+        .split("-")
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(" ");
+    }
+  }
+  return "Website";
+}

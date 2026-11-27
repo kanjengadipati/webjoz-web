@@ -2,26 +2,28 @@
 
 import React, { useMemo, useState, useEffect } from "react";
 import { ArrowRight, Smartphone, Monitor, ExternalLink } from "lucide-react";
-import { Dialog, Button, SparkleGenAI } from "webjoz-ui";
+import { Dialog, Button, SparkleGenAI, Spinner } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
-import { SHOWCASE_ITEMS, findShowcaseSample } from "@/lib/landing-showcase-data";
-import { TemplatePreview, getDesignToken } from "@/components/landing-template-showcase";
+import { TemplatePreview } from "@/components/landing-template-showcase";
 import {
   useMockupShowcaseSites,
   useAllRealSitesData,
   siteHost,
+  resolveSiteCategory,
+  resolveSiteBusinessName,
+  DEFAULT_MOCKUP_SHOWCASE_SITES,
 } from "@/lib/mockup-showcase-sites";
-import { CURATED_SHOWCASE_TABS } from "./curated-showcase-tabs";
 
-export interface ShowcaseDisplayItem {
+export interface ShowcaseSiteItem {
   id: string;
+  url: string;
   businessName: string;
+  category: number; // 0: Kuliner, 1: Jasa, 2: Produk
   templateId: string;
   content: any;
   designToken: any;
-  isRealSite: boolean;
-  siteUrl?: string;
   mood?: string | number;
+  isLoading: boolean;
 }
 
 interface ExampleShowcaseModalProps {
@@ -33,6 +35,12 @@ interface ExampleShowcaseModalProps {
   initialTabIndex?: number;
 }
 
+const CATEGORY_META = [
+  { id: 0, labelId: "Kuliner", labelEn: "Culinary" },
+  { id: 1, labelId: "Jasa & Portofolio", labelEn: "Services & Portfolio" },
+  { id: 2, labelId: "Produk & Toko", labelEn: "Products & Store" },
+];
+
 export function ExampleShowcaseModal({
   open,
   onClose,
@@ -42,131 +50,132 @@ export function ExampleShowcaseModal({
   initialTabIndex,
 }: ExampleShowcaseModalProps) {
   const { t, isIndonesian } = useI18n();
-  const { sites } = useMockupShowcaseSites();
-  const realSitesData = useAllRealSitesData(sites);
+  const { sites: rawSites } = useMockupShowcaseSites();
 
-  // Map category index to tab index:
-  // 0: Kuliner -> Tab 0 (Kuliner)
-  // 1: Jasa -> Tab 2 (Layanan & Reservasi)
-  // 2: Produk -> Tab 1 (Toko Online & Retail)
-  // others -> Tab 3 (Kreatif & Profesional)
-  const getTabIdxForCategory = (cat?: number): number => {
-    if (cat === 0) return 0;
-    if (cat === 1) return 2;
-    if (cat === 2) return 1;
-    return 3;
-  };
+  // If list is empty, fallback to default mockup sites so modal never breaks
+  const effectiveSites = useMemo(() => {
+    return rawSites.length > 0 ? rawSites : DEFAULT_MOCKUP_SHOWCASE_SITES;
+  }, [rawSites]);
 
-  const displayTabs = useMemo(() => {
-    return CURATED_SHOWCASE_TABS.map((tab, tabIdx) => {
-      // 1. Collect real sites for this tab
-      const matchingRealSites = sites.filter((s) => {
-        if (s.category !== undefined) {
-          return getTabIdxForCategory(s.category) === tabIdx;
-        }
-        const name = s.businessName.toLowerCase();
-        if (tabIdx === 0 && (name.includes("kopi") || name.includes("kuliner") || name.includes("resto"))) return true;
-        if (tabIdx === 2 && (name.includes("dev") || name.includes("jasa") || name.includes("service"))) return true;
-        return false;
-      });
+  const realSitesData = useAllRealSitesData(effectiveSites);
 
-      const realItems: ShowcaseDisplayItem[] = matchingRealSites.map((s) => {
+  // 1. Build all real site items dynamically
+  const allItems: ShowcaseSiteItem[] = useMemo(() => {
+    return effectiveSites
+      .filter((s) => s.url && s.url.trim().length > 0)
+      .map((s) => {
         const host = siteHost(s.url);
         const data = realSitesData[host];
-        const fallback = findShowcaseSample(
-          tabIdx === 0 ? "kuliner" : tabIdx === 1 ? "toko online" : tabIdx === 2 ? "jasa" : "kreatif"
-        );
-        const fallbackToken = getDesignToken(fallback.templateId);
+        const bName = resolveSiteBusinessName(s, data);
+        const cat = resolveSiteCategory(s, data);
 
         return {
-          id: s.url || s.businessName,
-          businessName: s.businessName,
-          templateId: data?.templateId || fallback.templateId,
-          content: data?.content || fallback.content,
-          designToken: data?.design_token || fallbackToken,
-          isRealSite: true,
-          siteUrl: s.url,
-          mood: s.mood || data?.design_token?.mood || fallbackToken.mood,
+          id: s.url,
+          url: s.url,
+          businessName: bName,
+          category: cat,
+          templateId: data?.templateId || "TEMPLATE_DYNAMIC",
+          content: data?.content || null,
+          designToken: data?.design_token || null,
+          mood: s.mood || data?.design_token?.mood || "modern",
+          isLoading: !data,
         };
       });
+  }, [effectiveSites, realSitesData]);
 
-      // 2. Static curated items for this tab
-      const staticItems: ShowcaseDisplayItem[] = tab.indices
-        .map((idx) => SHOWCASE_ITEMS[idx])
-        .filter(Boolean)
-        .map((item) => ({
-          id: item.businessName,
-          businessName: item.businessName,
-          templateId: item.templateId,
-          content: item.content,
-          designToken: getDesignToken(item.templateId),
-          isRealSite: false,
-          mood: (item as any).mood || "professional",
-        }));
+  // 2. Build category tabs dynamically from existing real sites
+  const tabs = useMemo(() => {
+    if (allItems.length === 0) return [];
 
-      return {
-        ...tab,
-        items: [...realItems, ...staticItems],
+    // Distinct category ids present in items
+    const presentCategoryIds = Array.from(new Set(allItems.map((it) => it.category)));
+
+    // If all items belong to 1 category or user wants a general overview, offer "Semua" tab
+    const categoryTabs = presentCategoryIds.map((catId) => {
+      const meta = CATEGORY_META.find((m) => m.id === catId) || {
+        id: catId,
+        labelId: "Lainnya",
+        labelEn: "Other",
       };
-    }).filter((t) => t.items.length > 0);
-  }, [sites, realSitesData]);
+      return {
+        key: `cat-${catId}`,
+        category: catId,
+        label: isIndonesian ? meta.labelId : meta.labelEn,
+        items: allItems.filter((it) => it.category === catId),
+      };
+    });
 
-  // Compute the initial item to select
+    if (categoryTabs.length > 1) {
+      return [
+        {
+          key: "all",
+          category: -1,
+          label: isIndonesian ? "Semua" : "All",
+          items: allItems,
+        },
+        ...categoryTabs,
+      ];
+    }
+
+    return categoryTabs;
+  }, [allItems, isIndonesian]);
+
+  // 3. Initial item calculation
   const initialItem = useMemo(() => {
+    if (allItems.length === 0) return null;
+
     if (typeof initialTabIndex === "number") {
-      if (initialTabIndex >= 0 && initialTabIndex < displayTabs.length) {
-        return displayTabs[initialTabIndex].items[0];
-      }
-      const sample = SHOWCASE_ITEMS[initialTabIndex];
-      if (sample) {
-        for (const tab of displayTabs) {
-          const match = tab.items.find((it) => it.businessName === sample.businessName);
-          if (match) return match;
-        }
+      if (initialTabIndex >= 0 && initialTabIndex < allItems.length) {
+        return allItems[initialTabIndex];
       }
     }
+
     if (initialBusinessType) {
       const lower = initialBusinessType.toLowerCase();
-      let targetTabIdx = -1;
+      let targetCat = -1;
       if (lower.includes("kuliner") || lower.includes("makan") || lower.includes("kopi") || lower.includes("cafe")) {
-        targetTabIdx = 0;
+        targetCat = 0;
       } else if (lower.includes("toko") || lower.includes("produk") || lower.includes("retail") || lower.includes("fashion")) {
-        targetTabIdx = 1;
+        targetCat = 2;
       } else if (lower.includes("jasa") || lower.includes("layanan") || lower.includes("service") || lower.includes("dev") || lower.includes("software")) {
-        targetTabIdx = 2;
-      } else if (lower.includes("kreatif") || lower.includes("portofolio") || lower.includes("desain") || lower.includes("legal")) {
-        targetTabIdx = 3;
+        targetCat = 1;
       }
-      if (targetTabIdx >= 0 && displayTabs[targetTabIdx]) {
-        return displayTabs[targetTabIdx].items[0];
+      if (targetCat >= 0) {
+        const match = allItems.find((it) => it.category === targetCat);
+        if (match) return match;
       }
     }
-    return displayTabs[0]?.items[0];
-  }, [initialBusinessType, initialTabIndex, displayTabs]);
+
+    return allItems[0];
+  }, [allItems, initialBusinessType, initialTabIndex]);
 
   const [selectedId, setSelectedId] = useState<string>(() => initialItem?.id || "");
+  const [activeTabKey, setActiveTabKey] = useState<string>(() => tabs[0]?.key || "all");
   const [previewDevice, setPreviewDevice] = useState<"desktop" | "mobile">("mobile");
 
-  // Sync when modal re-opens with a new initialTabIndex and detect mobile screen
+  // Sync on open
   useEffect(() => {
     if (open && initialItem) {
       setSelectedId(initialItem.id);
+      const parentTab = tabs.find((t) => t.items.some((it) => it.id === initialItem.id));
+      if (parentTab) setActiveTabKey(parentTab.key);
+
       if (typeof window !== "undefined") {
         setPreviewDevice(window.innerWidth < 640 ? "mobile" : "desktop");
       }
     }
-  }, [open, initialItem]);
+  }, [open, initialItem, tabs]);
 
   const activeTab = useMemo(() => {
-    return displayTabs.find((tab) => tab.items.some((it) => it.id === selectedId)) || displayTabs[0];
-  }, [displayTabs, selectedId]);
+    return tabs.find((t) => t.key === activeTabKey) || tabs[0];
+  }, [tabs, activeTabKey]);
 
   const activeItem = useMemo(() => {
-    return activeTab?.items.find((it) => it.id === selectedId) || activeTab?.items[0] || initialItem;
-  }, [activeTab, selectedId, initialItem]);
+    return allItems.find((it) => it.id === selectedId) || activeTab?.items[0] || allItems[0];
+  }, [allItems, activeTab, selectedId]);
 
   const handleUseStyle = () => {
-    if (!activeItem) return;
+    if (!activeItem || !activeItem.designToken) return;
     const token = activeItem.designToken;
     const styleToken: Record<string, any> = {
       palette: token.palette,
@@ -255,6 +264,7 @@ export function ExampleShowcaseModal({
             type="button"
             variant="default"
             onClick={handleUseStyle}
+            disabled={!activeItem?.designToken}
             className="w-full sm:w-auto h-10 px-3 sm:px-5 rounded-xl text-xs sm:text-sm font-bold gap-1.5 sm:gap-2 truncate"
           >
             <span className="truncate">{t("dashboard.wizard.exampleBtnUseStyle", isIndonesian ? "Pakai gaya ini" : "Use this style")}</span>
@@ -264,27 +274,31 @@ export function ExampleShowcaseModal({
       }
     >
       <div className="flex flex-col gap-2.5 sm:gap-3 h-[72dvh] sm:h-[62vh]">
-        {/* Category Tabs */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink-0 pb-0.5">
-          {displayTabs.map((tab) => {
-            const isActive = tab.items.some((item) => item.id === activeItem?.id);
-            const label = isIndonesian ? tab.labelFallbackId : tab.labelFallbackEn;
-            return (
-              <Button
-                key={tab.labelIdKey}
-                type="button"
-                size="sm"
-                variant={isActive ? "default" : "outline"}
-                onClick={() => setSelectedId(tab.items[0]?.id || "")}
-                className="shrink-0 rounded-full h-7 px-3 text-[11px] font-semibold"
-              >
-                {t(tab.labelIdKey, label)}
-              </Button>
-            );
-          })}
-        </div>
+        {/* Category Tabs (if more than 1 category) */}
+        {tabs.length > 1 && (
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink-0 pb-0.5">
+            {tabs.map((tab) => {
+              const isActive = tab.key === activeTab?.key;
+              return (
+                <Button
+                  key={tab.key}
+                  type="button"
+                  size="sm"
+                  variant={isActive ? "default" : "outline"}
+                  onClick={() => {
+                    setActiveTabKey(tab.key);
+                    if (tab.items[0]) setSelectedId(tab.items[0].id);
+                  }}
+                  className="shrink-0 rounded-full h-7 px-3 text-[11px] font-semibold"
+                >
+                  {tab.label}
+                </Button>
+              );
+            })}
+          </div>
+        )}
 
-        {/* Sub-pills when the active category has multiple examples */}
+        {/* Sub-pills for sites in the active tab */}
         {activeTab && activeTab.items.length > 1 && (
           <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink-0">
             {activeTab.items.map((sample) => {
@@ -300,35 +314,26 @@ export function ExampleShowcaseModal({
                       : "bg-transparent text-muted-foreground border-border/60 hover:text-foreground hover:border-border"
                   }`}
                 >
-                  {sample.isRealSite && (
-                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-                  )}
                   <span>{sample.businessName}</span>
-                  {sample.isRealSite && (
-                    <span className="text-[9px] font-semibold tracking-wide uppercase px-1 py-0.5 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
-                      Real
-                    </span>
-                  )}
                 </button>
               );
             })}
           </div>
         )}
 
-        {/* Live Site URL pill if the active item is a real generated site */}
-        {activeItem?.isRealSite && activeItem?.siteUrl && (
+        {/* Live Site URL pill */}
+        {activeItem?.url && (
           <div className="flex items-center justify-between px-1 text-[11px] text-muted-foreground shrink-0">
-            <span className="inline-flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span>{isIndonesian ? "Website hasil generate AI nyata" : "Real AI-generated site"}</span>
+            <span className="font-semibold text-foreground">
+              {activeItem.businessName}
             </span>
             <a
-              href={activeItem.siteUrl}
+              href={activeItem.url}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 text-foreground hover:text-primary transition-colors font-mono font-medium hover:underline"
             >
-              <span>{siteHost(activeItem.siteUrl)}</span>
+              <span>{siteHost(activeItem.url)}</span>
               <ExternalLink className="w-3 h-3" />
             </a>
           </div>
@@ -337,11 +342,18 @@ export function ExampleShowcaseModal({
         {/* Scrollable Real Template Preview */}
         <div className="flex-1 overflow-y-auto rounded-xl border border-border/70 bg-muted/30 p-1.5 sm:p-3">
           <div
-            className={`rounded-lg overflow-hidden border border-border/50 shadow-sm bg-white transition-all duration-200 ${
-              previewDevice === "mobile" ? "max-w-[390px] mx-auto" : "w-full"
+            className={`rounded-lg overflow-hidden border border-border/50 shadow-sm bg-white transition-all duration-200 min-h-[220px] flex items-center justify-center ${
+              previewDevice === "mobile" ? "max-w-[390px] mx-auto w-full" : "w-full"
             }`}
           >
-            {activeItem && (
+            {activeItem?.isLoading || !activeItem?.content ? (
+              <div className="flex flex-col items-center justify-center p-8 gap-2.5 text-muted-foreground">
+                <Spinner size="md" />
+                <span className="text-xs">
+                  {isIndonesian ? "Memuat website..." : "Loading website..."}
+                </span>
+              </div>
+            ) : (
               <TemplatePreview
                 key={`${activeItem.id}-${previewDevice}`}
                 templateId={activeItem.templateId}
