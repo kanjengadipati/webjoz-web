@@ -177,7 +177,7 @@ function AnimatedCheck({ animate = true }: { animate?: boolean }) {
             ? {
                 strokeDasharray: 24,
                 strokeDashoffset: 24,
-                animation: "draw-check 0.35s cubic-bezier(0.65, 0, 0.45, 1) forwards 0.05s",
+                animation: "draw-check 0.48s cubic-bezier(0.25, 1, 0.5, 1) forwards 0.08s",
               }
             : undefined
         }

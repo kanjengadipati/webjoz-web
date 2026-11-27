@@ -539,15 +539,15 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
       if (word >= firstSentenceWords) {
         clearInterval(firstInterval);
         // Staggered chip entrance in sync with text flow
-        timers.push(setTimeout(() => setInitialChipsCount(1), 160));
-        timers.push(setTimeout(() => setInitialChipsCount(2), 340));
-        timers.push(setTimeout(() => setInitialChipsCount(3), 520));
-        timers.push(setTimeout(() => startSecondSentence(), 720));
+        timers.push(setTimeout(() => setInitialChipsCount(1), 180));
+        timers.push(setTimeout(() => setInitialChipsCount(2), 600));
+        timers.push(setTimeout(() => setInitialChipsCount(3), 1020));
+        timers.push(setTimeout(() => startSecondSentence(), 1480));
       }
     }, 75);
     timers.push(firstInterval);
 
-    // Safety fallback: if anything throttles or delays the interval, finish gracefully after 3.5s
+    // Safety fallback: if anything throttles or delays the interval, finish gracefully after 4.5s
     const safetyTimer = setTimeout(() => {
       timers.forEach((t) => {
         clearTimeout(t as NodeJS.Timeout);
@@ -557,7 +557,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
       setInitialChipsCount(3);
       setIsInitialTyping(false);
       initialTypingDoneRef.current = true;
-    }, 3500);
+    }, 4500);
     timers.push(safetyTimer);
 
     return () => {
