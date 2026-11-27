@@ -23,7 +23,8 @@ export default function ColumnsWithNav({
   collapseSheetForInlineEdit,
   onEditingStateChange,
 }: FooterVariantProps) {
-  const displayBrand = brand_name || "Bisnis Kami";
+  const isEN = language === "en";
+  const displayBrand = brand_name || (isEN ? "Our Business" : "Bisnis Kami");
   const displayTagline = footer?.tagline || "";
   const displayCopyright = footer?.copyright_text || `© ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`;
   const links = footer?.social_links ?? [];
@@ -57,7 +58,7 @@ export default function ColumnsWithNav({
                     section="footer"
                     fieldKey="tagline"
                     value={displayTagline}
-                    placeholder="Tambah tagline..."
+                    placeholder={isEN ? "Add tagline..." : "Tambah tagline..."}
                     onUpdateField={onUpdateField}
                     isEditorMode={isEditorMode}
                     isSelected={isSelected}
@@ -75,33 +76,33 @@ export default function ColumnsWithNav({
           {/* Kolom 2: Navigasi Cepat (Quick Links) */}
           <div className="space-y-3">
             <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "var(--dt-primary)" }}>
-              Navigasi
+              {isEN ? "Navigation" : "Navigasi"}
             </p>
             <ul className="space-y-2 text-xs">
               <li>
                 <a href="#hero" className="transition-colors hover:text-[var(--dt-text)]" style={{ color: TXT_LINK }}>
-                  Beranda
+                  {isEN ? "Home" : "Beranda"}
                 </a>
               </li>
               <li>
                 <a href="#about" className="transition-colors hover:text-[var(--dt-text)]" style={{ color: TXT_LINK }}>
-                  Tentang Kami
+                  {isEN ? "About Us" : "Tentang Kami"}
                 </a>
               </li>
               <li>
                 <a href="#benefits" className="transition-colors hover:text-[var(--dt-text)]" style={{ color: TXT_LINK }}>
-                  Keunggulan
+                  {isEN ? "Features" : "Keunggulan"}
                 </a>
               </li>
               <li>
                 <a href="#faq" className="transition-colors hover:text-[var(--dt-text)]" style={{ color: TXT_LINK }}>
-                  Tanya Jawab (FAQ)
+                  {isEN ? "FAQ" : "Tanya Jawab (FAQ)"}
                 </a>
               </li>
               {hasBlog && (
                 <li>
                   <a href="#blog" className="transition-colors hover:text-[var(--dt-text)]" style={{ color: TXT_LINK }}>
-                    Blog & Berita
+                    {isEN ? "Blog & News" : "Blog & Berita"}
                   </a>
                 </li>
               )}
@@ -113,7 +114,7 @@ export default function ColumnsWithNav({
             {(links.length > 0 || isEditorMode) && (
               <div className="space-y-2">
                 <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "var(--dt-primary)" }}>
-                  Media Sosial
+                  {isEN ? "Social Media" : "Media Sosial"}
                 </p>
                 <InlineSocialEditor
                   links={links}

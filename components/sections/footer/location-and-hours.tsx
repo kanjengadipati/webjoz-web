@@ -42,7 +42,7 @@ export default function LocationAndHours({
                     section="footer"
                     fieldKey="tagline"
                     value={displayTagline}
-                    placeholder="Tambah tagline..."
+                    placeholder={isEN ? "Add tagline..." : "Tambah tagline..."}
                     onUpdateField={onUpdateField}
                     isEditorMode={isEditorMode}
                     isSelected={isSelected}
@@ -89,7 +89,7 @@ export default function LocationAndHours({
                 </p>
                 {contactMapsUrl && (
                   <a href={contactMapsUrl} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem", fontSize: "0.7rem", color: "var(--dt-primary)", marginTop: "0.375rem", textDecoration: "none" }}>
-                    Lihat peta <ExternalLink style={{ width: 10, height: 10 }} />
+                    {isEN ? "View map" : "Lihat peta"} <ExternalLink style={{ width: 10, height: 10 }} />
                   </a>
                 )}
               </div>

@@ -26,7 +26,7 @@ export default function BrandGradientCta({
   onEditingStateChange,
 }: FooterVariantProps) {
   const isEn = language === "en";
-  const displayBrand = brand_name || "Webjoz Studio";
+  const displayBrand = brand_name || (isEn ? "Our Brand" : "Brand Kami");
   const displayTagline =
     footer?.tagline || (isEn ? "Digital Works & Creative Solutions" : "Karya Digital & Solusi Bisnis Kreatif");
   const displayCopyright =

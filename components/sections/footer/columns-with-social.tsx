@@ -63,7 +63,7 @@ export default function ColumnsWithSocial({
         {(links.length > 0 || isEditorMode) && (
           <div className="space-y-2">
             <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: TXT_LOW }}>
-              Media Sosial
+              {isEN ? "Social Media" : "Media Sosial"}
             </p>
             <InlineSocialEditor
               links={links}
