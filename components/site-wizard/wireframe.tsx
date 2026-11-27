@@ -7,6 +7,7 @@ import { buildCssVars, loadGoogleFont } from "../templates/helpers";
 import { useI18n, resolvePath } from "@/lib/i18n/context";
 import { translations } from "@/lib/i18n/translations";
 import { generateDescriptionFromBusinessName } from "./helpers";
+import { categoryI18nKey } from "./taxonomy";
 
 interface WireframeProps {
   businessName: string;
@@ -208,20 +209,7 @@ export function Wireframe({ businessName, businessType, businessSubType, descrip
                 }}
               >
                 {(() => {
-                  const categoryKeyMap: Record<string, string> = {
-                    "Kuliner": "kuliner",
-                    "Toko": "tokoUmkm",
-                    "Toko Online & Retail": "tokoUmkm",
-                    "Toko & UMKM": "tokoUmkm",
-                    "Layanan & Reservasi": "jasaBooking",
-                    "Jasa & Booking": "jasaBooking",
-                    "Kreatif & Profesional": "portofolioKreator",
-                    "Portofolio": "portofolioKreator",
-                    "Portofolio & Kreator": "portofolioKreator",
-                    "Company Profile": "company",
-                    "Company": "company",
-                  };
-                  const typeKey = categoryKeyMap[businessType];
+                  const typeKey = categoryI18nKey(businessType);
                   const translatedType = typeKey
                     ? ((resolvePath(translations[effectiveLang], `dashboard.wizard.categories.${typeKey}`) as string) || businessType)
                     : businessType;

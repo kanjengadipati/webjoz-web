@@ -14,7 +14,7 @@ import { archetypeForLegacyType } from "./archetype-meta";
 import { useI18n } from "@/lib/i18n/context";
 import { useToast } from "@/components/toast-provider";
 import { refineTranscript, processBusinessDescription } from "@/lib/api/ai";
-import { validateClassification, sanitizeClassificationPair } from "./taxonomy";
+import { validateClassification, sanitizeClassificationPair, categoryI18nKey } from "./taxonomy";
 import { markMicHintAsSeen } from "./mic-onboarding-hint";
 import {
   type Entity,
@@ -1317,20 +1317,7 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
       }
       setChatStage("type");
 
-      const categoryKeyMap: Record<string, string> = {
-        "Kuliner": "kuliner",
-        "Toko": "tokoUmkm",
-        "Toko & UMKM": "tokoUmkm",
-        "Toko Online & Retail": "tokoUmkm",
-        "Layanan & Reservasi": "jasaBooking",
-        "Jasa & Booking": "jasaBooking",
-        "Kreatif & Profesional": "portofolioKreator",
-        "Portofolio & Kreator": "portofolioKreator",
-        "Portofolio": "portofolioKreator",
-        "Company Profile": "company",
-        "Company": "company",
-      };
-      const key = categoryKeyMap[confirmedType];
+      const key = categoryI18nKey(confirmedType);
       const categoryLabel = key ? t(`dashboard.wizard.categories.${key}`, confirmedType) : confirmedType;
       const promptMsg = t(
         "dashboard.wizard.descriptionInferenceTypeOnly",

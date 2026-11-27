@@ -106,7 +106,7 @@ import {
 import { fallbackArchetypeForEntity, fallbackTypeForEntity } from "./archetype-meta";
 import { useTaxonomy, useTaxonomyV2 } from "@/hooks/use-taxonomy";
 import { selectTemplate, formatText, generateSubdomain, generateSlug, getTemplatePool, getDynamicDescriptionPlaceholder, generateDescriptionFromBusinessName, preloadTemplate, resolveBusinessName } from "./helpers";
-import { sanitizeClassificationPair } from "./taxonomy";
+import { sanitizeClassificationPair, categoryI18nKey, normalizeLegacyType } from "./taxonomy";
 import { enrichGeneratePayloadV2 } from "./taxonomy-v2";
 import {
   loadWizardSnapshot,
@@ -2215,32 +2215,17 @@ export function SiteWizard({
                       : dynamicBusinessTypes
                     ).map((bt) => {
                       const isSelected = chat.businessType === bt.value;
-                      const categoryKeyMap: Record<string, { label: string; desc: string }> = {
-                        "Kuliner": { label: "kuliner", desc: "kulinerDesc" },
-                        "Toko": { label: "tokoUmkm", desc: "tokoUmkmDesc" },
-                        "Toko & UMKM": { label: "tokoUmkm", desc: "tokoUmkmDesc" },
-                        "Toko Online & Retail": { label: "tokoUmkm", desc: "tokoUmkmDesc" },
-                        "Layanan & Reservasi": { label: "jasaBooking", desc: "jasaBookingDesc" },
-                        "Jasa & Booking": { label: "jasaBooking", desc: "jasaBookingDesc" },
-                        "Kreatif & Profesional": { label: "portofolioKreator", desc: "portofolioKreatorDesc" },
-                        "Portofolio & Kreator": { label: "portofolioKreator", desc: "portofolioKreatorDesc" },
-                        "Company Profile": { label: "company", desc: "companyDesc" },
-                        "Company": { label: "company", desc: "companyDesc" },
-                      };
-                      const keys = categoryKeyMap[bt.value];
+                      const i18nKey = categoryI18nKey(bt.value);
+                      const keys = i18nKey ? { label: i18nKey, desc: `${i18nKey}Desc` } : undefined;
                       const translatedLabel = keys ? t(`dashboard.wizard.categories.${keys.label}`, bt.label) : bt.label;
 
                       const categoryIconMap: Record<string, React.ReactNode> = {
                         "Kuliner": <UtensilsCrossed className="w-3.5 h-3.5" />,
                         "Toko": <ShoppingBag className="w-3.5 h-3.5" />,
-                        "Toko & UMKM": <ShoppingBag className="w-3.5 h-3.5" />,
-                        "Toko Online & Retail": <ShoppingBag className="w-3.5 h-3.5" />,
                         "Layanan & Reservasi": <Calendar className="w-3.5 h-3.5" />,
-                        "Jasa & Booking": <Calendar className="w-3.5 h-3.5" />,
+                        "Portofolio": <Palette className="w-3.5 h-3.5" />,
                         "Kreatif & Profesional": <Palette className="w-3.5 h-3.5" />,
-                        "Portofolio & Kreator": <Palette className="w-3.5 h-3.5" />,
                         "Company Profile": <Building2 className="w-3.5 h-3.5" />,
-                        "Company": <Building2 className="w-3.5 h-3.5" />,
                       };
 
                       return (
@@ -2258,7 +2243,7 @@ export function SiteWizard({
                           }`}
                         >
                           <span className={`transition-colors shrink-0 ${isSelected ? "text-primary" : "text-slate-400 group-hover:text-white"}`}>
-                            {categoryIconMap[bt.value] || <SparkleIcon className="w-3.5 h-3.5" />}
+                            {categoryIconMap[normalizeLegacyType(bt.value)] || <SparkleIcon className="w-3.5 h-3.5" />}
                           </span>
                           <span>{translatedLabel}</span>
                           {isSelected && (

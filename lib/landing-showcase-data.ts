@@ -3,15 +3,15 @@
 
 export const TEMPLATE_PREFILL_MAP: Record<string, { businessType: string; businessSubType: string }> = {
   TEMPLATE_KULINER01: { businessType: "Kuliner", businessSubType: "Kafe" },
-  TEMPLATE_JASA02:    { businessType: "Portofolio & Kreator", businessSubType: "Konsultan" },
-  TEMPLATE_PRODUK03:  { businessType: "Toko & UMKM", businessSubType: "Fashion & Pakaian" },
+  TEMPLATE_JASA02:    { businessType: "Kreatif & Profesional", businessSubType: "Konsultan" },
+  TEMPLATE_PRODUK03:  { businessType: "Toko", businessSubType: "Fashion & Pakaian" },
   TEMPLATE_COLORFUL:  { businessType: "Kuliner", businessSubType: "Minuman & Bubble Tea" },
-  TEMPLATE_ELEGANT:   { businessType: "Jasa & Booking", businessSubType: "Salon & Kecantikan" },
-  TEMPLATE_NATURAL:   { businessType: "Toko & UMKM", businessSubType: "Produk Lokal Handmade" },
-  TEMPLATE_MINIMALIST:{ businessType: "Portofolio & Kreator", businessSubType: "Konsultan" },
-  TEMPLATE_BOLD:      { businessType: "Jasa & Booking", businessSubType: "Bengkel Motor" },
-  TEMPLATE_FUTURISTIC:{ businessType: "Toko & UMKM", businessSubType: "Elektronik" },
-  TEMPLATE_DYNAMIC:   { businessType: "Jasa & Booking", businessSubType: "Klinik & Kesehatan" },
+  TEMPLATE_ELEGANT:   { businessType: "Layanan & Reservasi", businessSubType: "Salon & Kecantikan" },
+  TEMPLATE_NATURAL:   { businessType: "Toko", businessSubType: "Produk Lokal Handmade" },
+  TEMPLATE_MINIMALIST:{ businessType: "Kreatif & Profesional", businessSubType: "Konsultan" },
+  TEMPLATE_BOLD:      { businessType: "Layanan & Reservasi", businessSubType: "Bengkel Motor" },
+  TEMPLATE_FUTURISTIC:{ businessType: "Toko", businessSubType: "Elektronik" },
+  TEMPLATE_DYNAMIC:   { businessType: "Layanan & Reservasi", businessSubType: "Klinik & Kesehatan" },
 };
 
 type ShowcaseItem = (typeof SHOWCASE_ITEMS)[number];

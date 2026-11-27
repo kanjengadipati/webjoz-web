@@ -13,7 +13,35 @@ const LEGACY_TYPE_ALIASES: Record<string, string> = {
   "Portofolio & Kreator": "Kreatif & Profesional",
 };
 
+// Legacy sub_type values → canonical sub-type (keys lowercase).
+// Mirror of api/internal/taxonomy/taxonomy_legacy.go LegacySubTypeAliases.
+const LEGACY_SUBTYPE_ALIASES: Record<string, string> = {
+  "otomotif & bengkel": "Bengkel Mobil & Otomotif",
+  "restoran": "Restoran & Warung Makan",
+  "warung makan": "Restoran & Warung Makan",
+};
+
+export function canonicalizeLegacySubType(subType: string): string {
+  const sub = (subType || "").trim();
+  return LEGACY_SUBTYPE_ALIASES[sub.toLowerCase()] ?? sub;
+}
+
 const CANONICAL_TYPES = BUSINESS_TYPES.map((t) => t.value);
+
+// i18n key suffix (dashboard.wizard.categories.<key>[Desc]) per canonical type.
+const CATEGORY_I18N_KEY: Record<string, string> = {
+  "Kuliner": "kuliner",
+  "Toko": "tokoUmkm",
+  "Layanan & Reservasi": "jasaBooking",
+  "Portofolio": "portofolioKreator",
+  "Kreatif & Profesional": "portofolioKreator",
+  "Company Profile": "company",
+};
+
+/** i18n key for a business type (legacy aliases accepted); undefined if unknown. */
+export function categoryI18nKey(businessType: string): string | undefined {
+  return CATEGORY_I18N_KEY[normalizeLegacyType(businessType)];
+}
 
 /**
  * Normalisasi business_type legacy → kanonis (case-insensitive, trim).
@@ -61,7 +89,8 @@ export function validateClassification(
   if (!rawSub) return { type: canonicalType, subType: "" };
 
   const subs = SUB_TYPES[canonicalType] || [];
-  const subHit = subs.find((s) => s.value.toLowerCase() === rawSub.toLowerCase());
+  const wantedSub = canonicalizeLegacySubType(rawSub);
+  const subHit = subs.find((s) => s.value.toLowerCase() === wantedSub.toLowerCase());
   if (!subHit) return null;
   return { type: canonicalType, subType: subHit.value };
 }
