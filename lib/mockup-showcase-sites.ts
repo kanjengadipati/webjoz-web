@@ -199,20 +199,54 @@ export function resolveSiteCategory(
   site: MockupShowcaseSite,
   data?: RealSiteData | null
 ): number {
+  // Priority 1: explicit category set by Super Admin in editor
   if (typeof site.category === "number" && site.category >= 0 && site.category <= 2) {
     return site.category;
   }
-  const text = (
-    `${site.businessName || ""} ${(data?.content as any)?.header?.brand_name || ""} ${(data?.content as any)?.business_type || ""} ${(data?.content as any)?.hero?.headline || ""} ${(data?.content as any)?.hero?.subheadline || ""}`
-  ).toLowerCase();
 
-  if (/kopi|coffee|resto|makan|food|kuliner|cafe|kafe|dapur|kitchen|bakery|cake|boba|tea|teh|snack|warung/.test(text)) {
-    return 0; // Kuliner
-  }
-  if (/toko|shop|store|produk|product|fashion|baju|clothing|hijab|distro|sepatu|tas|craft|handmade|skincare|kosmetik|merch|mart|retail|boutique|olshop/.test(text)) {
-    return 2; // Produk
-  }
-  return 1; // Jasa & Portofolio (default)
+  // Priority 2: keyword inference from business content
+  // Pull text from multiple content fields for broader coverage
+  const content = data?.content as any;
+  const textParts = [
+    site.businessName || "",
+    content?.header?.brand_name || "",
+    content?.header?.tagline || "",
+    content?.hero?.headline || "",
+    content?.hero?.subheadline || "",
+    content?.hero?.badge_text || "",
+    content?.about?.headline || "",
+    content?.about?.body || "",
+    content?.seo?.title || "",
+    content?.seo?.description || "",
+    content?.footer?.brand_name || "",
+  ];
+  const text = textParts.join(" ").toLowerCase();
+
+  // --- Category 0: Kuliner (archetype: food_venue) ---
+  // Covers: restoran, warung, kafe, bakery, pastry, catering, boba/bubble tea,
+  //         minuman, frozen food, herbal/jamu, kaki lima, angkringan, jajanan pasar
+  const kulinerPattern =
+    /\b(restoran|warung|makan|kuliner|kafe|cafe|coffee|kopi|bakery|pastry|catering|boba|bubble\s*tea|minuman|beverage|drink|frozen\s*food|herbal|jamu|angkringan|kaki\s*lima|jajanan|dapur|kitchen|food|snack|cake|roti|teh|tea|wedang|es\s*krim|gelato|pizza|burger|sushi|mie|nasi|ayam|seafood|ikan|sate|martabak|gorengan)\b/.test(text);
+  if (kulinerPattern) return 0;
+
+  // --- Category 2: Produk & Toko (archetype: retail_catalog) ---
+  // Covers: fashion, elektronik, gadget, kosmetik, handmade, minimarket, sembako,
+  //         perabot, furnitur, otomotif/sparepart, pertanian, material bangunan
+  const produkPattern =
+    /\b(toko|shop|store|produk|product|fashion|pakaian|baju|clothing|hijab|distro|sepatu|tas|elektronik|gadget|handmade|minimarket|sembako|perabot|furnitur|furniture|otomotif|sparepart|pertanian|peternakan|material|bangunan|retail|boutique|olshop|kosmetik|kecantikan|skincare|parfum|aksesori|souvenir|batik|tenun|kerajinan|craft|merchandise|merch|mart|warung\s*sembako|toko\s*online)\b/.test(text);
+  if (produkPattern) return 2;
+
+  // Category 1: Jasa & Portofolio (default — covers all remaining archetypes):
+  // booking_service: salon, spa, bengkel, klinik, travel, laundry, event/wedding,
+  //                  pendidikan/kursus, rental, barbershop, gym, biro jasa
+  // portfolio_individual: fotografer, videografer, desainer, ilustrator, developer, penulis, arsitek
+  // professional_firm: agency, SEO, konsultan, coach, speaker, notaris
+  // corporate_org: properti, konstruksi, manufaktur, logistik, koperasi
+  // institution_org: yayasan, institusi pendidikan, pesantren
+  // lodging: hotel, penginapan, villa, homestay
+  // destination: destinasi wisata, tempat wisata
+  // software_product: aplikasi, software, SaaS, platform, teknologi
+  return 1;
 }
 
 export function resolveSiteBusinessName(
