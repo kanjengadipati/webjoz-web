@@ -1,24 +1,25 @@
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from "react";
-import { Settings2, Trash2, Plus, RotateCcw } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
-import { usePermissions } from "@/hooks/use-permissions";
 import { TEMPLATE_REGISTRY, type DesignToken } from "@/lib/template-registry";
 import { TEMPLATE_DEFAULT_DESIGN_TOKENS } from "@/lib/template-defaults";
 import { SHOWCASE_ITEMS, findShowcaseSample, TEMPLATE_PREFILL_MAP } from "@/lib/landing-showcase-data";
 import { fetchDesignTokenLibrary } from "@/lib/design-token-library";
 import {
-  DEFAULT_MOCKUP_SHOWCASE_SITES,
-  MOCKUP_SHOWCASE_API_BASE,
-  type MockupShowcaseSite,
   type RealSiteData as SiteData,
   siteHost,
   useMockupShowcaseSites,
   useRealSiteData,
   resolveSiteBusinessName,
-  resolveSiteCategory,
+  resolveSiteArchetype,
 } from "@/lib/mockup-showcase-sites";
+import {
+  archetypeChipLabel,
+  archetypeChipWindow,
+  archetypeToCategoryIndex,
+  inferArchetypeFromText,
+} from "@/lib/showcase-archetypes";
 import { buildCssVars } from "@/components/templates/helpers";
 import { SparkleIcon } from "@/components/sparkle-icon";
 
@@ -215,20 +216,10 @@ function RealPreviewPanel({
      via the local template engine (auto-scroll preserved). Falls back to sample
      content when fetch fails. ────────────────────────────────────────────── */
 
-function inferCategoryIndex(
-  businessName?: string,
-  siteData?: SiteData | null,
-  sample?: ShowcaseItem | null
-): number {
-  // This is ONLY used as a fallback when there is NO real site URL loaded.
-  // When a real site is active, callers should use resolveSiteCategory(site, realSiteData) directly.
-  // Here we do keyword inference purely from what the user typed as business name.
-  const syntheticSite = {
-    url: "",
-    businessName: businessName || "",
-    category: undefined as number | undefined,
-  };
-  return resolveSiteCategory(syntheticSite, siteData ?? null);
+function inferArchetype(businessName?: string, siteData?: SiteData | null): string {
+  // ONLY a fallback when there is NO real showcase site loaded. With a real
+  // site, callers use resolveSiteArchetype(site, realSiteData) directly.
+  return resolveSiteArchetype({ url: "", businessName: businessName || "", archetype: "" }, siteData ?? null);
 }
 
 export const REAL_MOOD_SLUGS = [
@@ -367,7 +358,7 @@ function LiveAdaptiveSkeleton({
   }, [baseWidth]);
 
   const cssVars = useMemo(() => buildCssVars(token), [token]);
-  const catIdx = categoryIndex ?? inferCategoryIndex(businessName);
+  const catIdx = categoryIndex ?? archetypeToCategoryIndex(inferArchetype(businessName));
   const fallbackSubtype =
     catIdx === 1 ? "Developer & IT" : catIdx === 2 ? "Toko & Produk" : "Kuliner & Cafe";
   const prefill = TEMPLATE_PREFILL_MAP[sample.templateId];
@@ -793,14 +784,16 @@ function MobileChatCard({
   sample,
   token,
   siteUrl,
+  siteArchetype,
   businessName,
   flowStep: parentFlowStep,
 }: HeroItem & {
   siteUrl?: string | null;
+  siteArchetype?: string;
   businessName?: string;
   flowStep?: number;
 }) {
-  const { t, translations } = useI18n();
+  const { t, translations, isIndonesian } = useI18n();
   const localFlowStep = useFlowStep();
   const flowStep = parentFlowStep ?? localFlowStep;
 
@@ -810,15 +803,17 @@ function MobileChatCard({
   const realSiteData = useRealSiteData(host);
   const chatBusinessName =
     businessName?.trim() ||
-    (siteUrl ? resolveSiteBusinessName({ url: siteUrl, businessName: "" }, realSiteData) : "") ||
+    (siteUrl ? resolveSiteBusinessName({ url: siteUrl, businessName: "", archetype: "" }, realSiteData) : "") ||
     showcaseItem.businessName;
 
   const [manualTab, setManualTab] = useState<"chat" | "preview" | null>(null);
   // Category & mood: when real site is active, derive purely from API data.
   // Fallback to keyword inference on user-typed business name only when no real site URL.
-  const categoryIndex = siteUrl
-    ? resolveSiteCategory({ url: siteUrl, businessName: chatBusinessName }, realSiteData)
-    : inferCategoryIndex(chatBusinessName);
+  const archetype = siteUrl
+    ? resolveSiteArchetype({ url: siteUrl, businessName: chatBusinessName, archetype: siteArchetype ?? "" }, realSiteData)
+    : inferArchetype(chatBusinessName);
+  const categoryIndex = archetypeToCategoryIndex(archetype);
+  const archetypeChips = archetypeChipWindow(archetype);
   const selectedMoodIndex = inferMoodIndex(
     realSiteData,
     siteUrl ? undefined : token,
@@ -916,11 +911,12 @@ function MobileChatCard({
 
                 {/* Category Chips: 1 chip per line (decorative, non-clickable) */}
                 <div className="flex flex-col gap-1.5 pt-1">
-                  {translations.landing.mockupChips.map((chipText, i) => {
-                    const isSelected = i === categoryIndex && flowStep >= STEP_PICK_TYPE;
+                  {archetypeChips.map((chipId) => {
+                    const chipText = archetypeChipLabel(chipId, isIndonesian);
+                    const isSelected = chipId === archetype && flowStep >= STEP_PICK_TYPE;
                     return (
                       <div
-                        key={chipText}
+                        key={chipId}
                         className={`w-fit min-w-[125px] whitespace-nowrap rounded-full px-3.5 py-1 text-xs font-semibold select-none transition-all duration-300 flex items-center justify-center gap-1.5 ${
                           isSelected
                             ? "bg-white text-black shadow-md"
@@ -1114,12 +1110,9 @@ function MobileChatCard({
 }
 
 export function InteractiveMockup() {
-  const { t, translations } = useI18n();
-  const { role: userRole } = usePermissions();
-  const isSuperAdmin = userRole === "superadmin";
-  const { sites, save } = useMockupShowcaseSites();
-  const [editingSites, setEditingSites] = useState(false);
-  const [draftSites, setDraftSites] = useState<MockupShowcaseSite[]>([]);
+  const { t, translations, isIndonesian } = useI18n();
+  // Showcase list is curated by admin/superadmin (Dashboard → Showcase Website).
+  const { sites } = useMockupShowcaseSites();
   const cardRef = useRef<HTMLDivElement>(null);
   const flowStep = useFlowStep();
 
@@ -1136,9 +1129,11 @@ export function InteractiveMockup() {
     (currentSite ? resolveSiteBusinessName(currentSite, realSiteData) : "") ||
     showcaseItem.businessName;
 
-  const categoryIndex = currentSite
-    ? resolveSiteCategory(currentSite, realSiteData)
-    : inferCategoryIndex(chatBusinessName, null, showcaseItem);
+  const archetype = currentSite
+    ? resolveSiteArchetype(currentSite, realSiteData)
+    : inferArchetypeFromText(`${chatBusinessName} ${showcaseItem.businessName}`);
+  const categoryIndex = archetypeToCategoryIndex(archetype);
+  const archetypeChips = archetypeChipWindow(archetype);
   const selectedMoodIndex = inferMoodIndex(
     realSiteData,
     currentSite ? undefined : token,
@@ -1235,11 +1230,12 @@ export function InteractiveMockup() {
 
                     {/* Category Chips: 1 chip per line (decorative, non-clickable) */}
                     <div className="flex flex-col gap-1.5 pt-1">
-                      {translations.landing.mockupChips.map((chip, i) => {
-                        const sel = i === categoryIndex && flowStep >= STEP_PICK_TYPE;
+                      {archetypeChips.map((chipId) => {
+                        const chip = archetypeChipLabel(chipId, isIndonesian);
+                        const sel = chipId === archetype && flowStep >= STEP_PICK_TYPE;
                         return (
                           <div
-                            key={chip}
+                            key={chipId}
                             className={`w-fit min-w-[125px] rounded-full px-3.5 py-1 text-xs font-semibold border select-none transition-all duration-300 whitespace-nowrap flex items-center justify-center gap-1.5 ${
                               sel
                                 ? "bg-white text-black border-white shadow-md dark:bg-white dark:text-black"
@@ -1436,101 +1432,11 @@ export function InteractiveMockup() {
           sample={sample}
           token={token}
           siteUrl={currentSite?.url ?? null}
+          siteArchetype={currentSite?.archetype}
           businessName={chatBusinessName}
           flowStep={flowStep}
         />
       </div>
-
-      {/* ── Super admin: manage the "result generate web" showcase sites ── */}
-      {isSuperAdmin && (
-        <div className="mt-4 w-full">
-          <button
-            type="button"
-            onClick={() => {
-              setDraftSites(sites.length ? sites.map((s) => ({ ...s })) : [{ url: "", businessName: "" }]);
-              setEditingSites((v) => !v);
-            }}
-            className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/40 bg-amber-500/10 px-3 py-1.5 text-[11px] font-semibold text-amber-700 dark:text-amber-400 hover:bg-amber-500/20 transition cursor-pointer"
-          >
-            <Settings2 className="size-3.5" />
-            {editingSites ? t("landing.mockupSitesClose") : t("landing.mockupSitesManage")}
-          </button>
-
-          {editingSites && (
-            <div className="mt-3 rounded-2xl border border-border bg-card/70 p-4 text-left backdrop-blur">
-              <p className="text-xs font-semibold text-foreground">{t("landing.mockupSitesTitle")}</p>
-              <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">{t("landing.mockupSitesHint")}</p>
-
-              <div className="mt-3 space-y-2">
-                {draftSites.map((site, i) => (
-                  <div key={i} className="space-y-2 p-3 rounded-xl border border-border/70 bg-background/60">
-                    <div className="flex items-center gap-2">
-                      <input
-                        value={site.businessName}
-                        onChange={(e) =>
-                          setDraftSites((prev) =>
-                            prev.map((v, idx) => (idx === i ? { ...v, businessName: e.target.value } : v)),
-                          )
-                        }
-                        placeholder={t("landing.mockupSitesNamePlaceholder")}
-                        className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-xs text-foreground outline-none focus:border-amber-500/60 transition-colors"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setDraftSites((prev) => prev.filter((_, idx) => idx !== i))}
-                        className="rounded-lg border border-border p-2 text-muted-foreground hover:text-red-500 hover:border-red-500/40 transition cursor-pointer"
-                        aria-label="remove"
-                      >
-                        <Trash2 className="size-3.5" />
-                      </button>
-                    </div>
-                    <input
-                      value={site.url}
-                      onChange={(e) =>
-                        setDraftSites((prev) =>
-                          prev.map((v, idx) => (idx === i ? { ...v, url: e.target.value } : v)),
-                        )
-                      }
-                      placeholder="https://contoh.webjoz.com/"
-                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs font-mono text-foreground outline-none focus:border-amber-500/60 transition-colors"
-                    />
-                  </div>
-                ))}
-              </div>
-              <div className="mt-3 flex flex-wrap items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setDraftSites((prev) => [...prev, { url: "", businessName: "" }])}
-                  className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-1.5 text-[11px] font-semibold text-muted-foreground hover:text-foreground transition cursor-pointer"
-                >
-                  <Plus className="size-3.5" />
-                  {t("landing.mockupSitesAdd")}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setDraftSites(DEFAULT_MOCKUP_SHOWCASE_SITES.map((s) => ({ ...s })))}
-                  className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-1.5 text-[11px] font-semibold text-muted-foreground hover:text-foreground transition cursor-pointer"
-                >
-                  <RotateCcw className="size-3.5" />
-                  {t("landing.mockupSitesReset")}
-                </button>
-                <div className="flex-1" />
-                <button
-                  type="button"
-                  onClick={() => {
-                    save(draftSites);
-                    setEditingSites(false);
-                    setDraftSites([]);
-                  }}
-                  className="inline-flex items-center gap-1 rounded-lg bg-amber-500 px-3 py-1.5 text-[11px] font-bold text-black hover:bg-amber-400 transition cursor-pointer"
-                >
-                  {t("landing.mockupSitesSave")}
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
     </>
   );
 }

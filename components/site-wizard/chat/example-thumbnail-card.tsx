@@ -8,7 +8,7 @@ import {
   useAllRealSitesData,
   siteHost,
   resolveSiteBusinessName,
-  DEFAULT_MOCKUP_SHOWCASE_SITES,
+  resolveSiteArchetype,
 } from "@/lib/mockup-showcase-sites";
 
 interface ExampleThumbnailCardProps {
@@ -23,18 +23,35 @@ export function ExampleThumbnailCard({
   onDismiss,
 }: ExampleThumbnailCardProps) {
   const { t, isIndonesian } = useI18n();
-  const { sites: rawSites } = useMockupShowcaseSites();
-
-  const effectiveSites = useMemo(() => {
-    return rawSites.length > 0 ? rawSites : DEFAULT_MOCKUP_SHOWCASE_SITES;
-  }, [rawSites]);
+  // Curated by admin/superadmin: published sites only (GET /public/showcase-sites)
+  const { sites: effectiveSites } = useMockupShowcaseSites();
 
   const realSitesData = useAllRealSitesData(effectiveSites);
 
-  // Take up to 4 real sites for the thumbnail grid
+  // Up to 4 sites, preferring one per archetype so the card shows variety.
+  // `index` is the position in the full list (what onSelectTab expects).
   const displaySites = useMemo(() => {
-    return effectiveSites.slice(0, 4);
-  }, [effectiveSites]);
+    const indexed = effectiveSites.map((site, index) => ({
+      site,
+      index,
+      archetype: resolveSiteArchetype(site, realSitesData[siteHost(site.url)]),
+    }));
+    const picked: typeof indexed = [];
+    const seen = new Set<string>();
+    for (const it of indexed) {
+      if (picked.length >= 4) break;
+      if (seen.has(it.archetype)) continue;
+      seen.add(it.archetype);
+      picked.push(it);
+    }
+    for (const it of indexed) {
+      if (picked.length >= 4) break;
+      if (!picked.includes(it)) picked.push(it);
+    }
+    return picked.sort((a, b) => a.index - b.index);
+  }, [effectiveSites, realSitesData]);
+
+  if (displaySites.length === 0) return null;
 
   return (
     <div
@@ -97,7 +114,7 @@ export function ExampleThumbnailCard({
           gridTemplateColumns: `repeat(${Math.max(2, Math.min(4, displaySites.length))}, minmax(0, 1fr))`,
         }}
       >
-        {displaySites.map((site, idx) => {
+        {displaySites.map(({ site, index: idx }) => {
           const host = siteHost(site.url);
           const data = realSitesData[host];
           const bName = resolveSiteBusinessName(site, data);

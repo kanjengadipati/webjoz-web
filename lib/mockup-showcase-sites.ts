@@ -1,71 +1,75 @@
 "use client";
 
-import { useCallback, useState, useEffect, useMemo } from "react";
-
-export const MOCKUP_SHOWCASE_SITES_KEY = "webjoz_mockup_showcase_sites";
+import { useState, useEffect, useMemo } from "react";
+import { inferArchetypeFromText } from "@/lib/showcase-archetypes";
 
 export const MOCKUP_SHOWCASE_API_BASE =
   process.env.NEXT_PUBLIC_MOCKUP_SITES_API_BASE ?? "https://api.webjoz.com";
 
+/**
+ * One curated showcase entry. The list is managed by admin/superadmin in
+ * /dashboard/admin/showcase-sites and served by GET /public/showcase-sites —
+ * only published sites owned by an admin/superadmin ever appear here.
+ */
 export interface MockupShowcaseSite {
   url: string;
   businessName: string;
+  /** effective archetype from the API ("" = unknown → keyword inference) */
+  archetype: string;
+  siteId?: string;
 }
 
-export const DEFAULT_MOCKUP_SHOWCASE_SITES: MockupShowcaseSite[] = [
-  {
-    url: "https://pleco-dev.webjoz.com/",
-    businessName: "Pleco Dev",
-  },
-  {
-    url: "https://kopijozzjogja.webjoz.com/",
-    businessName: "Kopi Jozz Jogja",
-  },
-];
+export interface ShowcaseArchetype {
+  id: string;
+  label_id: string;
+  label_en: string;
+}
+
+interface ShowcasePayload {
+  sites: MockupShowcaseSite[];
+  archetypes: ShowcaseArchetype[];
+}
+
+const EMPTY_PAYLOAD: ShowcasePayload = { sites: [], archetypes: [] };
+
+let _payload: ShowcasePayload | null = null;
+let _inflight: Promise<ShowcasePayload> | null = null;
 
 function toSite(input: unknown): MockupShowcaseSite | null {
-  if (typeof input === "string") {
-    const url = input.trim();
-    return url ? { url, businessName: "" } : null;
-  }
-  if (input && typeof input === "object") {
-    const obj = input as Record<string, unknown>;
-    const url = typeof obj.url === "string" ? obj.url.trim() : "";
-    const businessName = typeof obj.businessName === "string" ? obj.businessName.trim() : "";
-    return url ? { url, businessName } : null;
-  }
-  return null;
+  const o = (input ?? {}) as Record<string, unknown>;
+  const url = typeof o.url === "string" ? o.url.trim() : "";
+  if (!url) return null;
+  return {
+    url,
+    businessName: typeof o.business_name === "string" ? o.business_name.trim() : "",
+    archetype: typeof o.archetype === "string" ? o.archetype.trim() : "",
+    siteId: typeof o.site_id === "string" ? o.site_id : undefined,
+  };
 }
 
-function normalizeSites(input: unknown): MockupShowcaseSite[] | null {
-  if (!Array.isArray(input)) return null;
-  const sites = input.map(toSite).filter((s): s is MockupShowcaseSite => s !== null);
-  return sites.length > 0 ? sites : [];
-}
-
-export function readMockupShowcaseSites(): MockupShowcaseSite[] {
-  if (typeof window === "undefined") return DEFAULT_MOCKUP_SHOWCASE_SITES;
-  try {
-    const raw = window.localStorage.getItem(MOCKUP_SHOWCASE_SITES_KEY);
-    if (!raw) return DEFAULT_MOCKUP_SHOWCASE_SITES;
-    const parsed = normalizeSites(JSON.parse(raw));
-    return parsed === null ? DEFAULT_MOCKUP_SHOWCASE_SITES : parsed;
-  } catch {
-    return DEFAULT_MOCKUP_SHOWCASE_SITES;
-  }
-}
-
-export function writeMockupShowcaseSites(sites: MockupShowcaseSite[]): MockupShowcaseSite[] {
-  const clean = normalizeSites(sites);
-  if (typeof window !== "undefined") {
+export async function fetchMockupShowcaseSites(force = false): Promise<ShowcasePayload> {
+  if (!force && _payload) return _payload;
+  if (!force && _inflight) return _inflight;
+  _inflight = (async () => {
     try {
-      window.localStorage.setItem(MOCKUP_SHOWCASE_SITES_KEY, JSON.stringify(clean ?? []));
+      const res = await fetch(`${MOCKUP_SHOWCASE_API_BASE}/public/showcase-sites`, { cache: "no-store" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = await res.json();
+      const items: unknown[] = Array.isArray(json?.data?.items) ? json.data.items : [];
+      const archetypes: ShowcaseArchetype[] = Array.isArray(json?.data?.archetypes) ? json.data.archetypes : [];
+      _payload = {
+        sites: items.map(toSite).filter((x): x is MockupShowcaseSite => x !== null),
+        archetypes,
+      };
     } catch {
-      /* localStorage unavailable (private mode) */
+      // Keep whatever we had; an empty list just means "no showcase yet".
+      _payload = _payload ?? EMPTY_PAYLOAD;
+    } finally {
+      _inflight = null;
     }
-  }
-  if (clean === null || clean.length === 0) return [];
-  return clean;
+    return _payload!;
+  })();
+  return _inflight;
 }
 
 export function siteHost(url: string): string {
@@ -77,13 +81,22 @@ export function siteHost(url: string): string {
 }
 
 export function useMockupShowcaseSites() {
-  const [sites, setSites] = useState<MockupShowcaseSite[]>(() => readMockupShowcaseSites());
+  const [payload, setPayload] = useState<ShowcasePayload>(_payload ?? EMPTY_PAYLOAD);
+  const [loading, setLoading] = useState(_payload === null);
 
-  const save = useCallback((next: MockupShowcaseSite[]) => {
-    setSites(writeMockupShowcaseSites(next));
+  useEffect(() => {
+    let active = true;
+    fetchMockupShowcaseSites().then((p) => {
+      if (!active) return;
+      setPayload(p);
+      setLoading(false);
+    });
+    return () => {
+      active = false;
+    };
   }, []);
 
-  return { sites, save };
+  return { sites: payload.sites, archetypes: payload.archetypes, loading };
 }
 
 export interface RealSiteData {
@@ -179,13 +192,16 @@ export function useAllRealSitesData(sites: MockupShowcaseSite[]): Record<string,
   return dataMap;
 }
 
-export function resolveSiteCategory(
+export function resolveSiteArchetype(
   site: MockupShowcaseSite,
   data?: RealSiteData | null
-): number {
-  // Infer category from real API content + business name
+): string {
+  // 1. Admin override / the site's own v2 archetype (already merged by the API).
+  if (site.archetype) return site.archetype;
+
+  // 2. Legacy sites without an archetype: infer from real content + name.
   const content = data?.content as any;
-  const textParts = [
+  const text = [
     site.businessName || "",
     content?.header?.brand_name || "",
     content?.header?.tagline || "",
@@ -197,34 +213,8 @@ export function resolveSiteCategory(
     content?.seo?.title || "",
     content?.seo?.description || "",
     content?.footer?.brand_name || "",
-  ];
-  const text = textParts.join(" ").toLowerCase();
-
-  // --- Category 0: Kuliner (archetype: food_venue) ---
-  // Covers: restoran, warung, kafe, bakery, pastry, catering, boba/bubble tea,
-  //         minuman, frozen food, herbal/jamu, kaki lima, angkringan, jajanan pasar
-  const kulinerPattern =
-    /\b(restoran|warung|makan|kuliner|kafe|cafe|coffee|kopi|bakery|pastry|catering|boba|bubble\s*tea|minuman|beverage|drink|frozen\s*food|herbal|jamu|angkringan|kaki\s*lima|jajanan|dapur|kitchen|food|snack|cake|roti|teh|tea|wedang|es\s*krim|gelato|pizza|burger|sushi|mie|nasi|ayam|seafood|ikan|sate|martabak|gorengan)\b/.test(text);
-  if (kulinerPattern) return 0;
-
-  // --- Category 2: Produk & Toko (archetype: retail_catalog) ---
-  // Covers: fashion, elektronik, gadget, kosmetik, handmade, minimarket, sembako,
-  //         perabot, furnitur, otomotif/sparepart, pertanian, material bangunan
-  const produkPattern =
-    /\b(toko|shop|store|produk|product|fashion|pakaian|baju|clothing|hijab|distro|sepatu|tas|elektronik|gadget|handmade|minimarket|sembako|perabot|furnitur|furniture|otomotif|sparepart|pertanian|peternakan|material|bangunan|retail|boutique|olshop|kosmetik|kecantikan|skincare|parfum|aksesori|souvenir|batik|tenun|kerajinan|craft|merchandise|merch|mart|warung\s*sembako|toko\s*online)\b/.test(text);
-  if (produkPattern) return 2;
-
-  // Category 1: Jasa & Portofolio (default — covers all remaining archetypes):
-  // booking_service: salon, spa, bengkel, klinik, travel, laundry, event/wedding,
-  //                  pendidikan/kursus, rental, barbershop, gym, biro jasa
-  // portfolio_individual: fotografer, videografer, desainer, ilustrator, developer, penulis, arsitek
-  // professional_firm: agency, SEO, konsultan, coach, speaker, notaris
-  // corporate_org: properti, konstruksi, manufaktur, logistik, koperasi
-  // institution_org: yayasan, institusi pendidikan, pesantren
-  // lodging: hotel, penginapan, villa, homestay
-  // destination: destinasi wisata, tempat wisata
-  // software_product: aplikasi, software, SaaS, platform, teknologi
-  return 1;
+  ].join(" ");
+  return inferArchetypeFromText(text);
 }
 
 export function resolveSiteBusinessName(

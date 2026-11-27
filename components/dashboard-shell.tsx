@@ -39,6 +39,7 @@ const NAV_LABEL_KEYS: Record<string, string> = {
   metrics: "dashboard.nav.metrics",
   "ai-settings": "dashboard.nav.aiSettings",
   "admin-sites": "dashboard.nav.adminSites",
+  "showcase-sites": "dashboard.nav.showcaseSites",
   sites: "dashboard.nav.sites",
   domains: "dashboard.nav.domains",
   leads: "dashboard.nav.leads",

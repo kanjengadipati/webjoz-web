@@ -15,6 +15,7 @@ export const DASHBOARD_NAVIGATION = [
   { id: "metrics", href: "/dashboard/admin/metrics", label: "Metrics", permission: "tenant:manage", icon: "activity", section: "Dashboard", groupStart: false, superAdminOnly: true },
   { id: "ai-settings", href: "/dashboard/admin/ai-settings", label: "AI Settings", permission: "tenant:manage", icon: "cpu", section: "Dashboard", groupStart: false, superAdminOnly: true },
   { id: "admin-sites", href: "/dashboard/admin/sites", label: "Site Moderation", permission: "tenant:manage", icon: "shield", section: "Dashboard", groupStart: false, adminOnly: true },
+  { id: "showcase-sites", href: "/dashboard/admin/showcase-sites", label: "Showcase Website", permission: "tenant:manage", icon: "layout", section: "Dashboard", groupStart: false, adminOnly: true },
   { id: "sites", href: "/dashboard/sites", label: "Website Saya", permission: "site:view", icon: "globe", section: "Website Builder", groupStart: false },
   { id: "domains", href: "/dashboard/domains", label: "Custom Domain", permission: "domain:manage", icon: "link", section: "Website Builder", groupStart: false },
   { id: "leads", href: "/dashboard/leads", label: "Customer Leads", permission: "lead:read", icon: "inbox", section: "Website Builder", groupStart: false },

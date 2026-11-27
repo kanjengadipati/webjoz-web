@@ -530,6 +530,7 @@ export interface Translations {
       metrics: string;
       aiSettings: string;
       adminSites: string;
+      showcaseSites: string;
       sectionShowcase: string;
       sites: string;
       domains: string;
@@ -4570,6 +4571,7 @@ export const translations: Record<Locale, Translations> = {
         metrics: "Metrik",
         aiSettings: "Pengaturan AI",
         adminSites: "Moderasi Situs",
+        showcaseSites: "Showcase Website",
         sectionShowcase: "Showcase Section",
         sites: "Website Saya",
         domains: "Custom Domain",
@@ -9182,6 +9184,7 @@ export const translations: Record<Locale, Translations> = {
         metrics: "Metrics",
         aiSettings: "AI Settings",
         adminSites: "Site Moderation",
+        showcaseSites: "Website Showcase",
         sectionShowcase: "Section Showcase",
         sites: "My Websites",
         domains: "Custom Domain",

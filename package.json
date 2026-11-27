@@ -33,7 +33,8 @@
     "test:brand-color": "node --test --experimental-strip-types scripts/brand-color.test.mjs",
     "test:theme-overrides": "node --test --experimental-strip-types scripts/theme-overrides.test.mjs",
     "test:theme-presets": "node --test --experimental-strip-types scripts/theme-presets.test.mjs",
-    "test:wizard-font-storage": "node --test --experimental-strip-types scripts/wizard-font-storage.test.mjs"
+    "test:wizard-font-storage": "node --test --experimental-strip-types scripts/wizard-font-storage.test.mjs",
+    "test:showcase-archetypes": "node --test --experimental-strip-types scripts/showcase-archetypes.test.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

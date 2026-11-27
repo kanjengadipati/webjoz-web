@@ -9,16 +9,20 @@ import {
   useMockupShowcaseSites,
   useAllRealSitesData,
   siteHost,
-  resolveSiteCategory,
+  resolveSiteArchetype,
   resolveSiteBusinessName,
-  DEFAULT_MOCKUP_SHOWCASE_SITES,
 } from "@/lib/mockup-showcase-sites";
+import {
+  ARCHETYPE_ORDER,
+  archetypeLabel,
+  inferArchetypeFromText,
+} from "@/lib/showcase-archetypes";
 
 export interface ShowcaseSiteItem {
   id: string;
   url: string;
   businessName: string;
-  category: number; // 0: Kuliner, 1: Jasa, 2: Produk
+  archetype: string; // v2 archetype id, e.g. "food_venue"
   templateId: string;
   content: any;
   designToken: any;
@@ -35,12 +39,6 @@ interface ExampleShowcaseModalProps {
   initialTabIndex?: number;
 }
 
-const CATEGORY_META = [
-  { id: 0, labelId: "Kuliner", labelEn: "Culinary" },
-  { id: 1, labelId: "Jasa & Portofolio", labelEn: "Services & Portfolio" },
-  { id: 2, labelId: "Produk & Toko", labelEn: "Products & Store" },
-];
-
 export function ExampleShowcaseModal({
   open,
   onClose,
@@ -50,12 +48,8 @@ export function ExampleShowcaseModal({
   initialTabIndex,
 }: ExampleShowcaseModalProps) {
   const { t, isIndonesian } = useI18n();
-  const { sites: rawSites } = useMockupShowcaseSites();
-
-  // If list is empty, fallback to default mockup sites so modal never breaks
-  const effectiveSites = useMemo(() => {
-    return rawSites.length > 0 ? rawSites : DEFAULT_MOCKUP_SHOWCASE_SITES;
-  }, [rawSites]);
+  // Curated by admin/superadmin: published sites only (GET /public/showcase-sites)
+  const { sites: effectiveSites, archetypes: apiArchetypes, loading: sitesLoading } = useMockupShowcaseSites();
 
   const realSitesData = useAllRealSitesData(effectiveSites);
 
@@ -67,13 +61,13 @@ export function ExampleShowcaseModal({
         const host = siteHost(s.url);
         const data = realSitesData[host];
         const bName = resolveSiteBusinessName(s, data);
-        const cat = resolveSiteCategory(s, data);
+        const arch = resolveSiteArchetype(s, data);
 
         return {
           id: s.url,
           url: s.url,
           businessName: bName,
-          category: cat,
+          archetype: arch,
           templateId: data?.templateId || "TEMPLATE_DYNAMIC",
           content: data?.content || null,
           designToken: data?.design_token || null,
@@ -83,42 +77,32 @@ export function ExampleShowcaseModal({
       });
   }, [effectiveSites, realSitesData]);
 
-  // 2. Build category tabs dynamically from existing real sites
+  // 2. Build archetype tabs from the archetypes that actually have sites
   const tabs = useMemo(() => {
     if (allItems.length === 0) return [];
 
-    // Distinct category ids present in items
-    const presentCategoryIds = Array.from(new Set(allItems.map((it) => it.category)));
-
-    // If all items belong to 1 category or user wants a general overview, offer "Semua" tab
-    const categoryTabs = presentCategoryIds.map((catId) => {
-      const meta = CATEGORY_META.find((m) => m.id === catId) || {
-        id: catId,
-        labelId: "Lainnya",
-        labelEn: "Other",
-      };
-      return {
-        key: `cat-${catId}`,
-        category: catId,
-        label: isIndonesian ? meta.labelId : meta.labelEn,
-        items: allItems.filter((it) => it.category === catId),
-      };
+    const order = ARCHETYPE_ORDER as readonly string[];
+    const present = Array.from(new Set(allItems.map((it) => it.archetype))).sort((a, b) => {
+      const ia = order.indexOf(a);
+      const ib = order.indexOf(b);
+      return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
     });
 
-    if (categoryTabs.length > 1) {
+    const archetypeTabs = present.map((arch) => ({
+      key: `arch-${arch}`,
+      archetype: arch,
+      label: archetypeLabel(arch, isIndonesian, apiArchetypes.find((a) => a.id === arch)),
+      items: allItems.filter((it) => it.archetype === arch),
+    }));
+
+    if (archetypeTabs.length > 1) {
       return [
-        {
-          key: "all",
-          category: -1,
-          label: isIndonesian ? "Semua" : "All",
-          items: allItems,
-        },
-        ...categoryTabs,
+        { key: "all", archetype: "", label: isIndonesian ? "Semua" : "All", items: allItems },
+        ...archetypeTabs,
       ];
     }
-
-    return categoryTabs;
-  }, [allItems, isIndonesian]);
+    return archetypeTabs;
+  }, [allItems, apiArchetypes, isIndonesian]);
 
   // 3. Initial item calculation
   const initialItem = useMemo(() => {
@@ -131,19 +115,9 @@ export function ExampleShowcaseModal({
     }
 
     if (initialBusinessType) {
-      const lower = initialBusinessType.toLowerCase();
-      let targetCat = -1;
-      if (lower.includes("kuliner") || lower.includes("makan") || lower.includes("kopi") || lower.includes("cafe")) {
-        targetCat = 0;
-      } else if (lower.includes("toko") || lower.includes("produk") || lower.includes("retail") || lower.includes("fashion")) {
-        targetCat = 2;
-      } else if (lower.includes("jasa") || lower.includes("layanan") || lower.includes("service") || lower.includes("dev") || lower.includes("software")) {
-        targetCat = 1;
-      }
-      if (targetCat >= 0) {
-        const match = allItems.find((it) => it.category === targetCat);
-        if (match) return match;
-      }
+      const wanted = inferArchetypeFromText(initialBusinessType);
+      const match = allItems.find((it) => it.archetype === wanted);
+      if (match) return match;
     }
 
     return allItems[0];
@@ -346,7 +320,16 @@ export function ExampleShowcaseModal({
               previewDevice === "mobile" ? "max-w-[390px] mx-auto w-full" : "w-full"
             }`}
           >
-            {activeItem?.isLoading || !activeItem?.content ? (
+            {!activeItem ? (
+              <div className="flex flex-col items-center justify-center p-8 gap-2.5 text-muted-foreground">
+                {sitesLoading ? <Spinner size="md" /> : null}
+                <span className="text-xs">
+                  {sitesLoading
+                    ? isIndonesian ? "Memuat contoh website..." : "Loading examples..."
+                    : isIndonesian ? "Belum ada contoh website." : "No examples yet."}
+                </span>
+              </div>
+            ) : activeItem.isLoading || !activeItem.content ? (
               <div className="flex flex-col items-center justify-center p-8 gap-2.5 text-muted-foreground">
                 <Spinner size="md" />
                 <span className="text-xs">
