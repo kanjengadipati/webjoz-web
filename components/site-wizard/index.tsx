@@ -2650,6 +2650,7 @@ export function SiteWizard({
           inputValue={chat.inputValue}
           clock={clock}
           handleResetChat={handleResetChat}
+          locale={locale}
           t={t}
         />
           </>
