@@ -29,7 +29,7 @@ export function ExampleThumbnailCard({
 
   const realSitesData = useAllRealSitesData(effectiveSites);
 
-  // Up to 4 sites, preferring one per archetype so the card shows variety.
+  // Up to 4 thumbnails, strictly 1 representative site per unique archetype (grouped by category).
   // `index` is the position in the full list (what onSelectTab expects).
   const displaySites = useMemo(() => {
     const indexed = effectiveSites.map((site, index) => ({
@@ -45,11 +45,7 @@ export function ExampleThumbnailCard({
       seen.add(it.archetype);
       picked.push(it);
     }
-    for (const it of indexed) {
-      if (picked.length >= 4) break;
-      if (!picked.includes(it)) picked.push(it);
-    }
-    return picked.sort((a, b) => a.index - b.index);
+    return picked;
   }, [effectiveSites, realSitesData]);
 
   if (displaySites.length === 0) return null;
