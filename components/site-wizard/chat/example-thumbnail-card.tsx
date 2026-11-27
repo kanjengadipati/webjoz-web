@@ -10,7 +10,7 @@ import {
   resolveSiteBusinessName,
   resolveSiteArchetype,
 } from "@/lib/mockup-showcase-sites";
-import { archetypeLabel } from "@/lib/showcase-archetypes";
+import { archetypeGroup, archetypeLabel } from "@/lib/showcase-archetypes";
 import { ArchetypeThumbnailArt } from "@/components/archetype-thumbnail-art";
 import { ArchetypeIcon } from "@/components/archetype-icon";
 
@@ -31,7 +31,7 @@ export function ExampleThumbnailCard({
 
   const realSitesData = useAllRealSitesData(effectiveSites);
 
-  // Up to 4 thumbnails, strictly 1 representative site per unique archetype (grouped by category).
+  // Up to 5 thumbnails, strictly 1 representative site per unique parent group.
   // `index` is the position in the full list (what onSelectTab expects).
   const displaySites = useMemo(() => {
     const indexed = effectiveSites.map((site, index) => ({
@@ -42,9 +42,10 @@ export function ExampleThumbnailCard({
     const picked: typeof indexed = [];
     const seen = new Set<string>();
     for (const it of indexed) {
-      if (picked.length >= 4) break;
-      if (seen.has(it.archetype)) continue;
-      seen.add(it.archetype);
+      if (picked.length >= 5) break;
+      const groupKey = archetypeGroup(it.archetype).key;
+      if (seen.has(groupKey)) continue;
+      seen.add(groupKey);
       picked.push(it);
     }
     return picked;
@@ -110,7 +111,7 @@ export function ExampleThumbnailCard({
       <div
         className="grid gap-1.5"
         style={{
-          gridTemplateColumns: `repeat(${Math.max(2, Math.min(4, displaySites.length))}, minmax(0, 1fr))`,
+          gridTemplateColumns: `repeat(${Math.max(2, Math.min(5, displaySites.length))}, minmax(0, 1fr))`,
         }}
       >
         {displaySites.map(({ site, index: idx, archetype }) => {

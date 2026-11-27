@@ -12,7 +12,7 @@ import {
   type ShowcaseArchetypeOption,
   type ShowcaseCandidate,
 } from "@/lib/api/showcase";
-import { archetypeLabel } from "@/lib/showcase-archetypes";
+import { archetypeGroupLabel, archetypeLabel } from "@/lib/showcase-archetypes";
 import { ArchetypeIcon } from "@/components/archetype-icon";
 import { useRealSiteData } from "@/lib/mockup-showcase-sites";
 import { TemplatePreview } from "@/components/landing-template-showcase";
@@ -322,6 +322,7 @@ export default function AdminShowcaseSitesPage() {
                             },
                             ...archetypes.map((a) => ({
                               value: a.id,
+                              group: archetypeGroupLabel(a.id, isIndonesian),
                               icon: <ArchetypeIcon id={a.id} className="size-3.5 text-muted-foreground" />,
                               label: archetypeLabel(a.id, isIndonesian, a),
                             })),

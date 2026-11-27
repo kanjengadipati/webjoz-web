@@ -15,9 +15,9 @@ import {
   resolveSiteArchetype,
 } from "@/lib/mockup-showcase-sites";
 import {
-  archetypeChipWindow,
-  archetypeLabel,
+  MOCKUP_CHIP_GROUPS,
   archetypeToCategoryIndex,
+  archetypeToMockupGroup,
   inferArchetypeFromText,
 } from "@/lib/showcase-archetypes";
 import { ArchetypeIcon } from "@/components/archetype-icon";
@@ -814,7 +814,7 @@ function MobileChatCard({
     ? resolveSiteArchetype({ url: siteUrl, businessName: chatBusinessName, archetype: siteArchetype ?? "" }, realSiteData)
     : inferArchetype(chatBusinessName);
   const categoryIndex = archetypeToCategoryIndex(archetype);
-  const archetypeChips = archetypeChipWindow(archetype);
+  const activeGroupKey = archetypeToMockupGroup(archetype);
   const selectedMoodIndex = inferMoodIndex(
     realSiteData,
     siteUrl ? undefined : token,
@@ -910,21 +910,21 @@ function MobileChatCard({
                   {t("landing.mockupPickType")}
                 </div>
 
-                {/* Category Chips: 1 chip per line (decorative, non-clickable) */}
+                {/* Category Chips: 4 parent groups, 1 chip per line (decorative, non-clickable) */}
                 <div className="flex flex-col gap-1.5 pt-1">
-                  {archetypeChips.map((chipId) => {
-                    const chipText = archetypeLabel(chipId, isIndonesian);
-                    const isSelected = chipId === archetype && flowStep >= STEP_PICK_TYPE;
+                  {MOCKUP_CHIP_GROUPS.map((grp) => {
+                    const chipText = isIndonesian ? grp.labelId : grp.labelEn;
+                    const isSelected = grp.key === activeGroupKey && flowStep >= STEP_PICK_TYPE;
                     return (
                       <div
-                        key={chipId}
+                        key={grp.key}
                         className={`w-fit min-w-[125px] whitespace-nowrap rounded-full px-3.5 py-1 text-xs font-semibold select-none transition-all duration-300 flex items-center justify-center gap-1.5 ${
                           isSelected
                             ? "bg-white text-black shadow-md"
                             : "bg-white/5 border border-white/10 text-white/80"
                         }`}
                       >
-                        <ArchetypeIcon id={chipId} className="size-3.5 shrink-0" />
+                        <ArchetypeIcon id={grp.archetypes[0]} className="size-3.5 shrink-0" />
                         <span>{chipText}</span>
                       </div>
                     );
@@ -1135,7 +1135,7 @@ export function InteractiveMockup() {
     ? resolveSiteArchetype(currentSite, realSiteData)
     : inferArchetypeFromText(`${chatBusinessName} ${showcaseItem.businessName}`);
   const categoryIndex = archetypeToCategoryIndex(archetype);
-  const archetypeChips = archetypeChipWindow(archetype);
+  const activeGroupKey = archetypeToMockupGroup(archetype);
   const selectedMoodIndex = inferMoodIndex(
     realSiteData,
     currentSite ? undefined : token,
@@ -1230,21 +1230,21 @@ export function InteractiveMockup() {
                       {t("landing.mockupPickType")}
                     </div>
 
-                    {/* Category Chips: 1 chip per line (decorative, non-clickable) */}
+                    {/* Category Chips: 4 parent groups, 1 chip per line (decorative, non-clickable) */}
                     <div className="flex flex-col gap-1.5 pt-1">
-                      {archetypeChips.map((chipId) => {
-                        const chip = archetypeLabel(chipId, isIndonesian);
-                        const sel = chipId === archetype && flowStep >= STEP_PICK_TYPE;
+                      {MOCKUP_CHIP_GROUPS.map((grp) => {
+                        const chip = isIndonesian ? grp.labelId : grp.labelEn;
+                        const sel = grp.key === activeGroupKey && flowStep >= STEP_PICK_TYPE;
                         return (
                           <div
-                            key={chipId}
+                            key={grp.key}
                             className={`w-fit min-w-[125px] rounded-full px-3.5 py-1 text-xs font-semibold border select-none transition-all duration-300 whitespace-nowrap flex items-center justify-center gap-1.5 ${
                               sel
                                 ? "bg-white text-black border-white shadow-md dark:bg-white dark:text-black"
                                 : "bg-card/70 border-border/50 text-muted-foreground dark:bg-white/5 dark:border-white/10 dark:text-white/80"
                             }`}
                           >
-                            <ArchetypeIcon id={chipId} className="size-3.5 shrink-0" />
+                            <ArchetypeIcon id={grp.archetypes[0]} className="size-3.5 shrink-0" />
                             <span>{chip}</span>
                           </div>
                         );
