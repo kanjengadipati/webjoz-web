@@ -15,8 +15,21 @@ import {
 import { archetypeChipLabel } from "@/lib/showcase-archetypes";
 import { useRealSiteData } from "@/lib/mockup-showcase-sites";
 import { TemplatePreview } from "@/components/landing-template-showcase";
-import { ArrowDown, ArrowUp, ExternalLink, Eye, Loader2, Monitor, Plus, Search, ShieldOff, Smartphone, Trash2 } from "lucide-react";
-import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Dialog, Input, Spinner } from "webjoz-ui";
+import { ArrowDown, ArrowUp, ExternalLink, Eye, Monitor, Plus, Search, ShieldOff, Smartphone, Trash2 } from "lucide-react";
+import {
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CustomSelect,
+  Dialog,
+  EmptyState,
+  FormField,
+  Input,
+  Spinner,
+} from "webjoz-ui";
 
 /** One row of the curated list as edited on this page. */
 interface DraftItem {
@@ -194,8 +207,7 @@ export default function AdminShowcaseSitesPage() {
             "Pick published, generated websites owned by an admin/superadmin. This list powers the landing-page Interactive Mockup and the Website Inspiration modal.",
           )}
         </p>
-        <Button onClick={handleSave} disabled={!dirty || saving} className="gap-2">
-          {saving && <Loader2 className="size-4 animate-spin" />}
+        <Button onClick={handleSave} disabled={!dirty} loading={saving} className="gap-2">
           {tr("Simpan", "Save")}
         </Button>
       </div>
@@ -211,16 +223,19 @@ export default function AdminShowcaseSitesPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             {loading ? (
-              <div className="flex items-center justify-center py-10 text-muted-foreground">
-                <Loader2 className="size-5 animate-spin" />
+              <div className="flex items-center justify-center py-10">
+                <Spinner size="md" variant="muted" />
               </div>
             ) : items.length === 0 ? (
-              <p className="py-8 text-center text-sm text-muted-foreground">
-                {tr(
-                  "Belum ada website. Tambahkan dari daftar di sebelah. Selama kosong, mockup memakai preview template lokal.",
-                  "Nothing selected yet. Add websites from the list. While empty, the mockup uses the local template preview.",
+              <EmptyState
+                title={tr("Belum ada showcase aktif", "No active showcase")}
+                text={tr(
+                  "Tambahkan website dari daftar di sebelah. Selama kosong, mockup memakai preview template lokal.",
+                  "Add websites from the list on the right. While empty, the mockup uses the local template preview.",
                 )}
-              </p>
+                icon={<Plus className="size-5 text-primary" />}
+                className="min-h-44"
+              />
             ) : (
               items.map((item, index) => (
                 <div key={item.site_id} className="space-y-2 rounded-xl border border-border/70 bg-background/60 p-3">
@@ -288,25 +303,27 @@ export default function AdminShowcaseSitesPage() {
                       {item.host}
                       <ExternalLink className="size-3" />
                     </a>
-                    <label className="flex items-center gap-2 text-[11px] text-muted-foreground">
-                      {tr("Kategori", "Category")}
-                      <select
-                        value={item.archetype_override}
-                        onChange={(e) => update(item.site_id, { archetype_override: e.target.value })}
-                        className="rounded-lg border border-border bg-background px-2 py-1 text-xs text-foreground"
-                      >
-                        <option value="">
-                          {item.own_archetype
-                            ? `${tr("Otomatis", "Auto")}: ${archetypeChipLabel(item.own_archetype, isIndonesian)}`
-                            : tr("Otomatis (dari website)", "Auto (from website)")}
-                        </option>
-                        {archetypes.map((a) => (
-                          <option key={a.id} value={a.id}>
-                            {archetypeChipLabel(a.id, isIndonesian)} — {isIndonesian ? a.label_id : a.label_en}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
+                    <div className="w-full min-w-[220px] sm:w-auto sm:min-w-[260px]">
+                      <FormField label={tr("Kategori", "Category")}>
+                        <CustomSelect
+                          size="sm"
+                          value={item.archetype_override}
+                          onChange={(value) => update(item.site_id, { archetype_override: value })}
+                          options={[
+                            {
+                              value: "",
+                              label: item.own_archetype
+                                ? `${tr("Otomatis", "Auto")}: ${archetypeChipLabel(item.own_archetype, isIndonesian)}`
+                                : tr("Otomatis (dari website)", "Auto (from website)"),
+                            },
+                            ...archetypes.map((a) => ({
+                              value: a.id,
+                              label: `${archetypeChipLabel(a.id, isIndonesian)} — ${isIndonesian ? a.label_id : a.label_en}`,
+                            })),
+                          ]}
+                        />
+                      </FormField>
+                    </div>
                   </div>
                 </div>
               ))
@@ -334,16 +351,19 @@ export default function AdminShowcaseSitesPage() {
           </CardHeader>
           <CardContent className="space-y-2">
             {loadingCandidates ? (
-              <div className="flex items-center justify-center py-10 text-muted-foreground">
-                <Loader2 className="size-5 animate-spin" />
+              <div className="flex items-center justify-center py-10">
+                <Spinner size="md" variant="muted" />
               </div>
             ) : candidates.length === 0 ? (
-              <p className="py-8 text-center text-sm text-muted-foreground">
-                {tr(
-                  "Tidak ada website published milik admin/superadmin.",
-                  "No published websites owned by an admin/superadmin.",
+              <EmptyState
+                title={tr("Tidak ada website", "No websites found")}
+                text={tr(
+                  "Belum ada website published milik admin/superadmin yang cocok dengan pencarian.",
+                  "No published websites owned by an admin/superadmin match this search.",
                 )}
-              </p>
+                icon={<Search className="size-5 text-muted-foreground" />}
+                className="min-h-44"
+              />
             ) : (
               candidates.map((c) => {
                 const picked = selectedIds.has(c.site_id);
@@ -437,32 +457,28 @@ export default function AdminShowcaseSitesPage() {
               )}
             </div>
             <div className="flex items-center bg-muted/80 p-0.5 rounded-lg border border-border/60 shrink-0">
-              <button
+              <Button
                 type="button"
+                size="sm"
+                variant={previewDevice === "mobile" ? "secondary" : "ghost"}
                 onClick={() => setPreviewDevice("mobile")}
                 title={tr("Tampilan HP", "Mobile view")}
-                aria-label="Mobile view"
-                className={`flex items-center justify-center p-1.5 rounded-md transition-all cursor-pointer ${
-                  previewDevice === "mobile"
-                    ? "bg-background text-foreground shadow-xs font-semibold"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
+                aria-label={tr("Tampilan HP", "Mobile view")}
+                className="gap-0"
               >
                 <Smartphone className="size-3.5" />
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
+                size="sm"
+                variant={previewDevice === "desktop" ? "secondary" : "ghost"}
                 onClick={() => setPreviewDevice("desktop")}
                 title={tr("Tampilan Desktop", "Desktop view")}
-                aria-label="Desktop view"
-                className={`flex items-center justify-center p-1.5 rounded-md transition-all cursor-pointer ${
-                  previewDevice === "desktop"
-                    ? "bg-background text-foreground shadow-xs font-semibold"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
+                aria-label={tr("Tampilan Desktop", "Desktop view")}
+                className="gap-0"
               >
                 <Monitor className="size-3.5" />
-              </button>
+              </Button>
             </div>
           </div>
         }
