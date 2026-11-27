@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import { preload } from "react-dom";
 import { cn } from "@/lib/utils";
 
 // ===========================================================================
@@ -16,6 +17,20 @@ export const MOOD_SVG: Record<string, string> = {
   "retro":        "/mood/klasik-retro.svg",
   "futuristic":   "/mood/futuristik.svg",
 };
+
+/** Preload all mood SVGs into browser cache early (called on wizard mount) */
+export function preloadMoodSvgs() {
+  if (typeof window === "undefined") return;
+  Object.values(MOOD_SVG).forEach((src) => {
+    try {
+      preload(src, { as: "image", type: "image/svg+xml" });
+    } catch {
+      // ignore
+    }
+    const img = new window.Image();
+    img.src = src;
+  });
+}
 
 // ===========================================================================
 // MoodCard — chip besar (dipakai di wizard mood-chips widget)
@@ -39,7 +54,7 @@ export function MoodCard({ value, label, isSelected, isLocked, onClick, readOnly
       <div className="relative shrink-0">
         <div
           className={cn(
-            "w-14 h-14 rounded-lg overflow-hidden transition-transform duration-200",
+            "w-14 h-14 rounded-lg overflow-hidden transition-transform duration-200 bg-white/5",
             !readOnly && (isSelected ? "scale-[1.02]" : "group-hover:scale-[1.02]")
           )}
         >
@@ -50,7 +65,8 @@ export function MoodCard({ value, label, isSelected, isLocked, onClick, readOnly
               width={56}
               height={56}
               className="w-full h-full object-cover"
-              priority={false}
+              priority
+              unoptimized
             />
           ) : (
             <div className="w-full h-full bg-white/10 rounded-lg" />
@@ -146,7 +162,7 @@ export function MoodPill({ value, label, isActive, onClick }: MoodPillProps) {
       {/* Thumbnail kecil */}
       <div
         className={cn(
-          "w-5 h-5 rounded-md overflow-hidden shrink-0 transition-transform duration-200",
+          "w-5 h-5 rounded-md overflow-hidden shrink-0 transition-transform duration-200 bg-white/5",
           isActive ? "scale-105" : "group-hover:scale-105"
         )}
       >
@@ -157,7 +173,8 @@ export function MoodPill({ value, label, isActive, onClick }: MoodPillProps) {
             width={20}
             height={20}
             className="w-full h-full object-cover"
-            priority={false}
+            priority
+            unoptimized
           />
         ) : (
           <div className="w-full h-full bg-white/10 rounded-md" />
@@ -209,14 +226,15 @@ export function MoodBubbleIcon({ value, label }: MoodBubbleIconProps) {
   if (!svgSrc) return null;
 
   return (
-    <span className="inline-block w-5 h-5 rounded-md overflow-hidden shrink-0 align-middle">
+    <span className="inline-block w-5 h-5 rounded-md overflow-hidden shrink-0 align-middle bg-white/5">
       <Image
         src={svgSrc}
         alt={label}
         width={20}
         height={20}
         className="w-full h-full object-cover"
-        priority={false}
+        priority
+        unoptimized
       />
     </span>
   );

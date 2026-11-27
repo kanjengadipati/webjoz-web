@@ -17,6 +17,7 @@ import { WIZARD_RESUME_KEY, loadWizardSnapshot } from "@/components/site-wizard/
 import { encodeSiteId } from "@/lib/sqids";
 import { uploadImageFile } from "@/components/file-upload";
 import { captureAttributionParams, trackAdEvent } from "@/lib/ad-tracking";
+import { preloadMoodSvgs } from "@/components/site-wizard/mood-card";
 
 const PENDING_KEY = "webjoz_pending_wizard_data";
 const SAVE_LOCK_KEY = "webjoz_save_in_progress";
@@ -46,6 +47,7 @@ function PublicWizardContent() {
   const [activeReferralCode, setActiveReferralCode] = useState<string>("");
 
   useEffect(() => {
+    preloadMoodSvgs();
     captureAttributionParams();
     if (!isSaveAction) {
       trackAdEvent("view_create", {

@@ -137,7 +137,7 @@ import { LoadingModal } from "./loading-modal";
 import { WizardErrorModal } from "./error-modal";
 import { WizardSuccessToast } from "./success-toast";
 import { useI18n } from "@/lib/i18n/context";
-import { MoodCard, MoodBubbleIcon } from "./mood-card";
+import { MoodCard, MoodBubbleIcon, preloadMoodSvgs } from "./mood-card";
 
 export { type SiteWizardProps };
 import { SUB_TYPE_ICONS, BIDANG_ICONS } from "./icons-map";
@@ -315,6 +315,11 @@ export function SiteWizard({
   // Design token dari galeri landing page — disimpan di ref agar tetap dipakai
   // pada semua generasi (dan tersedia di runGenerate yang closure-bound).
   const initialDesignTokenRef = React.useRef<Record<string, any> | null>(initialDesignToken ?? null);
+
+  // Preload mood SVGs early so mood chips appear instantaneously with zero latency
+  React.useEffect(() => {
+    preloadMoodSvgs();
+  }, []);
 
   // Seed preview dengan design token pilihan pada mount, supaya wireframe
   // langsung menampilkan warna/brand yang dipilih sebelum generasi pertama.
