@@ -6,6 +6,20 @@ import { AudioWaveform } from "../audio-waveform";
 import { MicOnboardingHint } from "../mic-onboarding-hint";
 import { getDynamicDescriptionPlaceholder } from "../helpers";
 
+const NAME_PLACEHOLDERS_ID = [
+  "Cth: Kopi Kenanga...",
+  "Cth: CV Jaya Bangun Persada...",
+  "Cth: Dimas Pratama (Portofolio)...",
+  "Cth: Studio Lensa Kreatif...",
+];
+
+const NAME_PLACEHOLDERS_EN = [
+  "e.g. Amber Cafe & Roastery...",
+  "e.g. Apex Construction Co...",
+  "e.g. Alex Morgan (Portfolio)...",
+  "e.g. Studio Lumina Design...",
+];
+
 interface WizardChatInputProps {
   chat: {
     isRecording: boolean;
@@ -45,6 +59,19 @@ export function WizardChatInput({
   locale,
   t,
 }: WizardChatInputProps) {
+  const [placeholderIndex, setPlaceholderIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    if (chat.chatStage !== "name") return;
+    const interval = setInterval(() => {
+      setPlaceholderIndex((prev) => (prev + 1) % NAME_PLACEHOLDERS_ID.length);
+    }, 3200);
+    return () => clearInterval(interval);
+  }, [chat.chatStage]);
+
+  const namePlaceholderList = locale === "en" ? NAME_PLACEHOLDERS_EN : NAME_PLACEHOLDERS_ID;
+  const currentNamePlaceholder = namePlaceholderList[placeholderIndex] || namePlaceholderList[0];
+
   if (
     chat.chatStage === "type" ||
     chat.chatStage === "language" ||
@@ -214,7 +241,7 @@ export function WizardChatInput({
                     "dashboard.wizard.inputDisabledBrandLogo",
                     "Klik 'Buat website saya' di atas untuk melanjutkan..."
                   )
-                : t("dashboard.wizard.inputPlaceholderName", "Masukkan nama bisnis Anda...")
+                : currentNamePlaceholder
             }
             autoFocus={!isBrandLogoStage}
             disabled={isInputDisabled}
