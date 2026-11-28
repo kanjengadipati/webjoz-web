@@ -1,18 +1,15 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { ArrowRight, ChevronRight, Menu, X } from "lucide-react";
+import { ArrowRight, ChevronRight, X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import {
   useMockupShowcaseSites,
   useAllRealSitesData,
   siteHost,
-  resolveSiteBusinessName,
   resolveSiteArchetype,
 } from "@/lib/mockup-showcase-sites";
 import { archetypeGroup } from "@/lib/showcase-archetypes";
-import { ArchetypeThumbnailArt } from "@/components/archetype-thumbnail-art";
-import { ArchetypeIcon } from "@/components/archetype-icon";
 
 interface ExampleThumbnailCardProps {
   onSeeAll: () => void;
@@ -20,48 +17,22 @@ interface ExampleThumbnailCardProps {
   onDismiss?: () => void;
 }
 
-const GROUP_HERO_COPY: Record<
-  string,
-  {
-    headlineId: string;
-    headlineEn: string;
-    subId: string;
-    subEn: string;
-    ctaId: string;
-    ctaEn: string;
-  }
-> = {
+const GROUP_ASSETS: Record<string, { icon: string; thumbnail: string }> = {
   kuliner_toko: {
-    headlineId: "Sajian & Produk.",
-    headlineEn: "Good Food. Mood.",
-    subId: "Kualitas pilihan.",
-    subEn: "Made with love.",
-    ctaId: "Pesan",
-    ctaEn: "Order",
+    icon: "/inspiration/icon_kuliner.png",
+    thumbnail: "/inspiration/thumbnail_kuliner_resto.png",
   },
   jasa_reservasi: {
-    headlineId: "Booking Mudah.",
-    headlineEn: "Book Easily.",
-    subId: "Cepat & praktis.",
-    subEn: "Fast & simple.",
-    ctaId: "Booking",
-    ctaEn: "Reserve",
+    icon: "/inspiration/icon_jasa_reservasi.png",
+    thumbnail: "/inspiration/thumbnail_jasa_bookly.png",
   },
   kreatif_pro: {
-    headlineId: "Ide Jadi Nyata.",
-    headlineEn: "Turn Ideas Real.",
-    subId: "Desain & karya.",
-    subEn: "Design & create.",
-    ctaId: "Mulai",
-    ctaEn: "Start",
+    icon: "/inspiration/icon_kreatif_pro.png",
+    thumbnail: "/inspiration/thumbnail_kreatif_studio.png",
   },
   bisnis_institusi: {
-    headlineId: "Bisnis Lebih Kuat.",
-    headlineEn: "Stronger Biz.",
-    subId: "Solusi masa depan.",
-    subEn: "Future solutions.",
-    ctaId: "Detail",
-    ctaEn: "Explore",
+    icon: "/inspiration/icon_bisnis_institusi.png",
+    thumbnail: "/inspiration/thumbnail_bizcorp.png",
   },
 };
 
@@ -106,18 +77,12 @@ export function ExampleThumbnailCard({
       {/* Header row */}
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2.5 min-w-0">
-          {/* Icon box */}
-          <div
-            className="shrink-0 w-8 h-8 rounded-xl flex items-center justify-center border border-white/[0.08]"
-            style={{ background: "rgba(255,255,255,0.07)" }}
-          >
-            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="text-white/75">
-              <rect x="1" y="1" width="5.5" height="5.5" rx="1.2" fill="currentColor" opacity="0.9" />
-              <rect x="8.5" y="1" width="5.5" height="5.5" rx="1.2" fill="currentColor" opacity="0.5" />
-              <rect x="1" y="8.5" width="5.5" height="5.5" rx="1.2" fill="currentColor" opacity="0.5" />
-              <rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1.2" fill="currentColor" opacity="0.25" />
-            </svg>
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/inspiration/icon_grid_section.png"
+            alt=""
+            className="shrink-0 w-8 h-8 rounded-xl object-cover border border-white/[0.08]"
+          />
           <div className="min-w-0">
             <p className="text-[13px] font-bold text-white leading-snug">
               {t("dashboard.wizard.exampleCardTitle", isIndonesian ? "Inspirasi Website" : "Website Inspiration")}
@@ -152,7 +117,7 @@ export function ExampleThumbnailCard({
         </div>
       </div>
 
-      {/* Portrait 1-row grid that fits 100% inside the chat panel */}
+      {/* Portrait 1-row grid fitted cleanly inside the chat panel */}
       <div
         className="grid gap-1.5"
         style={{
@@ -160,12 +125,9 @@ export function ExampleThumbnailCard({
         }}
       >
         {displaySites.map(({ site, index: idx, archetype }) => {
-          const host = siteHost(site.url);
-          const data = realSitesData[host];
-          const bName = resolveSiteBusinessName(site, data);
           const group = archetypeGroup(archetype);
           const groupLabel = isIndonesian ? group.labelId : group.labelEn;
-          const copy = GROUP_HERO_COPY[group.key] ?? GROUP_HERO_COPY.bisnis_institusi;
+          const asset = GROUP_ASSETS[group.key] ?? GROUP_ASSETS.bisnis_institusi;
 
           return (
             <button
@@ -176,59 +138,27 @@ export function ExampleThumbnailCard({
             >
               {/* Top group bar: icon + group label + compact arrow */}
               <div className="flex items-center gap-1 px-0.5 pt-0.5 min-h-[24px]">
-                <div className="w-5 h-5 rounded-full bg-white/[0.08] border border-white/[0.06] flex items-center justify-center shrink-0">
-                  <ArchetypeIcon id={group.archetypes[0]} className="w-2.5 h-2.5 text-white/90" />
-                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={asset.icon}
+                  alt=""
+                  className="w-5 h-5 rounded-full object-cover shrink-0 border border-white/[0.06]"
+                />
                 <span className="flex-1 min-w-0 text-[8.5px] font-semibold text-white/90 leading-[1.15] line-clamp-2 break-words">
                   {groupLabel}
                 </span>
                 <ArrowRight className="w-2.5 h-2.5 shrink-0 text-white/55 group-hover:text-white transition-transform group-hover:translate-x-0.5" />
               </div>
 
-              {/* Inner portrait monochrome mini-website preview card */}
-              <div className="relative h-[126px] w-full rounded-xl overflow-hidden bg-gradient-to-b from-[#f7f8fa] to-[#e4e7ed] text-[#111318] p-2 flex flex-col justify-between shadow-inner">
-                {/* Monochrome editorial SVG decoration anchored toward bottom */}
-                <ArchetypeThumbnailArt
-                  id={group.key}
-                  className="absolute inset-x-0 bottom-0 h-[78%] w-full pointer-events-none transition-transform duration-300 group-hover:scale-105"
+              {/* Portrait thumbnail artwork */}
+              <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden bg-[#eceef2]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={asset.thumbnail}
+                  alt={groupLabel}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                  loading="lazy"
                 />
-
-                {/* Top readability wash so navbar + hero text stay crisp above artwork */}
-                <div
-                  className="absolute inset-0 pointer-events-none"
-                  style={{
-                    background:
-                      "linear-gradient(to bottom, rgba(247,248,250,0.97) 0%, rgba(247,248,250,0.88) 46%, rgba(247,248,250,0.12) 100%)",
-                  }}
-                />
-
-                {/* Top block: mini navbar + hero copy + pill CTA */}
-                <div className="relative z-10 flex flex-col gap-1.5">
-                  {/* Mini navbar */}
-                  <div className="flex items-center justify-between gap-1">
-                    <div className="flex items-center gap-0.5 min-w-0">
-                      <ArchetypeIcon id={group.archetypes[0]} className="w-2 h-2 shrink-0 text-[#111318]/80" />
-                      <span className="text-[6.5px] font-bold text-[#111318]/90 truncate">
-                        {bName}
-                      </span>
-                    </div>
-                    <Menu className="w-2 h-2 shrink-0 text-[#111318]/65" />
-                  </div>
-
-                  {/* Hero copy */}
-                  <div>
-                    <p className="text-[9px] font-extrabold leading-[1.12] tracking-tight text-[#0d0f14] line-clamp-2">
-                      {isIndonesian ? copy.headlineId : copy.headlineEn}
-                    </p>
-                    <p className="text-[5.5px] text-[#4b515e] leading-tight truncate mt-0.5">
-                      {isIndonesian ? copy.subId : copy.subEn}
-                    </p>
-                    <span className="mt-1 inline-flex items-center gap-0.5 whitespace-nowrap rounded-full bg-[#111318] text-white text-[5.5px] font-semibold px-1.5 py-0.5 w-fit">
-                      <span>{isIndonesian ? copy.ctaId : copy.ctaEn}</span>
-                      <ArrowRight className="w-1.5 h-1.5 shrink-0" />
-                    </span>
-                  </div>
-                </div>
               </div>
             </button>
           );
