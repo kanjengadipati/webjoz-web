@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useCallback, useTransition } from "react";
 import { ArrowRight, Smartphone, Monitor } from "lucide-react";
 import { Dialog, Button, SparkleGenAI, Spinner } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
@@ -123,6 +123,32 @@ export function ExampleShowcaseModal({
   const [selectedId, setSelectedId] = useState<string>(() => initialItem?.id || "");
   const [activeTabKey, setActiveTabKey] = useState<string>(() => tabs[0]?.key || "all");
   const [previewDevice, setPreviewDevice] = useState<"desktop" | "mobile">("mobile");
+  // Loading overlay shown when user switches chip/tab so heavy render doesn't flash
+  const [isPending, startTransition] = useTransition();
+  const [previewKey, setPreviewKey] = useState(0);
+
+  // Helper: switch to a site with a visual loading flash
+  const selectSite = useCallback(
+    (id: string) => {
+      startTransition(() => {
+        setSelectedId(id);
+        setPreviewKey((k) => k + 1);
+      });
+    },
+    []
+  );
+
+  // Helper: switch tab + first site with loading flash
+  const selectTab = useCallback(
+    (tabKey: string, firstItemId?: string) => {
+      startTransition(() => {
+        setActiveTabKey(tabKey);
+        if (firstItemId) setSelectedId(firstItemId);
+        setPreviewKey((k) => k + 1);
+      });
+    },
+    []
+  );
 
   // Sync on open
   useEffect(() => {
@@ -272,8 +298,7 @@ export function ExampleShowcaseModal({
                   size="sm"
                   variant={isActive ? "default" : "outline"}
                   onClick={() => {
-                    setActiveTabKey(tab.key);
-                    if (tab.items[0]) setSelectedId(tab.items[0].id);
+                    selectTab(tab.key, tab.items[0]?.id);
                   }}
                   className="shrink-0 rounded-full h-7 px-3 text-[11px] font-semibold"
                 >
@@ -293,7 +318,7 @@ export function ExampleShowcaseModal({
                 <button
                   key={sample.id}
                   type="button"
-                  onClick={() => setSelectedId(sample.id)}
+                  onClick={() => selectSite(sample.id)}
                   className={`inline-flex items-center gap-1.5 shrink-0 rounded-lg px-2.5 py-1 text-[11px] font-medium transition-colors cursor-pointer border ${
                     isSelected
                       ? "bg-foreground/10 text-foreground border-foreground/25 font-semibold"
@@ -310,10 +335,20 @@ export function ExampleShowcaseModal({
         {/* Scrollable Real Template Preview */}
         <div className="flex-1 overflow-y-auto rounded-xl border border-border/70 bg-muted/30 p-1.5 sm:p-3">
           <div
-            className={`rounded-lg overflow-hidden border border-border/50 shadow-sm bg-white transition-all duration-200 min-h-[220px] flex items-center justify-center ${
+            className={`relative rounded-lg overflow-hidden border border-border/50 shadow-sm bg-white transition-all duration-200 min-h-[220px] flex items-center justify-center ${
               previewDevice === "mobile" ? "max-w-[390px] mx-auto w-full" : "w-full"
             }`}
           >
+            {/* Loading overlay — shown while React transition is pending (chip/tab switch) */}
+            {isPending && (
+              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2.5 bg-white/80 backdrop-blur-[2px]">
+                <Spinner size="md" />
+                <span className="text-xs text-muted-foreground">
+                  {isIndonesian ? "Memuat website..." : "Loading website..."}
+                </span>
+              </div>
+            )}
+
             {!activeItem ? (
               <div className="flex flex-col items-center justify-center p-8 gap-2.5 text-muted-foreground">
                 {sitesLoading ? <Spinner size="md" /> : null}
@@ -332,7 +367,7 @@ export function ExampleShowcaseModal({
               </div>
             ) : (
               <TemplatePreview
-                key={`${activeItem.id}-${previewDevice}`}
+                key={`${activeItem.id}-${previewDevice}-${previewKey}`}
                 templateId={activeItem.templateId}
                 content={activeItem.content}
                 designToken={activeItem.designToken}
