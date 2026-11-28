@@ -996,6 +996,10 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
             setArchetype(""); archetypeRef.current = "";
             setIndustryId(""); industryIdRef.current = "";
             setSuggestedIndustryId(route === "suggest" ? (d.suggested_industry_id ?? "") : "");
+            // Terapkan entity AI untuk semua route (pick/suggest) — bukan hanya confirm
+            if (d.entity === "individual" || d.entity === "organization") {
+              setEntityState((prev) => prev.source === "user" ? prev : { value: d.entity as "individual" | "organization", source: "inferred" });
+            }
           }
           if (d.industry_custom) setIndustryCustom(d.industry_custom);
 
@@ -1203,6 +1207,10 @@ export function useWizardChat(prefillInput?: { businessType?: string; businessSu
             setArchetype(""); archetypeRef.current = "";
             setIndustryId(""); industryIdRef.current = "";
             setSuggestedIndustryId(route === "suggest" ? (aiRes.data.suggested_industry_id ?? "") : "");
+            // Terapkan entity AI untuk semua route (pick/suggest) — bukan hanya confirm
+            if (aiRes.data.entity === "individual" || aiRes.data.entity === "organization") {
+              setEntityState((prev) => prev.source === "user" ? prev : { value: aiRes.data.entity as "individual" | "organization", source: "inferred" });
+            }
           }
           if (aiRes.data.industry_custom) {
             setIndustryCustom(aiRes.data.industry_custom);
