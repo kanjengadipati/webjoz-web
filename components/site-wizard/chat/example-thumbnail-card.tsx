@@ -9,7 +9,7 @@ import {
   siteHost,
   resolveSiteArchetype,
 } from "@/lib/mockup-showcase-sites";
-import { archetypeGroup } from "@/lib/showcase-archetypes";
+import { ARCHETYPE_GROUPS, archetypeGroup } from "@/lib/showcase-archetypes";
 
 interface ExampleThumbnailCardProps {
   onSeeAll: () => void;
@@ -64,6 +64,13 @@ export function ExampleThumbnailCard({
       seen.add(group.key);
       picked.push(it);
     }
+    // Sort by canonical ARCHETYPE_GROUPS order so cards match modal tab order
+    const groupOrder = new Map(ARCHETYPE_GROUPS.map((g, i) => [g.key, i]));
+    picked.sort((a, b) => {
+      const ia = groupOrder.get(archetypeGroup(a.archetype).key) ?? 99;
+      const ib = groupOrder.get(archetypeGroup(b.archetype).key) ?? 99;
+      return ia - ib;
+    });
     return picked;
   }, [effectiveSites, realSitesData]);
 
@@ -71,7 +78,7 @@ export function ExampleThumbnailCard({
 
   return (
     <div
-      className="relative rounded-2xl border border-white/15 p-3.5 space-y-3 backdrop-blur-xl shadow-[0_18px_50px_rgba(0,0,0,0.72)] ring-1 ring-white/[0.06]"
+      className="relative rounded-2xl border border-white/15 p-3 space-y-2.5 backdrop-blur-xl shadow-[0_18px_50px_rgba(0,0,0,0.72)] ring-1 ring-white/[0.06]"
       style={{ background: "rgba(20, 23, 30, 0.94)" }}
     >
       {/* Header row */}
@@ -126,7 +133,7 @@ export function ExampleThumbnailCard({
       >
         {displaySites.map(({ site, index: idx, archetype }) => {
           const group = archetypeGroup(archetype);
-          const groupLabel = isIndonesian ? group.labelId : group.labelEn;
+          const groupLabel = isIndonesian ? group.shortId : group.shortEn;
           const asset = GROUP_ASSETS[group.key] ?? GROUP_ASSETS.bisnis_institusi;
 
           return (
@@ -134,20 +141,20 @@ export function ExampleThumbnailCard({
               key={site.url || idx}
               type="button"
               onClick={() => (onSelectTab ? onSelectTab(group.key) : onSeeAll())}
-              className="group flex flex-col gap-1.5 rounded-2xl bg-[#181a20] hover:bg-[#1e2129] border border-white/[0.08] hover:border-white/25 p-1.5 text-left transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] focus:outline-none cursor-pointer"
+              className="group flex flex-col gap-1.5 rounded-2xl bg-[#181a20] hover:bg-[#1e2129] border border-white/[0.08] hover:border-white/25 p-1 text-left transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] focus:outline-none cursor-pointer"
             >
               {/* Top group bar: icon + group label + compact arrow */}
-              <div className="flex items-center gap-1 px-0.5 pt-0.5 min-h-[24px]">
+              <div className="flex items-center gap-1 px-0.5 pt-0.5 min-h-[22px]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={asset.icon}
                   alt=""
-                  className="w-5 h-5 rounded-full object-cover shrink-0 border border-white/[0.06]"
+                  className="w-4 h-4 rounded-full object-cover shrink-0 border border-white/[0.06]"
                 />
-                <span className="flex-1 min-w-0 text-[8.5px] font-semibold text-white/90 leading-[1.15] line-clamp-2 break-words">
+                <span className="flex-1 min-w-0 text-[8.5px] font-semibold text-white/95 leading-[1.15] tracking-tight line-clamp-2">
                   {groupLabel}
                 </span>
-                <ArrowRight className="w-2.5 h-2.5 shrink-0 text-white/55 group-hover:text-white transition-transform group-hover:translate-x-0.5" />
+                <ArrowRight className="w-2.5 h-2.5 shrink-0 text-white/50 group-hover:text-white transition-transform group-hover:translate-x-0.5" />
               </div>
 
               {/* Portrait thumbnail artwork */}
