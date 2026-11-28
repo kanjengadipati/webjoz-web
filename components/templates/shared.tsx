@@ -494,6 +494,8 @@ interface NavMenuProps {
   containerClass?: string;
   containerStyle?: React.CSSProperties;
   ctaButton?: React.ReactNode;
+  /** Breakpoint saat nav link menggantikan tombol hamburger (default: md). */
+  menuBreakpoint?: "md" | "lg";
 }
 
 const NavMenu: React.FC<NavMenuProps> = ({
@@ -512,7 +514,10 @@ const NavMenu: React.FC<NavMenuProps> = ({
   containerClass,
   containerStyle,
   ctaButton,
+  menuBreakpoint = "md",
 }) => {
+  const desktopNavClass = menuBreakpoint === "lg" ? "hidden lg:flex" : "hidden md:flex";
+  const mobileMenuClass = menuBreakpoint === "lg" ? "lg:hidden" : "md:hidden";
   const [open, setOpen] = useState(false);
   const [drawerTop, setDrawerTop] = useState(0);
   const btnRef = useRef<HTMLButtonElement>(null);
@@ -610,7 +615,7 @@ const NavMenu: React.FC<NavMenuProps> = ({
     <>
       <nav
         data-nav-menu="true"
-        className={`hidden md:flex items-center gap-1 ${containerClass || ""}`}
+        className={`${desktopNavClass} items-center gap-1 ${containerClass || ""}`}
         style={containerStyle}
         aria-label="Navigasi utama"
       >
@@ -647,7 +652,7 @@ const NavMenu: React.FC<NavMenuProps> = ({
         ref={btnRef}
         type="button"
         onClick={handleToggle}
-        className={`md:hidden flex items-center justify-center w-9 h-9 rounded-lg cursor-pointer focus:outline-none order-last shrink-0 ${linkClass}`}
+        className={`${mobileMenuClass} flex items-center justify-center w-9 h-9 rounded-lg cursor-pointer focus:outline-none order-last shrink-0 ${linkClass}`}
         aria-label={open ? "Tutup menu" : "Buka menu"}
         aria-expanded={open}
       >
@@ -658,7 +663,7 @@ const NavMenu: React.FC<NavMenuProps> = ({
         <>
           {/* Backdrop — tap outside to close */}
           <div
-            className="md:hidden fixed inset-0 z-[59]"
+            className={`${mobileMenuClass} fixed inset-0 z-[59]`}
             onClick={(e) => {
               e.stopPropagation();
               setOpen(false);
@@ -668,7 +673,7 @@ const NavMenu: React.FC<NavMenuProps> = ({
           {/* Drawer — fixed so iOS sticky/backdrop-filter clipping is avoided */}
           <div
             data-nav-menu="true"
-            className="md:hidden fixed left-0 right-0 z-[60] shadow-lg py-2"
+            className={`${mobileMenuClass} fixed left-0 right-0 z-[60] shadow-lg py-2`}
             onClick={(e) => e.stopPropagation()}
             style={{ top: drawerTop, ...(drawerStyle ?? { background: "rgba(255,255,255,0.97)", borderTop: "1px solid rgba(0,0,0,0.08)" }) }}
           >

@@ -116,7 +116,7 @@ export default function BrandBlockNav({
       </div>
 
       {/* Navigation Rail — kanan */}
-      <div className="flex-1 flex items-center justify-end gap-2 sm:gap-3 px-4 sm:px-6">
+      <div className="flex-1 flex items-center justify-end gap-2 sm:gap-3 px-3 sm:px-6">
         {!header?.nav_cta_hidden && (
           <a
             href={navCtaHref(header?.nav_cta_text, header?.nav_cta_href)}
@@ -141,7 +141,10 @@ export default function BrandBlockNav({
             />
           </a>
         )}
+        {/* Brand block memakan 240px; nav link baru muat di lg ke atas.
+            Di bawah itu pakai hamburger (lihat menuBreakpoint di shared.tsx). */}
         <NavMenu
+          menuBreakpoint="lg"
           sectionOrder={sectionOrder}
           hiddenSections={hiddenSections}
           extraLinks={extraLinks}
