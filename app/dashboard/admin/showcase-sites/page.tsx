@@ -15,7 +15,7 @@ import {
   ARCHETYPE_GROUPS,
   archetypeGroup,
   archetypeGroupLabel,
-  archetypeLabel,
+  inferArchetypeFromText,
 } from "@/lib/showcase-archetypes";
 import { ArchetypeIcon } from "@/components/archetype-icon";
 import { useRealSiteData } from "@/lib/mockup-showcase-sites";
@@ -308,39 +308,44 @@ export default function AdminShowcaseSitesPage() {
                     </a>
                     <div className="w-full min-w-[220px] sm:w-auto sm:min-w-[260px]">
                       <FormField label={tr("Kategori", "Category")}>
-                        <CustomSelect
-                          size="sm"
-                          value={
-                            item.archetype_override
-                              ? archetypeGroup(item.archetype_override).archetypes[0]
-                              : ""
-                          }
-                          onChange={(value) => update(item.site_id, { archetype_override: value })}
-                          options={[
-                            {
-                              value: "",
-                              icon: item.own_archetype ? (
-                                <ArchetypeIcon
-                                  id={archetypeGroup(item.own_archetype).archetypes[0]}
-                                  className="size-3.5 text-muted-foreground"
-                                />
-                              ) : undefined,
-                              label: item.own_archetype
-                                ? `${tr("Otomatis", "Auto")}: ${archetypeGroupLabel(item.own_archetype, isIndonesian)}`
-                                : tr("Otomatis (dari website)", "Auto (from website)"),
-                            },
-                            ...ARCHETYPE_GROUPS.map((g) => ({
-                              value: g.archetypes[0],
-                              icon: (
-                                <ArchetypeIcon
-                                  id={g.archetypes[0]}
-                                  className="size-3.5 text-muted-foreground"
-                                />
-                              ),
-                              label: isIndonesian ? g.labelId : g.labelEn,
-                            })),
-                          ]}
-                        />
+                        {(() => {
+                          const effectiveOwn =
+                            item.own_archetype ||
+                            inferArchetypeFromText(`${item.business_name} ${item.site_name} ${item.host}`);
+                          return (
+                            <CustomSelect
+                              size="sm"
+                              value={
+                                item.archetype_override
+                                  ? archetypeGroup(item.archetype_override).archetypes[0]
+                                  : ""
+                              }
+                              onChange={(value) => update(item.site_id, { archetype_override: value })}
+                              options={[
+                                {
+                                  value: "",
+                                  icon: (
+                                    <ArchetypeIcon
+                                      id={archetypeGroup(effectiveOwn).archetypes[0]}
+                                      className="size-3.5 text-muted-foreground"
+                                    />
+                                  ),
+                                  label: `${tr("Otomatis", "Auto")}: ${archetypeGroupLabel(effectiveOwn, isIndonesian)}`,
+                                },
+                                ...ARCHETYPE_GROUPS.map((g) => ({
+                                  value: g.archetypes[0],
+                                  icon: (
+                                    <ArchetypeIcon
+                                      id={g.archetypes[0]}
+                                      className="size-3.5 text-muted-foreground"
+                                    />
+                                  ),
+                                  label: isIndonesian ? g.labelId : g.labelEn,
+                                })),
+                              ]}
+                            />
+                          );
+                        })()}
                       </FormField>
                     </div>
                   </div>
@@ -386,6 +391,10 @@ export default function AdminShowcaseSitesPage() {
             ) : (
               candidates.map((c) => {
                 const picked = selectedIds.has(c.site_id);
+                const effectiveArch =
+                  c.archetype || inferArchetypeFromText(`${c.business_name} ${c.site_name} ${c.host}`);
+                const groupRep = archetypeGroup(effectiveArch).archetypes[0];
+                const groupText = archetypeGroupLabel(effectiveArch, isIndonesian);
                 return (
                   <div
                     key={c.site_id}
@@ -395,14 +404,13 @@ export default function AdminShowcaseSitesPage() {
                       <p className="truncate text-sm font-semibold text-foreground">{c.site_name}</p>
                       <p className="truncate font-mono text-[11px] text-muted-foreground">{c.host}</p>
                       <div className="mt-1 flex flex-wrap items-center gap-1.5">
-                        {c.archetype ? (
-                          <Badge variant="secondary" className="inline-flex items-center gap-1">
-                            <ArchetypeIcon id={c.archetype} className="size-3" />
-                            <span>{archetypeLabel(c.archetype, isIndonesian)}</span>
-                          </Badge>
-                        ) : (
-                          <Badge variant="outline">{tr("Kategori belum ada", "No category")}</Badge>
-                        )}
+                        <Badge
+                          variant={c.archetype ? "secondary" : "outline"}
+                          className="inline-flex items-center gap-1"
+                        >
+                          <ArchetypeIcon id={groupRep} className="size-3" />
+                          <span>{c.archetype ? groupText : `Auto · ${groupText}`}</span>
+                        </Badge>
                         {c.owner_name && (
                           <span className="text-[11px] text-muted-foreground">
                             {c.owner_name} · {c.owner_role}
