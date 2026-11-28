@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
-import { ArrowRight, Smartphone, Monitor, ExternalLink } from "lucide-react";
+import { ArrowRight, Smartphone, Monitor } from "lucide-react";
 import { Dialog, Button, SparkleGenAI, Spinner } from "webjoz-ui";
 import { useI18n } from "@/lib/i18n/context";
 import { TemplatePreview } from "@/components/landing-template-showcase";
@@ -287,24 +287,6 @@ export function ExampleShowcaseModal({
                 </button>
               );
             })}
-          </div>
-        )}
-
-        {/* Live Site URL pill */}
-        {activeItem?.url && (
-          <div className="flex items-center justify-between px-1 text-[11px] text-muted-foreground shrink-0">
-            <span className="font-semibold text-foreground">
-              {activeItem.businessName}
-            </span>
-            <a
-              href={activeItem.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-foreground hover:text-primary transition-colors font-mono font-medium hover:underline"
-            >
-              <span>{siteHost(activeItem.url)}</span>
-              <ExternalLink className="w-3 h-3" />
-            </a>
           </div>
         )}
 
