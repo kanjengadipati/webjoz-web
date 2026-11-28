@@ -33,7 +33,7 @@ export interface ShowcaseSiteItem {
 interface ExampleShowcaseModalProps {
   open: boolean;
   onClose: () => void;
-  onUseStyle: (styleToken: Record<string, any>) => void;
+  onUseStyle: (styleToken: Record<string, any>, sourceName?: string) => void;
   onStartCustom: () => void;
   initialBusinessType?: string;
   initialGroupKey?: string;
@@ -197,7 +197,7 @@ export function ExampleShowcaseModal({
       theme_mode: token.theme_mode,
     };
     onClose();
-    onUseStyle(styleToken);
+    onUseStyle(styleToken, activeItem.businessName);
   };
 
   return (

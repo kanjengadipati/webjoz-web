@@ -256,6 +256,7 @@ export function SiteWizard({
   const [showExamplesModal, setShowExamplesModal] = useState(false);
   const [examplesModalInitialTab, setExamplesModalInitialTab] = useState<string | undefined>(undefined);
   const [dismissedExamplePopup, setDismissedExamplePopup] = useState(false);
+  const [selectedStyleInfo, setSelectedStyleInfo] = useState<{ name: string; primaryColor?: string } | null>(null);
 
   const baseThemeToken =
     (preview.layoutOptionIndex > 0 && (preview.layoutOptionCount ?? 0) > 1
@@ -431,6 +432,8 @@ export function SiteWizard({
     clearWizardSnapshot();
     clearCustomFontStorage();
     setResumeDraft(null);
+    setSelectedStyleInfo(null);
+    initialDesignTokenRef.current = null;
     setThemeSheetOpen(false);
     if (device.isMobile) {
       device.setMobileScreen("chat");
@@ -1420,6 +1423,8 @@ export function SiteWizard({
     clearWizardSnapshot();
     clearCustomFontStorage();
     setResumeDraft(null);
+    setSelectedStyleInfo(null);
+    initialDesignTokenRef.current = null;
   };
 
   const [resumeSavedText, setResumeSavedText] = useState("");
@@ -2678,6 +2683,36 @@ export function SiteWizard({
           )}
         </div>
 
+        {/* Active selected style pill (from Website Inspiration modal) */}
+        {selectedStyleInfo && preview.previewState === "wireframe" && (
+          <div className="px-4 pb-1 flex items-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3 py-1 text-[11px] font-medium text-slate-200">
+              {selectedStyleInfo.primaryColor && (
+                <span
+                  className="w-2.5 h-2.5 rounded-full shrink-0 border border-white/25"
+                  style={{ background: selectedStyleInfo.primaryColor }}
+                />
+              )}
+              <span className="truncate max-w-[200px]">
+                {isIndonesian ? "Gaya:" : "Style:"} <strong className="text-white">{selectedStyleInfo.name}</strong>
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedStyleInfo(null);
+                  initialDesignTokenRef.current = null;
+                  preview.setStreamedDesignToken(null);
+                  preview.streamedTokenRef.current = null;
+                }}
+                aria-label={isIndonesian ? "Hapus gaya pilihan" : "Clear selected style"}
+                className="ml-0.5 text-slate-400 hover:text-white leading-none cursor-pointer"
+              >
+                &times;
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Chat Input */}
         <WizardChatInput
           chat={chat}
@@ -3042,19 +3077,53 @@ export function SiteWizard({
           open={showExamplesModal}
           onClose={() => setShowExamplesModal(false)}
           initialGroupKey={examplesModalInitialTab}
-          onUseStyle={(styleToken) => {
+          onUseStyle={(styleToken, sourceName) => {
             initialDesignTokenRef.current = styleToken;
-            preview.setStreamedDesignToken(styleToken);
-            preview.streamedTokenRef.current = styleToken;
+            setDismissedExamplePopup(true);
+            setSelectedStyleInfo({
+              name: sourceName || (isIndonesian ? "Gaya Pilihan" : "Selected Style"),
+              primaryColor: styleToken.palette?.primary,
+            });
             if (styleToken.mood) {
               chat.setMood(styleToken.mood);
               chat.moodRef.current = styleToken.mood;
             }
+            if (preview.previewState === "result") {
+              themeDraft.hardReset();
+              preview.setPreviewData((prev) => {
+                if (!prev) return prev;
+                const merged = {
+                  ...(prev.design_token || {}),
+                  palette: styleToken.palette ?? prev.design_token?.palette,
+                  typography: styleToken.typography ?? prev.design_token?.typography,
+                  mood: styleToken.mood ?? prev.design_token?.mood,
+                  theme_mode: styleToken.theme_mode ?? prev.design_token?.theme_mode,
+                  layout: {
+                    ...(prev.design_token?.layout || {}),
+                    ...(styleToken.layout || {}),
+                  },
+                };
+                preview.setStreamedDesignToken(merged);
+                preview.streamedTokenRef.current = merged;
+                return { ...prev, design_token: merged };
+              });
+              preview.setHasUnsavedEdits(true);
+            } else {
+              preview.setStreamedDesignToken(styleToken);
+              preview.streamedTokenRef.current = styleToken;
+            }
+            pushToast(
+              isIndonesian
+                ? `Gaya "${sourceName || "pilihan"}" diterapkan`
+                : `Style "${sourceName || "selected"}" applied`,
+              "success"
+            );
             if (device.isMobile) device.setMobileScreen("chat");
             chat.inputRef.current?.focus();
           }}
           onStartCustom={() => {
             initialDesignTokenRef.current = null;
+            setSelectedStyleInfo(null);
             preview.setStreamedDesignToken(null);
             preview.streamedTokenRef.current = null;
             chat.setMood("");
