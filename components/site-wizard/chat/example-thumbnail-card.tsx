@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { ChevronRight, X } from "lucide-react";
+import { ArrowRight, ChevronRight, Menu, X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import {
   useMockupShowcaseSites,
@@ -10,7 +10,7 @@ import {
   resolveSiteBusinessName,
   resolveSiteArchetype,
 } from "@/lib/mockup-showcase-sites";
-import { archetypeGroup, archetypeLabel } from "@/lib/showcase-archetypes";
+import { archetypeGroup } from "@/lib/showcase-archetypes";
 import { ArchetypeThumbnailArt } from "@/components/archetype-thumbnail-art";
 import { ArchetypeIcon } from "@/components/archetype-icon";
 
@@ -19,6 +19,51 @@ interface ExampleThumbnailCardProps {
   onSelectTab?: (showcaseIndex: number) => void;
   onDismiss?: () => void;
 }
+
+const GROUP_HERO_COPY: Record<
+  string,
+  {
+    headlineId: string;
+    headlineEn: string;
+    subId: string;
+    subEn: string;
+    ctaId: string;
+    ctaEn: string;
+  }
+> = {
+  kuliner_toko: {
+    headlineId: "Sajian & Produk Terbaik.",
+    headlineEn: "Good Food. Great Goods.",
+    subId: "Kualitas pilihan, siap pesan.",
+    subEn: "Curated quality, made with care.",
+    ctaId: "Pesan",
+    ctaEn: "Order Now",
+  },
+  jasa_reservasi: {
+    headlineId: "Booking Lebih Mudah.",
+    headlineEn: "Book Your Service Easily",
+    subId: "Cepat, praktis, terpercaya.",
+    subEn: "Fast. Simple. Reliable.",
+    ctaId: "Reservasi",
+    ctaEn: "Reserve Now",
+  },
+  kreatif_pro: {
+    headlineId: "Wujudkan Ide Jadi Nyata.",
+    headlineEn: "Turn Ideas Into Reality",
+    subId: "Desain, karya, dan solusi.",
+    subEn: "Design. Create. Inspire.",
+    ctaId: "Mulai",
+    ctaEn: "Get Started",
+  },
+  bisnis_institusi: {
+    headlineId: "Bangun Bisnis Lebih Kuat.",
+    headlineEn: "Build a Stronger Business",
+    subId: "Solusi inovatif masa depan.",
+    subEn: "Innovative solutions ahead.",
+    ctaId: "Selengkapnya",
+    ctaEn: "Learn More",
+  },
+};
 
 export function ExampleThumbnailCard({
   onSeeAll,
@@ -43,9 +88,9 @@ export function ExampleThumbnailCard({
     const seen = new Set<string>();
     for (const it of indexed) {
       if (picked.length >= 4) break;
-      const groupKey = archetypeGroup(it.archetype).key;
-      if (seen.has(groupKey)) continue;
-      seen.add(groupKey);
+      const group = archetypeGroup(it.archetype);
+      if (seen.has(group.key)) continue;
+      seen.add(group.key);
       picked.push(it);
     }
     return picked;
@@ -55,12 +100,12 @@ export function ExampleThumbnailCard({
 
   return (
     <div
-      className="relative rounded-2xl border border-white/15 p-3.5 space-y-2.5 backdrop-blur-xl shadow-[0_18px_50px_rgba(0,0,0,0.72)] ring-1 ring-white/[0.06]"
+      className="relative rounded-2xl border border-white/15 p-3.5 space-y-3 backdrop-blur-xl shadow-[0_18px_50px_rgba(0,0,0,0.72)] ring-1 ring-white/[0.06]"
       style={{ background: "rgba(20, 23, 30, 0.94)" }}
     >
       {/* Header row */}
       <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-2 min-w-0">
+        <div className="flex items-center gap-2.5 min-w-0">
           {/* Icon box */}
           <div
             className="shrink-0 w-8 h-8 rounded-xl flex items-center justify-center border border-white/[0.08]"
@@ -88,7 +133,7 @@ export function ExampleThumbnailCard({
           <button
             type="button"
             onClick={onSeeAll}
-            className="flex items-center gap-0.5 text-[11px] font-semibold text-white/55 hover:text-white/85 transition-colors whitespace-nowrap cursor-pointer"
+            className="flex items-center gap-1 rounded-full border border-white/15 bg-white/[0.05] hover:bg-white/12 px-2.5 py-1 text-[11px] font-semibold text-white/80 hover:text-white transition-colors whitespace-nowrap cursor-pointer"
           >
             {t("dashboard.wizard.exampleCardSeeAll", isIndonesian ? "Lihat semua" : "See all")}
             <ChevronRight className="w-3 h-3" />
@@ -107,81 +152,77 @@ export function ExampleThumbnailCard({
         </div>
       </div>
 
-      {/* Thumbnail grid — dynamically reflects the real sites */}
-      <div
-        className="grid gap-1.5"
-        style={{
-          gridTemplateColumns: `repeat(${Math.max(2, Math.min(4, displaySites.length))}, minmax(0, 1fr))`,
-        }}
-      >
+      {/* 4-group thumbnail grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         {displaySites.map(({ site, index: idx, archetype }) => {
           const host = siteHost(site.url);
           const data = realSitesData[host];
           const bName = resolveSiteBusinessName(site, data);
-          const categoryLabel = archetypeLabel(archetype, isIndonesian);
+          const group = archetypeGroup(archetype);
+          const groupLabel = isIndonesian ? group.labelId : group.labelEn;
+          const copy = GROUP_HERO_COPY[group.key] ?? GROUP_HERO_COPY.bisnis_institusi;
 
           return (
             <button
               key={site.url || idx}
               type="button"
               onClick={() => (onSelectTab ? onSelectTab(idx) : onSeeAll())}
-              className="group flex flex-col rounded-xl overflow-hidden border border-white/[0.08] hover:border-white/20 transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] focus:outline-none cursor-pointer"
+              className="group flex flex-col gap-2 rounded-2xl bg-[#181a20] hover:bg-[#1e2129] border border-white/[0.08] hover:border-white/25 p-2 text-left transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] focus:outline-none cursor-pointer"
             >
-              {/* SVG Artwork + headline */}
-              <div className="relative overflow-hidden" style={{ height: 100 }}>
-                <ArchetypeThumbnailArt
-                  id={archetype}
-                  className="w-full h-full transition-transform duration-300 group-hover:scale-105"
-                />
-                {/* Dark scrim */}
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.15) 100%)",
-                  }}
-                />
-
-                {/* Subdomain pill at top-left */}
-                <div
-                  className="absolute top-1.5 left-1.5 font-mono truncate max-w-[85%]"
-                  style={{
-                    fontSize: "6px",
-                    letterSpacing: "0.05em",
-                    color: "rgba(255,255,255,0.75)",
-                    lineHeight: 1,
-                  }}
-                >
-                  {host}
+              {/* Top group bar: icon + group label + arrow */}
+              <div className="flex items-center gap-1.5 px-0.5 pt-0.5">
+                <div className="w-6 h-6 rounded-full bg-white/[0.08] border border-white/[0.06] flex items-center justify-center shrink-0">
+                  <ArchetypeIcon id={group.archetypes[0]} className="w-3 h-3 text-white/90" />
                 </div>
-
-                {/* Business name — bottom */}
-                <div
-                  className="absolute bottom-1.5 left-1.5 right-1.5 leading-snug truncate"
-                  style={{
-                    fontSize: "12px",
-                    fontWeight: 800,
-                    color: "#ffffff",
-                    letterSpacing: "-0.01em",
-                    textShadow: "0 2px 8px rgba(0,0,0,0.7)",
-                  }}
-                >
-                  {bName}
+                <span className="flex-1 min-w-0 text-[10px] font-semibold text-white/90 leading-tight line-clamp-2">
+                  {groupLabel}
+                </span>
+                <div className="w-5 h-5 rounded-full bg-white/[0.07] group-hover:bg-white/20 flex items-center justify-center shrink-0 transition-colors">
+                  <ArrowRight className="w-2.5 h-2.5 text-white/75 group-hover:text-white transition-transform group-hover:translate-x-0.5" />
                 </div>
               </div>
 
-              {/* Label row */}
-              <div
-                className="flex items-center gap-1.5 px-2 py-1.5"
-                style={{
-                  background: "rgba(255,255,255,0.055)",
-                  borderTop: "1px solid rgba(255,255,255,0.07)",
-                }}
-              >
-                <ArchetypeIcon id={archetype} className="w-3 h-3 shrink-0 text-white/65" />
-                <span className="text-[9.5px] font-semibold text-white/75 truncate leading-tight">
-                  {categoryLabel}
-                </span>
+              {/* Inner monochrome mini-website preview card */}
+              <div className="relative h-[108px] w-full rounded-xl overflow-hidden bg-gradient-to-br from-[#f6f7f9] to-[#e6e9ef] text-[#111318] p-2.5 flex flex-col justify-between shadow-inner">
+                {/* Monochrome editorial SVG decoration */}
+                <ArchetypeThumbnailArt
+                  id={group.key}
+                  className="absolute inset-0 w-full h-full pointer-events-none transition-transform duration-300 group-hover:scale-105"
+                />
+
+                {/* Soft left readability wash so hero text always pops */}
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background:
+                      "linear-gradient(105deg, rgba(246,247,249,0.92) 0%, rgba(246,247,249,0.72) 56%, rgba(246,247,249,0.08) 100%)",
+                  }}
+                />
+
+                {/* Mini navbar */}
+                <div className="relative z-10 flex items-center justify-between gap-1">
+                  <div className="flex items-center gap-1 min-w-0">
+                    <ArchetypeIcon id={group.archetypes[0]} className="w-2.5 h-2.5 shrink-0 text-[#111318]/80" />
+                    <span className="text-[7.5px] font-bold text-[#111318]/90 truncate">
+                      {bName}
+                    </span>
+                  </div>
+                  <Menu className="w-2.5 h-2.5 shrink-0 text-[#111318]/65" />
+                </div>
+
+                {/* Mini hero copy + pill CTA */}
+                <div className="relative z-10 max-w-[88%]">
+                  <p className="text-[10px] font-extrabold leading-[1.12] tracking-tight text-[#0d0f14] line-clamp-2">
+                    {isIndonesian ? copy.headlineId : copy.headlineEn}
+                  </p>
+                  <p className="text-[6.5px] text-[#4b515e] leading-tight truncate mt-0.5">
+                    {isIndonesian ? copy.subId : copy.subEn}
+                  </p>
+                  <span className="mt-1.5 inline-flex items-center gap-0.5 rounded-full bg-[#111318] text-white text-[6.5px] font-semibold px-2 py-0.5">
+                    <span>{isIndonesian ? copy.ctaId : copy.ctaEn}</span>
+                    <ArrowRight className="w-2 h-2" />
+                  </span>
+                </div>
               </div>
             </button>
           );
