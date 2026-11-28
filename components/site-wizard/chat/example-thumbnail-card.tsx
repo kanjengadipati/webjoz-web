@@ -31,7 +31,7 @@ export function ExampleThumbnailCard({
 
   const realSitesData = useAllRealSitesData(effectiveSites);
 
-  // Up to 5 thumbnails, strictly 1 representative site per unique parent group.
+  // Up to 4 thumbnails, strictly 1 representative site per unique parent group.
   // `index` is the position in the full list (what onSelectTab expects).
   const displaySites = useMemo(() => {
     const indexed = effectiveSites.map((site, index) => ({
@@ -42,7 +42,7 @@ export function ExampleThumbnailCard({
     const picked: typeof indexed = [];
     const seen = new Set<string>();
     for (const it of indexed) {
-      if (picked.length >= 5) break;
+      if (picked.length >= 4) break;
       const groupKey = archetypeGroup(it.archetype).key;
       if (seen.has(groupKey)) continue;
       seen.add(groupKey);
@@ -111,7 +111,7 @@ export function ExampleThumbnailCard({
       <div
         className="grid gap-1.5"
         style={{
-          gridTemplateColumns: `repeat(${Math.max(2, Math.min(5, displaySites.length))}, minmax(0, 1fr))`,
+          gridTemplateColumns: `repeat(${Math.max(2, Math.min(4, displaySites.length))}, minmax(0, 1fr))`,
         }}
       >
         {displaySites.map(({ site, index: idx, archetype }) => {

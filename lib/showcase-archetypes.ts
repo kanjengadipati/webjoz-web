@@ -89,7 +89,7 @@ export function archetypeChipWindow(selected: string, size = 4): string[] {
 
 /* ═══════════════════════════════════════════════════════════════════════════
  * ARCHETYPE GROUP SYSTEM
- * 10 archetypes → 5 parent groups (for thumbnails, dropdown, chips).
+ * 10 archetypes → 4 parent groups (for thumbnails, dropdown, mockup chips).
  * ═══════════════════════════════════════════════════════════════════════════ */
 
 export interface ArchetypeGroup {
@@ -106,52 +106,43 @@ export interface ArchetypeGroup {
   archetypes: string[];
 }
 
-/** 5 parent groups — single source of truth for grouping everywhere. */
+/** 4 parent groups — single source of truth for grouping everywhere. */
 export const ARCHETYPE_GROUPS: ArchetypeGroup[] = [
   {
-    key: "kuliner",
+    key: "kuliner_toko",
     emoji: "🍜",
-    labelId: "Kuliner & F&B",
-    labelEn: "Food & Drink",
-    shortId: "Kuliner",
-    shortEn: "Food",
-    archetypes: ["food_venue"],
+    labelId: "Kuliner & Toko",
+    labelEn: "Food & Shop",
+    shortId: "Kuliner & Toko",
+    shortEn: "Food & Shop",
+    archetypes: ["food_venue", "retail_catalog"],
   },
   {
-    key: "toko",
-    emoji: "🛍",
-    labelId: "Toko & Produk",
-    labelEn: "Shop & Products",
-    shortId: "Toko & Produk",
-    shortEn: "Shop",
-    archetypes: ["retail_catalog", "software_product"],
-  },
-  {
-    key: "jasa",
+    key: "jasa_reservasi",
     emoji: "🔧",
-    labelId: "Jasa & Profesional",
-    labelEn: "Services & Pro",
-    shortId: "Jasa",
+    labelId: "Jasa & Reservasi",
+    labelEn: "Services & Booking",
+    shortId: "Jasa & Reservasi",
     shortEn: "Services",
-    archetypes: ["booking_service", "professional_firm", "portfolio_individual"],
+    archetypes: ["booking_service", "lodging", "destination"],
   },
   {
-    key: "perusahaan",
+    key: "kreatif_pro",
+    emoji: "🎨",
+    labelId: "Kreatif & Pro",
+    labelEn: "Creative & Pro",
+    shortId: "Kreatif & Pro",
+    shortEn: "Creative & Pro",
+    archetypes: ["portfolio_individual", "professional_firm", "software_product"],
+  },
+  {
+    key: "bisnis_institusi",
     emoji: "🏢",
-    labelId: "Perusahaan & Institusi",
-    labelEn: "Company & Institution",
-    shortId: "Perusahaan",
-    shortEn: "Company",
+    labelId: "Bisnis & Institusi",
+    labelEn: "Business & Institution",
+    shortId: "Bisnis & Institusi",
+    shortEn: "Business",
     archetypes: ["corporate_org", "institution_org"],
-  },
-  {
-    key: "destinasi",
-    emoji: "🏝",
-    labelId: "Destinasi & Penginapan",
-    labelEn: "Destination & Lodging",
-    shortId: "Destinasi",
-    shortEn: "Destination",
-    archetypes: ["destination", "lodging"],
   },
 ];
 
@@ -161,9 +152,9 @@ for (const g of ARCHETYPE_GROUPS) {
   for (const id of g.archetypes) _ARCHETYPE_TO_GROUP[id] = g;
 }
 
-/** Returns the parent group for an archetype id. Falls back to "jasa" group. */
+/** Returns the parent group for an archetype id. Falls back to "jasa_reservasi" group. */
 export function archetypeGroup(id: string): ArchetypeGroup {
-  return _ARCHETYPE_TO_GROUP[id] ?? ARCHETYPE_GROUPS[2];
+  return _ARCHETYPE_TO_GROUP[id] ?? ARCHETYPE_GROUPS[1];
 }
 
 /** Group label string — used as the `group` prop in CustomSelect options. */
@@ -173,12 +164,8 @@ export function archetypeGroupLabel(id: string, isIndonesian: boolean): string {
 }
 
 /**
- * 4 group-chip objects for the interactive mockup chat bubble.
- * Returns the 4 groups (kuliner / toko / jasa / perusahaan+destinasi merged as "Lainnya"),
- * and marks which one is "selected" for the given archetype.
- *
- * "Perusahaan & Institusi" and "Destinasi & Penginapan" are merged into a
- * single "Lainnya" chip to keep the list at 4 items (fits the narrow mockup).
+ * 4 group-chip objects for the interactive mockup chat bubble, derived directly
+ * from ARCHETYPE_GROUPS so chip labels and grouping stay in sync everywhere.
  */
 export const MOCKUP_CHIP_GROUPS: Array<{
   key: string;
@@ -186,43 +173,17 @@ export const MOCKUP_CHIP_GROUPS: Array<{
   labelId: string;
   labelEn: string;
   archetypes: string[];
-}> = [
-  {
-    key: "kuliner",
-    emoji: "🍜",
-    labelId: "Kuliner",
-    labelEn: "Food & Drink",
-    archetypes: ["food_venue"],
-  },
-  {
-    key: "toko",
-    emoji: "🛍",
-    labelId: "Toko & Produk",
-    labelEn: "Shop & Products",
-    archetypes: ["retail_catalog", "software_product"],
-  },
-  {
-    key: "jasa",
-    emoji: "🔧",
-    labelId: "Jasa",
-    labelEn: "Services",
-    archetypes: ["booking_service", "professional_firm", "portfolio_individual"],
-  },
-  {
-    key: "lainnya",
-    emoji: "🏢",
-    labelId: "Lainnya",
-    labelEn: "Others",
-    archetypes: ["corporate_org", "institution_org", "destination", "lodging"],
-  },
-];
+}> = ARCHETYPE_GROUPS.map((g) => ({
+  key: g.key,
+  emoji: g.emoji,
+  labelId: g.shortId,
+  labelEn: g.shortEn,
+  archetypes: g.archetypes,
+}));
 
 /** Returns the MOCKUP_CHIP_GROUPS key that the given archetype belongs to. */
 export function archetypeToMockupGroup(id: string): string {
-  for (const g of MOCKUP_CHIP_GROUPS) {
-    if (g.archetypes.includes(id)) return g.key;
-  }
-  return "jasa";
+  return archetypeGroup(id).key;
 }
 
 /** Keyword fallback for sites that have no stored archetype. */
