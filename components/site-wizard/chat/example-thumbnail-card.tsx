@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { ArrowRight, ChevronRight, X } from "lucide-react";
+import { ChevronRight, X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import {
   useMockupShowcaseSites,
@@ -154,7 +154,6 @@ export function ExampleThumbnailCard({
                 <span className="flex-1 min-w-0 text-[8.5px] font-semibold text-white/95 leading-[1.15] tracking-tight line-clamp-2">
                   {groupLabel}
                 </span>
-                <ArrowRight className="w-2.5 h-2.5 shrink-0 text-white/50 group-hover:text-white transition-transform group-hover:translate-x-0.5" />
               </div>
 
               {/* Portrait thumbnail artwork */}
