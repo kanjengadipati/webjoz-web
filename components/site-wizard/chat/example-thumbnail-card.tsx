@@ -152,38 +152,41 @@ export function ExampleThumbnailCard({
         </div>
       </div>
 
-      {/* 4-group horizontal card strip — keeps each card wide enough for crisp typography */}
-      <div className="flex gap-2 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-0.5">
-        {displaySites.map(({ site, index: idx, archetype }) => {
+      {/* Responsive grid that fits cleanly inside the chat panel without horizontal clipping */}
+      <div className={`grid gap-2 ${displaySites.length === 1 ? "grid-cols-1" : "grid-cols-2"}`}>
+        {displaySites.map(({ site, index: idx, archetype }, i) => {
           const host = siteHost(site.url);
           const data = realSitesData[host];
           const bName = resolveSiteBusinessName(site, data);
           const group = archetypeGroup(archetype);
           const groupLabel = isIndonesian ? group.labelId : group.labelEn;
           const copy = GROUP_HERO_COPY[group.key] ?? GROUP_HERO_COPY.bisnis_institusi;
+          const spanFull = displaySites.length === 3 && i === 2;
 
           return (
             <button
               key={site.url || idx}
               type="button"
               onClick={() => (onSelectTab ? onSelectTab(idx) : onSeeAll())}
-              className="group shrink-0 w-[166px] snap-start flex flex-col gap-2 rounded-2xl bg-[#181a20] hover:bg-[#1e2129] border border-white/[0.08] hover:border-white/25 p-2 text-left transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] focus:outline-none cursor-pointer"
+              className={`group flex flex-col gap-1.5 rounded-2xl bg-[#181a20] hover:bg-[#1e2129] border border-white/[0.08] hover:border-white/25 p-1.5 text-left transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] focus:outline-none cursor-pointer ${
+                spanFull ? "col-span-2" : ""
+              }`}
             >
               {/* Top group bar: icon + group label + arrow */}
-              <div className="flex items-center gap-1.5 px-0.5 pt-0.5 min-h-[26px]">
-                <div className="w-6 h-6 rounded-full bg-white/[0.08] border border-white/[0.06] flex items-center justify-center shrink-0">
-                  <ArchetypeIcon id={group.archetypes[0]} className="w-3 h-3 text-white/90" />
+              <div className="flex items-center gap-1.5 px-0.5 pt-0.5 min-h-[24px]">
+                <div className="w-5 h-5 rounded-full bg-white/[0.08] border border-white/[0.06] flex items-center justify-center shrink-0">
+                  <ArchetypeIcon id={group.archetypes[0]} className="w-2.5 h-2.5 text-white/90" />
                 </div>
-                <span className="flex-1 min-w-0 text-[10px] font-semibold text-white/90 leading-[1.2] line-clamp-2">
+                <span className="flex-1 min-w-0 text-[10px] font-semibold text-white/90 leading-[1.2] truncate">
                   {groupLabel}
                 </span>
-                <div className="w-5 h-5 rounded-full bg-white/[0.07] group-hover:bg-white/20 flex items-center justify-center shrink-0 transition-colors">
+                <div className="w-4 h-4 rounded-full bg-white/[0.07] group-hover:bg-white/20 flex items-center justify-center shrink-0 transition-colors">
                   <ArrowRight className="w-2.5 h-2.5 text-white/75 group-hover:text-white transition-transform group-hover:translate-x-0.5" />
                 </div>
               </div>
 
               {/* Inner monochrome mini-website preview card */}
-              <div className="relative h-[106px] w-full rounded-xl overflow-hidden bg-gradient-to-br from-[#f6f7f9] to-[#e6e9ef] text-[#111318] p-2.5 flex flex-col justify-between shadow-inner">
+              <div className="relative h-[92px] w-full rounded-xl overflow-hidden bg-gradient-to-br from-[#f6f7f9] to-[#e6e9ef] text-[#111318] p-2 flex flex-col justify-between shadow-inner">
                 {/* Monochrome editorial SVG decoration */}
                 <ArchetypeThumbnailArt
                   id={group.key}
@@ -212,13 +215,13 @@ export function ExampleThumbnailCard({
 
                 {/* Mini hero copy + pill CTA */}
                 <div className="relative z-10 max-w-[82%]">
-                  <p className="text-[10.5px] font-extrabold leading-[1.12] tracking-tight text-[#0d0f14] line-clamp-2">
+                  <p className="text-[10px] font-extrabold leading-[1.12] tracking-tight text-[#0d0f14] line-clamp-2">
                     {isIndonesian ? copy.headlineId : copy.headlineEn}
                   </p>
                   <p className="text-[6.5px] text-[#4b515e] leading-tight truncate mt-0.5">
                     {isIndonesian ? copy.subId : copy.subEn}
                   </p>
-                  <span className="mt-1.5 inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[#111318] text-white text-[6.5px] font-semibold px-2.5 py-0.5 w-fit">
+                  <span className="mt-1 inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[#111318] text-white text-[6.5px] font-semibold px-2 py-0.5 w-fit">
                     <span>{isIndonesian ? copy.ctaId : copy.ctaEn}</span>
                     <ArrowRight className="w-2 h-2 shrink-0" />
                   </span>
