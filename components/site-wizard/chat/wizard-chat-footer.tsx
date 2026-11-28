@@ -80,13 +80,13 @@ export function WizardChatFooter({
       </div>
     </div>
     <p className="px-5 pt-1 pb-2.5 text-center text-[10px] leading-snug text-slate-500/80 shrink-0">
-      {t("dashboard.wizard.privacyNoticePrefix", "Dengan melanjutkan, Anda menyetujui")}{" "}
+      {t("dashboard.wizard.privacyNoticePrefix", isEN ? "By continuing, you agree to our" : "Dengan melanjutkan, Anda menyetujui")}{" "}
       <a href={isEN ? "/en/terms" : "/terms"} target="_blank" rel="noopener" className="underline hover:text-slate-300">
-        {t("dashboard.wizard.privacyNoticeTerms", "Syarat & Ketentuan")}
+        {t("dashboard.wizard.privacyNoticeTerms", isEN ? "Terms & Conditions" : "Syarat & Ketentuan")}
       </a>{" "}
-      {t("dashboard.wizard.privacyNoticeAnd", "dan")}{" "}
+      {t("dashboard.wizard.privacyNoticeAnd", isEN ? "and" : "dan")}{" "}
       <a href={isEN ? "/en/privacy-policy" : "/privacy-policy"} target="_blank" rel="noopener" className="underline hover:text-slate-300">
-        {t("dashboard.wizard.privacyNoticePolicy", "Kebijakan Privasi")}
+        {t("dashboard.wizard.privacyNoticePolicy", isEN ? "Privacy Policy" : "Kebijakan Privasi")}
       </a>
       .
     </p>

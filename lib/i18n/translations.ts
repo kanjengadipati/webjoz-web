@@ -3621,6 +3621,10 @@ export interface Translations {
       loadingCardChecklist5: string;
       resetChatBtn: string;
       resetChatTooltip: string;
+      privacyNoticePrefix: string;
+      privacyNoticeTerms: string;
+      privacyNoticeAnd: string;
+      privacyNoticePolicy: string;
       exampleShowcaseTitle: string;
       exampleShowcaseSubtitle: string;
       exampleTabCafe: string;
@@ -8044,6 +8048,10 @@ export const translations: Record<Locale, Translations> = {
         loadingCardChecklist5: "Website siap dipublish!",
         resetChatBtn: "Reset Chat",
         resetChatTooltip: "Mulai ulang chat dari awal",
+        privacyNoticePrefix: "Dengan melanjutkan, Anda menyetujui",
+        privacyNoticeTerms: "Syarat & Ketentuan",
+        privacyNoticeAnd: "dan",
+        privacyNoticePolicy: "Kebijakan Privasi",
         exampleShowcaseTitle: "Contoh Hasil Website AI",
         exampleShowcaseSubtitle:
           "Dibuat otomatis dalam hitungan menit — scroll untuk lihat detailnya",
@@ -12318,11 +12326,11 @@ export const translations: Record<Locale, Translations> = {
           "Logo centered, navigation below it, CTA button.",
         variantHeaderTransparentOverlay: "Transparent (Hero Overlay)",
         variantHeaderTransparentOverlayDesc:
-          "Overlaps the hero (white text), shrinks and becomes frosted glass after scroll.",
+          "Overlays the hero (white text), shrinks into frosted glass on scroll.",
         variantHeaderLogoWithCtaButton: "Logo + CTA Button",
         variantHeaderLogoWithCtaButtonDesc:
-          "Logo on left, nav centered, solid-color CTA button on the right.",
-        variantHeaderStackedLogoTagline: "Logo + Tagline Stacked",
+          "Logo on the left, centered nav, solid CTA button on the right.",
+        variantHeaderStackedLogoTagline: "Stacked Logo + Tagline",
         variantHeaderStackedLogoTaglineDesc:
           "Logo and tagline stacked vertically in the center, thin nav below.",
         variantHeaderFloatingCapsule: "Floating Capsule",
@@ -12641,6 +12649,10 @@ export const translations: Record<Locale, Translations> = {
         loadingCardChecklist5: "Website ready to publish!",
         resetChatBtn: "Reset Chat",
         resetChatTooltip: "Start the chat over from the beginning",
+        privacyNoticePrefix: "By continuing, you agree to our",
+        privacyNoticeTerms: "Terms & Conditions",
+        privacyNoticeAnd: "and",
+        privacyNoticePolicy: "Privacy Policy",
         exampleShowcaseTitle: "Real AI Website Examples",
         exampleShowcaseSubtitle:
           "Generated in minutes — scroll to inspect the full layout",
