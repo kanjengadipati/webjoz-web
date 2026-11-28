@@ -9,10 +9,14 @@ import {
   fetchAdminShowcase,
   fetchShowcaseCandidates,
   saveAdminShowcase,
-  type ShowcaseArchetypeOption,
   type ShowcaseCandidate,
 } from "@/lib/api/showcase";
-import { archetypeGroupLabel, archetypeLabel } from "@/lib/showcase-archetypes";
+import {
+  ARCHETYPE_GROUPS,
+  archetypeGroup,
+  archetypeGroupLabel,
+  archetypeLabel,
+} from "@/lib/showcase-archetypes";
 import { ArchetypeIcon } from "@/components/archetype-icon";
 import { useRealSiteData } from "@/lib/mockup-showcase-sites";
 import { TemplatePreview } from "@/components/landing-template-showcase";
@@ -64,7 +68,6 @@ export default function AdminShowcaseSitesPage() {
 
   const [items, setItems] = useState<DraftItem[]>([]);
   const [savedSnapshot, setSavedSnapshot] = useState("[]");
-  const [archetypes, setArchetypes] = useState<ShowcaseArchetypeOption[]>([]);
   const [candidates, setCandidates] = useState<ShowcaseCandidate[]>([]);
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
@@ -102,7 +105,6 @@ export default function AdminShowcaseSitesPage() {
       }));
       setItems(next);
       setSavedSnapshot(serialize(next));
-      setArchetypes(res.data?.archetypes ?? []);
     } catch (err) {
       pushToast(errorMessage(err, tr("Gagal memuat showcase", "Failed to load showcase")), "error");
     } finally {
@@ -308,23 +310,34 @@ export default function AdminShowcaseSitesPage() {
                       <FormField label={tr("Kategori", "Category")}>
                         <CustomSelect
                           size="sm"
-                          value={item.archetype_override}
+                          value={
+                            item.archetype_override
+                              ? archetypeGroup(item.archetype_override).archetypes[0]
+                              : ""
+                          }
                           onChange={(value) => update(item.site_id, { archetype_override: value })}
                           options={[
                             {
                               value: "",
                               icon: item.own_archetype ? (
-                                <ArchetypeIcon id={item.own_archetype} className="size-3.5 text-muted-foreground" />
+                                <ArchetypeIcon
+                                  id={archetypeGroup(item.own_archetype).archetypes[0]}
+                                  className="size-3.5 text-muted-foreground"
+                                />
                               ) : undefined,
                               label: item.own_archetype
-                                ? `${tr("Otomatis", "Auto")}: ${archetypeLabel(item.own_archetype, isIndonesian)}`
+                                ? `${tr("Otomatis", "Auto")}: ${archetypeGroupLabel(item.own_archetype, isIndonesian)}`
                                 : tr("Otomatis (dari website)", "Auto (from website)"),
                             },
-                            ...archetypes.map((a) => ({
-                              value: a.id,
-                              group: archetypeGroupLabel(a.id, isIndonesian),
-                              icon: <ArchetypeIcon id={a.id} className="size-3.5 text-muted-foreground" />,
-                              label: archetypeLabel(a.id, isIndonesian, a),
+                            ...ARCHETYPE_GROUPS.map((g) => ({
+                              value: g.archetypes[0],
+                              icon: (
+                                <ArchetypeIcon
+                                  id={g.archetypes[0]}
+                                  className="size-3.5 text-muted-foreground"
+                                />
+                              ),
+                              label: isIndonesian ? g.labelId : g.labelEn,
                             })),
                           ]}
                         />
