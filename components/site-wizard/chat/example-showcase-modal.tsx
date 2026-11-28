@@ -13,8 +13,8 @@ import {
   resolveSiteBusinessName,
 } from "@/lib/mockup-showcase-sites";
 import {
-  ARCHETYPE_ORDER,
-  archetypeLabel,
+  ARCHETYPE_GROUPS,
+  archetypeGroup,
   inferArchetypeFromText,
 } from "@/lib/showcase-archetypes";
 
@@ -49,7 +49,7 @@ export function ExampleShowcaseModal({
 }: ExampleShowcaseModalProps) {
   const { t, isIndonesian } = useI18n();
   // Curated by admin/superadmin: published sites only (GET /public/showcase-sites)
-  const { sites: effectiveSites, archetypes: apiArchetypes, loading: sitesLoading } = useMockupShowcaseSites();
+  const { sites: effectiveSites, loading: sitesLoading } = useMockupShowcaseSites();
 
   const realSitesData = useAllRealSitesData(effectiveSites);
 
@@ -77,32 +77,24 @@ export function ExampleShowcaseModal({
       });
   }, [effectiveSites, realSitesData]);
 
-  // 2. Build archetype tabs from the archetypes that actually have sites
+  // 2. Build tabs from the 4 parent groups that actually have sites
   const tabs = useMemo(() => {
     if (allItems.length === 0) return [];
 
-    const order = ARCHETYPE_ORDER as readonly string[];
-    const present = Array.from(new Set(allItems.map((it) => it.archetype))).sort((a, b) => {
-      const ia = order.indexOf(a);
-      const ib = order.indexOf(b);
-      return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
-    });
+    const groupTabs = ARCHETYPE_GROUPS.map((g) => ({
+      key: `grp-${g.key}`,
+      label: isIndonesian ? g.labelId : g.labelEn,
+      items: allItems.filter((it) => archetypeGroup(it.archetype).key === g.key),
+    })).filter((tab) => tab.items.length > 0);
 
-    const archetypeTabs = present.map((arch) => ({
-      key: `arch-${arch}`,
-      archetype: arch,
-      label: archetypeLabel(arch, isIndonesian, apiArchetypes.find((a) => a.id === arch)),
-      items: allItems.filter((it) => it.archetype === arch),
-    }));
-
-    if (archetypeTabs.length > 1) {
+    if (groupTabs.length > 1) {
       return [
-        { key: "all", archetype: "", label: isIndonesian ? "Semua" : "All", items: allItems },
-        ...archetypeTabs,
+        { key: "all", label: isIndonesian ? "Semua" : "All", items: allItems },
+        ...groupTabs,
       ];
     }
-    return archetypeTabs;
-  }, [allItems, apiArchetypes, isIndonesian]);
+    return groupTabs;
+  }, [allItems, isIndonesian]);
 
   // 3. Initial item calculation
   const initialItem = useMemo(() => {
@@ -116,7 +108,10 @@ export function ExampleShowcaseModal({
 
     if (initialBusinessType) {
       const wanted = inferArchetypeFromText(initialBusinessType);
-      const match = allItems.find((it) => it.archetype === wanted);
+      const wantedGroupKey = archetypeGroup(wanted).key;
+      const match =
+        allItems.find((it) => it.archetype === wanted) ||
+        allItems.find((it) => archetypeGroup(it.archetype).key === wantedGroupKey);
       if (match) return match;
     }
 
