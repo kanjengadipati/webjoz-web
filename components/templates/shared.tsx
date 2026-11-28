@@ -621,14 +621,13 @@ const NavMenu: React.FC<NavMenuProps> = ({
       >
         {navItems.map((item) => {
           const isExtraLink = extraLinks.some(l => l.href === item.key);
-          return (
-            <button
-              key={item.key}
-              type="button"
-              onClick={(e) => handleClick(e, item)}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:opacity-70 cursor-pointer focus:outline-none ${linkClass}`}
-            >
-              {!isExtraLink && isEditorMode ? (
+          const className = `px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:opacity-70 cursor-pointer focus:outline-none ${linkClass}`;
+          // InlineText renders its own pencil <button> in editor mode. Wrapping it in
+          // another <button> is invalid HTML and causes a hydration error, so the
+          // editor variant uses a <span> (InlineText stops propagation itself).
+          if (!isExtraLink && isEditorMode) {
+            return (
+              <span key={item.key} className={className}>
                 <InlineText
                   section="header"
                   fieldKey={`nav_labels.${item.key}`}
@@ -640,9 +639,17 @@ const NavMenu: React.FC<NavMenuProps> = ({
                   onEditingStateChange={onEditingStateChange}
                   as="span"
                 />
-              ) : (
-                item.label
-              )}
+              </span>
+            );
+          }
+          return (
+            <button
+              key={item.key}
+              type="button"
+              onClick={(e) => handleClick(e, item)}
+              className={className}
+            >
+              {item.label}
             </button>
           );
         })}
@@ -679,14 +686,11 @@ const NavMenu: React.FC<NavMenuProps> = ({
           >
             {navItems.map((item) => {
               const isExtraLink = extraLinks.some(l => l.href === item.key);
-              return (
-                <button
-                  key={item.key}
-                  type="button"
-                  onClick={(e) => handleClick(e, item)}
-                  className={`w-full text-left px-5 py-3 text-sm font-medium hover:opacity-70 transition-opacity cursor-pointer focus:outline-none ${linkClass}`}
-                >
-                  {!isExtraLink && isEditorMode ? (
+              const className = `w-full text-left px-5 py-3 text-sm font-medium hover:opacity-70 transition-opacity cursor-pointer focus:outline-none ${linkClass}`;
+              // See desktop nav above: avoid a <button> around InlineText's pencil button.
+              if (!isExtraLink && isEditorMode) {
+                return (
+                  <span key={item.key} className={className}>
                     <InlineText
                       section="header"
                       fieldKey={`nav_labels.${item.key}`}
@@ -698,9 +702,17 @@ const NavMenu: React.FC<NavMenuProps> = ({
                       onEditingStateChange={onEditingStateChange}
                       as="span"
                     />
-                  ) : (
-                    item.label
-                  )}
+                  </span>
+                );
+              }
+              return (
+                <button
+                  key={item.key}
+                  type="button"
+                  onClick={(e) => handleClick(e, item)}
+                  className={className}
+                >
+                  {item.label}
                 </button>
               );
             })}
@@ -3382,7 +3394,7 @@ const LeadForm: React.FC<LeadFormProps> = ({
           isEN ? "Sending..." : "Mengirim..."
         ) : (
           <>
-            <InlineText
+            <InlineText pencilAs="span"
               section="contact"
               fieldKey="button_text"
               value={buttonText || (isEN ? "Send Message" : "Kirim Pesan")}

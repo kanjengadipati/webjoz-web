@@ -142,7 +142,7 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
                           : "text-dt-text-muted border-transparent hover:text-dt-text hover:border-dt-border"
                       }`}
                     >
-                    <InlineText section="menu" fieldKey={"categories." + index + ".name"} value={category.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
+                    <InlineText pencilAs="span" section="menu" fieldKey={"categories." + index + ".name"} value={category.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
                       <ChevronRight
                         className={`w-4 h-4 transition-transform duration-200 ${
                           isActive ? "translate-x-0 opacity-100 text-dt-primary" : "translate-x-[-4px] opacity-0 group-hover:opacity-55"
@@ -191,7 +191,7 @@ export default function SidebarScrollspyPhoto({ menu, onUpdateField, isEditorMod
                         : "bg-dt-surface text-dt-text-muted border-dt-border hover:text-dt-text hover:border-dt-border"
                     }`}
                     >
-                      <InlineText section="menu" fieldKey={"categories." + index + ".name"} value={category.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
+                      <InlineText pencilAs="span" section="menu" fieldKey={"categories." + index + ".name"} value={category.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" />
                   </button>
                   {canDelete && (
                     <InlineDeleteButton

@@ -142,7 +142,7 @@ export default function ProductHorizontalSwipeCarousel({
                 className="py-4 px-6 text-sm font-medium uppercase tracking-wider relative whitespace-nowrap transition-colors duration-200"
                 style={{ color: isActive ? brandText : "var(--dt-text-muted)", fontFamily: headingFont }}
               >
-                <InlineText
+                <InlineText pencilAs="span"
                   section={section}
                   fieldKey={"categories." + idx + ".name"}
                   value={category.name ?? ""}

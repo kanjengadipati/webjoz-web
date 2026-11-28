@@ -84,7 +84,7 @@ export default function MenuAccordionByCategory({ menu, onUpdateField, isEditorM
                     transition: "background 0.2s",
                   }}
                 >
-                  <InlineText section="menu" fieldKey={"categories." + ci + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontFamily: hFont, fontWeight: 700, fontSize: "0.9rem", color: isOpen ? p : text }} />
+                  <InlineText pencilAs="span" section="menu" fieldKey={"categories." + ci + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontFamily: hFont, fontWeight: 700, fontSize: "0.9rem", color: isOpen ? p : text }} />
                   <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                     <span style={{ fontSize: "0.65rem", color: muted, fontWeight: 500 }}>{cat.items?.length ?? 0} {isEN ? ((cat.items?.length ?? 0) === 1 ? "item" : "items") : "item"}</span>
                     <ChevronDown

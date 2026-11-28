@@ -337,7 +337,7 @@ export default function HeroBookingForm({
                   <span>{s.sending}</span>
                 ) : (
                   <>
-                    <InlineText
+                    <InlineText pencilAs="span"
                       {...common}
                       fieldKey="cta_text"
                       value={h.cta_text || defaultCta}

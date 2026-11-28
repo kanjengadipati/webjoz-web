@@ -146,7 +146,7 @@ export default function ProductTabsByCategory({
                     whiteSpace: "nowrap",
                   }}
                 >
-                  <InlineText section={section} fieldKey={"categories." + i + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontSize: "0.8rem", fontWeight: isActive ? 700 : 500, color: isActive ? "var(--dt-cta-text, #fff)" : `color-mix(in srgb, ${text} 70%, transparent)`, whiteSpace: "nowrap" as const }} />
+                  <InlineText pencilAs="span" section={section} fieldKey={"categories." + i + ".name"} value={cat.name ?? ""} onUpdateField={onUpdateField} isEditorMode={isEditorMode} isSelected={isSelected} collapseSheetForInlineEdit={collapseSheetForInlineEdit} onEditingStateChange={onEditingStateChange} as="span" style={{ fontSize: "0.8rem", fontWeight: isActive ? 700 : 500, color: isActive ? "var(--dt-cta-text, #fff)" : `color-mix(in srgb, ${text} 70%, transparent)`, whiteSpace: "nowrap" as const }} />
                   <span
                     className="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-[10px] font-bold"
                     style={{

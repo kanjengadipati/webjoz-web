@@ -87,7 +87,7 @@ export default function DynamicLeadForm({
         ) : (
           <>
             <Send style={{ width: 16, height: 16 }} />
-            <InlineText
+            <InlineText pencilAs="span"
               section={sectionKey}
               fieldKey="button_text"
               value={isEditorMode ? (buttonText ?? "") : (buttonText || (isEN ? "Send Message" : "Kirim Pesan"))} placeholder={(isEN ? "Send Message" : "Kirim Pesan")}

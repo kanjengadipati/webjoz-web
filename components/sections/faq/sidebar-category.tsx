@@ -176,7 +176,7 @@ export default function FaqSidebarCategory({
                   }}
                 >
                   {isEditorMode ? (
-                    <InlineText
+                    <InlineText pencilAs="span"
                       section="faq"
                       fieldKey={`items.${catIdx}.category`}
                       value={cat}

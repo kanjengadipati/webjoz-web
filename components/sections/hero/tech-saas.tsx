@@ -432,7 +432,7 @@ export default function HeroTechSaaS({
                   }}
                 >
                   <Icon style={{ width: 11, height: 11 }} />
-                  <InlineText
+                  <InlineText pencilAs="span"
                     section="hero"
                     fieldKey={`dashboard_widget.tab_${tab}_label`}
                     value={tabLabels[tab]}

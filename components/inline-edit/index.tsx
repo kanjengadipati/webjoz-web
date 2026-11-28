@@ -69,6 +69,12 @@ export interface InlineTextProps {
   /** Class tambahan untuk wrapper luar <span> (mis. "self-start", "w-fit") */
   wrapperClassName?: string;
   /**
+   * Render affordance pensil/AI sebagai <span role="button"> instead of <button>.
+   * Pakai ini ketika InlineText berada DI DALAM <button> lain — <button> bersarang
+   * tidak valid dan memicu hydration error. Perilaku klik tetap sama.
+   */
+  pencilAs?: "button" | "span";
+  /**
    * Callback regenerate untuk wizard preview (editorChrome=false).
    * Jika disediakan, icon Refresh akan muncul saat focus/klik teks.
    * Digunakan untuk memberi tahu user bahwa fitur AI regen butuh login.
@@ -95,6 +101,7 @@ export function InlineText({
   onAiRewrite,
   onRegen: onRegenProp,
   wrapperClassName = "",
+  pencilAs = "button",
 }: InlineTextProps) {
   const { t } = useI18n();
   const wizardRegen = useWizardRegen();
@@ -394,6 +401,10 @@ export function InlineText({
     </Comp>
   );
 
+  // Affordance pensil/AI boleh dirender sebagai <span> bila InlineText berada
+  // di dalam <button> lain — <button> bersarang invalid & merusak hidrasi.
+  const ActionTag: React.ElementType = pencilAs === "span" ? "span" : "button";
+
   return (
     <span
       ref={wrapperRef}
@@ -445,8 +456,17 @@ export function InlineText({
           - When Focused: Morphs into high-contrast glowing AI Regen [✨] (or Check [✓] for short text)
           - When Saved: Morphs into green Check [✓] for 1.5s (Auto-save confirmation)
       */}
-      <button
-        type="button"
+      <ActionTag
+        {...(pencilAs === "span"
+          ? { role: "button", tabIndex: 0, "aria-disabled": aiWriting }
+          : { type: "button", disabled: aiWriting })}
+        onKeyDown={pencilAs === "span" ? (e: React.KeyboardEvent<HTMLElement>) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            e.stopPropagation();
+            (e.currentTarget as HTMLElement).click();
+          }
+        } : undefined}
         onPointerDown={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -481,7 +501,6 @@ export function InlineText({
             handlePencilClick(e);
           }
         }}
-        disabled={aiWriting}
         aria-label={
           justSaved
             ? t("dashboard.sitesEditor.inlineSaved", "Tersimpan")
@@ -537,7 +556,7 @@ export function InlineText({
         ) : (
           <Pencil className="w-3.5 h-3.5 sm:w-2.5 sm:h-2.5 text-white stroke-[2.2]" style={{ width: 14, height: 14 }} />
         )}
-      </button>
+      </ActionTag>
 
       {/* Error tooltip */}
       {aiError && (
