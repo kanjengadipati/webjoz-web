@@ -1339,6 +1339,27 @@ export default function SiteEditorPage() {
 
       return next;
     });
+    if (group === "layout" && key === "hero_style") {
+      clearStockHeroImageIfProfileCutout(value);
+    }
+  };
+
+  // Saat berpindah ke varian profile-cutout, ganti foto stock otomatis (berkredit Unsplash/Pexels)
+  // kembali ke default cutout portrait agar tidak menampilkan foto landscape non-potret.
+  // Foto unggahan pengguna sendiri (tanpa image_credit) tetap dipertahankan.
+  const clearStockHeroImageIfProfileCutout = (heroStyle: string) => {
+    if (heroStyle !== "profile-cutout") return;
+    setContent((prev: any) => {
+      if (!prev?.hero?.image_credit?.name) return prev;
+      return {
+        ...prev,
+        hero: {
+          ...prev.hero,
+          image_url: "",
+          image_credit: null,
+        },
+      };
+    });
   };
 
   const updateDesignTokenBatch = (updates: Array<{ group: "palette" | "typography" | "layout"; key: string; value: any }>) => {
@@ -1374,6 +1395,10 @@ export default function SiteEditorPage() {
 
       return next;
     });
+    const heroStyleUpdate = updates.find((u) => u.group === "layout" && u.key === "hero_style");
+    if (heroStyleUpdate) {
+      clearStockHeroImageIfProfileCutout(heroStyleUpdate.value);
+    }
   };
 
   const updateSectionVariant = (section: string, value: string) => {
@@ -1399,6 +1424,9 @@ export default function SiteEditorPage() {
       }
       return next;
     });
+    if (section === "hero") {
+      clearStockHeroImageIfProfileCutout(value);
+    }
 
     // If using a legacy template, switch to dynamic engine so the section component renders the variant
     if (siteDetails.template_id !== "TEMPLATE_DYNAMIC") {

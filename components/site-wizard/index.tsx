@@ -3169,7 +3169,20 @@ export function SiteWizard({
                 };
                 preview.setStreamedDesignToken(merged);
                 preview.streamedTokenRef.current = merged;
-                return { ...prev, design_token: merged };
+                const nextHeroStyle = merged.layout?.section_variants?.hero || merged.layout?.hero_style;
+                const shouldResetStockHero =
+                  nextHeroStyle === "profile-cutout" && Boolean(prev.content?.hero?.image_credit?.name);
+                const nextContent = shouldResetStockHero
+                  ? {
+                      ...prev.content,
+                      hero: {
+                        ...prev.content.hero,
+                        image_url: "",
+                        image_credit: null,
+                      },
+                    }
+                  : prev.content;
+                return { ...prev, design_token: merged, content: nextContent };
               });
               preview.setHasUnsavedEdits(true);
             } else {
