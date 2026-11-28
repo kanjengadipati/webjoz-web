@@ -14,6 +14,7 @@ import { ShoppingCart, X, Plus, Minus, Trash2, MessageSquare, ArrowLeft, CheckCi
 
 import type { ItemVariantGroup, PaymentConfig } from "@/components/templates/types";
 import { formatIdNumber, formatPriceWithAmount } from "@/lib/utils";
+import { KIND_CONFIG, useProductKind } from "@/components/sections/product/kind-config";
 
 /**
  * Resolves the selection bounds for a variant group.
@@ -338,6 +339,12 @@ export function AddToCartButton({
   const { language } = useSitePayments();
   const isEN = language === "en";
   const [selectorOpen, setSelectorOpen] = useState(false);
+  // Services are inquired/booked, not "added to a cart": label the button by kind.
+  const ctaMode = KIND_CONFIG[useProductKind()].ctaMode;
+  const addLabel =
+    ctaMode === "inquiry" ? (isEN ? "Choose" : "Pilih") :
+    ctaMode === "booking" ? (isEN ? "Book" : "Pesan") :
+    (isEN ? "Add" : "Tambah");
 
   const hasVariants = Boolean(variant_groups && variant_groups.length > 0);
 
@@ -421,10 +428,10 @@ export function AddToCartButton({
         })}
         className={`inline-flex items-center justify-center gap-1.5 whitespace-nowrap ${className ?? ""}`}
         style={style}
-        aria-label={`${isEN ? "Add" : "Tambah"} ${itemName} ${isEN ? "to cart" : "ke keranjang"}`}
+        aria-label={`${addLabel} ${itemName}${ctaMode === "cart" ? (isEN ? " to cart" : " ke keranjang") : ""}`}
       >
         <Plus className="w-3.5 h-3.5 shrink-0" />
-        <span>{isEN ? "Add" : "Tambah"}</span>
+        <span>{addLabel}</span>
       </button>
     );
   }
