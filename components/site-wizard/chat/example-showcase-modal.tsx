@@ -33,7 +33,7 @@ export interface ShowcaseSiteItem {
 interface ExampleShowcaseModalProps {
   open: boolean;
   onClose: () => void;
-  onUseStyle: (styleToken: Record<string, any>, sourceName?: string) => void;
+  onUseStyle: (styleToken: Record<string, any>, sourceName?: string, sourceArchetype?: string) => void;
   onStartCustom: () => void;
   initialBusinessType?: string;
   initialGroupKey?: string;
@@ -189,15 +189,21 @@ export function ExampleShowcaseModal({
   const handleUseStyle = () => {
     if (!activeItem || !activeItem.designToken) return;
     const token = activeItem.designToken;
+    const layoutToken: Record<string, any> = {};
+    if (token.layout?.corner_radius) layoutToken.corner_radius = token.layout.corner_radius;
+    if (token.layout?.hero_style) layoutToken.hero_style = token.layout.hero_style;
+    if (token.layout?.section_variants && typeof token.layout.section_variants === "object") {
+      layoutToken.section_variants = { ...token.layout.section_variants };
+    }
     const styleToken: Record<string, any> = {
       palette: token.palette,
       typography: token.typography,
-      ...(token.layout?.corner_radius ? { layout: { corner_radius: token.layout.corner_radius } } : {}),
+      ...(Object.keys(layoutToken).length > 0 ? { layout: layoutToken } : {}),
       mood: token.mood || activeItem.mood,
       theme_mode: token.theme_mode,
     };
     onClose();
-    onUseStyle(styleToken, activeItem.businessName);
+    onUseStyle(styleToken, activeItem.businessName, activeItem.archetype);
   };
 
   return (

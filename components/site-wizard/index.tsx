@@ -104,6 +104,7 @@ import {
   nextEntityFromArchetype,
 } from "./entity";
 import { fallbackArchetypeForEntity, fallbackTypeForEntity } from "./archetype-meta";
+import { archetypeGroup } from "@/lib/showcase-archetypes";
 import { useTaxonomy, useTaxonomyV2 } from "@/hooks/use-taxonomy";
 import { selectTemplate, formatText, generateSubdomain, generateSlug, getTemplatePool, getDynamicDescriptionPlaceholder, generateDescriptionFromBusinessName, preloadTemplate, resolveBusinessName } from "./helpers";
 import { sanitizeClassificationPair, categoryI18nKey, normalizeLegacyType } from "./taxonomy";
@@ -235,6 +236,28 @@ async function persistCustomFonts(
   return next;
 }
 
+/**
+ * Pick section variants to carry from an inspiration style:
+ * - Always carry header, hero, and footer (universal across all business types).
+ * - Carry all section variants when source and target belong to the same parent group.
+ */
+function pickCompatibleVariants(
+  variants: Record<string, any> | undefined,
+  sourceArchetype?: string | null,
+  targetArchetype?: string | null,
+): Record<string, any> | undefined {
+  if (!variants || typeof variants !== "object") return undefined;
+  const sameGroup =
+    Boolean(sourceArchetype && targetArchetype) &&
+    archetypeGroup(sourceArchetype!).key === archetypeGroup(targetArchetype!).key;
+  if (sameGroup) return { ...variants };
+  const core: Record<string, any> = {};
+  for (const k of ["header", "hero", "footer"]) {
+    if (variants[k]) core[k] = variants[k];
+  }
+  return Object.keys(core).length > 0 ? core : undefined;
+}
+
 export function SiteWizard({
   mode,
   token,
@@ -316,6 +339,7 @@ export function SiteWizard({
   // Design token dari galeri landing page — disimpan di ref agar tetap dipakai
   // pada semua generasi (dan tersedia di runGenerate yang closure-bound).
   const initialDesignTokenRef = React.useRef<Record<string, any> | null>(initialDesignToken ?? null);
+  const styleSourceArchetypeRef = React.useRef<string | null>(null);
 
   // Preload mood SVGs early so mood chips appear instantaneously with zero latency
   React.useEffect(() => {
@@ -434,6 +458,7 @@ export function SiteWizard({
     setResumeDraft(null);
     setSelectedStyleInfo(null);
     initialDesignTokenRef.current = null;
+    styleSourceArchetypeRef.current = null;
     setThemeSheetOpen(false);
     if (device.isMobile) {
       device.setMobileScreen("chat");
@@ -845,7 +870,26 @@ export function SiteWizard({
 
     // Biarkan backend AI men-generate token desain lengkap (tipografi, radius, layout, mood).
     // Palet warna brand akan digabungkan di klien lewat onDesignToken dan final merge.
-    const initialToken = initialDesignTokenRef.current ?? undefined;
+    const targetArchForStyle =
+      chat.archetypeRef.current || (!safePair.businessType ? fallbackArchetypeForEntity(ent) : undefined);
+    const rawInitialToken = initialDesignTokenRef.current;
+    const initialToken = rawInitialToken
+      ? (() => {
+          const filteredVariants = pickCompatibleVariants(
+            rawInitialToken.layout?.section_variants,
+            styleSourceArchetypeRef.current,
+            targetArchForStyle,
+          );
+          if (!rawInitialToken.layout) return rawInitialToken;
+          return {
+            ...rawInitialToken,
+            layout: {
+              ...rawInitialToken.layout,
+              ...(filteredVariants ? { section_variants: filteredVariants } : {}),
+            },
+          };
+        })()
+      : undefined;
 
     await generate.startStream({
       business_name: bName, business_type: safeBusinessType, business_sub_type: safeBusinessSubType || undefined,
@@ -946,6 +990,8 @@ export function SiteWizard({
   const handleSelectMood = (mood: string) => {
     if (initialDesignTokenRef.current?.mood && initialDesignTokenRef.current.mood !== mood) {
       initialDesignTokenRef.current = null;
+      styleSourceArchetypeRef.current = null;
+      setSelectedStyleInfo(null);
     }
     chat.handleSelectMood(mood, () => {
       // onGenerate is deferred — called via handleStartGeneration after brand-logo step
@@ -1425,6 +1471,7 @@ export function SiteWizard({
     setResumeDraft(null);
     setSelectedStyleInfo(null);
     initialDesignTokenRef.current = null;
+    styleSourceArchetypeRef.current = null;
   };
 
   const [resumeSavedText, setResumeSavedText] = useState("");
@@ -2701,6 +2748,7 @@ export function SiteWizard({
                 onClick={() => {
                   setSelectedStyleInfo(null);
                   initialDesignTokenRef.current = null;
+                  styleSourceArchetypeRef.current = null;
                   preview.setStreamedDesignToken(null);
                   preview.streamedTokenRef.current = null;
                 }}
@@ -3077,8 +3125,9 @@ export function SiteWizard({
           open={showExamplesModal}
           onClose={() => setShowExamplesModal(false)}
           initialGroupKey={examplesModalInitialTab}
-          onUseStyle={(styleToken, sourceName) => {
+          onUseStyle={(styleToken, sourceName, sourceArchetype) => {
             initialDesignTokenRef.current = styleToken;
+            styleSourceArchetypeRef.current = sourceArchetype || null;
             setDismissedExamplePopup(true);
             setSelectedStyleInfo({
               name: sourceName || (isIndonesian ? "Gaya Pilihan" : "Selected Style"),
@@ -3090,6 +3139,12 @@ export function SiteWizard({
             }
             if (preview.previewState === "result") {
               themeDraft.hardReset();
+              const currentUserArch = chat.archetypeRef.current || null;
+              const compatVariants = pickCompatibleVariants(
+                styleToken.layout?.section_variants,
+                sourceArchetype,
+                currentUserArch,
+              );
               preview.setPreviewData((prev) => {
                 if (!prev) return prev;
                 const merged = {
@@ -3100,7 +3155,16 @@ export function SiteWizard({
                   theme_mode: styleToken.theme_mode ?? prev.design_token?.theme_mode,
                   layout: {
                     ...(prev.design_token?.layout || {}),
-                    ...(styleToken.layout || {}),
+                    ...(styleToken.layout?.corner_radius ? { corner_radius: styleToken.layout.corner_radius } : {}),
+                    ...(styleToken.layout?.hero_style ? { hero_style: styleToken.layout.hero_style } : {}),
+                    ...(compatVariants
+                      ? {
+                          section_variants: {
+                            ...(prev.design_token?.layout?.section_variants || {}),
+                            ...compatVariants,
+                          },
+                        }
+                      : {}),
                   },
                 };
                 preview.setStreamedDesignToken(merged);
@@ -3123,6 +3187,7 @@ export function SiteWizard({
           }}
           onStartCustom={() => {
             initialDesignTokenRef.current = null;
+            styleSourceArchetypeRef.current = null;
             setSelectedStyleInfo(null);
             preview.setStreamedDesignToken(null);
             preview.streamedTokenRef.current = null;
