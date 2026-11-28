@@ -34,6 +34,7 @@
     "test:theme-overrides": "node --test --experimental-strip-types scripts/theme-overrides.test.mjs",
     "test:theme-presets": "node --test --experimental-strip-types scripts/theme-presets.test.mjs",
     "test:wizard-font-storage": "node --test --experimental-strip-types scripts/wizard-font-storage.test.mjs",
+    "test:variant-eligibility": "node --test --experimental-strip-types scripts/variant-eligibility.test.mjs",
     "test:showcase-archetypes": "node --test --experimental-strip-types scripts/showcase-archetypes.test.mjs",
     "test:responsive-sections": "npx playwright test tests/showcase-responsive.unauthed.spec.ts --project=unauthed --workers=2"
   },

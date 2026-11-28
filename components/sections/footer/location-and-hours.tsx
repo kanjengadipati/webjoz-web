@@ -3,6 +3,7 @@ import React from "react";
 import { MapPin, Clock, ExternalLink } from "lucide-react";
 import type { FooterVariantProps } from "./types";
 import { InlineText } from "../../templates/shared";
+import { footerStrings } from "./footer-strings";
 
 export default function LocationAndHours({
   footer, brand_name, hasBlog, language,
@@ -11,6 +12,7 @@ export default function LocationAndHours({
   collapseSheetForInlineEdit, onEditingStateChange,
 }: FooterVariantProps) {
   const isEN = language === "en";
+  const L = footerStrings(language);
   const displayBrand = brand_name || (isEN ? "Our Business" : "Bisnis Kami");
   const displayTagline = footer?.tagline || "";
   const displayCopyright = footer?.copyright_text || `\u00A9 ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`;
@@ -42,7 +44,7 @@ export default function LocationAndHours({
                     section="footer"
                     fieldKey="tagline"
                     value={displayTagline}
-                    placeholder={isEN ? "Add tagline..." : "Tambah tagline..."}
+                    placeholder={L.taglinePlaceholder}
                     onUpdateField={onUpdateField}
                     isEditorMode={isEditorMode}
                     isSelected={isSelected}
@@ -78,7 +80,7 @@ export default function LocationAndHours({
                     section="contact"
                     fieldKey="address"
                     value={contactAddress ?? ""}
-                    placeholder={isEN ? "Add address / location..." : "Tambah alamat bisnis..."}
+                    placeholder={L.addressPlaceholder}
                     onUpdateField={onUpdateField}
                     isEditorMode={isEditorMode}
                     isSelected={isSelected}
@@ -114,7 +116,7 @@ export default function LocationAndHours({
                     section="contact"
                     fieldKey="opening_hours"
                     value={contactOpeningHours ?? ""}
-                    placeholder={isEN ? "Add opening hours..." : "Tambah jam operasional..."}
+                    placeholder={L.openingHoursPlaceholder}
                     onUpdateField={onUpdateField}
                     isEditorMode={isEditorMode}
                     isSelected={isSelected}

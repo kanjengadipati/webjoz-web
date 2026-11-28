@@ -2589,6 +2589,9 @@ export interface Translations {
       allVariants: string;
       variantsCount: string;
       variantPreviewHint: string;
+      variantFitBadge: string;
+      variantLessSuitedBadge: string;
+      variantNeedsPhotosBadge: string;
       done: string;
       pageLayoutVariants: string;
       activeSectionsCount: string;
@@ -6811,6 +6814,9 @@ export const translations: Record<Locale, Translations> = {
         allVariants: "Semua",
         variantsCount: "varian",
         variantPreviewHint: "Klik varian untuk pratinjau langsung di kanvas.",
+        variantFitBadge: "Cocok",
+        variantLessSuitedBadge: "Kurang cocok",
+        variantNeedsPhotosBadge: "Butuh {count} foto",
         done: "Selesai",
         pageLayoutVariants: "Tata Letak Bagian",
         activeSectionsCount: "bagian aktif",
@@ -11414,6 +11420,9 @@ export const translations: Record<Locale, Translations> = {
         variantsCount: "variants",
         variantPreviewHint:
           "Click a variant to preview instantly on the canvas.",
+        variantFitBadge: "Suited",
+        variantLessSuitedBadge: "Less suited",
+        variantNeedsPhotosBadge: "Needs {count} photos",
         done: "Done",
         pageLayoutVariants: "Section Layout Variants",
         activeSectionsCount: "active sections",

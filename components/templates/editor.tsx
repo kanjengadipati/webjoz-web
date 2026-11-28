@@ -11,6 +11,8 @@ import { useSectionVisibility, SectionVisibilityButton, HiddenSectionNotice } fr
 import { useEditorChromeEnabled } from "@/components/sections/editor-chrome-context";
 import { CustomSelect, type CustomSelectOption, VisualVariantPanel } from "webjoz-ui";
 import { VariantWireframe } from "@/app/dashboard/sites/[id]/components/SectionVariantWireframe";
+import { useVariantEligibility } from "@/hooks/use-variant-eligibility";
+import { eligibilityBadges, orderByEligibility, viewFor } from "@/lib/variant-eligibility";
 import { SeoEditorPreview } from "./shared";
 
 // ---------------------------------------------------------------------------
@@ -621,6 +623,12 @@ export const PreviewSectionWrapper: React.FC<{
     const canEditSection = section === "contact" && Boolean(editSectionShortcut);
     const { setNodeRef: setDropRef, canReorder, isSource, indicator } = useSectionDrop(section);
     const { hideable: canHide, isHidden } = useSectionVisibility(section);
+    // Per-business variant fit (public API). Hero is prefetched; other sections load
+    // when their picker opens. null = unknown business / failed → picker unchanged.
+    const { rows: eligibilityRows, heroImageCount } = useVariantEligibility(
+      section,
+      isEditorMode && chromeEnabled && (section === "hero" || isGalleryOpen),
+    );
 
     useEffect(() => {
       if (!isGalleryOpen) return;
@@ -780,13 +788,38 @@ export const PreviewSectionWrapper: React.FC<{
                           setIsGalleryOpen(false);
                         }}
                         onClose={() => setIsGalleryOpen(false)}
-                        options={variants.map((v): CustomSelectOption => ({
-                          value: v.value,
-                          label: getVariantLabel(section, v.value, t),
-                          group: v.group ? getVariantGroupLabel(v.group, locale) : undefined,
-                          description: v.description,
-                          preview: <VariantWireframe section={section} variant={v.value} />,
-                        }))}
+                        options={orderByEligibility(variants, eligibilityRows, heroImageCount, currentVariant).map((v): CustomSelectOption => {
+                          const view = viewFor(
+                            eligibilityRows,
+                            v.value,
+                            section === "hero" ? heroImageCount : undefined,
+                            currentVariant,
+                          );
+                          const badges = eligibilityBadges(view, locale);
+                          return {
+                            value: v.value,
+                            label: getVariantLabel(section, v.value, t),
+                            group: v.group ? getVariantGroupLabel(v.group, locale) : undefined,
+                            description: v.description,
+                            preview: badges.length > 0 ? (
+                              <div className="relative">
+                                <VariantWireframe section={section} variant={v.value} />
+                                <div className="absolute top-1 right-1 flex flex-col items-end gap-0.5">
+                                  {badges.map((b) => (
+                                    <span
+                                      key={b}
+                                      className={`rounded-full bg-slate-950/85 border border-white/15 px-1.5 py-px text-[8px] font-semibold leading-tight ${view.status === "fit" && b === badges[0] ? "text-emerald-300" : "text-amber-300"}`}
+                                    >
+                                      {b}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            ) : (
+                              <VariantWireframe section={section} variant={v.value} />
+                            ),
+                          };
+                        })}
                         allLabel={t("dashboard.sitesEditor.allVariants", "Semua")}
                         hintText={t("dashboard.sitesEditor.variantPreviewHint", "Klik varian untuk pratinjau langsung di kanvas.")}
                         doneLabel={t("dashboard.sitesEditor.done", "Selesai")}

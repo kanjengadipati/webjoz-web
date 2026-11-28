@@ -4,6 +4,7 @@ import React from "react";
 import type { FooterVariantProps } from "./types";
 import InlineSocialEditor from "./inline-social-editor";
 import { InlineText, navCtaHref } from "../../templates/shared";
+import { footerStrings } from "./footer-strings";
 import { ArrowRight, Sparkles } from "lucide-react";
 
 /**
@@ -26,6 +27,7 @@ export default function BrandGradientCta({
   onEditingStateChange,
 }: FooterVariantProps) {
   const isEn = language === "en";
+  const L = footerStrings(language);
   const displayBrand = brand_name || (isEn ? "Our Brand" : "Brand Kami");
   const displayTagline =
     footer?.tagline || (isEn ? "Digital Works & Creative Solutions" : "Karya Digital & Solusi Bisnis Kreatif");
@@ -74,7 +76,7 @@ export default function BrandGradientCta({
                   section="footer"
                   fieldKey="tagline"
                   value={displayTagline}
-                  placeholder={isEn ? "Add tagline..." : "Tambah tagline..."}
+                  placeholder={L.taglinePlaceholder}
                   onUpdateField={onUpdateField}
                   isEditorMode={isEditorMode}
                   isSelected={isSelected}

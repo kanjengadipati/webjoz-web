@@ -63,6 +63,8 @@ import {
 } from "@/lib/design-assets-config";
 import { SECTION_VARIANT_OPTIONS, HERO_STYLE_OPTIONS } from "@/components/sections/variant-registry";
 import { tenantHost } from "@/lib/site-config";
+import { VariantEligibilityProvider } from "@/hooks/use-variant-eligibility";
+import { countDistinctHeroImages } from "@/components/sections/hero/images";
 
 const FEATURE_MARKER_OPTIONS = (t: (k: string) => string) => [
   { value: "auto",    label: `⚡ ${t("dashboard.sitesEditor.featureMarkerAuto")}` },
@@ -1257,6 +1259,20 @@ export default function SiteEditorPage() {
 
   // Opens the Contact form in the sidebar and brings the maps field into view.
   // Stable identity so the memoised preview wrappers keep their bailout.
+  // Business context for the variant picker (which variants suit this business).
+  const heroImageCount = useMemo(
+    () => (content?.hero ? countDistinctHeroImages(content.hero) : 0),
+    [content?.hero],
+  );
+  const variantEligibilityCtx = useMemo(
+    () => ({
+      archetype: (siteDetails?.business_archetype as string | undefined) || undefined,
+      industryId: (siteDetails?.business_industry_id as string | undefined) || undefined,
+      heroImageCount,
+    }),
+    [siteDetails?.business_archetype, siteDetails?.business_industry_id, heroImageCount],
+  );
+
   const editContactShortcut = useMemo<SectionShortcutHandler>(() => () => {
     selectSection("contact");
     if (typeof window !== "undefined" && window.innerWidth < 768) {
@@ -2967,6 +2983,7 @@ export default function SiteEditorPage() {
               `}} />
             )}
 
+            <VariantEligibilityProvider value={variantEligibilityCtx}>
             <SectionShortcutContext.Provider value={editContactShortcut}>
               <SectionVisibilityProvider
                 enabled={!pendingDiff}
@@ -3069,6 +3086,7 @@ export default function SiteEditorPage() {
             </SectionReorderProvider>
             </SectionVisibilityProvider>
             </SectionShortcutContext.Provider>
+            </VariantEligibilityProvider>
           </div>
 
           {/* Mobile bottom sheet */}

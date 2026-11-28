@@ -4,6 +4,7 @@ import { ArrowUp } from "lucide-react";
 import type { FooterVariantProps } from "./types";
 import InlineSocialEditor from "./inline-social-editor";
 import { InlineText } from "../../templates/shared";
+import { footerStrings } from "./footer-strings";
 
 const FOOTER_BG = "var(--dt-surface)";
 const TXT_HIGH = "color-mix(in srgb, var(--dt-text) 95%, transparent)";
@@ -24,6 +25,7 @@ export default function ColumnsWithNav({
   onEditingStateChange,
 }: FooterVariantProps) {
   const isEN = language === "en";
+  const L = footerStrings(language);
   const displayBrand = brand_name || (isEN ? "Our Business" : "Bisnis Kami");
   const displayTagline = footer?.tagline || "";
   const displayCopyright = footer?.copyright_text || `© ${new Date().getFullYear()} ${displayBrand}. All rights reserved.`;
@@ -58,7 +60,7 @@ export default function ColumnsWithNav({
                     section="footer"
                     fieldKey="tagline"
                     value={displayTagline}
-                    placeholder={isEN ? "Add tagline..." : "Tambah tagline..."}
+                    placeholder={L.taglinePlaceholder}
                     onUpdateField={onUpdateField}
                     isEditorMode={isEditorMode}
                     isSelected={isSelected}
