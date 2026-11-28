@@ -31,10 +31,7 @@ export function WizardChatFooter({
   const isEN = locale === "en";
   return (
     <>
-    <div
-      className="px-5 py-2.5 shrink-0 flex items-center justify-between"
-      style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
-    >
+    <div className="px-5 py-1.5 shrink-0 flex items-center justify-between">
       <span className="text-[11px] text-slate-500 flex items-center gap-1.5">
         <div
           className={`w-2 h-2 rounded-full shrink-0 transition-all duration-500 ${
@@ -82,10 +79,7 @@ export function WizardChatFooter({
         </span>
       </div>
     </div>
-    <p
-      className="px-5 py-2 text-center text-[10px] leading-snug text-slate-500/80 shrink-0"
-      style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
-    >
+    <p className="px-5 pt-1 pb-2.5 text-center text-[10px] leading-snug text-slate-500/80 shrink-0">
       {t("dashboard.wizard.privacyNoticePrefix", "Dengan melanjutkan, Anda menyetujui")}{" "}
       <a href={isEN ? "/en/terms" : "/terms"} target="_blank" rel="noopener" className="underline hover:text-slate-300">
         {t("dashboard.wizard.privacyNoticeTerms", "Syarat & Ketentuan")}

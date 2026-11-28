@@ -100,10 +100,9 @@ export function WizardChatInput({
 
   return (
     <div
-      className={`shrink-0 px-4 pt-2 md:py-3 relative transition-all duration-150 ${
-        isKeyboardOpen ? "pb-2" : "pb-6"
+      className={`shrink-0 px-4 pt-2 md:pt-2.5 md:pb-2 relative transition-all duration-150 ${
+        isKeyboardOpen ? "pb-1.5" : "pb-2"
       }`}
-      style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
     >
       {chat.isRecording || chat.isMicConnecting ? (
         <div className="flex flex-col gap-2.5 p-3 rounded-2xl bg-white/[0.04] border border-white/10 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
@@ -213,10 +212,10 @@ export function WizardChatInput({
       ) : (
         <form
           onSubmit={isBrandLogoStage ? (e) => e.preventDefault() : handleSendText}
-          className={`flex items-center rounded-2xl px-4 py-1 gap-2 transition-all ${
+          className={`flex items-center rounded-full pl-4 pr-1.5 py-1.5 gap-2 transition-all ${
             isBrandLogoStage ? "opacity-40 cursor-not-allowed" : ""
           }`}
-          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}
+          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.06)" }}
         >
           <input
             ref={chat.inputRef}
@@ -250,7 +249,7 @@ export function WizardChatInput({
             }
             autoFocus={!isBrandLogoStage}
             disabled={isInputDisabled}
-            className={`flex-1 bg-transparent border-none py-2.5 text-base md:text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50 ${
+            className={`flex-1 bg-transparent border-none py-1.5 text-base md:text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50 ${
               isBrandLogoStage ? "cursor-not-allowed select-none" : ""
             }`}
           />
@@ -263,7 +262,7 @@ export function WizardChatInput({
                 type="button"
                 onClick={chat.startRecording}
                 disabled={isInputDisabled}
-                className="w-8 h-8 flex items-center justify-center rounded-xl bg-white/[0.06] border border-border text-slate-400 hover:text-white hover:bg-white/[0.12] transition-all disabled:opacity-30 shrink-0 active:scale-95 animate-mic-pulse cursor-pointer"
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-white/[0.06] border border-white/10 text-slate-400 hover:text-white hover:bg-white/[0.12] transition-all disabled:opacity-30 shrink-0 active:scale-95 animate-mic-pulse cursor-pointer"
                 title={t("dashboard.wizard.sttStartRecording", "Bicara dengan mic")}
               >
                 <Mic className="w-3.5 h-3.5" />
@@ -276,7 +275,7 @@ export function WizardChatInput({
               isInputDisabled ||
               (chat.chatStage === "name" && !chat.inputValue.trim())
             }
-            className={`w-8 h-8 flex items-center justify-center rounded-xl bg-white text-slate-900 hover:bg-slate-100 transition-all disabled:opacity-30 shrink-0 shadow-xs ${
+            className={`w-8 h-8 flex items-center justify-center rounded-full bg-[#e5e5e5] text-slate-900 hover:bg-white transition-all disabled:opacity-30 shrink-0 shadow-xs ${
               isBrandLogoStage ? "cursor-not-allowed" : "cursor-pointer"
             }`}
           >
