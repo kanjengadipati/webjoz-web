@@ -36,7 +36,7 @@ interface ExampleShowcaseModalProps {
   onUseStyle: (styleToken: Record<string, any>) => void;
   onStartCustom: () => void;
   initialBusinessType?: string;
-  initialTabIndex?: number;
+  initialGroupKey?: string;
 }
 
 export function ExampleShowcaseModal({
@@ -45,7 +45,7 @@ export function ExampleShowcaseModal({
   onUseStyle,
   onStartCustom,
   initialBusinessType,
-  initialTabIndex,
+  initialGroupKey,
 }: ExampleShowcaseModalProps) {
   const { t, isIndonesian } = useI18n();
   // Curated by admin/superadmin: published sites only (GET /public/showcase-sites)
@@ -96,14 +96,16 @@ export function ExampleShowcaseModal({
     return groupTabs;
   }, [allItems, isIndonesian]);
 
-  // 3. Initial item calculation
+  // 3. Initial item calculation — now driven by group key
   const initialItem = useMemo(() => {
     if (allItems.length === 0) return null;
 
-    if (typeof initialTabIndex === "number") {
-      if (initialTabIndex >= 0 && initialTabIndex < allItems.length) {
-        return allItems[initialTabIndex];
-      }
+    // If a specific group key was requested (from thumbnail click), pick first item of that group
+    if (initialGroupKey) {
+      const match = allItems.find(
+        (it) => archetypeGroup(it.archetype).key === initialGroupKey
+      );
+      if (match) return match;
     }
 
     if (initialBusinessType) {
@@ -116,7 +118,7 @@ export function ExampleShowcaseModal({
     }
 
     return allItems[0];
-  }, [allItems, initialBusinessType, initialTabIndex]);
+  }, [allItems, initialBusinessType, initialGroupKey]);
 
   const [selectedId, setSelectedId] = useState<string>(() => initialItem?.id || "");
   const [activeTabKey, setActiveTabKey] = useState<string>(() => tabs[0]?.key || "all");
@@ -124,7 +126,22 @@ export function ExampleShowcaseModal({
 
   // Sync on open
   useEffect(() => {
-    if (open && initialItem) {
+    if (!open) return;
+
+    // If a specific group key was provided, jump directly to that group tab
+    if (initialGroupKey) {
+      const targetTab = tabs.find((t) => t.key === `grp-${initialGroupKey}`);
+      if (targetTab) {
+        setActiveTabKey(targetTab.key);
+        if (targetTab.items[0]) setSelectedId(targetTab.items[0].id);
+        if (typeof window !== "undefined") {
+          setPreviewDevice(window.innerWidth < 640 ? "mobile" : "desktop");
+        }
+        return;
+      }
+    }
+
+    if (initialItem) {
       setSelectedId(initialItem.id);
       const parentTab = tabs.find((t) => t.items.some((it) => it.id === initialItem.id));
       if (parentTab) setActiveTabKey(parentTab.key);
@@ -133,7 +150,7 @@ export function ExampleShowcaseModal({
         setPreviewDevice(window.innerWidth < 640 ? "mobile" : "desktop");
       }
     }
-  }, [open, initialItem, tabs]);
+  }, [open, initialItem, initialGroupKey, tabs]);
 
   const activeTab = useMemo(() => {
     return tabs.find((t) => t.key === activeTabKey) || tabs[0];

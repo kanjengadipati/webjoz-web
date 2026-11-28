@@ -254,7 +254,7 @@ export function SiteWizard({
   const preview = useWizardPreview();
   const device = useWizardDevice();
   const [showExamplesModal, setShowExamplesModal] = useState(false);
-  const [examplesModalInitialTab, setExamplesModalInitialTab] = useState<number | undefined>(undefined);
+  const [examplesModalInitialTab, setExamplesModalInitialTab] = useState<string | undefined>(undefined);
   const [dismissedExamplePopup, setDismissedExamplePopup] = useState(false);
 
   const baseThemeToken =
@@ -2667,8 +2667,8 @@ export function SiteWizard({
                     setExamplesModalInitialTab(undefined);
                     setShowExamplesModal(true);
                   }}
-                  onSelectTab={(showcaseIndex) => {
-                    setExamplesModalInitialTab(showcaseIndex);
+                  onSelectTab={(groupKey) => {
+                    setExamplesModalInitialTab(groupKey);
                     setShowExamplesModal(true);
                   }}
                   onDismiss={() => setDismissedExamplePopup(true)}
@@ -3041,7 +3041,7 @@ export function SiteWizard({
         <ExampleShowcaseModal
           open={showExamplesModal}
           onClose={() => setShowExamplesModal(false)}
-          initialTabIndex={examplesModalInitialTab}
+          initialGroupKey={examplesModalInitialTab}
           onUseStyle={(styleToken) => {
             initialDesignTokenRef.current = styleToken;
             preview.setStreamedDesignToken(styleToken);

@@ -13,7 +13,7 @@ import { archetypeGroup } from "@/lib/showcase-archetypes";
 
 interface ExampleThumbnailCardProps {
   onSeeAll: () => void;
-  onSelectTab?: (showcaseIndex: number) => void;
+  onSelectTab?: (groupKey: string) => void;
   onDismiss?: () => void;
 }
 
@@ -133,7 +133,7 @@ export function ExampleThumbnailCard({
             <button
               key={site.url || idx}
               type="button"
-              onClick={() => (onSelectTab ? onSelectTab(idx) : onSeeAll())}
+              onClick={() => (onSelectTab ? onSelectTab(group.key) : onSeeAll())}
               className="group flex flex-col gap-1.5 rounded-2xl bg-[#181a20] hover:bg-[#1e2129] border border-white/[0.08] hover:border-white/25 p-1.5 text-left transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] focus:outline-none cursor-pointer"
             >
               {/* Top group bar: icon + group label + compact arrow */}
