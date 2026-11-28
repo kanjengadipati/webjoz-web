@@ -54,18 +54,25 @@ export function TemplatePreview({
   const innerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0.2);
   const [innerHeight, setInnerHeight] = useState(0);
+  // isReady: true setelah ResizeObserver pertama kali mengukur tinggi konten
+  // (artinya TemplateComponent sudah selesai layout di DOM)
+  const [isReady, setIsReady] = useState(false);
   const TemplateComponent = TEMPLATE_REGISTRY.find((t) => t.id === templateId)?.component;
 
   useEffect(() => {
+    // Reset skeleton setiap kali templateId / content berubah
+    setIsReady(false);
     const el = containerRef.current;
     if (!el || !TemplateComponent) return;
     const update = () => {
       const s = el.offsetWidth / scaleBase;
       if (s > 0) setScale(s);
-      // Scrollable mode: container height = tinggi layout asli × scale, supaya
-      // area scroll tepat setinggi tampilan yang ter-skalakan (bukan tinggi layout
-      // yang belum di-scale = ribuan px dengan ruang kosong besar di bawah).
-      if (scrollable && innerRef.current) setInnerHeight(innerRef.current.offsetHeight);
+      if (innerRef.current) {
+        const h = innerRef.current.offsetHeight;
+        if (scrollable) setInnerHeight(h);
+        // Anggap "ready" begitu konten punya tinggi yang masuk akal (> 100px)
+        if (h > 100) setIsReady(true);
+      }
     };
     const obs = new ResizeObserver(update);
     obs.observe(el);
@@ -80,8 +87,51 @@ export function TemplatePreview({
     <div
       ref={containerRef}
       className={`relative w-full bg-white ${scrollable ? "overflow-visible" : "h-full overflow-hidden"}`}
-      style={scrollable ? { height: Math.round(innerHeight * scale) } : undefined}
+      style={
+        scrollable
+          ? {
+              height: isReady ? Math.round(innerHeight * scale) : undefined,
+              minHeight: !isReady ? 420 : undefined,
+            }
+          : undefined
+      }
     >
+      {/* Skeleton shimmer — muncul saat template belum selesai di-layout */}
+      {!isReady && (
+        <div className="absolute inset-0 z-10 bg-white overflow-hidden">
+          {/* Navbar skeleton */}
+          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+            <div className="h-5 w-24 rounded bg-gray-200 animate-pulse" />
+            <div className="flex gap-3">
+              <div className="h-3 w-12 rounded bg-gray-100 animate-pulse" />
+              <div className="h-3 w-12 rounded bg-gray-100 animate-pulse" />
+              <div className="h-3 w-12 rounded bg-gray-100 animate-pulse" />
+            </div>
+            <div className="h-7 w-20 rounded-full bg-gray-200 animate-pulse" />
+          </div>
+          {/* Hero skeleton */}
+          <div className="flex flex-col items-center gap-4 px-6 pt-10 pb-6">
+            <div className="h-3 w-20 rounded-full bg-gray-200 animate-pulse" />
+            <div className="h-8 w-3/4 rounded bg-gray-200 animate-pulse" />
+            <div className="h-8 w-1/2 rounded bg-gray-200 animate-pulse" />
+            <div className="h-4 w-2/3 rounded bg-gray-100 animate-pulse" />
+            <div className="h-4 w-1/2 rounded bg-gray-100 animate-pulse" />
+            <div className="flex gap-3 mt-2">
+              <div className="h-9 w-28 rounded-full bg-gray-300 animate-pulse" />
+              <div className="h-9 w-24 rounded-full bg-gray-100 animate-pulse" />
+            </div>
+          </div>
+          {/* Image placeholder */}
+          <div className="mx-6 h-40 rounded-xl bg-gray-100 animate-pulse" />
+          {/* Cards row skeleton */}
+          <div className="flex gap-3 mx-6 mt-5">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex-1 h-24 rounded-xl bg-gray-100 animate-pulse" />
+            ))}
+          </div>
+        </div>
+      )}
+
       <div
         ref={innerRef}
         style={{
@@ -90,6 +140,9 @@ export function TemplatePreview({
           transform: `scale(${scale})`,
           pointerEvents: "none",
           userSelect: "none",
+          // Sembunyikan konten mentah sampai sudah ter-scale dengan benar
+          opacity: isReady ? 1 : 0,
+          transition: "opacity 0.25s ease",
         }}
       >
         <TemplateComponent content={content} design_token={designToken} isEditorMode={false} />
